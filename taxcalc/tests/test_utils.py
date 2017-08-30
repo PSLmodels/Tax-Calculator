@@ -489,8 +489,7 @@ def test_row_classifier(cps_subsample):
     calc2.calc_all()
     calc2_s006 = create_distribution_table(calc2.records,
                                            groupby='webapp_income_bins',
-                                           result_type='weighted_sum',
-                                           baseline_obj=calc1.records).s006
+                                           result_type='weighted_sum').s006
     # use weighted sum of weights in each cell to check classifer
     assert np.allclose(calc1_s006, calc2_s006, atol=0.00, rtol=0.0)
 

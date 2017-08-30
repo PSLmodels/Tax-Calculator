@@ -231,8 +231,7 @@ def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
 
 
 def create_distribution_table(obj, groupby, result_type,
-                              income_measure='expanded_income',
-                              baseline_obj=None, diffs=False):
+                              income_measure='expanded_income'):
     """
     Get results from object, sort them based on groupby, manipulate them
     based on result_type, and return them as a table.
@@ -241,8 +240,7 @@ def create_distribution_table(obj, groupby, result_type,
     ----------
     obj : any object with array-like attributes named as in STATS_COLUMNS list
         Examples include a Tax-Calculator Records object and a
-        Pandas DataFrame object, but if baseline_obj is specified, both obj
-        and baseline_obj must have a current_year attribute
+        Pandas DataFrame object.
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
@@ -252,15 +250,6 @@ def create_distribution_table(obj, groupby, result_type,
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
         determines how the data should be manipulated
-
-    baseline_obj : any object with array-like attributes named as in
-        the STATS_COLUMNS list and having a current_year attribute
-        Examples include a Tax-Calculator Records object
-
-    diffs : boolean
-        indicates showing the results from reform or the difference between
-        the baseline and reform. Turn this switch to True if you want to see
-        the difference
 
     Notes
     -----
@@ -275,9 +264,9 @@ def create_distribution_table(obj, groupby, result_type,
 
     Returns
     -------
-    Pandas DataFrame object
+    distribution table as a Pandas DataFrame
     """
-    # pylint: disable=too-many-arguments
+    # nested function that specifies calculated columns
     def add_columns(pdf):
         """
         Nested function that adds several columns to
@@ -296,20 +285,10 @@ def create_distribution_table(obj, groupby, result_type,
         # weight of returns with positive Alternative Minimum Tax (AMT)
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
-    # create distribution table
+    # main logic of create_distribution_table
     res = results(obj)
     res = add_columns(res)
-    if baseline_obj is not None:
-        res_base = results(baseline_obj)
-        assert obj.current_year == baseline_obj.current_year
-        baseline_income_measure = income_measure + '_baseline'
-        res[baseline_income_measure] = res_base[income_measure]
-        income_measure = baseline_income_measure
-        if diffs:
-            res_base = add_columns(res_base)
-            res = res.subtract(res_base)
-            res['s006'] = res_base['s006']
-    # sort the data
+    # sort the data given specified groupby
     if groupby == 'weighted_deciles':
         pdf = add_weighted_income_bins(res, num_bins=10,
                                        income_measure=income_measure)
@@ -324,11 +303,10 @@ def create_distribution_table(obj, groupby, result_type,
                               income_measure=income_measure)
     else:
         msg = ("groupby must be either 'weighted_deciles' or "
-               "'small_income_bins' or 'large_income_bins' or "
-               "'webapp_income_bins'")
+               "'webapp_income_bins' or 'large_income_bins' or "
+               "'small_income_bins'")
         raise ValueError(msg)
-    # manipulate the data
-    pd.options.display.float_format = '{:8,.0f}'.format
+    # manipulate the data given specified result_type
     if result_type == 'weighted_sum':
         pdf = weighted(pdf, STATS_COLUMNS)
         gpdf_mean = pdf.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
@@ -341,7 +319,10 @@ def create_distribution_table(obj, groupby, result_type,
     else:
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
         raise ValueError(msg)
-    return gpdf_mean.append(sum_row)
+    dist_table = gpdf_mean.append(sum_row)
+    # set print display format for float table elements
+    pd.options.display.float_format = '{:8,.0f}'.format
+    return dist_table
 
 
 def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
