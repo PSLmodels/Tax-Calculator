@@ -58,7 +58,7 @@ DIFF_TABLE_LABELS = ['Tax Units with Tax Cut',
                      'Percent with Tax Increase',
                      'Percent with Tax Decrease',
                      'Share of Overall Change',
-                     'Change relative to Aftertax Income']
+                     'Change as % of Aftertax Income']
 
 
 WEBAPP_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
