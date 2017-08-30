@@ -23,7 +23,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count, weighted_mean,
                                wage_weighted, agi_weighted,
                                expanded_income_weighted,
-                               weighted_perc_inc, weighted_perc_dec,
+                               weighted_perc_inc, weighted_perc_cut,
                                EPSILON)
 
 
@@ -204,7 +204,7 @@ def diff_table_stats(res2, groupby, income_measure):
     diffs['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
     diffs['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
     diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
-    diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, 'tax_diff')
+    diffs['perc_cut'] = gpdf.apply(weighted_perc_cut, 'tax_diff')
     wtotal = (res2['tax_diff'] * res2['s006']).sum()
     diffs['share_of_change'] = gpdf.apply(weighted_share_of_total, 'tax_diff',
                                           wtotal)

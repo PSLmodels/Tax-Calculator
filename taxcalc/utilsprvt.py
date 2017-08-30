@@ -77,7 +77,7 @@ def weighted_perc_inc(pdf, col_name):
             (weighted_count(pdf) + EPSILON))
 
 
-def weighted_perc_dec(pdf, col_name):
+def weighted_perc_cut(pdf, col_name):
     """
     Return weighted fraction (not percent) of negative values for the
     variable with col_name in the specified Pandas DataFrame.
