@@ -340,15 +340,16 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 @iterate_jit(nopython=True)
 def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
-               ):
+               c00100, ID_AmountCap_rt, ID_AmountCap_Switch):
     """
     Apply a cap to gross itemized deductions.
 
     Notes
     -----
     Tax Law Parameters:
-        SWITCH : Indicator for which itemized deductions are capped
-        CAP : Cap on itemized deductions; decimal fraction of AGI
+        ID_AmountCap_Switch : Indicator for which itemized deductions are
+                              capped
+        ID_AmountCap_rt : Cap on itemized deductions; decimal fraction of AGI
 
     Taxpayer Characteristics:
         e17500 : Medical expenses
@@ -366,6 +367,8 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         e20400 : Total miscellaneous expenses
 
         g20500 : Gross casualty or theft loss (before disregard)
+
+        c00100: Adjusted Gross Income
 
     Returns
     -------
@@ -387,6 +390,48 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         capped by ItemDedCap
 
     """
+    cap = ID_AmountCap_rt * c00100
+
+    gross_ded_amt = 0
+    if ID_AmountCap_Switch[0]:  # medical
+        gross_ded_amt += e17500
+    if ID_AmountCap_Switch[1]:  # statelocal
+        gross_ded_amt += e18400
+    if ID_AmountCap_Switch[2]:  # realestate
+        gross_ded_amt += e18500
+    if ID_AmountCap_Switch[3]:  # casualty
+        gross_ded_amt += g20500
+    if ID_AmountCap_Switch[4]:  # misc
+        gross_ded_amt += e20400
+    if ID_AmountCap_Switch[5]:  # interest
+        gross_ded_amt += e19200
+    if ID_AmountCap_Switch[6]:  # charitycash
+        gross_ded_amt += e19800
+    if ID_AmountCap_Switch[7]:  # charitynoncash
+        gross_ded_amt += e20100
+
+    overage = min(0, gross_ded_amt - cap)
+
+    if overage > 0:
+        if ID_AmountCap_Switch[0]:  # medical
+            e17500_capped -= e17500 / gross_ded_amt * overage
+        if ID_AmountCap_Switch[1]:  # statelocal
+            e18400_capped -= e18400 / gross_ded_amt * overage
+        if ID_AmountCap_Switch[2]:  # realestate
+            e18500_capped -= e18500 / gross_ded_amt * overage
+        if ID_AmountCap_Switch[3]:  # casualty
+            g20500_capped -= g20500 / gross_ded_amt * overage
+        if ID_AmountCap_Switch[4]:  # misc
+            e20400_capped -= e20400 / gross_ded_amt * overage
+        if ID_AmountCap_Switch[5]:  # interest
+            e19200_capped -= e19200 / gross_ded_amt * overage
+        if ID_AmountCap_Switch[6]:  # charitycash
+            e19800_capped -= e19800 / gross_ded_amt * overage
+        if ID_AmountCap_Switch[7]:  # charitynoncash
+            e20100_capped -= e20100 / gross_ded_amt * overage
+
+    return (e17500_capped, e18400_capped, e18500_capped, g20500_capped,
+            e20400_capped, e19200_capped, e19800_capped, e20100_capped)
 
 
 @iterate_jit(nopython=True)
@@ -499,8 +544,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
-    c20500 = max(0., g20500_capped - ID_Casualty_frt * posagi)
-    * (1. - ID_Casualty_hc)
+    c20500 = (max(0., g20500_capped - ID_Casualty_frt * posagi) *
+              (1. - ID_Casualty_hc))
     c20500 = min(c20500, ID_Casualty_c[MARS - 1])
     # Miscellaneous
     c20400 = e20400_capped
