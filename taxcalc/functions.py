@@ -340,7 +340,9 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 @iterate_jit(nopython=True)
 def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
-               c00100, ID_AmountCap_rt, ID_AmountCap_Switch):
+               c00100, ID_AmountCap_rt, ID_AmountCap_Switch, e17500_capped,
+               e18400_capped, e18500_capped, e19200_capped, e19800_capped,
+               e20100_capped, e20400_capped, g20500_capped):
     """
     Apply a cap to gross itemized deductions.
 
@@ -410,7 +412,16 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     if ID_AmountCap_Switch[7]:  # charitynoncash
         gross_ded_amt += e20100
 
-    overage = min(0, gross_ded_amt - cap)
+    overage = max(0, gross_ded_amt - cap)
+
+    e17500_capped = e17500
+    e18400_capped = e18400
+    e18500_capped = e18500
+    g20500_capped = g20500
+    e20400_capped = e20400
+    e19200_capped = e19200
+    e19800_capped = e19800
+    e20100_capped = e20100
 
     if overage > 0:
         if ID_AmountCap_Switch[0]:  # medical
