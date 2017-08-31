@@ -339,9 +339,60 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
 
 
 @iterate_jit(nopython=True)
-def ItemDed(e17500, e18400, e18500,
-            g20500, e20400, e19200, e19800, e20100,
-            MARS, age_head, age_spouse,
+def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
+               ):
+    """
+    Apply a cap to gross itemized deductions.
+
+    Notes
+    -----
+    Tax Law Parameters:
+        SWITCH : Indicator for which itemized deductions are capped
+        CAP : Cap on itemized deductions; decimal fraction of AGI
+
+    Taxpayer Characteristics:
+        e17500 : Medical expenses
+
+        e18400 : State and local taxes
+
+        e18500 : Real-estate taxes
+
+        e19200 : Interest paid
+
+        e19800 : Charity cash contributions
+
+        e20100 : Charity noncash contributions
+
+        e20400 : Total miscellaneous expenses
+
+        g20500 : Gross casualty or theft loss (before disregard)
+
+    Returns
+    -------
+        e17500_capped: Medical expenses, capped by ItemDedCap
+
+        e18400_capped: State and local taxes, capped by ItemDedCap
+
+        e18500_capped : Real-estate taxes, capped by ItemDedCap
+
+        e19200_capped : Interest paid, capped by ItemDedCap
+
+        e19800_capped : Charity cash contributions, capped by ItemDedCap
+
+        e20100_capped : Charity noncash contributions, capped by ItemDedCap
+
+        e20400_capped : Total miscellaneous expenses, capped by ItemDedCap
+
+        g20500_capped : Gross casualty or theft loss (before disregard),
+        capped by ItemDedCap
+
+    """
+
+
+@iterate_jit(nopython=True)
+def ItemDed(e17500_capped, e18400_capped, e18500_capped,
+            g20500_capped, e20400_capped, e19200_capped, e19800_capped,
+            e20100_capped, MARS, age_head, age_spouse,
             c00100, c04470, c17000, c18300, c20500, c19200,
             c20800, c21040, c21060, c19700,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
@@ -403,21 +454,22 @@ def ItemDed(e17500, e18400, e18500,
         ID_Miscellaneous_c : Ceiling on miscellaneous expense deduction
 
     Taxpayer Characteristics:
-        e17500 : Medical expenses
+        e17500_capped : Medical expenses, capped by ItemDedCap
 
-        e18400 : State and local taxes
+        e18400_capped : State and local taxes, capped by ItemDedCap
 
-        e18500 : Real-estate taxes
+        e18500_capped : Real-estate taxes, capped by ItemDedCap
 
-        e19200 : Interest paid
+        e19200_capped : Interest paid, capped by ItemDedCap
 
-        e19800 : Charity cash contributions
+        e19800_capped : Charity cash contributions, capped by ItemDedCap
 
-        e20100 : Charity noncash contributions
+        e20100_capped : Charity noncash contributions, capped by ItemDedCap
 
-        e20400 : Total miscellaneous expenses
+        e20400_capped : Total miscellaneous expenses, capped by ItemDedCap
 
-        g20500 : Gross casualty or theft loss (before disregard)
+        g20500_capped : Gross casualty or theft loss (before disregard),
+        capped by ItemDedCap
 
     Returns
     -------
@@ -429,28 +481,29 @@ def ItemDed(e17500, e18400, e18500,
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         medical_frt += ID_Medical_frt_add4aged
     c17750 = medical_frt * posagi
-    c17000 = max(0., e17500 - c17750) * (1. - ID_Medical_hc)
+    c17000 = max(0., e17500_capped - c17750) * (1. - ID_Medical_hc)
     c17000 = min(c17000, ID_Medical_c[MARS - 1])
     # State and local taxes
-    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400, 0.),
+    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400_capped, 0.),
                  ID_StateLocalTax_c[MARS - 1])
-    c18500 = min((1. - ID_RealEstate_hc) * e18500,
+    c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
                  ID_RealEstate_c[MARS - 1])
     c18300 = c18400 + c18500
     # Interest paid
-    c19200 = e19200 * (1. - ID_InterestPaid_hc)
+    c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    lim30 = min(ID_Charity_crt_noncash * posagi, e20100)
-    c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800)
+    lim30 = min(ID_Charity_crt_noncash * posagi, e20100_capped)
+    c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
     charity_floor = ID_Charity_frt * posagi  # floor is zero in present law
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
-    c20500 = max(0., g20500 - ID_Casualty_frt * posagi) * (1. - ID_Casualty_hc)
+    c20500 = max(0., g20500_capped - ID_Casualty_frt * posagi)
+    * (1. - ID_Casualty_hc)
     c20500 = min(c20500, ID_Casualty_c[MARS - 1])
     # Miscellaneous
-    c20400 = e20400
+    c20400 = e20400_capped
     c20750 = ID_Miscellaneous_frt * posagi
     c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
     c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
@@ -1497,10 +1550,10 @@ def BenefitLimitation(calc):
             deductible_expenses += calc.records.c17000
         if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
             deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_hc) *
-                                    np.maximum(calc.records.e18400, 0.))
+                                    np.maximum(calc.records.e18400_capped, 0.))
         if calc.policy.ID_BenefitCap_Switch[2]:
             deductible_expenses += ((1. - calc.policy.ID_RealEstate_hc) *
-                                    calc.records.e18500)
+                                    calc.records.e18500_capped)
         if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
             deductible_expenses += calc.records.c20500
         if calc.policy.ID_BenefitCap_Switch[4]:  # Miscellaneous
