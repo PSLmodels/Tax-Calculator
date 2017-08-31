@@ -319,26 +319,32 @@ def dropq_summary(df1, df2, mask):
     comb_reform = (df2['combined_xdec'] * df2['s006']).sum()
 
     # create difference tables, grouped by deciles and bins
+    df2['iitax'] = df2['iitax_xdec']
     itax_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
+    df2['iitax'] = df2['iitax_xbin']
     itax_diff_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
+    df2['payrolltax'] = df2['payrolltax_xdec']
     ptax_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='payrolltax')
+    df2['payrolltax'] = df2['payrolltax_xbin']
     ptax_diff_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='payrolltax')
+    df2['combined'] = df2['combined_xdec']
     comb_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='combined')
+    df2['combined'] = df2['combined_xbin']
     comb_diff_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
@@ -348,12 +354,16 @@ def dropq_summary(df1, df2, mask):
     dist1_dec = create_distribution_table(df1, groupby='weighted_deciles',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
+    for col in [c for c in list(df2) if c.endswith('_xdec')]:
+        df2[col[:-5]] = df2[col]
     dist2_dec = create_distribution_table(df2, groupby='weighted_deciles',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
     dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
+    for col in [c for c in list(df2) if c.endswith('_xbin')]:
+        df2[col[:-5]] = df2[col]
     dist2_bin = create_distribution_table(df2, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
