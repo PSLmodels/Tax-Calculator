@@ -792,9 +792,24 @@
       "desc": "Sch A: Medical expenses deducted",
       "form": {}
     },
+    "e17500_capped": {
+      "type": "float",
+      "desc": "Sch A: Medical expenses, capped as a decimal fraction of AGI",
+      "form": ""
+    },
     "c18300": {
       "type": "float",
       "desc": "Sch A: State and local taxes deducted",
+      "form": {}
+    },
+    "e18400_capped":{
+      "type": "float",
+      "desc": "Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI",
+      "form": {}
+    },
+    "e18500_capped":{
+      "type": "float",
+      "desc": "Sch A: State and local real estate taxes deductible, capped as a decimal fraction of AGI",
       "form": {}
     },
     "c19200": {
@@ -802,9 +817,24 @@
       "desc": "Sch A: Interest deducted",
       "form": {}
     },
+    "e19200_capped": {
+      "type": "float",
+      "desc": "Sch A: Interest deduction deductible, capped as a decimal fraction of AGI",
+      "form": {}
+    },
     "c19700": {
       "type": "float",
       "desc": "Sch A: Charity contributions deducted",
+      "form": {}
+    },
+    "e19800_capped": {
+      "type": "float",
+      "desc": "Sch A: Charity cash contributions deductible, capped as a decimal fraction of AGI",
+      "form": {}
+    },
+    "e20100_capped": {
+      "type": "float",
+      "desc": "Sch A: Charity noncash contributions deductible, capped as a decimal fraction of AGI",
       "form": {}
     },
     "c20500": {
@@ -812,9 +842,19 @@
       "desc": "Sch A: Net casualty or theft loss deducted",
       "form": {}
     },
+    "g20500_capped": {
+      "type": "float",
+      "desc": "Sch A: Gross casualty or theft loss deductible, capped as a decimal fraction of AGI",
+      "form": {}
+    },
     "c20800": {
       "type": "float",
       "desc": "Sch A: Net limited miscellaneous deductions deducted",
+      "form": {}
+    },
+    "e20400_capped": {
+      "type": "float",
+      "desc": "Sch A: Gross miscellaneous deductions deductible, capped as a decimal fraction of AGI",
       "form": {}
     },
     "c21040": {
