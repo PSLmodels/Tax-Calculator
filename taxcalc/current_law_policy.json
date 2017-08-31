@@ -1608,6 +1608,47 @@
         "out_of_range_action": "stop"
     },
 
+       "_ID_AmountCap_rt": {
+        "long_name": "Ceiling on the gross amount from itemized deductions allowed; decimal fraction of AGI",
+        "description": "The gross allowable amount from specified itemized deductions is capped at this percent of AGI.",
+        "section_1": "Itemized Deductions",
+        "section_2": "Ceiling On The Amount Of Itemized Deductions As A Decimal Fraction Of AGI",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "value": [1.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
+
+    "_ID_AmountCap_Switch": {
+        "long_name": "Deductions subject to the cap on itemized deduction benefits",
+        "description": "The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
+        "section_1": "Itemized Deductions",
+        "section_2": "Ceiling On The Amount Of Itemized Deductions As A Decimal Fraction Of AGI",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "idedtype",
+        "col_label": ["medical", "statelocal", "realestate", "casualty", "misc", "interest", "charitycash", "charitynoncash"],
+        "value": [[true, true, true, true, true, true, true, true]],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividends (regular/non-AMT) rate 1",
         "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. ",
