@@ -233,17 +233,17 @@ def chooser(agg):
     return ans
 
 
-def drop_records(df1, df2, mask):
+def fuzz_records(df1, df2, mask):
     """
     Modify df1 and df2 by adding statistical fuzz for data privacy.
 
     Parameters
     ----------
     df1: Pandas DataFrame
-        contains results for the standard plan X and X'.
+        contains results for the baseline plan X.
 
     df2: Pandas DataFrame
-        contains results for the user-specified plan (Plan Y).
+        contains results for the reform plan Y.
 
     mask: boolean numpy array
         contains info about whether or not each element of X and X' are same
@@ -258,39 +258,35 @@ def drop_records(df1, df2, mask):
     -----
     This function groups both DataFrames based on the web application's
     income groupings (both weighted decile and income bins), and then
-    pseudo-randomly picks NUM_TO_DROP records to 'drop' within each bin.
+    pseudo-randomly picks NUM_TO_DROP records to 'fuzz' within each bin.
     We keep track of the NUM_TO_DROP dropped records in both group-by
-    strategies and then use these 'flag' columns to modify all
-    columns of interest, creating new '_dec' columns for
-    statistics based on weighted deciles and '_bin' columns for
-    statitistics based on income bins.  Lastly we calculate
-    individual income tax differences, payroll tax differences, and
-    combined tax differences between the baseline and reform
-    for the two groupings.
+    groupings and then use the 'nofuzz' columns to select records to
+    modify, creating new '_xdec' columns for statistics based on
+    expanded income deciles and '_xbin' columns for statitistics based
+    on expanded income bins.
     """
     # group first
     df1['mask'] = mask
     df2['mask'] = mask
     df1 = add_weighted_income_bins(df1)
     df2 = add_weighted_income_bins(df2)
-    gp2_dec = df2.groupby('bins')
+    gp2_xdec = df2.groupby('bins')
     df1 = add_income_bins(df1, bins=WEBAPP_INCOME_BINS)
     df2 = add_income_bins(df2, bins=WEBAPP_INCOME_BINS)
-    gp2_bin = df2.groupby('bins')
-    # transform to get the 'flag' column that marks dropped records in each bin
-    df2['flag_dec'] = gp2_dec['mask'].transform(chooser)
-    df2['flag_bin'] = gp2_bin['mask'].transform(chooser)
-    # ... first calculate all of X'
-    columns_to_make_noisy = set(TABLE_COLUMNS) | set(STATS_COLUMNS)
-    # ... these don't exist yet
-    columns_to_make_noisy.remove('num_returns_ItemDed')
-    columns_to_make_noisy.remove('num_returns_StandardDed')
-    columns_to_make_noisy.remove('num_returns_AMT')
-    for col in columns_to_make_noisy:
-        df2[col + '_dec'] = (df2[col] * df2['flag_dec'] -
-                             df1[col] * df2['flag_dec'] + df1[col])
-        df2[col + '_bin'] = (df2[col] * df2['flag_bin'] -
-                             df1[col] * df2['flag_bin'] + df1[col])
+    gp2_xbin = df2.groupby('bins')
+    # calculate the 'nofuzz' column that marks records that are not fuzzed
+    df2['nofuzz_xdec'] = gp2_xdec['mask'].transform(chooser)
+    df2['nofuzz_xbin'] = gp2_xbin['mask'].transform(chooser)
+    # create the 'fuzz' in available df2 columns
+    columns_to_fuzz = set(TABLE_COLUMNS) | set(STATS_COLUMNS)
+    columns_to_fuzz.remove('num_returns_ItemDed')
+    columns_to_fuzz.remove('num_returns_StandardDed')
+    columns_to_fuzz.remove('num_returns_AMT')
+    for col in columns_to_fuzz:
+        df2[col + '_xdec'] = (df2[col] * df2['nofuzz_xdec'] -
+                              df1[col] * df2['nofuzz_xdec'] + df1[col])
+        df2[col + '_xbin'] = (df2[col] * df2['nofuzz_xbin'] -
+                              df1[col] * df2['nofuzz_xbin'] + df1[col])
     return df1, df2
 
 
@@ -302,12 +298,15 @@ def dropq_summary(df1, df2, mask):
     """
     # pylint: disable=too-many-locals
 
-    df1, df2 = drop_records(df1, df2, mask)
+    df1, df2 = fuzz_records(df1, df2, mask)
 
     # tax difference totals between reform and baseline
-    itax_diff = ((df2['iitax'] - df1['iitax']) * df2['s006']).sum()
-    ptax_diff = ((df2['payrolltax'] - df1['payrolltax']) * df2['s006']).sum()
-    comb_diff = ((df2['combined'] - df1['combined']) * df2['s006']).sum()
+    tdiff = df2['iitax_xdec'] - df1['iitax']
+    itax_diff = (tdiff * df2['s006']).sum()
+    tdiff = df2['payrolltax_xdec'] - df1['payrolltax']
+    ptax_diff = (tdiff * df2['s006']).sum()
+    tdiff = df2['combined_xdec'] - df1['combined']
+    comb_diff = (tdiff * df2['s006']).sum()
 
     # totals for baseline
     itax_base = (df1['iitax'] * df1['s006']).sum()
@@ -315,9 +314,9 @@ def dropq_summary(df1, df2, mask):
     comb_base = (df1['combined'] * df1['s006']).sum()
 
     # totals for reform
-    itax_reform = (df2['iitax'] * df2['s006']).sum()
-    ptax_reform = (df2['payrolltax'] * df2['s006']).sum()
-    comb_reform = (df2['combined'] * df2['s006']).sum()
+    itax_reform = (df2['iitax_xdec'] * df2['s006']).sum()
+    ptax_reform = (df2['payrolltax_xdec'] * df2['s006']).sum()
+    comb_reform = (df2['combined_xdec'] * df2['s006']).sum()
 
     # create difference tables, grouped by deciles and bins
     itax_diff_dec = create_difference_table(df1, df2,
