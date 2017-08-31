@@ -184,10 +184,12 @@ def test_Calculator_create_distribution_table(cps_subsample):
                    'Combined Payroll and Individual Income Tax Liabilities']
     dt1 = create_distribution_table(calc.records,
                                     groupby="weighted_deciles",
+                                    income_measure='expanded_income',
                                     result_type="weighted_sum")
     dt1.columns = dist_labels
     dt2 = create_distribution_table(calc.records,
                                     groupby="small_income_bins",
+                                    income_measure='expanded_income',
                                     result_type="weighted_avg")
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)

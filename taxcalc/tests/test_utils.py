@@ -163,6 +163,7 @@ def test_create_tables(cps_subsample):
     # test creating various distribution tables
     dist = create_distribution_table(calc2.records,
                                      groupby='weighted_deciles',
+                                     income_measure='expanded_income',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [-8851215,
@@ -194,6 +195,7 @@ def test_create_tables(cps_subsample):
 
     dist = create_distribution_table(calc2.records,
                                      groupby='webapp_income_bins',
+                                     income_measure='expanded_income',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [-103274,
@@ -230,11 +232,13 @@ def test_create_tables(cps_subsample):
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='small_income_bins',
+                                  income_measure='expanded_income',
                                   result_type='bad_result_type')
 
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='bad_bins',
+                                  income_measure='expanded_income',
                                   result_type='weighted_sum')
 
 
@@ -429,13 +433,16 @@ def test_dist_table_sum_row(cps_subsample):
     calc.calc_all()
     tb1 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
+                                    income_measure='expanded_income',
                                     result_type='weighted_sum')
     tb2 = create_distribution_table(calc.records,
                                     groupby='large_income_bins',
+                                    income_measure='expanded_income',
                                     result_type='weighted_sum')
     assert np.allclose(tb1[-1:], tb2[-1:])
     tb3 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
+                                    income_measure='expanded_income',
                                     result_type='weighted_avg')
     assert isinstance(tb3, pd.DataFrame)
 

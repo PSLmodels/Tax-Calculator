@@ -8,13 +8,11 @@ Private utility functions used only by public functions in the dropq.py file.
 import copy
 import hashlib
 import numpy as np
-import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
 from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
-                           create_difference_table, get_sums,
-                           weighted, weighted_avg_allcols,
-                           create_distribution_table, results,
+                           create_difference_table, create_distribution_table,
+                           results,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
 
 
@@ -349,12 +347,16 @@ def dropq_summary(df1, df2, mask):
 
     # create distribution tables
     dist1_dec = create_distribution_table(df1, groupby='weighted_deciles',
+                                          income_measure='expanded_income',
                                           result_type='weighted_sum')
     dist2_dec = create_distribution_table(df2, groupby='weighted_deciles',
+                                          income_measure='expanded_income',
                                           result_type='weighted_sum')
     dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
+                                          income_measure='expanded_income',
                                           result_type='weighted_sum')
     dist2_bin = create_distribution_table(df2, groupby='webapp_income_bins',
+                                          income_measure='expanded_income',
                                           result_type='weighted_sum')
 
     return (dist2_dec, dist1_dec,

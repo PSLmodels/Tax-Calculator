@@ -230,11 +230,10 @@ def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
     return wadf
 
 
-def create_distribution_table(obj, groupby, result_type,
-                              income_measure='expanded_income'):
+def create_distribution_table(obj, groupby, income_measure, result_type):
     """
-    Get results from object, sort them based on groupby, manipulate them
-    based on result_type, and return them as a table.
+    Get results from object, sort them based on groupby using income_measure,
+    manipulate them based on result_type, and return them as a table.
 
     Parameters
     ----------
@@ -250,6 +249,9 @@ def create_distribution_table(obj, groupby, result_type,
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
         determines how the data should be manipulated
+
+    income_measure : String object
+        options for input: 'expanded_income', 'c00100'(AGI)
 
     Notes
     -----
@@ -345,7 +347,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         specifies kind of bins used to group filing units
 
     income_measure : String object
-        options for input: 'expanded_income', ...
+        options for input: 'expanded_income', 'c00100'(AGI)
         specifies statistic to place filing units in bins
 
     tax_to_diff : String object
