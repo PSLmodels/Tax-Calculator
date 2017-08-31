@@ -81,11 +81,21 @@ def test_run_tax_calc_model(puf_subsample, resjson):
     res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, usermods,
                                       return_json=resjson)
     assert len(res) == 13
+    dump = False  # set to True in order to dump returned results and fail test
     for idx in range(0, len(res)):
         if resjson:
             assert isinstance(res[idx], dict)
         else:
             assert isinstance(res[idx], pd.DataFrame)
+        if dump:
+            if resjson:
+                cols = sorted(res[idx].keys())
+            else:
+                cols = sorted(list(res[idx]))
+            for col in cols:
+                print('<<idx={}:col={}>>'.format(idx, col))
+                print(res[idx][col])
+    assert not dump
 
 
 @pytest.mark.requires_pufcsv
