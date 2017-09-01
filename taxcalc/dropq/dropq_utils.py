@@ -116,7 +116,7 @@ def dropq_calculate(year_n, start_year,
         calc1p.calc_all()
         assert calc1p.current_year == start_year
         # compute mask showing which of the calc1 and calc1p results differ;
-        # mask is true if a filing unit's incom tax liability changed after
+        # mask is true if a filing unit's income tax liability changed after
         # a dollar was added to the filing unit's wage and salary income
         res1 = results(calc1.records)
         res1p = results(calc1p.records)
@@ -232,7 +232,7 @@ def chooser(agg):
     return ans
 
 
-def fuzz_records(df1, df2, mask):
+def fuzz_df2_records(df1, df2, mask):
     """
     Modify df2 by adding random fuzz for data privacy.
 
@@ -245,49 +245,42 @@ def fuzz_records(df1, df2, mask):
         contains results for the reform plan
 
     mask: boolean numpy array
-        contains info about whether or not each element of X and X' are same
+        contains info about whether or not each row might be fuzzed
 
     Returns
     -------
-    fuzzed_df1: Pandas DataFrame
-
     fuzzed_df2: Pandas DataFrame
 
     Notes
     -----
     This function groups both DataFrames based on the web application's
-    income groupings (both weighted decile and income bins), and then
-    pseudo-randomly picks NUM_TO_DROP records to 'fuzz' within each bin.
-    We keep track of the NUM_TO_DROP dropped records in both group-by
-    groupings and then use the 'nofuzz' columns to select records to
-    modify, creating new '_xdec' columns for statistics based on
-    expanded income deciles and '_xbin' columns for statitistics based
-    on expanded income bins.
+    income groupings (both quantile and income bins), and then pseudo-
+    randomly picks NUM_TO_FUZZ records to 'fuzz' within each bin.  The
+    fuzzing involves creating new df2 columns containing the fuzzed
+    results for each bin.
     """
-    # group first
+    cols_to_skip = set(['num_returns_ItemDed', 'num_returns_StandardDed',
+                        'num_returns_AMT', 's006'])
+    columns_to_fuzz = (set(TABLE_COLUMNS) | set(STATS_COLUMNS)) - cols_to_skip
     df1['mask'] = mask
     df2['mask'] = mask
+    # fuzz using expanded income quantile bins
     df1 = add_quantile_bins(df1, 'expanded_income', 10)
     df2 = add_quantile_bins(df2, 'expanded_income', 10)
     gp2_xdec = df2.groupby('bins')
-    df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
-    df2 = add_income_bins(df2, 'expanded_income', bins=WEBAPP_INCOME_BINS)
-    gp2_xbin = df2.groupby('bins')
-    # calculate the 'nofuzz' column that marks records that are not fuzzed
     df2['nofuzz_xdec'] = gp2_xdec['mask'].transform(chooser)
-    df2['nofuzz_xbin'] = gp2_xbin['mask'].transform(chooser)
-    # create the 'fuzz' in available df2 columns other than s006 weights
-    columns_to_fuzz = set(TABLE_COLUMNS) | set(STATS_COLUMNS)
-    columns_to_fuzz.remove('num_returns_ItemDed')
-    columns_to_fuzz.remove('num_returns_StandardDed')
-    columns_to_fuzz.remove('num_returns_AMT')
-    columns_to_fuzz.remove('s006')
     for col in columns_to_fuzz:
         df2[col + '_xdec'] = (df2[col] * df2['nofuzz_xdec'] -
                               df1[col] * df2['nofuzz_xdec'] + df1[col])
+    # fuzz using expanded income webapp bins
+    df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
+    df2 = add_income_bins(df2, 'expanded_income', bins=WEBAPP_INCOME_BINS)
+    gp2_xbin = df2.groupby('bins')
+    df2['nofuzz_xbin'] = gp2_xbin['mask'].transform(chooser)
+    for col in columns_to_fuzz:
         df2[col + '_xbin'] = (df2[col] * df2['nofuzz_xbin'] -
                               df1[col] * df2['nofuzz_xbin'] + df1[col])
-    return df1, df2
+    return df2
 
 
 def dropq_summary(df1, df2, mask):
@@ -298,7 +291,7 @@ def dropq_summary(df1, df2, mask):
     """
     # pylint: disable=too-many-locals
 
-    df1, df2 = fuzz_records(df1, df2, mask)
+    df2 = fuzz_df2_records(df1, df2, mask)
 
     # tax difference totals between reform and baseline
     tdiff = df2['iitax_xdec'] - df1['iitax']
