@@ -438,8 +438,7 @@ class TaxCalcIO(object):
         """
         Write to tfile the tkind decile table using dfx DataFrame.
         """
-        dfx = add_weighted_income_bins(dfx, num_bins=10,
-                                       income_measure='expanded_income',
+        dfx = add_weighted_income_bins(dfx, 'expanded_income', 10,
                                        weight_by_income_measure=False)
         gdfx = dfx.groupby('bins', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')

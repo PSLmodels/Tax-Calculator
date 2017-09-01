@@ -344,14 +344,16 @@ def test_add_income_bins():
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     bins = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
             200000, 9e99]
-    dfr = add_income_bins(dfx, compare_with='tpc', bins=None)
+    dfr = add_income_bins(dfx, 'expanded_income', bin_type='tpc', bins=None,
+                          right=True)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, compare_with='tpc', bins=None, right=False)
+    dfl = add_income_bins(dfx, 'expanded_income', bin_type='tpc', bins=None,
+                          right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, _ in groupedl:
@@ -366,14 +368,14 @@ def test_add_income_bins_soi():
     bins = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
             1999999, 4999999, 9999999, 9e99]
-    dfr = add_income_bins(dfx, compare_with='soi', bins=None)
+    dfr = add_income_bins(dfx, 'expanded_income', bin_type='soi', right=True)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, compare_with='soi', bins=None, right=False)
+    dfl = add_income_bins(dfx, 'expanded_income', bin_type='soi', right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, _ in groupedl:
@@ -386,14 +388,14 @@ def test_add_exp_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     bins = [-9e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 9e99]
-    dfr = add_income_bins(dfx, bins=bins)
+    dfr = add_income_bins(dfx, 'expanded_income', bins=bins, right=True)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, bins=bins, right=False)
+    dfl = add_income_bins(dfx, 'expanded_income', bins=bins, right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, _ in groupedl:
@@ -406,21 +408,24 @@ def test_add_income_bins_raises():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     with pytest.raises(ValueError):
-        dfx = add_income_bins(dfx, compare_with='stuff')
+        dfx = add_income_bins(dfx, 'expanded_income', bin_type='stuff')
 
 
 def test_add_weighted_income_bins():
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
-    dfb = add_weighted_income_bins(dfx, num_bins=100)
+    dfb = add_weighted_income_bins(dfx, 'expanded_income', 100,
+                                   weight_by_income_measure=False)
     bin_labels = dfb['bins'].unique()
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
     # custom labels
-    dfb = add_weighted_income_bins(dfx, weight_by_income_measure=True)
+    dfb = add_weighted_income_bins(dfx, 'expanded_income', 100,
+                                   weight_by_income_measure=True)
     assert 'bins' in dfb
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-    dfb = add_weighted_income_bins(dfx, labels=custom_labels)
+    dfb = add_weighted_income_bins(dfx, 'expanded_income', 10,
+                                   labels=custom_labels)
     assert 'bins' in dfb
     bin_labels = dfb['bins'].unique()
     for lab in bin_labels:

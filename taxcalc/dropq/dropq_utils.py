@@ -235,7 +235,7 @@ def chooser(agg):
 
 def fuzz_records(df1, df2, mask):
     """
-    Modify df1 and df2 by adding statistical fuzz for data privacy.
+    Modify df2 by adding statistical fuzz for data privacy.
 
     Parameters
     ----------
@@ -268,11 +268,11 @@ def fuzz_records(df1, df2, mask):
     # group first
     df1['mask'] = mask
     df2['mask'] = mask
-    df1 = add_weighted_income_bins(df1)
-    df2 = add_weighted_income_bins(df2)
+    df1 = add_weighted_income_bins(df1, 'expanded_income', 10)
+    df2 = add_weighted_income_bins(df2, 'expanded_income', 10)
     gp2_xdec = df2.groupby('bins')
-    df1 = add_income_bins(df1, bins=WEBAPP_INCOME_BINS)
-    df2 = add_income_bins(df2, bins=WEBAPP_INCOME_BINS)
+    df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
+    df2 = add_income_bins(df2, 'expanded_income', bins=WEBAPP_INCOME_BINS)
     gp2_xbin = df2.groupby('bins')
     # calculate the 'nofuzz' column that marks records that are not fuzzed
     df2['nofuzz_xdec'] = gp2_xdec['mask'].transform(chooser)

@@ -286,8 +286,7 @@ def write_decile_table(dfx):
     Write to stdout the distributional table specified in dfx DataFrame.
     """
     # create expanded-income decile information
-    dfx = add_weighted_income_bins(dfx, num_bins=10,
-                                   income_measure='expanded_income',
+    dfx = add_weighted_income_bins(dfx, 'expanded_income', 10,
                                    weight_by_income_measure=False)
     gdfx = dfx.groupby('bins', as_index=False)
     rtns_series = gdfx.apply(unweighted_sum, 's006')
