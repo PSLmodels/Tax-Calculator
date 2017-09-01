@@ -10,9 +10,8 @@ import hashlib
 import numpy as np
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
-from taxcalc.utils import (add_income_bins, add_quantile_bins,
+from taxcalc.utils import (add_income_bins, add_quantile_bins, results,
                            create_difference_table, create_distribution_table,
-                           results,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
 
 
@@ -116,9 +115,9 @@ def dropq_calculate(year_n, start_year,
             calc1p.increment_year()
         calc1p.calc_all()
         assert calc1p.current_year == start_year
-        # compute mask that shows which of the calc1 and calc1p results differ
-        # mask is true if a filing unit's tax liability changed after a dollar
-        # was added to the filing unit's income
+        # compute mask showing which of the calc1 and calc1p results differ;
+        # mask is true if a filing unit's incom tax liability changed after
+        # a dollar was added to the filing unit's wage and salary income
         res1 = results(calc1.records)
         res1p = results(calc1p.records)
         mask = np.logical_not(  # pylint: disable=no-member
@@ -205,28 +204,28 @@ def random_seed_from_subdict(subdict):
     return seed % np.iinfo(np.uint32).max  # pylint: disable=no-member
 
 
-NUM_TO_DROP = 3
+NUM_TO_FUZZ = 3
 
 
 def chooser(agg):
     """
-    This is a transformation function that should be called on each group.
-    It is assumed that the chunk 'agg' is a chunk of the 'mask' column.
-    This chooser selects NUM_TO_DROP of those mask indices with the output for
-    those NUM_TO_DROP indices being zero and the output for all the other
-    indices being one.
+    This is a transformation function that should be called on each group
+    (that is, each cell in a table).  It is assumed that the chunk 'agg' is
+    a chunk of the 'mask' column.  This chooser selects NUM_TO_FUZZ of those
+    mask indices with the output for those NUM_TO_FUZZ indices being zero and
+    the output for all the other indices being one.
     """
     # select indices of records with change in tax liability after
     # a one dollar increase in income
     indices = np.where(agg)
-    if len(indices[0]) >= NUM_TO_DROP:
+    if len(indices[0]) >= NUM_TO_FUZZ:
         choices = np.random.choice(indices[0],  # pylint: disable=no-member
-                                   size=NUM_TO_DROP, replace=False)
+                                   size=NUM_TO_FUZZ, replace=False)
     else:
         msg = ('Not enough differences in income tax when adding '
                'one dollar for chunk with name: {}')
         raise ValueError(msg.format(agg.name))
-    # drop chosen records
+    # mark the records chosen to be fuzzed
     ans = [1] * len(agg)
     for idx in choices:
         ans[idx] = 0
@@ -235,15 +234,15 @@ def chooser(agg):
 
 def fuzz_records(df1, df2, mask):
     """
-    Modify df2 by adding statistical fuzz for data privacy.
+    Modify df2 by adding random fuzz for data privacy.
 
     Parameters
     ----------
     df1: Pandas DataFrame
-        contains results for the baseline plan X.
+        contains results for the baseline plan
 
     df2: Pandas DataFrame
-        contains results for the reform plan Y.
+        contains results for the reform plan
 
     mask: boolean numpy array
         contains info about whether or not each element of X and X' are same
@@ -293,9 +292,9 @@ def fuzz_records(df1, df2, mask):
 
 def dropq_summary(df1, df2, mask):
     """
-    df1 contains raw results for the standard plan X and X'
-    df2 contains raw results the user-specified plan (Plan Y)
-    mask is the boolean mask where X and X' match
+    df1 contains raw results for baseline plan
+    df2 contains raw results for reform plan
+    mask is the boolean array specifying which rows might be fuzzed
     """
     # pylint: disable=too-many-locals
 
