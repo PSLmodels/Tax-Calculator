@@ -350,16 +350,18 @@ def dropq_summary(df1, df2, mask):
     dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
-    df2_cols_ending_in_xdec = [c for c in list(df2) if c.endswith('_xdec')]
-    for col in df2_cols_ending_in_xdec:
-        root_col_name = col[:-5]  # dropping off the trailing '_xdec'
+    suffix = '_xdec'
+    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
+    for col in df2_cols_with_suffix:
+        root_col_name = col.replace(suffix, '')
         df2[root_col_name] = df2[col]
     dist2_dec = create_distribution_table(df2, groupby='weighted_deciles',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
-    df2_cols_ending_in_xbin = [c for c in list(df2) if c.endswith('_xbin')]
-    for col in df2_cols_ending_in_xbin:
-        root_col_name = col[:-5]  # dropping off the trailing '_xbin'
+    suffix = '_xbin'
+    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
+    for col in df2_cols_with_suffix:
+        root_col_name = col.replace(suffix, '')
         df2[root_col_name] = df2[col]
     dist2_bin = create_distribution_table(df2, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
