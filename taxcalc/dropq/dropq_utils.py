@@ -277,11 +277,12 @@ def fuzz_records(df1, df2, mask):
     # calculate the 'nofuzz' column that marks records that are not fuzzed
     df2['nofuzz_xdec'] = gp2_xdec['mask'].transform(chooser)
     df2['nofuzz_xbin'] = gp2_xbin['mask'].transform(chooser)
-    # create the 'fuzz' in available df2 columns
+    # create the 'fuzz' in available df2 columns other than s006 weights
     columns_to_fuzz = set(TABLE_COLUMNS) | set(STATS_COLUMNS)
     columns_to_fuzz.remove('num_returns_ItemDed')
     columns_to_fuzz.remove('num_returns_StandardDed')
     columns_to_fuzz.remove('num_returns_AMT')
+    columns_to_fuzz.remove('s006')
     for col in columns_to_fuzz:
         df2[col + '_xdec'] = (df2[col] * df2['nofuzz_xdec'] -
                               df1[col] * df2['nofuzz_xdec'] + df1[col])
@@ -318,15 +319,10 @@ def dropq_summary(df1, df2, mask):
     ptax_reform = (df2['payrolltax_xdec'] * df2['s006']).sum()
     comb_reform = (df2['combined_xdec'] * df2['s006']).sum()
 
-    # create difference tables, grouped by deciles and bins
+    # create difference tables grouped by deciles and bins
     df2['iitax'] = df2['iitax_xdec']
     itax_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
-                                            income_measure='expanded_income',
-                                            tax_to_diff='iitax')
-    df2['iitax'] = df2['iitax_xbin']
-    itax_diff_bin = create_difference_table(df1, df2,
-                                            groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
     df2['payrolltax'] = df2['payrolltax_xdec']
@@ -334,32 +330,37 @@ def dropq_summary(df1, df2, mask):
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='payrolltax')
-    df2['payrolltax'] = df2['payrolltax_xbin']
-    ptax_diff_bin = create_difference_table(df1, df2,
-                                            groupby='webapp_income_bins',
-                                            income_measure='expanded_income',
-                                            tax_to_diff='payrolltax')
     df2['combined'] = df2['combined_xdec']
     comb_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='combined')
+    df2['iitax'] = df2['iitax_xbin']
+    itax_diff_bin = create_difference_table(df1, df2,
+                                            groupby='webapp_income_bins',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='iitax')
+    df2['payrolltax'] = df2['payrolltax_xbin']
+    ptax_diff_bin = create_difference_table(df1, df2,
+                                            groupby='webapp_income_bins',
+                                            income_measure='expanded_income',
+                                            tax_to_diff='iitax')
     df2['combined'] = df2['combined_xbin']
     comb_diff_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='combined')
 
-    # create distribution tables
+    # create distribution tables grouped by deciles and bins
     dist1_dec = create_distribution_table(df1, groupby='weighted_deciles',
+                                          income_measure='expanded_income',
+                                          result_type='weighted_sum')
+    dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
     for col in [c for c in list(df2) if c.endswith('_xdec')]:
         df2[col[:-5]] = df2[col]
     dist2_dec = create_distribution_table(df2, groupby='weighted_deciles',
-                                          income_measure='expanded_income',
-                                          result_type='weighted_sum')
-    dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
     for col in [c for c in list(df2) if c.endswith('_xbin')]:
