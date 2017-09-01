@@ -10,7 +10,7 @@ import hashlib
 import numpy as np
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
-from taxcalc.utils import (add_income_bins, add_weighted_income_bins,
+from taxcalc.utils import (add_income_bins, add_quantile_bins,
                            create_difference_table, create_distribution_table,
                            results,
                            STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
@@ -268,8 +268,8 @@ def fuzz_records(df1, df2, mask):
     # group first
     df1['mask'] = mask
     df2['mask'] = mask
-    df1 = add_weighted_income_bins(df1, 'expanded_income', 10)
-    df2 = add_weighted_income_bins(df2, 'expanded_income', 10)
+    df1 = add_quantile_bins(df1, 'expanded_income', 10)
+    df2 = add_quantile_bins(df2, 'expanded_income', 10)
     gp2_xdec = df2.groupby('bins')
     df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
     df2 = add_income_bins(df2, 'expanded_income', bins=WEBAPP_INCOME_BINS)

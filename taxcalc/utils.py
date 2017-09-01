@@ -86,12 +86,15 @@ def weighted_sum(pdf, col_name):
     return (pdf[col_name] * pdf['s006']).sum()
 
 
-def add_weighted_income_bins(pdf, income_measure, num_bins,
-                             weight_by_income_measure=False, labels=None):
+def add_quantile_bins(pdf, income_measure, num_bins,
+                      weight_by_income_measure=False, labels=None):
     """
     Add a column of income bins to specified Pandas DataFrame, pdf, with
-    the new column being named 'bins'.  Assumes that specified pdf contains
-    columns for the specified income_measure and for sample weights, s006.
+    the new column being named 'bins'.  The bins hold equal number of
+    filing units when weight_by_income_measure=False or equal number of
+    income dollars when weight_by_income_measure=True.  Assumes that
+    specified pdf contains columns for the specified income_measure and
+    for sample weights, s006.
     """
     pdf.sort_values(by=income_measure, inplace=True)
     if weight_by_income_measure:
@@ -291,7 +294,7 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     res = add_columns(res)
     # sort the data given specified groupby
     if groupby == 'weighted_deciles':
-        pdf = add_weighted_income_bins(res, income_measure, 10)
+        pdf = add_quantile_bins(res, income_measure, 10)
     elif groupby == 'webapp_income_bins':
         pdf = add_income_bins(res, income_measure, bin_type='webapp')
     elif groupby == 'large_income_bins':
@@ -372,7 +375,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             return weighted_sum(gpdf, colname) / (total + EPSILON)
         # add bin column to res2 given specified groupby and income_measure
         if groupby == 'weighted_deciles':
-            pdf = add_weighted_income_bins(res2, income_measure, 10)
+            pdf = add_quantile_bins(res2, income_measure, 10)
         elif groupby == 'webapp_income_bins':
             pdf = add_income_bins(res2, income_measure, bin_type='webapp')
         elif groupby == 'large_income_bins':
@@ -727,8 +730,8 @@ def mtr_graph_data(calc1, calc2,
     if mars != 'ALL':
         dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column given specified income_var and dollar_weighting
-    dfx = add_weighted_income_bins(dfx, income_var, 100,
-                                   weight_by_income_measure=dollar_weighting)
+    dfx = add_quantile_bins(dfx, income_var, 100,
+                            weight_by_income_measure=dollar_weighting)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
@@ -863,7 +866,7 @@ def atr_graph_data(calc1, calc2,
     if mars != 'ALL':
         dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column
-    dfx = add_weighted_income_bins(dfx, 'expanded_income', 100)
+    dfx = add_quantile_bins(dfx, 'expanded_income', 100)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply weighted_mean function to percentile-grouped income/tax values

@@ -22,7 +22,7 @@ from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
                            wage_weighted, agi_weighted,
                            expanded_income_weighted,
                            weighted_perc_inc, weighted_perc_cut,
-                           add_income_bins, add_weighted_income_bins,
+                           add_income_bins, add_quantile_bins,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
@@ -411,21 +411,21 @@ def test_add_income_bins_raises():
         dfx = add_income_bins(dfx, 'expanded_income', bin_type='stuff')
 
 
-def test_add_weighted_income_bins():
+def test_add_quantile_bins():
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
-    dfb = add_weighted_income_bins(dfx, 'expanded_income', 100,
-                                   weight_by_income_measure=False)
+    dfb = add_quantile_bins(dfx, 'expanded_income', 100,
+                            weight_by_income_measure=False)
     bin_labels = dfb['bins'].unique()
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
     # custom labels
-    dfb = add_weighted_income_bins(dfx, 'expanded_income', 100,
-                                   weight_by_income_measure=True)
+    dfb = add_quantile_bins(dfx, 'expanded_income', 100,
+                            weight_by_income_measure=True)
     assert 'bins' in dfb
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-    dfb = add_weighted_income_bins(dfx, 'expanded_income', 10,
-                                   labels=custom_labels)
+    dfb = add_quantile_bins(dfx, 'expanded_income', 10,
+                            labels=custom_labels)
     assert 'bins' in dfb
     bin_labels = dfb['bins'].unique()
     for lab in bin_labels:
