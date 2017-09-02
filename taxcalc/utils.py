@@ -390,8 +390,8 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
-        tax_cut = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
-        diffs = pd.DataFrame(data=tax_cut, columns=['tax_cut'])
+        diffs = pd.DataFrame()
+        diffs['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
         diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
         diffs['count'] = gpdf.apply(weighted_count)
         diffs['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
