@@ -103,105 +103,111 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     np.random.seed(seed)  # pylint: disable=no-member
 
     # construct dropq summary results from raw results
-    (dist2_dec, dist1_dec,
-     idf_dec, pdf_dec, cdf_dec,
-     dist2_bin, dist1_bin,
-     idf_bin, pdf_bin, cdf_bin,
-     itax_sumd, ptax_sumd, comb_sumd,
-     itax_sum1, ptax_sum1, comb_sum1,
-     itax_sum2, ptax_sum2, comb_sum2) = dropq_summary(rawres1, rawres2, mask)
+    (dist1_dec, dist2_dec,
+     diff_itax_dec, diff_ptax_dec, diff_comb_dec,
+     dist1_bin, dist2_bin,
+     diff_itax_bin, diff_ptax_bin, diff_comb_bin,
+     aggr_itax_d, aggr_ptax_d, aggr_comb_d,
+     aggr_itax_1, aggr_ptax_1, aggr_comb_1,
+     aggr_itax_2, aggr_ptax_2, aggr_comb_2) = dropq_summary(rawres1,
+                                                            rawres2,
+                                                            mask)
 
-    # construct DataFrames containing selected summary results
-    totsd = [itax_sumd, ptax_sumd, comb_sumd]
-    fiscal_tots_diff = pd.DataFrame(data=totsd, index=TOTAL_ROW_NAMES)
-
-    tots1 = [itax_sum1, ptax_sum1, comb_sum1]
-    fiscal_tots_baseline = pd.DataFrame(data=tots1, index=TOTAL_ROW_NAMES)
-
-    tots2 = [itax_sum2, ptax_sum2, comb_sum2]
-    fiscal_tots_reform = pd.DataFrame(data=tots2, index=TOTAL_ROW_NAMES)
-
-    # remove negative incomes from selected summary results
-    idf_bin.drop(idf_bin.index[0], inplace=True)
-    pdf_bin.drop(pdf_bin.index[0], inplace=True)
-    cdf_bin.drop(cdf_bin.index[0], inplace=True)
-    dist2_bin.drop(dist2_bin.index[0], inplace=True)
-    dist1_bin.drop(dist1_bin.index[0], inplace=True)
+    # construct DataFrames containing aggregate tax results
+    # ... for reform minus baseline difference
+    aggrd = [aggr_itax_d, aggr_ptax_d, aggr_comb_d]
+    aggr_d = pd.DataFrame(data=aggrd, index=TOTAL_ROW_NAMES)
+    # ... for baseline
+    aggr1 = [aggr_itax_1, aggr_ptax_1, aggr_comb_1]
+    aggr_1 = pd.DataFrame(data=aggr1, index=TOTAL_ROW_NAMES)
+    # ... for reform
+    aggr2 = [aggr_itax_2, aggr_ptax_2, aggr_comb_2]
+    aggr_2 = pd.DataFrame(data=aggr2, index=TOTAL_ROW_NAMES)
 
     elapsed_time = time.time() - start_time
     print('elapsed time for this run: ', elapsed_time)
 
-    def append_year(tdf):
+    def append_year(pdf):
         """
-        append_year embedded function
+        append_year embedded function revises all column names in pdf
         """
-        tdf.columns = [str(col) + '_{}'.format(year_n) for col in tdf.columns]
-        return tdf
+        pdf.columns = [str(col) + '_{}'.format(year_n) for col in pdf.columns]
+        return pdf
 
     # optionally return non-JSON results
     if not return_json:
-        return (append_year(dist2_dec), append_year(dist1_dec),
-                append_year(idf_dec),
-                append_year(pdf_dec),
-                append_year(cdf_dec),
-                append_year(dist2_bin), append_year(dist1_bin),
-                append_year(idf_bin),
-                append_year(pdf_bin),
-                append_year(cdf_bin),
-                append_year(fiscal_tots_diff),
-                append_year(fiscal_tots_baseline),
-                append_year(fiscal_tots_reform))
+        return (append_year(dist2_dec),
+                append_year(dist1_dec),
+                append_year(diff_itax_dec),
+                append_year(diff_ptax_dec),
+                append_year(diff_comb_dec),
+                append_year(dist2_bin),
+                append_year(dist1_bin),
+                append_year(diff_itax_bin),
+                append_year(diff_ptax_bin),
+                append_year(diff_comb_bin),
+                append_year(aggr_d),
+                append_year(aggr_1),
+                append_year(aggr_2))
 
-    # optionally construct JSON results
-    decile_row_names_i = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
-    dist2_dec_table_i = create_json_table(dist2_dec,
-                                          row_names=decile_row_names_i,
+    # optionally construct JSON results for year n
+    dec_row_names_n = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
+    dist2_dec_table_n = create_json_table(dist2_dec,
+                                          row_names=dec_row_names_n,
                                           column_types=PLAN_COLUMN_TYPES)
-    dist1_dec_table_i = create_json_table(dist1_dec,
-                                          row_names=decile_row_names_i,
+    dist1_dec_table_n = create_json_table(dist1_dec,
+                                          row_names=dec_row_names_n,
                                           column_types=PLAN_COLUMN_TYPES)
-    idf_dec_table_i = create_json_table(idf_dec,
-                                        row_names=decile_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    pdf_dec_table_i = create_json_table(pdf_dec,
-                                        row_names=decile_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    cdf_dec_table_i = create_json_table(cdf_dec,
-                                        row_names=decile_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    bin_row_names_i = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
-    dist2_bin_table_i = create_json_table(dist2_bin,
-                                          row_names=bin_row_names_i,
+    diff_itax_dec_table_n = create_json_table(diff_itax_dec,
+                                              row_names=dec_row_names_n,
+                                              column_types=DIFF_COLUMN_TYPES)
+    diff_ptax_dec_table_n = create_json_table(diff_ptax_dec,
+                                              row_names=dec_row_names_n,
+                                              column_types=DIFF_COLUMN_TYPES)
+    diff_comb_dec_table_n = create_json_table(diff_comb_dec,
+                                              row_names=dec_row_names_n,
+                                              column_types=DIFF_COLUMN_TYPES)
+    bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
+    dist2_bin_table_n = create_json_table(dist2_bin,
+                                          row_names=bin_row_names_n,
                                           column_types=PLAN_COLUMN_TYPES)
-    dist1_bin_table_i = create_json_table(dist1_bin,
-                                          row_names=bin_row_names_i,
+    dist1_bin_table_n = create_json_table(dist1_bin,
+                                          row_names=bin_row_names_n,
                                           column_types=PLAN_COLUMN_TYPES)
-    idf_bin_table_i = create_json_table(idf_bin,
-                                        row_names=bin_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    pdf_bin_table_i = create_json_table(pdf_bin,
-                                        row_names=bin_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    cdf_bin_table_i = create_json_table(cdf_bin,
-                                        row_names=bin_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    total_row_names_i = [x + '_' + str(year_n) for x in TOTAL_ROW_NAMES]
-    fiscal_yr_total_df = create_json_table(fiscal_tots_diff,
-                                           row_names=total_row_names_i)
-    fiscal_yr_total_df = dict((k, v[0]) for k, v in fiscal_yr_total_df.items())
-    fiscal_yr_total_bl = create_json_table(fiscal_tots_baseline,
-                                           row_names=total_row_names_i)
-    fiscal_yr_total_bl = dict((k, v[0]) for k, v in fiscal_yr_total_bl.items())
-    fiscal_yr_total_rf = create_json_table(fiscal_tots_reform,
-                                           row_names=total_row_names_i)
-    fiscal_yr_total_rf = dict((k, v[0]) for k, v in fiscal_yr_total_rf.items())
+    diff_itax_bin_table_n = create_json_table(diff_itax_bin,
+                                              row_names=bin_row_names_n,
+                                              column_types=DIFF_COLUMN_TYPES)
+    diff_ptax_bin_table_n = create_json_table(diff_ptax_bin,
+                                              row_names=bin_row_names_n,
+                                              column_types=DIFF_COLUMN_TYPES)
+    diff_comb_bin_table_n = create_json_table(diff_comb_bin,
+                                              row_names=bin_row_names_n,
+                                              column_types=DIFF_COLUMN_TYPES)
+    total_row_names_n = [x + '_' + str(year_n) for x in TOTAL_ROW_NAMES]
+    aggr_d_table_n = create_json_table(aggr_d,
+                                       row_names=total_row_names_n)
+    aggr_d_table_n = dict((k, v[0]) for k, v in aggr_d_table_n.items())
+    aggr_1_table_n = create_json_table(aggr_1,
+                                       row_names=total_row_names_n)
+    aggr_1_table_n = dict((k, v[0]) for k, v in aggr_1_table_n.items())
+    aggr_2_table_n = create_json_table(aggr_2,
+                                       row_names=total_row_names_n)
+    aggr_2_table_n = dict((k, v[0]) for k, v in aggr_2_table_n.items())
 
     # return JSON results
-    return (dist2_dec_table_i, dist1_dec_table_i,
-            idf_dec_table_i, pdf_dec_table_i, cdf_dec_table_i,
-            dist2_bin_table_i, dist1_bin_table_i,
-            idf_bin_table_i, pdf_bin_table_i, cdf_bin_table_i,
-            fiscal_yr_total_df, fiscal_yr_total_bl, fiscal_yr_total_rf)
+    return (dist2_dec_table_n,
+            dist1_dec_table_n,
+            diff_itax_dec_table_n,
+            diff_ptax_dec_table_n,
+            diff_comb_dec_table_n,
+            dist2_bin_table_n,
+            dist1_bin_table_n,
+            diff_itax_bin_table_n,
+            diff_ptax_bin_table_n,
+            diff_comb_bin_table_n,
+            aggr_d_table_n,
+            aggr_1_table_n,
+            aggr_2_table_n)
 
 
 def run_nth_year_gdp_elast_model(year_n, start_year,
@@ -226,10 +232,10 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     # return gdp_effect results
     if return_json:
         gdp_df = pd.DataFrame(data=[gdp_effect], columns=['col0'])
-        gdp_elast_names_i = [x + '_' + str(year_n)
+        gdp_elast_names_n = [x + '_' + str(year_n)
                              for x in GDP_ELAST_ROW_NAMES]
         gdp_elast_total = create_json_table(gdp_df,
-                                            row_names=gdp_elast_names_i,
+                                            row_names=gdp_elast_names_n,
                                             num_decimals=5)
         gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
         return gdp_elast_total
