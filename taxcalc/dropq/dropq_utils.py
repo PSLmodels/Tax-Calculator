@@ -259,45 +259,40 @@ def fuzz_df2_records(df1, df2, mask):
     fuzzing involves creating new df2 columns containing the fuzzed
     results for each bin.
     """
+    # nested function that does the record fuzzing
+    def fuzz(df1, df2, bin_type, imeasure1, imeasure2, suffix, cols_to_fuzz):
+        """
+        Fuzz some df2 records in each bin.
+        """
+        # pylint: disable=too-many-arguments
+        assert bin_type == 'dec' or bin_type == 'bin'
+        if bin_type == 'dec':
+            df1 = add_quantile_bins(df1, imeasure1, 10)
+            df2 = add_quantile_bins(df2, imeasure2, 10)
+        else:
+            df1 = add_income_bins(df1, imeasure1, bins=WEBAPP_INCOME_BINS)
+            df2 = add_income_bins(df2, imeasure2, bins=WEBAPP_INCOME_BINS)
+        gdf2 = df2.groupby('bins')
+        df2['nofuzz'] = gdf2['mask'].transform(chooser)
+        for col in cols_to_fuzz:
+            df2[col + suffix] = (df2[col] * df2['nofuzz'] -
+                                 df1[col] * df2['nofuzz'] + df1[col])
+    # main logic of fuzz_df2_records
     cols_to_skip = set(['num_returns_ItemDed', 'num_returns_StandardDed',
                         'num_returns_AMT', 's006'])
     columns_to_fuzz = (set(TABLE_COLUMNS) | set(STATS_COLUMNS)) - cols_to_skip
     df2['mask'] = mask
-    # --- use expanded income in df2 reform to groupby ---
-    # fuzz using expanded income decile bins in reform, df2
-    df1 = add_quantile_bins(df1, 'expanded_income', 10)
-    df2 = add_quantile_bins(df2, 'expanded_income', 10)
-    gp2_x2dec = df2.groupby('bins')
-    df2['nofuzz_x2dec'] = gp2_x2dec['mask'].transform(chooser)
-    for col in columns_to_fuzz:
-        df2[col + '_x2dec'] = (df2[col] * df2['nofuzz_x2dec'] -
-                               df1[col] * df2['nofuzz_x2dec'] + df1[col])
-    # fuzz using expanded income webapp bins in reform, df2
-    df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
-    df2 = add_income_bins(df2, 'expanded_income', bins=WEBAPP_INCOME_BINS)
-    gp2_x2bin = df2.groupby('bins')
-    df2['nofuzz_x2bin'] = gp2_x2bin['mask'].transform(chooser)
-    for col in columns_to_fuzz:
-        df2[col + '_x2bin'] = (df2[col] * df2['nofuzz_x2bin'] -
-                               df1[col] * df2['nofuzz_x2bin'] + df1[col])
-    # --- use expanded income in df1 baseline to groupby ---
+    # use expanded income in df2 reform to groupby
+    fuzz(df1, df2, 'dec', 'expanded_income', 'expanded_income',
+         '_x2dec', columns_to_fuzz)
+    fuzz(df1, df2, 'bin', 'expanded_income', 'expanded_income',
+         '_x2bin', columns_to_fuzz)
+    # use expanded income in df1 baseline to groupby
     df2['xin_baseline'] = df1['expanded_income']
-    # fuzz using expanded income decile bins in baseline, df1
-    df1 = add_quantile_bins(df1, 'expanded_income', 10)
-    df2 = add_quantile_bins(df2, 'xin_baseline', 10)
-    gp2_x1dec = df2.groupby('bins')
-    df2['nofuzz_x1dec'] = gp2_x1dec['mask'].transform(chooser)
-    for col in columns_to_fuzz:
-        df2[col + '_x1dec'] = (df2[col] * df2['nofuzz_x1dec'] -
-                               df1[col] * df2['nofuzz_x1dec'] + df1[col])
-    # fuzz using expanded income webapp bins in baseline, df1
-    df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
-    df2 = add_income_bins(df2, 'xin_baseline', bins=WEBAPP_INCOME_BINS)
-    gp2_x1bin = df2.groupby('bins')
-    df2['nofuzz_x1bin'] = gp2_x1bin['mask'].transform(chooser)
-    for col in columns_to_fuzz:
-        df2[col + '_x1bin'] = (df2[col] * df2['nofuzz_x1bin'] -
-                               df1[col] * df2['nofuzz_x1bin'] + df1[col])
+    fuzz(df1, df2, 'dec', 'expanded_income', 'xin_baseline',
+         '_x1dec', columns_to_fuzz)
+    fuzz(df1, df2, 'bin', 'expanded_income', 'xin_baseline',
+         '_x1bin', columns_to_fuzz)
     return df2
 
 
