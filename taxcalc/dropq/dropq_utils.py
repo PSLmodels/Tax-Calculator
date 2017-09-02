@@ -262,24 +262,42 @@ def fuzz_df2_records(df1, df2, mask):
     cols_to_skip = set(['num_returns_ItemDed', 'num_returns_StandardDed',
                         'num_returns_AMT', 's006'])
     columns_to_fuzz = (set(TABLE_COLUMNS) | set(STATS_COLUMNS)) - cols_to_skip
-    df1['mask'] = mask
     df2['mask'] = mask
-    # fuzz using expanded income quantile bins
+    # --- use expanded income in df2 reform to groupby ---
+    # fuzz using expanded income decile bins in reform, df2
     df1 = add_quantile_bins(df1, 'expanded_income', 10)
     df2 = add_quantile_bins(df2, 'expanded_income', 10)
-    gp2_xdec = df2.groupby('bins')
-    df2['nofuzz_xdec'] = gp2_xdec['mask'].transform(chooser)
+    gp2_xdec2 = df2.groupby('bins')
+    df2['nofuzz_xdec2'] = gp2_xdec2['mask'].transform(chooser)
     for col in columns_to_fuzz:
-        df2[col + '_xdec'] = (df2[col] * df2['nofuzz_xdec'] -
-                              df1[col] * df2['nofuzz_xdec'] + df1[col])
-    # fuzz using expanded income webapp bins
+        df2[col + '_xdec2'] = (df2[col] * df2['nofuzz_xdec2'] -
+                               df1[col] * df2['nofuzz_xdec2'] + df1[col])
+    # fuzz using expanded income webapp bins in reform, df2
     df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
     df2 = add_income_bins(df2, 'expanded_income', bins=WEBAPP_INCOME_BINS)
-    gp2_xbin = df2.groupby('bins')
-    df2['nofuzz_xbin'] = gp2_xbin['mask'].transform(chooser)
+    gp2_xbin2 = df2.groupby('bins')
+    df2['nofuzz_xbin2'] = gp2_xbin2['mask'].transform(chooser)
     for col in columns_to_fuzz:
-        df2[col + '_xbin'] = (df2[col] * df2['nofuzz_xbin'] -
-                              df1[col] * df2['nofuzz_xbin'] + df1[col])
+        df2[col + '_xbin2'] = (df2[col] * df2['nofuzz_xbin2'] -
+                               df1[col] * df2['nofuzz_xbin2'] + df1[col])
+    # --- use expanded income in df1 baseline to groupby ---
+    df2['xin_baseline'] = df1['expanded_income']
+    # fuzz using expanded income decile bins in baseline, df1
+    df1 = add_quantile_bins(df1, 'expanded_income', 10)
+    df2 = add_quantile_bins(df2, 'xin_baseline', 10)
+    gp2_xdec1 = df2.groupby('bins')
+    df2['nofuzz_xdec1'] = gp2_xdec1['mask'].transform(chooser)
+    for col in columns_to_fuzz:
+        df2[col + '_xdec1'] = (df2[col] * df2['nofuzz_xdec1'] -
+                               df1[col] * df2['nofuzz_xdec1'] + df1[col])
+    # fuzz using expanded income webapp bins in baseline, df1
+    df1 = add_income_bins(df1, 'expanded_income', bins=WEBAPP_INCOME_BINS)
+    df2 = add_income_bins(df2, 'xin_baseline', bins=WEBAPP_INCOME_BINS)
+    gp2_xbin1 = df2.groupby('bins')
+    df2['nofuzz_xbin1'] = gp2_xbin1['mask'].transform(chooser)
+    for col in columns_to_fuzz:
+        df2[col + '_xbin1'] = (df2[col] * df2['nofuzz_xbin1'] -
+                               df1[col] * df2['nofuzz_xbin1'] + df1[col])
     return df2
 
 
@@ -294,11 +312,11 @@ def dropq_summary(df1, df2, mask):
     df2 = fuzz_df2_records(df1, df2, mask)
 
     # tax difference totals between reform and baseline
-    tdiff = df2['iitax_xdec'] - df1['iitax']
+    tdiff = df2['iitax_xdec2'] - df1['iitax']
     itax_diff = (tdiff * df2['s006']).sum()
-    tdiff = df2['payrolltax_xdec'] - df1['payrolltax']
+    tdiff = df2['payrolltax_xdec2'] - df1['payrolltax']
     ptax_diff = (tdiff * df2['s006']).sum()
-    tdiff = df2['combined_xdec'] - df1['combined']
+    tdiff = df2['combined_xdec2'] - df1['combined']
     comb_diff = (tdiff * df2['s006']).sum()
 
     # totals for baseline
@@ -307,37 +325,37 @@ def dropq_summary(df1, df2, mask):
     comb_base = (df1['combined'] * df1['s006']).sum()
 
     # totals for reform
-    itax_reform = (df2['iitax_xdec'] * df2['s006']).sum()
-    ptax_reform = (df2['payrolltax_xdec'] * df2['s006']).sum()
-    comb_reform = (df2['combined_xdec'] * df2['s006']).sum()
+    itax_reform = (df2['iitax_xdec2'] * df2['s006']).sum()
+    ptax_reform = (df2['payrolltax_xdec2'] * df2['s006']).sum()
+    comb_reform = (df2['combined_xdec2'] * df2['s006']).sum()
 
     # create difference tables grouped by deciles and bins
-    df2['iitax'] = df2['iitax_xdec']
+    df2['iitax'] = df2['iitax_xdec1']
     itax_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
-    df2['payrolltax'] = df2['payrolltax_xdec']
+    df2['payrolltax'] = df2['payrolltax_xdec1']
     ptax_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='payrolltax')
-    df2['combined'] = df2['combined_xdec']
+    df2['combined'] = df2['combined_xdec1']
     comb_diff_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='combined')
-    df2['iitax'] = df2['iitax_xbin']
+    df2['iitax'] = df2['iitax_xbin1']
     itax_diff_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
-    df2['payrolltax'] = df2['payrolltax_xbin']
+    df2['payrolltax'] = df2['payrolltax_xbin1']
     ptax_diff_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
-    df2['combined'] = df2['combined_xbin']
+    df2['combined'] = df2['combined_xbin1']
     comb_diff_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
@@ -350,7 +368,7 @@ def dropq_summary(df1, df2, mask):
     dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
-    suffix = '_xdec'
+    suffix = '_xdec2'
     df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
     for col in df2_cols_with_suffix:
         root_col_name = col.replace(suffix, '')
@@ -358,7 +376,7 @@ def dropq_summary(df1, df2, mask):
     dist2_dec = create_distribution_table(df2, groupby='weighted_deciles',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
-    suffix = '_xbin'
+    suffix = '_xbin2'
     df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
     for col in df2_cols_with_suffix:
         root_col_name = col.replace(suffix, '')
