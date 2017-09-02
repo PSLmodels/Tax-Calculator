@@ -113,8 +113,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                                             rawres2,
                                                             mask)
 
-    # construct DataFrames containing aggregate tax results
-    # ... for reform minus baseline difference
+    # construct DataFrames containing aggregate tax totals
+    # ... for reform-minus-baseline difference
     aggrd = [aggr_itax_d, aggr_ptax_d, aggr_comb_d]
     aggr_d = pd.DataFrame(data=aggrd, index=TOTAL_ROW_NAMES)
     # ... for baseline
@@ -150,7 +150,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                 append_year(aggr_1),
                 append_year(aggr_2))
 
-    # optionally construct JSON results for year n
+    # optionally construct JSON results tables for year n
     dec_row_names_n = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
     dist2_dec_table_n = create_json_table(dist2_dec,
                                           row_names=dec_row_names_n,
