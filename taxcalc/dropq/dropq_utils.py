@@ -263,6 +263,8 @@ def fuzz_df2_records(df1, df2, mask):
     def fuzz(df1, df2, bin_type, imeasure1, imeasure2, suffix, cols_to_fuzz):
         """
         Fuzz some df2 records in each bin.
+        The fuzzed records have their post-reform tax results (in df2)
+        set to their pre-reform tax results (in df1).
         """
         # pylint: disable=too-many-arguments
         assert bin_type == 'dec' or bin_type == 'bin'
