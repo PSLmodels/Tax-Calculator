@@ -427,8 +427,8 @@ class TaxCalcIO(object):
                 tfile.write(msg)
             return
         # create DataFrame with tax differences (reform - baseline)
-        clp = [getattr(self.calc_clp.records, col) for col in tax_cols]
-        change = [(reform[idx] - clp[idx]) for idx in range(0, len(tax_cols))]
+        base = [getattr(self.calc_clp.records, col) for col in tax_cols]
+        change = [(reform[idx] - base[idx]) for idx in range(0, len(tax_cols))]
         diff = nontax + change  # using expanded_income under baseline policy
         diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_cols)
         # write each kind of distributional table
