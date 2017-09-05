@@ -249,17 +249,16 @@ def fuzz_df2_records(df1, df2, mask):
 
     Returns
     -------
-    fuzzed_df2: Pandas DataFrame
+    fuzzed df2: Pandas DataFrame
 
     Notes
     -----
     This function groups both DataFrames based on the web application's
-    income groupings (both quantile and income bins), and then pseudo-
-    randomly picks NUM_TO_FUZZ records to 'fuzz' within each bin.  The
-    fuzzing involves creating new df2 columns containing the fuzzed
-    results for each bin.
+    income groupings (both decile and income bins), and then randomly
+    selects NUM_TO_FUZZ records to fuzz within each bin.  The fuzzing
+    involves overwriting df2 columns in cols_to_fuzz with df1 values.
     """
-    # nested function that does the record fuzzing
+    # nested function that does the fuzzing
     def fuzz(df1, df2, bin_type, imeasure1, imeasure2, suffix, cols_to_fuzz):
         """
         Fuzz some df2 records in each bin.

@@ -1,7 +1,7 @@
 """
 The dropq functions are used by TaxBrain to call Tax-Calculator in order
 to maintain the privacy of the micro data being used by TaxBrain.
-This is done by "fuzzing" reform results for several randomly selected 
+This is done by "fuzzing" reform results for several randomly selected
 filing units in each table cell.  The filing units randomly selected
 differs for each policy reform and the "fuzzing" involves replacing the
 post-reform tax results for the selected units with those the pre-reform
