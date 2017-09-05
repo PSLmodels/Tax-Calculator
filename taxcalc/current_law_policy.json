@@ -1640,7 +1640,7 @@
         "row_label": ["2013"],
         "start_year": 2013,
         "cpi_inflated": false,
-        "col_var": "idedtype",
+        "col_var": "grossidedtype",
         "col_label": ["medical", "statelocal", "realestate", "casualty", "misc", "interest", "charitycash", "charitynoncash"],
         "value": [[true, true, true, true, true, true, true, true]],
         "range": {"min": false, "max": true},

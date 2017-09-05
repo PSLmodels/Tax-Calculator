@@ -392,7 +392,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         capped by ItemDedCap
 
     """
-    cap = ID_AmountCap_rt * c00100
+    cap = max(0, ID_AmountCap_rt * c00100)
 
     gross_ded_amt = 0
     if ID_AmountCap_Switch[0]:  # medical
@@ -412,7 +412,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     if ID_AmountCap_Switch[7]:  # charitynoncash
         gross_ded_amt += e20100
 
-    overage = max(0, gross_ded_amt - cap)
+    overage = max(0., gross_ded_amt - cap)
 
     e17500_capped = e17500
     e18400_capped = e18400
@@ -423,23 +423,23 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e19800_capped = e19800
     e20100_capped = e20100
 
-    if overage > 0:
+    if overage > 0.:
         if ID_AmountCap_Switch[0]:  # medical
-            e17500_capped -= e17500 / gross_ded_amt * overage
+            e17500_capped -= (e17500 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[1]:  # statelocal
-            e18400_capped -= e18400 / gross_ded_amt * overage
+            e18400_capped -= (e18400 / (gross_ded_amt) * overage)
         if ID_AmountCap_Switch[2]:  # realestate
-            e18500_capped -= e18500 / gross_ded_amt * overage
+            e18500_capped -= (e18500 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[3]:  # casualty
-            g20500_capped -= g20500 / gross_ded_amt * overage
+            g20500_capped -= (g20500 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[4]:  # misc
-            e20400_capped -= e20400 / gross_ded_amt * overage
+            e20400_capped -= (e20400 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[5]:  # interest
-            e19200_capped -= e19200 / gross_ded_amt * overage
+            e19200_capped -= (e19200 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[6]:  # charitycash
-            e19800_capped -= e19800 / gross_ded_amt * overage
+            e19800_capped -= (e19800 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[7]:  # charitynoncash
-            e20100_capped -= e20100 / gross_ded_amt * overage
+            e20100_capped -= (e20100 / gross_ded_amt) * overage
 
     return (e17500_capped, e18400_capped, e18500_capped, g20500_capped,
             e20400_capped, e19200_capped, e19800_capped, e20100_capped)

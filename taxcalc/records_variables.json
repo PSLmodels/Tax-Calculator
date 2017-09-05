@@ -795,7 +795,7 @@
     "e17500_capped": {
       "type": "float",
       "desc": "Sch A: Medical expenses, capped as a decimal fraction of AGI",
-      "form": ""
+      "form": {}
     },
     "c18300": {
       "type": "float",
