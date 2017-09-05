@@ -435,6 +435,9 @@ def dropq_diff_table(df1, df2, groupby, res_col, diff_col, suffix, wsum):
     srs_change = ["{0:.2f}%".format(val * 100) for val in
                   diffs['share_of_change']]
     diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
+    srs_aftertax_perc = ['{0:.2f}%'.format(val * 100)
+                         for val in diffs['aftertax_perc']]
+    diffs['aftertax_perc'] = pd.Series(srs_aftertax_perc, index=diffs.index)
     # columns containing weighted values relative to the binning mechanism
     non_sum_cols = [x for x in diffs.columns if 'mean' in x or 'perc' in x]
     for col in non_sum_cols:
