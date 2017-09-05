@@ -192,9 +192,9 @@ def get_sums(pdf, not_available=False):
     return pd.Series(sums, name='sums')
 
 
-def results(obj):
+def results(obj, cols=None):
     """
-    Get results from object and organize them into a table.
+    Get cols results from object and organize them into a table.
 
     Parameters
     ----------
@@ -202,13 +202,20 @@ def results(obj):
           Examples include a Tax-Calculator Records object and a
           Pandas DataFrame object
 
+    cols : list of object results columns to put into table
+           if None, the use STATS_COLUMNS as cols list
+
     Returns
     -------
-    Pandas DataFrame object
+    table : Pandas DataFrame object
     """
-    arrays = [getattr(obj, name) for name in STATS_COLUMNS]
-    res = pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
-    return res
+    if cols is None:
+        columns = STATS_COLUMNS
+    else:
+        columns = cols
+    arrays = [getattr(obj, name) for name in columns]
+    tbl = pd.DataFrame(data=np.column_stack(arrays), columns=columns)
+    return tbl
 
 
 def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
@@ -291,14 +298,17 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
     # main logic of create_distribution_table
-    res = results(obj)
-    res = add_columns(res)
-    # sort the data given specified groupby and income_measure
     assert (income_measure == 'expanded_income' or
             income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
             income_measure == 'c00100_baseline')
-    assert income_measure in list(res)
+    if income_measure not in STATS_COLUMNS:
+        columns = STATS_COLUMNS + [income_measure]
+    else:
+        columns = None
+    res = results(obj, cols=columns)
+    res = add_columns(res)
+    # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
         pdf = add_quantile_bins(res, income_measure, 10)
     elif groupby == 'webapp_income_bins':

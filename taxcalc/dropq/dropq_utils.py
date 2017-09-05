@@ -283,17 +283,12 @@ def fuzz_df2_records(df1, df2, mask):
                         'num_returns_AMT', 's006'])
     columns_to_fuzz = (set(TABLE_COLUMNS) | set(STATS_COLUMNS)) - cols_to_skip
     df2['mask'] = mask
-    # use expanded income in df2 reform to groupby
-    fuzz(df1, df2, 'dec', 'expanded_income', 'expanded_income',
-         '_x2dec', columns_to_fuzz)
-    fuzz(df1, df2, 'bin', 'expanded_income', 'expanded_income',
-         '_x2bin', columns_to_fuzz)
-    # use expanded income in df1 baseline to groupby
-    df2['xin_baseline'] = df1['expanded_income']
-    fuzz(df1, df2, 'dec', 'expanded_income', 'xin_baseline',
-         '_x1dec', columns_to_fuzz)
-    fuzz(df1, df2, 'bin', 'expanded_income', 'xin_baseline',
-         '_x1bin', columns_to_fuzz)
+    # always use expanded income in df1 baseline to groupby into bins
+    df2['expanded_income_baseline'] = df1['expanded_income']
+    fuzz(df1, df2, 'dec', 'expanded_income', 'expanded_income_baseline',
+         '_xdec', columns_to_fuzz)
+    fuzz(df1, df2, 'bin', 'expanded_income', 'expanded_income_baseline',
+         '_xbin', columns_to_fuzz)
     return df2
 
 
@@ -308,11 +303,11 @@ def dropq_summary(df1, df2, mask):
     df2 = fuzz_df2_records(df1, df2, mask)
 
     # tax difference totals between reform and baseline
-    tdiff = df2['iitax_x2dec'] - df1['iitax']
+    tdiff = df2['iitax_xdec'] - df1['iitax']
     aggr_itax_d = (tdiff * df2['s006']).sum()
-    tdiff = df2['payrolltax_x2dec'] - df1['payrolltax']
+    tdiff = df2['payrolltax_xdec'] - df1['payrolltax']
     aggr_ptax_d = (tdiff * df2['s006']).sum()
-    tdiff = df2['combined_x2dec'] - df1['combined']
+    tdiff = df2['combined_xdec'] - df1['combined']
     aggr_comb_d = (tdiff * df2['s006']).sum()
 
     # totals for baseline
@@ -321,37 +316,37 @@ def dropq_summary(df1, df2, mask):
     aggr_comb_1 = (df1['combined'] * df1['s006']).sum()
 
     # totals for reform
-    aggr_itax_2 = (df2['iitax_x2dec'] * df2['s006']).sum()
-    aggr_ptax_2 = (df2['payrolltax_x2dec'] * df2['s006']).sum()
-    aggr_comb_2 = (df2['combined_x2dec'] * df2['s006']).sum()
+    aggr_itax_2 = (df2['iitax_xdec'] * df2['s006']).sum()
+    aggr_ptax_2 = (df2['payrolltax_xdec'] * df2['s006']).sum()
+    aggr_comb_2 = (df2['combined_xdec'] * df2['s006']).sum()
 
     # create difference tables grouped by deciles and bins
-    df2['iitax'] = df2['iitax_x1dec']
+    df2['iitax'] = df2['iitax_xdec']
     diff_itax_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
-    df2['payrolltax'] = df2['payrolltax_x1dec']
+    df2['payrolltax'] = df2['payrolltax_xdec']
     diff_ptax_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='payrolltax')
-    df2['combined'] = df2['combined_x1dec']
+    df2['combined'] = df2['combined_xdec']
     diff_comb_dec = create_difference_table(df1, df2,
                                             groupby='weighted_deciles',
                                             income_measure='expanded_income',
                                             tax_to_diff='combined')
-    df2['iitax'] = df2['iitax_x1bin']
+    df2['iitax'] = df2['iitax_xbin']
     diff_itax_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
-    df2['payrolltax'] = df2['payrolltax_x1bin']
+    df2['payrolltax'] = df2['payrolltax_xbin']
     diff_ptax_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
                                             tax_to_diff='iitax')
-    df2['combined'] = df2['combined_x1bin']
+    df2['combined'] = df2['combined_xbin']
     diff_comb_bin = create_difference_table(df1, df2,
                                             groupby='webapp_income_bins',
                                             income_measure='expanded_income',
@@ -364,22 +359,26 @@ def dropq_summary(df1, df2, mask):
     dist1_bin = create_distribution_table(df1, groupby='webapp_income_bins',
                                           income_measure='expanded_income',
                                           result_type='weighted_sum')
-    suffix = '_x2dec'
+    suffix = '_xdec'
     df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
     for col in df2_cols_with_suffix:
         root_col_name = col.replace(suffix, '')
         df2[root_col_name] = df2[col]
-    dist2_dec = create_distribution_table(df2, groupby='weighted_deciles',
-                                          income_measure='expanded_income',
-                                          result_type='weighted_sum')
-    suffix = '_x2bin'
+    df2['expanded_income_baseline'] = df1['expanded_income']
+    dist2_dec = \
+        create_distribution_table(df2, groupby='weighted_deciles',
+                                  income_measure='expanded_income_baseline',
+                                  result_type='weighted_sum')
+    suffix = '_xbin'
     df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
     for col in df2_cols_with_suffix:
         root_col_name = col.replace(suffix, '')
         df2[root_col_name] = df2[col]
-    dist2_bin = create_distribution_table(df2, groupby='webapp_income_bins',
-                                          income_measure='expanded_income',
-                                          result_type='weighted_sum')
+    df2['expanded_income_baseline'] = df1['expanded_income']
+    dist2_bin = \
+        create_distribution_table(df2, groupby='webapp_income_bins',
+                                  income_measure='expanded_income_baseline',
+                                  result_type='weighted_sum')
 
     # remove negative-income bin from each bin result
     dist1_bin.drop(dist1_bin.index[0], inplace=True)
