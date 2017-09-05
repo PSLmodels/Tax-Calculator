@@ -253,7 +253,8 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         determines how the data should be manipulated
 
     income_measure : String object
-        options for input: 'expanded_income', 'c00100'(AGI)
+        options for input: 'expanded_income', 'c00100'(AGI),
+                           'expanded_income_baseline', 'c00100_baseline'
 
     Notes
     -----
@@ -292,7 +293,12 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     # main logic of create_distribution_table
     res = results(obj)
     res = add_columns(res)
-    # sort the data given specified groupby
+    # sort the data given specified groupby and income_measure
+    assert (income_measure == 'expanded_income' or
+            income_measure == 'c00100' or
+            income_measure == 'expanded_income_baseline' or
+            income_measure == 'c00100_baseline')
+    assert income_measure in list(res)
     if groupby == 'weighted_deciles':
         pdf = add_quantile_bins(res, income_measure, 10)
     elif groupby == 'webapp_income_bins':
@@ -424,6 +430,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         assert res1.current_year == res2.current_year
         res1 = results(res1)
         res2 = results(res2)
+    assert income_measure == 'expanded_income' or income_measure == 'c00100'
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
