@@ -229,6 +229,14 @@ def test_create_tables(cps_subsample):
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
+    setattr(calc2.records, 'expanded_income_baseline',
+            getattr(calc2.records, 'expanded_income'))
+    dist = create_distribution_table(calc2.records,
+                                     groupby='webapp_income_bins',
+                                     income_measure='expanded_income_baseline',
+                                     result_type='weighted_sum')
+    assert isinstance(dist, pd.DataFrame)
+
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='small_income_bins',
