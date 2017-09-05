@@ -259,20 +259,18 @@ def fuzz_df2_records(df1, df2, mask):
     involves overwriting df2 columns in cols_to_fuzz with df1 values.
     """
     # nested function that does the fuzzing
-    def fuzz(df1, df2, bin_type, imeasure1, imeasure2, suffix, cols_to_fuzz):
+    def fuzz(df1, df2, bin_type, imeasure, suffix, cols_to_fuzz):
         """
-        Fuzz some df2 records in each bin.
+        Fuzz some df2 records in each bin defined by bin_type and imeasure.
         The fuzzed records have their post-reform tax results (in df2)
         set to their pre-reform tax results (in df1).
         """
         # pylint: disable=too-many-arguments
         assert bin_type == 'dec' or bin_type == 'bin'
         if bin_type == 'dec':
-            df1 = add_quantile_bins(df1, imeasure1, 10)
-            df2 = add_quantile_bins(df2, imeasure2, 10)
+            df2 = add_quantile_bins(df2, imeasure, 10)
         else:
-            df1 = add_income_bins(df1, imeasure1, bins=WEBAPP_INCOME_BINS)
-            df2 = add_income_bins(df2, imeasure2, bins=WEBAPP_INCOME_BINS)
+            df2 = add_income_bins(df2, imeasure, bins=WEBAPP_INCOME_BINS)
         gdf2 = df2.groupby('bins')
         df2['nofuzz'] = gdf2['mask'].transform(chooser)
         for col in cols_to_fuzz:
@@ -285,10 +283,8 @@ def fuzz_df2_records(df1, df2, mask):
     df2['mask'] = mask
     # always use expanded income in df1 baseline to groupby into bins
     df2['expanded_income_baseline'] = df1['expanded_income']
-    fuzz(df1, df2, 'dec', 'expanded_income', 'expanded_income_baseline',
-         '_xdec', columns_to_fuzz)
-    fuzz(df1, df2, 'bin', 'expanded_income', 'expanded_income_baseline',
-         '_xbin', columns_to_fuzz)
+    fuzz(df1, df2, 'dec', 'expanded_income_baseline', '_xdec', columns_to_fuzz)
+    fuzz(df1, df2, 'bin', 'expanded_income_baseline', '_xbin', columns_to_fuzz)
     return df2
 
 
