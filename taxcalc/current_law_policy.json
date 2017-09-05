@@ -1609,8 +1609,8 @@
     },
 
        "_ID_AmountCap_rt": {
-        "long_name": "Ceiling on the gross amount from itemized deductions allowed; decimal fraction of AGI",
-        "description": "The gross allowable amount from specified itemized deductions is capped at this percent of AGI.",
+        "long_name": "Ceiling on the gross amount of itemized deductions allowed; decimal fraction of AGI",
+        "description": "The gross allowable amount of specified itemized deductions is capped at this percent of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Ceiling On The Amount Of Itemized Deductions As A Decimal Fraction Of AGI",
         "irs_ref": "",
@@ -1621,8 +1621,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [1.0],
-        "range": {"min": 0, "max": 1},
+        "value": [9e99],
+        "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"
