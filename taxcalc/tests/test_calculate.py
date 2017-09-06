@@ -184,10 +184,12 @@ def test_Calculator_create_distribution_table(cps_subsample):
                    'Combined Payroll and Individual Income Tax Liabilities']
     dt1 = create_distribution_table(calc.records,
                                     groupby="weighted_deciles",
+                                    income_measure='expanded_income',
                                     result_type="weighted_sum")
     dt1.columns = dist_labels
     dt2 = create_distribution_table(calc.records,
                                     groupby="small_income_bins",
+                                    income_measure='expanded_income',
                                     result_type="weighted_avg")
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
@@ -265,7 +267,9 @@ def test_Calculator_create_difference_table(cps_subsample):
     calc2.calc_all()
     # create difference table and check that it is a Pandas DataFrame
     dtable = create_difference_table(calc1.records, calc2.records,
-                                     groupby="weighted_deciles")
+                                     groupby='weighted_deciles',
+                                     income_measure='expanded_income',
+                                     tax_to_diff='payrolltax')
     assert isinstance(dtable, pd.DataFrame)
 
 

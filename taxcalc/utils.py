@@ -23,7 +23,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count, weighted_mean,
                                wage_weighted, agi_weighted,
                                expanded_income_weighted,
-                               weighted_perc_inc, weighted_perc_dec,
+                               weighted_perc_inc, weighted_perc_cut,
                                EPSILON)
 
 
@@ -50,20 +50,26 @@ TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
                 'Combined Payroll and Individual Income Tax Liabilities']
 
 # Following list is used in our difference table to label its columns.
-DIFF_TABLE_LABELS = ['Tax Units with Tax Cut', 'Tax Units with Tax Increase',
-                     'Count', 'Average Tax Change', 'Total Tax Difference',
-                     'Percent with Tax Increase', 'Percent with Tax Decrease',
-                     'Share of Overall Change']
+DIFF_TABLE_LABELS = ['Tax Units with Tax Cut',
+                     'Tax Units with Tax Increase',
+                     'Count',
+                     'Average Tax Change',
+                     'Total Tax Difference',
+                     'Percent with Tax Increase',
+                     'Percent with Tax Decrease',
+                     'Share of Overall Change',
+                     'Change as % of Aftertax Income']
 
-LARGE_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                     200000, 1e99]
 
-SMALL_INCOME_BINS = [-1e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                      199999, 499999, 1000000, 9e99]
+
+LARGE_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+                     200000, 9e99]
+
+SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                     1999999, 4999999, 9999999, 1e99]
-
-WEBAPP_INCOME_BINS = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                      199999, 499999, 1000000, 1e99]
+                     1999999, 4999999, 9999999, 9e99]
 
 
 def unweighted_sum(pdf, col_name):
@@ -80,13 +86,15 @@ def weighted_sum(pdf, col_name):
     return (pdf[col_name] * pdf['s006']).sum()
 
 
-def add_weighted_income_bins(pdf, num_bins=10, labels=None,
-                             income_measure='expanded_income',
-                             weight_by_income_measure=False):
+def add_quantile_bins(pdf, income_measure, num_bins,
+                      weight_by_income_measure=False, labels=None):
     """
     Add a column of income bins to specified Pandas DataFrame, pdf, with
-    the new column being named 'bins'.  Assumes that specified pdf contains
-    columns for the specified income_measure and for sample weights, s006.
+    the new column being named 'bins'.  The bins hold equal number of
+    filing units when weight_by_income_measure=False or equal number of
+    income dollars when weight_by_income_measure=True.  Assumes that
+    specified pdf contains columns for the specified income_measure and
+    for sample weights, s006.
     """
     pdf.sort_values(by=income_measure, inplace=True)
     if weight_by_income_measure:
@@ -109,76 +117,49 @@ def add_weighted_income_bins(pdf, num_bins=10, labels=None,
     return pdf
 
 
-def add_income_bins(pdf, compare_with='soi', bins=None, right=True,
-                    income_measure='expanded_income'):
+def add_income_bins(pdf, income_measure,
+                    bin_type='soi', bins=None, right=True):
     """
-    Add a column of income bins of income_measure using pandas 'cut'.
-    This will serve as a 'grouper' later on.
+    Add a column of income bins of income_measure using Pandas 'cut' function.
 
     Parameters
     ----------
-    pdf: Pandas DataFrame object
+    pdf: Pandas DataFrame
         the object to which we are adding bins
 
-    compare_with: String, optional
-        options for input: 'tpc', 'soi', 'webapp'
-        determines which types of bins will be added
+    income_measure: String
+        specifies income variable used to construct bins
+
+    bin_type: String, optional
+        options for input: 'webapp', 'tpc', 'soi'
         default: 'soi'
 
-    bins: iterable of scalars, optional income breakpoints.
-            Follows pandas convention. The breakpoint is inclusive if
-            right=True. This argument overrides any choice of compare_with.
+    bins: iterable of scalars, optional income breakpoints
+        follows Pandas convention; the breakpoint is inclusive if
+        right=True; this argument overrides the compare_with argument
 
     right : bool, optional
-        Indicates whether the bins include the rightmost edge or not.
-        If right == True (the default), then the bins [1,2,3,4]
-        indicate (1,2], (2,3], (3,4].
+        indicates whether the bins include the rightmost edge or not;
+        if right == True (the default), then bins=[1,2,3,4] implies
+        this bin grouping (1,2], (2,3], (3,4]
 
     Returns
     -------
-    pdf: Pandas DataFrame object
-        the original input that bins have been added to
+    pdf: Pandas DataFrame
+        the original input plus the added 'bin' column
     """
     if not bins:
-        if compare_with == 'tpc':
-            bins = LARGE_INCOME_BINS
-        elif compare_with == 'soi':
-            bins = SMALL_INCOME_BINS
-        elif compare_with == 'webapp':
+        if bin_type == 'webapp':
             bins = WEBAPP_INCOME_BINS
+        elif bin_type == 'tpc':
+            bins = LARGE_INCOME_BINS
+        elif bin_type == 'soi':
+            bins = SMALL_INCOME_BINS
         else:
-            msg = 'Unknown compare_with arg {0}'.format(compare_with)
+            msg = 'Unknown bin_type argument {}'.format(bin_type)
             raise ValueError(msg)
-    # Groupby income_measure bins
     pdf['bins'] = pd.cut(pdf[income_measure], bins, right=right)
     return pdf
-
-
-def means_and_comparisons(col_name, gpdf, weighted_total):
-    """
-    Return new Pandas DataFrame based on grouped values of specified
-    col_name in specified gpdf Pandas DataFrame.
-    col_name: the column name to calculate against
-    gpdf: grouped Pandas DataFrame
-    """
-    def weighted_share_of_total(pdf, col_name, total):
-        """
-        Nested function that returns the ratio of
-        weighted_sum(pdf, col_name) and the specified total.
-        """
-        return weighted_sum(pdf, col_name) / (float(total) + EPSILON)
-    # tabulate who has a tax cut and who has a tax increase
-    diffs = gpdf.apply(weighted_count_lt_zero, col_name)
-    diffs = pd.DataFrame(data=diffs, columns=['tax_cut'])
-    diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, col_name)
-    diffs['count'] = gpdf.apply(weighted_count)
-    diffs['mean'] = gpdf.apply(weighted_mean, col_name)
-    diffs['tot_change'] = gpdf.apply(weighted_sum, col_name)
-    diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, col_name)
-    diffs['perc_cut'] = gpdf.apply(weighted_perc_dec, col_name)
-    diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
-                                          col_name, weighted_total)
-    return diffs
 
 
 def weighted(pdf, col_names):
@@ -211,9 +192,9 @@ def get_sums(pdf, not_available=False):
     return pd.Series(sums, name='sums')
 
 
-def results(obj):
+def results(obj, cols=None):
     """
-    Get results from object and organize them into a table.
+    Get cols results from object and organize them into a table.
 
     Parameters
     ----------
@@ -221,12 +202,20 @@ def results(obj):
           Examples include a Tax-Calculator Records object and a
           Pandas DataFrame object
 
+    cols : list of object results columns to put into table
+           if None, the use STATS_COLUMNS as cols list
+
     Returns
     -------
-    Pandas DataFrame object
+    table : Pandas DataFrame object
     """
-    arrays = [getattr(obj, name) for name in STATS_COLUMNS]
-    return pd.DataFrame(data=np.column_stack(arrays), columns=STATS_COLUMNS)
+    if cols is None:
+        columns = STATS_COLUMNS
+    else:
+        columns = cols
+    arrays = [getattr(obj, name) for name in columns]
+    tbl = pd.DataFrame(data=np.column_stack(arrays), columns=columns)
+    return tbl
 
 
 def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
@@ -250,37 +239,29 @@ def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
     return wadf
 
 
-def create_distribution_table(obj, groupby, result_type,
-                              income_measure='expanded_income',
-                              baseline_obj=None, diffs=False):
+def create_distribution_table(obj, groupby, income_measure, result_type):
     """
-    Get results from object, sort them based on groupby, manipulate them
-    based on result_type, and return them as a table.
+    Get results from object, sort them based on groupby using income_measure,
+    manipulate them based on result_type, and return them as a table.
 
     Parameters
     ----------
     obj : any object with array-like attributes named as in STATS_COLUMNS list
         Examples include a Tax-Calculator Records object and a
-        Pandas DataFrame object, but if baseline_obj is specified, both obj
-        and baseline_obj must have a current_year attribute
+        Pandas DataFrame object.
 
     groupby : String object
-        options for input: 'weighted_deciles', 'small_income_bins',
-        'large_income_bins', 'webapp_income_bins';
+        options for input: 'weighted_deciles', 'webapp_income_bins',
+                           'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
         determines how the data should be manipulated
 
-    baseline_obj : any object with array-like attributes named as in
-        the STATS_COLUMNS list and having a current_year attribute
-        Examples include a Tax-Calculator Records object
-
-    diffs : boolean
-        indicates showing the results from reform or the difference between
-        the baseline and reform. Turn this switch to True if you want to see
-        the difference
+    income_measure : String object
+        options for input: 'expanded_income', 'c00100'(AGI),
+                           'expanded_income_baseline', 'c00100_baseline'
 
     Notes
     -----
@@ -295,9 +276,9 @@ def create_distribution_table(obj, groupby, result_type,
 
     Returns
     -------
-    Pandas DataFrame object
+    distribution table as a Pandas DataFrame
     """
-    # pylint: disable=too-many-arguments
+    # nested function that specifies calculated columns
     def add_columns(pdf):
         """
         Nested function that adds several columns to
@@ -316,41 +297,32 @@ def create_distribution_table(obj, groupby, result_type,
         # weight of returns with positive Alternative Minimum Tax (AMT)
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
-    # create distribution table
-    res = results(obj)
+    # main logic of create_distribution_table
+    assert (income_measure == 'expanded_income' or
+            income_measure == 'c00100' or
+            income_measure == 'expanded_income_baseline' or
+            income_measure == 'c00100_baseline')
+    if income_measure not in STATS_COLUMNS:
+        columns = STATS_COLUMNS + [income_measure]
+    else:
+        columns = None
+    res = results(obj, cols=columns)
     res = add_columns(res)
-    if baseline_obj is not None:
-        res_base = results(baseline_obj)
-        if obj.current_year != baseline_obj.current_year:
-            msg = 'current_year differs in baseline obj and reform obj'
-            raise ValueError(msg)
-        baseline_income_measure = income_measure + '_baseline'
-        res[baseline_income_measure] = res_base[income_measure]
-        income_measure = baseline_income_measure
-        if diffs:
-            res_base = add_columns(res_base)
-            res = res.subtract(res_base)
-            res['s006'] = res_base['s006']
-    # sort the data
+    # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        pdf = add_weighted_income_bins(res, num_bins=10,
-                                       income_measure=income_measure)
-    elif groupby == 'small_income_bins':
-        pdf = add_income_bins(res, compare_with='soi',
-                              income_measure=income_measure)
-    elif groupby == 'large_income_bins':
-        pdf = add_income_bins(res, compare_with='tpc',
-                              income_measure=income_measure)
+        pdf = add_quantile_bins(res, income_measure, 10)
     elif groupby == 'webapp_income_bins':
-        pdf = add_income_bins(res, compare_with='webapp',
-                              income_measure=income_measure)
+        pdf = add_income_bins(res, income_measure, bin_type='webapp')
+    elif groupby == 'large_income_bins':
+        pdf = add_income_bins(res, income_measure, bin_type='tpc')
+    elif groupby == 'small_income_bins':
+        pdf = add_income_bins(res, income_measure, bin_type='soi')
     else:
         msg = ("groupby must be either 'weighted_deciles' or "
-               "'small_income_bins' or 'large_income_bins' or "
-               "'webapp_income_bins'")
+               "'webapp_income_bins' or 'large_income_bins' or "
+               "'small_income_bins'")
         raise ValueError(msg)
-    # manipulate the data
-    pd.options.display.float_format = '{:8,.0f}'.format
+    # manipulate the data given specified result_type
     if result_type == 'weighted_sum':
         pdf = weighted(pdf, STATS_COLUMNS)
         gpdf_mean = pdf.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
@@ -363,96 +335,117 @@ def create_distribution_table(obj, groupby, result_type,
     else:
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
         raise ValueError(msg)
-    return gpdf_mean.append(sum_row)
+    dist_table = gpdf_mean.append(sum_row)
+    # set print display format for float table elements
+    pd.options.display.float_format = '{:8,.0f}'.format
+    return dist_table
 
 
-def create_difference_table(recs1, recs2, groupby,
-                            income_measure='expanded_income',
-                            tax_to_present='iitax'):
+def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different Records objects for the same year, compare
-    the two results, and return the differences as a Pandas DataFrame that is
-    sorted according to the variable specified by the groupby argument.
+    Get results from two different res, compare the two tax-diff results,
+    and return the difference statistics as a Pandas DataFrame that is sorted
+    according to the variable specified by the groupby argument.
 
     Parameters
     ----------
-    recs1 : a Tax-Calculator Records object that refers to the baseline
+    res1 : baseline object is either a Tax-Calculator Records object or
+           a Pandas DataFrame including columns in STATS_COLUMNS list
 
-    recs2 : a Tax-Calculator Records object that refers to the reform
+    res2 : reform object is either a Tax-Calculator Records object or
+           a Pandas DataFrame including columns in STATS_COLUMNS list
 
     groupby : String object
-        options for input: 'weighted_deciles', 'small_income_bins',
-        'large_income_bins', 'webapp_income_bins'
-        determines how the columns in the resulting Pandas DataFrame are sorted
+        options for input: 'weighted_deciles', 'webapp_income_bins',
+                           'large_income_bins', 'small_income_bins'
+        specifies kind of bins used to group filing units
 
     income_measure : String object
-        options for input: 'expanded_income', 'iitax'
-        classifier of income bins/deciles
+        options for input: 'expanded_income', 'c00100'(AGI)
+        specifies statistic to place filing units in bins
 
-    tax_to_present : String object
+    tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
+        specifies which tax to difference
 
     Returns
     -------
-    Pandas DataFrame object
+    difference table as a Pandas DataFrame
     """
-    # pylint: disable=too-many-locals
-    if recs1.current_year != recs2.current_year:
-        msg = 'recs1.current_year not equal to recs2.current_year'
-        raise ValueError(msg)
-    res1 = results(recs1)
-    res2 = results(recs2)
+    # nested function that actually creates the difference table
+    def diff_table_stats(res2, groupby, income_measure):
+        """
+        Return new Pandas DataFrame containing difference table statistics
+        based on grouped values of specified col_name in the specified res2.
+
+        res2: reform difference results Pandas DataFrame
+        groupby: string naming type of bins
+        income_measure: string naming column used to create res2 bins
+        """
+        # pylint: disable=too-many-locals
+        def weighted_share_of_total(gpdf, colname, total):
+            """
+            Nested function that returns the ratio of the
+            weighted_sum(pdf, colname) and specified total.
+            """
+            return weighted_sum(gpdf, colname) / (total + EPSILON)
+        # add bin column to res2 given specified groupby and income_measure
+        if groupby == 'weighted_deciles':
+            pdf = add_quantile_bins(res2, income_measure, 10)
+        elif groupby == 'webapp_income_bins':
+            pdf = add_income_bins(res2, income_measure, bin_type='webapp')
+        elif groupby == 'large_income_bins':
+            pdf = add_income_bins(res2, income_measure, bin_type='tpc')
+        elif groupby == 'small_income_bins':
+            pdf = add_income_bins(res2, income_measure, bin_type='soi')
+        else:
+            msg = ("groupby must be either "
+                   "'weighted_deciles' or 'webapp_income_bins' "
+                   "or 'large_income_bins' or 'small_income_bins'")
+            raise ValueError(msg)
+        # create grouped Pandas DataFrame
+        gpdf = pdf.groupby('bins', as_index=False)
+        # create difference table statistics from gpdf in a new DataFrame
+        diffs = pd.DataFrame()
+        diffs['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
+        diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
+        diffs['count'] = gpdf.apply(weighted_count)
+        diffs['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
+        diffs['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
+        diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
+        diffs['perc_cut'] = gpdf.apply(weighted_perc_cut, 'tax_diff')
+        wtotal = (res2['tax_diff'] * res2['s006']).sum()
+        diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
+                                              'tax_diff', wtotal)
+        diffs['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
+        # add sum row at bottom and convert some cols to percentages
+        sum_row = get_sums(diffs)[diffs.columns]
+        difs = diffs.append(sum_row)
+        pct_cols = ['perc_inc', 'perc_cut', 'share_of_change', 'perc_aftertax']
+        for col in pct_cols:
+            newvals = ['{:.2f}%'.format(val * 100) for val in difs[col]]
+            difs[col] = pd.Series(newvals, index=difs.index)
+        # specify some column sum elements to be 'n/a'
+        non_sum_cols = [c for c in difs.columns if 'mean' in c or 'perc' in c]
+        for col in non_sum_cols:
+            difs.loc['sums', col] = 'n/a'
+        # set print display format for float table elements
+        pd.options.display.float_format = '{:8,.0f}'.format
+        return difs
+    # main logic of create_difference_table
+    isdf1 = isinstance(res1, pd.DataFrame)
+    isdf2 = isinstance(res2, pd.DataFrame)
+    assert isdf1 == isdf2
+    if not isdf1:
+        assert res1.current_year == res2.current_year
+        res1 = results(res1)
+        res2 = results(res2)
+    assert income_measure == 'expanded_income' or income_measure == 'c00100'
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
-    res2['aftertax_baseline'] = res1['aftertax_income']
-    income_measure = baseline_income_measure
-    if groupby == 'weighted_deciles':
-        pdf = add_weighted_income_bins(res2, num_bins=10,
-                                       income_measure=income_measure)
-    elif groupby == 'small_income_bins':
-        pdf = add_income_bins(res2, compare_with='soi',
-                              income_measure=income_measure)
-    elif groupby == 'large_income_bins':
-        pdf = add_income_bins(res2, compare_with='tpc',
-                              income_measure=income_measure)
-    elif groupby == 'webapp_income_bins':
-        pdf = add_income_bins(res2, compare_with='webapp',
-                              income_measure=income_measure)
-    else:
-        msg = ("groupby must be either "
-               "'weighted_deciles' or 'small_income_bins' "
-               "or 'large_income_bins' or 'webapp_income_bins'")
-        raise ValueError(msg)
-    # compute difference in results
-    # Positive values are the magnitude of the tax increase
-    # Negative values are the magnitude of the tax decrease
-    res2['tax_diff'] = res2[tax_to_present] - res1[tax_to_present]
-    res2['aftertax_perc'] = res2['tax_diff'] / res2['aftertax_baseline']
-    diffs = means_and_comparisons('tax_diff',
-                                  pdf.groupby('bins', as_index=False),
-                                  (res2['tax_diff'] * res2['s006']).sum())
-    aftertax_perc = pdf.groupby('bins', as_index=False).apply(weighted_mean,
-                                                              'aftertax_perc')
-    diffs['aftertax_perc'] = aftertax_perc
-    sum_row = get_sums(diffs)[diffs.columns.values.tolist()]
-    diffs = diffs.append(sum_row)  # pylint: disable=redefined-variable-type
-    pd.options.display.float_format = '{:8,.0f}'.format
-    srs_inc = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_inc']]
-    diffs['perc_inc'] = pd.Series(srs_inc, index=diffs.index)
-
-    srs_cut = ['{0:.2f}%'.format(val * 100) for val in diffs['perc_cut']]
-    diffs['perc_cut'] = pd.Series(srs_cut, index=diffs.index)
-    srs_change = ['{0:.2f}%'.format(val * 100)
-                  for val in diffs['share_of_change']]
-    diffs['share_of_change'] = pd.Series(srs_change, index=diffs.index)
-    srs_aftertax_perc = ['{0:.2f}%'.format(val * 100)
-                         for val in diffs['aftertax_perc']]
-    diffs['aftertax_perc'] = pd.Series(srs_aftertax_perc, index=diffs.index)
-    # columns containing weighted values relative to the binning mechanism
-    non_sum_cols = [col for col in diffs.columns
-                    if 'mean' in col or 'perc' in col]
-    for col in non_sum_cols:
-        diffs.loc['sums', col] = 'n/a'
+    res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
+    res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
+    diffs = diff_table_stats(res2, groupby, baseline_income_measure)
     return diffs
 
 
@@ -675,11 +668,8 @@ def mtr_graph_data(calc1, calc2,
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
     # check that two calculator objects have the same current_year
-    if calc1.current_year == calc2.current_year:
-        year = calc1.current_year
-    else:
-        msg = 'calc1.current_year={} != calc2.current_year={}'
-        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
+    assert calc1.current_year == calc2.current_year
+    year = calc1.current_year
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -757,9 +747,8 @@ def mtr_graph_data(calc1, calc2,
     if mars != 'ALL':
         dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column given specified income_var and dollar_weighting
-    dfx = add_weighted_income_bins(dfx, num_bins=100,
-                                   income_measure=income_var,
-                                   weight_by_income_measure=dollar_weighting)
+    dfx = add_quantile_bins(dfx, income_var, 100,
+                            weight_by_income_measure=dollar_weighting)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
@@ -894,8 +883,7 @@ def atr_graph_data(calc1, calc2,
     if mars != 'ALL':
         dfx = dfx[dfx['MARS'] == mars]
     # create 'bins' column
-    dfx = add_weighted_income_bins(dfx, num_bins=100,
-                                   income_measure='expanded_income')
+    dfx = add_quantile_bins(dfx, 'expanded_income', 100)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply weighted_mean function to percentile-grouped income/tax values

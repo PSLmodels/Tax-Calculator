@@ -2,15 +2,12 @@
 test_dropq.py uses only PUF input data because the dropq algorithm
 is designed to work exclusively with private IRS-SOI PUF input data.
 """
-import os
-import six
 import numpy as np
 import pandas as pd
 import pytest
 from taxcalc.dropq.dropq_utils import *
 from taxcalc.dropq import *
 from taxcalc import (Policy, Records, Calculator,
-                     create_difference_table,
                      multiyear_diagnostic_table, results)
 
 
@@ -77,8 +74,7 @@ def test_run_nth_year_value_errors(puf_subsample):
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resjson', [True, False])
 def test_run_tax_calc_model(puf_subsample, resjson):
-    usermods = USER_MODS
-    res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, usermods,
+    res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, USER_MODS,
                                       return_json=resjson)
     assert len(res) == 13
     dump = False  # set to True in order to dump returned results and fail test
@@ -152,61 +148,6 @@ def test_create_json_table():
                           columns=['a', 'b', 'c'], dtype='i2')
     with pytest.raises(NotImplementedError):
         create_json_table(dframe)
-
-
-@pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('groupby, result_type',
-                         [('small_income_bins', 'weighted_sum'),
-                          ('large_income_bins', 'weighted_sum'),
-                          ('large_income_bins', 'weighted_avg'),
-                          ('other_income_bins', 'weighted_avg'),
-                          ('large_income_bins', 'other_avg')])
-def test_dropq_dist_table(groupby, result_type, puf_subsample):
-    calc = Calculator(policy=Policy(), records=Records(data=puf_subsample))
-    calc.calc_all()
-    res = results(calc.records)
-    mask = np.ones(len(res.index))
-    (res, _) = drop_records(res, res, mask)
-    if groupby == 'other_income_bins' or result_type == 'other_avg':
-        with pytest.raises(ValueError):
-            dropq_dist_table(res, groupby=groupby,
-                             result_type=result_type, suffix='_bin')
-    else:
-        dropq_dist_table(res, groupby=groupby,
-                         result_type=result_type, suffix='_bin')
-
-
-@pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('groupby, res_column',
-                         [('weighted_deciles', 'tax_diff'),
-                          ('webapp_income_bins', 'tax_diff'),
-                          ('small_income_bins', 'tax_diff'),
-                          ('large_income_bins', 'tax_diff'),
-                          ('other_deciles', 'tax_diff')])
-def test_dropq_diff_table(groupby, res_column, puf_subsample):
-    recs1 = Records(data=puf_subsample)
-    calc1 = Calculator(policy=Policy(), records=recs1)
-    recs2 = Records(data=puf_subsample)
-    pol2 = Policy()
-    pol2.implement_reform(USER_MODS['policy'])
-    calc2 = Calculator(policy=pol2, records=recs2)
-    calc1.calc_all()
-    calc2.calc_all()
-    res1 = results(calc1.records)
-    res2 = results(calc2.records)
-    assert len(res1.index) == len(res2.index)
-    mask = np.ones(len(res1.index))
-    (res1, res2) = drop_records(res1, res2, mask)
-    dec_sum = (res2['tax_diff_dec'] * res2['s006']).sum()
-    if groupby == 'other_deciles':
-        with pytest.raises(ValueError):
-            dropq_diff_table(res1, res2, groupby=groupby,
-                             res_col=res_column, diff_col='iitax',
-                             suffix='_dec', wsum=dec_sum)
-    else:
-        dropq_diff_table(res1, res2, groupby=groupby,
-                         res_col=res_column, diff_col='iitax',
-                         suffix='_dec', wsum=dec_sum)
 
 
 @pytest.mark.requires_pufcsv
@@ -285,71 +226,3 @@ def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(bad2_mods)
     assert len(msg_dict['warnings']) == 0
     assert len(msg_dict['errors']) > 0
-
-
-@pytest.mark.requires_pufcsv
-def test_dropq_diff_vs_util_diff(puf_subsample):
-    recs1 = Records(data=puf_subsample)
-    calc1 = Calculator(policy=Policy(), records=recs1)
-    recs2 = Records(data=puf_subsample)
-    pol2 = Policy()
-    pol2.implement_reform(USER_MODS['policy'])
-    calc2 = Calculator(policy=pol2, records=recs2)
-    calc1.advance_to_year(2016)
-    calc2.advance_to_year(2016)
-    calc1.calc_all()
-    calc2.calc_all()
-    # generate diff table using utility function
-    udf = create_difference_table(calc1.records, calc2.records,
-                                  groupby='weighted_deciles',
-                                  income_measure='expanded_income',
-                                  tax_to_present='iitax')
-    assert isinstance(udf, pd.DataFrame)
-    # generate diff table using dropq functions without dropping any records
-    res1 = results(calc1.records)
-    res2 = results(calc2.records)
-    res2['iitax_dec'] = res2['iitax']  # TODO: ??? drop ???
-    res2['tax_diff_dec'] = res2['iitax'] - res1['iitax']  # TODO: ??? drop ???
-    qdf = dropq_diff_table(res1, res2,
-                           groupby='weighted_deciles',
-                           res_col='tax_diff',
-                           diff_col='iitax',
-                           suffix='_dec',
-                           wsum=(res2['tax_diff_dec'] * res2['s006']).sum())
-    assert isinstance(qdf, pd.DataFrame)
-    # check that each element in the two DataFrames are the same
-    if 'aftertax_perc' not in list(qdf):
-        qdf = qdf.assign(aftertax_perc=['-0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.00%',
-                                        '0.34%',
-                                        '0.90%',
-                                        '1.51%',
-                                        '2.69%',
-                                        'n/a'])
-    assert udf.shape[0] == qdf.shape[0]  # same number of rows
-    assert udf.shape[1] == qdf.shape[1]  # same number of cols
-    for col in list(qdf):
-        for row in range(0, qdf.shape[0]):
-            same = False
-            qel_str_type = isinstance(qdf[col][row], six.string_types)
-            uel_str_type = isinstance(udf[col][row], six.string_types)
-            assert qel_str_type == uel_str_type
-            if qel_str_type:
-                same = qdf[col][row] == udf[col][row]
-            else:
-                qel_flt_type = isinstance(qdf[col][row], float)
-                uel_flt_type = isinstance(udf[col][row], float)
-                assert qel_flt_type == uel_flt_type
-                if qel_flt_type:
-                    same = np.allclose([qdf[col][row]], [udf[col][row]])
-            if not same:
-                msg = '{} {} : [{}] {} [{}] {}'.format(col, row,
-                                                       qdf[col][row],
-                                                       type(qdf[col][row]),
-                                                       udf[col][row],
-                                                       type(udf[col][row]))
-                assert msg == 'qdf element not equal to udf element'

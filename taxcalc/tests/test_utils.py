@@ -21,8 +21,8 @@ from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
                            weighted_count, weighted_sum, weighted_mean,
                            wage_weighted, agi_weighted,
                            expanded_income_weighted,
-                           weighted_perc_inc, weighted_perc_dec,
-                           add_income_bins, add_weighted_income_bins,
+                           weighted_perc_inc, weighted_perc_cut,
+                           add_income_bins, add_quantile_bins,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
@@ -72,7 +72,9 @@ def test_create_tables(cps_subsample):
 
     # test creating various difference tables
     diff = create_difference_table(calc1.records, calc2.records,
-                                   groupby='large_income_bins')
+                                   groupby='large_income_bins',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = ['0.00%',
                 '0.01%',
@@ -85,10 +87,12 @@ def test_create_tables(cps_subsample):
                 '0.78%',
                 '0.27%',
                 'n/a']
-    assert np.array_equal(diff['aftertax_perc'], expected)
+    assert np.array_equal(diff['perc_aftertax'], expected)
 
     diff = create_difference_table(calc1.records, calc2.records,
-                                   groupby='webapp_income_bins')
+                                   groupby='webapp_income_bins',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = ['0.00%',
                 '0.01%',
@@ -103,10 +107,12 @@ def test_create_tables(cps_subsample):
                 '0.08%',
                 '0.07%',
                 'n/a']
-    assert np.array_equal(diff['aftertax_perc'], expected)
+    assert np.array_equal(diff['perc_aftertax'], expected)
 
     diff = create_difference_table(calc1.records, calc2.records,
-                                   groupby='small_income_bins')
+                                   groupby='small_income_bins',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = ['0.00%',
                 '0.01%',
@@ -128,10 +134,12 @@ def test_create_tables(cps_subsample):
                 '0.02%',
                 '0.00%',
                 'n/a']
-    assert np.array_equal(diff['aftertax_perc'], expected)
+    assert np.array_equal(diff['perc_aftertax'], expected)
 
     diff = create_difference_table(calc1.records, calc2.records,
-                                   groupby='weighted_deciles')
+                                   groupby='weighted_deciles',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = ['0.00%',
                 '0.02%',
@@ -144,37 +152,102 @@ def test_create_tables(cps_subsample):
                 '0.91%',
                 '0.50%',
                 'n/a']
-    assert np.array_equal(diff['aftertax_perc'], expected)
+    assert np.array_equal(diff['perc_aftertax'], expected)
 
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
-                                groupby='bad_bins')
+                                groupby='bad_bins',
+                                income_measure='expanded_income',
+                                tax_to_diff='iitax')
 
     # test creating various distribution tables
+    dist = create_distribution_table(calc2.records,
+                                     groupby='weighted_deciles',
+                                     income_measure='expanded_income',
+                                     result_type='weighted_sum')
+    assert isinstance(dist, pd.DataFrame)
+    expected = [-8851215,
+                -99666120,
+                -123316561,
+                -85895787,
+                -47357458,
+                207462144,
+                443391189,
+                978487989,
+                1709504845,
+                7631268907,
+                10605027933]
+    assert np.allclose(dist['iitax'], expected,
+                       atol=0.5, rtol=0.0)
+    expected = [1202,
+                1688,
+                13506,
+                18019,
+                30130,
+                48244,
+                80994,
+                112788,
+                131260,
+                146001,
+                583832]
+    assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+
+    dist = create_distribution_table(calc2.records,
+                                     groupby='webapp_income_bins',
+                                     income_measure='expanded_income',
+                                     result_type='weighted_sum')
+    assert isinstance(dist, pd.DataFrame)
+    expected = [-103274,
+                -83144506,
+                -152523834,
+                -129881470,
+                85802556,
+                255480678,
+                832529135,
+                1066963515,
+                3023956558,
+                2876331264,
+                1008672459,
+                1820944852,
+                10605027933]
+    assert np.allclose(dist['iitax'], expected,
+                       atol=0.5, rtol=0.0)
+    expected = [0,
+                1202,
+                22654,
+                31665,
+                30547,
+                49851,
+                124786,
+                97349,
+                160147,
+                56806,
+                5803,
+                3023,
+                583832]
+    assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+
+    setattr(calc2.records, 'expanded_income_baseline',
+            getattr(calc2.records, 'expanded_income'))
+    dist = create_distribution_table(calc2.records,
+                                     groupby='webapp_income_bins',
+                                     income_measure='expanded_income_baseline',
+                                     result_type='weighted_sum')
+    assert isinstance(dist, pd.DataFrame)
+
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='small_income_bins',
+                                  income_measure='expanded_income',
                                   result_type='bad_result_type')
 
     with pytest.raises(ValueError):
         create_distribution_table(calc2.records,
                                   groupby='bad_bins',
+                                  income_measure='expanded_income',
                                   result_type='weighted_sum')
-
-    dist = create_distribution_table(calc2.records,
-                                     groupby='small_income_bins',
-                                     result_type='weighted_sum',
-                                     baseline_obj=calc1.records, diffs=True)
-    assert isinstance(dist, pd.DataFrame)
-    calc1.increment_year()
-    with pytest.raises(ValueError):
-        create_difference_table(calc1.records, calc2.records,
-                                groupby='large_income_bins')
-    with pytest.raises(ValueError):
-        create_distribution_table(calc2.records,
-                                  groupby='small_income_bins',
-                                  result_type='weighted_sum',
-                                  baseline_obj=calc1.records, diffs=True)
 
 
 def test_weighted_count_lt_zero():
@@ -262,10 +335,10 @@ def test_weighted_perc_inc():
     pd.util.testing.assert_series_equal(exp, diffs)
 
 
-def test_weighted_perc_dec():
+def test_weighted_perc_cut():
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_perc_dec, 'tax_diff')
+    diffs = grouped.apply(weighted_perc_cut, 'tax_diff')
     exp = pd.Series(data=[4. / 12., 0.0], index=['a', 'b'])
     exp.index.name = 'label'
     pd.util.testing.assert_series_equal(exp, diffs)
@@ -277,16 +350,18 @@ EPSILON = 1e-5
 def test_add_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-            200000, 1e99]
-    dfr = add_income_bins(dfx, compare_with='tpc', bins=None)
+    bins = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
+            200000, 9e99]
+    dfr = add_income_bins(dfx, 'expanded_income', bin_type='tpc', bins=None,
+                          right=True)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, compare_with='tpc', bins=None, right=False)
+    dfl = add_income_bins(dfx, 'expanded_income', bin_type='tpc', bins=None,
+                          right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, _ in groupedl:
@@ -298,17 +373,17 @@ def test_add_income_bins():
 def test_add_income_bins_soi():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
+    bins = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
             49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-            1999999, 4999999, 9999999, 1e99]
-    dfr = add_income_bins(dfx, compare_with='soi', bins=None)
+            1999999, 4999999, 9999999, 9e99]
+    dfr = add_income_bins(dfx, 'expanded_income', bin_type='soi', right=True)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, compare_with='soi', bins=None, right=False)
+    dfl = add_income_bins(dfx, 'expanded_income', bin_type='soi', right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, _ in groupedl:
@@ -320,15 +395,15 @@ def test_add_income_bins_soi():
 def test_add_exp_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-1e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 1e99]
-    dfr = add_income_bins(dfx, bins=bins)
+    bins = [-9e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 9e99]
+    dfr = add_income_bins(dfx, 'expanded_income', bins=bins, right=True)
     groupedr = dfr.groupby('bins')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, bins=bins, right=False)
+    dfl = add_income_bins(dfx, 'expanded_income', bins=bins, right=False)
     groupedl = dfl.groupby('bins')
     idx = 1
     for name, _ in groupedl:
@@ -341,21 +416,24 @@ def test_add_income_bins_raises():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     with pytest.raises(ValueError):
-        dfx = add_income_bins(dfx, compare_with='stuff')
+        dfx = add_income_bins(dfx, 'expanded_income', bin_type='stuff')
 
 
-def test_add_weighted_income_bins():
+def test_add_quantile_bins():
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
-    dfb = add_weighted_income_bins(dfx, num_bins=100)
+    dfb = add_quantile_bins(dfx, 'expanded_income', 100,
+                            weight_by_income_measure=False)
     bin_labels = dfb['bins'].unique()
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
     # custom labels
-    dfb = add_weighted_income_bins(dfx, weight_by_income_measure=True)
+    dfb = add_quantile_bins(dfx, 'expanded_income', 100,
+                            weight_by_income_measure=True)
     assert 'bins' in dfb
     custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-    dfb = add_weighted_income_bins(dfx, labels=custom_labels)
+    dfb = add_quantile_bins(dfx, 'expanded_income', 10,
+                            labels=custom_labels)
     assert 'bins' in dfb
     bin_labels = dfb['bins'].unique()
     for lab in bin_labels:
@@ -368,13 +446,16 @@ def test_dist_table_sum_row(cps_subsample):
     calc.calc_all()
     tb1 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
+                                    income_measure='expanded_income',
                                     result_type='weighted_sum')
     tb2 = create_distribution_table(calc.records,
                                     groupby='large_income_bins',
+                                    income_measure='expanded_income',
                                     result_type='weighted_sum')
     assert np.allclose(tb1[-1:], tb2[-1:])
     tb3 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
+                                    income_measure='expanded_income',
                                     result_type='weighted_avg')
     assert isinstance(tb3, pd.DataFrame)
 
@@ -394,41 +475,20 @@ def test_diff_table_sum_row(cps_subsample):
     calc2.calc_all()
     # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1.records, calc2.records,
-                                     groupby='small_income_bins')
+                                     groupby='small_income_bins',
+                                     income_measure='expanded_income',
+                                     tax_to_diff='iitax')
     tdiff2 = create_difference_table(calc1.records, calc2.records,
-                                     groupby='large_income_bins')
+                                     groupby='large_income_bins',
+                                     income_measure='expanded_income',
+                                     tax_to_diff='iitax')
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change',
-                      'aftertax_perc']
-    digit_cols = [x for x in tdiff1.columns.tolist() if
-                  x not in non_digit_cols]
+                      'perc_aftertax']
+    digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
     np.testing.assert_array_equal(tdiff1[non_digit_cols][-1:],
                                   tdiff2[non_digit_cols][-1:])
-
-
-def test_row_classifier(cps_subsample):
-    # create a current-law Policy object and Calculator calc1
-    policy1 = Policy()
-    records1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=policy1, records=records1)
-    calc1.calc_all()
-    calc1_s006 = create_distribution_table(calc1.records,
-                                           groupby='webapp_income_bins',
-                                           result_type='weighted_sum').s006
-    # create a policy-reform Policy object and Calculator calc2
-    reform = {2013: {'_ALD_StudentLoan_hc': [1]}}
-    policy2 = Policy()
-    policy2.implement_reform(reform)
-    records2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=policy2, records=records2)
-    calc2.calc_all()
-    calc2_s006 = create_distribution_table(calc2.records,
-                                           groupby='webapp_income_bins',
-                                           result_type='weighted_sum',
-                                           baseline_obj=calc1.records).s006
-    # use weighted sum of weights in each cell to check classifer
-    assert np.allclose(calc1_s006, calc2_s006, atol=0.00, rtol=0.0)
 
 
 def test_mtr_graph_data(cps_subsample):
@@ -455,11 +515,6 @@ def test_mtr_graph_data(cps_subsample):
                            income_measure='wages',
                            dollar_weighting=True)
     assert isinstance(gdata, dict)
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(),
-                           records=Records.cps_constructor(data=cps_subsample))
-        calcx.advance_to_year(2020)
-        gdata = mtr_graph_data(calcx, calc)
 
 
 def test_atr_graph_data(cps_subsample):

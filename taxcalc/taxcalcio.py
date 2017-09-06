@@ -21,7 +21,7 @@ from taxcalc.calculate import Calculator
 from taxcalc.utils import (delete_file, ce_aftertax_income,
                            atr_graph_data, mtr_graph_data,
                            xtr_graph_plot, write_graph_file,
-                           add_weighted_income_bins,
+                           add_quantile_bins,
                            unweighted_sum, weighted_sum)
 
 
@@ -442,9 +442,8 @@ class TaxCalcIO(object):
         """
         Write to tfile the tkind decile table using dfx DataFrame.
         """
-        dfx = add_weighted_income_bins(dfx, num_bins=10,
-                                       income_measure='expanded_income',
-                                       weight_by_income_measure=False)
+        dfx = add_quantile_bins(dfx, 'expanded_income', 10,
+                                weight_by_income_measure=False)
         gdfx = dfx.groupby('bins', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
         xinc_series = gdfx.apply(weighted_sum, 'expanded_income')
