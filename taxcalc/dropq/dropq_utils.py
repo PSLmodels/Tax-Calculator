@@ -266,11 +266,13 @@ def fuzz_df2_records(df1, df2, mask):
         set to their pre-reform tax results (in df1).
         """
         # pylint: disable=too-many-arguments
-        assert bin_type == 'dec' or bin_type == 'bin'
+        assert bin_type == 'dec' or bin_type == 'bin' or bin_type == 'agg'
         if bin_type == 'dec':
             df2 = add_quantile_bins(df2, imeasure, 10)
-        else:
+        elif bin_type == 'bin':
             df2 = add_income_bins(df2, imeasure, bins=WEBAPP_INCOME_BINS)
+        else:
+            df2 = add_quantile_bins(df2, imeasure, 1)
         gdf2 = df2.groupby('bins')
         df2['nofuzz'] = gdf2['mask'].transform(chooser)
         for col in cols_to_fuzz:
@@ -285,6 +287,7 @@ def fuzz_df2_records(df1, df2, mask):
     df2['expanded_income_baseline'] = df1['expanded_income']
     fuzz(df1, df2, 'dec', 'expanded_income_baseline', '_xdec', columns_to_fuzz)
     fuzz(df1, df2, 'bin', 'expanded_income_baseline', '_xbin', columns_to_fuzz)
+    fuzz(df1, df2, 'agg', 'expanded_income_baseline', '_agg', columns_to_fuzz)
     return df2
 
 
@@ -299,11 +302,11 @@ def dropq_summary(df1, df2, mask):
     df2 = fuzz_df2_records(df1, df2, mask)
 
     # tax difference totals between reform and baseline
-    tdiff = df2['iitax_xdec'] - df1['iitax']
+    tdiff = df2['iitax_agg'] - df1['iitax']
     aggr_itax_d = (tdiff * df2['s006']).sum()
-    tdiff = df2['payrolltax_xdec'] - df1['payrolltax']
+    tdiff = df2['payrolltax_agg'] - df1['payrolltax']
     aggr_ptax_d = (tdiff * df2['s006']).sum()
-    tdiff = df2['combined_xdec'] - df1['combined']
+    tdiff = df2['combined_agg'] - df1['combined']
     aggr_comb_d = (tdiff * df2['s006']).sum()
 
     # totals for baseline
@@ -312,9 +315,9 @@ def dropq_summary(df1, df2, mask):
     aggr_comb_1 = (df1['combined'] * df1['s006']).sum()
 
     # totals for reform
-    aggr_itax_2 = (df2['iitax_xdec'] * df2['s006']).sum()
-    aggr_ptax_2 = (df2['payrolltax_xdec'] * df2['s006']).sum()
-    aggr_comb_2 = (df2['combined_xdec'] * df2['s006']).sum()
+    aggr_itax_2 = (df2['iitax_agg'] * df2['s006']).sum()
+    aggr_ptax_2 = (df2['payrolltax_agg'] * df2['s006']).sum()
+    aggr_comb_2 = (df2['combined_agg'] * df2['s006']).sum()
 
     # create difference tables grouped by deciles and bins
     df2['iitax'] = df2['iitax_xdec']
