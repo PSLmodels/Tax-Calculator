@@ -13,7 +13,8 @@ Release 0.Y.Z on 2017-??-??
 - None
 
 **New Features**
-- None
+- Add option to cap the amount of gross itemized deductions allowed as a decimal fraction of AGI
+  [[#1542](https://github.com/open-source-economics/Tax-Calculator/pull/1542) by Matt Jensen]
 
 **Bug Fixes**
 - None
