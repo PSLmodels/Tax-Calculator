@@ -392,7 +392,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         capped by ItemDedCap
 
     """
-    cap = max(0, ID_AmountCap_rt * c00100)
+    cap = max(0., ID_AmountCap_rt * c00100)
 
     gross_ded_amt = 0
     if ID_AmountCap_Switch[0]:  # medical
@@ -423,7 +423,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e19800_capped = e19800
     e20100_capped = e20100
 
-    if overage > 0.:
+    if overage > 0. and c00100 > 0.:
         if ID_AmountCap_Switch[0]:  # medical
             e17500_capped -= (e17500 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[1]:  # statelocal
