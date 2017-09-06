@@ -695,7 +695,7 @@ def mtr_graph_data(calc1, calc2,
             weighting_function = agi_weighted
     elif income_measure == 'expanded_income':
         income_var = 'expanded_income'
-        income_str = 'Expanded Income'
+        income_str = 'Expanded-Income'
         if dollar_weighting:
             weighting_function = expanded_income_weighted
     else:
@@ -776,7 +776,7 @@ def mtr_graph_data(calc1, calc2,
         income_str = 'Dollar-weighted {}'.format(income_str)
         mtr_str = 'Dollar-weighted {}'.format(mtr_str)
     data['ylabel'] = '{} MTR'.format(mtr_str)
-    xlabel_str = '{} Percentile'.format(income_str)
+    xlabel_str = 'Baseline {} Percentile'.format(income_str)
     if mars != 'ALL':
         xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
     data['xlabel'] = xlabel_str
@@ -918,7 +918,7 @@ def atr_graph_data(calc1, calc2,
     data = dict()
     data['lines'] = lines
     data['ylabel'] = '{} Average Tax Rate'.format(atr_str)
-    xlabel_str = 'Expanded Income Percentile'
+    xlabel_str = 'Baseline Expanded-Income Percentile'
     if mars != 'ALL':
         xlabel_str = '{} for MARS={}'.format(xlabel_str, mars)
     data['xlabel'] = xlabel_str
@@ -1002,7 +1002,7 @@ def xtr_graph_plot(data,
     fig = bp.figure(plot_width=width, plot_height=height, title=title)
     fig.title.text_font_size = '12pt'
     lines = data['lines']
-    fig.line(lines.index, lines.base, line_color='blue', legend='Base')
+    fig.line(lines.index, lines.base, line_color='blue', legend='Baseline')
     fig.line(lines.index, lines.reform, line_color='red', legend='Reform')
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     if xlabel == '':
