@@ -238,7 +238,7 @@ class Policy(ParametersBase):
         'casualty': 3,
         'misc': 4,
         'interest': 5,
-        'charity': 6
+        'charity': 6,
         # grossidedtype-indexed suffixes and list index numbers
         'medical': 0,
         'statelocal': 1,
