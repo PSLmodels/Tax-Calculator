@@ -239,6 +239,15 @@ class Policy(ParametersBase):
         'misc': 4,
         'interest': 5,
         'charity': 6
+        # grossidedtype-indexed suffixes and list index numbers
+        'medical': 0,
+        'statelocal': 1,
+        'realestate': 2,
+        'casualty': 3,
+        'misc': 4,
+        'interest': 5,
+        'charitycash': 6,
+        'charitynoncash': 7
     }
 
     @staticmethod
