@@ -366,6 +366,7 @@ class Policy(ParametersBase):
         range information from the current_law_policy.json file.
         """
         # pylint: disable=too-many-locals,too-many-branches
+        # pylint: disable=too-many-nested-blocks
         clp = self.current_law_version()
         parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
@@ -407,6 +408,8 @@ class Policy(ParametersBase):
                             name = pname
                         else:
                             name = '{}_{}'.format(pname, idx[1])
+                            if len(extra) > 0:
+                                msg += '_{}'.format(idx[1])
                         if action == 'warn':
                             self.reform_warnings += (
                                 'WARNING: ' + msg.format(idx[0] + syr, name,
