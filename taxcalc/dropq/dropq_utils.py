@@ -12,7 +12,8 @@ from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
 from taxcalc.utils import (add_income_bins, add_quantile_bins, results,
                            create_difference_table, create_distribution_table,
-                           STATS_COLUMNS, TABLE_COLUMNS, WEBAPP_INCOME_BINS)
+                           STATS_COLUMNS, DIST_TABLE_COLUMNS,
+                           WEBAPP_INCOME_BINS)
 
 
 def check_years(start_year, year_n):
@@ -279,9 +280,11 @@ def fuzz_df2_records(df1, df2, mask):
             df2[col + suffix] = (df2[col] * df2['nofuzz'] -
                                  df1[col] * df2['nofuzz'] + df1[col])
     # main logic of fuzz_df2_records
-    cols_to_skip = set(['num_returns_ItemDed', 'num_returns_StandardDed',
-                        'num_returns_AMT', 's006'])
-    columns_to_fuzz = (set(TABLE_COLUMNS) | set(STATS_COLUMNS)) - cols_to_skip
+    skips = set(['num_returns_ItemDed',
+                 'num_returns_StandardDed',
+                 'num_returns_AMT',
+                 's006'])
+    columns_to_fuzz = (set(DIST_TABLE_COLUMNS) | set(STATS_COLUMNS)) - skips
     df2['mask'] = mask
     # always use expanded income in df1 baseline to groupby into bins
     df2['expanded_income_baseline'] = df1['expanded_income']
@@ -291,11 +294,15 @@ def fuzz_df2_records(df1, df2, mask):
     return df2
 
 
+AGGR_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
+
+
 def dropq_summary(df1, df2, mask):
     """
     df1 contains raw results for baseline plan
     df2 contains raw results for reform plan
-    mask is the boolean array specifying which rows might be fuzzed
+    mask is the boolean array specifying which records might be fuzzed
+    returns dictionary of summary results DataFrames
     """
     # pylint: disable=too-many-locals
 

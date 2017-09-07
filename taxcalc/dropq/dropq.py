@@ -17,26 +17,27 @@ import numpy as np
 import pandas as pd
 from taxcalc.dropq.dropq_utils import (dropq_calculate,
                                        random_seed,
-                                       dropq_summary)
-from taxcalc import (results, TABLE_LABELS, proportional_change_gdp,
-                     Growdiff, Growfactors, Policy)
+                                       dropq_summary,
+                                       AGGR_ROW_NAMES)
+from taxcalc import (results, DIST_TABLE_LABELS,
+                     proportional_change_gdp, Growdiff, Growfactors, Policy)
 
 
 # specify constants
-PLAN_COLUMN_TYPES = [float] * len(TABLE_LABELS)
+DIST_COLUMN_TYPES = [float] * len(DIST_TABLE_LABELS)
 
 DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str, str]
 
-DECILE_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
-                    'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
-                    'perc80-90', 'perc90-100', 'all']
+DEC_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
+                 'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
+                 'perc80-90', 'perc90-100', 'all']
 
 BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
                  'forty_fifty', 'fifty_seventyfive', 'seventyfive_hundred',
                  'hundred_twohundred', 'twohundred_fivehundred',
                  'fivehundred_thousand', 'thousand_up', 'all']
 
-TOTAL_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
+AGG_ROW_NAMES = AGGR_ROW_NAMES
 
 GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
 
@@ -120,13 +121,13 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     # construct DataFrames containing aggregate tax totals
     # ... for reform-minus-baseline difference
     aggrd = [aggr_itax_d, aggr_ptax_d, aggr_comb_d]
-    aggr_d = pd.DataFrame(data=aggrd, index=TOTAL_ROW_NAMES)
+    aggr_d = pd.DataFrame(data=aggrd, index=AGGR_ROW_NAMES)
     # ... for baseline
     aggr1 = [aggr_itax_1, aggr_ptax_1, aggr_comb_1]
-    aggr_1 = pd.DataFrame(data=aggr1, index=TOTAL_ROW_NAMES)
+    aggr_1 = pd.DataFrame(data=aggr1, index=AGGR_ROW_NAMES)
     # ... for reform
     aggr2 = [aggr_itax_2, aggr_ptax_2, aggr_comb_2]
-    aggr_2 = pd.DataFrame(data=aggr2, index=TOTAL_ROW_NAMES)
+    aggr_2 = pd.DataFrame(data=aggr2, index=AGGR_ROW_NAMES)
 
     elapsed_time = time.time() - start_time
     print('elapsed time for this run: ', elapsed_time)
@@ -155,13 +156,13 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                 append_year(aggr_2))
 
     # optionally construct JSON results tables for year n
-    dec_row_names_n = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
+    dec_row_names_n = [x + '_' + str(year_n) for x in DEC_ROW_NAMES]
     dist2_dec_table_n = create_json_table(dist2_dec,
                                           row_names=dec_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
+                                          column_types=DIST_COLUMN_TYPES)
     dist1_dec_table_n = create_json_table(dist1_dec,
                                           row_names=dec_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
+                                          column_types=DIST_COLUMN_TYPES)
     diff_itax_dec_table_n = create_json_table(diff_itax_dec,
                                               row_names=dec_row_names_n,
                                               column_types=DIFF_COLUMN_TYPES)
@@ -174,10 +175,10 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
     dist2_bin_table_n = create_json_table(dist2_bin,
                                           row_names=bin_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
+                                          column_types=DIST_COLUMN_TYPES)
     dist1_bin_table_n = create_json_table(dist1_bin,
                                           row_names=bin_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
+                                          column_types=DIST_COLUMN_TYPES)
     diff_itax_bin_table_n = create_json_table(diff_itax_bin,
                                               row_names=bin_row_names_n,
                                               column_types=DIFF_COLUMN_TYPES)
@@ -187,7 +188,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     diff_comb_bin_table_n = create_json_table(diff_comb_bin,
                                               row_names=bin_row_names_n,
                                               column_types=DIFF_COLUMN_TYPES)
-    total_row_names_n = [x + '_' + str(year_n) for x in TOTAL_ROW_NAMES]
+    total_row_names_n = [x + '_' + str(year_n) for x in AGGR_ROW_NAMES]
     aggr_d_table_n = create_json_table(aggr_d,
                                        row_names=total_row_names_n)
     aggr_d_table_n = dict((k, v[0]) for k, v in aggr_d_table_n.items())

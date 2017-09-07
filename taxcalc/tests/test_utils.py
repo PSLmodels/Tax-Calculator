@@ -15,7 +15,8 @@ import pandas as pd
 import pytest
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Behavior, Calculator
-from taxcalc.utils import (TABLE_COLUMNS, TABLE_LABELS, STATS_COLUMNS,
+from taxcalc.utils import (STATS_COLUMNS,
+                           DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
                            create_distribution_table, create_difference_table,
                            weighted_count_lt_zero, weighted_count_gt_zero,
                            weighted_count, weighted_sum, weighted_mean,
@@ -52,7 +53,7 @@ DATA_FLOAT = [[1.0, 2, 'a'],
 
 
 def test_validity_of_name_lists():
-    assert len(TABLE_COLUMNS) == len(TABLE_LABELS)
+    assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
 
 
