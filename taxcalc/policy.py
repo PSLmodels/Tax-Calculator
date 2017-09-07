@@ -402,7 +402,6 @@ class Policy(ParametersBase):
                         if len(extra) > 0:
                             msg += ' {}'.format(extra)
                     if out_of_range:
-
                         action = self._vals[pname]['out_of_range_action']
                         if scalar:
                             name = pname
