@@ -78,19 +78,19 @@ def test_run_tax_calc_model(puf_subsample, resjson):
                                       return_json=resjson)
     assert len(res) == 13
     dump = False  # set to True in order to dump returned results and fail test
-    for idx in range(0, len(res)):
+    for tbl in sorted(res.keys()):
         if resjson:
-            assert isinstance(res[idx], dict)
+            assert isinstance(res[tbl], dict)
         else:
-            assert isinstance(res[idx], pd.DataFrame)
+            assert isinstance(res[tbl], pd.DataFrame)
         if dump:
             if resjson:
-                cols = sorted(res[idx].keys())
+                cols = sorted(res[tbl].keys())
             else:
-                cols = sorted(list(res[idx]))
+                cols = sorted(list(res[tbl]))
             for col in cols:
-                print('<<idx={}:col={}>>'.format(idx, col))
-                print(res[idx][col])
+                print('<<tbl={}:col={}>>'.format(tbl, col))
+                print(res[tbl][col])
     assert not dump
 
 
@@ -186,12 +186,11 @@ def test_with_pufcsv(puf_fullsample):
     # create a Public Use File object
     tax_data = puf_fullsample
     # call run_nth_year_tax_calc_model function
-    restuple = run_nth_year_tax_calc_model(year_n, start_year,
-                                           tax_data, usermods,
-                                           return_json=True)
-    total = restuple[len(restuple) - 1]  # the last of element of the tuple
-    dropq_reform_revenue = float(total['combined_tax_9'])
-    dropq_reform_revenue *= 1e-9  # convert to billions of dollars
+    resdict = run_nth_year_tax_calc_model(year_n, start_year,
+                                          tax_data, usermods,
+                                          return_json=True)
+    total = resdict['aggr_2']
+    dropq_reform_revenue = float(total['combined_tax_9']) * 1e-9
     # assert that dropq revenue is similar to the fullsample calculation
     diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue

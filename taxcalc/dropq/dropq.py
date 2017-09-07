@@ -17,26 +17,27 @@ import numpy as np
 import pandas as pd
 from taxcalc.dropq.dropq_utils import (dropq_calculate,
                                        random_seed,
-                                       dropq_summary)
-from taxcalc import (results, TABLE_LABELS, proportional_change_gdp,
-                     Growdiff, Growfactors, Policy)
+                                       dropq_summary,
+                                       AGGR_ROW_NAMES)
+from taxcalc import (results, DIST_TABLE_LABELS,
+                     proportional_change_gdp, Growdiff, Growfactors, Policy)
 
 
 # specify constants
-PLAN_COLUMN_TYPES = [float] * len(TABLE_LABELS)
+DIST_COLUMN_TYPES = [float] * len(DIST_TABLE_LABELS)
 
 DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str, str]
 
-DECILE_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
-                    'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
-                    'perc80-90', 'perc90-100', 'all']
+DEC_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
+                 'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
+                 'perc80-90', 'perc90-100', 'all']
 
 BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
                  'forty_fifty', 'fifty_seventyfive', 'seventyfive_hundred',
                  'hundred_twohundred', 'twohundred_fivehundred',
                  'fivehundred_thousand', 'thousand_up', 'all']
 
-TOTAL_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
+AGG_ROW_NAMES = AGGR_ROW_NAMES
 
 GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
 
@@ -107,26 +108,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     np.random.seed(seed)  # pylint: disable=no-member
 
     # construct dropq summary results from raw results
-    (dist1_dec, dist2_dec,
-     diff_itax_dec, diff_ptax_dec, diff_comb_dec,
-     dist1_bin, dist2_bin,
-     diff_itax_bin, diff_ptax_bin, diff_comb_bin,
-     aggr_itax_d, aggr_ptax_d, aggr_comb_d,
-     aggr_itax_1, aggr_ptax_1, aggr_comb_1,
-     aggr_itax_2, aggr_ptax_2, aggr_comb_2) = dropq_summary(rawres1,
-                                                            rawres2,
-                                                            mask)
-
-    # construct DataFrames containing aggregate tax totals
-    # ... for reform-minus-baseline difference
-    aggrd = [aggr_itax_d, aggr_ptax_d, aggr_comb_d]
-    aggr_d = pd.DataFrame(data=aggrd, index=TOTAL_ROW_NAMES)
-    # ... for baseline
-    aggr1 = [aggr_itax_1, aggr_ptax_1, aggr_comb_1]
-    aggr_1 = pd.DataFrame(data=aggr1, index=TOTAL_ROW_NAMES)
-    # ... for reform
-    aggr2 = [aggr_itax_2, aggr_ptax_2, aggr_comb_2]
-    aggr_2 = pd.DataFrame(data=aggr2, index=TOTAL_ROW_NAMES)
+    summ = dropq_summary(rawres1, rawres2, mask)
 
     elapsed_time = time.time() - start_time
     print('elapsed time for this run: ', elapsed_time)
@@ -140,78 +122,39 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
     # optionally return non-JSON results
     if not return_json:
-        return (append_year(dist2_dec),
-                append_year(dist1_dec),
-                append_year(diff_itax_dec),
-                append_year(diff_ptax_dec),
-                append_year(diff_comb_dec),
-                append_year(dist2_bin),
-                append_year(dist1_bin),
-                append_year(diff_itax_bin),
-                append_year(diff_ptax_bin),
-                append_year(diff_comb_bin),
-                append_year(aggr_d),
-                append_year(aggr_1),
-                append_year(aggr_2))
+        res = dict()
+        for tbl in summ:
+            res[tbl] = append_year(summ[tbl])
+        return res
 
     # optionally construct JSON results tables for year n
-    dec_row_names_n = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
-    dist2_dec_table_n = create_json_table(dist2_dec,
-                                          row_names=dec_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
-    dist1_dec_table_n = create_json_table(dist1_dec,
-                                          row_names=dec_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
-    diff_itax_dec_table_n = create_json_table(diff_itax_dec,
-                                              row_names=dec_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_ptax_dec_table_n = create_json_table(diff_ptax_dec,
-                                              row_names=dec_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_comb_dec_table_n = create_json_table(diff_comb_dec,
-                                              row_names=dec_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
+    dec_row_names_n = [x + '_' + str(year_n) for x in DEC_ROW_NAMES]
     bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
-    dist2_bin_table_n = create_json_table(dist2_bin,
-                                          row_names=bin_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
-    dist1_bin_table_n = create_json_table(dist1_bin,
-                                          row_names=bin_row_names_n,
-                                          column_types=PLAN_COLUMN_TYPES)
-    diff_itax_bin_table_n = create_json_table(diff_itax_bin,
-                                              row_names=bin_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_ptax_bin_table_n = create_json_table(diff_ptax_bin,
-                                              row_names=bin_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_comb_bin_table_n = create_json_table(diff_comb_bin,
-                                              row_names=bin_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    total_row_names_n = [x + '_' + str(year_n) for x in TOTAL_ROW_NAMES]
-    aggr_d_table_n = create_json_table(aggr_d,
-                                       row_names=total_row_names_n)
-    aggr_d_table_n = dict((k, v[0]) for k, v in aggr_d_table_n.items())
-    aggr_1_table_n = create_json_table(aggr_1,
-                                       row_names=total_row_names_n)
-    aggr_1_table_n = dict((k, v[0]) for k, v in aggr_1_table_n.items())
-    aggr_2_table_n = create_json_table(aggr_2,
-                                       row_names=total_row_names_n)
-    aggr_2_table_n = dict((k, v[0]) for k, v in aggr_2_table_n.items())
-
-    # return JSON results
-    return (dist2_dec_table_n,
-            dist1_dec_table_n,
-            diff_itax_dec_table_n,
-            diff_ptax_dec_table_n,
-            diff_comb_dec_table_n,
-            dist2_bin_table_n,
-            dist1_bin_table_n,
-            diff_itax_bin_table_n,
-            diff_ptax_bin_table_n,
-            diff_comb_bin_table_n,
-            aggr_d_table_n,
-            aggr_1_table_n,
-            aggr_2_table_n)
+    agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
+    info = dict()
+    for tbl in summ:
+        info[tbl] = {'row_names': [], 'col_types': []}
+        if 'dec' in tbl:
+            info[tbl]['row_names'] = dec_row_names_n
+        elif 'bin' in tbl:
+            info[tbl]['row_names'] = bin_row_names_n
+        else:
+            info[tbl]['row_names'] = agg_row_names_n
+        if 'dist' in tbl:
+            info[tbl]['col_types'] = DIST_COLUMN_TYPES
+        elif 'diff' in tbl:
+            info[tbl]['col_types'] = DIFF_COLUMN_TYPES
+    res = dict()
+    for tbl in summ:
+        if 'aggr' in tbl:
+            res_table = create_json_table(summ[tbl],
+                                          row_names=info[tbl]['row_names'])
+            res[tbl] = dict((k, v[0]) for k, v in res_table.items())
+        else:
+            res[tbl] = create_json_table(summ[tbl],
+                                         row_names=info[tbl]['row_names'],
+                                         column_types=info[tbl]['col_types'])
+    return res
 
 
 def run_nth_year_gdp_elast_model(year_n, start_year,

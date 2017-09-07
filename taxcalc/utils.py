@@ -32,22 +32,49 @@ STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                  'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
                  'payrolltax', 'combined', 's006']
 
-# Items in the TABLE_COLUMNS list below correspond to the items in the
-# TABLE_LABELS list below; this correspondence allows us to use TABLE_LABELS
-# to map a label to the correct column in our distribution tables.
-TABLE_COLUMNS = ['s006', 'c00100', 'num_returns_StandardDed', 'standard',
-                 'num_returns_ItemDed', 'c04470', 'c04600', 'c04800', 'taxbc',
-                 'c62100', 'num_returns_AMT', 'c09600', 'c05800', 'c07100',
-                 'othertaxes', 'refund', 'iitax', 'payrolltax', 'combined']
+# Items in the DIST_TABLE_COLUMNS list below correspond to the items in the
+# DIST_TABLE_LABELS list below; this correspondence allows us to use
+# DIST_TABLE_LABELS to map a label to the correct column in the distribution
+# tables.
+DIST_TABLE_COLUMNS = ['s006',
+                      'c00100',
+                      'num_returns_StandardDed',
+                      'standard',
+                      'num_returns_ItemDed',
+                      'c04470',
+                      'c04600',
+                      'c04800',
+                      'taxbc',
+                      'c62100',
+                      'num_returns_AMT',
+                      'c09600',
+                      'c05800',
+                      'c07100',
+                      'othertaxes',
+                      'refund',
+                      'iitax',
+                      'payrolltax',
+                      'combined']
 
-TABLE_LABELS = ['Returns', 'AGI', 'Standard Deduction Filers',
-                'Standard Deduction', 'Itemizers',
-                'Itemized Deduction', 'Personal Exemption',
-                'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers', 'AMT',
-                'Tax before Credits', 'Non-refundable Credits',
-                'Other Taxes', 'Refundable Credits',
-                'Individual Income Tax Liabilities', 'Payroll Tax Liablities',
-                'Combined Payroll and Individual Income Tax Liabilities']
+DIST_TABLE_LABELS = ['Returns',
+                     'AGI',
+                     'Standard Deduction Filers',
+                     'Standard Deduction',
+                     'Itemizers',
+                     'Itemized Deduction',
+                     'Personal Exemption',
+                     'Taxable Income',
+                     'Regular Tax',
+                     'AMTI',
+                     'AMT Filers',
+                     'AMT',
+                     'Tax before Credits',
+                     'Non-refundable Credits',
+                     'Other Taxes',
+                     'Refundable Credits',
+                     'Individual Income Tax Liabilities',
+                     'Payroll Tax Liablities',
+                     'Combined Payroll and Individual Income Tax Liabilities']
 
 # Following list is used in our difference table to label its columns.
 DIFF_TABLE_LABELS = ['Tax Units with Tax Cut',
@@ -325,13 +352,14 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     # manipulate the data given specified result_type
     if result_type == 'weighted_sum':
         pdf = weighted(pdf, STATS_COLUMNS)
-        gpdf_mean = pdf.groupby('bins', as_index=False)[TABLE_COLUMNS].sum()
+        gpdf = pdf.groupby('bins', as_index=False)
+        gpdf_mean = gpdf[DIST_TABLE_COLUMNS].sum()
         gpdf_mean.drop('bins', axis=1, inplace=True)
-        sum_row = get_sums(pdf)[TABLE_COLUMNS]
+        sum_row = get_sums(pdf)[DIST_TABLE_COLUMNS]
     elif result_type == 'weighted_avg':
-        gpdf_mean = weighted_avg_allcols(pdf, TABLE_COLUMNS,
+        gpdf_mean = weighted_avg_allcols(pdf, DIST_TABLE_COLUMNS,
                                          income_measure=income_measure)
-        sum_row = get_sums(pdf, not_available=True)[TABLE_COLUMNS]
+        sum_row = get_sums(pdf, not_available=True)[DIST_TABLE_COLUMNS]
     else:
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
         raise ValueError(msg)
