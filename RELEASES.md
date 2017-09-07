@@ -19,7 +19,11 @@ Release 0.11.0 on 2017-??-??
 
 **New Features**
 - Add option to cap the amount of gross itemized deductions allowed as a decimal fraction of AGI
-  [[#1542](https://github.com/open-source-economics/Tax-Calculator/pull/1542) by Matt Jensen]
+  [[#1542](https://github.com/open-source-economics/Tax-Calculator/pull/1542)
+  by Matt Jensen]
+- Add dropq tables using AGI as income measure for TaxBrain use
+  [[#1544](https://github.com/open-source-economics/Tax-Calculator/pull/1544)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None

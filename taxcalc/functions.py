@@ -392,6 +392,8 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         capped by ItemDedCap
 
     """
+    # pylint: disable=too-many-branches
+
     cap = max(0., ID_AmountCap_rt * c00100)
 
     gross_ded_amt = 0
