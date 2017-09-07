@@ -76,7 +76,7 @@ def test_run_nth_year_value_errors(puf_subsample):
 def test_run_tax_calc_model(puf_subsample, resjson):
     res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, USER_MODS,
                                       return_json=resjson)
-    assert len(res) == 13
+    assert isinstance(res, dict)
     dump = False  # set to True in order to dump returned results and fail test
     for tbl in sorted(res.keys()):
         if resjson:
