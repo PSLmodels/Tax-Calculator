@@ -186,12 +186,11 @@ def test_with_pufcsv(puf_fullsample):
     # create a Public Use File object
     tax_data = puf_fullsample
     # call run_nth_year_tax_calc_model function
-    restuple = run_nth_year_tax_calc_model(year_n, start_year,
-                                           tax_data, usermods,
-                                           return_json=True)
-    total = restuple[len(restuple) - 1]  # the last of element of the tuple
-    dropq_reform_revenue = float(total['combined_tax_9'])
-    dropq_reform_revenue *= 1e-9  # convert to billions of dollars
+    resdict = run_nth_year_tax_calc_model(year_n, start_year,
+                                          tax_data, usermods,
+                                          return_json=True)
+    total = resdict['aggr_2']
+    dropq_reform_revenue = float(total['combined_tax_9']) * 1e-9
     # assert that dropq revenue is similar to the fullsample calculation
     diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue
