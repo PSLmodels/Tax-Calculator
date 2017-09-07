@@ -1608,7 +1608,7 @@
         "out_of_range_action": "stop"
     },
 
-       "_ID_AmountCap_rt": {
+    "_ID_AmountCap_rt": {
         "long_name": "Ceiling on the gross amount of itemized deductions allowed; decimal fraction of AGI",
         "description": "The gross allowable amount of specified itemized deductions is capped at this percent of AGI.",
         "section_1": "Itemized Deductions",

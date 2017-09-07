@@ -802,12 +802,12 @@
       "desc": "Sch A: State and local taxes deducted",
       "form": {}
     },
-    "e18400_capped":{
+    "e18400_capped": {
       "type": "float",
       "desc": "Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI",
       "form": {}
     },
-    "e18500_capped":{
+    "e18500_capped": {
       "type": "float",
       "desc": "Sch A: State and local real estate taxes deductible, capped as a decimal fraction of AGI",
       "form": {}
