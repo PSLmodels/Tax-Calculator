@@ -408,7 +408,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     if ID_AmountCap_Switch[5]:  # interest
         gross_ded_amt += e19200
     if ID_AmountCap_Switch[6]:  # charitycash
-        gross_ded_amt += e19800
+        gross_ded_amt += e19800 + e20100
     if ID_AmountCap_Switch[7]:  # charitynoncash
         gross_ded_amt += e20100
 
@@ -436,9 +436,8 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
             e20400_capped -= (e20400 / gross_ded_amt) * overage
         if ID_AmountCap_Switch[5]:  # interest
             e19200_capped -= (e19200 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[6]:  # charitycash
+        if ID_AmountCap_Switch[6]:  # charity
             e19800_capped -= (e19800 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[7]:  # charitynoncash
             e20100_capped -= (e20100 / gross_ded_amt) * overage
 
     return (e17500_capped, e18400_capped, e18500_capped, g20500_capped,
