@@ -122,78 +122,39 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
     # optionally return non-JSON results
     if not return_json:
-        return (append_year(summ['dist2_dec']),
-                append_year(summ['dist1_dec']),
-                append_year(summ['diff_itax_dec']),
-                append_year(summ['diff_ptax_dec']),
-                append_year(summ['diff_comb_dec']),
-                append_year(summ['dist2_bin']),
-                append_year(summ['dist1_bin']),
-                append_year(summ['diff_itax_bin']),
-                append_year(summ['diff_ptax_bin']),
-                append_year(summ['diff_comb_bin']),
-                append_year(summ['aggr_d']),
-                append_year(summ['aggr_1']),
-                append_year(summ['aggr_2']))
+        res = dict()
+        for tbl in summ:
+            res[tbl] = append_year(summ[tbl])
+        return res
 
     # optionally construct JSON results tables for year n
     dec_row_names_n = [x + '_' + str(year_n) for x in DEC_ROW_NAMES]
-    dist2_dec_table_n = create_json_table(summ['dist2_dec'],
-                                          row_names=dec_row_names_n,
-                                          column_types=DIST_COLUMN_TYPES)
-    dist1_dec_table_n = create_json_table(summ['dist1_dec'],
-                                          row_names=dec_row_names_n,
-                                          column_types=DIST_COLUMN_TYPES)
-    diff_itax_dec_table_n = create_json_table(summ['diff_itax_dec'],
-                                              row_names=dec_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_ptax_dec_table_n = create_json_table(summ['diff_ptax_dec'],
-                                              row_names=dec_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_comb_dec_table_n = create_json_table(summ['diff_comb_dec'],
-                                              row_names=dec_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
     bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
-    dist2_bin_table_n = create_json_table(summ['dist2_bin'],
-                                          row_names=bin_row_names_n,
-                                          column_types=DIST_COLUMN_TYPES)
-    dist1_bin_table_n = create_json_table(summ['dist1_bin'],
-                                          row_names=bin_row_names_n,
-                                          column_types=DIST_COLUMN_TYPES)
-    diff_itax_bin_table_n = create_json_table(summ['diff_itax_bin'],
-                                              row_names=bin_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_ptax_bin_table_n = create_json_table(summ['diff_ptax_bin'],
-                                              row_names=bin_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    diff_comb_bin_table_n = create_json_table(summ['diff_comb_bin'],
-                                              row_names=bin_row_names_n,
-                                              column_types=DIFF_COLUMN_TYPES)
-    total_row_names_n = [x + '_' + str(year_n) for x in AGGR_ROW_NAMES]
-    aggr_d_table_n = create_json_table(summ['aggr_d'],
-                                       row_names=total_row_names_n)
-    aggr_d_table_n = dict((k, v[0]) for k, v in aggr_d_table_n.items())
-    aggr_1_table_n = create_json_table(summ['aggr_1'],
-                                       row_names=total_row_names_n)
-    aggr_1_table_n = dict((k, v[0]) for k, v in aggr_1_table_n.items())
-    aggr_2_table_n = create_json_table(summ['aggr_2'],
-                                       row_names=total_row_names_n)
-    aggr_2_table_n = dict((k, v[0]) for k, v in aggr_2_table_n.items())
-
-    # return JSON results
-    return (dist2_dec_table_n,
-            dist1_dec_table_n,
-            diff_itax_dec_table_n,
-            diff_ptax_dec_table_n,
-            diff_comb_dec_table_n,
-            dist2_bin_table_n,
-            dist1_bin_table_n,
-            diff_itax_bin_table_n,
-            diff_ptax_bin_table_n,
-            diff_comb_bin_table_n,
-            aggr_d_table_n,
-            aggr_1_table_n,
-            aggr_2_table_n)
+    agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
+    info = dict()
+    for tbl in summ:
+        info[tbl] = {'row_names': [], 'col_types': []}
+        if 'dec' in tbl:
+            info[tbl]['row_names'] = dec_row_names_n
+        elif 'bin' in tbl:
+            info[tbl]['row_names'] = bin_row_names_n
+        else:
+            info[tbl]['row_names'] = agg_row_names_n
+        if 'dist' in tbl:
+            info[tbl]['col_types'] = DIST_COLUMN_TYPES
+        elif 'diff' in tbl:
+            info[tbl]['col_types'] = DIFF_COLUMN_TYPES
+    res = dict()
+    for tbl in summ:
+        if 'aggr' in tbl:
+            res_table = create_json_table(summ[tbl],
+                                          row_names=info[tbl]['row_names'])
+            res[tbl] = dict((k, v[0]) for k, v in res_table.items())
+        else:
+            res[tbl] = create_json_table(summ[tbl],
+                                         row_names=info[tbl]['row_names'],
+                                         column_types=info[tbl]['col_types'])
+    return res
 
 
 def run_nth_year_gdp_elast_model(year_n, start_year,

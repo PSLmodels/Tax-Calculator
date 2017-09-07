@@ -78,19 +78,19 @@ def test_run_tax_calc_model(puf_subsample, resjson):
                                       return_json=resjson)
     assert len(res) == 13
     dump = False  # set to True in order to dump returned results and fail test
-    for idx in range(0, len(res)):
+    for tbl in sorted(res.keys()):
         if resjson:
-            assert isinstance(res[idx], dict)
+            assert isinstance(res[tbl], dict)
         else:
-            assert isinstance(res[idx], pd.DataFrame)
+            assert isinstance(res[tbl], pd.DataFrame)
         if dump:
             if resjson:
-                cols = sorted(res[idx].keys())
+                cols = sorted(res[tbl].keys())
             else:
-                cols = sorted(list(res[idx]))
+                cols = sorted(list(res[tbl]))
             for col in cols:
-                print('<<idx={}:col={}>>'.format(idx, col))
-                print(res[idx][col])
+                print('<<tbl={}:col={}>>'.format(tbl, col))
+                print(res[tbl][col])
     assert not dump
 
 
