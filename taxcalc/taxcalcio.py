@@ -200,6 +200,7 @@ class TaxCalcIO(object):
             try:
                 pol.implement_reform(param_dict['policy'])
                 self.errmsg += pol.reform_errors
+                self.errmsg += pol.reform_warnings
             except ValueError as valerr_msg:
                 self.errmsg += valerr_msg.__str__()
         else:
