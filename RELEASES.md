@@ -13,6 +13,9 @@ Release 0.11.0 on 2017-??-??
 - Revise dropq distribution and difference tables used by TaxBrain
   [[#1537](https://github.com/open-source-economics/Tax-Calculator/pull/1537)
   by Anderson Frailey and Martin Holmer]
+- Make dropq run_nth_year_tax_calc_model return a dictionary of results
+  [[#1543](https://github.com/open-source-economics/Tax-Calculator/pull/1543)
+  by Martin Holmer]
 
 **New Features**
 - None
@@ -42,7 +45,6 @@ Release 0.10.0 on 2017-08-28
 - Add extensive checking of reform policy parameter names and values
   [[#1524](https://github.com/open-source-economics/Tax-Calculator/pull/1524)
   by Martin Holmer]
-
 
 **Bug Fixes**
 - None
