@@ -28,6 +28,20 @@ Release 0.11.0 on 2017-??-??
 **Bug Fixes**
 - None
 
+Release 0.10.1 on 2017-09-08
+----------------------------
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Fix vagueness of error/warning messages for non-scalar policy parameters
+  [[5536792](https://github.com/open-source-economics/Tax-Calculator/commit/5536792538c3f3e687cccc9e38b20949ac68cb9a)
+  by Martin Holmer]
+
 Release 0.10.0 on 2017-08-28
 ----------------------------
 (last merged pull request is
