@@ -16,9 +16,9 @@ import numpy as np
 from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                DependentCare, ALD_InvInc_ec_base, CapGains,
-                               SSBenefits, UBI, AGI, ItemDed, StdDed,
-                               AdditionalMedicareTax, F2441, EITC, SchR,
-                               ChildTaxCredit, AdditionalCTC, CTC_new,
+                               SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
+                               StdDed, AdditionalMedicareTax, F2441, EITC,
+                               SchR, ChildTaxCredit, AdditionalCTC, CTC_new,
                                PersonalTaxCredit,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
@@ -449,6 +449,7 @@ class Calculator(object):
         SSBenefits(self.policy, self.records)
         UBI(self.policy, self.records)
         AGI(self.policy, self.records)
+        ItemDedCap(self.policy, self.records)
         ItemDed(self.policy, self.records)
         AdditionalMedicareTax(self.policy, self.records)
         StdDed(self.policy, self.records)

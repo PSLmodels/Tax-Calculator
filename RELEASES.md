@@ -4,10 +4,48 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.10.0 on 2017-??-??
+Release 0.11.0 on 2017-??-??
 ----------------------------
 (last merged pull request is
-[#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Revise dropq distribution and difference tables used by TaxBrain
+  [[#1537](https://github.com/open-source-economics/Tax-Calculator/pull/1537)
+  by Anderson Frailey and Martin Holmer]
+- Make dropq run_nth_year_tax_calc_model return a dictionary of results
+  [[#1543](https://github.com/open-source-economics/Tax-Calculator/pull/1543)
+  by Martin Holmer]
+
+**New Features**
+- Add option to cap the amount of gross itemized deductions allowed as a decimal fraction of AGI
+  [[#1542](https://github.com/open-source-economics/Tax-Calculator/pull/1542)
+  by Matt Jensen]
+- Add dropq tables using AGI as income measure for TaxBrain use
+  [[#1544](https://github.com/open-source-economics/Tax-Calculator/pull/1544)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+Release 0.10.1 on 2017-09-08
+----------------------------
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Fix vagueness of error/warning messages for non-scalar policy parameters
+  [[5536792](https://github.com/open-source-economics/Tax-Calculator/commit/5536792538c3f3e687cccc9e38b20949ac68cb9a)
+  by Martin Holmer]
+
+Release 0.10.0 on 2017-08-28
+----------------------------
+(last merged pull request is
+[#1531](https://github.com/open-source-economics/Tax-Calculator/pull/1531))
 
 **API Changes**
 - Add dropq function that returns reform warnings and errors
@@ -26,7 +64,6 @@ Release 0.10.0 on 2017-??-??
 - Add extensive checking of reform policy parameter names and values
   [[#1524](https://github.com/open-source-economics/Tax-Calculator/pull/1524)
   by Martin Holmer]
-
 
 **Bug Fixes**
 - None

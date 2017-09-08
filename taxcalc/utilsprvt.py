@@ -34,8 +34,8 @@ def weighted_mean(pdf, col_name):
     """
     Return weighted mean of Pandas DataFrame col_name items.
     """
-    return (float((pdf[col_name] * pdf['s006']).sum()) /
-            float(pdf['s006'].sum() + EPSILON))
+    return ((pdf[col_name] * pdf['s006']).sum() /
+            (pdf['s006'].sum() + EPSILON))
 
 
 def wage_weighted(pdf, col_name):
@@ -44,8 +44,8 @@ def wage_weighted(pdf, col_name):
     """
     swght = 's006'
     wage = 'e00200'
-    return (float((pdf[col_name] * pdf[swght] * pdf[wage]).sum()) /
-            float((pdf[swght] * pdf[wage]).sum() + EPSILON))
+    return (((pdf[col_name] * pdf[swght] * pdf[wage]).sum()) /
+            ((pdf[swght] * pdf[wage]).sum() + EPSILON))
 
 
 def agi_weighted(pdf, col_name):
@@ -54,8 +54,8 @@ def agi_weighted(pdf, col_name):
     """
     swght = 's006'
     agi = 'c00100'
-    return (float((pdf[col_name] * pdf[swght] * pdf[agi]).sum()) /
-            float((pdf[swght] * pdf[agi]).sum() + EPSILON))
+    return ((pdf[col_name] * pdf[swght] * pdf[agi]).sum() /
+            ((pdf[swght] * pdf[agi]).sum() + EPSILON))
 
 
 def expanded_income_weighted(pdf, col_name):
@@ -64,8 +64,8 @@ def expanded_income_weighted(pdf, col_name):
     """
     swght = 's006'
     expinc = 'expanded_income'
-    return (float((pdf[col_name] * pdf[swght] * pdf[expinc]).sum()) /
-            float((pdf[swght] * pdf[expinc]).sum() + EPSILON))
+    return ((pdf[col_name] * pdf[swght] * pdf[expinc]).sum() /
+            ((pdf[swght] * pdf[expinc]).sum() + EPSILON))
 
 
 def weighted_perc_inc(pdf, col_name):
@@ -73,14 +73,14 @@ def weighted_perc_inc(pdf, col_name):
     Return weighted fraction (not percent) of positive values for the
     variable with col_name in the specified Pandas DataFrame.
     """
-    return (float(weighted_count_gt_zero(pdf, col_name)) /
-            float(weighted_count(pdf) + EPSILON))
+    return (weighted_count_gt_zero(pdf, col_name) /
+            (weighted_count(pdf) + EPSILON))
 
 
-def weighted_perc_dec(pdf, col_name):
+def weighted_perc_cut(pdf, col_name):
     """
     Return weighted fraction (not percent) of negative values for the
     variable with col_name in the specified Pandas DataFrame.
     """
-    return (float(weighted_count_lt_zero(pdf, col_name)) /
-            float(weighted_count(pdf) + EPSILON))
+    return (weighted_count_lt_zero(pdf, col_name) /
+            (weighted_count(pdf) + EPSILON))

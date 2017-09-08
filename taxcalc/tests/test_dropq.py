@@ -2,7 +2,6 @@
 test_dropq.py uses only PUF input data because the dropq algorithm
 is designed to work exclusively with private IRS-SOI PUF input data.
 """
-import os
 import numpy as np
 import pandas as pd
 import pytest
@@ -75,15 +74,24 @@ def test_run_nth_year_value_errors(puf_subsample):
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resjson', [True, False])
 def test_run_tax_calc_model(puf_subsample, resjson):
-    usermods = USER_MODS
-    res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, usermods,
+    res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, USER_MODS,
                                       return_json=resjson)
-    assert len(res) == 13
-    for idx in range(0, len(res)):
+    assert isinstance(res, dict)
+    dump = False  # set to True in order to dump returned results and fail test
+    for tbl in sorted(res.keys()):
         if resjson:
-            assert isinstance(res[idx], dict)
+            assert isinstance(res[tbl], dict)
         else:
-            assert isinstance(res[idx], pd.DataFrame)
+            assert isinstance(res[tbl], pd.DataFrame)
+        if dump:
+            if resjson:
+                cols = sorted(res[tbl].keys())
+            else:
+                cols = sorted(list(res[tbl]))
+            for col in cols:
+                print('<<tbl={}:col={}>>'.format(tbl, col))
+                print(res[tbl][col])
+    assert not dump
 
 
 @pytest.mark.requires_pufcsv
@@ -143,61 +151,6 @@ def test_create_json_table():
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('groupby, result_type',
-                         [('small_income_bins', 'weighted_sum'),
-                          ('large_income_bins', 'weighted_sum'),
-                          ('large_income_bins', 'weighted_avg'),
-                          ('other_income_bins', 'weighted_avg'),
-                          ('large_income_bins', 'other_avg')])
-def test_dropq_dist_table(groupby, result_type, puf_subsample):
-    calc = Calculator(policy=Policy(), records=Records(data=puf_subsample))
-    calc.calc_all()
-    res = results(calc.records)
-    mask = np.ones(len(res.index))
-    (res, _) = drop_records(res, res, mask)
-    if groupby == 'other_income_bins' or result_type == 'other_avg':
-        with pytest.raises(ValueError):
-            dropq_dist_table(res, groupby=groupby,
-                             result_type=result_type, suffix='_bin')
-    else:
-        dropq_dist_table(res, groupby=groupby,
-                         result_type=result_type, suffix='_bin')
-
-
-@pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('groupby, res_column',
-                         [('weighted_deciles', 'tax_diff'),
-                          ('webapp_income_bins', 'tax_diff'),
-                          ('small_income_bins', 'tax_diff'),
-                          ('large_income_bins', 'tax_diff'),
-                          ('other_deciles', 'tax_diff')])
-def test_dropq_diff_table(groupby, res_column, puf_subsample):
-    recs1 = Records(data=puf_subsample)
-    calc1 = Calculator(policy=Policy(), records=recs1)
-    recs2 = Records(data=puf_subsample)
-    pol2 = Policy()
-    pol2.implement_reform(USER_MODS['policy'])
-    calc2 = Calculator(policy=pol2, records=recs2)
-    calc1.calc_all()
-    calc2.calc_all()
-    res1 = results(calc1.records)
-    res2 = results(calc2.records)
-    assert len(res1.index) == len(res2.index)
-    mask = np.ones(len(res1.index))
-    (res1, res2) = drop_records(res1, res2, mask)
-    dec_sum = (res2['tax_diff_dec'] * res2['s006']).sum()
-    if groupby == 'other_deciles':
-        with pytest.raises(ValueError):
-            dropq_diff_table(res1, res2, groupby=groupby,
-                             res_col=res_column, diff_col='iitax',
-                             suffix='_dec', wsum=dec_sum)
-    else:
-        dropq_diff_table(res1, res2, groupby=groupby,
-                         res_col=res_column, diff_col='iitax',
-                         suffix='_dec', wsum=dec_sum)
-
-
-@pytest.mark.requires_pufcsv
 def test_with_pufcsv(puf_fullsample):
     # specify usermods dictionary in code
     start_year = 2017
@@ -233,12 +186,11 @@ def test_with_pufcsv(puf_fullsample):
     # create a Public Use File object
     tax_data = puf_fullsample
     # call run_nth_year_tax_calc_model function
-    restuple = run_nth_year_tax_calc_model(year_n, start_year,
-                                           tax_data, usermods,
-                                           return_json=True)
-    total = restuple[len(restuple) - 1]  # the last of element of the tuple
-    dropq_reform_revenue = float(total['combined_tax_9'])
-    dropq_reform_revenue *= 1e-9  # convert to billions of dollars
+    resdict = run_nth_year_tax_calc_model(year_n, start_year,
+                                          tax_data, usermods,
+                                          return_json=True)
+    total = resdict['aggr_2']
+    dropq_reform_revenue = float(total['combined_tax_9']) * 1e-9
     # assert that dropq revenue is similar to the fullsample calculation
     diff = abs(fulls_reform_revenue - dropq_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue

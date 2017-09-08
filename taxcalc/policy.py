@@ -365,7 +365,9 @@ class Policy(ParametersBase):
         Check values of parameters in specified parameter_set using
         range information from the current_law_policy.json file.
         """
+        # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches
+        # pylint: disable=too-many-nested-blocks
         clp = self.current_law_version()
         parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
@@ -382,6 +384,11 @@ class Policy(ParametersBase):
                 else:
                     vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
+                assert len(pvalue.shape) <= 2
+                if len(pvalue.shape) == 2:
+                    scalar = False  # parameter value is a list
+                else:
+                    scalar = True  # parameter value is a scalar
                 for idx in np.ndindex(pvalue.shape):
                     out_of_range = False
                     if vop == 'min' and pvalue[idx] < vvalue[idx]:
@@ -398,15 +405,21 @@ class Policy(ParametersBase):
                             msg += ' {}'.format(extra)
                     if out_of_range:
                         action = self._vals[pname]['out_of_range_action']
+                        if scalar:
+                            name = pname
+                        else:
+                            name = '{}_{}'.format(pname, idx[1])
+                            if len(extra) > 0:
+                                msg += '_{}'.format(idx[1])
                         if action == 'warn':
                             self.reform_warnings += (
-                                'WARNING: ' + msg.format(idx[0] + syr, pname,
+                                'WARNING: ' + msg.format(idx[0] + syr, name,
                                                          pvalue[idx],
                                                          vvalue[idx]) + '\n'
                             )
                         if action == 'stop':
                             self.reform_errors += (
-                                'ERROR: ' + msg.format(idx[0] + syr, pname,
+                                'ERROR: ' + msg.format(idx[0] + syr, name,
                                                        pvalue[idx],
                                                        vvalue[idx]) + '\n'
                             )

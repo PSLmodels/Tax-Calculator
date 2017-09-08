@@ -1,6 +1,11 @@
 """
 The dropq functions are used by TaxBrain to call Tax-Calculator in order
-to maintain the privacy of the micro data being used by TaxBrain.
+to maintain the privacy of the IRS-SOI PUF data being used by TaxBrain.
+This is done by "fuzzing" reform results for several randomly selected
+filing units in each table cell.  The filing units randomly selected
+differ for each policy reform and the "fuzzing" involves replacing the
+post-reform tax results for the selected units with their pre-reform
+tax results.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 dropq.py
@@ -12,26 +17,27 @@ import numpy as np
 import pandas as pd
 from taxcalc.dropq.dropq_utils import (dropq_calculate,
                                        random_seed,
-                                       dropq_summary)
-from taxcalc import (results, TABLE_LABELS, proportional_change_gdp,
-                     Growdiff, Growfactors, Policy)
+                                       dropq_summary,
+                                       AGGR_ROW_NAMES)
+from taxcalc import (results, DIST_TABLE_LABELS,
+                     proportional_change_gdp, Growdiff, Growfactors, Policy)
 
 
 # specify constants
-PLAN_COLUMN_TYPES = [float] * len(TABLE_LABELS)
+DIST_COLUMN_TYPES = [float] * len(DIST_TABLE_LABELS)
 
-DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str]
+DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str, str]
 
-DECILE_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
-                    'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
-                    'perc80-90', 'perc90-100', 'all']
+DEC_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
+                 'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
+                 'perc80-90', 'perc90-100', 'all']
 
 BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
                  'forty_fifty', 'fifty_seventyfive', 'seventyfive_hundred',
                  'hundred_twohundred', 'twohundred_fivehundred',
                  'fivehundred_thousand', 'thousand_up', 'all']
 
-TOTAL_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
+AGG_ROW_NAMES = AGGR_ROW_NAMES
 
 GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
 
@@ -102,98 +108,53 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     np.random.seed(seed)  # pylint: disable=no-member
 
     # construct dropq summary results from raw results
-    (m2_dec, m1_dec, df_dec, pdf_dec, cdf_dec,
-     m2_bin, m1_bin, df_bin, pdf_bin, cdf_bin,
-     itax_sumd, ptax_sumd, comb_sumd,
-     itax_sum1, ptax_sum1, comb_sum1,
-     itax_sum2, ptax_sum2, comb_sum2) = dropq_summary(rawres1, rawres2, mask)
-
-    # construct DataFrames containing selected summary results
-    totsd = [itax_sumd, ptax_sumd, comb_sumd]
-    fiscal_tots_diff = pd.DataFrame(data=totsd, index=TOTAL_ROW_NAMES)
-
-    tots1 = [itax_sum1, ptax_sum1, comb_sum1]
-    fiscal_tots_baseline = pd.DataFrame(data=tots1, index=TOTAL_ROW_NAMES)
-
-    tots2 = [itax_sum2, ptax_sum2, comb_sum2]
-    fiscal_tots_reform = pd.DataFrame(data=tots2, index=TOTAL_ROW_NAMES)
-
-    # remove negative incomes from selected summary results
-    df_bin.drop(df_bin.index[0], inplace=True)
-    pdf_bin.drop(pdf_bin.index[0], inplace=True)
-    cdf_bin.drop(cdf_bin.index[0], inplace=True)
-    m2_bin.drop(m2_bin.index[0], inplace=True)
-    m1_bin.drop(m1_bin.index[0], inplace=True)
+    summ = dropq_summary(rawres1, rawres2, mask)
 
     elapsed_time = time.time() - start_time
     print('elapsed time for this run: ', elapsed_time)
 
-    def append_year(tdf):
+    def append_year(pdf):
         """
-        append_year embedded function
+        append_year embedded function revises all column names in pdf
         """
-        tdf.columns = [str(col) + '_{}'.format(year_n) for col in tdf.columns]
-        return tdf
+        pdf.columns = [str(col) + '_{}'.format(year_n) for col in pdf.columns]
+        return pdf
 
     # optionally return non-JSON results
     if not return_json:
-        return (append_year(m2_dec), append_year(m1_dec), append_year(df_dec),
-                append_year(pdf_dec), append_year(cdf_dec),
-                append_year(m2_bin), append_year(m1_bin), append_year(df_bin),
-                append_year(pdf_bin), append_year(cdf_bin),
-                append_year(fiscal_tots_diff),
-                append_year(fiscal_tots_baseline),
-                append_year(fiscal_tots_reform))
+        res = dict()
+        for tbl in summ:
+            res[tbl] = append_year(summ[tbl])
+        return res
 
-    # optionally construct JSON results
-    decile_row_names_i = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
-    m2_dec_table_i = create_json_table(m2_dec,
-                                       row_names=decile_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    m1_dec_table_i = create_json_table(m1_dec,
-                                       row_names=decile_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    df_dec_table_i = create_json_table(df_dec,
-                                       row_names=decile_row_names_i,
-                                       column_types=DIFF_COLUMN_TYPES)
-    pdf_dec_table_i = create_json_table(pdf_dec,
-                                        row_names=decile_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    cdf_dec_table_i = create_json_table(cdf_dec,
-                                        row_names=decile_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    bin_row_names_i = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
-    m2_bin_table_i = create_json_table(m2_bin,
-                                       row_names=bin_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    m1_bin_table_i = create_json_table(m1_bin,
-                                       row_names=bin_row_names_i,
-                                       column_types=PLAN_COLUMN_TYPES)
-    df_bin_table_i = create_json_table(df_bin,
-                                       row_names=bin_row_names_i,
-                                       column_types=DIFF_COLUMN_TYPES)
-    pdf_bin_table_i = create_json_table(pdf_bin,
-                                        row_names=bin_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    cdf_bin_table_i = create_json_table(cdf_bin,
-                                        row_names=bin_row_names_i,
-                                        column_types=DIFF_COLUMN_TYPES)
-    total_row_names_i = [x + '_' + str(year_n) for x in TOTAL_ROW_NAMES]
-    fiscal_yr_total_df = create_json_table(fiscal_tots_diff,
-                                           row_names=total_row_names_i)
-    fiscal_yr_total_df = dict((k, v[0]) for k, v in fiscal_yr_total_df.items())
-    fiscal_yr_total_bl = create_json_table(fiscal_tots_baseline,
-                                           row_names=total_row_names_i)
-    fiscal_yr_total_bl = dict((k, v[0]) for k, v in fiscal_yr_total_bl.items())
-    fiscal_yr_total_rf = create_json_table(fiscal_tots_reform,
-                                           row_names=total_row_names_i)
-    fiscal_yr_total_rf = dict((k, v[0]) for k, v in fiscal_yr_total_rf.items())
-
-    # return JSON results
-    return (m2_dec_table_i, m1_dec_table_i, df_dec_table_i, pdf_dec_table_i,
-            cdf_dec_table_i, m2_bin_table_i, m1_bin_table_i, df_bin_table_i,
-            pdf_bin_table_i, cdf_bin_table_i, fiscal_yr_total_df,
-            fiscal_yr_total_bl, fiscal_yr_total_rf)
+    # optionally construct JSON results tables for year n
+    dec_row_names_n = [x + '_' + str(year_n) for x in DEC_ROW_NAMES]
+    bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
+    agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
+    info = dict()
+    for tbl in summ:
+        info[tbl] = {'row_names': [], 'col_types': []}
+        if 'dec' in tbl:
+            info[tbl]['row_names'] = dec_row_names_n
+        elif 'bin' in tbl:
+            info[tbl]['row_names'] = bin_row_names_n
+        else:
+            info[tbl]['row_names'] = agg_row_names_n
+        if 'dist' in tbl:
+            info[tbl]['col_types'] = DIST_COLUMN_TYPES
+        elif 'diff' in tbl:
+            info[tbl]['col_types'] = DIFF_COLUMN_TYPES
+    res = dict()
+    for tbl in summ:
+        if 'aggr' in tbl:
+            res_table = create_json_table(summ[tbl],
+                                          row_names=info[tbl]['row_names'])
+            res[tbl] = dict((k, v[0]) for k, v in res_table.items())
+        else:
+            res[tbl] = create_json_table(summ[tbl],
+                                         row_names=info[tbl]['row_names'],
+                                         column_types=info[tbl]['col_types'])
+    return res
 
 
 def run_nth_year_gdp_elast_model(year_n, start_year,
@@ -218,10 +179,10 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     # return gdp_effect results
     if return_json:
         gdp_df = pd.DataFrame(data=[gdp_effect], columns=['col0'])
-        gdp_elast_names_i = [x + '_' + str(year_n)
+        gdp_elast_names_n = [x + '_' + str(year_n)
                              for x in GDP_ELAST_ROW_NAMES]
         gdp_elast_total = create_json_table(gdp_df,
-                                            row_names=gdp_elast_names_i,
+                                            row_names=gdp_elast_names_n,
                                             num_decimals=5)
         gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
         return gdp_elast_total

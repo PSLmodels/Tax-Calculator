@@ -1295,3 +1295,26 @@ def test_r54(puf_subsample):
                     'Tax-Calculator,42.2,43.3,42.7,43.5')
     actual_res = reform_results(json.loads(reform_json), puf_subsample)
     assert actual_res == expected_res
+
+
+@pytest.mark.requires_pufcsv
+def test_r55(puf_subsample):
+    """
+    Comparison test 55
+    """
+    reform_json = """
+    {
+        "start_year": 2017,
+        "value": {"_ID_AmountCap_rt": [0.02],
+                  "_ID_AmountCap_Switch":
+                  [[false, true, true, false, false, false, false]]},
+        "name": "Limit amount of S&L deduction to 2% AGI",
+        "output_type": "iitax",
+        "compare_with": {"Budget Options": [44.1, 86.6, 87.1, 91.2]}
+    }
+    """
+    expected_res = ('Limit amount of S&L deduction to 2% AGI'
+                    '\n'
+                    'Tax-Calculator,86.2,90.3,94.6,98.9')
+    actual_res = reform_results(json.loads(reform_json), puf_subsample)
+    assert actual_res == expected_res

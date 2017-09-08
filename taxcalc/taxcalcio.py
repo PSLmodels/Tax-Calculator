@@ -21,7 +21,7 @@ from taxcalc.calculate import Calculator
 from taxcalc.utils import (delete_file, ce_aftertax_income,
                            atr_graph_data, mtr_graph_data,
                            xtr_graph_plot, write_graph_file,
-                           add_weighted_income_bins,
+                           add_quantile_bins,
                            unweighted_sum, weighted_sum)
 
 
@@ -408,39 +408,42 @@ class TaxCalcIO(object):
         """
         # pylint: disable=too-many-locals
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
-        # create DataFrame with weighted tax totals
+        # create list of nontax column results
+        # - weights don't change with reform
+        # - expanded_income may change, but always use baseline expanded income
         nontax_cols = ['s006', 'expanded_income']
+        nontax = [getattr(self.calc_clp.records, col) for col in nontax_cols]
+        # specify column names for taxes
         tax_cols = ['iitax', 'payrolltax', 'lumpsum_tax', 'combined']
         all_cols = nontax_cols + tax_cols
-        non = [getattr(self.calc.records, col) for col in nontax_cols]
-        ref = [getattr(self.calc.records, col) for col in tax_cols]
-        tot = non + ref
-        totdf = pd.DataFrame(data=np.column_stack(tot), columns=all_cols)
+        # create DataFrame with taxes under the reform
+        reform = [getattr(self.calc.records, col) for col in tax_cols]
+        dist = nontax + reform  # using expanded_income under baseline policy
+        distdf = pd.DataFrame(data=np.column_stack(dist), columns=all_cols)
         # skip tables if there are not some positive weights
-        if totdf['s006'].sum() <= 0.:
+        if distdf['s006'].sum() <= 0.:
             with open(tab_fname, 'w') as tfile:
                 msg = 'No tables because sum of weights is not positive\n'
                 tfile.write(msg)
             return
-        # create DataFrame with weighted tax differences
-        clp = [getattr(self.calc_clp.records, col) for col in tax_cols]
-        chg = [(ref[idx] - clp[idx]) for idx in range(0, len(tax_cols))]
-        dif = non + chg
-        difdf = pd.DataFrame(data=np.column_stack(dif), columns=all_cols)
+        # create DataFrame with tax differences (reform - baseline)
+        base = [getattr(self.calc_clp.records, col) for col in tax_cols]
+        change = [(reform[idx] - base[idx]) for idx in range(0, len(tax_cols))]
+        diff = nontax + change  # using expanded_income under baseline policy
+        diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_cols)
         # write each kind of distributional table
         with open(tab_fname, 'w') as tfile:
-            TaxCalcIO.write_decile_table(totdf, tfile, tkind='Totals')
+            TaxCalcIO.write_decile_table(distdf, tfile, tkind='Reform Totals')
             tfile.write('\n')
-            TaxCalcIO.write_decile_table(difdf, tfile, tkind='Differences')
+            TaxCalcIO.write_decile_table(diffdf, tfile, tkind='Differences')
 
     @staticmethod
     def write_decile_table(dfx, tfile, tkind='Totals'):
         """
         Write to tfile the tkind decile table using dfx DataFrame.
         """
-        dfx = add_weighted_income_bins(dfx, num_bins=10,
-                                       income_measure='expanded_income',
-                                       weight_by_income_measure=False)
+        dfx = add_quantile_bins(dfx, 'expanded_income', 10,
+                                weight_by_income_measure=False)
         gdfx = dfx.groupby('bins', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
         xinc_series = gdfx.apply(weighted_sum, 'expanded_income')
@@ -449,7 +452,7 @@ class TaxCalcIO(object):
         htax_series = gdfx.apply(weighted_sum, 'lumpsum_tax')
         ctax_series = gdfx.apply(weighted_sum, 'combined')
         # write decile table to text file
-        row = 'Weighted Tax {} by Expanded-Income Decile\n'
+        row = 'Weighted Tax {} by Baseline Expanded-Income Decile\n'
         tfile.write(row.format(tkind))
         rowfmt = '{}{}{}{}{}{}\n'
         row = rowfmt.format('    Returns',
