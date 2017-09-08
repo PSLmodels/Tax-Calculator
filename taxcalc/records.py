@@ -557,7 +557,7 @@ class Records(object):
                 benefits = pd.read_csv(data_path)
             else:
                 # cannot call read_egg_ function in unit tests
-                benefits = read_egg_csv(os.path.basename(data_path))  # pragma: no cover
+                benefits = read_egg_csv(os.path.basename(data_path))
         else:
             msg = ('benefits is not None or a string'
                    'or a Pandas DataFrame')
