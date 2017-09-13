@@ -28,6 +28,7 @@ from taxcalc.utils import (STATS_COLUMNS,
                            mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
+                           bootstrap_se_ci,
                            certainty_equivalent, ce_aftertax_income)
 
 
@@ -704,3 +705,18 @@ def test_create_delete_temp_file():
     assert os.path.isfile(fname) is True
     delete_file(fname)
     assert os.path.isfile(fname) is False
+
+
+def test_bootstrap_se_ci():
+    # Use treated mouse data from Table 2.1 and
+    # results from Table 2.2 and Table 13.1 in
+    # Bradley Efron and Robert Tibshirani,
+    # "An Introduction to the Bootstrap"
+    # (Chapman & Hall, 1993).
+    data = np.array([94, 197, 16, 38, 99, 141, 23], dtype=np.float64)
+    assert abs(np.mean(data) - 86.86) < 0.005  # just rounding error
+    bsd = bootstrap_se_ci(data, 123456789, 1000, np.mean, alpha=0.025)
+    # following comparisons less precise because of rn seed differences
+    assert abs(bsd['se'] / 23.02 - 1) < 0.02
+    assert abs(bsd['cilo'] / 45.9 - 1) < 0.02
+    assert abs(bsd['cihi'] / 135.4 - 1) < 0.03
