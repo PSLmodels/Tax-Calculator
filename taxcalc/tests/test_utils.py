@@ -290,8 +290,8 @@ def test_diff_count_precision():
 
     Background information on Trump2017.json reform used in TaxBrain run 16649:
 
-    WEBAPP bin 10 (500-1000 thousands of dollars) has weighted count 1,179,000
-                  and weighted count of units with tax increase of 32,000.
+    WEBAPP bin 10 (500-1000 thousand dollars) has weighted count 1,179,000
+                   and weighted count of units with tax increase is 32,000.
 
     So, the mean weight for all units in WEBAPP bin 10 is 111.5421 and the
     unweighted number with a tax increase is 287 assuming all units in that
@@ -305,7 +305,25 @@ def test_diff_count_precision():
     assert len(data_list) == 10570
     data = np.array(data_list)
     assert (data > 0).sum() == 287
-    assert abs((np.sum(data) / 32000) - 1) < 0.0005
+    data_estimate = np.sum(data) * 1e-3
+    assert abs((data_estimate / 32) - 1) < 0.0005
+    seed = 123456789
+    bs_samples = 1000
+    alpha = 0.025  # implies 95% confidence interval
+    bsd = bootstrap_se_ci(data, seed, bs_samples, np.sum, alpha)
+    stderr = bsd['se'] * 1e-3
+    cilo = bsd['cilo'] * 1e-3
+    cihi = bsd['cihi'] * 1e-3
+    dump = False  # setting to True implies results printed and test fails
+    if dump:
+        res = 'EST={:.1f} B={} alpha={:.3f} se={:.1f} ci=[ {:.1f} , {:.1f} ]'
+        print(
+            res.format(data_estimate, bs_samples, alpha, stderr, cilo, cihi)
+        )
+    assert abs((stderr / 1.9) - 1) < 0.0008
+    assert abs((cilo / 28.3) - 1) < 0.0012
+    assert abs((cihi / 35.8) - 1) < 0.0012
+    assert not dump
 
 
 def test_weighted_count_lt_zero():
