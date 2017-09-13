@@ -1292,3 +1292,31 @@ def delete_file(filename):
     """
     if os.path.isfile(filename):
         os.remove(filename)
+
+
+def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
+    """
+    Return bootstrap estimate of standard error of statistic and
+    bootstrap estimate of 100*(1-2*alpha)% confidence interval for statistic
+    in a dictionary along with seed and nun_samples (B) and alpha.
+    """
+    assert isinstance(data, np.ndarray)
+    assert isinstance(seed, int)
+    assert isinstance(num_samples, int)
+    assert callable(statistic)  # function that computes statistic from data
+    assert isinstance(alpha, float)
+    bsest = dict()
+    bsest['seed'] = seed
+    np.random.seed(seed)  # pylint: disable=no-member
+    dlen = len(data)
+    idx = np.random.randint(0, dlen,   # pylint: disable=no-member
+                            (num_samples, dlen))
+    samples = data[idx]
+    stat = statistic(samples, axis=1)
+    bsest['B'] = num_samples
+    bsest['se'] = np.std(stat, ddof=1)
+    stat = np.sort(stat)
+    bsest['alpha'] = alpha
+    bsest['cilo'] = stat[int(round(alpha * num_samples)) - 1]
+    bsest['cihi'] = stat[int(round((1 - alpha) * num_samples)) - 1]
+    return bsest
