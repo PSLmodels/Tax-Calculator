@@ -251,6 +251,62 @@ def test_create_tables(cps_subsample):
                                   result_type='weighted_sum')
 
 
+def test_diff_count_precision():
+    """
+    Estimate bootstrap standard error and confidence interval for count
+    statistics ('tax_cut' and 'tax_inc') in difference table generated
+    using puf.csv input data without any fuzzing by the dropq algorithm.
+
+    Background information on unweighted number of filing units by bin:
+
+    DECILE BINS:
+    0   16268
+    1   14897
+    2   13620
+    3   15760
+    4   16426
+    5   18070
+    6   18348
+    7   19352
+    8   21051
+    9   61733
+    A  215525
+
+    WEBAPP BINS:
+    0    7081 <--- negative income bin is dropped in TaxBrain display
+    1   19355
+    2   22722
+    3   20098
+    4   17088
+    5   14515
+    6   24760
+    7   15875
+    8   25225
+    9   15123
+    10  10570 <--- smallest unweighted bin count
+    11  23113
+    A  215525
+
+    Background information on Trump2017.json reform used in TaxBrain run 16649:
+
+    WEBAPP bin 10 (500-1000 thousands of dollars) has weighted count 1,179,000
+                  and weighted count of units with tax increase of 32,000.
+
+    So, the mean weight for all units in WEBAPP bin 10 is 111.5421 and the
+    unweighted number with a tax increase is 287 assuming all units in that
+    bin have the same weight.  (Note that 287 * 111.5421 is about 32,012.58,
+    which rounds to the 32 thousand shown in the TaxBrain difference table.)
+
+    This test estimates the standard error of and the confidence interval
+    around this 32 thousand estimate.
+    """
+    data_list = [111.5421] * 287 + [0.0] * (10570 - 287)
+    assert len(data_list) == 10570
+    data = np.array(data_list)
+    assert (data > 0).sum() == 287
+    assert abs((np.sum(data) / 32000) - 1) < 0.0005
+
+
 def test_weighted_count_lt_zero():
     df1 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
