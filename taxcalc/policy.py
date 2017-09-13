@@ -87,6 +87,7 @@ class Policy(ParametersBase):
 
         self.reform_warnings = ''
         self.reform_errors = ''
+        self._ignore_errors = False
 
     def inflation_rates(self):
         """
@@ -193,7 +194,7 @@ class Policy(ParametersBase):
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names
         self._validate_parameter_names(reform)
-        if len(self.reform_errors) > 0:
+        if not self._ignore_errors and len(self.reform_errors) > 0:
             raise ValueError(self.reform_errors)
         # implement the reform year by year
         precall_current_year = self.current_year
@@ -303,6 +304,7 @@ class Policy(ParametersBase):
             else:
                 growfactors = None
             pol = Policy(gfactors=growfactors)
+            pol.ignore_reform_errors()
             odict = dict()
             for param in gdict.keys():
                 odict[param] = dict()
@@ -330,6 +332,12 @@ class Policy(ParametersBase):
                                      growdiff_response_dict))
         # - return policy dictionary containing constructed parameter arrays
         return odict
+
+    def ignore_reform_errors(self):
+        """
+        Sets self._ignore_errors to True.
+        """
+        self._ignore_errors = True
 
     # ----- begin private methods of Policy class -----
 
