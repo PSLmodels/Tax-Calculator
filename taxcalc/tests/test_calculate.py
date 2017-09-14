@@ -844,3 +844,33 @@ def test_translate_json_reform_suffixes_idedtype():
             assert np.allclose(rdict1[year]['_ID_BenefitCap_Switch'],
                                rdict2[year]['_ID_BenefitCap_Switch'],
                                atol=0.01, rtol=0.0)
+
+
+def test_read_json_param_files_with_suffixes_and_errors():
+    # test interaction of policy parameter suffixes and reform errors
+    # (fails without 0.10.2 bug fix as reported by Hank Doupe in TB PR#641)
+    reform = {
+        u'policy': {
+            u'_II_brk4_separate': {u'2017': [5000.0]},
+            u'_STD_separate': {u'2017': [8000.0]},
+            u'_STD_single': {u'2018': [1000.0]},
+            u'_II_brk2_headhousehold': {u'2017': [1000.0]},
+            u'_II_brk4_single': {u'2017': [500.0]},
+            u'_STD_joint': {u'2017': [10000.0], u'2020': [150.0]},
+            u'_II_brk2_separate': {u'2017': [1000.0]},
+            u'_II_brk2_single': {u'2017': [1000.0]},
+            u'_II_brk2_joint': {u'2017': [1000.0]},
+            u'_FICA_ss_trt': {u'2017': [-1.0], u'2019': [0.1]},
+            u'_II_brk4_headhousehold': {u'2017': [500.0]},
+            u'_STD_headhousehold': {u'2017': [10000.0], u'2020': [150.0]},
+            u'_II_brk4_joint': {u'2017': [500.0]},
+            u'_ID_BenefitSurtax_Switch_medical': {u'2017': [True]}
+        }
+    }
+    json_reform = json.dumps(reform)
+    params = Calculator.read_json_param_files(json_reform, None)
+    assert isinstance(params, dict)
+    pol = Policy()
+    pol.implement_reform(params['policy'])
+    assert len(pol.reform_errors) > 0
+    assert len(pol.reform_warnings) > 0
