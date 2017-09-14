@@ -845,7 +845,7 @@ def test_translate_json_reform_suffixes_idedtype():
                                rdict2[year]['_ID_BenefitCap_Switch'],
                                atol=0.01, rtol=0.0)
 
-@pytest.mark.one
+
 def test_read_json_param_files_with_suffixes_and_errors():
     # test interaction of policy parameter suffixes and reform errors
     # (fails without 0.10.2 bug fix as reported by Hank Doupe in TB PR#641)
@@ -870,7 +870,7 @@ def test_read_json_param_files_with_suffixes_and_errors():
     json_reform = json.dumps(reform)
     params = Calculator.read_json_param_files(json_reform, None)
     assert isinstance(params, dict)
-    pol = taxcalc.Policy()
+    pol = Policy()
     pol.implement_reform(params['policy'])
     assert len(pol.reform_errors) > 0
     assert len(pol.reform_warnings) > 0
