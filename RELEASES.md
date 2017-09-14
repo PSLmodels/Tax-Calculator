@@ -28,6 +28,20 @@ Release 0.11.0 on 2017-??-??
 **Bug Fixes**
 - None
 
+Release 0.10.2 on 2017-09-13
+----------------------------
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Allow policy parameter suffix logic to work even when there are reform errors
+  [[34561ff](https://github.com/open-source-economics/Tax-Calculator/commit/34561ffdeb23c632e248d760c0e34417df0b41f3)
+  by Martin Holmer]
+
 Release 0.10.1 on 2017-09-08
 ----------------------------
 
