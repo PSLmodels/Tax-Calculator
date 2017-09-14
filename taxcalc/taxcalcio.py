@@ -469,7 +469,7 @@ class TaxCalcIO(object):
                             '      ($b)',
                             '      ($b)')
         tfile.write(row)
-        rowfmt = '{:9.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
+        rowfmt = '{:9.2f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}\n'
         for decile in range(0, 10):
             row = '{:2d}'.format(decile)
             row += rowfmt.format(rtns_series[decile] * 1e-6,
