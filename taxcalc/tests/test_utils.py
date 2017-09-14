@@ -256,7 +256,10 @@ def test_diff_count_precision():
     """
     Estimate bootstrap standard error and confidence interval for count
     statistics ('tax_cut' and 'tax_inc') in difference table generated
-    using puf.csv input data without any fuzzing by the dropq algorithm.
+    using puf.csv input data taking no account of dropq fuzzing and
+    assuming all filing units in each bin have the same weight.  These
+    assumptions imply that the estimates produced here are likely to
+    over-estimate the precision of the count statistics.
 
     Background information on unweighted number of filing units by bin:
 
@@ -270,7 +273,7 @@ def test_diff_count_precision():
     6   18348
     7   19352
     8   21051
-    9   61733
+    9   61733 <--- largest unweighted bin count
     A  215525
 
     WEBAPP BINS:
@@ -285,44 +288,72 @@ def test_diff_count_precision():
     8   25225
     9   15123
     10  10570 <--- smallest unweighted bin count
-    11  23113
+    11  23113 <--- second largest unweighted WEBAPP bin count
     A  215525
 
     Background information on Trump2017.json reform used in TaxBrain run 16649:
 
-    WEBAPP bin 10 (500-1000 thousand dollars) has weighted count 1,179,000
-                   and weighted count of units with tax increase is 32,000.
+    WEBAPP bin 10 ($500-1000 thousand) has weighted count of 1179 thousand;
+                  weighted count of units with tax increase is 32 thousand.
 
     So, the mean weight for all units in WEBAPP bin 10 is 111.5421 and the
     unweighted number with a tax increase is 287 assuming all units in that
     bin have the same weight.  (Note that 287 * 111.5421 is about 32,012.58,
     which rounds to the 32 thousand shown in the TaxBrain difference table.)
 
-    This test estimates the standard error of and the confidence interval
-    around this 32 thousand estimate.
+    WEBAPP bin 11 ($1000+ thousand) has weighted count of 636 thousand;
+              weighted count of units with tax increase is 27 thousand.
+
+    So, the mean weight for all units in WEBAPP bin 11 is about 27.517 and the
+    unweighted number with a tax increase is 981 assuming all units in that
+    bin have the same weight.  (Note that 981 * 27.517 is about 26,994.18,
+    which rounds to the 27 thousand shown in the TaxBrain difference table.)
     """
+    dump = False  # setting to True implies results printed and test fails
+    seed = 123456789
+    bs_samples = 1000
+    alpha = 0.025  # implies 95% confidence interval
+    # compute stderr and confidence interval for WEBAPP bin 10 increase count
     data_list = [111.5421] * 287 + [0.0] * (10570 - 287)
     assert len(data_list) == 10570
     data = np.array(data_list)
     assert (data > 0).sum() == 287
     data_estimate = np.sum(data) * 1e-3
     assert abs((data_estimate / 32) - 1) < 0.0005
-    seed = 123456789
-    bs_samples = 1000
-    alpha = 0.025  # implies 95% confidence interval
     bsd = bootstrap_se_ci(data, seed, bs_samples, np.sum, alpha)
     stderr = bsd['se'] * 1e-3
     cilo = bsd['cilo'] * 1e-3
     cihi = bsd['cihi'] * 1e-3
-    dump = False  # setting to True implies results printed and test fails
     if dump:
-        res = 'EST={:.1f} B={} alpha={:.3f} se={:.1f} ci=[ {:.1f} , {:.1f} ]'
+        res = '{}EST={:.1f} B={} alpha={:.3f} se={:.2f} ci=[ {:.2f} , {:.2f} ]'
         print(
-            res.format(data_estimate, bs_samples, alpha, stderr, cilo, cihi)
+            res.format('WEBAPP-BIN10: ',
+                       data_estimate, bs_samples, alpha, stderr, cilo, cihi)
         )
-    assert abs((stderr / 1.9) - 1) < 0.0008
-    assert abs((cilo / 28.3) - 1) < 0.0012
-    assert abs((cihi / 35.8) - 1) < 0.0012
+    assert abs((stderr / 1.90) - 1) < 0.0008
+    assert abs((cilo / 28.33) - 1) < 0.0012
+    assert abs((cihi / 35.81) - 1) < 0.0012
+    # compute stderr and confidence interval for WEBAPP bin 11 increase count
+    data_list = [27.517] * 981 + [0.0] * (23113 - 981)
+    assert len(data_list) == 23113
+    data = np.array(data_list)
+    assert (data > 0).sum() == 981
+    data_estimate = np.sum(data) * 1e-3
+    assert abs((data_estimate / 27) - 1) < 0.0005
+    bsd = bootstrap_se_ci(data, seed, bs_samples, np.sum, alpha)
+    stderr = bsd['se'] * 1e-3
+    cilo = bsd['cilo'] * 1e-3
+    cihi = bsd['cihi'] * 1e-3
+    if dump:
+        res = '{}EST={:.1f} B={} alpha={:.3f} se={:.2f} ci=[ {:.2f} , {:.2f} ]'
+        print(
+            res.format('WEBAPP-BIN11: ',
+                       data_estimate, bs_samples, alpha, stderr, cilo, cihi)
+        )
+    assert abs((stderr / 0.85) - 1) < 0.0040
+    assert abs((cilo / 25.37) - 1) < 0.0012
+    assert abs((cihi / 28.65) - 1) < 0.0012
+    # fail if doing dump
     assert not dump
 
 
@@ -788,7 +819,7 @@ def test_bootstrap_se_ci():
     # "An Introduction to the Bootstrap"
     # (Chapman & Hall, 1993).
     data = np.array([94, 197, 16, 38, 99, 141, 23], dtype=np.float64)
-    assert abs(np.mean(data) - 86.86) < 0.005  # diff is just rounding error
+    assert abs(np.mean(data) - 86.86) < 0.005  # this is just rounding error
     bsd = bootstrap_se_ci(data, 123456789, 1000, np.mean, alpha=0.025)
     # following comparisons are less precise because of r.n. stream differences
     assert abs(bsd['se'] / 23.02 - 1) < 0.02
