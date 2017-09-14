@@ -331,6 +331,19 @@ def test_diff_count_precision():
                        data_estimate, bs_samples, alpha, stderr, cilo, cihi)
         )
     assert abs((stderr / 1.90) - 1) < 0.0008
+    # NOTE: a se of 1.90 thousand implies that when comparing the difference
+    #       in the weighted number of filing units in WEBAPP bin 10 with a
+    #       tax increase, the difference statistic has a bigger se (because
+    #       the variance of the difference is the sum of the variances of the
+    #       two point estimates).  So, in WEBAPP bin 10 if the point estimates
+    #       both had se = 1.90, then the difference in the point estimates has
+    #       has a se = 2.687.  This means that the difference would have to be
+    #       over 5 thousand in order for there to be high confidence that the
+    #       difference was different from zero in a statistically significant
+    #       manner.
+    #       Or put a different way, a difference of 1 thousand cannot be
+    #       accurately detected while a difference of 10 thousand can be
+    #       accurately detected.
     assert abs((cilo / 28.33) - 1) < 0.0012
     assert abs((cihi / 35.81) - 1) < 0.0012
     # compute stderr and confidence interval for WEBAPP bin 11 increase count
@@ -351,6 +364,19 @@ def test_diff_count_precision():
                        data_estimate, bs_samples, alpha, stderr, cilo, cihi)
         )
     assert abs((stderr / 0.85) - 1) < 0.0040
+    # NOTE: a se of 0.85 thousand implies that when comparing the difference
+    #       in the weighted number of filing units in WEBAPP bin 11 with a
+    #       tax increase, the difference statistic has a bigger se (because
+    #       the variance of the difference is the sum of the variances of the
+    #       two point estimates).  So, in WEBAPP bin 11 if the point estimates
+    #       both had se = 0.85, then the difference in the point estimates has
+    #       has a se = 1.20.  This means that the difference would have to be
+    #       over 2.5 thousand in order for there to be high confidence that the
+    #       difference was different from zero in a statistically significant
+    #       manner.
+    #       Or put a different way, a difference of 1 thousand cannot be
+    #       accurately detected while a difference of 10 thousand can be
+    #       accurately detected.
     assert abs((cilo / 25.37) - 1) < 0.0012
     assert abs((cihi / 28.65) - 1) < 0.0012
     # fail if doing dump
