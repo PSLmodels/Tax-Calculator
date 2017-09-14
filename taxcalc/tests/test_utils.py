@@ -788,9 +788,9 @@ def test_bootstrap_se_ci():
     # "An Introduction to the Bootstrap"
     # (Chapman & Hall, 1993).
     data = np.array([94, 197, 16, 38, 99, 141, 23], dtype=np.float64)
-    assert abs(np.mean(data) - 86.86) < 0.005  # just rounding error
+    assert abs(np.mean(data) - 86.86) < 0.005  # diff is just rounding error
     bsd = bootstrap_se_ci(data, 123456789, 1000, np.mean, alpha=0.025)
-    # following comparisons less precise because of rn seed differences
+    # following comparisons are less precise because of r.n. stream differences
     assert abs(bsd['se'] / 23.02 - 1) < 0.02
     assert abs(bsd['cilo'] / 45.9 - 1) < 0.02
     assert abs(bsd['cihi'] / 135.4 - 1) < 0.03

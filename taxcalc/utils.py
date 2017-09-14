@@ -1298,7 +1298,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     """
     Return bootstrap estimate of standard error of statistic and
     bootstrap estimate of 100*(1-2*alpha)% confidence interval for statistic
-    in a dictionary along with seed and nun_samples (B) and alpha.
+    in a dictionary along with specified seed and nun_samples (B) and alpha.
     """
     assert isinstance(data, np.ndarray)
     assert isinstance(seed, int)
@@ -1309,8 +1309,8 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     bsest['seed'] = seed
     np.random.seed(seed)  # pylint: disable=no-member
     dlen = len(data)
-    idx = np.random.randint(0, dlen,   # pylint: disable=no-member
-                            (num_samples, dlen))
+    idx = np.random.randint(low=0, high=dlen,   # pylint: disable=no-member
+                            size=(num_samples, dlen))
     samples = data[idx]
     stat = statistic(samples, axis=1)
     bsest['B'] = num_samples
