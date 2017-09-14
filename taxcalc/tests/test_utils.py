@@ -252,6 +252,137 @@ def test_create_tables(cps_subsample):
                                   result_type='weighted_sum')
 
 
+def test_diff_count_precision():
+    """
+    Estimate bootstrap standard error and confidence interval for count
+    statistics ('tax_cut' and 'tax_inc') in difference table generated
+    using puf.csv input data taking no account of dropq fuzzing and
+    assuming all filing units in each bin have the same weight.  These
+    assumptions imply that the estimates produced here are likely to
+    over-estimate the precision of the count statistics.
+
+    Background information on unweighted number of filing units by bin:
+
+    DECILE BINS:
+    0   16268
+    1   14897
+    2   13620
+    3   15760
+    4   16426
+    5   18070
+    6   18348
+    7   19352
+    8   21051
+    9   61733 <--- largest unweighted bin count
+    A  215525
+
+    WEBAPP BINS:
+    0    7081 <--- negative income bin is dropped in TaxBrain display
+    1   19355
+    2   22722
+    3   20098
+    4   17088
+    5   14515
+    6   24760
+    7   15875
+    8   25225
+    9   15123
+    10  10570 <--- smallest unweighted bin count
+    11  23113 <--- second largest unweighted WEBAPP bin count
+    A  215525
+
+    Background information on Trump2017.json reform used in TaxBrain run 16649:
+
+    WEBAPP bin 10 ($500-1000 thousand) has weighted count of 1179 thousand;
+                  weighted count of units with tax increase is 32 thousand.
+
+    So, the mean weight for all units in WEBAPP bin 10 is 111.5421 and the
+    unweighted number with a tax increase is 287 assuming all units in that
+    bin have the same weight.  (Note that 287 * 111.5421 is about 32,012.58,
+    which rounds to the 32 thousand shown in the TaxBrain difference table.)
+
+    WEBAPP bin 11 ($1000+ thousand) has weighted count of 636 thousand;
+              weighted count of units with tax increase is 27 thousand.
+
+    So, the mean weight for all units in WEBAPP bin 11 is about 27.517 and the
+    unweighted number with a tax increase is 981 assuming all units in that
+    bin have the same weight.  (Note that 981 * 27.517 is about 26,994.18,
+    which rounds to the 27 thousand shown in the TaxBrain difference table.)
+    """
+    dump = False  # setting to True implies results printed and test fails
+    seed = 123456789
+    bs_samples = 1000
+    alpha = 0.025  # implies 95% confidence interval
+    # compute stderr and confidence interval for WEBAPP bin 10 increase count
+    data_list = [111.5421] * 287 + [0.0] * (10570 - 287)
+    assert len(data_list) == 10570
+    data = np.array(data_list)
+    assert (data > 0).sum() == 287
+    data_estimate = np.sum(data) * 1e-3
+    assert abs((data_estimate / 32) - 1) < 0.0005
+    bsd = bootstrap_se_ci(data, seed, bs_samples, np.sum, alpha)
+    stderr = bsd['se'] * 1e-3
+    cilo = bsd['cilo'] * 1e-3
+    cihi = bsd['cihi'] * 1e-3
+    if dump:
+        res = '{}EST={:.1f} B={} alpha={:.3f} se={:.2f} ci=[ {:.2f} , {:.2f} ]'
+        print(
+            res.format('WEBAPP-BIN10: ',
+                       data_estimate, bs_samples, alpha, stderr, cilo, cihi)
+        )
+    assert abs((stderr / 1.90) - 1) < 0.0008
+    # NOTE: a se of 1.90 thousand implies that when comparing the difference
+    #       in the weighted number of filing units in WEBAPP bin 10 with a
+    #       tax increase, the difference statistic has a bigger se (because
+    #       the variance of the difference is the sum of the variances of the
+    #       two point estimates).  So, in WEBAPP bin 10 if the point estimates
+    #       both had se = 1.90, then the difference in the point estimates has
+    #       has a se = 2.687.  This means that the difference would have to be
+    #       over 5 thousand in order for there to be high confidence that the
+    #       difference was different from zero in a statistically significant
+    #       manner.
+    #       Or put a different way, a difference of 1 thousand cannot be
+    #       accurately detected while a difference of 10 thousand can be
+    #       accurately detected.
+    assert abs((cilo / 28.33) - 1) < 0.0012
+    assert abs((cihi / 35.81) - 1) < 0.0012
+    # compute stderr and confidence interval for WEBAPP bin 11 increase count
+    data_list = [27.517] * 981 + [0.0] * (23113 - 981)
+    assert len(data_list) == 23113
+    data = np.array(data_list)
+    assert (data > 0).sum() == 981
+    data_estimate = np.sum(data) * 1e-3
+    assert abs((data_estimate / 27) - 1) < 0.0005
+    bsd = bootstrap_se_ci(data, seed, bs_samples, np.sum, alpha)
+    stderr = bsd['se'] * 1e-3
+    cilo = bsd['cilo'] * 1e-3
+    cihi = bsd['cihi'] * 1e-3
+    if dump:
+        res = '{}EST={:.1f} B={} alpha={:.3f} se={:.2f} ci=[ {:.2f} , {:.2f} ]'
+        print(
+            res.format('WEBAPP-BIN11: ',
+                       data_estimate, bs_samples, alpha, stderr, cilo, cihi)
+        )
+    assert abs((stderr / 0.85) - 1) < 0.0040
+    # NOTE: a se of 0.85 thousand implies that when comparing the difference
+    #       in the weighted number of filing units in WEBAPP bin 11 with a
+    #       tax increase, the difference statistic has a bigger se (because
+    #       the variance of the difference is the sum of the variances of the
+    #       two point estimates).  So, in WEBAPP bin 11 if the point estimates
+    #       both had se = 0.85, then the difference in the point estimates has
+    #       has a se = 1.20.  This means that the difference would have to be
+    #       over 2.5 thousand in order for there to be high confidence that the
+    #       difference was different from zero in a statistically significant
+    #       manner.
+    #       Or put a different way, a difference of 1 thousand cannot be
+    #       accurately detected while a difference of 10 thousand can be
+    #       accurately detected.
+    assert abs((cilo / 25.37) - 1) < 0.0012
+    assert abs((cihi / 28.65) - 1) < 0.0012
+    # fail if doing dump
+    assert not dump
+
+
 def test_weighted_count_lt_zero():
     df1 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grped = df1.groupby('label')
@@ -714,9 +845,9 @@ def test_bootstrap_se_ci():
     # "An Introduction to the Bootstrap"
     # (Chapman & Hall, 1993).
     data = np.array([94, 197, 16, 38, 99, 141, 23], dtype=np.float64)
-    assert abs(np.mean(data) - 86.86) < 0.005  # just rounding error
+    assert abs(np.mean(data) - 86.86) < 0.005  # this is just rounding error
     bsd = bootstrap_se_ci(data, 123456789, 1000, np.mean, alpha=0.025)
-    # following comparisons less precise because of rn seed differences
+    # following comparisons are less precise because of r.n. stream differences
     assert abs(bsd['se'] / 23.02 - 1) < 0.02
     assert abs(bsd['cilo'] / 45.9 - 1) < 0.02
     assert abs(bsd['cihi'] / 135.4 - 1) < 0.03

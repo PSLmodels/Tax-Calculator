@@ -433,6 +433,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             raise ValueError(msg)
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
+        # print gpdf.count()  # show unweighted number of filing units per bin
         # create difference table statistics from gpdf in a new DataFrame
         diffs = pd.DataFrame()
         diffs['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
@@ -1297,7 +1298,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     """
     Return bootstrap estimate of standard error of statistic and
     bootstrap estimate of 100*(1-2*alpha)% confidence interval for statistic
-    in a dictionary along with seed and nun_samples (B) and alpha.
+    in a dictionary along with specified seed and nun_samples (B) and alpha.
     """
     assert isinstance(data, np.ndarray)
     assert isinstance(seed, int)
@@ -1308,8 +1309,8 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     bsest['seed'] = seed
     np.random.seed(seed)  # pylint: disable=no-member
     dlen = len(data)
-    idx = np.random.randint(0, dlen,   # pylint: disable=no-member
-                            (num_samples, dlen))
+    idx = np.random.randint(low=0, high=dlen,   # pylint: disable=no-member
+                            size=(num_samples, dlen))
     samples = data[idx]
     stat = statistic(samples, axis=1)
     bsest['B'] = num_samples
