@@ -1,0 +1,17 @@
+// Title: 2017 Brown-Khanna Grow American Incomes Now (GAIN) Act EITC expansion
+// Reform_File_Author: Martin Holmer
+// Reform_Reference: https://khanna.house.gov/media/press-releases/release-sen-sherrod-brown-and-rep-ro-khanna-introduce-landmark-legislation
+// Reform_Description:
+// - Raise maximum EITC amounts (1) 
+// - Reduce minimim age for childless EITC eligibility from 25 to 21 (2) 
+// Reform_Parameter_Map:
+// - 1: _EITC_c
+// - 2: _EITC_MinEligAge
+{
+  "policy": {
+        "_EITC_c":
+            {"2017": [[3000, 6528, 10783, 12131]]},
+        "_EITC_MinEligAge":
+            {"2017": [21]}
+    }
+}
