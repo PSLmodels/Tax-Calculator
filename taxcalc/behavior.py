@@ -144,7 +144,7 @@ class Behavior(ParametersBase):
           Using this method, a semi-elasticity of -3.45 corresponds to a tax
           rate elasticity of -0.792.
         """
-        # pylint: disable=too-many-statements,too-many-locals
+        # pylint: disable=too-many-statements,too-many-locals,too-many-branches
         assert calc_x.records.dim == calc_y.records.dim
         assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
@@ -152,27 +152,38 @@ class Behavior(ParametersBase):
             sub = np.zeros(calc_x.records.dim)
             inc = np.zeros(calc_x.records.dim)
         else:
-            # calculate marginal tax rates on wages and combined taxes
+            # calculate marginal combined tax rates on taxpayer wages+salary
             # (e00200p is taxpayer's wages+salary)
             wage_mtr_x, wage_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
                                                       mtr_of='e00200p',
                                                       tax_type='combined')
-            # calculate magnitude of substitution and income effects
+            # calculate magnitude of substitution effect
             if calc_y.behavior.BE_sub == 0.0:
                 sub = np.zeros(calc_x.records.dim)
             else:
-                # proportional change in marginal net-of-tax rates on wages
-                # (c04800 is filing unit's taxable income)
+                # proportional change in marginal net-of-tax rates on earnings
                 pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
-                sub = calc_y.behavior.BE_sub * pch * calc_x.records.c04800
+                if calc_y.behavior.BE_subinc_wrt_earnings:
+                    # Note: e00200 is filing unit's wages+salaries
+                    sub = calc_y.behavior.BE_sub * pch * calc_x.records.e00200
+                else:
+                    # Note: c04800 is filing unit's taxable income
+                    sub = calc_y.behavior.BE_sub * pch * calc_x.records.c04800
+            # calculate magnitude of income effect
             if calc_y.behavior.BE_inc == 0.0:
                 inc = np.zeros(calc_x.records.dim)
             else:
-                # dollar change in after-tax income
-                # (combined is filing unit's income+payroll tax liability)
-                dch = calc_x.records.combined - calc_y.records.combined
-                inc = calc_y.behavior.BE_inc * dch
-        taxinc_chg = sub + inc
+                if calc_y.behavior.BE_subinc_wrt_earnings:
+                    # proportional change in after-tax income
+                    pch = (calc_y.records.aftertax_income /
+                           calc_x.records.aftertax_income) - 1.
+                    inc = calc_y.behavior.BE_inc * pch * calc_x.records.e00200
+                else:
+                    # dollar change in after-tax income
+                    # Note: combined is f.unit's income+payroll tax liability
+                    dch = calc_x.records.combined - calc_y.records.combined
+                    inc = calc_y.behavior.BE_inc * dch
+        si_chg = sub + inc
         # calculate long-term capital-gains effect
         if calc_y.behavior.BE_cg == 0.0:
             ltcg_chg = np.zeros(calc_x.records.dim)
@@ -253,7 +264,11 @@ class Behavior(ParametersBase):
                                       nc_charity_chg)
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
-        calc_y_behv = Behavior._update_ordinary_income(taxinc_chg, calc_y_behv)
+        if calc_y_behv.behavior.BE_subinc_wrt_earnings:
+            calc_y_behv.records.e00200 = calc_y_behv.records.e00200 + si_chg
+            calc_y_behv.records.e00200p = calc_y_behv.records.e00200p + si_chg
+        else:
+            calc_y_behv = Behavior._update_ordinary_income(si_chg, calc_y_behv)
         calc_y_behv = Behavior._update_cap_gain_income(ltcg_chg, calc_y_behv)
         calc_y_behv = Behavior._update_charity(c_charity_chg, nc_charity_chg,
                                                calc_y_behv)
@@ -286,7 +301,7 @@ class Behavior(ParametersBase):
                 elif elast == '_BE_charity':
                     if val > 0.0:
                         raise ValueError(msg.format(elast, neg, year, val))
-                else:
+                elif elast != '_BE_subinc_wrt_earnings':
                     raise ValueError('illegal elasticity {}'.format(elast))
 
     @staticmethod
