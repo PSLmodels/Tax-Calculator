@@ -48,12 +48,14 @@ def test_behavioral_response_Calculator(cps_subsample):
                         '_BE_charity': [[0.0, 0.0, 0.0]]}}
     behavior_y.update_behavior(behavior0)
     calc_y_behavior0 = Behavior.response(calc_x, calc_y)
-    behavior1 = {year: {'_BE_sub': [0.3], '_BE_cg': [0.0]}}
+    behavior1 = {year: {'_BE_sub': [0.3], '_BE_inc': [-0.1], '_BE_cg': [0.0],
+                        '_BE_subinc_wrt_earnings': [True]}}
     behavior_y.update_behavior(behavior1)
     assert behavior_y.has_response() is True
-    assert behavior_y.BE_sub == 0.3
-    assert behavior_y.BE_inc == 0.0
-    assert behavior_y.BE_cg == 0.0
+    epsilon = 1e-9
+    assert abs(behavior_y.BE_sub - 0.3) < epsilon
+    assert abs(behavior_y.BE_inc - -0.1) < epsilon
+    assert abs(behavior_y.BE_cg - 0.0) < epsilon
     calc_y_behavior1 = Behavior.response(calc_x, calc_y)
     behavior2 = {year: {'_BE_sub': [0.5], '_BE_cg': [-0.8]}}
     behavior_y.update_behavior(behavior2)
