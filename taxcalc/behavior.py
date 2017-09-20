@@ -175,8 +175,11 @@ class Behavior(ParametersBase):
             else:
                 if calc_y.behavior.BE_subinc_wrt_earnings:
                     # proportional change in after-tax income
-                    pch = (calc_y.records.aftertax_income /
-                           calc_x.records.aftertax_income) - 1.
+                    with np.errstate(invalid='ignore'):
+                        pch = np.where(calc_x.records.aftertax_income > 0.,
+                                       (calc_y.records.aftertax_income /
+                                        calc_x.records.aftertax_income) - 1.,
+                                       0.)
                     inc = calc_y.behavior.BE_inc * pch * calc_x.records.e00200
                 else:
                     # dollar change in after-tax income
