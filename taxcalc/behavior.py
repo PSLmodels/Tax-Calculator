@@ -59,7 +59,7 @@ class Behavior(ParametersBase):
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         self.initialize(start_year, num_years)
-        self._validate_elasticity_values()
+        self._validate_parameter_values()
 
     def update_behavior(self, revisions):
         """
@@ -80,7 +80,7 @@ class Behavior(ParametersBase):
             self.set_year(year)
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
-        self._validate_elasticity_values()
+        self._validate_parameter_values()
 
     def has_response(self):
         """
@@ -149,9 +149,9 @@ class Behavior(ParametersBase):
         assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
         if calc_y.behavior.BE_sub == 0.0 and calc_y.behavior.BE_inc == 0.0:
-            sub = np.zeros(calc_x.records.dim)
-            inc = np.zeros(calc_x.records.dim)
+            zero_sub_and_inc = True
         else:
+            zero_sub_and_inc = False
             # calculate marginal combined tax rates on taxpayer wages+salary
             # (e00200p is taxpayer's wages+salary)
             wage_mtr_x, wage_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
@@ -186,7 +186,8 @@ class Behavior(ParametersBase):
                     # Note: combined is f.unit's income+payroll tax liability
                     dch = calc_x.records.combined - calc_y.records.combined
                     inc = calc_y.behavior.BE_inc * dch
-        si_chg = sub + inc
+            # calculate sum of substitution and income effects
+            si_chg = sub + inc
         # calculate long-term capital-gains effect
         if calc_y.behavior.BE_cg == 0.0:
             ltcg_chg = np.zeros(calc_x.records.dim)
@@ -267,12 +268,15 @@ class Behavior(ParametersBase):
                                       nc_charity_chg)
         # Add behavioral-response changes to income sources
         calc_y_behv = copy.deepcopy(calc_y)
-        if calc_y_behv.behavior.BE_subinc_wrt_earnings:
-            calc_y_behv.records.e00200 = calc_y_behv.records.e00200 + si_chg
-            calc_y_behv.records.e00200p = calc_y_behv.records.e00200p + si_chg
-        else:
-            calc_y_behv = Behavior._update_ordinary_income(si_chg, calc_y_behv)
-        calc_y_behv = Behavior._update_cap_gain_income(ltcg_chg, calc_y_behv)
+        if not zero_sub_and_inc:
+            if calc_y_behv.behavior.BE_subinc_wrt_earnings:
+                calc_y_behv = Behavior._update_earnings(si_chg,
+                                                        calc_y_behv)
+            else:
+                calc_y_behv = Behavior._update_ordinary_income(si_chg,
+                                                               calc_y_behv)
+        calc_y_behv = Behavior._update_cap_gain_income(ltcg_chg,
+                                                       calc_y_behv)
         calc_y_behv = Behavior._update_charity(c_charity_chg, nc_charity_chg,
                                                calc_y_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
@@ -281,31 +285,74 @@ class Behavior(ParametersBase):
 
     # ----- begin private methods of Behavior class -----
 
-    def _validate_elasticity_values(self):
+    def _validate_parameter_values(self):
         """
-        Check that behavioral-response elasticities have valid values.
+        Check that all behavioral-response parameters have valid values.
         """
+        # pylint: disable=too-many-branches,too-many-locals
+        # check for presence of required parameters
+        expected_num_params = 5
+        num_params = 0
+        for param in self._vals:
+            if param == '_BE_sub':
+                num_params += 1
+            elif param == '_BE_inc':
+                num_params += 1
+            elif param == '_BE_subinc_wrt_earnings':
+                num_params += 1
+            elif param == '_BE_cg':
+                num_params += 1
+            elif param == '_BE_charity':
+                num_params += 1
+        if num_params != expected_num_params:
+            msg = 'num required Behavior parameters {} not expected number {}'
+            raise ValueError(msg.format(num_params, expected_num_params))
+        # check validity of parameter values
         msg = '{} elasticity cannot be {} in year {}; value is {}'
         pos = 'positive'
         neg = 'negative'
-        for elast in self._vals:
-            values = getattr(self, elast)
+        nob = 'non-boolean'
+        for param in self._vals:
+            values = getattr(self, param)
             for year in np.ndindex(values.shape):
                 val = values[year]
-                if elast == '_BE_inc':
-                    if val > 0.0:
-                        raise ValueError(msg.format(elast, pos, year, val))
-                elif elast == '_BE_sub':
+                cyr = year[0] + self.start_year
+                if param == '_BE_sub':
                     if val < 0.0:
-                        raise ValueError(msg.format(elast, neg, year, val))
-                elif elast == '_BE_cg':
+                        raise ValueError(msg.format(param, neg, cyr, val))
+                elif param == '_BE_inc':
                     if val > 0.0:
-                        raise ValueError(msg.format(elast, pos, year, val))
-                elif elast == '_BE_charity':
+                        raise ValueError(msg.format(param, pos, cyr, val))
+                elif param == '_BE_subinc_wrt_earnings':
+                    if val < 0 or val > 1:
+                        raise ValueError(msg.format(param, nob, cyr, val))
+                elif param == '_BE_cg':
                     if val > 0.0:
-                        raise ValueError(msg.format(elast, neg, year, val))
-                elif elast != '_BE_subinc_wrt_earnings':
-                    raise ValueError('illegal elasticity {}'.format(elast))
+                        raise ValueError(msg.format(param, pos, cyr, val))
+                elif param == '_BE_charity':
+                    if val > 0.0:
+                        raise ValueError(msg.format(param, neg, cyr, val))
+        # check consistency of earnings-related parameters
+        subinc_wrt_earnings = getattr(self, '_BE_subinc_wrt_earnings')
+        sub_elasticity = getattr(self, '_BE_sub')
+        inc_elasticity = getattr(self, '_BE_inc')
+        msg = ('_BE_subinc_wrt_earnings is True in year {} '
+               'when _BE_sub and _BE_inc are both zero')
+        for year in range(self.num_years):
+            if subinc_wrt_earnings[year]:
+                zero_sub = sub_elasticity[year] == 0.0
+                zero_inc = inc_elasticity[year] == 0.0
+                if zero_sub and zero_inc:
+                    raise ValueError(msg.format(year + self.start_year))
+
+    @staticmethod
+    def _update_earnings(change, calc):
+        """
+        Implement earnings change induced by earnings response.
+        """
+        calc.records.e00200 += change
+        calc.records.e00200p += change
+        return calc
 
     @staticmethod
     def _update_ordinary_income(taxinc_change, calc):
@@ -333,10 +380,10 @@ class Behavior(ParametersBase):
         # confirm that the three parts are consistent with delta_income
         assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
         # add the three parts to different calc.records variables
-        calc.records.e00200 = calc.records.e00200 + delta_winc
-        calc.records.e00200p = calc.records.e00200p + delta_winc
-        calc.records.e00300 = calc.records.e00300 + delta_oinc
-        calc.records.e19200 = calc.records.e19200 + delta_ided
+        calc.records.e00200 += delta_winc
+        calc.records.e00200p += delta_winc
+        calc.records.e00300 += delta_oinc
+        calc.records.e19200 += delta_ided
         return calc
 
     @staticmethod
@@ -344,7 +391,7 @@ class Behavior(ParametersBase):
         """
         Implement capital gain change induced by behavioral responses.
         """
-        calc.records.p23250 = calc.records.p23250 + cap_gain_change
+        calc.records.p23250 += cap_gain_change
         return calc
 
     @staticmethod
@@ -353,8 +400,8 @@ class Behavior(ParametersBase):
         Implement cash charitable contribution change induced
         by behavioral responses.
         """
-        calc.records.e19800 = calc.records.e19800 + cash_charity_change
-        calc.records.e20100 = calc.records.e20100 + non_cash_charity_change
+        calc.records.e19800 += cash_charity_change
+        calc.records.e20100 += non_cash_charity_change
         return calc
 
     @staticmethod
