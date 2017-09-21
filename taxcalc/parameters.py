@@ -3,6 +3,7 @@ Tax-Calculator abstract base parameters class.
 """
 import os
 import json
+import six
 import abc
 import collections as collect
 import numpy as np
@@ -90,13 +91,20 @@ class ParametersBase(object):
         """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                cpi_inflated = data.get('cpi_inflated', False)
-                values = data['value']
-                index_rates = self.indexing_rates(name)
-                setattr(self, name,
-                        self._expand_array(values, inflate=cpi_inflated,
-                                           inflation_rates=index_rates,
-                                           num_years=self._num_years))
+                if not isinstance(name, six.string_types):
+                    msg = 'parameter name {} is not a string'
+                    raise ValueError(msg.format(name))
+                values = data.get('value', None)
+                if values:
+                    cpi_inflated = data.get('cpi_inflated', False)
+                    if cpi_inflated:
+                        index_rates = self.indexing_rates(name)
+                    else:
+                        index_rates = None
+                    setattr(self, name,
+                            self._expand_array(values, inflate=cpi_inflated,
+                                               inflation_rates=index_rates,
+                                               num_years=self._num_years))
         self.set_year(self._start_year)
 
     @property
@@ -160,8 +168,9 @@ class ParametersBase(object):
         year_zero_indexed = year - self._start_year
         if hasattr(self, '_vals'):
             for name in self._vals:
-                arr = getattr(self, name)
-                setattr(self, name[1:], arr[year_zero_indexed])
+                if isinstance(name, six.string_types):
+                    arr = getattr(self, name)
+                    setattr(self, name[1:], arr[year_zero_indexed])
 
     # ----- begin private methods of ParametersBase class -----
 
