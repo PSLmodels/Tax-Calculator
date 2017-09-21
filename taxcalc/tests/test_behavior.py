@@ -5,19 +5,34 @@ from taxcalc import Policy, Records, Calculator, Behavior
 
 def test_incorrect_Behavior_instantiation():
     with pytest.raises(ValueError):
-        behv = Behavior(behavior_dict=list())
-    bad_behv_dict = {'_BE_bad': {'start_year': 2013, 'value': [0.0]}}
+        Behavior(behavior_dict=list())
+    bad_behv_dict = {
+        '_BE_bad': {'start_year': 2013, 'value': [0.0]}
+    }
     with pytest.raises(ValueError):
-        behv = Behavior(behavior_dict=bad_behv_dict)
+        Behavior(behavior_dict=bad_behv_dict)
     with pytest.raises(ValueError):
-        behv = Behavior(num_years=0)
+        Behavior(num_years=0)
     with pytest.raises(FloatingPointError):
         np.divide(1., 0.)
-
-
-def test_correct_but_not_recommended_Behavior_instantiation():
-    behv = Behavior(behavior_dict={})
-    assert behv
+    with pytest.raises(ValueError):
+        Behavior(behavior_dict={})
+    bad_behv_dict = {
+        '_BE_subinc_wrt_earnings': {'start_year': 2013, 'value': [True]}
+    }
+    with pytest.raises(ValueError):
+        Behavior(behavior_dict=bad_behv_dict)
+    bad_behv_dict = {
+        '_BE_subinc_wrt_earnings': {'start_year': 2013, 'value': [True]},
+        '_BE_sub': {'start_year': 2017, 'value': [0.25]}
+    }
+    with pytest.raises(ValueError):
+        Behavior(behavior_dict=bad_behv_dict)
+    bad_behv_dict = {
+        54321: {'start_year': 2013, 'value': [0.0]}
+    }
+    with pytest.raises(ValueError):
+        Behavior(behavior_dict=bad_behv_dict)
 
 
 def test_behavioral_response_Calculator(cps_subsample):
@@ -103,21 +118,22 @@ def test_correct_update_behavior():
 
 
 def test_incorrect_update_behavior():
-    behv = Behavior()
     with pytest.raises(ValueError):
-        behv.update_behavior({2013: {'_BE_inc': [+0.2]}})
+        Behavior().update_behavior({2013: {'_BE_inc': [+0.2]}})
     with pytest.raises(ValueError):
-        behv.update_behavior({2013: {'_BE_sub': [-0.2]}})
+        Behavior().update_behavior({2013: {'_BE_sub': [-0.2]}})
     with pytest.raises(ValueError):
-        behv.update_behavior({2013:
-                             {'_BE_charity':
-                              [[0.2, -0.2, 0.2]]}})
+        Behavior().update_behavior({2017: {'_BE_subinc_wrt_earnings': [2]}})
     with pytest.raises(ValueError):
-        behv.update_behavior({2013: {'_BE_cg': [+0.8]}})
+        Behavior().update_behavior({2020: {'_BE_subinc_wrt_earnings': [True]}})
     with pytest.raises(ValueError):
-        behv.update_behavior({2013: {'_BE_xx': [0.0]}})
+        Behavior().update_behavior({2013: {'_BE_charity': [[0.2, -0.2, 0.2]]}})
     with pytest.raises(ValueError):
-        behv.update_behavior({2013: {'_BE_xx_cpi': [True]}})
+        Behavior().update_behavior({2013: {'_BE_cg': [+0.8]}})
+    with pytest.raises(ValueError):
+        Behavior().update_behavior({2013: {'_BE_xx': [0.0]}})
+    with pytest.raises(ValueError):
+        Behavior().update_behavior({2013: {'_BE_xx_cpi': [True]}})
 
 
 def test_future_update_behavior():
