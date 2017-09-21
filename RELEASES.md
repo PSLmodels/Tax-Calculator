@@ -26,7 +26,7 @@ Release 0.11.0 on 2017-??-??
   by Martin Holmer]
 - Add JSON reform file for Brown-Khanna GAIN Act that expands the EITC
   [[#1555](https://github.com/open-source-economics/Tax-Calculator/pull/1555)
-  by Matt Jensen]
+  by Matt Jensen and Martin Holmer]
 
 **Bug Fixes**
 - None
