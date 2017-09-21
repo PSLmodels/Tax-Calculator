@@ -4,10 +4,10 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.11.0 on 2017-??-??
+Release 0.11.0 on 2017-09-21
 ----------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1555](https://github.com/open-source-economics/Tax-Calculator/pull/1555))
 
 **API Changes**
 - Revise dropq distribution and difference tables used by TaxBrain
