@@ -27,8 +27,10 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
-from taxcalc.behavior import Behavior
 from taxcalc.consumption import Consumption
+from taxcalc.behavior import Behavior
+from taxcalc.growdiff import Growdiff
+from taxcalc.growfactors import Growfactors
 # import pdb
 
 
@@ -375,6 +377,15 @@ class Calculator(object):
         containing a valid JSON string (rather than a filename),
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
+
+        The reform file contents or JSON string must be like:
+        {"policy": {...}}
+        and the assump file contents or JSON string must be like:
+        {"consumption": {...},
+         "behavior": {...},
+         "growdiff_baseline": {...},
+         "growdiff_response": {...}
+        }
         """
         # first process second assump parameter
         if assump is None:
@@ -422,6 +433,36 @@ class Calculator(object):
     REQUIRED_REFORM_KEYS = set(['policy'])
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
                                 'growdiff_baseline', 'growdiff_response'])
+
+    @staticmethod
+    def create_reform_documentation(params):
+        """
+        Generate reform documentation.
+
+        Parameters
+        ----------
+        params: dict
+            compound dictionary structured as dict returned from
+            the static Calculator method read_json_param_objects()
+
+        Returns
+        -------
+        doc: String
+            the documentation for the policy reform specified in params
+        """
+        # create Policy object with pre-reform (i.e., baseline) values
+        # ... create gdiff_baseline object
+        gdiff_baseline = Growdiff()
+        gdiff_baseline.update_growdiff(params['growdiff_baseline'])
+        # ... create Growfactors clp object that incorporates gdiff_baseline
+        gfactors_clp = Growfactors()
+        gdiff_baseline.apply_to(gfactors_clp)
+        # ... create Policy object containing pre-reform parameter values
+        clp = Policy(gfactors=gfactors_clp)
+        clp_vals = getattr(clp, '_vals', None)
+        assert isinstance(clp_vals, dict)
+        # TODO: construct documentation text (first assump, then reform)
+        return ''
 
     # ----- begin private methods of Calculator class -----
 
@@ -642,7 +683,7 @@ class Calculator(object):
     def _convert_parameter_dict(param_key_dict, arrays_not_lists):
         """
         Converts specified param_key_dict into a dictionary whose primary
-        keys are calendary years, and hence, is suitable as the argument to
+        keys are calendar years, and hence, is suitable as the argument to
         the Policy.implement_reform() method, or
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or

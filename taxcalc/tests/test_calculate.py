@@ -3,6 +3,7 @@ import json
 from io import StringIO
 import tempfile
 import copy
+import six
 import pytest
 import numpy as np
 import pandas as pd
@@ -880,3 +881,32 @@ def test_read_json_param_with_suffixes_and_errors():
     pol.implement_reform(params['policy'])
     assert len(pol.reform_errors) > 0
     assert len(pol.reform_warnings) > 0
+
+@pytest.mark.one
+def test_create_reform_documentation():
+    reform_json = """
+    {"policy": {
+       "_II_em": {"2018": [4000],
+                  "2020": [5000],
+                  "2022": [6000]},
+       "_II_em_cpi": {"2018": false,
+                      "2020": true},
+       "_STD_Aged": {"2018": [[1600, 1300, 1300, 1600, 1600]]},
+       "_STD_Aged_cpi": {"2018": false}
+    }}
+    """
+    assump_json = """
+    {
+    "consumption": {},
+    "behavior": {},
+    // increase baseline inflation rate by one percentage beginning in 2014
+    "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
+    "growdiff_response": {}
+    }
+    """
+    params = Calculator.read_json_param_objects(reform_json, assump_json,
+                                                arrays_not_lists=False)
+    assert isinstance(params, dict)
+    doc = Calculator.create_reform_documentation(params)
+    assert isinstance(doc, six.string_types)
+    assert doc == ''  # TODO: complete test
