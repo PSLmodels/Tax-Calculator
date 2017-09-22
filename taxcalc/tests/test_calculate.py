@@ -367,7 +367,7 @@ def test_Calculator_using_nonstd_input(rawinputfile):
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for read_json_param_files() function.
+// Example of a reform file suitable for read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within each "policy" object, the primary keys are parameters and
@@ -412,7 +412,7 @@ REFORM_CONTENTS = """
 @pytest.fixture(scope='module', name='reform_file')
 def fixture_reform_file():
     """
-    Temporary reform file for read_json_param_files() function.
+    Temporary reform file for read_json_param_objects() function.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -427,7 +427,7 @@ def fixture_reform_file():
 
 
 ASSUMP_CONTENTS = """
-// Example of an assump file suitable for the read_json_param_files() function.
+// Example of assump file suitable for the read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within each "behavior", "consumption" and "growth" object, the
@@ -462,12 +462,14 @@ def fixture_assump_file():
 
 def test_read_json_reform_file_two_ways(reform_file, assump_file):
     """
-    Test when using file name and file contents in read_json_param_files
+    Test when using filename/contents in read_json_param_objects()
     """
-    pd1 = Calculator.read_json_param_files(reform_file.name, assump_file.name,
-                                           arrays_not_lists=False)
-    pd2 = Calculator.read_json_param_files(REFORM_CONTENTS, ASSUMP_CONTENTS,
-                                           arrays_not_lists=False)
+    pd1 = Calculator.read_json_param_objects(reform_file.name,
+                                             assump_file.name,
+                                             arrays_not_lists=False)
+    pd2 = Calculator.read_json_param_objects(REFORM_CONTENTS,
+                                             ASSUMP_CONTENTS,
+                                             arrays_not_lists=False)
     assert pd1 == pd2
 
 
@@ -483,8 +485,8 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    param_dict = Calculator.read_json_param_files(reform_file.name,
-                                                  assump_file.name)
+    param_dict = Calculator.read_json_param_objects(reform_file.name,
+                                                    assump_file.name)
     policy.implement_reform(param_dict['policy'])
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1
@@ -575,13 +577,13 @@ def fixture_bad3reformfile():
 def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
                                    bad3reformfile):
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(bad1reformfile.name, None)
+        Calculator.read_json_param_objects(bad1reformfile.name, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(bad2reformfile.name, None)
+        Calculator.read_json_param_objects(bad2reformfile.name, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(bad3reformfile.name, None)
+        Calculator.read_json_param_objects(bad3reformfile.name, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(list(), None)
+        Calculator.read_json_param_objects(list(), None)
 
 
 @pytest.fixture(scope='module', name='bad1assumpfile')
@@ -649,15 +651,15 @@ def fixture_bad3assumpfile():
 def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
                                    bad3assumpfile):
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, bad1assumpfile.name)
+        Calculator.read_json_param_objects(None, bad1assumpfile.name)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, bad2assumpfile.name)
+        Calculator.read_json_param_objects(None, bad2assumpfile.name)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, bad3assumpfile.name)
+        Calculator.read_json_param_objects(None, bad3assumpfile.name)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, 'unknown_file_name')
+        Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, list())
+        Calculator.read_json_param_objects(None, list())
 
 
 def test_convert_parameter_dict():
@@ -681,7 +683,7 @@ def test_convert_parameter_dict():
 def test_calc_all(reform_file, rawinputfile):
     cyr = 2016
     policy = Policy()
-    param_dict = Calculator.read_json_param_files(reform_file.name, None)
+    param_dict = Calculator.read_json_param_objects(reform_file.name, None)
     policy.implement_reform(param_dict['policy'])
     policy.set_year(cyr)
     nonpuf = Records(data=rawinputfile.name, gfactors=None,
@@ -695,7 +697,8 @@ def test_calc_all(reform_file, rawinputfile):
 
 
 def test_translate_json_reform_suffixes_mars_indexed():
-    # test read_json_param_files(...) using MARS-indexed parameter suffixes
+    # test read_json_param_objects()
+    # using MARS-indexed parameter suffixes
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_STD_single": {"2018": [18000], "2016": [16000]},
@@ -709,9 +712,9 @@ def test_translate_json_reform_suffixes_mars_indexed():
         "_AWAGE": {"2013": [0.01]}},
       "growdiff_response": {}
     }"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=assump_json,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1,
+                                                assump=assump_json,
+                                                arrays_not_lists=True)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_STD": {"2016": [[16000.00, 12600.00, 6300.00,  9300.00, 12600.00]],
@@ -720,9 +723,9 @@ def test_translate_json_reform_suffixes_mars_indexed():
                "2019": [[18592.20, 13874.23, 6937.11, 10240.50, 19000.00]]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=assump_json,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2,
+                                                assump=assump_json,
+                                                arrays_not_lists=True)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -737,15 +740,16 @@ def test_translate_json_reform_suffixes_mars_indexed():
 
 
 def test_translate_json_reform_suffixes_mars_non_indexed():
-    # test read_json_param_files(...) using MARS-indexed parameter suffixes
+    # test read_json_param_objects()
+    # using MARS-indexed parameter suffixes
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_AMEDT_ec_joint": {"2018": [400000], "2016": [300000]},
       "_AMEDT_ec_separate": {"2017": [150000], "2019": [200000]}
     }}"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1,
+                                                assump=None,
+                                                arrays_not_lists=True)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_AMEDT_ec": {"2016": [[200000, 300000, 125000, 200000, 200000]],
@@ -754,9 +758,9 @@ def test_translate_json_reform_suffixes_mars_non_indexed():
                     "2019": [[200000, 400000, 200000, 200000, 200000]]},
       "_II_em": {"2015": [15000], "2020": [20000]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2,
+                                                assump=None,
+                                                arrays_not_lists=True)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -771,7 +775,8 @@ def test_translate_json_reform_suffixes_mars_non_indexed():
 
 
 def test_translate_json_reform_suffixes_eic():
-    # test read_json_param_files(...) using EIC-indexed parameter suffixes
+    # test read_json_param_objects(...)
+    # using EIC-indexed parameter suffixes
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_EITC_c_0kids": {"2018": [510], "2019": [510]},
@@ -779,18 +784,18 @@ def test_translate_json_reform_suffixes_eic():
       "_EITC_c_2kids": {"2018": [5616], "2019": [5616]},
       "_EITC_c_3+kids": {"2019": [6318], "2018": [6318]}
     }}"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1,
+                                                assump=None,
+                                                arrays_not_lists=True)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_EITC_c": {"2019": [[510, 3400, 5616, 6318]],
                   "2018": [[510, 3400, 5616, 6318]]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2,
+                                                assump=None,
+                                                arrays_not_lists=True)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -805,7 +810,8 @@ def test_translate_json_reform_suffixes_eic():
 
 
 def test_translate_json_reform_suffixes_idedtype():
-    # test read_json_param_files(...) using idedtype-indexed parameter suffixes
+    # test read_json_param_objects(...)
+    # using idedtype-indexed parameter suffixes
     json1 = """{"policy": {
       "_ID_BenefitCap_rt": {"2019": [0.2]},
       "_ID_BenefitCap_Switch_medical": {"2019": [false]},
@@ -815,9 +821,9 @@ def test_translate_json_reform_suffixes_idedtype():
       "_ID_BenefitCap_Switch_charity": {"2019": [false]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1,
+                                                assump=None,
+                                                arrays_not_lists=True)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
@@ -826,9 +832,9 @@ def test_translate_json_reform_suffixes_idedtype():
       },
       "_ID_BenefitCap_rt": {"2019": [0.2]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2,
+                                                assump=None,
+                                                arrays_not_lists=True)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -846,9 +852,9 @@ def test_translate_json_reform_suffixes_idedtype():
                                atol=0.01, rtol=0.0)
 
 
-def test_read_json_param_files_with_suffixes_and_errors():
+def test_read_json_param_with_suffixes_and_errors():
     # test interaction of policy parameter suffixes and reform errors
-    # (fails without 0.10.2 bug fix as reported by Hank Doupe in TB PR#641)
+    # (fails without 0.10.2 bug fix as reported by Hank Doupe in PB PR#641)
     reform = {
         u'policy': {
             u'_II_brk4_separate': {u'2017': [5000.0]},
@@ -868,7 +874,7 @@ def test_read_json_param_files_with_suffixes_and_errors():
         }
     }
     json_reform = json.dumps(reform)
-    params = Calculator.read_json_param_files(json_reform, None)
+    params = Calculator.read_json_param_objects(json_reform, None)
     assert isinstance(params, dict)
     pol = Policy()
     pol.implement_reform(params['policy'])
