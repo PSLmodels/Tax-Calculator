@@ -4,13 +4,15 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.Y.Z on 2017-??-??
+Release 0.12.0 on 2017-??-??
 ----------------------------
 (last merged pull request is
 [#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
 
 **API Changes**
-- None
+- Rename read_json_param_files as read_json_param_objects
+  [[#1563](https://github.com/open-source-economics/Tax-Calculator/pull/1563)
+  by Martin Holmer]
 
 **New Features**
 - None
