@@ -883,23 +883,25 @@ def test_read_json_param_with_suffixes_and_errors():
     assert len(pol.reform_warnings) > 0
 
 @pytest.mark.one
-def test_create_reform_documentation():
+def test_reform_documentation():
     reform_json = """
-    {"policy": {
-       "_II_em": {"2018": [4000],
-                  "2020": [5000],
-                  "2022": [6000]},
-       "_II_em_cpi": {"2018": false,
-                      "2020": true},
-       "_STD_Aged": {"2018": [[1600, 1300, 1300, 1600, 1600]]},
-       "_STD_Aged_cpi": {"2018": false}
-    }}
+    {
+    "policy": {
+      "_II_em": {"2016": [4000],
+                 "2018": [5000],
+                 "2020": [6000]},
+      "_II_em_cpi": {"2016": false,
+                     "2018": true},
+      "_STD_Aged": {"2016": [[1600, 1300, 1300, 1600, 1600]]},
+      "_STD_Aged_cpi": {"2016": false}
+      }
+    }
     """
     assump_json = """
     {
     "consumption": {},
     "behavior": {},
-    // increase baseline inflation rate by one percentage beginning in 2014
+    // increase baseline inflation rate by one percentage point in 2014+
     "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
     "growdiff_response": {}
     }
@@ -907,7 +909,7 @@ def test_create_reform_documentation():
     params = Calculator.read_json_param_objects(reform_json, assump_json,
                                                 arrays_not_lists=False)
     assert isinstance(params, dict)
-    doc = Calculator.create_reform_documentation(params)
+    doc = Calculator.reform_documentation(params)
     assert isinstance(doc, six.string_types)
     print doc
     assert 1 == 2  # TODO: complete test
