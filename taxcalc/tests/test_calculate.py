@@ -913,5 +913,5 @@ def test_reform_documentation():
     assert isinstance(params, dict)
     doc = Calculator.reform_documentation(params)
     assert isinstance(doc, six.string_types)
-    print doc
+    print(doc)  # TODO: remove debugging print
     assert 1 == 2  # TODO: complete test
