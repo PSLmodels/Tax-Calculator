@@ -909,4 +909,5 @@ def test_create_reform_documentation():
     assert isinstance(params, dict)
     doc = Calculator.create_reform_documentation(params)
     assert isinstance(doc, six.string_types)
-    assert doc == ''  # TODO: complete test
+    print doc
+    assert 1 == 2  # TODO: complete test
