@@ -450,67 +450,115 @@ class Calculator(object):
         doc: String
             the documentation for the policy reform specified in params
         """
+        # pylint: disable=too-many-statements
         # nested function used only in reform_documentation
-        def param_doc(years, change, baseline):
+        def param_doc(years, change, base):
             """
             Parameters
             ----------
             years: list of change years
             change: dictionary of parameter changes
-            baseline: dictionary of baseline parameter info
+            base: Policy or Growdiff object with baseline values
+            syear: parameter start calendar year
 
             Returns
             -------
             doc: String
             """
+            # pylint: disable=too-many-branches
+            # nested function used only in param_doc
+            def lines(text, num_indent_spaces, max_line_length=77):
+                """
+                Return list of text lines, each one of which is no longer
+                than max_line_length, with the second and subsequent lines
+                being indented by the number of specified num_indent_spaces;
+                each line in the list ends with the '\n' character
+                """
+                if len(text) < max_line_length:
+                    # all text fits on one line
+                    line = text + '\n'
+                    return [line]
+                # all text does not fix on one line
+                first_line = True
+                line_list = list()
+                words = text.split()
+                while len(words) > 0:
+                    if first_line:
+                        line = ''
+                        first_line = False
+                    else:
+                        line = ' ' * num_indent_spaces
+                    while (len(words) > 0 and
+                           (len(words[0]) + len(line)) < max_line_length):
+                        line += words.pop(0) + ' '
+                    line = line[:-1] + '\n'
+                    line_list.append(line)
+                return line_list
+            # begin main logic of param_doc
             assert len(years) == len(change.keys())
+            basevals = getattr(base, '_vals', None)
+            assert isinstance(basevals, dict)
             doc = ''
             for year in years:
+                base.set_year(year)
                 doc += '{}:\n'.format(year)
                 for param in sorted(change[year].keys()):
                     pval = change[year][param]
                     if isinstance(pval, list):
-                        val = pval[0]
-                    else:
-                        val = pval
-                    doc += ' {} : {}\n'.format(param, val)
+                        pval = pval[0]
+                    doc += ' {} : {}\n'.format(param, pval)
+                    if isinstance(pval, list):
+                        pval = basevals[param]['col_label']
+                        pval = [str(item) for item in pval]
+                        doc += ' ' * (4 + len(param)) + '{}\n'.format(pval)
                     if param.endswith('_cpi'):
-                        name = '{} inflation indexing status'.format(param)
+                        rootparam = param[:-4]
+                        name = '{} inflation indexing status'.format(rootparam)
                     else:
-                        name = baseline[param]['long_name']
-                    doc += '  name: {}\n'.format(name)
+                        name = basevals[param]['long_name']
+                    for line in lines('name: ' + name, 6):
+                        doc += '  ' + line
                     if not param.endswith('_cpi'):
-                        desc = baseline[param]['description']
-                        doc += '  desc: {}\n'.format(desc)
+                        desc = basevals[param]['description']
+                        for line in lines('desc: ' + desc, 6):
+                            doc += '  ' + line
+                    if isinstance(base, Policy):
+                        if param.endswith('_cpi'):
+                            rootparam = param[:-4]
+                            pval = basevals[rootparam].get('cpi_inflated',
+                                                           False)
+                        else:
+                            pval = getattr(base, param[1:], None)
+                    else:  # if base is Growdiff object
+                        pval = 0.0  # all parameters have zero default values
+                    if isinstance(pval, np.ndarray):
+                        pval = pval.tolist()
+                    doc += '  baseline_value: {}\n'.format(pval)
             return doc
         # begin main logic of reform_documentation
         # create Policy object with pre-reform (i.e., baseline) values
         # ... create gdiff_baseline object
-        gdiff_baseline = Growdiff()
-        gdiff_baseline.update_growdiff(params['growdiff_baseline'])
-        gdbvals = getattr(gdiff_baseline, '_vals', None)
-        assert isinstance(gdbvals, dict)
+        gdb = Growdiff()
+        gdb.update_growdiff(params['growdiff_baseline'])
         # ... create Growfactors clp object that incorporates gdiff_baseline
         gfactors_clp = Growfactors()
-        gdiff_baseline.apply_to(gfactors_clp)
+        gdb.apply_to(gfactors_clp)
         # ... create Policy object containing pre-reform parameter values
         clp = Policy(gfactors=gfactors_clp)
-        clpvals = getattr(clp, '_vals', None)
-        assert isinstance(clpvals, dict)
         # generate documentation text
         doc = 'REFORM DOCUMENTATION\n'
         doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
         years = sorted(params['growdiff_baseline'].keys())
         if len(years) == 0:
-            doc += 'none: using default baseline growth assumptions\n'
+            doc += 'none: using baseline growth assumptions\n'
         else:
-            doc += param_doc(years, params['growdiff_baseline'], gdbvals)
+            doc += param_doc(years, params['growdiff_baseline'], gdb)
         doc += 'Policy Reform Parameter Values by Year:\n'
         years = sorted(params['policy'].keys())
         if len(years) == 0:
             doc += 'none: using current-law policy parameters\n'
         else:
-            doc += param_doc(years, params['policy'], clpvals)
+            doc += param_doc(years, params['policy'], clp)
         return doc
 
     # ----- begin private methods of Calculator class -----

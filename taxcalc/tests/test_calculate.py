@@ -887,13 +887,14 @@ def test_reform_documentation():
     reform_json = """
     {
     "policy": {
-      "_II_em": {"2016": [4000],
-                 "2018": [5000],
-                 "2020": [6000]},
-      "_II_em_cpi": {"2016": false,
-                     "2018": true},
-      "_STD_Aged": {"2016": [[1600, 1300, 1300, 1600, 1600]]},
-      "_STD_Aged_cpi": {"2016": false}
+      //"_II_em_cpi": {"2016": false,
+      //               "2018": true},
+      "_II_em": {"2016": [5000],
+                 "2018": [6000],
+                 "2020": [7000]},
+      //"_STD_Aged_cpi": {"2016": false},
+      "_STD_Aged": {"2016": [[1600, 1300, 1300, 1600, 1600]],
+                    "2020": [[2000, 2000, 2000, 2000, 2000]]}
       }
     }
     """
@@ -901,8 +902,9 @@ def test_reform_documentation():
     {
     "consumption": {},
     "behavior": {},
-    // increase baseline inflation rate by one percentage point in 2014+
-    "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
+    // increase baseline inflation rate by one percentage point in 2018+
+    // "growdiff_baseline": {"_ACPIU": {"2018": [0.01]}},
+    "growdiff_baseline": {},
     "growdiff_response": {}
     }
     """
