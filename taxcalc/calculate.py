@@ -535,7 +535,7 @@ class Calculator(object):
                         pval = 0.0  # all parameters have zero default values
                     if isinstance(pval, np.ndarray):
                         pval = pval.tolist()  # pylint: disable=no-member
-                        if basevals[param]['range']['min'] is False:
+                        if basevals[param]['boolean_value']:
                             pval = [True if item else False for item in pval]
                     doc += '  baseline_value: {}\n'.format(pval)
             return doc

@@ -1,3 +1,5 @@
+import os
+import json
 import numpy as np
 import pytest
 from taxcalc import Policy, Records, Calculator, Behavior
@@ -156,3 +158,31 @@ def test_behavior_default_data():
     assert paramdata['_BE_inc'] == [0.0]
     assert paramdata['_BE_sub'] == [0.0]
     assert paramdata['_BE_cg'] == [0.0]
+
+
+def test_boolean_value_infomation(tests_path):
+    """
+    Check consistency of boolean_value in behavior.json file.
+    """
+    # read behavior.json file into a dictionary
+    path = os.path.join(tests_path, '..', 'behavior.json')
+    with open(path, 'r') as behfile:
+        beh = json.load(behfile)
+    for param in beh.keys():
+        val = beh[param]['value']
+        if isinstance(val, list):
+            val = val[0]
+            if isinstance(val, list):
+                val = val[0]
+        valstr = str(val)
+        if valstr == 'True' or valstr == 'False':
+            val_is_boolean = True
+        else:
+            val_is_boolean = False
+        if beh[param]['boolean_value'] != val_is_boolean:
+            print('param,boolean_value,val,val_is_boolean=',
+                  str(param),
+                  beh[param]['boolean_value'],
+                  val,
+                  val_is_boolean)
+            assert beh[param]['boolean_value'] == val_is_boolean

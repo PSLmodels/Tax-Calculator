@@ -1,3 +1,5 @@
+import os
+import json
 from numpy.testing import assert_allclose
 import pytest
 from taxcalc import Growdiff, Growfactors, Policy
@@ -52,3 +54,31 @@ def test_has_any_response():
     gdiff.update_growdiff({2020: {'_AWAGE': [0.01]}})
     assert gdiff.current_year == syr
     assert gdiff.has_any_response() is True
+
+
+def test_boolean_value_infomation(tests_path):
+    """
+    Check consistency of boolean_value in growdiff.json file.
+    """
+    # read growdiff.json file into a dictionary
+    path = os.path.join(tests_path, '..', 'growdiff.json')
+    with open(path, 'r') as gddfile:
+        gdd = json.load(gddfile)
+    for param in gdd.keys():
+        val = gdd[param]['value']
+        if isinstance(val, list):
+            val = val[0]
+            if isinstance(val, list):
+                val = val[0]
+        valstr = str(val)
+        if valstr == 'True' or valstr == 'False':
+            val_is_boolean = True
+        else:
+            val_is_boolean = False
+        if gdd[param]['boolean_value'] != val_is_boolean:
+            print('param,boolean_value,val,val_is_boolean=',
+                  str(param),
+                  gdd[param]['boolean_value'],
+                  val,
+                  val_is_boolean)
+            assert gdd[param]['boolean_value'] == val_is_boolean
