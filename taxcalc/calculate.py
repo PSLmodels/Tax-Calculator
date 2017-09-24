@@ -532,7 +532,7 @@ class Calculator(object):
                     else:  # if base is Growdiff object
                         pval = 0.0  # all parameters have zero default values
                     if isinstance(pval, np.ndarray):
-                        pval = pval.tolist()
+                        pval = pval.tolist()  # pylint: disable=no-member
                     doc += '  baseline_value: {}\n'.format(pval)
             return doc
         # begin main logic of reform_documentation
@@ -550,7 +550,7 @@ class Calculator(object):
         doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
         years = sorted(params['growdiff_baseline'].keys())
         if len(years) == 0:
-            doc += 'none: using baseline growth assumptions\n'
+            doc += 'none: using default baseline growth assumptions\n'
         else:
             doc += param_doc(years, params['growdiff_baseline'], gdb)
         doc += 'Policy Reform Parameter Values by Year:\n'

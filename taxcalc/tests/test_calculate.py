@@ -883,18 +883,51 @@ def test_read_json_param_with_suffixes_and_errors():
     assert len(pol.reform_warnings) > 0
 
 
+def test_noreform_documentation():
+    reform_json = """
+    {
+    "policy": {}
+    }
+    """
+    assump_json = """
+    {
+    "consumption": {},
+    "behavior": {},
+    "growdiff_baseline": {},
+    "growdiff_response": {}
+    }
+    """
+    params = Calculator.read_json_param_objects(reform_json, assump_json,
+                                                arrays_not_lists=False)
+    assert isinstance(params, dict)
+    actual_doc = Calculator.reform_documentation(params)
+    expected_doc = (
+        'REFORM DOCUMENTATION\n'
+        'Baseline Growth-Difference Assumption Values by Year:\n'
+        'none: using default baseline growth assumptions\n'
+        'Policy Reform Parameter Values by Year:\n'
+        'none: using current-law policy parameters\n'
+    )
+    assert actual_doc == expected_doc
+
+
 def test_reform_documentation():
     reform_json = """
     {
     "policy": {
-      //"_II_em_cpi": {"2016": false,
-      //               "2018": true},
+      "_II_em_cpi": {"2016": false,
+                     "2018": true},
       "_II_em": {"2016": [5000],
                  "2018": [6000],
                  "2020": [7000]},
-      //"_STD_Aged_cpi": {"2016": false},
+      "_STD_Aged_cpi": {"2016": false},
       "_STD_Aged": {"2016": [[1600, 1300, 1300, 1600, 1600]],
-                    "2020": [[2000, 2000, 2000, 2000, 2000]]}
+                    "2020": [[2000, 2000, 2000, 2000, 2000]]},
+      "_ID_BenefitCap_Switch_medical": {"2020": [false]},
+      "_ID_BenefitCap_Switch_casualty": {"2020": [false]},
+      "_ID_BenefitCap_Switch_misc": {"2020": [false]},
+      "_ID_BenefitCap_Switch_interest": {"2020": [false]},
+      "_ID_BenefitCap_Switch_charity": {"2020": [false]}
       }
     }
     """
@@ -902,9 +935,9 @@ def test_reform_documentation():
     {
     "consumption": {},
     "behavior": {},
-    // increase baseline inflation rate by one percentage point in 2018+
-    // "growdiff_baseline": {"_ACPIU": {"2018": [0.01]}},
-    "growdiff_baseline": {},
+    // increase baseline inflation rate by one percentage point in 2014+
+    // (has no effect on known policy parameter values)
+    "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
     "growdiff_response": {}
     }
     """
@@ -913,5 +946,7 @@ def test_reform_documentation():
     assert isinstance(params, dict)
     doc = Calculator.reform_documentation(params)
     assert isinstance(doc, six.string_types)
-    print(doc)  # TODO: remove debugging print
-    # assert 1 == 2  # TODO: complete test
+    dump = False  # set to True to print doc and force test failure
+    if dump:
+        print(doc)
+        assert 1 == 2
