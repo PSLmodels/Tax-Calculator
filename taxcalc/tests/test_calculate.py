@@ -946,7 +946,7 @@ def test_reform_documentation():
     assert isinstance(params, dict)
     doc = Calculator.reform_documentation(params)
     assert isinstance(doc, six.string_types)
-    dump = False  # set to True to print doc and force test failure
+    dump = False  # set to True to print documentation and force test failure
     if dump:
         print(doc)
         assert 1 == 2

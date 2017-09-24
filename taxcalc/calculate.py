@@ -506,6 +506,8 @@ class Calculator(object):
                     pval = change[year][param]
                     if isinstance(pval, list):
                         pval = pval[0]
+                        if basevals[param]['range']['min'] is False:
+                            pval = [True if item else False for item in pval]
                     doc += ' {} : {}\n'.format(param, pval)
                     if isinstance(pval, list):
                         pval = basevals[param]['col_label']
@@ -533,6 +535,8 @@ class Calculator(object):
                         pval = 0.0  # all parameters have zero default values
                     if isinstance(pval, np.ndarray):
                         pval = pval.tolist()  # pylint: disable=no-member
+                        if basevals[param]['range']['min'] is False:
+                            pval = [True if item else False for item in pval]
                     doc += '  baseline_value: {}\n'.format(pval)
             return doc
         # begin main logic of reform_documentation

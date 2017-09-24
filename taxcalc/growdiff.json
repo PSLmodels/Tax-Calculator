@@ -11,7 +11,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ACGNS": {
@@ -26,7 +27,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ACPIM": {
@@ -41,7 +43,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ACPIU": {
@@ -56,7 +59,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ADIVS": {
@@ -71,7 +75,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AINTS": {
@@ -86,7 +91,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AIPD": {
@@ -101,7 +107,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHCI": {
@@ -116,7 +123,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHCL": {
@@ -131,7 +139,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHEI": {
@@ -146,7 +155,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHEL": {
@@ -161,7 +171,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHF": {
@@ -176,7 +187,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASOCSEC": {
@@ -191,7 +203,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ATXPY": {
@@ -206,7 +219,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AUCOMP": {
@@ -221,7 +235,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AWAGE": {
@@ -236,6 +251,7 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     }
 }
