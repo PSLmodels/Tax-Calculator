@@ -36,7 +36,6 @@ def main():
     # create a calculator
     tax_dta1 = pd.read_csv(PUF_PATH)
     weight = pd.read_csv(WEIGHT_PATH)
-    print ("records1 = Records(tax_dta1, weights=weight)")
     records1 = Records(tax_dta1, weights=weight)
     policy1 = Policy(start_year=2013)
     calc1 = Calculator(records=records1, policy=policy1)
@@ -73,7 +72,7 @@ def creat_table_base():
     if os.path.exists(EVAR_PATH):
         with open(EVAR_PATH) as vfile:
             vardict = json.load(vfile)
-    print vardict['read']['DSI']
+
     # Use all variable list minus unused variable list
     # to get used variable list
     codes_imp_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
@@ -90,7 +89,7 @@ def creat_table_base():
                          'age_head', 'age_spouse',
                          'blind_head', 'blind_spouse'])
     used_vars_set = list(Records.USABLE_READ_VARS - codes_imp_set)
-    # read variable description from e_variable_info.csv
+    # read variable description from json file
     table = {}
     for var in used_vars_set:
         # use variable names as keys of dictionary
