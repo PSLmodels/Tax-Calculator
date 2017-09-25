@@ -506,7 +506,7 @@ class Calculator(object):
                     pval = change[year][param]
                     if isinstance(pval, list):
                         pval = pval[0]
-                        if basevals[param]['range']['min'] is False:
+                        if basevals[param]['boolean_value']:
                             pval = [True if item else False for item in pval]
                     doc += ' {} : {}\n'.format(param, pval)
                     if isinstance(pval, list):
