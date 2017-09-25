@@ -52,7 +52,7 @@
 
     "_ACPIU": {
         "long_name": "ACPIU additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.  Note that non-zero values of this parameter will not affect historically known values of the policy parameters.",
+        "description": "Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.  Note that non-zero values of this parameter will not affect historically known values of policy parameters.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -256,7 +256,7 @@
 
     "_AWAGE": {
         "long_name": "AWAGE additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values _SS_Earnings_c.",",
+        "description": "Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.",
         "section_1": "",
         "section_2": "",
         "notes": "",
