@@ -749,6 +749,24 @@ def test_json_reform_suffixes(tests_path):
         assert unmatched == 'UNMATCHED SUFFIXES'
 
 
+def test_description_punctuation(tests_path):
+    """
+    Check that each description ends in a period.
+    """
+    # read JSON file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    with open(path, 'r') as jsonfile:
+        dct = json.load(jsonfile)
+    all_desc_ok = True
+    for param in dct.keys():
+        if not dct[param]['description'].endswith('.'):
+            all_desc_ok = False
+            print('param,description=',
+                  str(param),
+                  dct[param]['description'])
+    assert all_desc_ok
+
+
 def test_boolean_value_infomation(tests_path):
     """
     Check consistency of boolean_value in current_law_policy.json file.

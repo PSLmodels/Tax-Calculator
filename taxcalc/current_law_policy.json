@@ -200,7 +200,7 @@
 
     "_ALD_StudentLoan_hc": {
         "long_name": "Adjustment for student loan interest haircut",
-        "description": "This decimal fraction can be applied to limit the student loan interest adjustment allowed. ",
+        "description": "This decimal fraction can be applied to limit the student loan interest adjustment allowed.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 33",
@@ -221,7 +221,7 @@
 
     "_ALD_SelfEmploymentTax_hc": {
         "long_name": "Adjustment for self-employment tax haircut",
-        "description": "This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment. ",
+        "description": "This decimal fraction, if greater than zero, reduces the employer equivalent portion of self-employment adjustment.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 27",
@@ -242,7 +242,7 @@
 
     "_ALD_SelfEmp_HealthIns_hc": {
         "long_name": "Adjustment for self employed health insurance haircut",
-        "description": "This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers. ",
+        "description": "This decimal fraction, if greater than zero, reduces the health insurance adjustment for self-employed taxpayers.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 29",
@@ -326,7 +326,7 @@
 
     "_ALD_EducatorExpenses_hc": {
         "long_name": "Deduction for educator expenses haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI",
+        "description": "If greater than zero, this decimal fraction reduces the portion of educator expenses that can be deducted from AGI.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
@@ -347,7 +347,7 @@
 
     "_ALD_HSADeduction_hc": {
         "long_name": "Deduction for HSA deduction haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI",
+        "description": "If greater than zero, this decimal fraction reduces the portion of a taxpayer's HSA deduction that can be deducted from AGI.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
@@ -368,7 +368,7 @@
 
     "_ALD_IRAContributions_hc": {
         "long_name": "Deduction for IRA contributions haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI",
+        "description": "If greater than zero, this decimal fraction reduces the portion of IRA contributions that can be deducted from AGI.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
@@ -389,7 +389,7 @@
 
     "_ALD_DomesticProduction_hc": {
         "long_name": "Deduction for domestic production activity haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI",
+        "description": "If greater than zero, this decimal fraction reduces the portion of domestic production activity that can be deducted from AGI.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
@@ -410,7 +410,7 @@
 
     "_ALD_Tuition_hc": {
         "long_name": "Deduction for tuition and fees haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI",
+        "description": "If greater than zero, this decimal fraction reduces the portion of tuition and fees that can be deducted from AGI.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "",
@@ -473,7 +473,7 @@
 
     "_ALD_Dependents_hc": {
         "long_name": "Deduction for childcare costs haircut",
-        "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI",
+        "description": "This decimal fraction, if greater than zero, reduces the portion of childcare costs that can be deducted from AGI.",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "irs_ref": "",
@@ -494,7 +494,7 @@
 
     "_ALD_Dependents_Child_c": {
         "long_name": "National average childcare costs: ceiling for available childcare deduction.",
-        "description": "The weighted average of childcare costs in the US. 7165 is the weighted average from the 'Child Care in America: 2016 State Fact Sheets'",
+        "description": "The weighted average of childcare costs in the US. 7165 is the weighted average from the 'Child Care in America: 2016 State Fact Sheets'.",
         "section_1": "Above The Line Deductions",
         "section_2": "Child And Elderly Care",
         "irs_ref": "",
@@ -602,7 +602,7 @@
 
     "_II_em_ps": {
         "long_name": "Personal exemption phaseout starting income",
-        "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision). ",
+        "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).",
         "section_1": "",
         "section_2": "",
         "irs_ref": "Form 1040, line 42, instruction (Worksheet).",
@@ -652,7 +652,7 @@
 
     "_II_no_em_nu18": {
         "long_name": "Repeal personal exemptions for dependents under age 18",
-        "description": "Total personal exemptions will be decreased by the number of dependents under the age of 18",
+        "description": "Total personal exemptions will be decreased by the number of dependents under the age of 18.",
         "section_1": "Personal Exemptions",
         "section_2": "Repeal for Dependents Under Age 18",
         "irs_ref": "",
@@ -731,7 +731,7 @@
 
     "_STD_Aged": {
         "long_name": "Additional standard deduction for blind and aged",
-        "description": "To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction",
+        "description": "To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction.",
         "section_1": "Standard Deduction",
         "section_2": "Additional Standard Deduction For Blind And Aged",
         "irs_ref": "Form 1040, line 40, calculation (the difference of the two tables given in the instruction).",
@@ -1010,7 +1010,7 @@
 
     "_ID_Medical_c": {
         "long_name": "Ceiling on the amount of medical expense deduction allowed (dollars)",
-        "description": "The amount of medical expense deduction is limited to this dollar amount. ",
+        "description": "The amount of medical expense deduction is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "irs_ref": "",
@@ -1060,7 +1060,7 @@
 
     "_ID_StateLocalTax_c": {
         "long_name": "Ceiling on the amount of state and local income and sales taxes deduction allowed (dollars)",
-        "description": "The amount of state and local income and sales taxes deduction is limited to this dollar amount. ",
+        "description": "The amount of state and local income and sales taxes deduction is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "State And Local Income And Sales Taxes",
         "irs_ref": "",
@@ -1110,7 +1110,7 @@
 
     "_ID_RealEstate_c": {
         "long_name": "Ceiling on the amount of state, local, and foreign real estate taxes deduction allowed (dollars)",
-        "description": "The amount of real estate taxes deduction is limited to this dollar amount. ",
+        "description": "The amount of real estate taxes deduction is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "State, Local, And Foreign Real Estate Taxes",
         "irs_ref": "",
@@ -1189,7 +1189,7 @@
 
     "_ID_Charity_crt_all": {
         "long_name": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
-        "description": "The total deduction for charity is capped at this fraction of AGI. ",
+        "description": "The total deduction for charity is capped at this fraction of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "irs_ref": "Pub. 526, Limits on Deductions: 50% Limit Organizations. ",
@@ -1210,7 +1210,7 @@
 
     "_ID_Charity_crt_noncash": {
         "long_name": "Ceiling (as a decimal fraction of AGI) for noncash charitable contribution deductions",
-        "description": "The deduction for noncash charity contributions is capped at this fraction of AGI. ",
+        "description": "The deduction for noncash charity contributions is capped at this fraction of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "irs_ref": "Pub 526, Limits on Deductions: Special 30% Limit for Capital Gain Property.",
@@ -1274,7 +1274,7 @@
 
     "_ID_Charity_c": {
         "long_name": "Ceiling on the amount of charity expense deduction allowed (dollars)",
-        "description": "The amount of charity expense deduction is limited to this dollar amount. ",
+        "description": "The amount of charity expense deduction is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "irs_ref": "",
@@ -1345,7 +1345,7 @@
 
     "_ID_Casualty_c": {
         "long_name": "Ceiling on the amount of casualty expense deduction allowed (dollars)",
-        "description": "The amount of casualty expense deduction is limited to this dollar amount. ",
+        "description": "The amount of casualty expense deduction is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "Casualty",
         "irs_ref": "",
@@ -1416,7 +1416,7 @@
 
     "_ID_Miscellaneous_c": {
         "long_name": "Ceiling on the amount of miscellaneous expense deduction allowed (dollars)",
-        "description": "The amount of miscellaneous expense deduction is limited to this dollar amount. ",
+        "description": "The amount of miscellaneous expense deduction is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "Miscellaneous",
         "irs_ref": "",
@@ -1495,7 +1495,7 @@
 
     "_ID_crt": {
         "long_name": "Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease)",
-        "description": "The phaseout amount is capped at this fraction of the original total deduction. ",
+        "description": "The phaseout amount is capped at this fraction of the original total deduction.",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "irs_ref": "Form 1040 Schedule A, line 29, instructions. ",
@@ -1588,7 +1588,7 @@
 
     "_ID_BenefitSurtax_Switch": {
         "long_name": "Deductions subject to the surtax on itemized deduction benefits",
-        "description": "The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
+        "description": "The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter.",
         "section_1": "Itemized Deductions",
         "section_2": "Surtax On Itemized Deduction Benefits Above An AGI Threshold",
         "irs_ref": "",
@@ -1631,7 +1631,7 @@
 
     "_ID_BenefitCap_Switch": {
         "long_name": "Deductions subject to the cap on itemized deduction benefits",
-        "description": "The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
+        "description": "The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter.",
         "section_1": "Itemized Deductions",
         "section_2": "Ceiling On The Benefit Of Itemized Deductions As A Percent Of Deductible Expenses",
         "irs_ref": "",
@@ -1652,7 +1652,7 @@
 
     "_ID_c": {
         "long_name": "Ceiling on the amount of itemized deductions allowed (dollars)",
-        "description": "The amount of itemized deductions is limited to this dollar amount. ",
+        "description": "The amount of itemized deductions is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
         "section_2": "Ceiling On The Amount Of Itemized Deductions Allowed",
         "irs_ref": "",
@@ -1703,7 +1703,7 @@
 
     "_ID_AmountCap_Switch": {
         "long_name": "Deductions subject to the cap on itemized deduction benefits",
-        "description": "The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter. ",
+        "description": "The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter.",
         "section_1": "Itemized Deductions",
         "section_2": "Ceiling On The Amount Of Itemized Deductions Allowed",
         "irs_ref": "",
@@ -1724,7 +1724,7 @@
 
     "_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividends (regular/non-AMT) rate 1",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate. ",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 20, in-line. ",
@@ -1745,7 +1745,7 @@
 
     "_CG_brk1": {
         "long_name": "Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 1",
-        "description": "The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1. ",
+        "description": "The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 15, in-line. ",
@@ -1774,7 +1774,7 @@
 
     "_CG_rt2": {
         "long_name": "Long term capital gain and qualified dividends (regular/non-AMT) rate 2",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 are taxed at this rate. ",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 are taxed at this rate.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 29, in-line. ",
@@ -1824,7 +1824,7 @@
 
     "_CG_rt3": {
         "long_name": "Long term capital gain and qualified dividends (regular/non-AMT) rate 3",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 2 and below threshold 3 are taxed at this rate. ",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 2 and below threshold 3 are taxed at this rate.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "irs_ref": "Form 1040 Schedule D tax worksheet, line 32, in-line. ",
@@ -1874,7 +1874,7 @@
 
     "_CG_rt4": {
         "long_name": "Long term capital gain and qualified dividends (regular/non-AMT) rate 4",
-        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate. ",
+        "description": "The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "Regular - Long Term Capital Gains And Qualified Dividends",
         "irs_ref": "",
@@ -1896,7 +1896,7 @@
 
     "_AMT_CG_rt1": {
         "long_name": "Long term capital gain and qualified dividends (AMT) rate 1",
-        "description": "Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate. ",
+        "description": "Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate.",
         "section_1": "Capital Gains And Dividends",
         "section_2": "AMT - Long Term Capital Gains And Qualified Dividends",
         "irs_ref": "Form 6251, line 47, in-line. ",
@@ -2140,7 +2140,7 @@
 
     "_II_rt1": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 1",
-        "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1. ",
+        "description": "The lowest tax rate, applied to the portion of taxable income below tax bracket 1.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2161,7 +2161,7 @@
 
     "_II_brk1": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 1",
-        "description": "Taxable income below this threshold is taxed at tax rate 1. ",
+        "description": "Taxable income below this threshold is taxed at tax rate 1.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -2190,7 +2190,7 @@
 
     "_II_rt2": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 2",
-        "description": "The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1. ",
+        "description": "The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2212,7 +2212,7 @@
 
     "_II_brk2": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 2",
-        "description": "Income below this threshold and above tax bracket 1 is taxed at tax rate 2. ",
+        "description": "Income below this threshold and above tax bracket 1 is taxed at tax rate 2.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -2241,7 +2241,7 @@
 
     "_II_rt3": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 3",
-        "description": "The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2. ",
+        "description": "The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2291,7 +2291,7 @@
 
     "_II_rt4": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 4",
-        "description": "The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3. ",
+        "description": "The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2341,7 +2341,7 @@
 
     "_II_rt5": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 5",
-        "description": "The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4. ",
+        "description": "The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2392,7 +2392,7 @@
 
     "_II_rt6": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 6",
-        "description": "The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5. ",
+        "description": "The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2442,7 +2442,7 @@
 
     "_II_rt7": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax rate 7",
-        "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6. ",
+        "description": "The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2463,7 +2463,7 @@
 
     "_II_brk7": {
         "long_name": "Personal income (regular/non-AMT/non-pass-through) tax bracket 7",
-        "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity",
+        "description": "Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity.",
         "section_1": "Personal Income",
         "section_2": "Regular: Non-AMT, Non-Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -2515,7 +2515,7 @@
 
     "_PT_rt1": {
         "long_name": "Pass-through income tax rate 1",
-        "description": "The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 1. ",
+        "description": "The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 1.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2536,7 +2536,7 @@
 
     "_PT_brk1": {
         "long_name": "Pass-through income tax bracket (upper threshold) 1",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1. ",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -2565,7 +2565,7 @@
 
     "_PT_rt2": {
         "long_name": "Pass-through income tax rate 2",
-        "description": "The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 2 and above tax bracket 1. ",
+        "description": "The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 2 and above tax bracket 1.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2587,7 +2587,7 @@
 
     "_PT_brk2": {
         "long_name": "Pass-through income tax bracket (upper threshold) 2",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 1 is taxed at tax rate 2. ",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 1 is taxed at tax rate 2.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -2616,7 +2616,7 @@
 
     "_PT_rt3": {
         "long_name": "Pass-through income tax rate 3",
-        "description": "The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 3 and above tax bracket 2. ",
+        "description": "The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 3 and above tax bracket 2.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2666,7 +2666,7 @@
 
     "_PT_rt4": {
         "long_name": "Pass-through income tax rate 4",
-        "description": "The tax rate applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 4 and above tax bracket 3. ",
+        "description": "The tax rate applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 4 and above tax bracket 3.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2716,7 +2716,7 @@
 
     "_PT_rt5": {
         "long_name": "Pass-through income tax rate 5",
-        "description": "The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 5 and above tax bracket 4. ",
+        "description": "The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 5 and above tax bracket 4.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2766,7 +2766,7 @@
 
     "_PT_rt6": {
         "long_name": "Pass-through income tax rate 6",
-        "description": "The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 6 and above tax bracket 5. ",
+        "description": "The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 6 and above tax bracket 5.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2816,7 +2816,7 @@
 
     "_PT_rt7": {
         "long_name": "Pass-through income tax rate 7",
-        "description": "The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 7 and above tax bracket 6. ",
+        "description": "The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 7 and above tax bracket 6.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -2837,7 +2837,7 @@
 
     "_PT_brk7": {
         "long_name": "Extra pass-through income tax bracket",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity",
+        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "",
@@ -2918,7 +2918,7 @@
 
     "_AMT_prt": {
         "long_name": "AMT exemption phaseout rate",
-        "description": "AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start. ",
+        "description": "AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start.",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "section_3": "Exemption",
@@ -3142,7 +3142,7 @@
 
     "_CDCC_ps": {
         "long_name": "Child & dependent care credit phaseout start",
-        "description": "For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount. ",
+        "description": "For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "notes": "",
@@ -3183,7 +3183,7 @@
 
     "_CTC_c": {
         "long_name": "Maximum child tax credit per child",
-        "description": "The maximum amount of credit allowed for each child. ",
+        "description": "The maximum amount of credit allowed for each child.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "form 1040, line 52, instructions (child tax credit worksheet, line 1).",
@@ -3246,7 +3246,7 @@
 
     "_CTC_prt": {
         "long_name": "Child tax credit phaseout rate",
-        "description": "The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start. ",
+        "description": "The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "Form 1040, line 52, instruction (child tax credit worksheet, line 5)",
@@ -3309,7 +3309,7 @@
 
     "_NIIT_PT_taxed": {
         "long_name": "Whether or not partnership and S-corp income is in NIIT base",
-        "description": "false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and S-corp income is in NIIT base",
+        "description": "false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and S-corp income is in NIIT base.",
         "section_1": "Other Taxes",
         "section_2": "Net Investment Income Tax",
         "irs_ref": "",
@@ -3351,7 +3351,7 @@
 
     "_EITC_c": {
         "long_name": "Maximum earned income credit",
-        "description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have. ",
+        "description": "This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "IRS reference: form 1040, line 66a&b, instruction (table).",
@@ -3423,7 +3423,7 @@
 
     "_EITC_ps": {
         "long_name": "Earned income credit phaseout start AGI",
-        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease at the phaseout rate. ",
+        "description": "If AGI is higher than this threshold, the amount of EITC will start to decrease at the phaseout rate.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "Form 1040, line 66a&b, instructions.",
@@ -3649,7 +3649,7 @@
 
     "_ACTC_rt": {
         "long_name": "Additional Child Tax Credit rate",
-        "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers. ",
+        "description": "This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers.",
         "section_1": "Refundable Credits",
         "section_2": "Additional Child Tax Credit",
         "irs_ref": "Form 8812, line 8, inline.",
@@ -3754,7 +3754,7 @@
 
     "_CTC_new_c_under5_bonus": {
         "long_name": "Bonus new refundable child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old. ",
+        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "irs_ref": "",
@@ -3846,7 +3846,7 @@
 
     "_CTC_new_refund_limited": {
         "long_name": "New child tax credit refund limited to a decimal fraction of payroll taxes",
-        "description": "Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt)",
+        "description": "Specifies whether the new child tax credit refund is limited by the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt).",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "irs_ref": "",
@@ -3909,7 +3909,7 @@
 
     "_FST_AGI_thd_lo": {
         "long_name": "Minimum AGI needed to be subject to the new minimum tax",
-        "description": "A taxpayer is only subject to the new minimum tax if they exceed this level of AGI",
+        "description": "A taxpayer is only subject to the new minimum tax if they exceed this level of AGI.",
         "section_1": "Surtaxes",
         "section_2": "New Minimum Tax",
         "irs_ref": "",
@@ -3938,7 +3938,7 @@
 
     "_FST_AGI_thd_hi": {
         "long_name": "AGI level at which the New Minimum Tax is fully phased in",
-        "description": "The new minimum tax will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold",
+        "description": "The new minimum tax will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold.",
         "section_1": "Surtaxes",
         "section_2": "New Minimum Tax",
         "irs_ref": "",
@@ -4039,7 +4039,7 @@
 
     "_UBI1": {
         "long_name": "UBI benefit for those under 18",
-        "description": "UBI benefit provided to people under 18",
+        "description": "UBI benefit provided to people under 18.",
         "section_1": "",
         "section_2": "",
         "irs_ref": "",
@@ -4068,7 +4068,7 @@
 
     "_UBI2": {
         "long_name": "UBI benefit for those 18 through 20",
-        "description": "UBI benefit provided to people 18-20 years of age",
+        "description": "UBI benefit provided to people 18-20 years of age.",
         "section_1": "",
         "section_2": "",
         "irs_ref": "",
@@ -4097,7 +4097,7 @@
 
     "_UBI3": {
         "long_name": "UBI benefit for those 21 and over",
-        "description": "UBI benefit provided to people 21 and over",
+        "description": "UBI benefit provided to people 21 and over.",
         "section_1": "",
         "section_2": "",
         "irs_ref": "",
@@ -4126,7 +4126,7 @@
 
     "_UBI_ecrt": {
         "long_name": "Fraction of UBI benefits excluded from AGI",
-        "description": "One minus this fraction of UBI benefits are taxable and will be added to AGI",
+        "description": "One minus this fraction of UBI benefits are taxable and will be added to AGI.",
         "section_1": "",
         "section_2": "",
         "irs_ref": "",
@@ -4147,7 +4147,7 @@
 
     "_CR_RetirementSavings_hc": {
         "long_name": "Credit for retirement savings haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of the retirement savings credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the retirement savings credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4168,7 +4168,7 @@
 
     "_CR_ForeignTax_hc": {
         "long_name": "Credit for foreign tax haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of the foreign tax credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the foreign tax credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4189,7 +4189,7 @@
 
     "_CR_ResidentialEnergy_hc": {
         "long_name": "Credit for residential energy haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of the residential energy credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the residential energy credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4210,7 +4210,7 @@
 
     "_CR_GeneralBusiness_hc": {
         "long_name": "Credit for general business haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of the general business credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the general business credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4231,7 +4231,7 @@
 
     "_CR_MinimumTax_hc": {
         "long_name": "Credit for previous year minimum tax credit haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of the previous year minimum tax credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the previous year minimum tax credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4252,7 +4252,7 @@
 
     "_CR_AmOppRefundable_hc": {
         "long_name": "Refundable portion of the American Opportunity Credit haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of the refundable American Opportunity credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the refundable American Opportunity credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4273,7 +4273,7 @@
 
     "_CR_AmOppNonRefundable_hc": {
         "long_name": "Nonrefundable portion of the American Opportunity Credit haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of the nonrefundable American Opportunity credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of the nonrefundable American Opportunity credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4294,7 +4294,7 @@
 
     "_CR_SchR_hc": {
         "long_name": "Schedule R Credit haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of Schedule R credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4315,7 +4315,7 @@
 
     "_CR_OtherCredits_hc": {
         "long_name": "Other Credits haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of other credit that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of other credit that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
@@ -4336,7 +4336,7 @@
 
     "_CR_Education_hc": {
         "long_name": "Education Credits haircut",
-        "description": "If greater than zero, this decimal fraction reduces the portion of education credits that can be claimed",
+        "description": "If greater than zero, this decimal fraction reduces the portion of education credits that can be claimed.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Misc. Credit Limits",
         "irs_ref": "",
