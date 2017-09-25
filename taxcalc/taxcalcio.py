@@ -135,7 +135,7 @@ class TaxCalcIO(object):
         self.behavior_has_any_response = False
         self.calc = None
         self.calc_clp = None
-        self.param_dict = None
+        self.param_dict_with_lists = None
 
     def init(self, input_data, tax_year, reform, assump,
              growdiff_response,
@@ -166,7 +166,8 @@ class TaxCalcIO(object):
         self.errmsg = ''
         # get parameter dictionaries from --reform and --assump files
         param_dict = Calculator.read_json_param_objects(reform, assump)
-        self.param_dict = param_dict
+        self.param_dict_with_lists = Calculator.read_json_param_objects(
+            reform, assump, arrays_not_lists=False)
         # create Behavior object
         beh = Behavior()
         beh.update_behavior(param_dict['behavior'])
@@ -401,7 +402,7 @@ class TaxCalcIO(object):
         """
         Write reform documentation to text file.
         """
-        doc = Calculator.reform_documentation(self.param_dict)
+        doc = Calculator.reform_documentation(self.param_dict_with_lists)
         doc_fname = self._output_filename.replace('.csv', '-doc.text')
         with open(doc_fname, 'w') as dfile:
             dfile.write(doc)
