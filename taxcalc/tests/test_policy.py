@@ -430,7 +430,7 @@ def test_parameters_get_default_start_year():
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for Calculator read_json_param_files().
+// Example of reform file suitable for Calculator read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // The primary keys are policy parameters and secondary keys are years.
@@ -474,7 +474,7 @@ REFORM_CONTENTS = """
 @pytest.fixture(scope='module', name='reform_file')
 def fixture_reform_file():
     """
-    Temporary reform file for Calculator read_json_param_files function.
+    Temporary reform file for Calculator read_json_param_objects() function.
     """
     with tempfile.NamedTemporaryFile(mode='a', delete=False) as rfile:
         rfile.write(REFORM_CONTENTS)
@@ -488,7 +488,7 @@ def fixture_reform_file():
 
 
 @pytest.mark.parametrize("set_year", [False, True])
-def test_read_json_param_files_and_implement_reform(reform_file, set_year):
+def test_read_json_param_and_implement_reform(reform_file, set_year):
     """
     Test reading and translation of reform file into a reform dictionary
     that is then used to call implement_reform method.
@@ -497,7 +497,7 @@ def test_read_json_param_files_and_implement_reform(reform_file, set_year):
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    param_dict = Calculator.read_json_param_files(reform_file.name, None)
+    param_dict = Calculator.read_json_param_objects(reform_file.name, None)
     policy.implement_reform(param_dict['policy'])
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1

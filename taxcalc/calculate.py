@@ -358,33 +358,35 @@ class Calculator(object):
         return calc
 
     @staticmethod
-    def read_json_param_files(reform_filename, assump_filename,
-                              arrays_not_lists=True):
+    def read_json_param_objects(reform, assump, arrays_not_lists=True):
         """
-        Read JSON files and call Calculator.read_json_*_text methods
-        returning a single dictionary containing five key:dict pairs:
+        Read JSON reform and assump objects and
+        return a single dictionary containing five key:dict pairs:
         'policy':dict, 'consumption':dict, 'behavior':dict,
         'growdiff_baseline':dict and 'growdiff_response':dict.
 
-        Note that either of the first two parameters may be None, in which
-        case an empty dictionary or empty dictionaries will be returned.
+        Note that either of the first two parameters may be None.
+        If reform is None, the dict in the 'policy':dict pair is empty.
+        If assump is None, the dict in the 'consumption':dict pair,
+        in the 'behavior':dict pair, in the 'growdiff_baseline':dict pair,
+        and in the 'growdiff_response':dict pair, are all empty.
 
         Also note that either of the first two parameters can be strings
-        containing the JSON parameter file contents (rather than filename),
-        in which case the file reading is skipped and the read_json_*_text
-        method is called.
+        containing a valid JSON string (rather than a filename),
+        in which case the file reading is skipped and the appropriate
+        read_json_*_text method is called.
         """
         # first process second assump parameter
-        if assump_filename is None:
+        if assump is None:
             cons_dict = dict()
             behv_dict = dict()
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
-        elif isinstance(assump_filename, str):
-            if os.path.isfile(assump_filename):
-                txt = open(assump_filename, 'r').read()
+        elif isinstance(assump, six.string_types):
+            if os.path.isfile(assump):
+                txt = open(assump, 'r').read()
             else:
-                txt = assump_filename
+                txt = assump
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
@@ -392,22 +394,22 @@ class Calculator(object):
                  Calculator._read_json_econ_assump_text(txt,
                                                         arrays_not_lists))
         else:
-            raise ValueError('assump_filename is neither None nor str')
+            raise ValueError('assump is neither None nor string')
         # next process first reform parameter
-        if reform_filename is None:
+        if reform is None:
             rpol_dict = dict()
-        elif isinstance(reform_filename, str):
-            if os.path.isfile(reform_filename):
-                txt = open(reform_filename, 'r').read()
+        elif isinstance(reform, six.string_types):
+            if os.path.isfile(reform):
+                txt = open(reform, 'r').read()
             else:
-                txt = reform_filename
+                txt = reform
             rpol_dict = (
                 Calculator._read_json_policy_reform_text(txt,
                                                          arrays_not_lists,
                                                          gdiff_base_dict,
                                                          gdiff_resp_dict))
         else:
-            raise ValueError('reform_filename is neither None nor str')
+            raise ValueError('reform is neither None nor string')
         # finally construct and return single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict

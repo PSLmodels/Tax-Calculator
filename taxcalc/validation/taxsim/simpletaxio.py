@@ -104,7 +104,7 @@ class SimpleTaxIO(object):
         # implement reform if reform is specified
         if reform:
             if self._using_reform_file:
-                param_dict = Calculator.read_json_param_files(reform, None)
+                param_dict = Calculator.read_json_param_objects(reform, None)
                 r_pol = param_dict['policy']
             else:
                 r_pol = reform

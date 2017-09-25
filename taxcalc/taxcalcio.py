@@ -161,7 +161,7 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
         # get parameter dictionaries from --reform and --assump files
-        param_dict = Calculator.read_json_param_files(reform, assump)
+        param_dict = Calculator.read_json_param_objects(reform, assump)
         # create Behavior object
         beh = Behavior()
         beh.update_behavior(param_dict['behavior'])
