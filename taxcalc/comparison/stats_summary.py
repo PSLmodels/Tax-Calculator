@@ -16,9 +16,7 @@ import json
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
 from taxcalc import Policy, Records, Calculator
-from taxcalc.utils import read_egg_json
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
-WEIGHT_PATH = os.path.join(CUR_PATH, "..", "puf_weights.csv")
 EVAR_PATH = os.path.join(CUR_PATH, "..", "records_variables.json")
 
 
@@ -35,8 +33,7 @@ def main():
     args = parser.parse_args()
     # create a calculator
     tax_dta1 = pd.read_csv(PUF_PATH)
-    weight = pd.read_csv(WEIGHT_PATH)
-    records1 = Records(tax_dta1, weights=weight)
+    records1 = Records(tax_dta1)
     policy1 = Policy(start_year=2013)
     calc1 = Calculator(records=records1, policy=policy1)
     table = creat_table_base()
