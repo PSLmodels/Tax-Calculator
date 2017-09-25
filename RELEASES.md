@@ -15,7 +15,9 @@ Release 0.12.0 on 2017-??-??
   by Martin Holmer]
 
 **New Features**
-- None
+- Add Calculator.reform_documentation that generates plain text documentation of a reform
+  [[#1564](https://github.com/open-source-economics/Tax-Calculator/pull/1564)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None

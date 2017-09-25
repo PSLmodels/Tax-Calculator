@@ -27,8 +27,10 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
-from taxcalc.behavior import Behavior
 from taxcalc.consumption import Consumption
+from taxcalc.behavior import Behavior
+from taxcalc.growdiff import Growdiff
+from taxcalc.growfactors import Growfactors
 # import pdb
 
 
@@ -375,6 +377,15 @@ class Calculator(object):
         containing a valid JSON string (rather than a filename),
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
+
+        The reform file contents or JSON string must be like:
+        {"policy": {...}}
+        and the assump file contents or JSON string must be like:
+        {"consumption": {...},
+         "behavior": {...},
+         "growdiff_baseline": {...},
+         "growdiff_response": {...}
+        }
         """
         # first process second assump parameter
         if assump is None:
@@ -422,6 +433,137 @@ class Calculator(object):
     REQUIRED_REFORM_KEYS = set(['policy'])
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
                                 'growdiff_baseline', 'growdiff_response'])
+
+    @staticmethod
+    def reform_documentation(params):
+        """
+        Generate reform documentation.
+
+        Parameters
+        ----------
+        params: dict
+            compound dictionary structured as dict returned from
+            the static Calculator method read_json_param_objects()
+
+        Returns
+        -------
+        doc: String
+            the documentation for the policy reform specified in params
+        """
+        # pylint: disable=too-many-statements
+        # nested function used only in reform_documentation
+        def param_doc(years, change, base):
+            """
+            Parameters
+            ----------
+            years: list of change years
+            change: dictionary of parameter changes
+            base: Policy or Growdiff object with baseline values
+            syear: parameter start calendar year
+
+            Returns
+            -------
+            doc: String
+            """
+            # pylint: disable=too-many-branches
+            # nested function used only in param_doc
+            def lines(text, num_indent_spaces, max_line_length=77):
+                """
+                Return list of text lines, each one of which is no longer
+                than max_line_length, with the second and subsequent lines
+                being indented by the number of specified num_indent_spaces;
+                each line in the list ends with the '\n' character
+                """
+                if len(text) < max_line_length:
+                    # all text fits on one line
+                    line = text + '\n'
+                    return [line]
+                # all text does not fix on one line
+                first_line = True
+                line_list = list()
+                words = text.split()
+                while len(words) > 0:
+                    if first_line:
+                        line = ''
+                        first_line = False
+                    else:
+                        line = ' ' * num_indent_spaces
+                    while (len(words) > 0 and
+                           (len(words[0]) + len(line)) < max_line_length):
+                        line += words.pop(0) + ' '
+                    line = line[:-1] + '\n'
+                    line_list.append(line)
+                return line_list
+            # begin main logic of param_doc
+            assert len(years) == len(change.keys())
+            basevals = getattr(base, '_vals', None)
+            assert isinstance(basevals, dict)
+            doc = ''
+            for year in years:
+                base.set_year(year)
+                doc += '{}:\n'.format(year)
+                for param in sorted(change[year].keys()):
+                    pval = change[year][param]
+                    if isinstance(pval, list):
+                        pval = pval[0]
+                        if basevals[param]['boolean_value']:
+                            pval = [True if item else False for item in pval]
+                    doc += ' {} : {}\n'.format(param, pval)
+                    if isinstance(pval, list):
+                        pval = basevals[param]['col_label']
+                        pval = [str(item) for item in pval]
+                        doc += ' ' * (4 + len(param)) + '{}\n'.format(pval)
+                    if param.endswith('_cpi'):
+                        rootparam = param[:-4]
+                        name = '{} inflation indexing status'.format(rootparam)
+                    else:
+                        name = basevals[param]['long_name']
+                    for line in lines('name: ' + name, 6):
+                        doc += '  ' + line
+                    if not param.endswith('_cpi'):
+                        desc = basevals[param]['description']
+                        for line in lines('desc: ' + desc, 6):
+                            doc += '  ' + line
+                    if isinstance(base, Policy):
+                        if param.endswith('_cpi'):
+                            rootparam = param[:-4]
+                            pval = basevals[rootparam].get('cpi_inflated',
+                                                           False)
+                        else:
+                            pval = getattr(base, param[1:], None)
+                    else:  # if base is Growdiff object
+                        pval = 0.0  # all parameters have zero default values
+                    if isinstance(pval, np.ndarray):
+                        pval = pval.tolist()  # pylint: disable=no-member
+                        if basevals[param]['boolean_value']:
+                            pval = [True if item else False for item in pval]
+                    doc += '  baseline_value: {}\n'.format(pval)
+            return doc
+        # begin main logic of reform_documentation
+        # create Policy object with pre-reform (i.e., baseline) values
+        # ... create gdiff_baseline object
+        gdb = Growdiff()
+        gdb.update_growdiff(params['growdiff_baseline'])
+        # ... create Growfactors clp object that incorporates gdiff_baseline
+        gfactors_clp = Growfactors()
+        gdb.apply_to(gfactors_clp)
+        # ... create Policy object containing pre-reform parameter values
+        clp = Policy(gfactors=gfactors_clp)
+        # generate documentation text
+        doc = 'REFORM DOCUMENTATION\n'
+        doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
+        years = sorted(params['growdiff_baseline'].keys())
+        if len(years) == 0:
+            doc += 'none: using default baseline growth assumptions\n'
+        else:
+            doc += param_doc(years, params['growdiff_baseline'], gdb)
+        doc += 'Policy Reform Parameter Values by Year:\n'
+        years = sorted(params['policy'].keys())
+        if len(years) == 0:
+            doc += 'none: using current-law policy parameters\n'
+        else:
+            doc += param_doc(years, params['policy'], clp)
+        return doc
 
     # ----- begin private methods of Calculator class -----
 
@@ -642,7 +784,7 @@ class Calculator(object):
     def _convert_parameter_dict(param_key_dict, arrays_not_lists):
         """
         Converts specified param_key_dict into a dictionary whose primary
-        keys are calendary years, and hence, is suitable as the argument to
+        keys are calendar years, and hence, is suitable as the argument to
         the Policy.implement_reform() method, or
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or

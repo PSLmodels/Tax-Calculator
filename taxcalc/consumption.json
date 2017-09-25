@@ -11,6 +11,7 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": false,
         "value": [0.0]
     },
 
@@ -27,6 +28,7 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": false,
         "value": [0.0]
     },
 
@@ -43,6 +45,7 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": false,
         "value": [0.0]
     },
 
@@ -59,6 +62,7 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": false,
         "value": [0.0]
     }
 }

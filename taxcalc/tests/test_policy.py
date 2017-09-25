@@ -749,6 +749,52 @@ def test_json_reform_suffixes(tests_path):
         assert unmatched == 'UNMATCHED SUFFIXES'
 
 
+def test_description_punctuation(tests_path):
+    """
+    Check that each description ends in a period.
+    """
+    # read JSON file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    with open(path, 'r') as jsonfile:
+        dct = json.load(jsonfile)
+    all_desc_ok = True
+    for param in dct.keys():
+        if not dct[param]['description'].endswith('.'):
+            all_desc_ok = False
+            print('param,description=',
+                  str(param),
+                  dct[param]['description'])
+    assert all_desc_ok
+
+
+def test_boolean_value_infomation(tests_path):
+    """
+    Check consistency of boolean_value in current_law_policy.json file.
+    """
+    # read current_law_policy.json file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    with open(path, 'r') as clpfile:
+        clp = json.load(clpfile)
+    for param in clp.keys():
+        val = clp[param]['value']
+        if isinstance(val, list):
+            val = val[0]
+            if isinstance(val, list):
+                val = val[0]
+        valstr = str(val)
+        if valstr == 'True' or valstr == 'False':
+            val_is_boolean = True
+        else:
+            val_is_boolean = False
+        if clp[param]['boolean_value'] != val_is_boolean:
+            print('param,boolean_value,val,val_is_boolean=',
+                  str(param),
+                  clp[param]['boolean_value'],
+                  val,
+                  val_is_boolean)
+            assert clp[param]['boolean_value'] == val_is_boolean
+
+
 def test_range_infomation(tests_path):
     """
     Check consistency of range-related info in current_law_policy.json file.
