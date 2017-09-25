@@ -105,7 +105,7 @@ def cli_tc_main():
     args = parser.parse_args()
     # write test input and expected output files if --test option specified
     if args.test:
-        _write_test_input_output_files()
+        _write_expected_test_output()
         inputfn = TEST_INPUT_FILENAME
         taxyear = TEST_TAXYEAR
     else:
@@ -148,7 +148,7 @@ EXPECTED_TEST_OUTPUT_FILENAME = 'test-{}-out.csv'.format(str(TEST_TAXYEAR)[2:])
 ACTUAL_TEST_OUTPUT_FILENAME = 'test-{}-#-#.csv'.format(str(TEST_TAXYEAR)[2:])
 
 
-def _write_test_input_output_files():
+def _write_expected_test_output():
     """
     Private function that writes tc --test input and expected output files.
     """
