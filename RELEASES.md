@@ -13,6 +13,9 @@ Release 0.12.0 on 2017-??-??
 - Rename read_json_param_files as read_json_param_objects
   [[#1563](https://github.com/open-source-economics/Tax-Calculator/pull/1563)
   by Martin Holmer]
+- Remove arrays_not_lists argument from read_json_param_objects
+  [[#1568](https://github.com/open-source-economics/Tax-Calculator/pull/1568)
+  by Martin Holmer]
 
 **New Features**
 - Add Calculator.reform_documentation that generates plain text documentation of a reform
