@@ -2,22 +2,26 @@
 This script calculates weighted means for PUF variables used in the Calculator
 and 16 calculated variables.
 USAGE:
-Generate statistics summary: python stats_summary.py
+Generate statistics summary and correlation matrix: python stats_summary.py
+Generate statistics summary: python stats_summary.py --output sum-stats
 Generate correlation matrix: python stats_summary.py --output correlation
 """
-
-import pandas as pd
-from pandas import DataFrame
-import numpy as np
 import os
 import sys
 import argparse
 import json
+import copy
+
+import pandas as pd
+import numpy as np
+
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, "..", ".."))
-from taxcalc import Policy, Records, Calculator
 PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
 EVAR_PATH = os.path.join(CUR_PATH, "..", "records_variables.json")
+
+sys.path.append(os.path.join(CUR_PATH, "..", ".."))
+from taxcalc import Policy, Records, Calculator
+
 
 
 def main():
@@ -29,15 +33,22 @@ def main():
                      'as an argument after python Stats_Summary.py --output')
     )
     parser.add_argument('--output',
-                        default='sum-stats')
+                        default='both')
     args = parser.parse_args()
+    
     # create a calculator
     tax_dta1 = pd.read_csv(PUF_PATH)
     records1 = Records(tax_dta1)
     policy1 = Policy(start_year=2013)
     calc1 = Calculator(records=records1, policy=policy1)
     table = creat_table_base()
-    if args.output == 'sum-stats':
+
+    if args.output == 'both':
+        calc2 = copy.deepcopy(calc1)
+        table2 = copy.deepcopy(table)
+        gen_sum_stats(table, calc=calc1)
+        gen_correlation(table2, calc=calc2)
+    elif args.output == 'sum-stats':
         gen_sum_stats(table, calc=calc1)
     elif args.output == 'correlation':
         gen_correlation(table, calc=calc1)
@@ -63,7 +74,7 @@ def creat_table_base():
                        "c07180": "Child care credit",
                        "eitc": "Federal EITC",
                        "c09600": "federal AMT liability"}
-    cal = DataFrame.from_dict(calculated_vars, orient='index')
+    cal = pd.DataFrame.from_dict(calculated_vars, orient='index')
     cal.columns = ['description']
 
     if os.path.exists(EVAR_PATH):
@@ -121,7 +132,7 @@ def gen_sum_stats(table, calc):
                  header=['description', '2013', '2014', '2015',
                          '2016', '2017', '2018', '2019', '2020',
                          '2021', '2022', '2023', '2024', '2025', '2026'],
-                 float_format='%8.2f')
+                 float_format='%8.3f')
 
 
 def gen_correlation(table, calc):
@@ -136,7 +147,7 @@ def gen_correlation(table, calc):
             cor = np.corrcoef(variable1, variable2)[0][1]
             var1_cor.append(cor)
         table[var1] = var1_cor
-    table.to_csv("correlation.csv")
+    table.to_csv("correlation.csv", float_format='%8.3f')
 
 
 if __name__ == '__main__':
