@@ -18,6 +18,9 @@ Release 0.12.0 on 2017-??-??
 - Add Calculator.reform_documentation that generates plain text documentation of a reform
   [[#1564](https://github.com/open-source-economics/Tax-Calculator/pull/1564)
   by Martin Holmer]
+- Enhance stats_summary.py script and its output
+  [[#1566](https://github.com/open-source-economics/Tax-Calculator/pull/1566)
+  by Amy Xu]
 - Add reform documentation as standard output from Tax-Calculator CLI, tc
   [[#1567](https://github.com/open-source-economics/Tax-Calculator/pull/1567)
   by Martin Holmer]
