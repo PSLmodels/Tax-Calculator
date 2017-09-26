@@ -442,8 +442,9 @@ class Calculator(object):
         Parameters
         ----------
         params: dict
-            compound dictionary structured as dict returned from
-            the static Calculator method read_json_param_objects()
+            compound dictionary structured as dict returned from the
+            static Calculator method read_json_param_objects() when
+            called with the arrays_not_lists=False argument
 
         Returns
         -------
