@@ -360,7 +360,7 @@ class Calculator(object):
         return calc
 
     @staticmethod
-    def read_json_param_objects(reform, assump, arrays_not_lists=True):
+    def read_json_param_objects(reform, assump):
         """
         Read JSON reform and assump objects and
         return a single dictionary containing five key:dict pairs:
@@ -378,7 +378,7 @@ class Calculator(object):
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
 
-        The reform file contents or JSON string must be like:
+        The reform file contents or JSON string must be like this:
         {"policy": {...}}
         and the assump file contents or JSON string must be like:
         {"consumption": {...},
@@ -386,6 +386,8 @@ class Calculator(object):
          "growdiff_baseline": {...},
          "growdiff_response": {...}
         }
+
+        The returned dictionary contains parameter lists (not arrays).
         """
         # first process second assump parameter
         if assump is None:
@@ -401,9 +403,7 @@ class Calculator(object):
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
-             gdiff_resp_dict) = (
-                 Calculator._read_json_econ_assump_text(txt,
-                                                        arrays_not_lists))
+             gdiff_resp_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
             raise ValueError('assump is neither None nor string')
         # next process first reform parameter
@@ -416,9 +416,9 @@ class Calculator(object):
                 txt = reform
             rpol_dict = (
                 Calculator._read_json_policy_reform_text(txt,
-                                                         arrays_not_lists,
                                                          gdiff_base_dict,
-                                                         gdiff_resp_dict))
+                                                         gdiff_resp_dict)
+            )
         else:
             raise ValueError('reform is neither None nor string')
         # finally construct and return single composite dictionary
@@ -442,9 +442,8 @@ class Calculator(object):
         Parameters
         ----------
         params: dict
-            compound dictionary structured as dict returned from the
-            static Calculator method read_json_param_objects() when
-            called with the arrays_not_lists=False argument
+            compound dictionary structured as dict returned from
+            the static Calculator method read_json_param_objects()
 
         Returns
         -------
@@ -643,7 +642,7 @@ class Calculator(object):
         IITAX(self.policy, self.records)
 
     @staticmethod
-    def _read_json_policy_reform_text(text_string, arrays_not_lists,
+    def _read_json_policy_reform_text(text_string,
                                       growdiff_baseline_dict,
                                       growdiff_response_dict):
         """
@@ -664,8 +663,7 @@ class Calculator(object):
 
         Returned dictionary prdict has integer years as primary keys and
         string parameters as secondary keys.  This returned dictionary is
-        suitable as the argument to the Policy implement_reform(prdict)
-        method ONLY if the function argument arrays_not_lists is True.
+        suitable as the argument to the Policy implement_reform(prdict) method.
         """
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
@@ -700,11 +698,11 @@ class Calculator(object):
         tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'],
                                                       growdiff_baseline_dict,
                                                       growdiff_response_dict)
-        prdict = Calculator._convert_parameter_dict(tdict, arrays_not_lists)
+        prdict = Calculator._convert_parameter_dict(tdict)
         return prdict
 
     @staticmethod
-    def _read_json_econ_assump_text(text_string, arrays_not_lists):
+    def _read_json_econ_assump_text(text_string):
         """
         Strip //-comments from text_string and return 4 dict based on the JSON.
 
@@ -733,8 +731,7 @@ class Calculator(object):
         These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the Behavior.update_behavior(behv_dict) method, or
-        the Growdiff.update_growdiff(gdiff_dict) method,
-        but ONLY if the function argument arrays_not_lists is True.
+        the Growdiff.update_growdiff(gdiff_dict) method.
         """
         # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
@@ -768,29 +765,24 @@ class Calculator(object):
                 raise ValueError(msg.format(rkey))
         # convert the assumption dictionaries in raw_dict
         key = 'consumption'
-        cons_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                       arrays_not_lists)
+        cons_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'behavior'
-        behv_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                       arrays_not_lists)
+        behv_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_baseline'
-        gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                             arrays_not_lists)
+        gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_response'
-        gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                             arrays_not_lists)
+        gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
         return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict)
 
     @staticmethod
-    def _convert_parameter_dict(param_key_dict, arrays_not_lists):
+    def _convert_parameter_dict(param_key_dict):
         """
         Converts specified param_key_dict into a dictionary whose primary
         keys are calendar years, and hence, is suitable as the argument to
         the Policy.implement_reform() method, or
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or
-        the Growdiff.update_growdiff() method,
-        but only if function argument is arrays_not_lists=True.
+        the Growdiff.update_growdiff() method.
 
         Specified input dictionary has string parameter primary keys and
         string years as secondary keys.
@@ -815,10 +807,7 @@ class Calculator(object):
                     raise ValueError(msg.format(skey))
                 else:
                     year = int(skey)
-                if isinstance(val, list) and arrays_not_lists:
-                    rdict[year] = np.array(val)
-                else:
-                    rdict[year] = val
+                rdict[year] = val
             year_param[pkey] = rdict
         # convert year_param dictionary to year_key_dict dictionary
         year_key_dict = dict()
