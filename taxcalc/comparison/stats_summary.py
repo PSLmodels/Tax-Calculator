@@ -23,7 +23,6 @@ sys.path.append(os.path.join(CUR_PATH, "..", ".."))
 from taxcalc import Policy, Records, Calculator
 
 
-
 def main():
     parser = argparse.ArgumentParser(
         prog="python stats_summary.py",
@@ -35,7 +34,7 @@ def main():
     parser.add_argument('--output',
                         default='both')
     args = parser.parse_args()
-    
+
     # create a calculator
     tax_dta1 = pd.read_csv(PUF_PATH)
     records1 = Records(tax_dta1)
