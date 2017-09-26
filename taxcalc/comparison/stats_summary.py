@@ -2,21 +2,25 @@
 This script calculates weighted means for PUF variables used in the Calculator
 and 16 calculated variables.
 USAGE:
-Generate statistics summary: python stats_summary.py
+Generate statistics summary and correlation matrix: python stats_summary.py
+Generate statistics summary: python stats_summary.py --output sum-stats
 Generate correlation matrix: python stats_summary.py --output correlation
 """
-
-import pandas as pd
-from pandas import DataFrame
-import numpy as np
 import os
 import sys
 import argparse
+import json
+import copy
+
+import pandas as pd
+import numpy as np
+
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
+PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
+EVAR_PATH = os.path.join(CUR_PATH, "..", "records_variables.json")
+
 sys.path.append(os.path.join(CUR_PATH, "..", ".."))
 from taxcalc import Policy, Records, Calculator
-PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
-EVAR_PATH = os.path.join(CUR_PATH, "..", "e_variable_info.csv")
 
 
 def main():
@@ -28,15 +32,22 @@ def main():
                      'as an argument after python Stats_Summary.py --output')
     )
     parser.add_argument('--output',
-                        default='sum-stats')
+                        default='both')
     args = parser.parse_args()
+
     # create a calculator
     tax_dta1 = pd.read_csv(PUF_PATH)
     records1 = Records(tax_dta1)
     policy1 = Policy(start_year=2013)
     calc1 = Calculator(records=records1, policy=policy1)
     table = creat_table_base()
-    if args.output == 'sum-stats':
+
+    if args.output == 'both':
+        calc2 = copy.deepcopy(calc1)
+        table2 = copy.deepcopy(table)
+        gen_sum_stats(table, calc=calc1)
+        gen_correlation(table2, calc=calc2)
+    elif args.output == 'sum-stats':
         gen_sum_stats(table, calc=calc1)
     elif args.output == 'correlation':
         gen_correlation(table, calc=calc1)
@@ -53,20 +64,22 @@ def creat_table_base():
                        "c00100": "Federal AGI",
                        "c02500": "OASDI benefits in AGI",
                        "c04600": "Post-phase-out personal exemption",
-                       "pre_c04600": "Pre-phase-out personal exemption",
                        "c21040": "Itemized deduction that is phased out",
                        "c04470": "Post-phase-out itemized deduction",
                        "c04800": "Federal regular taxable income",
-                       "c05200": "Tax from Sch X,Y,Z tables",
+                       "c05200": "Regular tax on taxable income",
                        "c07220": "Child tax credit (adjusted)",
                        "c11070": "Extra child tax credit (refunded)",
                        "c07180": "Child care credit",
                        "eitc": "Federal EITC",
-                       "c62100": "Federal AMT taxable income",
-                       "c09600": "Federal AMT liability"}
-    cal = DataFrame.from_dict(calculated_vars, orient='index')
+                       "c09600": "federal AMT liability"}
+    cal = pd.DataFrame.from_dict(calculated_vars, orient='index')
     cal.columns = ['description']
-    puf_ecodes_info = pd.read_csv(EVAR_PATH)
+
+    if os.path.exists(EVAR_PATH):
+        with open(EVAR_PATH) as vfile:
+            vardict = json.load(vfile)
+
     # Use all variable list minus unused variable list
     # to get used variable list
     codes_imp_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
@@ -83,14 +96,13 @@ def creat_table_base():
                          'age_head', 'age_spouse',
                          'blind_head', 'blind_spouse'])
     used_vars_set = list(Records.USABLE_READ_VARS - codes_imp_set)
-    # read variable description from e_variable_info.csv
+    # read variable description from json file
     table = {}
-    for i in range(0, len(used_vars_set) - 1):
+    for var in used_vars_set:
         # use variable names as keys of dictionary
-        var_name = used_vars_set[i]
-        fval = (puf_ecodes_info.Input_Name == var_name)
-        description = puf_ecodes_info.Definition_2014[fval].values[0]
-        table[var_name] = description
+        description = vardict['read'][var]['desc']
+        table[var] = description
+
     table = pd.DataFrame.from_dict(table, orient='index')
     table.columns = ["description"]
     table = table.append(cal)
@@ -119,7 +131,7 @@ def gen_sum_stats(table, calc):
                  header=['description', '2013', '2014', '2015',
                          '2016', '2017', '2018', '2019', '2020',
                          '2021', '2022', '2023', '2024', '2025', '2026'],
-                 float_format='%8.2f')
+                 float_format='%8.3f')
 
 
 def gen_correlation(table, calc):
@@ -134,7 +146,7 @@ def gen_correlation(table, calc):
             cor = np.corrcoef(variable1, variable2)[0][1]
             var1_cor.append(cor)
         table[var1] = var1_cor
-    table.to_csv("correlation.csv")
+    table.to_csv("correlation.csv", float_format='%8.3f')
 
 
 if __name__ == '__main__':
