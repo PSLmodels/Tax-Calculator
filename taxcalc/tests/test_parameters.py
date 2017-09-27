@@ -308,3 +308,57 @@ def test_expand_2d_partial_expand():
                                     inflate=True, inflation_rates=inf_rates,
                                     num_years=4)
     assert np.allclose(res, exp, atol=0.01, rtol=0.0)
+
+
+@pytest.mark.parametrize('json_filename',
+                         ['current_law_policy.json',
+                          'behavior.json',
+                          'consumption.json',
+                          'growdiff.json'])
+def test_bool_int_value_info(tests_path, json_filename):
+    """
+    Check consistency of boolean_value and integer_value info in
+    JSON parameter files.
+    """
+    path = os.path.join(tests_path, '..', json_filename)
+    with open(path, 'r') as pfile:
+        pdict = json.load(pfile)
+    maxint = np.iinfo(np.int64).max
+    for param in sorted(pdict.keys()):
+        # check that boolean_value always implies integer_value
+        if pdict[param]['boolean_value'] and not pdict[param]['integer_value']:
+            msg = 'param,integer_value,boolean_value,= {} {} {}'
+            msg = msg.format(str(param),
+                             pdict[param]['boolean_value'],
+                             pdict[param]['integer_value'])
+            assert msg == 'ERROR: boolean_value is not integer_value'
+        # check that cpi_indexed param is not boolean or integer
+        nonfloat_value = (pdict[param]['integer_value'] or
+                          pdict[param]['boolean_value'])
+        if pdict[param]['cpi_inflated'] and nonfloat_value:
+            msg = 'param,integer_value,boolean_value= {} {} {}'
+            msg = msg.format(str(param),
+                             pdict[param]['boolean_value'],
+                             pdict[param]['integer_value'])
+            assert msg == 'ERROR: nonfloat_value param is inflation indexed'
+        # find param type based on value
+        val = pdict[param]['value']
+        while isinstance(val, list):
+            val = val[0]
+        valstr = str(val)
+        val_is_boolean = bool(valstr == 'True' or valstr == 'False')
+        val_is_integer = not bool('.' in valstr or val > maxint)
+        # check that val_is_integer is consistent with integer_value
+        if val_is_integer != pdict[param]['integer_value']:
+            msg = 'param,integer_value,valstr= {} {} {}'
+            msg = msg.format(str(param),
+                             pdict[param]['integer_value'],
+                             valstr)
+            assert msg == 'ERROR: integer_value param has non-integer value'
+        # check that val_is_boolean is consistent with boolean_value
+        if val_is_boolean != pdict[param]['boolean_value']:
+            msg = 'param,boolean_value,valstr= {} {} {}'
+            msg = msg.format(str(param),
+                             pdict[param]['boolean_value'],
+                             valstr)
+            assert msg == 'ERROR: boolean_value param has non-boolean value'
