@@ -417,7 +417,7 @@ class Records(object):
                 READ_VARS.add(varname)
                 if varname in Records.INTEGER_READ_VARS:
                     setattr(self, varname,
-                            taxdf[varname].astype(np.int64).values)
+                            taxdf[varname].astype(np.int32).values)
                 else:
                     setattr(self, varname,
                             taxdf[varname].astype(np.float64).values)
@@ -433,7 +433,7 @@ class Records(object):
         for varname in ZEROED_VARS:
             if varname in Records.INTEGER_VARS:
                 setattr(self, varname,
-                        np.zeros(self.dim, dtype=np.int64))
+                        np.zeros(self.dim, dtype=np.int32))
             else:
                 setattr(self, varname,
                         np.zeros(self.dim, dtype=np.float64))

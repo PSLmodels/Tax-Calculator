@@ -3640,7 +3640,7 @@
         "boolean_value": false,
         "integer_value": true,
         "value": [25],
-        "range": {"min": 0, "max": 999},
+        "range": {"min": 0, "max": 120},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"
@@ -3662,7 +3662,7 @@
         "boolean_value": false,
         "integer_value": true,
         "value": [64],
-        "range": {"min": 0, "max": 999},
+        "range": {"min": 0, "max": 120},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"

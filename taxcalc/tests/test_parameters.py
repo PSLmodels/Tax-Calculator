@@ -294,7 +294,7 @@ def test_bool_int_value_info(tests_path, json_filename):
     path = os.path.join(tests_path, '..', json_filename)
     with open(path, 'r') as pfile:
         pdict = json.load(pfile)
-    maxint = np.iinfo(np.int64).max
+    maxint = np.iinfo(np.int8).max
     for param in sorted(pdict.keys()):
         # check that boolean_value always implies integer_value
         if pdict[param]['boolean_value'] and not pdict[param]['integer_value']:
@@ -318,7 +318,7 @@ def test_bool_int_value_info(tests_path, json_filename):
             val = val[0]
         valstr = str(val)
         val_is_boolean = bool(valstr == 'True' or valstr == 'False')
-        val_is_integer = not bool('.' in valstr or val > maxint)
+        val_is_integer = not bool('.' in valstr or abs(val) > maxint)
         # check that val_is_integer is consistent with integer_value
         if val_is_integer != pdict[param]['integer_value']:
             msg = 'param,integer_value,valstr= {} {} {}'

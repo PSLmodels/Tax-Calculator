@@ -415,7 +415,7 @@ class ParametersBase(object):
             x must be either a list of scalar lists or a 2D numpy array
 
         x_dtype_int : boolean
-            True implies dtype=np.int64; False implies dtype=np.float64
+            True implies dtype=np.int8; False implies dtype=np.float64
 
         inflate: boolean
             As we expand, inflate values if this is True, otherwise, just copy
@@ -435,7 +435,7 @@ class ParametersBase(object):
             raise ValueError(msg)
         if isinstance(x, list):
             if x_dtype_int:
-                x = np.array(x, np.int64)
+                x = np.array(x, np.int8)
             else:
                 x = np.array(x, np.float64)
         if len(x.shape) == 1:
