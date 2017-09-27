@@ -41,12 +41,10 @@ def test_instantiation_and_usage():
         pbase._update({syr: []})
     # pylint: disable=no-member
     with pytest.raises(ValueError):
-        ParametersBase._expand_array([1, 2, None], False, [], 3)
-    with pytest.raises(ValueError):
-        ParametersBase._expand_array({}, True, [0.02], 1)
+        ParametersBase._expand_array({}, True, True, [0.02], 1)
     threedarray = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
     with pytest.raises(ValueError):
-        ParametersBase._expand_array(threedarray, True, [0.02, 0.02], 2)
+        ParametersBase._expand_array(threedarray, True, True, [0.02, 0.02], 2)
 
 
 @pytest.mark.parametrize("fname",
@@ -191,33 +189,6 @@ def test_expand_xd_errors():
                                   num_years=10)
 
 
-def test_expand_1d_short_array():
-    """
-    One of several _expand_?D tests.
-    """
-    ary = np.array([4, 5, 9], dtype='i4')
-    exp2 = np.array([9.0 * math.pow(1.02, i) for i in range(1, 8)])
-    exp1 = np.array([4, 5, 9])
-    exp = np.zeros(10)
-    exp[:3] = exp1
-    exp[3:] = exp2
-    res = ParametersBase._expand_1D(ary, inflate=True,
-                                    inflation_rates=[0.02] * 10, num_years=10)
-    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
-
-
-def test_expand_1d_variable_rates():
-    """
-    One of several _expand_?D tests.
-    """
-    irates = [0.02, 0.02, 0.03, 0.035]
-    ary = np.array([4, 5, 9], dtype='f4')
-    res = ParametersBase._expand_1D(ary, inflate=True,
-                                    inflation_rates=irates, num_years=5)
-    exp = np.array([4, 5, 9, 9 * 1.03, 9 * 1.03 * 1.035])
-    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
-
-
 def test_expand_1d_scalar():
     """
     One of several _expand_?D tests.
@@ -287,9 +258,9 @@ def test_expand_2d_partial_expand():
     One of several _expand_?D tests.
     """
     # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
-    _II_brk2 = [[36000, 72250, 36500, 48600, 72500, 36250],
-                [38000, 74000, 36900, 49400, 73800, 36900],
-                [40000, 74900, 37450, 50200, 74900, 37450]]
+    _II_brk2 = [[36000.0, 72250.0, 36500.0, 48600.0, 72500.0, 36250.0],
+                [38000.0, 74000.0, 36900.0, 49400.0, 73800.0, 36900.0],
+                [40000.0, 74900.0, 37450.0, 50200.0, 74900.0, 37450.0]]
     # We have three years worth of data, need 4 years worth,
     # but we only need the inflation rate for year 3 to go
     # from year 3 -> year 4
@@ -300,9 +271,9 @@ def test_expand_2d_partial_expand():
     exp4 = 50200. * 1.03
     exp5 = 74900. * 1.03
     exp6 = 37450. * 1.03
-    exp = [[36000., 72250., 36500., 48600., 72500., 36250.],
-           [38000., 74000., 36900., 49400., 73800., 36900.],
-           [40000., 74900., 37450., 50200., 74900., 37450.],
+    exp = [[36000.0, 72250.0, 36500.0, 48600.0, 72500.0, 36250.0],
+           [38000.0, 74000.0, 36900.0, 49400.0, 73800.0, 36900.0],
+           [40000.0, 74900.0, 37450.0, 50200.0, 74900.0, 37450.0],
            [exp1, exp2, exp3, exp4, exp5, exp6]]
     res = ParametersBase._expand_2D(np.array(_II_brk2),
                                     inflate=True, inflation_rates=inf_rates,

@@ -94,6 +94,7 @@ class ParametersBase(object):
                 if not isinstance(name, six.string_types):
                     msg = 'parameter name {} is not a string'
                     raise ValueError(msg.format(name))
+                integer_values = data.get('integer_value', None)
                 values = data.get('value', None)
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
@@ -102,7 +103,8 @@ class ParametersBase(object):
                     else:
                         index_rates = None
                     setattr(self, name,
-                            self._expand_array(values, inflate=cpi_inflated,
+                            self._expand_array(values, integer_values,
+                                               inflate=cpi_inflated,
                                                inflation_rates=index_rates,
                                                num_years=self._num_years))
         self.set_year(self._start_year)
@@ -353,6 +355,7 @@ class ParametersBase(object):
                 continue  # handle elsewhere in this method
             if name in self._vals:
                 vals_indexed = self._vals[name].get('cpi_inflated', False)
+                integer_values = self._vals[name].get('integer_value')
             else:
                 msg = 'parameter name {} not in parameter values dictionary'
                 raise ValueError(msg.format(name))
@@ -368,7 +371,7 @@ class ParametersBase(object):
             cval = getattr(self, name, None)
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            nval = self._expand_array(values,
+            nval = self._expand_array(values, integer_values,
                                       inflate=indexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -388,7 +391,8 @@ class ParametersBase(object):
             pvalues = [cval[year - self.start_year]]
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            nval = self._expand_array(pvalues,
+            integer_values = self._vals[pname]['integer_value']
+            nval = self._expand_array(pvalues, integer_values,
                                       inflate=pindexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -399,7 +403,7 @@ class ParametersBase(object):
         self.set_year(year)
 
     @staticmethod
-    def _expand_array(x, inflate, inflation_rates, num_years):
+    def _expand_array(x, x_dtype_int, inflate, inflation_rates, num_years):
         """
         Private method called only within this abstract base class.
         Dispatch to either _expand_1D or _expand_2D given dimension of x.
@@ -408,7 +412,10 @@ class ParametersBase(object):
         ----------
         x : value to expand
             x must be either a scalar list or a 1D numpy array, or
-            x must be either a list of scalar lists or a 2D numpy array.
+            x must be either a list of scalar lists or a 2D numpy array
+
+        x_dtype_int : boolean
+            True implies dtype=np.int64; False implies dtype=np.float64
 
         inflate: boolean
             As we expand, inflate values if this is True, otherwise, just copy
@@ -421,15 +428,16 @@ class ParametersBase(object):
 
         Returns
         -------
-        expanded numpy array with dtype=np.float64
+        expanded numpy array with specified dtype
         """
         if not isinstance(x, list) and not isinstance(x, np.ndarray):
             msg = '_expand_array expects x to be a list or numpy array'
             raise ValueError(msg)
         if isinstance(x, list):
-            x = np.array(x, np.float64)
-        if np.any(np.isnan(x)):
-            raise ValueError('_expand_array expects array with no NaN values')
+            if x_dtype_int:
+                x = np.array(x, np.int64)
+            else:
+                x = np.array(x, np.float64)
         if len(x.shape) == 1:
             return ParametersBase._expand_1D(x, inflate, inflation_rates,
                                              num_years)
@@ -452,7 +460,7 @@ class ParametersBase(object):
         if len(x) >= num_years:
             return x
         else:
-            ans = np.zeros(num_years, dtype=np.float64)
+            ans = np.zeros(num_years, dtype=x.dtype)
             ans[:len(x)] = x
             if inflate:
                 extra = []
@@ -481,7 +489,7 @@ class ParametersBase(object):
         if x.shape[0] >= num_years:
             return x
         else:
-            ans = np.zeros((num_years, x.shape[1]), dtype=np.float64)
+            ans = np.zeros((num_years, x.shape[1]), dtype=x.dtype)
             ans[:len(x), :] = x
             for i in range(x.shape[0], ans.shape[0]):
                 for j in range(ans.shape[1]):
