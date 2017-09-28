@@ -127,7 +127,7 @@ def gen_sum_stats(table, calc):
         year += 1
         if year != 2027:
             calc.increment_year()
-    table.to_csv("variable_stats_summary.csv",
+    table.to_csv("puf_var_wght_means_by_year.csv",
                  header=['description', '2013', '2014', '2015',
                          '2016', '2017', '2018', '2019', '2020',
                          '2021', '2022', '2023', '2024', '2025', '2026'],
@@ -146,7 +146,7 @@ def gen_correlation(table, calc):
             cor = np.corrcoef(variable1, variable2)[0][1]
             var1_cor.append(cor)
         table[var1] = var1_cor
-    table.to_csv("correlation.csv", float_format='%8.3f')
+    table.to_csv("puf_var_correl_coeffs_2016.csv", float_format='%8.3f')
 
 
 if __name__ == '__main__':
