@@ -54,6 +54,7 @@ def create_base_table(test_path):
     rec_vars_path = os.path.join(test_path, '..', 'records_variables.json')
     with open(rec_vars_path) as vfile:
         vardict = json.load(vfile)
+    # create table_dict with sorted read vars first then sorted calc vars
     table_dict = dict()
     for var in sorted(read_vars):
         description = vardict['read'][var]['desc']
