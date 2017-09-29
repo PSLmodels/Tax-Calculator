@@ -1,153 +1,123 @@
 """
-This script calculates weighted means for PUF variables used in the Calculator
-and 16 calculated variables.
-USAGE:
-Generate statistics summary and correlation matrix: python stats_summary.py
-Generate statistics summary: python stats_summary.py --output sum-stats
-Generate correlation matrix: python stats_summary.py --output correlation
+Test generates statistics for puf.csv variables.
 """
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 test_puf_var_stats.py
+# pylint --disable=locally-disabled test_puf_var_stats.py
+
 import os
-import sys
-import argparse
 import json
 import copy
-
-import pandas as pd
 import numpy as np
-
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-PUF_PATH = os.path.join(CUR_PATH, "..", "..", "puf.csv")
-EVAR_PATH = os.path.join(CUR_PATH, "..", "records_variables.json")
-
-sys.path.append(os.path.join(CUR_PATH, "..", ".."))
-from taxcalc import Policy, Records, Calculator
+import pandas as pd
+import pytest
+from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        prog="python stats_summary.py",
-        description=('Generates a files for either statistics summary'
-                     'on a 10-year span or correlation matrix of current'
-                     'tax year. Adding either sum-stats or correlation'
-                     'as an argument after python Stats_Summary.py --output')
-    )
-    parser.add_argument('--output',
-                        default='both')
-    args = parser.parse_args()
-
-    # create a calculator
-    tax_dta1 = pd.read_csv(PUF_PATH)
-    records1 = Records(tax_dta1)
-    policy1 = Policy(start_year=2013)
-    calc1 = Calculator(records=records1, policy=policy1)
-    table = creat_table_base()
-
-    if args.output == 'both':
-        calc2 = copy.deepcopy(calc1)
-        table2 = copy.deepcopy(table)
-        gen_sum_stats(table, calc=calc1)
-        gen_correlation(table2, calc=calc2)
-    elif args.output == 'sum-stats':
-        gen_sum_stats(table, calc=calc1)
-    elif args.output == 'correlation':
-        gen_correlation(table, calc=calc1)
-    else:
-        print("no such output available")
-    return 0
-
-
-def creat_table_base():
-    # saved caculated variable names and descriptions in json format
-    # currently only includes 16 most used variables
-    calculated_vars = {"iitax": "Federal income tax liability",
-                       "payrolltax": "Payroll taxes (ee+er) for OASDI+HI",
-                       "c00100": "Federal AGI",
-                       "c02500": "OASDI benefits in AGI",
-                       "c04600": "Post-phase-out personal exemption",
-                       "c21040": "Itemized deduction that is phased out",
-                       "c04470": "Post-phase-out itemized deduction",
-                       "c04800": "Federal regular taxable income",
-                       "c05200": "Regular tax on taxable income",
-                       "c07220": "Child tax credit (adjusted)",
-                       "c11070": "Extra child tax credit (refunded)",
-                       "c07180": "Child care credit",
-                       "eitc": "Federal EITC",
-                       "c09600": "federal AMT liability"}
-    cal = pd.DataFrame.from_dict(calculated_vars, orient='index')
-    cal.columns = ['description']
-
-    if os.path.exists(EVAR_PATH):
-        with open(EVAR_PATH) as vfile:
-            vardict = json.load(vfile)
-
-    # Use all variable list minus unused variable list
-    # to get used variable list
-    codes_imp_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
-                         'FLPDYR', 'FLPDMO', 'f2441', 'f3800', 'f6251',
-                         'f8582', 'f8606', 'f8829', 'f8910', 'f8936', 'n20',
-                         'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
-                         'TFORM', 'IE', 'TXST', 'XFPT', 'XFST', 'XOCAH',
-                         'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT', 'MARS', 'MIDR',
-                         'RECID', 'gender', 'wage_head', 'wage_spouse',
-                         'earnsplit', 'agedp1', 'agedp2', 'agedp3',
-                         's006', 's008', 's009', 'WSAMP', 'TXRT',
-                         'filer', 'matched_weight', 'e00200p', 'e00200s',
-                         'e00900p', 'e00900s', 'e02100p', 'e02100s',
-                         'age_head', 'age_spouse',
-                         'blind_head', 'blind_spouse'])
-    used_vars_set = list(Records.USABLE_READ_VARS - codes_imp_set)
-    # read variable description from json file
-    table = {}
-    for var in used_vars_set:
-        # use variable names as keys of dictionary
+def create_base_table(test_path):
+    """
+    Create and return base table.
+    """
+    # specify caculated variable names and descriptions in dictionary
+    # (currently includes only 16 of the most used variables)
+    calc_dict = {'iitax': 'Federal income tax liability',
+                 'payrolltax': 'Payroll taxes (ee+er) for OASDI+HI',
+                 'c00100': 'Federal AGI',
+                 'c02500': 'OASDI benefits in AGI',
+                 'c04600': 'Post-phase-out personal exemption',
+                 'c21040': 'Itemized deduction that is phased out',
+                 'c04470': 'Post-phase-out itemized deduction',
+                 'c04800': 'Federal regular taxable income',
+                 'c05200': 'Regular tax on taxable income',
+                 'c07220': 'Child tax credit (adjusted)',
+                 'c11070': 'Extra child tax credit (refunded)',
+                 'c07180': 'Child care credit',
+                 'eitc': 'Federal EITC',
+                 'c09600': 'Federal AMT liability'}
+    # specify set of unused read variables in statistics calculations
+    unused_var_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
+                          'FLPDYR', 'FLPDMO', 'f2441', 'f3800', 'f6251',
+                          'f8582', 'f8606', 'f8829', 'f8910', 'f8936', 'n20',
+                          'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
+                          'TFORM', 'IE', 'TXST', 'XFPT', 'XFST', 'XOCAH',
+                          'XOCAWH', 'XOODEP', 'XOPAR', 'XTOT', 'MARS', 'MIDR',
+                          'RECID', 'gender', 'wage_head', 'wage_spouse',
+                          'earnsplit', 'agedp1', 'agedp2', 'agedp3',
+                          's006', 's008', 's009', 'WSAMP', 'TXRT',
+                          'filer', 'matched_weight', 'e00200p', 'e00200s',
+                          'e00900p', 'e00900s', 'e02100p', 'e02100s',
+                          'age_head', 'age_spouse',
+                          'blind_head', 'blind_spouse'])
+    # calculate for all usable read variables minus unused variables
+    read_vars = list(Records.USABLE_READ_VARS - unused_var_set)
+    # read variable descriptions from JSON file
+    rec_vars_path = os.path.join(test_path, '..', 'records_variables.json')
+    with open(rec_vars_path) as vfile:
+        vardict = json.load(vfile)
+    table_dict = dict()
+    for var in sorted(read_vars):
         description = vardict['read'][var]['desc']
-        table[var] = description
-
-    table = pd.DataFrame.from_dict(table, orient='index')
-    table.columns = ["description"]
-    table = table.append(cal)
+        table_dict[var] = description
+    sorted_calc_vars = sorted(calc_dict.keys())
+    for var in sorted_calc_vars:
+        table_dict[var] = calc_dict[var]
+    # construct DataFrame table from table_dict
+    table = pd.DataFrame.from_dict(table_dict, orient='index')
+    table.columns = ['description']
     return table
 
 
-def gen_sum_stats(table, calc):
-    # calculates weighted mean for each variable
-    # in total 10 years
-    total_pop = calc.records.s006.sum()
-    for year in range(2013, 2027):
+def generate_corr_stats(calc, table, test_path):
+    """
+    Calculate correlation coefficient matrix for 2016.
+    """
+    for varname1 in table.index:
+        var1 = getattr(calc.records, varname1)
+        var1_cc = list()
+        for varname2 in table.index:
+            var2 = getattr(calc.records, varname2)
+            cor = np.corrcoef(var1, var2)[0][1]
+            var1_cc.append(cor)
+        table[varname1] = var1_cc
+    out_path = os.path.join(test_path, 'puf_var_correl_coeffs_2016.csv')
+    table.to_csv(out_path, float_format='%8.3f')
+
+
+def generate_all_stats(calc, table_mean, table_corr, test_path):
+    """
+    Calculate weighted mean each year and correlation coefficients for 2016
+    """
+    year_headers = ['description']
+    for year in range(Policy.JSON_START_YEAR, Policy.LAST_BUDGET_YEAR + 1):
+        assert year == calc.policy.current_year
+        year_headers.append(str(year))
         calc.calc_all()
-        stat = []
-        for variable in table.index:
+        if year == 2016:
+            # calculate correlation coefficients for 2016
+            generate_corr_stats(calc, table_corr, test_path)
+        # calculate weighted means for this year
+        total_weight = calc.records.s006.sum()
+        stat = list()
+        for variable in table_mean.index:
             weighted = getattr(calc.records, variable) * calc.records.s006
-            this_record = weighted.sum() / total_pop
+            this_record = weighted.sum() / total_weight
             stat.append(this_record)
-
-        column = "mean_" + str(year)
-        table[column] = stat
-
-        year += 1
-        if year != 2027:
+        column = 'mean_' + str(year)
+        table_mean[column] = stat
+        if year < Policy.LAST_BUDGET_YEAR:
             calc.increment_year()
-    table.to_csv("puf_var_wght_means_by_year.csv",
-                 header=['description', '2013', '2014', '2015',
-                         '2016', '2017', '2018', '2019', '2020',
-                         '2021', '2022', '2023', '2024', '2025', '2026'],
-                 float_format='%8.3f')
+    out_path = os.path.join(test_path, 'puf_var_wght_means_by_year.csv')
+    table_mean.to_csv(out_path, header=year_headers, float_format='%8.3f')
 
-
-def gen_correlation(table, calc):
-    # for now we only do correlation matrix for 2016
-    calc.advance_to_year(2016)
-    calc.calc_all()
-    for var1 in table.index:
-        variable1 = getattr(calc.records, var1)
-        var1_cor = []
-        for var2 in table.index:
-            variable2 = getattr(calc.records, var2)
-            cor = np.corrcoef(variable1, variable2)[0][1]
-            var1_cor.append(cor)
-        table[var1] = var1_cor
-    table.to_csv("puf_var_correl_coeffs_2016.csv", float_format='%8.3f')
-
-
-if __name__ == '__main__':
-    sys.exit(main())
+@pytest.mark.one
+@pytest.mark.requires_pufcsv
+def test_puf_var_stats(tests_path, puf_fullsample):
+    """
+    Main logic of test.
+    """
+    # create a Calculator object
+    rec = Records(data=puf_fullsample)
+    calc = Calculator(policy=Policy(), records=rec, verbose=False)
+    table_mean = create_base_table(tests_path)
+    table_corr = copy.deepcopy(table_mean)
+    generate_all_stats(calc, table_mean, table_corr, tests_path)
