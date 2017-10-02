@@ -41,28 +41,24 @@ def check_user_mods(user_mods):
         raise ValueError('user_mods is not a dictionary')
     actual_keys = set(list(user_mods.keys()))
     expected_keys = set(['policy', 'consumption', 'behavior',
-                         'growdiff_baseline', 'growdiff_response',
-                         'gdp_elasticity'])
-    missing_keys = expected_keys - actual_keys
-    if len(missing_keys) > 0:
-        raise ValueError('user_mods has missing keys: {}'.format(missing_keys))
-    extra_keys = actual_keys - expected_keys
-    if len(extra_keys) > 0:
-        raise ValueError('user_mods has extra keys: {}'.format(extra_keys))
+                         'growdiff_baseline', 'growdiff_response'])
+    if actual_keys != expected_keys:
+        msg = 'actual user_mod keys not equal to expected keys\n'
+        msg += '  actual: {}'.format(actual_keys)
+        msg += '  expect: {}'.format(expected_keys)
+        raise ValueError(msg)
 
 
 def calculate(year_n, start_year,
               taxrec_df, user_mods,
               behavior_allowed, mask_computed):
     """
-    The calculate function assumes specified user_mods is
-      a dictionary returned by the Calculator.read_json_parameter_files()
-      function with an extra key:value pair that is specified as
-      'gdp_elasticity': {'value': <float_value>}.
+    The calculate function assumes the specified user_mods is a dictionary
+      returned by the Calculator.read_json_param_objects() function.
     The function returns (calc1, calc2, mask) where
       calc1 is pre-reform Calculator object calculated for year_n,
       calc2 is post-reform Calculator object calculated for year_n, and
-      mask is boolean array if compute_mask=True or None otherwise
+      mask is boolean array if mask_computeed=True or None otherwise
     """
     # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
 

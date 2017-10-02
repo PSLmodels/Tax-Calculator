@@ -27,8 +27,6 @@ USER_MODS = {
     },
     'growdiff_response': {
     },
-    'gdp_elasticity': {
-    }
 }
 
 
@@ -62,12 +60,18 @@ def test_check_user_mods_errors():
 @pytest.mark.requires_pufcsv
 def test_run_nth_year_value_errors(puf_subsample):
     usermods = USER_MODS
+    # test for growdiff_response not allowed error
     usermods['growdiff_response'] = {2018: {'_AINTS': [0.02]}}
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, puf_subsample, usermods, False)
+        run_nth_year_gdp_elast_model(1, 2013, puf_subsample,
+                                     usermods, gdp_elasticity=0.36,
+                                     return_json=False)
     usermods['growdiff_response'] = dict()
+    # test for behavior not allowed error
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, puf_subsample, usermods, False)
+        run_nth_year_gdp_elast_model(1, 2013, puf_subsample,
+                                     usermods, gdp_elasticity=0.36,
+                                     return_json=False)
 
 
 @pytest.mark.requires_pufcsv
@@ -98,8 +102,8 @@ def test_run_tax_calc_model(puf_subsample, resjson):
 def test_run_gdp_elast_model(puf_subsample, resjson):
     usermods = USER_MODS
     usermods['behavior'] = dict()
-    usermods['gdp_elasticity'] = {'value': 0.36}
-    res = run_nth_year_gdp_elast_model(2, 2016, puf_subsample, usermods,
+    res = run_nth_year_gdp_elast_model(2, 2016, puf_subsample,
+                                       usermods, gdp_elasticity=0.36,
                                        return_json=resjson)
     if resjson:
         assert isinstance(res, dict)
@@ -165,7 +169,6 @@ def test_with_pufcsv(puf_fullsample):
     usermods['behavior'] = {}
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
-    usermods['gdp_elasticity'] = {}
     seed = random_seed(usermods)
     assert seed == 1574318062
     # create a Policy object (pol) containing reform policy parameters

@@ -3,7 +3,7 @@ Implements TaxBrain "Macroeconomic Elasticities Simulation" dynamic analysis.
 """
 
 
-def proportional_change_gdp(calc1, calc2, elasticity=0.0):
+def proportional_change_gdp(calc1, calc2, elasticity):
     '''
     This function harnesses econometric estimates of the historic relationship
     between tax policy and the macroeconomy to predict the effect of tax

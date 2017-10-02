@@ -85,10 +85,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                 taxrec_df, user_mods,
                                 return_json=True):
     """
-    The run_nth_year_tax_calc_model function assumes user_mods is a
-    dictionary returned by the Calculator.read_json_parameter_files()
-    function with an extra key:value pair that is specified as
-    'gdp_elasticity': {'value': <float_value>}.
+    The run_nth_year_tax_calc_model function assumes user_mods is a dictionary
+    returned by the Calculator.read_json_param_objects() function.
     """
     # pylint: disable=too-many-locals
     start_time = time.time()
@@ -160,12 +158,11 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
 def run_nth_year_gdp_elast_model(year_n, start_year,
                                  taxrec_df, user_mods,
+                                 gdp_elasticity,
                                  return_json=True):
     """
-    The run_nth_year_gdp_elast_model function assumes user_mods is a
-    dictionary returned by the Calculator.read_json_parameter_files()
-    function with an extra key:value pair that is specified as
-    'gdp_elasticity': {'value': <float_value>}.
+    The run_nth_year_gdp_elast_model function assumes user_mods is a dictionary
+    returned by the Calculator.read_json_param_objects() function.
     """
     # create calc1 and calc2 calculated for year_n
     (calc1, calc2, _) = calculate(year_n, start_year,
@@ -173,8 +170,7 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
                                   behavior_allowed=False,
                                   mask_computed=False)
 
-    # compute GDP effect given assumed gdp elasticity
-    gdp_elasticity = user_mods['gdp_elasticity']['value']
+    # compute GDP effect given specified gdp_elasticity
     gdp_effect = proportional_change_gdp(calc1, calc2, gdp_elasticity)
 
     # return gdp_effect results
