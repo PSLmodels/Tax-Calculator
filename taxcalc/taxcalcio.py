@@ -228,11 +228,11 @@ class TaxCalcIO(object):
         if aging_input_data:
             if self.cps_input_data:
                 recs = Records.cps_constructor(
-                    growfactors=gfactors_ref,
+                    gfactors=gfactors_ref,
                     exact_calculations=exact_calculations
                 )
                 recs_clp = Records.cps_constructor(
-                    growfactors=gfactors_clp,
+                    gfactors=gfactors_clp,
                     exact_calculations=exact_calculations
                 )
             else:  # if not cps_input_data

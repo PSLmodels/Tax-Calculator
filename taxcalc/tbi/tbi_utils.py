@@ -5,6 +5,7 @@ Private utility functions used only by public functions in the tbi.py file.
 # pep8 --ignore=E402 tbi_utils.py
 # pylint --disable=locally-disabled tbi_utils.py
 
+import os
 import copy
 import hashlib
 import numpy as np
@@ -44,23 +45,28 @@ def check_user_mods(user_mods):
                          'growdiff_baseline', 'growdiff_response'])
     if actual_keys != expected_keys:
         msg = 'actual user_mod keys not equal to expected keys\n'
-        msg += '  actual: {}'.format(actual_keys)
+        msg += '  actual: {}\n'.format(actual_keys)
         msg += '  expect: {}'.format(expected_keys)
         raise ValueError(msg)
 
 
 def calculate(year_n, start_year,
-              taxrec_df, user_mods,
-              behavior_allowed, mask_computed):
+              use_puf_not_cps,
+              use_full_sample,
+              user_mods,
+              behavior_allowed):
     """
     The calculate function assumes the specified user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
     The function returns (calc1, calc2, mask) where
       calc1 is pre-reform Calculator object calculated for year_n,
       calc2 is post-reform Calculator object calculated for year_n, and
-      mask is boolean array if mask_computeed=True or None otherwise
+      mask is boolean array marking records with reform-induced iitax diffs
+    Set behavior_allowed to False when generating static results or
+      set behavior_allowed to True when generating dynamic results.
     """
-    # pylint: disable=too-many-arguments,too-many-locals,too-many-statements
+    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-branches,too-many-statements
 
     check_years(start_year, year_n)
     check_user_mods(user_mods)
@@ -85,9 +91,34 @@ def calculate(year_n, start_year,
     growdiff_baseline.apply_to(growfactors_post)
     growdiff_response.apply_to(growfactors_post)
 
-    # create pre-reform Calculator instance using PUF input data & weights
-    recs1 = Records(data=copy.deepcopy(taxrec_df),
-                    gfactors=growfactors_pre)
+    # create sample pd.DataFrame from specified input file and sampling scheme
+    tbi_path = os.path.abspath(os.path.dirname(__file__))
+    if use_puf_not_cps:
+        input_path = os.path.join(tbi_path, '..', '..', 'puf.csv.gz')
+        if not os.path.isfile(input_path):
+            input_path = os.path.join(tbi_path, '..', '..', 'puf.csv')
+        sampling_frac = 0.05
+        sampling_seed = 180
+    else:
+        input_path = os.path.join(tbi_path, '..', 'cps.csv.gz')
+        sampling_frac = 0.05
+        sampling_seed = 180
+    full_sample = pd.read_csv(input_path)
+    if use_full_sample:
+        sample = full_sample
+    else:
+        sample = full_sample.sample(  # pylint: disable=no-member
+            frac=sampling_frac,
+            random_state=sampling_seed
+        )
+
+    # create pre-reform Calculator instance
+    if use_puf_not_cps:
+        recs1 = Records(data=copy.deepcopy(sample),
+                        gfactors=growfactors_pre)
+    else:
+        recs1 = Records.cps_constructor(data=copy.deepcopy(sample),
+                                        gfactors=growfactors_pre)
     policy1 = Policy(gfactors=growfactors_pre)
     calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
     while calc1.current_year < start_year:
@@ -95,11 +126,11 @@ def calculate(year_n, start_year,
     calc1.calc_all()
     assert calc1.current_year == start_year
 
-    # optionally compute mask
-    if mask_computed:
-        # create pre-reform Calculator instance with extra income using
-        # PUF input data & weights
-        recs1p = Records(data=copy.deepcopy(taxrec_df),
+    # compute mask array
+    res1 = results(calc1.records)
+    if use_puf_not_cps:
+        # create pre-reform Calculator instance with extra income
+        recs1p = Records(data=copy.deepcopy(sample),
                          gfactors=growfactors_pre)
         # add one dollar to the income of each filing unit to determine
         # which filing units undergo a resulting change in tax liability
@@ -116,13 +147,14 @@ def calculate(year_n, start_year,
         # compute mask showing which of the calc1 and calc1p results differ;
         # mask is true if a filing unit's income tax liability changed after
         # a dollar was added to the filing unit's wage and salary income
-        res1 = results(calc1.records)
         res1p = results(calc1p.records)
         mask = np.logical_not(  # pylint: disable=no-member
             np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
         )
-    else:
-        mask = None
+        assert np.any(mask)
+    else:  # if use_cps_not_cps is False
+        # indicate that no fuzzing of reform results is required
+        mask = np.zeros(res1.shape[0], dtype=np.int8)
 
     # specify Behavior instance
     behv = Behavior()
@@ -139,9 +171,13 @@ def calculate(year_n, start_year,
         msg = 'A behavior RESPONSE IS NOT ALLOWED'
         raise ValueError(msg)
 
-    # create post-reform Calculator instance using PUF input data & weights
-    recs2 = Records(data=copy.deepcopy(taxrec_df),
-                    gfactors=growfactors_post)
+    # create post-reform Calculator instance
+    if use_puf_not_cps:
+        recs2 = Records(data=copy.deepcopy(sample),
+                        gfactors=growfactors_post)
+    else:
+        recs2 = Records.cps_constructor(data=copy.deepcopy(sample),
+                                        gfactors=growfactors_post)
     policy2 = Policy(gfactors=growfactors_post)
     policy_reform = user_mods['policy']
     policy2.implement_reform(policy_reform)
@@ -202,7 +238,7 @@ def random_seed_from_subdict(subdict):
     return seed % np.iinfo(np.uint32).max  # pylint: disable=no-member
 
 
-NUM_TO_FUZZ = 3
+NUM_TO_FUZZ = 3  # when using dropq algorithm on puf.csv results
 
 
 def chooser(agg):
@@ -223,7 +259,7 @@ def chooser(agg):
         msg = ('Not enough differences in income tax when adding '
                'one dollar for chunk with name: {}')
         raise ValueError(msg.format(agg.name))
-    # mark the records chosen to be fuzzed
+    # mark the records chosen to be fuzzed (ans=0)
     ans = [1] * len(agg)
     for idx in choices:
         ans[idx] = 0
@@ -232,7 +268,7 @@ def chooser(agg):
 
 def fuzz_df2_records(df1, df2, mask):
     """
-    Modify df2 by adding random fuzz for data privacy.
+    Possibly modify df2 results by adding random fuzz for data privacy.
 
     Parameters
     ----------
@@ -243,11 +279,12 @@ def fuzz_df2_records(df1, df2, mask):
         contains results for the reform plan
 
     mask: boolean numpy array
-        contains info about whether or not each row might be fuzzed
+        contains info about whether or not units have reform-induced tax diffs
+        (if mask contains all False values, then no results fuzzing is done)
 
     Returns
     -------
-    fuzzed df2: Pandas DataFrame
+    possibly fuzzed df2: Pandas DataFrame
 
     Notes
     -----
@@ -257,7 +294,7 @@ def fuzz_df2_records(df1, df2, mask):
     involves overwriting df2 columns in cols_to_fuzz with df1 values.
     """
     # nested function that does the fuzzing
-    def fuzz(df1, df2, bin_type, imeasure, suffix, cols_to_fuzz):
+    def fuzz(df1, df2, bin_type, imeasure, suffix, cols_to_fuzz, do_fuzzing):
         """
         Fuzz some df2 records in each bin defined by bin_type and imeasure.
         The fuzzed records have their post-reform tax results (in df2)
@@ -272,25 +309,34 @@ def fuzz_df2_records(df1, df2, mask):
         else:
             df2 = add_quantile_bins(df2, imeasure, 1)
         gdf2 = df2.groupby('bins')
-        df2['nofuzz'] = gdf2['mask'].transform(chooser)
+        if do_fuzzing:
+            df2['nofuzz'] = gdf2['mask'].transform(chooser)
+        else:  # never do any results fuzzing
+            df2['nofuzz'] = np.ones(df2.shape[0], dtype=np.int8)
         for col in cols_to_fuzz:
             df2[col + suffix] = (df2[col] * df2['nofuzz'] -
                                  df1[col] * df2['nofuzz'] + df1[col])
     # main logic of fuzz_df2_records
+    do_fuzzing = np.any(mask)
     skips = set(['num_returns_ItemDed',
                  'num_returns_StandardDed',
                  'num_returns_AMT',
                  's006'])
-    columns_to_fuzz = (set(DIST_TABLE_COLUMNS) | set(STATS_COLUMNS)) - skips
+    columns_to_fuzz = (set(DIST_TABLE_COLUMNS) |
+                       set(STATS_COLUMNS)) - skips
     df2['mask'] = mask
-    # always use expanded income in df1 baseline to groupby into bins
     df2['expanded_income_baseline'] = df1['expanded_income']
-    fuzz(df1, df2, 'dec', 'expanded_income_baseline', '_xdec', columns_to_fuzz)
-    fuzz(df1, df2, 'bin', 'expanded_income_baseline', '_xbin', columns_to_fuzz)
-    fuzz(df1, df2, 'agg', 'expanded_income_baseline', '_agg', columns_to_fuzz)
+    fuzz(df1, df2, 'dec', 'expanded_income_baseline', '_xdec',
+         columns_to_fuzz, do_fuzzing)
+    fuzz(df1, df2, 'bin', 'expanded_income_baseline', '_xbin',
+         columns_to_fuzz, do_fuzzing)
+    fuzz(df1, df2, 'agg', 'expanded_income_baseline', '_agg',
+         columns_to_fuzz, do_fuzzing)
     df2['c00100_baseline'] = df1['c00100']  # c00100 is AGI
-    fuzz(df1, df2, 'dec', 'c00100_baseline', '_adec', columns_to_fuzz)
-    fuzz(df1, df2, 'bin', 'c00100_baseline', '_abin', columns_to_fuzz)
+    fuzz(df1, df2, 'dec', 'c00100_baseline', '_adec',
+         columns_to_fuzz, do_fuzzing)
+    fuzz(df1, df2, 'bin', 'c00100_baseline', '_abin',
+         columns_to_fuzz, do_fuzzing)
     return df2
 
 
@@ -301,7 +347,7 @@ def summary(df1, df2, mask):
     """
     df1 contains raw results for baseline plan
     df2 contains raw results for reform plan
-    mask is the boolean array specifying which records might be fuzzed
+    mask is the boolean array specifying records with reform-induced tax diffs
     returns dictionary of summary results DataFrames
     """
     # pylint: disable=too-many-statements,too-many-locals

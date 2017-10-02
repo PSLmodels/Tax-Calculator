@@ -46,7 +46,7 @@ GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
 def reform_warnings_errors(user_mods):
     """
     The reform_warnings_errors function assumes user_mods is a dictionary
-    returned by the Calculator.read_json_parameter_files() function.
+    returned by the Calculator.read_json_param_objects() function.
 
     This function returns a dictionary containing two STR:STR pairs:
     {'warnings': '<empty-or-message(s)>', 'errors': '<empty-or-message(s)>'}
@@ -82,20 +82,27 @@ def reform_warnings_errors(user_mods):
 
 
 def run_nth_year_tax_calc_model(year_n, start_year,
-                                taxrec_df, user_mods,
+                                use_puf_not_cps,
+                                use_full_sample,
+                                user_mods,
                                 return_json=True):
     """
     The run_nth_year_tax_calc_model function assumes user_mods is a dictionary
-    returned by the Calculator.read_json_param_objects() function.
+      returned by the Calculator.read_json_param_objects() function.
+    Setting use_puf_not_cps=True implies use puf.csv input file;
+      otherwise, use cps.csv input file.
+    Setting use_full_sample=False implies use sub-sample of input file;
+      otherwsie, use the complete sample.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals
+
     start_time = time.time()
 
     # create calc1 and calc2 calculated for year_n and mask
     (calc1, calc2, mask) = calculate(year_n, start_year,
-                                     taxrec_df, user_mods,
-                                     behavior_allowed=True,
-                                     mask_computed=True)
+                                     use_puf_not_cps, use_full_sample,
+                                     user_mods,
+                                     behavior_allowed=True)
 
     # extract raw results from calc1 and calc2
     rawres1 = results(calc1.records)
@@ -109,9 +116,6 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     # construct TaxBrain summary results from raw results
     summ = summary(rawres1, rawres2, mask)
 
-    elapsed_time = time.time() - start_time
-    print('elapsed time for this run: ', elapsed_time)
-
     def append_year(pdf):
         """
         append_year embedded function revises all column names in pdf
@@ -124,6 +128,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         res = dict()
         for tbl in summ:
             res[tbl] = append_year(summ[tbl])
+        elapsed_time = time.time() - start_time
+        print('elapsed time for this run: ', elapsed_time)
         return res
 
     # optionally construct JSON results tables for year n
@@ -153,22 +159,33 @@ def run_nth_year_tax_calc_model(year_n, start_year,
             res[tbl] = create_json_table(summ[tbl],
                                          row_names=info[tbl]['row_names'],
                                          column_types=info[tbl]['col_types'])
+    elapsed_time = time.time() - start_time
+    print('elapsed time for this run: ', elapsed_time)
     return res
 
 
 def run_nth_year_gdp_elast_model(year_n, start_year,
-                                 taxrec_df, user_mods,
+                                 use_puf_not_cps,
+                                 use_full_sample,
+                                 user_mods,
                                  gdp_elasticity,
                                  return_json=True):
     """
     The run_nth_year_gdp_elast_model function assumes user_mods is a dictionary
-    returned by the Calculator.read_json_param_objects() function.
+      returned by the Calculator.read_json_param_objects() function.
+    Setting use_puf_not_cps=True implies use puf.csv input file;
+      otherwise, use cps.csv input file.
+    Setting use_full_sample=False implies use sub-sample of input file;
+      otherwsie, use the complete sample.
     """
+    # pylint: disable=too-many-arguments
+
     # create calc1 and calc2 calculated for year_n
     (calc1, calc2, _) = calculate(year_n, start_year,
-                                  taxrec_df, user_mods,
-                                  behavior_allowed=False,
-                                  mask_computed=False)
+                                  use_puf_not_cps,
+                                  use_full_sample,
+                                  user_mods,
+                                  behavior_allowed=False)
 
     # compute GDP effect given specified gdp_elasticity
     gdp_effect = proportional_change_gdp(calc1, calc2, gdp_elasticity)

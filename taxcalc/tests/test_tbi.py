@@ -58,26 +58,35 @@ def test_check_user_mods_errors():
 
 
 @pytest.mark.requires_pufcsv
-def test_run_nth_year_value_errors(puf_subsample):
+def test_run_nth_year_value_errors():
     usermods = USER_MODS
     # test for growdiff_response not allowed error
     usermods['growdiff_response'] = {2018: {'_AINTS': [0.02]}}
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, puf_subsample,
-                                     usermods, gdp_elasticity=0.36,
+        run_nth_year_gdp_elast_model(1, 2013,
+                                     use_puf_not_cps=True,
+                                     use_full_sample=False,
+                                     user_mods=usermods,
+                                     gdp_elasticity=0.36,
                                      return_json=False)
     usermods['growdiff_response'] = dict()
     # test for behavior not allowed error
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, puf_subsample,
-                                     usermods, gdp_elasticity=0.36,
+        run_nth_year_gdp_elast_model(1, 2013,
+                                     use_puf_not_cps=True,
+                                     use_full_sample=False,
+                                     user_mods=usermods,
+                                     gdp_elasticity=0.36,
                                      return_json=False)
 
 
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resjson', [True, False])
-def test_run_tax_calc_model(puf_subsample, resjson):
-    res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, USER_MODS,
+def test_run_tax_calc_model(resjson):
+    res = run_nth_year_tax_calc_model(2, 2016,
+                                      use_puf_not_cps=resjson,
+                                      use_full_sample=False,
+                                      user_mods=USER_MODS,
                                       return_json=resjson)
     assert isinstance(res, dict)
     dump = False  # set to True in order to dump returned results and fail test
@@ -99,11 +108,14 @@ def test_run_tax_calc_model(puf_subsample, resjson):
 
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resjson', [True, False])
-def test_run_gdp_elast_model(puf_subsample, resjson):
+def test_run_gdp_elast_model(resjson):
     usermods = USER_MODS
     usermods['behavior'] = dict()
-    res = run_nth_year_gdp_elast_model(2, 2016, puf_subsample,
-                                       usermods, gdp_elasticity=0.36,
+    res = run_nth_year_gdp_elast_model(2, 2016,
+                                       use_puf_not_cps=True,
+                                       use_full_sample=False,
+                                       user_mods=usermods,
+                                       gdp_elasticity=0.36,
                                        return_json=resjson)
     if resjson:
         assert isinstance(res, dict)
@@ -185,11 +197,11 @@ def test_with_pufcsv(puf_fullsample):
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     assert taxes_fullsample is not None
     fulls_reform_revenue = float(taxes_fullsample.loc[analysis_year])
-    # create a Public Use File object
-    tax_data = puf_fullsample
     # call run_nth_year_tax_calc_model function
     resdict = run_nth_year_tax_calc_model(year_n, start_year,
-                                          tax_data, usermods,
+                                          use_puf_not_cps=True,
+                                          use_full_sample=True,
+                                          user_mods=usermods,
                                           return_json=True)
     total = resdict['aggr_2']
     tbi_reform_revenue = float(total['combined_tax_9']) * 1e-9
