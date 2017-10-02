@@ -1,12 +1,11 @@
 """
-test_dropq.py uses only PUF input data because the dropq algorithm
-is designed to work exclusively with private IRS-SOI PUF input data.
+Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
 """
 import numpy as np
 import pandas as pd
 import pytest
-from taxcalc.dropq.dropq_utils import *
-from taxcalc.dropq import *
+from taxcalc.tbi.tbi_utils import *
+from taxcalc.tbi import *
 from taxcalc import (Policy, Records, Calculator,
                      multiyear_diagnostic_table, results)
 
@@ -190,12 +189,12 @@ def test_with_pufcsv(puf_fullsample):
                                           tax_data, usermods,
                                           return_json=True)
     total = resdict['aggr_2']
-    dropq_reform_revenue = float(total['combined_tax_9']) * 1e-9
-    # assert that dropq revenue is similar to the fullsample calculation
-    diff = abs(fulls_reform_revenue - dropq_reform_revenue)
+    tbi_reform_revenue = float(total['combined_tax_9']) * 1e-9
+    # assert that tbi revenue is similar to the fullsample calculation
+    diff = abs(fulls_reform_revenue - tbi_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue
     frmt = 'f,d,adiff,pdiff=  {:.4f}  {:.4f}  {:.4f}  {}'
-    print(frmt.format(fulls_reform_revenue, dropq_reform_revenue,
+    print(frmt.format(fulls_reform_revenue, tbi_reform_revenue,
                       diff, proportional_diff))
     assert proportional_diff < 0.0001  # one-hundredth of one percent
     # assert 1 == 2  # uncomment to force test failure with above print out

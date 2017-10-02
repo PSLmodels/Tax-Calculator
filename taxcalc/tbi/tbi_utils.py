@@ -1,9 +1,9 @@
 """
-Private utility functions used only by public functions in the dropq.py file.
+Private utility functions used only by public functions in the tbi.py file.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 dropq_utils.py
-# pylint --disable=locally-disabled dropq_utils.py
+# pep8 --ignore=E402 tbi_utils.py
+# pylint --disable=locally-disabled tbi_utils.py
 
 import copy
 import hashlib
@@ -51,11 +51,11 @@ def check_user_mods(user_mods):
         raise ValueError('user_mods has extra keys: {}'.format(extra_keys))
 
 
-def dropq_calculate(year_n, start_year,
-                    taxrec_df, user_mods,
-                    behavior_allowed, mask_computed):
+def calculate(year_n, start_year,
+              taxrec_df, user_mods,
+              behavior_allowed, mask_computed):
     """
-    The dropq_calculate function assumes specified user_mods is
+    The calculate function assumes specified user_mods is
       a dictionary returned by the Calculator.read_json_parameter_files()
       function with an extra key:value pair that is specified as
       'gdp_elasticity': {'value': <float_value>}.
@@ -301,7 +301,7 @@ def fuzz_df2_records(df1, df2, mask):
 AGGR_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
 
 
-def dropq_summary(df1, df2, mask):
+def summary(df1, df2, mask):
     """
     df1 contains raw results for baseline plan
     df2 contains raw results for reform plan

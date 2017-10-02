@@ -256,7 +256,7 @@ def test_diff_count_precision():
     """
     Estimate bootstrap standard error and confidence interval for count
     statistics ('tax_cut' and 'tax_inc') in difference table generated
-    using puf.csv input data taking no account of dropq fuzzing and
+    using puf.csv input data taking no account of tbi privacy fuzzing and
     assuming all filing units in each bin have the same weight.  These
     assumptions imply that the estimates produced here are likely to
     over-estimate the precision of the count statistics.

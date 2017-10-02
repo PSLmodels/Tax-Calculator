@@ -1,24 +1,25 @@
 """
-The dropq functions are used by TaxBrain to call Tax-Calculator in order
-to maintain the privacy of the IRS-SOI PUF data being used by TaxBrain.
-This is done by "fuzzing" reform results for several randomly selected
+The tbi functions are used by TaxBrain to call Tax-Calculator in order
+to do distributed processing of TaxBrain runs and in order to maintain
+the privacy of the IRS-SOI PUF data being used by TaxBrain.  Maintaining
+privacy is done by "fuzzing" reform results for several randomly selected
 filing units in each table cell.  The filing units randomly selected
 differ for each policy reform and the "fuzzing" involves replacing the
 post-reform tax results for the selected units with their pre-reform
 tax results.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 dropq.py
-# pylint --disable=locally-disabled dropq.py
+# pep8 --ignore=E402 tbi.py
+# pylint --disable=locally-disabled tbi.py
 
 from __future__ import print_function
 import time
 import numpy as np
 import pandas as pd
-from taxcalc.dropq.dropq_utils import (dropq_calculate,
-                                       random_seed,
-                                       dropq_summary,
-                                       AGGR_ROW_NAMES)
+from taxcalc.tbi.tbi_utils import (calculate,
+                                   random_seed,
+                                   summary,
+                                   AGGR_ROW_NAMES)
 from taxcalc import (results, DIST_TABLE_LABELS,
                      proportional_change_gdp, Growdiff, Growfactors, Policy)
 
@@ -93,10 +94,10 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     start_time = time.time()
 
     # create calc1 and calc2 calculated for year_n and mask
-    (calc1, calc2, mask) = dropq_calculate(year_n, start_year,
-                                           taxrec_df, user_mods,
-                                           behavior_allowed=True,
-                                           mask_computed=True)
+    (calc1, calc2, mask) = calculate(year_n, start_year,
+                                     taxrec_df, user_mods,
+                                     behavior_allowed=True,
+                                     mask_computed=True)
 
     # extract raw results from calc1 and calc2
     rawres1 = results(calc1.records)
@@ -107,8 +108,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     print('seed={}'.format(seed))
     np.random.seed(seed)  # pylint: disable=no-member
 
-    # construct dropq summary results from raw results
-    summ = dropq_summary(rawres1, rawres2, mask)
+    # construct TaxBrain summary results from raw results
+    summ = summary(rawres1, rawres2, mask)
 
     elapsed_time = time.time() - start_time
     print('elapsed time for this run: ', elapsed_time)
@@ -167,10 +168,10 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     'gdp_elasticity': {'value': <float_value>}.
     """
     # create calc1 and calc2 calculated for year_n
-    (calc1, calc2, _) = dropq_calculate(year_n, start_year,
-                                        taxrec_df, user_mods,
-                                        behavior_allowed=False,
-                                        mask_computed=False)
+    (calc1, calc2, _) = calculate(year_n, start_year,
+                                  taxrec_df, user_mods,
+                                  behavior_allowed=False,
+                                  mask_computed=False)
 
     # compute GDP effect given assumed gdp elasticity
     gdp_elasticity = user_mods['gdp_elasticity']['value']
