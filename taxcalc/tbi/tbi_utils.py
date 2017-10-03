@@ -5,7 +5,9 @@ Private utility functions used only by public functions in the tbi.py file.
 # pep8 --ignore=E402 tbi_utils.py
 # pylint --disable=locally-disabled tbi_utils.py
 
+from __future__ import print_function
 import os
+import time
 import copy
 import hashlib
 import numpy as np
@@ -92,17 +94,20 @@ def calculate(year_n, start_year,
     growdiff_response.apply_to(growfactors_post)
 
     # create sample pd.DataFrame from specified input file and sampling scheme
+    stime = time.time()
     tbi_path = os.path.abspath(os.path.dirname(__file__))
     if use_puf_not_cps:
-        input_path = os.path.join(tbi_path, '..', '..', 'puf.csv.gz')
+        # first try TaxBrain deployment path
+        input_path = 'puf.csv.gz'
         if not os.path.isfile(input_path):
+            # otherwise try local Tax-Calculator deployment path
             input_path = os.path.join(tbi_path, '..', '..', 'puf.csv')
         sampling_frac = 0.05
         sampling_seed = 180
     else:
         input_path = os.path.join(tbi_path, '..', 'cps.csv.gz')
-        sampling_frac = 0.05
-        sampling_seed = 180
+        sampling_frac = 0.05  # TODO: using same as for puf for now
+        sampling_seed = 180  # TODO: using same as for puf for now
     full_sample = pd.read_csv(input_path)
     if use_full_sample:
         sample = full_sample
@@ -111,6 +116,10 @@ def calculate(year_n, start_year,
             frac=sampling_frac,
             random_state=sampling_seed
         )
+    if use_puf_not_cps:
+        print('puf-read-time= {:.1f}'.format(time.time() - stime))
+    else:
+        print('cps-read-time= {:.1f}'.format(time.time() - stime))
 
     # create pre-reform Calculator instance
     if use_puf_not_cps:
