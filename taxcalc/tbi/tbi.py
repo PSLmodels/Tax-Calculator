@@ -85,7 +85,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                 use_puf_not_cps,
                                 use_full_sample,
                                 user_mods,
-                                return_json=True):
+                                return_dict=True):
     """
     The run_nth_year_tax_calc_model function assumes user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
@@ -124,12 +124,12 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         return pdf
 
     # optionally return non-JSON results
-    if not return_json:
+    if not return_dict:
         res = dict()
         for tbl in summ:
             res[tbl] = append_year(summ[tbl])
         elapsed_time = time.time() - start_time
-        print('elapsed time for this run: ', elapsed_time)
+        print('elapsed time for this run: {:.1f}'.format(elapsed_time))
         return res
 
     # optionally construct JSON results tables for year n
@@ -152,15 +152,15 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     res = dict()
     for tbl in summ:
         if 'aggr' in tbl:
-            res_table = create_json_table(summ[tbl],
+            res_table = create_dict_table(summ[tbl],
                                           row_names=info[tbl]['row_names'])
             res[tbl] = dict((k, v[0]) for k, v in res_table.items())
         else:
-            res[tbl] = create_json_table(summ[tbl],
+            res[tbl] = create_dict_table(summ[tbl],
                                          row_names=info[tbl]['row_names'],
                                          column_types=info[tbl]['col_types'])
     elapsed_time = time.time() - start_time
-    print('elapsed time for this run: ', elapsed_time)
+    print('elapsed time for this run: {:.1f}'.format(elapsed_time))
     return res
 
 
@@ -169,7 +169,7 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
                                  use_full_sample,
                                  user_mods,
                                  gdp_elasticity,
-                                 return_json=True):
+                                 return_dict=True):
     """
     The run_nth_year_gdp_elast_model function assumes user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
@@ -191,11 +191,11 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     gdp_effect = proportional_change_gdp(calc1, calc2, gdp_elasticity)
 
     # return gdp_effect results
-    if return_json:
+    if return_dict:
         gdp_df = pd.DataFrame(data=[gdp_effect], columns=['col0'])
         gdp_elast_names_n = [x + '_' + str(year_n)
                              for x in GDP_ELAST_ROW_NAMES]
-        gdp_elast_total = create_json_table(gdp_df,
+        gdp_elast_total = create_dict_table(gdp_df,
                                             row_names=gdp_elast_names_n,
                                             num_decimals=5)
         gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
@@ -204,10 +204,10 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
         return gdp_effect
 
 
-def create_json_table(dframe, row_names=None, column_types=None,
+def create_dict_table(dframe, row_names=None, column_types=None,
                       num_decimals=2):
     """
-    Create and return dictionary with JSON-like contents from specified dframe.
+    Create and return dictionary with JSON-like content from specified dframe.
     """
     # embedded formatted_string function
     def formatted_string(val, _type, num_decimals):
@@ -230,7 +230,7 @@ def create_json_table(dframe, row_names=None, column_types=None,
         except ValueError:
             # try making it a string - good luck!
             return str(val)
-    # high-level create_json_table function logic
+    # high-level create_dict_table function logic
     out = dict()
     if row_names is None:
         row_names = [str(x) for x in list(dframe.index)]
