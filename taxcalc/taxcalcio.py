@@ -135,7 +135,7 @@ class TaxCalcIO(object):
         self.behavior_has_any_response = False
         self.calc = None
         self.calc_clp = None
-        self.paramdict = None
+        self.param_dict = None
 
     def init(self, input_data, tax_year, reform, assump,
              growdiff_response,
@@ -165,21 +165,21 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
         # get parameter dictionaries from --reform and --assump files
-        self.paramdict = Calculator.read_json_param_objects(reform, assump)
+        paramdict = Calculator.read_json_param_objects(reform, assump)
         # create Behavior object
         beh = Behavior()
-        beh.update_behavior(self.paramdict['behavior'])
+        beh.update_behavior(paramdict['behavior'])
         self.behavior_has_any_response = beh.has_any_response()
         # create gdiff_baseline object
         gdiff_baseline = Growdiff()
-        gdiff_baseline.update_growdiff(self.paramdict['growdiff_baseline'])
+        gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
         # create Growfactors clp object that incorporates gdiff_baseline
         gfactors_clp = Growfactors()
         gdiff_baseline.apply_to(gfactors_clp)
         # specify gdiff_response object
         if growdiff_response is None:
             gdiff_response = Growdiff()
-            gdiff_response.update_growdiff(self.paramdict['growdiff_response'])
+            gdiff_response.update_growdiff(paramdict['growdiff_response'])
         elif isinstance(growdiff_response, Growdiff):
             gdiff_response = growdiff_response
         else:
@@ -202,7 +202,7 @@ class TaxCalcIO(object):
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
             try:
-                pol.implement_reform(self.paramdict['policy'])
+                pol.implement_reform(paramdict['policy'])
                 self.errmsg += pol.reform_errors
             except ValueError as valerr_msg:
                 self.errmsg += valerr_msg.__str__()
@@ -260,7 +260,7 @@ class TaxCalcIO(object):
             self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Calculator objects
         con = Consumption()
-        con.update_consumption(self.paramdict['consumption'])
+        con.update_consumption(paramdict['consumption'])
         self.calc = Calculator(policy=pol, records=recs,
                                verbose=True,
                                consumption=con,
@@ -270,6 +270,8 @@ class TaxCalcIO(object):
                                    verbose=False,
                                    consumption=con,
                                    sync_years=aging_input_data)
+        # remember parameter dictionary for reform documentation
+        self.param_dict = paramdict
 
     def tax_year(self):
         """
@@ -400,7 +402,7 @@ class TaxCalcIO(object):
         """
         Write reform documentation to text file.
         """
-        doc = Calculator.reform_documentation(self.paramdict)
+        doc = Calculator.reform_documentation(self.param_dict)
         doc_fname = self._output_filename.replace('.csv', '-doc.text')
         with open(doc_fname, 'w') as dfile:
             dfile.write(doc)
