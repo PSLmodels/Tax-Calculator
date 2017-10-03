@@ -75,6 +75,14 @@ def policy_param_text(pname, param):
         txt += '<br><i>Inflation Indexed:</i> True'
     else:
         txt += '<br><i>Inflation Indexed:</i> False'
+    if param['integer_value']:
+        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Integer Value:</i> True'
+    else:
+        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Integer Value:</i> False'
+    if param['boolean_value']:
+        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Boolean Value:</i> True'
+    else:
+        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Boolean Value:</i> False'
     txt += '<br><i>Known Values:</i>'
     if len(param['col_label']) > 0:
         cols = ', '.join(param['col_label'])
