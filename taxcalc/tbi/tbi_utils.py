@@ -266,9 +266,10 @@ def chooser(agg):
     return ans
 
 
-def fuzz_df2_records(df1, df2, mask):
+def create_results_columns(df1, df2, mask):
     """
-    Possibly modify df2 results by adding random fuzz for data privacy.
+    Create columns in df2 results dataframe and possibly
+    modify df2 results by adding random fuzz for data privacy.
 
     Parameters
     ----------
@@ -284,20 +285,22 @@ def fuzz_df2_records(df1, df2, mask):
 
     Returns
     -------
-    possibly fuzzed df2: Pandas DataFrame
+    expanded and possibly fuzzed df2: Pandas DataFrame
 
     Notes
     -----
-    This function groups both DataFrames based on the web application's
+    When doing the fuzzing for puf.csv results, this
+    function groups both DataFrames based on the web application's
     income groupings (both decile and income bins), and then randomly
     selects NUM_TO_FUZZ records to fuzz within each bin.  The fuzzing
     involves overwriting df2 columns in cols_to_fuzz with df1 values.
     """
     # nested function that does the fuzzing
-    def fuzz(df1, df2, bin_type, imeasure, suffix, cols_to_fuzz, do_fuzzing):
+    def create(df1, df2, bin_type, imeasure, suffix, cols_to_fuzz, do_fuzzing):
         """
-        Fuzz some df2 records in each bin defined by bin_type and imeasure.
-        The fuzzed records have their post-reform tax results (in df2)
+        Create additional df2 columns.  If do_fuzzing is True, also
+        fuzz some df2 records in each bin defined by bin_type and imeasure
+        with the fuzzed records having their post-reform tax results (in df2)
         set to their pre-reform tax results (in df1).
         """
         # pylint: disable=too-many-arguments
@@ -316,27 +319,28 @@ def fuzz_df2_records(df1, df2, mask):
         for col in cols_to_fuzz:
             df2[col + suffix] = (df2[col] * df2['nofuzz'] -
                                  df1[col] * df2['nofuzz'] + df1[col])
-    # main logic of fuzz_df2_records
-    do_fuzzing = np.any(mask)
+    # main logic of create_results_columns function
     skips = set(['num_returns_ItemDed',
                  'num_returns_StandardDed',
                  'num_returns_AMT',
                  's006'])
-    columns_to_fuzz = (set(DIST_TABLE_COLUMNS) |
-                       set(STATS_COLUMNS)) - skips
-    df2['mask'] = mask
+    columns_to_create = (set(DIST_TABLE_COLUMNS) |
+                         set(STATS_COLUMNS)) - skips
+    do_fuzzing = np.any(mask)
+    if do_fuzzing:
+        df2['mask'] = mask
     df2['expanded_income_baseline'] = df1['expanded_income']
-    fuzz(df1, df2, 'dec', 'expanded_income_baseline', '_xdec',
-         columns_to_fuzz, do_fuzzing)
-    fuzz(df1, df2, 'bin', 'expanded_income_baseline', '_xbin',
-         columns_to_fuzz, do_fuzzing)
-    fuzz(df1, df2, 'agg', 'expanded_income_baseline', '_agg',
-         columns_to_fuzz, do_fuzzing)
+    create(df1, df2, 'dec', 'expanded_income_baseline', '_xdec',
+           columns_to_create, do_fuzzing)
+    create(df1, df2, 'bin', 'expanded_income_baseline', '_xbin',
+           columns_to_create, do_fuzzing)
+    create(df1, df2, 'agg', 'expanded_income_baseline', '_agg',
+           columns_to_create, do_fuzzing)
     df2['c00100_baseline'] = df1['c00100']  # c00100 is AGI
-    fuzz(df1, df2, 'dec', 'c00100_baseline', '_adec',
-         columns_to_fuzz, do_fuzzing)
-    fuzz(df1, df2, 'bin', 'c00100_baseline', '_abin',
-         columns_to_fuzz, do_fuzzing)
+    create(df1, df2, 'dec', 'c00100_baseline', '_adec',
+           columns_to_create, do_fuzzing)
+    create(df1, df2, 'bin', 'c00100_baseline', '_abin',
+           columns_to_create, do_fuzzing)
     return df2
 
 
@@ -352,7 +356,7 @@ def summary(df1, df2, mask):
     """
     # pylint: disable=too-many-statements,too-many-locals
 
-    df2 = fuzz_df2_records(df1, df2, mask)
+    df2 = create_results_columns(df1, df2, mask)
 
     summ = dict()
 
