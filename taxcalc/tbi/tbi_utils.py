@@ -17,7 +17,7 @@ from taxcalc import (Policy, Records, Calculator,
 from taxcalc.utils import (add_income_bins, add_quantile_bins, results,
                            create_difference_table, create_distribution_table,
                            STATS_COLUMNS, DIST_TABLE_COLUMNS,
-                           WEBAPP_INCOME_BINS)
+                           WEBAPP_INCOME_BINS, read_egg_csv)
 
 
 def check_years(start_year, year_n):
@@ -104,11 +104,17 @@ def calculate(year_n, start_year,
             input_path = os.path.join(tbi_path, '..', '..', 'puf.csv')
         sampling_frac = 0.05
         sampling_seed = 180
-    else:
+    else:  # if using cps input not puf input
+        # first try Tax-Calculator code path
         input_path = os.path.join(tbi_path, '..', 'cps.csv.gz')
+        if not os.path.isfile(input_path):
+            # otherwise try taxcalc package path
+            input_path = None
+            full_sample = read_egg_csv('cps.csv.gz')  # pragma: no cover
         sampling_frac = 0.05  # TODO: using same as for puf for now
         sampling_seed = 180  # TODO: using same as for puf for now
-    full_sample = pd.read_csv(input_path)
+    if input_path:
+        full_sample = pd.read_csv(input_path)
     if use_full_sample:
         sample = full_sample
     else:
