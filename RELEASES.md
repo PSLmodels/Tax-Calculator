@@ -29,7 +29,9 @@ Release 0.12.0 on 2017-??-??
   by Martin Holmer]
 
 **Bug Fixes**
-- None
+- Relax _STD and _STD_Dep minimum value warning logic
+  [[#1578](https://github.com/open-source-economics/Tax-Calculator/pull/1578)
+  by Martin Holmer]
 
 Release 0.11.0 on 2017-09-21
 ----------------------------
