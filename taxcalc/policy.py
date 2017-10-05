@@ -391,8 +391,11 @@ class Policy(ParametersBase):
                         vvalue = getattr(clp, pname)
                         if vop == 'min':
                             vvalue -= rounding_error
-                        elif vop == 'max':
-                            vvalue += rounding_error
+                        # the follow branch can never be reached, so it
+                        # is commented out because it can never be tested
+                        # (see test_range_infomation in test_policy.py)
+                        # --> elif vop == 'max':
+                        # -->    vvalue += rounding_error
                     else:
                         vvalue = getattr(self, vval)
                 else:
