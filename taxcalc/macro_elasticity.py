@@ -1,6 +1,9 @@
 """
 Implements TaxBrain "Macroeconomic Elasticities Simulation" dynamic analysis.
 """
+# CODING-STYLE CHECKS:
+# pep8 --ignore=E402 macro_elasticity.py
+# pylint --disable=locally-disabled macro_elasticity.py
 
 
 def proportional_change_gdp(calc1, calc2, elasticity):
@@ -15,19 +18,21 @@ def proportional_change_gdp(calc1, calc2, elasticity):
     derived from calculations of income-weighted marginal tax rates under the
     baseline and reform.
 
-    Evidence for this parameter can be found in Barro and Redlick's
-    "Macroeconomic Effects from Government Purchases and Taxes." In particular,
-    Barro and Redlick find that from a 1 percentage point increase in the AMTR
-    leads to a 0.54 percent increase in GDP. Evaluated at the sample mean,
-    this translates to an elasticity of GDP with respect to the average after
-    tax rate of 0.36.
+    Empirical evidence on this elasticity can be found in Robert Barro
+    and Charles Redlick, "Macroeconomic Effects from Government Purchases
+    and Taxes" (2011 Quarterly Journal of Economics).  In particular,
+    Barro and Redlick find that a 1 percentage point decrease in the AMTR
+    leads to a 0.54 percent increase in GDP.  Evaluated at the sample mean,
+    this translates to an elasticity of GDP with respect to the average
+    after-tax marginal rate of about 0.36.
 
-    Karel Mertens' "Marginal Tax Rates and Income: New Time Series Evidence"
-    contains additional evidence, focussed on tax cuts affecting the upper part
-    of the income distribution.
-
-    Both Mertens and Karel tentatively conclude that the effect stems from
-    marginal rather than average tax rates.
+    A more recent paper by Karel Mertens and Jose L. Montiel Olea,
+    entitled "Marginal Tax Rates and Income: New Time Series Evidence",
+    NBER working paper 19171 (June 2013 with September 2017 revisions)
+    <http://www.nber.org/papers/w19171.pdf>,
+    contains additional empirical evidence suggesting the elasticity is
+    no less than the 0.36 Barro-Redlick estimate and perhaps somewhat
+    higher (see section 4.6).
 
     Parameters
     ----------
@@ -50,5 +55,4 @@ def proportional_change_gdp(calc1, calc2, elasticity):
     diff_avg_one_mtr = avg_one_mtr2 - avg_one_mtr1
     proportional_diff_mtr = diff_avg_one_mtr / avg_one_mtr1
     gdp_effect_of_reform = proportional_diff_mtr * elasticity
-    print('{:.5f}'.format(gdp_effect_of_reform))
     return gdp_effect_of_reform

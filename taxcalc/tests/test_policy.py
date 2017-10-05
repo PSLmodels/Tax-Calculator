@@ -141,35 +141,41 @@ def test_multi_year_reform():
         wfactor[syr + i] = 1.0 + wratelist[i]
     # confirm that parameters have current-law values
     assert_allclose(getattr(pol, '_EITC_c'),
-                    Policy._expand_array(np.array([[487, 3250, 5372, 6044],
-                                                   [496, 3305, 5460, 6143],
-                                                   [503, 3359, 5548, 6242],
-                                                   [506, 3373, 5572, 6269],
-                                                   [510, 3400, 5616, 6318]]),
-                                         inflate=True,
-                                         inflation_rates=iratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([[487, 3250, 5372, 6044],
+                                  [496, 3305, 5460, 6143],
+                                  [503, 3359, 5548, 6242],
+                                  [506, 3373, 5572, 6269],
+                                  [510, 3400, 5616, 6318]],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=iratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     assert_allclose(getattr(pol, '_II_em'),
-                    Policy._expand_array(np.array([3900, 3950, 4000, 4050,
-                                                   4050]),
-                                         inflate=True,
-                                         inflation_rates=iratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([3900, 3950, 4000, 4050, 4050],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=iratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     assert_allclose(getattr(pol, '_CTC_c'),
-                    Policy._expand_array(np.array([1000]),
-                                         inflate=False,
-                                         inflation_rates=iratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([1000],
+                                 dtype=np.float64), False,
+                        inflate=False,
+                        inflation_rates=iratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     # this parameter uses a different indexing rate
     assert_allclose(getattr(pol, '_SS_Earnings_c'),
-                    Policy._expand_array(np.array([113700, 117000,
-                                                   118500, 118500, 127200]),
-                                         inflate=True,
-                                         inflation_rates=wratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([113700, 117000, 118500, 118500, 127200],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=wratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     # specify multi-year reform using a dictionary of year_provisions dicts
     reform = {
@@ -325,28 +331,34 @@ def test_create_parameters_from_file(policyfile):
     ppo = Policy(parameter_dict=policy)
     inf_rates = ppo.inflation_rates()
     assert_allclose(ppo._almdep,
-                    Policy._expand_array(np.array([7150, 7250, 7400]),
-                                         inflate=True,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([7150, 7250, 7400],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._almsep,
-                    Policy._expand_array(np.array([40400, 41050]),
-                                         inflate=True,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([40400, 41050],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt5,
-                    Policy._expand_array(np.array([0.33]),
-                                         inflate=False,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([0.33]), False,
+                        inflate=False,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt7,
-                    Policy._expand_array(np.array([0.396]),
-                                         inflate=False,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([0.396]), False,
+                        inflate=False,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
 
 
@@ -765,34 +777,6 @@ def test_description_punctuation(tests_path):
                   str(param),
                   dct[param]['description'])
     assert all_desc_ok
-
-
-def test_boolean_value_infomation(tests_path):
-    """
-    Check consistency of boolean_value in current_law_policy.json file.
-    """
-    # read current_law_policy.json file into a dictionary
-    path = os.path.join(tests_path, '..', 'current_law_policy.json')
-    with open(path, 'r') as clpfile:
-        clp = json.load(clpfile)
-    for param in clp.keys():
-        val = clp[param]['value']
-        if isinstance(val, list):
-            val = val[0]
-            if isinstance(val, list):
-                val = val[0]
-        valstr = str(val)
-        if valstr == 'True' or valstr == 'False':
-            val_is_boolean = True
-        else:
-            val_is_boolean = False
-        if clp[param]['boolean_value'] != val_is_boolean:
-            print('param,boolean_value,val,val_is_boolean=',
-                  str(param),
-                  clp[param]['boolean_value'],
-                  val,
-                  val_is_boolean)
-            assert clp[param]['boolean_value'] == val_is_boolean
 
 
 def test_range_infomation(tests_path):
