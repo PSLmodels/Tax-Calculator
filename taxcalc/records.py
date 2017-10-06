@@ -14,10 +14,6 @@ from taxcalc.growfactors import Growfactors
 from taxcalc.utils import read_egg_csv, read_egg_json
 
 
-PUFCSV_YEAR = 2009
-CPSCSV_YEAR = 2014
-
-
 class Records(object):
     """
     Constructor for the tax-filing-unit Records class.
@@ -99,6 +95,9 @@ class Records(object):
     # pylint: disable=invalid-name
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
+
+    PUFCSV_YEAR = 2009
+    CPSCSV_YEAR = 2014
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     PUF_WEIGHTS_FILENAME = 'puf_weights.csv'
@@ -191,7 +190,7 @@ class Records(object):
                        gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       start_year=CPSCSV_YEAR)
+                       start_year=Records.CPSCSV_YEAR)
 
     @property
     def data_year(self):
