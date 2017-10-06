@@ -32,7 +32,9 @@ Release 0.12.0 on 2017-??-??
   by Martin Holmer]
 
 **Bug Fixes**
-- None
+- Fix macro-elasticity model logic so that GDP change in year t depends on tax rate changes in year t-1
+  [[#1579](https://github.com/open-source-economics/Tax-Calculator/pull/1579)
+  by Martin Holmer]
 
 Release 0.11.0 on 2017-09-21
 ----------------------------
