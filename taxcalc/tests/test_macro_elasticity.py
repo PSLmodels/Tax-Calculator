@@ -22,6 +22,8 @@ def test_proportional_change_in_gdp(cps_subsample):
     pol2.implement_reform(reform)
     calc2 = Calculator(policy=pol2, records=rec2)
     assert calc1.current_year == 2014  # because using CPS data
+    gdpc = proportional_change_in_gdp(2014, calc1, calc2, elasticity=0.36)
+    assert gdpc == 0.0  # no effect for first data year
     gdpc = proportional_change_in_gdp(2015, calc1, calc2, elasticity=0.36)
     assert gdpc == 0.0  # no effect in first year of reform
     calc1.increment_year()
@@ -29,6 +31,6 @@ def test_proportional_change_in_gdp(cps_subsample):
     assert calc1.current_year == 2015
     gdpc = proportional_change_in_gdp(2016, calc1, calc2, elasticity=0.36)
     assert gdpc < 0.0  # higher average MTR implies reduction in GDP
-    # don't increment year to 2016
+    # skip calc?.increment_year to 2016, so calc?.current_year is still 2015
     with pytest.raises(ValueError):
         gdpc = proportional_change_in_gdp(2017, calc1, calc2, elasticity=0.36)
