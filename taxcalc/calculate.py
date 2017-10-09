@@ -41,47 +41,29 @@ class Calculator(object):
     Parameters
     ----------
     policy: Policy class object
-        this argument must be specified
-        IMPORTANT NOTE: never pass the same Policy object to more than one
-        Calculator.  In other words, when specifying more
-        than one Calculator object, do this::
-
-            pol1 = Policy()
-            rec1 = Records()
-            calc1 = Calculator(policy=pol1, records=rec1)
-            pol2 = Policy()
-            rec2 = Records()
-            calc2 = Calculator(policy=pol2, records=rec2)
+        this argument must be specified and object is copied for internal use
 
     records: Records class object
-        this argument must be specified
-        IMPORTANT NOTE: never pass the same Records object to more than one
-        Calculator.  In other words, when specifying more
-        than one Calculator object, do this::
-
-            pol1 = Policy()
-            rec1 = Records()
-            calc1 = Calculator(policy=pol1, records=rec1)
-            pol2 = Policy()
-            rec2 = Records()
-            calc2 = Calculator(policy=pol2, records=rec2)
+        this argument must be specified and object is copied for internal use
 
     verbose: boolean
         specifies whether or not to write to stdout data-loaded and
         data-extrapolated progress reports; default value is true.
 
     sync_years: boolean
-        specifies whether or not to syncronize policy year and records year;
+        specifies whether or not to synchronize policy year and records year;
         default value is true.
 
     consumption: Consumption class object
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
-        no consumption responses assumed in marginal tax rate calculations.
+        no consumption responses assumed in marginal tax rate calculations;
+        when argument is an object it is copied for internal use
 
     behavior: Behavior class object
-        specifies behaviorial responses used by Calculator; default is None,
-        which implies no behavioral responses to policy reform.
+        specifies behavioral responses used by Calculator; default is None,
+        which implies no behavioral responses to policy reform;
+        when argument is an object it is copied for internal use
 
     Raises
     ------
@@ -91,6 +73,18 @@ class Calculator(object):
     Returns
     -------
     class instance: Calculator
+
+    Notes
+    -----
+    The most efficient way to specify current-law and reform Calculator
+    objects is as follows:
+         pol = Policy()
+         rec = Records()
+         calc1 = Calculator(policy=pol, records=rec)  # current-law
+         pol.implement_reform(...)
+         calc2 = Calculator(policy=pol, records=rec)  # reform
+    All calculations are done on the internal copies of the Policy and
+    Records objects passed to each of the two Calculator constructors.
     """
 
     def __init__(self, policy=None, records=None, verbose=True,
