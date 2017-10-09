@@ -732,6 +732,9 @@ def test_multiyear_diagnostic_table(cps_subsample):
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, pd.DataFrame)
     behv.update_behavior({2013: {'_BE_sub': [0.3]}})
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample),
+                      behavior=behv)
     assert calc.behavior.has_response()
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, pd.DataFrame)
