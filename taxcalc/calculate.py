@@ -97,11 +97,11 @@ class Calculator(object):
                  sync_years=True, consumption=None, behavior=None):
         # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
-            self.policy = policy
+            self.policy = copy.deepcopy(policy)
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self.records = records
+            self.records = copy.deepcopy(records)
         else:
             raise ValueError('must specify records as a Records object')
         if self.policy.current_year < self.records.data_year:
@@ -109,7 +109,7 @@ class Calculator(object):
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
-            self.consumption = consumption
+            self.consumption = copy.deepcopy(consumption)
             while self.consumption.current_year < self.policy.current_year:
                 next_year = self.consumption.current_year + 1
                 self.consumption.set_year(next_year)
@@ -118,7 +118,7 @@ class Calculator(object):
         if behavior is None:
             self.behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
-            self.behavior = behavior
+            self.behavior = copy.deepcopy(behavior)
             while self.behavior.current_year < self.policy.current_year:
                 next_year = self.behavior.current_year + 1
                 self.behavior.set_year(next_year)
