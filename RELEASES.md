@@ -16,6 +16,9 @@ Release 0.12.0 on 2017-??-??
 - Remove arrays_not_lists argument from read_json_param_objects
   [[#1568](https://github.com/open-source-economics/Tax-Calculator/pull/1568)
   by Martin Holmer]
+- Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions
+  [[#1577](https://github.com/open-source-economics/Tax-Calculator/pull/1577)
+  by Martin Holmer]
 
 **New Features**
 - Add Calculator.reform_documentation that generates plain text documentation of a reform
