@@ -176,3 +176,34 @@ def test_csv_input_vars_md_contents(tests_path):
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
+
+
+def test_benefits():
+    """
+    Ensure that benefits data is updated as expected
+    """
+    benefits_path = os.path.join(os.path.join(Records.CUR_PATH,
+                                 "cps_benefits.csv.gz"))
+    benefits = pd.read_csv(benefits_path, compression="gzip")
+    print(benefits.columns.tolist())
+    rec = Records.cps_constructor(data=None,
+                                  exact_calculations=False,
+                                  growfactors=Growfactors(),
+                                  benefits=benefits.copy(deep=True))
+
+    assert rec.current_year == 2014
+    recip_col_name = "ssi_recipients_{}".format(2014)
+    ben_col_name = "ssi_benefits_{}".format(2014)
+    assert (np.allclose(rec.ssi_recipients,
+                        benefits[recip_col_name].values) and
+            np.allclose(rec.ssi_benefits, benefits[ben_col_name].values))
+
+    for i in range(1, 13):
+        rec.increment_year()
+        recip_col_name = "ssi_recipients_{}".format(2014 + i)
+        ben_col_name = "ssi_benefits_{}".format(2014 + i)
+        assert (np.allclose(rec.ssi_recipients,
+                            benefits[recip_col_name].values) and
+                np.allclose(rec.ssi_benefits, benefits[ben_col_name].values))
+
+    assert rec.current_year == 2026

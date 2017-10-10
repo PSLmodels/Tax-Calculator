@@ -113,7 +113,8 @@ class Records(object):
                  gfactors=Growfactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
-                 start_year=PUFCSV_YEAR):
+                 start_year=PUFCSV_YEAR,
+                 benefits=None):
         # pylint: disable=too-many-arguments
         self._data_year = start_year
         # read specified data
@@ -170,10 +171,17 @@ class Records(object):
         if wt_colname in self.WT.columns:
             self.s006 = self.WT[wt_colname] * 0.01
 
+        # read in benefits data
+        # we would need to assert cps is being used and assert that the
+        # indices line up
+        self.benefits = benefits
+        self._read_benefits(benefits)
+
     @staticmethod
     def cps_constructor(data=None,
                         exact_calculations=False,
-                        growfactors=Growfactors()):
+                        growfactors=Growfactors(),
+                        benefits=None):
         """
         Static method returns a Records object instantiated with CPS
         input data.  This works in a analogous way to Records(), which
@@ -191,7 +199,8 @@ class Records(object):
                        gfactors=growfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       start_year=CPSCSV_YEAR)
+                       start_year=CPSCSV_YEAR,
+                       benefits=benefits)
 
     @property
     def data_year(self):
@@ -223,6 +232,20 @@ class Records(object):
             wt_colname = 'WT{}'.format(self.current_year)
             if wt_colname in self.WT.columns:
                 self.s006 = self.WT[wt_colname] * 0.01
+
+        # set ssi participation and benefits data for current_year
+        # in the future we would set corresponding attributes for
+        # SNAP, SS, Medicare, and Medicaid
+        # minimum year allowed is 2014
+        if self.benefits is not None:
+            year = max(2014, self.current_year)
+            recip_col_name = "ssi_recipients_{}".format(year)
+            self.ssi_recipients = (self.benefits.loc[:, recip_col_name]
+                                   .astype(np.float64).values)
+            ben_col_name = "ssi_benefits_{}".format(year)
+            self.ssi_benefits = (self.benefits.loc[:, ben_col_name]
+                                 .astype(np.float64).values)
+
 
     def set_current_year(self, new_current_year):
         """
@@ -514,3 +537,41 @@ class Records(object):
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
         self.ADJ = ADJ
+
+    def _read_benefits(self, data):
+        """
+        Read benefits data from file or from a specified DataFrame or as None
+        if data is None
+        """
+        if data is None:
+            benefits = None
+            setattr(self, 'benefits', benefits)
+            return
+        if isinstance(data, pd.DataFrame):
+            benefits = data
+        elif isinstance(data, six.string_types):
+            data_path = os.path.join(Records.CUR_PATH, data)
+            if os.path.isfile(data_path):
+                # pylint: disable=redefined-variable-type
+                # (above because pylint mistakenly thinks ADJ not a DataFrame)
+                benefits = pd.read_csv(data_path)
+            else:
+                # cannot call read_egg_ function in unit tests
+                benefits = read_egg_csv(os.path.basename(data_path))
+        else:
+            msg = ('benefits is not None or a string'
+                   'or a Pandas DataFrame')
+            raise ValueError(msg)
+        assert isinstance(benefits, pd.DataFrame)
+        self.benefits = benefits
+        # set ssi participation and benefits data for current_year
+        # in the future we would set corresponding attributes for
+        # SNAP, SS, Medicare, and Medicaid
+        # minimum year allowed is 2014
+        year = max(2014, self.current_year)
+        recip_col_name = "ssi_recipients_{}".format(year)
+        self.ssi_recipients = (self.benefits.loc[:, recip_col_name]
+                               .astype(np.float64).values)
+        benefit_col_name = "ssi_benefits_{}".format(year)
+        self.ssi_benefits = (self.benefits.loc[:, benefit_col_name]
+                             .astype(np.float64).values)
