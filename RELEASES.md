@@ -19,6 +19,9 @@ Release 0.12.0 on 2017-??-??
 - Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions
   [[#1577](https://github.com/open-source-economics/Tax-Calculator/pull/1577)
   by Martin Holmer]
+- Rename and reorder difference table columns
+  [[#1584](https://github.com/open-source-economics/Tax-Calculator/pull/1584)
+  by Martin Holmer]
 
 **New Features**
 - Add Calculator.reform_documentation that generates plain text documentation of a reform
