@@ -173,7 +173,7 @@ class Records(object):
     @staticmethod
     def cps_constructor(data=None,
                         exact_calculations=False,
-                        growfactors=Growfactors()):
+                        gfactors=Growfactors()):
         """
         Static method returns a Records object instantiated with CPS
         input data.  This works in a analogous way to Records(), which
@@ -188,7 +188,7 @@ class Records(object):
             data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
         return Records(data=data,
                        exact_calculations=exact_calculations,
-                       gfactors=growfactors,
+                       gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
                        start_year=CPSCSV_YEAR)
@@ -213,7 +213,7 @@ class Records(object):
         Also, does extrapolation, reweighting, adjusting for new current year.
         """
         self._current_year += 1
-        # apply variable extrapolation growfactors
+        # apply variable extrapolation grow factors
         if self.gfactors is not None:
             self._blowup(self.current_year)
         # apply variable adjustment ratios
