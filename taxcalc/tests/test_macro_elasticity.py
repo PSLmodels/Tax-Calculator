@@ -29,8 +29,15 @@ def test_proportional_change_in_gdp(cps_subsample):
     calc1.increment_year()
     calc2.increment_year()
     assert calc1.current_year == 2015
-    gdpc = proportional_change_in_gdp(2016, calc1, calc2, elasticity=0.36)
-    assert gdpc < 0.0  # higher average MTR implies reduction in GDP
-    # skip calc?.increment_year to 2016, so calc?.current_year is still 2015
+    gdp_pchg = 100.0 * proportional_change_in_gdp(2016, calc1, calc2,
+                                                  elasticity=0.36)
+    exp_pchg = -0.54  # higher MTRs imply negative expected GDP percent change
+    abs_diff_pchg = abs(gdp_pchg - exp_pchg)
+    if abs_diff_pchg > 0.01:
+        msg = 'year,gdp_pchg,exp_pchg= {} {:.3f} {:.3f}'.format(2016,
+                                                                gdp_pchg,
+                                                                exp_pchg)
+        assert msg == 'ERROR: gdp_pchg not close to exp_pchg'
+    # skip calcN.increment_year to 2016, so calcN.current_year is still 2015
     with pytest.raises(ValueError):
-        gdpc = proportional_change_in_gdp(2017, calc1, calc2, elasticity=0.36)
+        proportional_change_in_gdp(2017, calc1, calc2, elasticity=0.36)
