@@ -30,6 +30,9 @@ Release 0.12.0 on 2017-??-??
 - Add reform documentation as standard output from Tax-Calculator CLI, tc
   [[#1567](https://github.com/open-source-economics/Tax-Calculator/pull/1567)
   by Martin Holmer]
+- Add parameter type checking to Policy.implement_reform method
+  [[#1585](https://github.com/open-source-economics/Tax-Calculator/pull/1585)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None
