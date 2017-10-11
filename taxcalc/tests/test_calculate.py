@@ -55,7 +55,7 @@ def fixture_policyfile():
     os.remove(f.name)
 
 
-def test_make_Calculator(cps_subsample):
+def test_make_calculator(cps_subsample):
     parm = Policy(start_year=2014, num_years=9)
     assert parm.current_year == 2014
     recs = Records.cps_constructor(data=cps_subsample)
@@ -76,7 +76,7 @@ def test_make_Calculator(cps_subsample):
         calc = Calculator(policy=parm, records=recs, consumption=list())
 
 
-def test_make_Calculator_deepcopy(cps_subsample):
+def test_make_calculator_deepcopy(cps_subsample):
     parm = Policy()
     recs = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=parm, records=recs)
@@ -84,14 +84,14 @@ def test_make_Calculator_deepcopy(cps_subsample):
     assert isinstance(calc2, Calculator)
 
 
-def test_make_Calculator_with_policy_reform(cps_subsample):
+def test_make_calculator_with_policy_reform(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     year = recs.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
-    reform = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
+    reform = {2013: {'_II_em': [4000], '_II_em_cpi': False,
                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
-                     "_STD_Aged_cpi": False}}
+                     '_STD_Aged_cpi': False}}
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
     calc = Calculator(policy=pol, records=recs)
@@ -108,7 +108,7 @@ def test_make_Calculator_with_policy_reform(cps_subsample):
                        np.array([1600, 1300, 1300, 1600, 1600]))
 
 
-def test_make_Calculator_with_multiyear_reform(cps_subsample):
+def test_make_calculator_with_multiyear_reform(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     year = recs.current_year
     # create a Policy object and apply a policy reform
@@ -134,7 +134,7 @@ def test_make_Calculator_with_multiyear_reform(cps_subsample):
                        np.array([1600, 1300, 1600, 1300, 1600]))
 
 
-def test_Calculator_advance_to_year(cps_subsample):
+def test_calculator_advance_to_year(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     calc = Calculator(policy=pol, records=rec)
@@ -144,13 +144,13 @@ def test_Calculator_advance_to_year(cps_subsample):
         calc.advance_to_year(2015)
 
 
-def test_make_Calculator_raises_on_no_policy(cps_subsample):
+def test_make_calculator_raises_on_no_policy(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     with pytest.raises(ValueError):
         calc = Calculator(records=rec)
 
 
-def test_Calculator_attr_access_to_policy(cps_subsample):
+def test_calculator_attr_access_to_policy(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     assert hasattr(calc.records, 'c01000')
@@ -158,7 +158,7 @@ def test_Calculator_attr_access_to_policy(cps_subsample):
     assert hasattr(calc, 'policy')
 
 
-def test_Calculator_current_law_version(cps_subsample):
+def test_calculator_current_law_version(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     reform = {2013: {'_II_rt7': [0.45]}}
@@ -170,7 +170,7 @@ def test_Calculator_current_law_version(cps_subsample):
     assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
 
 
-def test_Calculator_create_distribution_table(cps_subsample):
+def test_calculator_create_distribution_table(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     calc.calc_all()
@@ -196,7 +196,7 @@ def test_Calculator_create_distribution_table(cps_subsample):
     assert isinstance(dt2, pd.DataFrame)
 
 
-def test_Calculator_mtr(cps_subsample):
+def test_calculator_mtr(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
@@ -222,7 +222,7 @@ def test_Calculator_mtr(cps_subsample):
     assert type(mtr_combined) == np.ndarray
 
 
-def test_Calculator_mtr_when_PT_rates_differ():
+def test_calculator_mtr_when_PT_rates_differ():
     reform = {2013: {'_II_rt1': [0.40],
                      '_II_rt2': [0.40],
                      '_II_rt3': [0.40],
@@ -253,7 +253,7 @@ def test_Calculator_mtr_when_PT_rates_differ():
     assert np.allclose(mtr1, mtr2, rtol=0.0, atol=1e-06)
 
 
-def test_Calculator_create_difference_table(cps_subsample):
+def test_calculator_create_difference_table(cps_subsample):
     # create current-law Policy object and use to create Calculator calc1
     cps1 = Records.cps_constructor(data=cps_subsample)
     year = cps1.current_year
@@ -274,7 +274,7 @@ def test_Calculator_create_difference_table(cps_subsample):
     assert isinstance(dtable, pd.DataFrame)
 
 
-def test_Calculator_create_diagnostic_table(cps_subsample):
+def test_calculator_create_diagnostic_table(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     calc.calc_all()
@@ -282,7 +282,7 @@ def test_Calculator_create_diagnostic_table(cps_subsample):
     assert isinstance(adt, pd.DataFrame)
 
 
-def test_make_Calculator_increment_years_first(cps_subsample):
+def test_make_calculator_increment_years_first(cps_subsample):
     # create Policy object with policy reform
     syr = 2013
     pol = Policy(start_year=syr, num_years=5)
@@ -345,7 +345,7 @@ def test_ID_HC_vs_BS(cps_subsample):
                        bs_calc.records.iitax)
 
 
-def test_Calculator_using_nonstd_input(rawinputfile):
+def test_calculator_using_nonstd_input(rawinputfile):
     # check Calculator handling of raw, non-standard input data with no aging
     policy = Policy()
     policy.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year

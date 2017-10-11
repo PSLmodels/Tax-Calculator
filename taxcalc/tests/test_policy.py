@@ -834,10 +834,14 @@ def test_range_infomation(tests_path):
     assert len(clp.reform_errors) == 0
 
 
-def test_validate_param_names_errors():
+def test_validate_param_names_types_errors():
     """
-    Check detection of invalid policy parameters in reforms.
+    Check detection of invalid policy parameter names and types in reforms.
     """
+    pol0 = Policy()
+    ref0 = {2020: {'_STD_cpi': 2}}
+    with pytest.raises(ValueError):
+        pol0.implement_reform(ref0)
     pol1 = Policy()
     ref1 = {2020: {'_badname_cpi': True}}
     with pytest.raises(ValueError):
@@ -850,6 +854,14 @@ def test_validate_param_names_errors():
     ref3 = {2020: {'_badname': [0.4]}}
     with pytest.raises(ValueError):
         pol3.implement_reform(ref3)
+    pol4 = Policy()
+    ref4 = {2020: {'_EITC_MinEligAge': [21.4]}}
+    with pytest.raises(ValueError):
+        pol4.implement_reform(ref4)
+    pol5 = Policy()
+    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
+    with pytest.raises(ValueError):
+        pol5.implement_reform(ref5)
 
 
 def test_validate_param_values_warnings_errors():
@@ -876,10 +888,6 @@ def test_validate_param_values_warnings_errors():
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5)
     assert len(pol5.reform_errors) == 0
-    pol6 = Policy()
-    ref6 = {2026: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
-    pol6.implement_reform(ref6)
-    assert len(pol6.reform_errors) > 0
 
 
 def test_indexing_rates_for_update():
