@@ -577,3 +577,48 @@ def summary(df1, df2, mask):
 
     # return dictionary of summary results
     return summ
+
+
+def create_dict_table(dframe, row_names=None, column_types=None,
+                      num_decimals=2):
+    """
+    Create and return dictionary with JSON-like content from specified dframe.
+    """
+    # embedded formatted_string function
+    def formatted_string(val, _type, num_decimals):
+        """
+        Return formatted conversion of number val into a string.
+        """
+        float_types = [float, np.dtype('f8')]
+        int_types = [int, np.dtype('i8')]
+        frmat_str = "0:.{num}f".format(num=num_decimals)
+        frmat_str = "{" + frmat_str + "}"
+        try:
+            if _type in float_types or _type is None:
+                return frmat_str.format(val)
+            elif _type in int_types:
+                return str(int(val))
+            elif _type == str:
+                return str(val)
+            else:
+                raise NotImplementedError()
+        except ValueError:
+            # try making it a string - good luck!
+            return str(val)
+    # high-level create_dict_table function logic
+    out = dict()
+    if row_names is None:
+        row_names = [str(x) for x in list(dframe.index)]
+    else:
+        assert len(row_names) == len(dframe.index)
+    if column_types is None:
+        column_types = [dframe[col].dtype for col in dframe.columns]
+    else:
+        assert len(column_types) == len(dframe.columns)
+    for idx, row_name in zip(dframe.index, row_names):
+        row_out = out.get(row_name, [])
+        for col, dtype in zip(dframe.columns, column_types):
+            row_out.append(formatted_string(dframe.loc[idx, col],
+                                            dtype, num_decimals))
+        out[row_name] = row_out
+    return out

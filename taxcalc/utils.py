@@ -33,9 +33,8 @@ STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                  'payrolltax', 'combined', 's006']
 
 # Items in the DIST_TABLE_COLUMNS list below correspond to the items in the
-# DIST_TABLE_LABELS list below; this correspondence allows us to use
-# DIST_TABLE_LABELS to map a label to the correct column in the distribution
-# tables.
+# DIST_TABLE_LABELS list below; this correspondence allows us to use this
+# labels list to map a label to the correct column in a distribution table.
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
                       'num_returns_StandardDed',
@@ -76,7 +75,19 @@ DIST_TABLE_LABELS = ['Returns',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities']
 
-# Following list is used in the difference table to label its columns.
+# Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
+# DIFF_TABLE_LABELS list below; this correspondence allows us to use this
+# labels list to map a label to the correct column in a difference table.
+DIFF_TABLE_COLUMNS = ['count',
+                      'tax_cut',
+                      'perc_cut',
+                      'tax_inc',
+                      'perc_inc',
+                      'mean',
+                      'tot_change',
+                      'share_of_change',
+                      'perc_aftertax']
+
 DIFF_TABLE_LABELS = ['All Tax Units',
                      'Tax Units with Tax Cut',
                      'Percent with Tax Cut',
