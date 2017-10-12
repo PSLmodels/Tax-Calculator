@@ -379,27 +379,32 @@ class Policy(ParametersBase):
                             scalar = False  # parameter value is a list
                         else:
                             scalar = True  # parameter value is a scalar
-                            pvalue = [pvalue]
+                            pvalue = [pvalue]  # make scalar a single-item list
                         for idx in range(0, len(pvalue)):
                             if scalar:
                                 pname = name
                             else:
                                 pname = '{}_{}'.format(name, idx)
                             pvalue_boolean = (isinstance(pvalue[idx], bool) or
-                                              pvalue[idx] == 0 or
-                                              pvalue[idx] == 1)
-                            if bool_type and not pvalue_boolean:
-                                msg = '{} value {} in {} is not boolean'
-                                self.reform_errors += (
-                                    'ERROR: ' + msg.format(pname, pvalue[idx],
-                                                           year) + '\n'
-                                )
-                            if int_type and not isinstance(pvalue[idx], int):
-                                msg = '{} value {} in {} is not integer'
-                                self.reform_errors += (
-                                    'ERROR: ' + msg.format(pname, pvalue[idx],
-                                                           year) + '\n'
-                                )
+                                              (isinstance(pvalue[idx], int) and
+                                               (pvalue[idx] == 0 or
+                                                pvalue[idx] == 1)))
+                            if bool_type:
+                                if not pvalue_boolean:
+                                    msg = '{} {} value {} is not boolean'
+                                    self.reform_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
+                            elif int_type:
+                                if not isinstance(pvalue[idx], int):
+                                    msg = '{} {} value {} is not integer'
+                                    self.reform_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
 
     def _validate_parameter_values(self, parameters_set):
         """
