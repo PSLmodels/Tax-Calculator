@@ -405,6 +405,15 @@ class Policy(ParametersBase):
                                         msg.format(year, pname, pvalue[idx]) +
                                         '\n'
                                     )
+                            else:  # param is neither bool_type nor int_type
+                                if not (isinstance(pvalue[idx], float) or
+                                        isinstance(pvalue[idx], int)):
+                                    msg = '{} {} value {} is not a number'
+                                    self.reform_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
 
     def _validate_parameter_values(self, parameters_set):
         """

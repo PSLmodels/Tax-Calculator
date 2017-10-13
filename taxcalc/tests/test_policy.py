@@ -862,6 +862,10 @@ def test_validate_param_names_types_errors():
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
     with pytest.raises(ValueError):
         pol5.implement_reform(ref5)
+    pol6 = Policy()
+    ref6 = {2021: {'_II_em': ['not-a-number']}}
+    with pytest.raises(ValueError):
+        pol6.implement_reform(ref6)
 
 
 def test_validate_param_values_warnings_errors():
