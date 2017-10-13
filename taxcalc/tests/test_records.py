@@ -5,7 +5,7 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
 from io import StringIO
-from taxcalc import Growfactors, Policy, Records, Calculator, CPSCSV_YEAR
+from taxcalc import Growfactors, Policy, Records, Calculator
 
 
 def test_incorrect_Records_instantiation(cps_subsample):
@@ -42,7 +42,7 @@ def test_correct_Records_instantiation(cps_subsample):
                    gfactors=Growfactors(),
                    weights=wghts_df,
                    adjust_ratios=ratio_df,
-                   start_year=CPSCSV_YEAR)
+                   start_year=Records.CPSCSV_YEAR)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == rec2.data_year
