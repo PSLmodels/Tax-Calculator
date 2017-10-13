@@ -46,22 +46,20 @@ def reform_results(reform_dict, puf_data):
     """
     # pylint: disable=too-many-locals
     # create current-law-policy Calculator object
-    pol1 = Policy()
-    rec1 = Records(data=puf_data)
-    calc1 = Calculator(policy=pol1, records=rec1, verbose=False, behavior=None)
+    pol = Policy()
+    rec = Records(data=puf_data)
+    calc1 = Calculator(policy=pol, records=rec, verbose=False, behavior=None)
     # create reform Calculator object with possible behavioral responses
     start_year = reform_dict['start_year']
-    beh2 = Behavior()
+    beh = Behavior()
     if '_BE_cg' in reform_dict['value']:
         elasticity = reform_dict['value']['_BE_cg']
         del reform_dict['value']['_BE_cg']  # in order to have a valid reform
         beh_assump = {start_year: {'_BE_cg': elasticity}}
-        beh2.update_behavior(beh_assump)
+        beh.update_behavior(beh_assump)
     reform = {start_year: reform_dict['value']}
-    pol2 = Policy()
-    pol2.implement_reform(reform)
-    rec2 = Records(data=puf_data)
-    calc2 = Calculator(policy=pol2, records=rec2, verbose=False, behavior=beh2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec, verbose=False, behavior=beh)
     # increment both calculators to reform's start_year
     calc1.advance_to_year(start_year)
     calc2.advance_to_year(start_year)

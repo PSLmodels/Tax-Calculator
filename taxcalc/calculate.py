@@ -345,13 +345,11 @@ class Calculator(object):
         """
         Return Calculator object same as self except with current-law policy.
         """
-        clp = self.policy.current_law_version()
-        recs = copy.deepcopy(self.records)
-        cons = copy.deepcopy(self.consumption)
-        behv = copy.deepcopy(self.behavior)
-        calc = Calculator(policy=clp, records=recs, sync_years=False,
-                          consumption=cons, behavior=behv)
-        return calc
+        return Calculator(policy=self.policy.current_law_version(),
+                          records=copy.deepcopy(self.records),
+                          sync_years=False,
+                          consumption=copy.deepcopy(self.consumption),
+                          behavior=copy.deepcopy(self.behavior))
 
     @staticmethod
     def read_json_param_objects(reform, assump):
