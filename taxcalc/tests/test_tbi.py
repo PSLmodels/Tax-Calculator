@@ -36,7 +36,7 @@ USER_MODS = {
                           (2017, 10)])
 def test_check_years_errors(start_year, year_n):
     with pytest.raises(ValueError):
-        check_years(start_year, year_n)
+        check_years_return_first_year(year_n, start_year, use_puf_not_cps=True)
 
 
 def test_check_user_mods_errors():
