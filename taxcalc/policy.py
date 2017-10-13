@@ -376,6 +376,8 @@ class Policy(ParametersBase):
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-nested-blocks
+        rounding_error = 100.0
+        # above handles non-rounding of inflation-indexed parameter values
         clp = self.current_law_version()
         parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
@@ -387,6 +389,13 @@ class Policy(ParametersBase):
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
                         vvalue = getattr(clp, pname)
+                        if vop == 'min':
+                            vvalue -= rounding_error
+                        # the follow branch can never be reached, so it
+                        # is commented out because it can never be tested
+                        # (see test_range_infomation in test_policy.py)
+                        # --> elif vop == 'max':
+                        # -->    vvalue += rounding_error
                     else:
                         vvalue = getattr(self, vval)
                 else:
