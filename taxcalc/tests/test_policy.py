@@ -798,13 +798,17 @@ def test_range_infomation(tests_path):
         range = param.get('range', None)
         if range:
             json_range_params.add(pname)
-            assert param['out_of_range_action'] in warn_stop_list
+            oor_action = param['out_of_range_action']
+            assert oor_action in warn_stop_list
             range_items = range.items()
             assert len(range_items) == 2
             for vop, vval in range_items:
                 assert vop in min_max_list
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
+                        if vop != 'min' or oor_action != 'warn':
+                            msg = 'USES DEFAULT FOR min OR FOR error'
+                            assert pname == msg
                         continue
                     elif vval in clpdict:
                         if vop == 'min':
@@ -892,6 +896,14 @@ def test_validate_param_values_warnings_errors():
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5)
     assert len(pol5.reform_errors) == 0
+    # raise stdded for everybody but widows, leaving widow value unchanged,
+    # which is the logic TaxBrain has been using at least until 2017-10-05
+    # when this "7" test was added
+    pol7 = Policy()
+    ref7 = {2013: {'_STD': [[20000, 20000, 20000, 20000, 12200]]}}
+    pol7.implement_reform(ref7)
+    assert pol7.reform_errors == ''
+    assert pol7.reform_warnings == ''
 
 
 def test_indexing_rates_for_update():

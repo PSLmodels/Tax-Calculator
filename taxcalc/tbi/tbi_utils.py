@@ -20,20 +20,28 @@ from taxcalc.utils import (add_income_bins, add_quantile_bins, results,
                            WEBAPP_INCOME_BINS, read_egg_csv)
 
 
-def check_years(start_year, year_n):
+def check_years_return_first_year(year_n, start_year, use_puf_not_cps):
     """
-    Ensure start_year and year_n values are consistent with Policy constants.
+    Ensure year_n and start_year values are valid given input data used.
+    Return value of first year, which is maximum of first records data year
+    and first policy parameter year.
     """
-    if start_year < Policy.JSON_START_YEAR:
-        msg = 'start_year={} < Policy.JSON_START_YEAR={}'
-        raise ValueError(msg.format(start_year, Policy.JSON_START_YEAR))
     if year_n < 0:
         msg = 'year_n={} < 0'
         raise ValueError(msg.format(year_n))
+    if use_puf_not_cps:
+        first_data_year = Records.PUFCSV_YEAR
+    else:
+        first_data_year = Records.CPSCSV_YEAR
+    first_year = max(Policy.JSON_START_YEAR, first_data_year)
+    if start_year < first_year:
+        msg = 'start_year={} < first_year={}'
+        raise ValueError(msg.format(start_year, first_year))
     if (start_year + year_n) > Policy.LAST_BUDGET_YEAR:
         msg = '(start_year={} + year_n={}) > Policy.LAST_BUDGET_YEAR={}'
         raise ValueError(msg.format(start_year, year_n,
                                     Policy.LAST_BUDGET_YEAR))
+    return first_year
 
 
 def check_user_mods(user_mods):
@@ -70,7 +78,6 @@ def calculate(year_n, start_year,
     # pylint: disable=too-many-arguments,too-many-locals
     # pylint: disable=too-many-branches,too-many-statements
 
-    check_years(start_year, year_n)
     check_user_mods(user_mods)
 
     # specify Consumption instance

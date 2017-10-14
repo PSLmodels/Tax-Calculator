@@ -16,7 +16,7 @@ Release 0.12.0 on 2017-??-??
 - Remove arrays_not_lists argument from read_json_param_objects
   [[#1568](https://github.com/open-source-economics/Tax-Calculator/pull/1568)
   by Martin Holmer]
-- Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions
+- Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions so that either puf.csv or cps.csv can be used as input data
   [[#1577](https://github.com/open-source-economics/Tax-Calculator/pull/1577)
   by Martin Holmer]
 
@@ -35,7 +35,12 @@ Release 0.12.0 on 2017-??-??
   by Martin Holmer]
 
 **Bug Fixes**
-- None
+- Relax _STD and _STD_Dep minimum value warning logic
+  [[#1578](https://github.com/open-source-economics/Tax-Calculator/pull/1578)
+  by Martin Holmer]
+- Fix macro-elasticity model logic so that GDP change in year t depends on tax rate changes in year t-1
+  [[#1579](https://github.com/open-source-economics/Tax-Calculator/pull/1579)
+  by Martin Holmer]
 
 Release 0.11.0 on 2017-09-21
 ----------------------------
