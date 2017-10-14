@@ -1,4 +1,6 @@
 """
+The public API of the TaxBrain Interface (tbi).
+
 The tbi functions are used by TaxBrain to call Tax-Calculator in order
 to do distributed processing of TaxBrain runs and in order to maintain
 the privacy of the IRS-SOI PUF data being used by TaxBrain.  Maintaining
@@ -16,13 +18,14 @@ from __future__ import print_function
 import time
 import numpy as np
 import pandas as pd
-from taxcalc.tbi.tbi_utils import (calculate,
+from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
+                                   calculate,
                                    random_seed,
                                    summary,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
 from taxcalc import (results, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
-                     proportional_change_gdp, Growdiff, Growfactors, Policy)
+                     proportional_change_in_gdp, Growdiff, Growfactors, Policy)
 
 
 # specify constants
@@ -96,6 +99,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     start_time = time.time()
 
     # create calc1 and calc2 calculated for year_n and mask
+    check_years_return_first_year(year_n, start_year, use_puf_not_cps)
     (calc1, calc2, mask) = calculate(year_n, start_year,
                                      use_puf_not_cps, use_full_sample,
                                      user_mods,
@@ -180,17 +184,22 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     Setting use_full_sample=False implies use sub-sample of input file;
       otherwsie, use the complete sample.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-locals
 
-    # create calc1 and calc2 calculated for year_n
-    (calc1, calc2, _) = calculate(year_n, start_year,
-                                  use_puf_not_cps,
-                                  use_full_sample,
-                                  user_mods,
-                                  behavior_allowed=False)
-
-    # compute GDP effect given specified gdp_elasticity
-    gdp_effect = proportional_change_gdp(calc1, calc2, gdp_elasticity)
+    # calculate gdp_effect
+    fyear = check_years_return_first_year(year_n, start_year, use_puf_not_cps)
+    if (start_year + year_n) > fyear:
+        # create calc1 and calc2 calculated for year_n - 1
+        (calc1, calc2, _) = calculate((year_n - 1), start_year,
+                                      use_puf_not_cps,
+                                      use_full_sample,
+                                      user_mods,
+                                      behavior_allowed=False)
+        # compute GDP effect given specified gdp_elasticity
+        gdp_effect = proportional_change_in_gdp((start_year + year_n),
+                                                calc1, calc2, gdp_elasticity)
+    else:
+        gdp_effect = 0.0
 
     # return gdp_effect results
     if return_dict:
