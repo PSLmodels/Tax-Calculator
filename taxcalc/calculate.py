@@ -187,6 +187,13 @@ class Calculator(object):
         """
         return self.policy.current_year
 
+    @property
+    def data_year(self):
+        """
+        Calculator class initial (i.e., first) records data year property.
+        """
+        return self.records.data_year
+
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
                            'e00900p', 'e00300',
                            'e00400', 'e00600',
