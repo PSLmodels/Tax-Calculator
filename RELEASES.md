@@ -16,7 +16,7 @@ Release 0.12.0 on 2017-??-??
 - Remove arrays_not_lists argument from read_json_param_objects
   [[#1568](https://github.com/open-source-economics/Tax-Calculator/pull/1568)
   by Martin Holmer]
-- Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions
+- Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions so that either puf.csv or cps.csv can be used as input data
   [[#1577](https://github.com/open-source-economics/Tax-Calculator/pull/1577)
   by Martin Holmer]
 - Change Calculator class constructor so that it makes a deep copy of each specified object for internal use
