@@ -62,6 +62,15 @@ pep8 --ignore=E402 records.py
 where in the above example you want to check the coding style of your
 proposed revisions to the `records.py` file.
 
+In addition, if you are proposing revisions to one of the files in the
+taxcalc directory that has a `.json` extension, you should use the
+`pep8` tool as follows:
+```
+pep8 --ignore=E501,E121 current_law_policy.json
+```
+where in the above example you want to check the coding style of your
+proposed revisions to the `current_law_policy.json` file.
+
 pylint
 ------
 
