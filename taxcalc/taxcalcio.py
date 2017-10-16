@@ -235,7 +235,7 @@ class TaxCalcIO(object):
                     gfactors=gfactors_clp,
                     exact_calculations=exact_calculations
                 )
-            else:  # if not cps_input_data
+            else:  # if not cps_input_data but aging_input_data
                 recs = Records(
                     data=input_data,
                     gfactors=gfactors_ref,
@@ -620,6 +620,8 @@ class TaxCalcIO(object):
     @staticmethod
     def growmodel_analysis(input_data, tax_year, reform, assump,
                            aging_input_data, exact_calculations,
+                           # first six parameters above
+                           # last five parameters below
                            writing_output_file=False,
                            output_tables=False,
                            output_graphs=False,
@@ -641,9 +643,28 @@ class TaxCalcIO(object):
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-locals
+        # check for illegal parameters
+        if isinstance(input_data, six.string_types):
+            if input_data.endswith('puf.csv'):
+                data_year = Records.PUFCSV_YEAR
+            elif input_data.endswith('cps.csv'):
+                data_year = Records.CPSCSV_YEAR
+            else:
+                msg = 'input_data is neither "puf.csv" nor "cps.csv"'
+                raise ValueError(msg)
+            if not aging_input_data:
+                msg = 'aging_input_data=False'
+                raise ValueError(msg)
+        else:
+            msg = 'input_data is not a string'
+            raise ValueError(msg)
+        start_year = max(data_year, Policy.JSON_START_YEAR)
+        if tax_year < start_year:
+            msg = 'tax_year={} < start_year={}'
+            raise ValueError(msg.format(tax_year, start_year))
+        gdiff_dict = {start_year: {}}
         progress = 'STARTING ANALYSIS FOR YEAR {}'
-        gdiff_dict = {Policy.JSON_START_YEAR: {}}
-        for year in range(Policy.JSON_START_YEAR, tax_year + 1):
+        for year in range(start_year, tax_year + 1):
             print(progress.format(year))  # pylint: disable=superfluous-parens
             # specify growdiff_response using gdiff_dict
             growdiff_response = Growdiff()
@@ -652,7 +673,9 @@ class TaxCalcIO(object):
                                                 reform, assump,
                                                 aging_input_data,
                                                 exact_calculations,
+                                                # first six are above
                                                 growdiff_response, year,
+                                                # last five are below
                                                 writing_output_file,
                                                 output_tables,
                                                 output_graphs,
@@ -663,7 +686,9 @@ class TaxCalcIO(object):
     @staticmethod
     def annual_analysis(input_data, tax_year, reform, assump,
                         aging_input_data, exact_calculations,
+                        # first six parameters above
                         growdiff_response, year,
+                        # last five parameters below
                         writing_output_file,
                         output_tables,
                         output_graphs,

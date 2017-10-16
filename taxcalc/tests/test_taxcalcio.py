@@ -673,20 +673,49 @@ def test_analyze_warnings_print(warnreformfile):
     assert tcio.tax_year() == taxyear
 
 
-def test_growmodel_analysis(reformfile1, assumpfile1):
+def test_bad_growmodel_analysis(reformfile1, assumpfile1):
     """
-    Test TaxCalcIO.growmodel_analysis method with no output.
+    Test incorrect TaxCalcIO.growmodel_analysis method calls.
     """
-    taxyear = 2015
-    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
-    recdf = pd.DataFrame(data=recdict, index=[0])
-    # test growmodel_analysis with legal assumptions
-    try:
-        TaxCalcIO.growmodel_analysis(input_data=recdf,
-                                     tax_year=taxyear,
+    with pytest.raises(ValueError):
+        TaxCalcIO.growmodel_analysis(input_data=list(),
+                                     tax_year=2020,
+                                     reform=reformfile1.name,
+                                     assump=assumpfile1.name,
+                                     aging_input_data=True,
+                                     exact_calculations=False)
+    with pytest.raises(ValueError):
+        TaxCalcIO.growmodel_analysis(input_data='cps.csv',
+                                     tax_year=2020,
                                      reform=reformfile1.name,
                                      assump=assumpfile1.name,
                                      aging_input_data=False,
                                      exact_calculations=False)
-    except:  # pylint: disable=bare-except
-        assert 'TaxCalcIO.growmodel_analysis_ok' == 'no'
+    with pytest.raises(ValueError):
+        TaxCalcIO.growmodel_analysis(input_data='bad.csv',
+                                     tax_year=2020,
+                                     reform=reformfile1.name,
+                                     assump=assumpfile1.name,
+                                     aging_input_data=True,
+                                     exact_calculations=False)
+    with pytest.raises(ValueError):
+        TaxCalcIO.growmodel_analysis(input_data='cps.csv',
+                                     tax_year=2013,
+                                     reform=reformfile1.name,
+                                     assump=assumpfile1.name,
+                                     aging_input_data=True,
+                                     exact_calculations=False)
+
+
+@pytest.mark.requires_pufcsv
+def test_growmodel_analysis(puf_path, reformfile1, assumpfile1):
+    """
+    Test TaxCalcIO.growmodel_analysis method with no output.
+    """
+    taxyear = 2017
+    TaxCalcIO.growmodel_analysis(input_data=puf_path,
+                                 tax_year=taxyear,
+                                 reform=reformfile1.name,
+                                 assump=assumpfile1.name,
+                                 aging_input_data=True,
+                                 exact_calculations=False)
