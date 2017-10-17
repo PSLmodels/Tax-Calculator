@@ -51,6 +51,10 @@ class TaxCalcIO(object):
         None implies economic assumptions are standard assumptions,
         or string is name of optional ASSUMP file.
 
+    params_dict: dictionary
+        dictionary returned from call to
+        Calculator.read_json_param_objects(reform, assump) function.
+
     Returns
     -------
     class instance: TaxCalcIO
@@ -621,22 +625,23 @@ class TaxCalcIO(object):
     def growmodel_analysis(input_data, tax_year, reform, assump,
                            aging_input_data, exact_calculations,
                            # first six parameters above
-                           # last five parameters below
+                           # last six parameters below
                            writing_output_file=False,
                            output_tables=False,
                            output_graphs=False,
                            output_ceeu=False,
-                           output_dump=False):
+                           output_dump=False,
+                           output_sqldb=False):
         """
         High-level logic for dynamic analysis using GrowModel class.
 
         Parameters
         ----------
-        First six parameters are same as the first six parameters of
-        the TaxCalcIO.init method.
+        First six parameters are same as the first seven parameters of
+        the TaxCalcIO.init() method excluding the growdiff_response parameter.
 
-        Last five parameters are same as the first five parameters of
-        the TaxCalcIO.analyze method.
+        Last six parameters are same as the first six parameters of
+        the TaxCalcIO.analyze() method.
 
         Returns
         -------
@@ -671,45 +676,52 @@ class TaxCalcIO(object):
             growdiff_response.update_growdiff(gdiff_dict)
             gd_dict = TaxCalcIO.annual_analysis(input_data, tax_year,
                                                 reform, assump,
+                                                growdiff_response,
                                                 aging_input_data,
                                                 exact_calculations,
-                                                # first six are above
-                                                growdiff_response, year,
-                                                # last five are below
+                                                # first seven are above
+                                                year,
+                                                # last six are below
                                                 writing_output_file,
                                                 output_tables,
                                                 output_graphs,
                                                 output_ceeu,
-                                                output_dump)
+                                                output_dump,
+                                                output_sqldb)
             gdiff_dict[year + 1] = gd_dict
 
     @staticmethod
     def annual_analysis(input_data, tax_year, reform, assump,
+                        growdiff_response,
                         aging_input_data, exact_calculations,
-                        # first six parameters above
-                        growdiff_response, year,
-                        # last five parameters below
+                        # first seven parameters above
+                        year,
+                        # last six parameters below
                         writing_output_file,
                         output_tables,
                         output_graphs,
                         output_ceeu,
-                        output_dump):
+                        output_dump,
+                        output_sqldb):
         """
         Conduct static analysis for specifed year and growdiff_response.
 
         Parameters
         ----------
-        First six parameters are same as the first six parameters of
-        the TaxCalcIO.init method.
+        First seven parameters are same as the first seven parameters of
+        the TaxCalcIO.init() method.
 
-        Last five parameters are same as the first five parameters of
-        the TaxCalcIO.analyze method.
+        year: integer
+          Year through which growdiff_reponse is known.
+
+        Last six parameters are same as the first six parameters of
+        the TaxCalcIO.analyze() method.
 
         Returns
         -------
-        gd_dict: Growdiff sub-dictionary for year+1
+        gd_dict: growdiff sub-dictionary for year+1
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         # instantiate TaxCalcIO object for specified year and growdiff_response
         tcio = TaxCalcIO(input_data=input_data,
                          tax_year=year,
@@ -728,7 +740,8 @@ class TaxCalcIO(object):
                          output_tables=output_tables,
                          output_graphs=output_graphs,
                          output_ceeu=output_ceeu,
-                         output_dump=output_dump)
+                         output_dump=output_dump,
+                         output_sqldb=output_sqldb)
             gd_dict = {}
         else:
             # conduct intermediate tax analysis for year less than tax_year

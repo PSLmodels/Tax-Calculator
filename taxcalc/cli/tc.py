@@ -9,7 +9,7 @@ which can be accessed as 'tc' from an installed taxcalc conda package.
 import sys
 import argparse
 import difflib
-from taxcalc import TaxCalcIO
+from taxcalc import Calculator, TaxCalcIO
 
 
 TEST_INPUT_FILENAME = 'test.csv'
@@ -103,44 +103,63 @@ def cli_tc_main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
-    # write test input and expected output files if --test option specified
+    # conduct test if --test option specified and return appropriate retcode
     if args.test:
         _write_expected_test_output()
-        inputfn = TEST_INPUT_FILENAME
-        taxyear = TEST_TAXYEAR
-    else:
-        inputfn = args.INPUT
-        taxyear = args.TAXYEAR
-    # instantiate taxcalcio object and do tax analysis
-    tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                     reform=args.reform, assump=args.assump)
-    if len(tcio.errmsg) > 0:
-        sys.stderr.write(tcio.errmsg)
-        sys.stderr.write('USAGE: tc --help\n')
-        return 1
-    aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
-    tcio.init(input_data=inputfn, tax_year=taxyear,
-              reform=args.reform, assump=args.assump,
-              growdiff_response=None,
-              aging_input_data=aging,
-              exact_calculations=args.exact)
-    if len(tcio.errmsg) > 0:
-        sys.stderr.write(tcio.errmsg)
-        sys.stderr.write('USAGE: tc --help\n')
-        return 1
-    tcio.analyze(writing_output_file=True,
-                 output_tables=args.tables,
-                 output_graphs=args.graphs,
-                 output_ceeu=args.ceeu,
-                 output_dump=args.dump,
-                 output_sqldb=args.sqldb)
-    # compare test output with expected test output if --test option specified
-    if args.test:
+        tcio = TaxCalcIO(input_data=TEST_INPUT_FILENAME,
+                         tax_year=TEST_TAXYEAR,
+                         reform=None, assump=None)
+        tcio.init(input_data=TEST_INPUT_FILENAME,
+                  tax_year=TEST_TAXYEAR,
+                  reform=None, assump=None,
+                  growdiff_response=None,
+                  aging_input_data=False,
+                  exact_calculations=False)
+        tcio.analyze(writing_output_file=True)
         retcode = _compare_test_output_files()
+        return retcode
+    # conduct tax analysis
+    inputfn = args.INPUT
+    taxyear = args.TAXYEAR
+    aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
+    params_dict = Calculator.read_json_param_objects(args.reform, args.assump)
+    if 'growmodel' in params_dict.keys():
+        TaxCalcIO.growmodel_analysis(input_data=inputfn,
+                                     tax_year=taxyear,
+                                     reform=args.reform,
+                                     assump=args.assump,
+                                     aging_input_data=aging,
+                                     exact_calculations=args.exact,
+                                     writing_output_file=True,
+                                     output_tables=args.tables,
+                                     output_graphs=args.graphs,
+                                     output_ceeu=args.ceeu,
+                                     output_dump=args.dump,
+                                     output_sqldb=args.sqldb)
     else:
-        retcode = 0
+        tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
+                         reform=args.reform, assump=args.assump)
+        if len(tcio.errmsg) > 0:
+            sys.stderr.write(tcio.errmsg)
+            sys.stderr.write('USAGE: tc --help\n')
+            return 1
+        tcio.init(input_data=inputfn, tax_year=taxyear,
+                  reform=args.reform, assump=args.assump,
+                  growdiff_response=None,
+                  aging_input_data=aging,
+                  exact_calculations=args.exact)
+        if len(tcio.errmsg) > 0:
+            sys.stderr.write(tcio.errmsg)
+            sys.stderr.write('USAGE: tc --help\n')
+            return 1
+        tcio.analyze(writing_output_file=True,
+                     output_tables=args.tables,
+                     output_graphs=args.graphs,
+                     output_ceeu=args.ceeu,
+                     output_dump=args.dump,
+                     output_sqldb=args.sqldb)
     # return exit code
-    return retcode
+    return 0
 # end of cli_tc_main function code
 
 
