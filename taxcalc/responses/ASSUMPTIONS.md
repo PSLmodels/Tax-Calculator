@@ -59,6 +59,24 @@ above.  Empty values mean no responses, so an assumption file with
 empty values for all top-level keys implies no responses of any type,
 which implies static analysis of a tax reform.
 
+Including just these four key:value pairs in the assumption file indicates
+that the GrowModel is inactive.  To activate the GrowModel, simply add a
+fifth key:value pair like this when you want to use the default parameter
+values of the GrowModel:
+```
+  ,
+  "growmodel": {
+  } 
+```
+or add fifth key:value pair like this when you want to customize the
+GrowModel parameter values:
+```
+  ,
+  "growmodel": {
+     <parameter_name>: {<calyear>: <parameter-value>}
+  } 
+```
+
 The rules about structuring a non-empty value for a top-level key are
 the same as for policy reform files, which are described
 [here](../reforms/REFORMS.md).  The response parameter names

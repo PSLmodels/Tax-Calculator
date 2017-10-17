@@ -7,6 +7,7 @@ Test example JSON response assumption files in taxcalc/responses directory
 
 import os
 import glob
+import pytest
 # pylint: disable=import-error
 from taxcalc import Calculator, Consumption, Behavior, Growdiff
 
@@ -28,8 +29,8 @@ def test_response_json(tests_path):
                          '"growdiff_response"' in jpf_text)
         if response_file:
             # pylint: disable=protected-access
-            (con, beh, gdiff_base,
-             gdiff_resp) = Calculator._read_json_econ_assump_text(jpf_text)
+            (con, beh, gdiff_base, gdiff_resp,
+             growmod) = Calculator._read_json_econ_assump_text(jpf_text)
             cons = Consumption()
             cons.update_consumption(con)
             behv = Behavior()
@@ -38,7 +39,38 @@ def test_response_json(tests_path):
             growdiff_baseline.update_growdiff(gdiff_base)
             growdiff_response = Growdiff()
             growdiff_response.update_growdiff(gdiff_resp)
+            # TODO: activate commented-out code below
+            """
+            if growmod is not None:
+                growmodel = GrowModel()
+                growmodel.update_growmodel(growmod)
+            """
         else:  # jpf_text is not a valid JSON response assumption file
             print('test-failing-filename: ' +
                   jpf)
             assert False
+
+
+def test_growmodel_json():
+    """
+    Check dictionaries returned by Calculator._read_json_econ_assump_text(txt)
+    when txt includes a "growmodel":value pair.
+    """
+    txt = """
+    {
+    "consumption": {},
+    "behavior": {},
+    "growdiff_baseline": {},
+    "growdiff_response": {},
+    "growmodel": {}
+    }
+    """
+    # pylint: disable=protected-access
+    (con, beh, gdiff_base, gdiff_resp,
+     growmod) = Calculator._read_json_econ_assump_text(txt)
+    empty_dict = dict()
+    assert con == empty_dict
+    assert beh == empty_dict
+    assert gdiff_base == empty_dict
+    assert gdiff_resp == empty_dict
+    assert growmod == empty_dict

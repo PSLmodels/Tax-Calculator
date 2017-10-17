@@ -94,3 +94,5 @@
         "_AWAGE": {"2017": [0.0]}
     }
 }
+
+//The absence of a "growmodel" key above indicates that GrowModel is inactive.

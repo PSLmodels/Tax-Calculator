@@ -673,49 +673,99 @@ def test_analyze_warnings_print(warnreformfile):
     assert tcio.tax_year() == taxyear
 
 
-def test_bad_growmodel_analysis(reformfile1, assumpfile1):
+@pytest.fixture(scope='module', name='reformfile9')
+def fixture_reformfile9():
+    """
+    Temporary reform file with .json extension.
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = """
+    { "policy": {
+        "_SS_Earnings_c": { 
+          "2014": [300000],
+          "2015": [500000],
+          "2016": [700000]}
+      }
+    }
+    """
+    rfile.write(contents)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.fixture(scope='module', name='assumpfile9')
+def fixture_assumpfile9():
+    """
+    Temporary assumption file with .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = """
+    { "consumption": {},
+      "behavior": {},
+      "growdiff_baseline": {},
+      "growdiff_response": {},
+      "growmodel": {}
+    }
+    """
+    afile.write(contents)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_bad_growmodel_analysis(reformfile9, assumpfile9):
     """
     Test incorrect TaxCalcIO.growmodel_analysis method calls.
     """
     with pytest.raises(ValueError):
         TaxCalcIO.growmodel_analysis(input_data=list(),
                                      tax_year=2020,
-                                     reform=reformfile1.name,
-                                     assump=assumpfile1.name,
+                                     reform=reformfile9.name,
+                                     assump=assumpfile9.name,
                                      aging_input_data=True,
                                      exact_calculations=False)
     with pytest.raises(ValueError):
-        TaxCalcIO.growmodel_analysis(input_data='cps.csv',
+        TaxCalcIO.growmodel_analysis(input_data='puf.csv',
                                      tax_year=2020,
-                                     reform=reformfile1.name,
-                                     assump=assumpfile1.name,
+                                     reform=reformfile9.name,
+                                     assump=assumpfile9.name,
                                      aging_input_data=False,
                                      exact_calculations=False)
     with pytest.raises(ValueError):
         TaxCalcIO.growmodel_analysis(input_data='bad.csv',
                                      tax_year=2020,
-                                     reform=reformfile1.name,
-                                     assump=assumpfile1.name,
+                                     reform=reformfile9.name,
+                                     assump=assumpfile9.name,
                                      aging_input_data=True,
                                      exact_calculations=False)
     with pytest.raises(ValueError):
         TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                      tax_year=2013,
-                                     reform=reformfile1.name,
-                                     assump=assumpfile1.name,
+                                     reform=reformfile9.name,
+                                     assump=assumpfile9.name,
                                      aging_input_data=True,
                                      exact_calculations=False)
 
 
-@pytest.mark.requires_pufcsv
-def test_growmodel_analysis(puf_path, reformfile1, assumpfile1):
+def test_growmodel_analysis(reformfile9, assumpfile9):
     """
     Test TaxCalcIO.growmodel_analysis method with no output.
     """
     taxyear = 2017
-    TaxCalcIO.growmodel_analysis(input_data=puf_path,
+    TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                  tax_year=taxyear,
-                                 reform=reformfile1.name,
-                                 assump=assumpfile1.name,
+                                 reform=reformfile9.name,
+                                 assump=assumpfile9.name,
                                  aging_input_data=True,
                                  exact_calculations=False)
