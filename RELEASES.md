@@ -22,6 +22,9 @@ Release 0.12.0 on 2017-??-??
 - Change Calculator class constructor so that it makes a deep copy of each specified object for internal use
   [[#1582](https://github.com/open-source-economics/Tax-Calculator/pull/1582)
   by Martin Holmer]
+- Rename and reorder difference table columns
+  [[#1584](https://github.com/open-source-economics/Tax-Calculator/pull/1584)
+  by Martin Holmer]
 
 **New Features**
 - Add Calculator.reform_documentation that generates plain text documentation of a reform

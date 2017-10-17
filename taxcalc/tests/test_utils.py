@@ -17,6 +17,7 @@ import pytest
 from taxcalc import Policy, Records, Behavior, Calculator
 from taxcalc.utils import (STATS_COLUMNS,
                            DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
+                           DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
                            create_distribution_table, create_difference_table,
                            weighted_count_lt_zero, weighted_count_gt_zero,
                            weighted_count, weighted_sum, weighted_mean,
@@ -846,3 +847,9 @@ def test_bootstrap_se_ci():
     assert abs(bsd['se'] / 23.02 - 1) < 0.02
     assert abs(bsd['cilo'] / 45.9 - 1) < 0.02
     assert abs(bsd['cihi'] / 135.4 - 1) < 0.03
+
+
+def test_table_columns_labels():
+    # check that length of two lists are the same
+    assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
+    assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
