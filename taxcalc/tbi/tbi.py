@@ -22,17 +22,13 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    calculate,
                                    random_seed,
                                    summary,
+                                   create_dict_table,
                                    AGGR_ROW_NAMES)
-from taxcalc import (results, DIST_TABLE_LABELS,
-                     proportional_change_in_gdp,
-                     Growdiff, Growfactors, Policy)
+from taxcalc import (results, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
+                     proportional_change_in_gdp, Growdiff, Growfactors, Policy)
 
 
 # specify constants
-DIST_COLUMN_TYPES = [float] * len(DIST_TABLE_LABELS)
-
-DIFF_COLUMN_TYPES = [int, int, int, float, float, str, str, str, str]
-
 DEC_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
                  'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
                  'perc80-90', 'perc90-100', 'all']
@@ -128,7 +124,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         pdf.columns = [str(col) + '_{}'.format(year_n) for col in pdf.columns]
         return pdf
 
-    # optionally return non-JSON results
+    # optionally return non-JSON-like results
     if not return_dict:
         res = dict()
         for tbl in summ:
@@ -137,10 +133,13 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         print('elapsed time for this run: {:.1f}'.format(elapsed_time))
         return res
 
-    # optionally construct JSON results tables for year n
+    # optionally construct JSON-like results dictionaries for year n
     dec_row_names_n = [x + '_' + str(year_n) for x in DEC_ROW_NAMES]
     bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
     agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
+    dist_column_types = [float] * len(DIST_TABLE_LABELS)
+    diff_column_types = [int, int, str, int, str, float, float, str, str]
+    assert len(diff_column_types) == len(DIFF_TABLE_LABELS)
     info = dict()
     for tbl in summ:
         info[tbl] = {'row_names': [], 'col_types': []}
@@ -151,9 +150,9 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         else:
             info[tbl]['row_names'] = agg_row_names_n
         if 'dist' in tbl:
-            info[tbl]['col_types'] = DIST_COLUMN_TYPES
+            info[tbl]['col_types'] = dist_column_types
         elif 'diff' in tbl:
-            info[tbl]['col_types'] = DIFF_COLUMN_TYPES
+            info[tbl]['col_types'] = diff_column_types
     res = dict()
     for tbl in summ:
         if 'aggr' in tbl:
@@ -164,8 +163,10 @@ def run_nth_year_tax_calc_model(year_n, start_year,
             res[tbl] = create_dict_table(summ[tbl],
                                          row_names=info[tbl]['row_names'],
                                          column_types=info[tbl]['col_types'])
+
     elapsed_time = time.time() - start_time
     print('elapsed time for this run: {:.1f}'.format(elapsed_time))
+
     return res
 
 
@@ -212,48 +213,3 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
         return gdp_elast_total
     else:
         return gdp_effect
-
-
-def create_dict_table(dframe, row_names=None, column_types=None,
-                      num_decimals=2):
-    """
-    Create and return dictionary with JSON-like content from specified dframe.
-    """
-    # embedded formatted_string function
-    def formatted_string(val, _type, num_decimals):
-        """
-        Return formatted conversion of number val into a string.
-        """
-        float_types = [float, np.dtype('f8')]
-        int_types = [int, np.dtype('i8')]
-        frmat_str = "0:.{num}f".format(num=num_decimals)
-        frmat_str = "{" + frmat_str + "}"
-        try:
-            if _type in float_types or _type is None:
-                return frmat_str.format(val)
-            elif _type in int_types:
-                return str(int(val))
-            elif _type == str:
-                return str(val)
-            else:
-                raise NotImplementedError()
-        except ValueError:
-            # try making it a string - good luck!
-            return str(val)
-    # high-level create_dict_table function logic
-    out = dict()
-    if row_names is None:
-        row_names = [str(x) for x in list(dframe.index)]
-    else:
-        assert len(row_names) == len(dframe.index)
-    if column_types is None:
-        column_types = [dframe[col].dtype for col in dframe.columns]
-    else:
-        assert len(column_types) == len(dframe.columns)
-    for idx, row_name in zip(dframe.index, row_names):
-        row_out = out.get(row_name, [])
-        for col, dtype in zip(dframe.columns, column_types):
-            row_out.append(formatted_string(dframe.loc[idx, col],
-                                            dtype, num_decimals))
-        out[row_name] = row_out
-    return out

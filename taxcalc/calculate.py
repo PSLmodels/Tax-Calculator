@@ -41,47 +41,29 @@ class Calculator(object):
     Parameters
     ----------
     policy: Policy class object
-        this argument must be specified
-        IMPORTANT NOTE: never pass the same Policy object to more than one
-        Calculator.  In other words, when specifying more
-        than one Calculator object, do this::
-
-            pol1 = Policy()
-            rec1 = Records()
-            calc1 = Calculator(policy=pol1, records=rec1)
-            pol2 = Policy()
-            rec2 = Records()
-            calc2 = Calculator(policy=pol2, records=rec2)
+        this argument must be specified and object is copied for internal use
 
     records: Records class object
-        this argument must be specified
-        IMPORTANT NOTE: never pass the same Records object to more than one
-        Calculator.  In other words, when specifying more
-        than one Calculator object, do this::
-
-            pol1 = Policy()
-            rec1 = Records()
-            calc1 = Calculator(policy=pol1, records=rec1)
-            pol2 = Policy()
-            rec2 = Records()
-            calc2 = Calculator(policy=pol2, records=rec2)
+        this argument must be specified and object is copied for internal use
 
     verbose: boolean
         specifies whether or not to write to stdout data-loaded and
         data-extrapolated progress reports; default value is true.
 
     sync_years: boolean
-        specifies whether or not to syncronize policy year and records year;
+        specifies whether or not to synchronize policy year and records year;
         default value is true.
 
     consumption: Consumption class object
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
-        no consumption responses assumed in marginal tax rate calculations.
+        no consumption responses assumed in marginal tax rate calculations;
+        when argument is an object it is copied for internal use
 
     behavior: Behavior class object
-        specifies behaviorial responses used by Calculator; default is None,
-        which implies no behavioral responses to policy reform.
+        specifies behavioral responses used by Calculator; default is None,
+        which implies no behavioral responses to policy reform;
+        when argument is an object it is copied for internal use
 
     Raises
     ------
@@ -91,17 +73,29 @@ class Calculator(object):
     Returns
     -------
     class instance: Calculator
+
+    Notes
+    -----
+    The most efficient way to specify current-law and reform Calculator
+    objects is as follows:
+         pol = Policy()
+         rec = Records()
+         calc1 = Calculator(policy=pol, records=rec)  # current-law
+         pol.implement_reform(...)
+         calc2 = Calculator(policy=pol, records=rec)  # reform
+    All calculations are done on the internal copies of the Policy and
+    Records objects passed to each of the two Calculator constructors.
     """
 
     def __init__(self, policy=None, records=None, verbose=True,
                  sync_years=True, consumption=None, behavior=None):
         # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
-            self.policy = policy
+            self.policy = copy.deepcopy(policy)
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self.records = records
+            self.records = copy.deepcopy(records)
         else:
             raise ValueError('must specify records as a Records object')
         if self.policy.current_year < self.records.data_year:
@@ -109,7 +103,7 @@ class Calculator(object):
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
-            self.consumption = consumption
+            self.consumption = copy.deepcopy(consumption)
             while self.consumption.current_year < self.policy.current_year:
                 next_year = self.consumption.current_year + 1
                 self.consumption.set_year(next_year)
@@ -118,7 +112,7 @@ class Calculator(object):
         if behavior is None:
             self.behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
-            self.behavior = behavior
+            self.behavior = copy.deepcopy(behavior)
             while self.behavior.current_year < self.policy.current_year:
                 next_year = self.behavior.current_year + 1
                 self.behavior.set_year(next_year)
@@ -358,13 +352,11 @@ class Calculator(object):
         """
         Return Calculator object same as self except with current-law policy.
         """
-        clp = self.policy.current_law_version()
-        recs = copy.deepcopy(self.records)
-        cons = copy.deepcopy(self.consumption)
-        behv = copy.deepcopy(self.behavior)
-        calc = Calculator(policy=clp, records=recs, sync_years=False,
-                          consumption=cons, behavior=behv)
-        return calc
+        return Calculator(policy=self.policy.current_law_version(),
+                          records=copy.deepcopy(self.records),
+                          sync_years=False,
+                          consumption=copy.deepcopy(self.consumption),
+                          behavior=copy.deepcopy(self.behavior))
 
     @staticmethod
     def read_json_param_objects(reform, assump):

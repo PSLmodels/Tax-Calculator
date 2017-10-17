@@ -33,9 +33,8 @@ STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                  'payrolltax', 'combined', 's006']
 
 # Items in the DIST_TABLE_COLUMNS list below correspond to the items in the
-# DIST_TABLE_LABELS list below; this correspondence allows us to use
-# DIST_TABLE_LABELS to map a label to the correct column in the distribution
-# tables.
+# DIST_TABLE_LABELS list below; this correspondence allows us to use this
+# labels list to map a label to the correct column in a distribution table.
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
                       'num_returns_StandardDed',
@@ -76,17 +75,28 @@ DIST_TABLE_LABELS = ['Returns',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities']
 
-# Following list is used in our difference table to label its columns.
-DIFF_TABLE_LABELS = ['Tax Units with Tax Cut',
+# Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
+# DIFF_TABLE_LABELS list below; this correspondence allows us to use this
+# labels list to map a label to the correct column in a difference table.
+DIFF_TABLE_COLUMNS = ['count',
+                      'tax_cut',
+                      'perc_cut',
+                      'tax_inc',
+                      'perc_inc',
+                      'mean',
+                      'tot_change',
+                      'share_of_change',
+                      'perc_aftertax']
+
+DIFF_TABLE_LABELS = ['All Tax Units',
+                     'Tax Units with Tax Cut',
+                     'Percent with Tax Cut',
                      'Tax Units with Tax Increase',
-                     'Count',
+                     'Percent with Tax Increase',
                      'Average Tax Change',
                      'Total Tax Difference',
-                     'Percent with Tax Increase',
-                     'Percent with Tax Decrease',
                      'Share of Overall Change',
                      'Change as % of Aftertax Income']
-
 
 WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 9e99]
@@ -436,13 +446,13 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         # print gpdf.count()  # show unweighted number of filing units per bin
         # create difference table statistics from gpdf in a new DataFrame
         diffs = pd.DataFrame()
-        diffs['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
-        diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
         diffs['count'] = gpdf.apply(weighted_count)
+        diffs['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
+        diffs['perc_cut'] = gpdf.apply(weighted_perc_cut, 'tax_diff')
+        diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
+        diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
         diffs['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
         diffs['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-        diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
-        diffs['perc_cut'] = gpdf.apply(weighted_perc_cut, 'tax_diff')
         wtotal = (res2['tax_diff'] * res2['s006']).sum()
         diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                               'tax_diff', wtotal)
