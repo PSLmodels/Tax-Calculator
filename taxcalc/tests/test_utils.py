@@ -61,19 +61,17 @@ def test_validity_of_name_lists():
 
 def test_create_tables(cps_subsample):
     # create a current-law Policy object and Calculator object calc1
-    policy1 = Policy()
-    records1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=policy1, records=records1)
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
     reform = {2013: {'_II_rt1': [0.15]}}
-    policy2 = Policy()
-    policy2.implement_reform(reform)
-    records2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=policy2, records=records2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
-
     # test creating various difference tables
+
     diff = create_difference_table(calc1.records, calc2.records,
                                    groupby='large_income_bins',
                                    income_measure='expanded_income',
@@ -575,8 +573,8 @@ def test_add_quantile_bins():
 
 
 def test_dist_table_sum_row(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=recs)
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
     tb1 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
@@ -595,17 +593,15 @@ def test_dist_table_sum_row(cps_subsample):
 
 
 def test_diff_table_sum_row(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
     # create a current-law Policy object and Calculator calc1
-    policy1 = Policy()
-    records1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=policy1, records=records1)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator calc2
     reform = {2013: {'_II_rt4': [0.56]}}
-    policy2 = Policy()
-    policy2.implement_reform(reform)
-    records2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=policy2, records=records2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
     # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1.records, calc2.records,
@@ -629,21 +625,21 @@ def test_mtr_graph_data(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars='bad',
-                               income_measure='agi',
-                               dollar_weighting=True)
+        mtr_graph_data(calc, calc, mars='bad',
+                       income_measure='agi',
+                       dollar_weighting=True)
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars=0,
-                               income_measure='expanded_income',
-                               dollar_weighting=True)
+        mtr_graph_data(calc, calc, mars=0,
+                       income_measure='expanded_income',
+                       dollar_weighting=True)
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars=list())
+        mtr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
+        mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
+        mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, income_measure='badincome')
+        mtr_graph_data(calc, calc, income_measure='badincome')
     gdata = mtr_graph_data(calc, calc, mars=1,
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
@@ -652,25 +648,25 @@ def test_mtr_graph_data(cps_subsample):
 
 
 def test_atr_graph_data(cps_subsample):
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample))
+    pol = Policy()
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=pol, records=rec)
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, mars='bad')
+        atr_graph_data(calc, calc, mars='bad')
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, mars=0)
+        atr_graph_data(calc, calc, mars=0)
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, mars=list())
+        atr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, atr_measure='badtax')
+        atr_graph_data(calc, calc, atr_measure='badtax')
     gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
     gdata = atr_graph_data(calc, calc, atr_measure='itax')
     gdata = atr_graph_data(calc, calc, atr_measure='ptax')
     assert isinstance(gdata, dict)
     with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(),
-                           records=Records.cps_constructor(data=cps_subsample))
+        calcx = Calculator(policy=pol, records=rec)
         calcx.advance_to_year(2020)
-        gdata = atr_graph_data(calcx, calc)
+        atr_graph_data(calcx, calc)
 
 
 def test_xtr_graph_plot(cps_subsample):
@@ -722,29 +718,30 @@ def test_write_graph_file(cps_subsample):
 
 
 def test_multiyear_diagnostic_table(cps_subsample):
-    behv = Behavior()
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample),
-                      behavior=behv)
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    beh = Behavior()
+    calc = Calculator(policy=pol, records=rec, behavior=beh)
     with pytest.raises(ValueError):
-        adt = multiyear_diagnostic_table(calc, 0)
+        multiyear_diagnostic_table(calc, 0)
     with pytest.raises(ValueError):
-        adt = multiyear_diagnostic_table(calc, 20)
+        multiyear_diagnostic_table(calc, 20)
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, pd.DataFrame)
-    behv.update_behavior({2013: {'_BE_sub': [0.3]}})
+    beh.update_behavior({2013: {'_BE_sub': [0.3]}})
+    calc = Calculator(policy=pol, records=rec, behavior=beh)
     assert calc.behavior.has_response()
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, pd.DataFrame)
 
 
 def test_myr_diag_table_wo_behv(cps_subsample):
-    pol = Policy()
     reform = {
         2013: {
             '_II_rt7': [0.33],
             '_PT_rt7': [0.33],
         }}
+    pol = Policy()
     pol.implement_reform(reform)
     calc = Calculator(policy=pol,
                       records=Records.cps_constructor(data=cps_subsample))
@@ -792,19 +789,17 @@ def test_ce_aftertax_income(cps_subsample):
     cmin = 1000
     assert con == round(certainty_equivalent(con, 0, cmin), 6)
     # test with require_no_agg_tax_change equal to False
+    rec = Records.cps_constructor(data=cps_subsample)
     cyr = 2020
     # specify calc1 and calc_all() for cyr
-    pol1 = Policy()
-    rec1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=pol1, records=rec1)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     calc1.advance_to_year(cyr)
     calc1.calc_all()
     # specify calc2 and calc_all() for cyr
-    pol2 = Policy()
     reform = {2018: {'_II_em': [0.0]}}
-    pol2.implement_reform(reform)
-    rec2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=pol2, records=rec2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
     cedict = ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=False)

@@ -19,6 +19,9 @@ Release 0.12.0 on 2017-??-??
 - Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions so that either puf.csv or cps.csv can be used as input data
   [[#1577](https://github.com/open-source-economics/Tax-Calculator/pull/1577)
   by Martin Holmer]
+- Change Calculator class constructor so that it makes a deep copy of each specified object for internal use
+  [[#1582](https://github.com/open-source-economics/Tax-Calculator/pull/1582)
+  by Martin Holmer]
 - Rename and reorder difference table columns
   [[#1584](https://github.com/open-source-economics/Tax-Calculator/pull/1584)
   by Martin Holmer]

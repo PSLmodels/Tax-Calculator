@@ -14,13 +14,13 @@ def test_proportional_change_in_gdp(cps_subsample):
     """
     Test correct and incorrect calls to proportional_change_in_gdp function.
     """
-    rec1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=Policy(), records=rec1)
-    rec2 = Records.cps_constructor(data=cps_subsample)
-    pol2 = Policy()
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     reform = {2015: {'_II_em': [0.0]}}  # reform increases taxes and MTRs
-    pol2.implement_reform(reform)
-    calc2 = Calculator(policy=pol2, records=rec2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
+    assert calc1.current_year == calc2.current_year
     assert calc1.current_year == 2014  # because using CPS data
     gdpc = proportional_change_in_gdp(2014, calc1, calc2, elasticity=0.36)
     assert gdpc == 0.0  # no effect for first data year
