@@ -622,6 +622,37 @@ class TaxCalcIO(object):
         return odf
 
     @staticmethod
+    def using_growmodel(assump):
+        """
+        Determines if assump implies using the GrowModel class.
+
+        Parameters
+        ----------
+        assump: None or string
+            None implies economic assumptions are standard assumptions,
+            or string is name of optional ASSUMP file.
+
+        Returns
+        -------
+        is_using: boolean
+        """
+        if assump is None:
+            return False
+        elif isinstance(assump, six.string_types):
+            if os.path.isfile(assump):
+                with open(assump) as afile:
+                    assump_text = afile.read()
+                if '"growmodel"' in assump_text:
+                    pdict = Calculator.read_json_param_objects(None, assump)
+                    return bool('growmodel' in pdict.keys())
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+
+    @staticmethod
     def growmodel_analysis(input_data, tax_year, reform, assump,
                            aging_input_data, exact_calculations,
                            # first six parameters above

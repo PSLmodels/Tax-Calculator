@@ -9,7 +9,7 @@ which can be accessed as 'tc' from an installed taxcalc conda package.
 import sys
 import argparse
 import difflib
-from taxcalc import Calculator, TaxCalcIO
+from taxcalc import TaxCalcIO
 
 
 TEST_INPUT_FILENAME = 'test.csv'
@@ -103,7 +103,7 @@ def cli_tc_main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
-    # conduct test if --test option specified and return appropriate retcode
+    # if --test option specified, conduct test and return appropriate retcode
     if args.test:
         _write_expected_test_output()
         tcio = TaxCalcIO(input_data=TEST_INPUT_FILENAME,
@@ -122,8 +122,7 @@ def cli_tc_main():
     inputfn = args.INPUT
     taxyear = args.TAXYEAR
     aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
-    params_dict = Calculator.read_json_param_objects(args.reform, args.assump)
-    if 'growmodel' in params_dict.keys():
+    if TaxCalcIO.using_growmodel(args.assump):
         TaxCalcIO.growmodel_analysis(input_data=inputfn,
                                      tax_year=taxyear,
                                      reform=args.reform,

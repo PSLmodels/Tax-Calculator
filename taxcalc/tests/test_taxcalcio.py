@@ -681,7 +681,7 @@ def fixture_reformfile9():
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     { "policy": {
-        "_SS_Earnings_c": { 
+        "_SS_Earnings_c": {
           "2014": [300000],
           "2015": [500000],
           "2016": [700000]}
@@ -724,9 +724,19 @@ def fixture_assumpfile9():
             pass  # sometimes we can't remove a generated temporary file
 
 
+def test_using_growmodel_is_false(assumpfile0):
+    """
+    Test TaxCalcIO.using_growmodel function calls that return False.
+    """
+    assert TaxCalcIO.using_growmodel(None) is False
+    assert TaxCalcIO.using_growmodel(list()) is False
+    assert TaxCalcIO.using_growmodel('unknown.json') is False
+    assert TaxCalcIO.using_growmodel(assumpfile0.name) is False
+
+
 def test_bad_growmodel_analysis(reformfile9, assumpfile9):
     """
-    Test incorrect TaxCalcIO.growmodel_analysis method calls.
+    Test incorrect TaxCalcIO.growmodel_analysis function calls.
     """
     with pytest.raises(ValueError):
         TaxCalcIO.growmodel_analysis(input_data=list(),
@@ -760,12 +770,12 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9):
 
 def test_growmodel_analysis(reformfile9, assumpfile9):
     """
-    Test TaxCalcIO.growmodel_analysis method with no output.
+    Test TaxCalcIO.growmodel_analysis function with no output.
     """
-    taxyear = 2017
-    TaxCalcIO.growmodel_analysis(input_data='cps.csv',
-                                 tax_year=taxyear,
-                                 reform=reformfile9.name,
-                                 assump=assumpfile9.name,
-                                 aging_input_data=True,
-                                 exact_calculations=False)
+    if TaxCalcIO.using_growmodel(assumpfile9.name):
+        TaxCalcIO.growmodel_analysis(input_data='cps.csv',
+                                     tax_year=2015,
+                                     reform=reformfile9.name,
+                                     assump=assumpfile9.name,
+                                     aging_input_data=True,
+                                     exact_calculations=False)
