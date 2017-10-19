@@ -1471,7 +1471,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 @iterate_jit(nopython=True)
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
-            CTC_new_ps, CTC_new_prt,
+            CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
             ctc_new):
@@ -1480,8 +1480,9 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
     """
     if n24 > 0:
         posagi = max(c00100, 0.)
-        ctc_new = min(CTC_new_rt * posagi,
-                      CTC_new_c * n24 + CTC_new_c_under5_bonus * nu05)
+        ctc_new = CTC_new_c * n24 + CTC_new_c_under5_bonus * nu05
+        if not CTC_new_for_all:
+            ctc_new = min(CTC_new_rt * posagi, ctc_new)
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
             ctc_new_reduced = max(0.,
