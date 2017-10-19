@@ -115,8 +115,8 @@ def calculate(year_n, start_year,
         # first try Tax-Calculator code path
         input_path = os.path.join(tbi_path, '..', 'cps.csv.gz')
         if not os.path.isfile(input_path):
-            # otherwise try taxcalc package path
-            input_path = None
+            # otherwise read from taxcalc package "egg"
+            input_path = None  # pragma: no cover
             full_sample = read_egg_csv('cps.csv.gz')  # pragma: no cover
         sampling_frac = 0.05  # TODO: using same as for puf for now
         sampling_seed = 180  # TODO: using same as for puf for now

@@ -108,7 +108,7 @@ def test_run_tax_calc_model(resdict):
 
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resdict', [True, False])
-def test_run_gdp_elast_model(resdict):
+def test_run_gdp_elast_model_1(resdict):
     usermods = USER_MODS
     usermods['behavior'] = dict()
     res = run_nth_year_gdp_elast_model(2, 2016,
@@ -121,6 +121,18 @@ def test_run_gdp_elast_model(resdict):
         assert isinstance(res, dict)
     else:
         assert isinstance(res, float)
+
+
+def test_run_gdp_elast_model_2():
+    usermods = USER_MODS
+    usermods['behavior'] = dict()
+    res = run_nth_year_gdp_elast_model(0, 2014,  # forces no automatic zero
+                                       use_puf_not_cps=False,
+                                       use_full_sample=False,
+                                       user_mods=usermods,
+                                       gdp_elasticity=0.36,
+                                       return_dict=False)
+    assert res == 0.0
 
 
 def test_random_seed_from_subdict():
