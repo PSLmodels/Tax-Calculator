@@ -4209,8 +4209,8 @@
     "_UBI1": {
         "long_name": "UBI benefit for those under 18",
         "description": "UBI benefit provided to people under 18.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Benefits",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -4239,8 +4239,8 @@
     "_UBI2": {
         "long_name": "UBI benefit for those 18 through 20",
         "description": "UBI benefit provided to people 18-20 years of age.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Benefits",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -4269,8 +4269,8 @@
     "_UBI3": {
         "long_name": "UBI benefit for those 21 and over",
         "description": "UBI benefit provided to people 21 and over.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Benefits",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -4299,8 +4299,8 @@
     "_UBI_ecrt": {
         "long_name": "Fraction of UBI benefits excluded from AGI",
         "description": "One minus this fraction of UBI benefits are taxable and will be added to AGI.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Taxability",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
