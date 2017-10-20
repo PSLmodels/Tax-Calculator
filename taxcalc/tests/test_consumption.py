@@ -67,27 +67,24 @@ def test_consumption_response(cps_subsample):
     with pytest.raises(ValueError):
         consump.response(list(), 1)
     # test correct call to response method
-    recs = Records.cps_constructor(data=cps_subsample)
-    pre = copy.deepcopy(recs.e20400)
-    consump.response(recs, 1.0)
-    post = recs.e20400
+    rec = Records.cps_constructor(data=cps_subsample)
+    pre = copy.deepcopy(rec.e20400)
+    consump.response(rec, 1.0)
+    post = rec.e20400
     actual_diff = post - pre
-    expected_diff = np.ones(recs.dim) * mpc
+    expected_diff = np.ones(rec.dim) * mpc
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
-    recs0 = Records.cps_constructor(data=cps_subsample)
-    calc0 = Calculator(policy=Policy(), records=recs0, consumption=None)
-    ided0 = copy.deepcopy(recs0.e20400)
+    rec = Records.cps_constructor(data=cps_subsample)
+    ided0 = copy.deepcopy(rec.e20400)
+    calc0 = Calculator(policy=Policy(), records=rec, consumption=None)
     (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)
     assert np.allclose(calc0.records.e20400, ided0)
     # compute earnings mtr with consumption response
-    recs1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=Policy(), records=recs1, consumption=None)
-    assert np.allclose(calc1.records.e20400, ided0)
-    calc1.consumption.update_consumption(consumption_response)
-    (mtr1_ptax, mtr1_itax, _) = calc1.mtr(variable_str='e00200p',
-                                          wrt_full_compensation=False)
+    calc1 = Calculator(policy=Policy(), records=rec, consumption=consump)
+    mtr1_ptax, mtr1_itax, _ = calc1.mtr(variable_str='e00200p',
+                                        wrt_full_compensation=False)
     assert np.allclose(calc1.records.e20400, ided0)
     # confirm that payroll mtr values are no different
     assert np.allclose(mtr1_ptax, mtr0_ptax)
