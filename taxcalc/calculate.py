@@ -464,7 +464,7 @@ class Calculator(object):
             -------
             doc: String
             """
-            # pylint: disable=too-many-branches
+            # pylint: disable=too-many-branches,too-many-nested-blocks
             # nested function used only in param_doc
             def lines(text, num_indent_spaces, max_line_length=77):
                 """
@@ -499,9 +499,12 @@ class Calculator(object):
             assert isinstance(basevals, dict)
             doc = ''
             for year in years:
+                # write year
                 base.set_year(year)
                 doc += '{}:\n'.format(year)
+                # write info for each param in year
                 for param in sorted(change[year].keys()):
+                    # ... write param:value line
                     pval = change[year][param]
                     if isinstance(pval, list):
                         pval = pval[0]
@@ -510,12 +513,14 @@ class Calculator(object):
                                 pval = [True if item else
                                         False for item in pval]
                             else:
-                                pval = [bool(pval)]
+                                pval = bool(pval)
                     doc += ' {} : {}\n'.format(param, pval)
+                    # ... write optional param-index line
                     if isinstance(pval, list):
                         pval = basevals[param]['col_label']
                         pval = [str(item) for item in pval]
                         doc += ' ' * (4 + len(param)) + '{}\n'.format(pval)
+                    # ... write name line
                     if param.endswith('_cpi'):
                         rootparam = param[:-4]
                         name = '{} inflation indexing status'.format(rootparam)
@@ -523,24 +528,31 @@ class Calculator(object):
                         name = basevals[param]['long_name']
                     for line in lines('name: ' + name, 6):
                         doc += '  ' + line
+                    # ... write optional desc line
                     if not param.endswith('_cpi'):
                         desc = basevals[param]['description']
                         for line in lines('desc: ' + desc, 6):
                             doc += '  ' + line
+                    # ... write baseline_value line
                     if isinstance(base, Policy):
                         if param.endswith('_cpi'):
                             rootparam = param[:-4]
-                            pval = basevals[rootparam].get('cpi_inflated',
+                            bval = basevals[rootparam].get('cpi_inflated',
                                                            False)
                         else:
-                            pval = getattr(base, param[1:], None)
+                            bval = getattr(base, param[1:], None)
+                            if isinstance(bval, np.ndarray):
+                                # pylint: disable=no-member
+                                bval = bval.tolist()
+                                if basevals[param]['boolean_value']:
+                                    bval = [True if item else
+                                            False for item in bval]
+                            elif basevals[param]['boolean_value']:
+                                bval = bool(bval)
+                        doc += '  baseline_value: {}\n'.format(bval)
                     else:  # if base is Growdiff object
-                        pval = [0.0]  # all parameters have zero default values
-                    if isinstance(pval, np.ndarray):
-                        pval = pval.tolist()  # pylint: disable=no-member
-                        if basevals[param]['boolean_value']:
-                            pval = [True if item else False for item in pval]
-                    doc += '  baseline_value: {}\n'.format(pval)
+                        # all Growdiff parameters have zero as default value
+                        doc += '  baseline_value: 0.0\n'
             return doc
         # begin main logic of reform_documentation
         # create Policy object with pre-reform (i.e., baseline) values
