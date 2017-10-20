@@ -89,9 +89,9 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
-    reform = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
+    reform = {2013: {'_II_em': [4000], '_II_em_cpi': False,
                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
-                     "_STD_Aged_cpi": False}}
+                     '_STD_Aged_cpi': False}}
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
     calc = Calculator(policy=pol, records=rec)
@@ -881,6 +881,7 @@ def test_reform_documentation():
       "_II_em": {"2016": [5000],
                  "2018": [6000],
                  "2020": [7000]},
+      "_EITC_indiv": {"2017": [true]},
       "_STD_Aged_cpi": {"2016": false},
       "_STD_Aged": {"2016": [[1600, 1300, 1300, 1600, 1600]],
                     "2020": [[2000, 2000, 2000, 2000, 2000]]},

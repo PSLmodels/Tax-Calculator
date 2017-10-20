@@ -3264,7 +3264,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [3000.0],
-        "range": {"min": 0, "max": 9e99},
+        "range": {"min": 0, "max": 3000},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"
@@ -3931,9 +3931,31 @@
         "out_of_range_action": "stop"
     },
 
+    "_CTC_new_for_all": {
+        "long_name": "Whether or not maximum amount of the new refundable child tax credit is available to all",
+        "description": "The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see _CTC_new_rt.",
+        "section_1": "Refundable Credits",
+        "section_2": "New Refundable Child Tax Credit",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_CTC_new_rt": {
         "long_name": "New refundable child tax credit amount phasein rate",
-        "description": "The total amount of the new child tax credit is increased at this rate per dollar of AGI until _CTC_new_c times the number of qualified children is reached.",
+        "description": "The maximum amount of the new child tax credit is increased at this rate per dollar of positive AGI until _CTC_new_c times the number of qualified children is reached if CTC_new_for_all is false; if CTC_new_for_all is true, there is no AGI limitation to the maximum amount.",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "irs_ref": "",
@@ -4209,8 +4231,8 @@
     "_UBI1": {
         "long_name": "UBI benefit for those under 18",
         "description": "UBI benefit provided to people under 18.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Benefits",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -4239,8 +4261,8 @@
     "_UBI2": {
         "long_name": "UBI benefit for those 18 through 20",
         "description": "UBI benefit provided to people 18-20 years of age.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Benefits",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -4269,8 +4291,8 @@
     "_UBI3": {
         "long_name": "UBI benefit for those 21 and over",
         "description": "UBI benefit provided to people 21 and over.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Benefits",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -4299,8 +4321,8 @@
     "_UBI_ecrt": {
         "long_name": "Fraction of UBI benefits excluded from AGI",
         "description": "One minus this fraction of UBI benefits are taxable and will be added to AGI.",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Universal Basic Income",
+        "section_2": "UBI Taxability",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
