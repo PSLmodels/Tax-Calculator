@@ -4,10 +4,10 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.12.0 on 2017-??-??
+Release 0.12.0 on 2017-10-20
 ----------------------------
 (last merged pull request is
-[#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
+[#1600](https://github.com/open-source-economics/Tax-Calculator/pull/1600))
 
 **API Changes**
 - Rename read_json_param_files as read_json_param_objects
@@ -39,6 +39,15 @@ Release 0.12.0 on 2017-??-??
 - Add parameter type checking to Policy.implement_reform method
   [[#1585](https://github.com/open-source-economics/Tax-Calculator/pull/1585)
   by Martin Holmer]
+- Add `_CTC_new_for_all` policy parameter to allow credits for those with negative AGI
+  [[#1595](https://github.com/open-source-economics/Tax-Calculator/pull/1595)
+  by Martin Holmer]
+- Narrow range of legal values for `_CDCC_c` policy parameter
+  [[#1597](https://github.com/open-source-economics/Tax-Calculator/pull/1597)
+  by Matt Jensen]
+- Make several UBI policy parameters available to external applications like TaxBrain
+  [[#1599](https://github.com/open-source-economics/Tax-Calculator/pull/1599)
+  by Matt Jensen]
 
 **Bug Fixes**
 - Relax _STD and _STD_Dep minimum value warning logic
@@ -46,6 +55,9 @@ Release 0.12.0 on 2017-??-??
   by Martin Holmer]
 - Fix macro-elasticity model logic so that GDP change in year t depends on tax rate changes in year t-1
   [[#1579](https://github.com/open-source-economics/Tax-Calculator/pull/1579)
+  by Martin Holmer]
+- Fix bugs in automatic generation of reform documentation having to do with policy parameters that are boolean scalars
+  [[#1596](https://github.com/open-source-economics/Tax-Calculator/pull/1596)
   by Martin Holmer]
 
 Release 0.11.0 on 2017-09-21
