@@ -506,7 +506,11 @@ class Calculator(object):
                     if isinstance(pval, list):
                         pval = pval[0]
                         if basevals[param]['boolean_value']:
-                            pval = [True if item else False for item in pval]
+                            if isinstance(pval, list):
+                                pval = [True if item else
+                                        False for item in pval]
+                            else:
+                                pval = [bool(pval)]
                     doc += ' {} : {}\n'.format(param, pval)
                     if isinstance(pval, list):
                         pval = basevals[param]['col_label']
@@ -531,7 +535,7 @@ class Calculator(object):
                         else:
                             pval = getattr(base, param[1:], None)
                     else:  # if base is Growdiff object
-                        pval = 0.0  # all parameters have zero default values
+                        pval = [0.0]  # all parameters have zero default values
                     if isinstance(pval, np.ndarray):
                         pval = pval.tolist()  # pylint: disable=no-member
                         if basevals[param]['boolean_value']:
