@@ -3264,7 +3264,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [3000.0],
-        "range": {"min": 0, "max": "default"},
+        "range": {"min": 0, "max": 3000},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"
