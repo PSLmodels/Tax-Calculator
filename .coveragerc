@@ -4,5 +4,6 @@ omit =
     taxcalc/functions.py
     taxcalc/*.json
     taxcalc/cli/*
+    taxcalc/tbi/*
     taxcalc/tests/*
     taxcalc/validation/*
