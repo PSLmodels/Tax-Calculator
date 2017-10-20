@@ -712,10 +712,10 @@ def test_clp_section_titles(tests_path):
             'New AGI Surtax': 0,
             'Lump-Sum Tax': 0
         },
-        # 'Universal Basic Income': {
-        #     'UBI Benefit By Age': 0,
-        #     'UBI Benefit Taxability': 0
-        # },
+        'Universal Basic Income': {
+            'UBI Benefits': 0,
+            'UBI Taxability': 0
+        },
         '': {  # empty section_1 implies parameter is not displayed in TaxBrain
             '': 0
         }
