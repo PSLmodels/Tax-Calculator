@@ -449,7 +449,8 @@ class Calculator(object):
         doc: String
             the documentation for the policy reform specified in params
         """
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-statements,too-many-branches
+
         # nested function used only in reform_documentation
         def param_doc(years, change, base):
             """
@@ -464,7 +465,7 @@ class Calculator(object):
             -------
             doc: String
             """
-            # pylint: disable=too-many-branches,too-many-nested-blocks
+
             # nested function used only in param_doc
             def lines(text, num_indent_spaces, max_line_length=77):
                 """
@@ -493,7 +494,9 @@ class Calculator(object):
                     line = line[:-1] + '\n'
                     line_list.append(line)
                 return line_list
+
             # begin main logic of param_doc
+            # pylint: disable=too-many-nested-blocks
             assert len(years) == len(change.keys())
             basevals = getattr(base, '_vals', None)
             assert isinstance(basevals, dict)
@@ -554,6 +557,7 @@ class Calculator(object):
                         # all Growdiff parameters have zero as default value
                         doc += '  baseline_value: 0.0\n'
             return doc
+
         # begin main logic of reform_documentation
         # create Policy object with pre-reform (i.e., baseline) values
         # ... create gdiff_baseline object
