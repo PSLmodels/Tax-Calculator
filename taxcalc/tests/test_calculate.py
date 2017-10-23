@@ -8,7 +8,6 @@ import pytest
 import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
-from taxcalc import create_difference_table
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -221,26 +220,6 @@ def test_calculator_mtr_when_PT_rates_differ():
     calc2 = Calculator(policy=pol, records=rec)
     (_, mtr2, _) = calc2.mtr(variable_str='p23250')
     assert np.allclose(mtr1, mtr2, rtol=0.0, atol=1e-06)
-
-
-def test_calculator_create_difference_table(cps_subsample):
-    # create current-law Policy object and use to create Calculator calc1
-    rec = Records.cps_constructor(data=cps_subsample)
-    year = rec.current_year
-    pol = Policy()
-    calc1 = Calculator(policy=pol, records=rec)
-    calc1.calc_all()
-    # create policy-reform Policy object and use to create Calculator calc2
-    reform = {year: {'_II_rt7': [0.45]}}
-    pol.implement_reform(reform)
-    calc2 = Calculator(policy=pol, records=rec)
-    calc2.calc_all()
-    # create difference table and check that it is a Pandas DataFrame
-    dtable = create_difference_table(calc1.records, calc2.records,
-                                     groupby='weighted_deciles',
-                                     income_measure='expanded_income',
-                                     tax_to_diff='payrolltax')
-    assert isinstance(dtable, pd.DataFrame)
 
 
 def test_make_calculator_increment_years_first(cps_subsample):
