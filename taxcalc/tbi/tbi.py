@@ -40,7 +40,7 @@ BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
-GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
+GDP_ELAST_ROW_NAMES = ['gdp_proportional_change']
 
 
 def reform_warnings_errors(user_mods):
