@@ -53,7 +53,9 @@ DIST_TABLE_COLUMNS = ['s006',
                       'refund',
                       'iitax',
                       'payrolltax',
-                      'combined']
+                      'combined',
+                      'expanded_income',
+                      'aftertax_income']
 
 DIST_TABLE_LABELS = ['Returns',
                      'AGI',
@@ -73,7 +75,9 @@ DIST_TABLE_LABELS = ['Returns',
                      'Refundable Credits',
                      'Individual Income Tax Liabilities',
                      'Payroll Tax Liablities',
-                     'Combined Payroll and Individual Income Tax Liabilities']
+                     'Combined Payroll and Individual Income Tax Liabilities',
+                     'Expanded Income',
+                     'After-Tax Expanded Income']
 
 # Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
 # DIFF_TABLE_LABELS list below; this correspondence allows us to use this

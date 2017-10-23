@@ -8,7 +8,6 @@ import pytest
 import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
-from taxcalc import create_distribution_table
 from taxcalc import create_difference_table
 from taxcalc import create_diagnostic_table
 
@@ -168,32 +167,6 @@ def test_calculator_current_law_version(cps_subsample):
     assert isinstance(calc_clp, Calculator)
     assert calc.policy.II_rt6 == calc_clp.policy.II_rt6
     assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
-
-
-def test_calculator_create_distribution_table(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=rec)
-    calc.calc_all()
-    dist_labels = ['Returns', 'AGI', 'Standard Deduction Filers',
-                   'Standard Deduction', 'Itemizers',
-                   'Itemized Deduction', 'Personal Exemption',
-                   'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers',
-                   'AMT', 'Tax before Credits', 'Non-refundable Credits',
-                   'Tax before Refundable Credits', 'Refundable Credits',
-                   'Individual Income Tax Liabilities',
-                   'Payroll Tax Liablities',
-                   'Combined Payroll and Individual Income Tax Liabilities']
-    dt1 = create_distribution_table(calc.records,
-                                    groupby="weighted_deciles",
-                                    income_measure='expanded_income',
-                                    result_type="weighted_sum")
-    dt1.columns = dist_labels
-    dt2 = create_distribution_table(calc.records,
-                                    groupby="small_income_bins",
-                                    income_measure='expanded_income',
-                                    result_type="weighted_avg")
-    assert isinstance(dt1, pd.DataFrame)
-    assert isinstance(dt2, pd.DataFrame)
 
 
 def test_calculator_mtr(cps_subsample):

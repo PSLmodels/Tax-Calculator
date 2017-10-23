@@ -70,6 +70,7 @@ def test_create_tables(cps_subsample):
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
+
     # test creating various difference tables
 
     diff = create_difference_table(calc1.records, calc2.records,
@@ -162,6 +163,7 @@ def test_create_tables(cps_subsample):
                                 tax_to_diff='iitax')
 
     # test creating various distribution tables
+
     dist = create_distribution_table(calc2.records,
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
@@ -192,6 +194,32 @@ def test_create_tables(cps_subsample):
                 146001,
                 583832]
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+    expected = [158456013,
+                1351981790,
+                2383726863,
+                3408544081,
+                4569232020,
+                6321944661,
+                8520304098,
+                11817197884,
+                17299173380,
+                41117720202,
+                96948280992]
+    assert np.allclose(dist['expanded_income'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+    expected = [147367698,
+                1354827269,
+                2351611947,
+                3192405234,
+                4157431713,
+                5454468907,
+                7125788590,
+                9335613303,
+                13417244946,
+                29691084873,
+                76227844481]
+    assert np.allclose(dist['aftertax_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
     dist = create_distribution_table(calc2.records,
