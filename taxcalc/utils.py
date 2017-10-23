@@ -100,7 +100,7 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Average Tax Change',
                      'Total Tax Difference',
                      'Share of Overall Change',
-                     'Change as % of Aftertax Income']
+                     'Change as % of After-Tax Income']
 
 WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 9e99]
