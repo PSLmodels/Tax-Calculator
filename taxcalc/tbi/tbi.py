@@ -25,18 +25,8 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
 from taxcalc import (results, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
+                     DECILE_ROW_NAMES, WEBBIN_ROW_NAMES,
                      proportional_change_in_gdp, Growdiff, Growfactors, Policy)
-
-
-# specify constants
-DEC_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40',
-                 '40-50', '50-60', '60-70', '70-80',
-                 '80-90', '90-100', 'all']
-
-BIN_ROW_NAMES = ['<$10K', '$10-20K', '$20-30K', '$30-40K',
-                 '$40-50K', '$50-75K', '$75-100K',
-                 '$100-200K', '$200-500K',
-                 '$500-1000K', '>$1000K', 'all']
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
@@ -134,8 +124,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         return res
 
     # optionally construct JSON-like results dictionaries for year n
-    dec_row_names_n = [x + '_' + str(year_n) for x in DEC_ROW_NAMES]
-    bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
+    dec_row_names_n = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
+    bin_row_names_n = [x + '_' + str(year_n) for x in WEBBIN_ROW_NAMES]
     agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
     dist_column_types = [float] * len(DIST_TABLE_LABELS)
     diff_column_types = [int, int, str, int, str, float, float, str, str]

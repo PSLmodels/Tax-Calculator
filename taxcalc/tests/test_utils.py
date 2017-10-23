@@ -169,6 +169,7 @@ def test_create_tables(cps_subsample):
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
+
     expected = [-8851215,
                 -99666120,
                 -123316561,
@@ -179,7 +180,10 @@ def test_create_tables(cps_subsample):
                 978487989,
                 1709504845,
                 7631268907,
-                10605027933]
+                10605027933,
+                4171055704,
+                2751003155,
+                709210048]
     assert np.allclose(dist['iitax'], expected,
                        atol=0.5, rtol=0.0)
     expected = [1202,
@@ -192,7 +196,10 @@ def test_create_tables(cps_subsample):
                 112788,
                 131260,
                 146001,
-                583832]
+                583832,
+                75279,
+                56819,
+                13903]
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
                        atol=0.5, rtol=0.0)
     expected = [158456013,
@@ -205,7 +212,10 @@ def test_create_tables(cps_subsample):
                 11817197884,
                 17299173380,
                 41117720202,
-                96948280992]
+                96948280992,
+                21687950798,
+                15093608351,
+                4336161053]
     assert np.allclose(dist['expanded_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
     expected = [147367698,
@@ -218,7 +228,10 @@ def test_create_tables(cps_subsample):
                 9335613303,
                 13417244946,
                 29691084873,
-                76227844481]
+                76227844481,
+                15608893056,
+                10854804442,
+                3227387375]
     assert np.allclose(dist['aftertax_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
