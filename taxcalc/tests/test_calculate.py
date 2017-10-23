@@ -9,7 +9,6 @@ import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
 from taxcalc import create_difference_table
-from taxcalc import create_diagnostic_table
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -242,14 +241,6 @@ def test_calculator_create_difference_table(cps_subsample):
                                      income_measure='expanded_income',
                                      tax_to_diff='payrolltax')
     assert isinstance(dtable, pd.DataFrame)
-
-
-def test_calculator_create_diagnostic_table(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=rec)
-    calc.calc_all()
-    adt = create_diagnostic_table(calc)
-    assert isinstance(adt, pd.DataFrame)
 
 
 def test_make_calculator_increment_years_first(cps_subsample):
