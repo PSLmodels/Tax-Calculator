@@ -1,48 +1,28 @@
 import os
-import shutil
+import json
 import subprocess
-import tempfile
-
 import pytest
 
-d = os.path.dirname
-TEST_DIR = d(os.path.abspath(__file__))
-TOP_DIR = os.path.join(d(d(TEST_DIR)))
 
-FILES = ('10_Minutes_to_Tax-Calculator.ipynb', 'Behavioral_example.ipynb',)
-NB0 = os.path.join(TOP_DIR, 'read-the-docs',
-                   'notebooks',
-                   FILES[0])
-NB1 = os.path.join(TOP_DIR, 'read-the-docs',
-                   'notebooks',
-                   FILES[1])
-
-
-def notebook_run(path):
-    import json
+def notebook_run(test_path, notebook_path):
     content = []
-    for cell in json.load(open(path))['cells']:
+    for cell in json.load(open(notebook_path))['cells']:
         if cell.get('cell_type') == 'code':
             content.append('\n'.join(cell['source']))
     script = '\n  ## Next Cell ## \n'.join(content)
-    try:
-        f = os.path.join(TEST_DIR, '10_minutes_script.py')
-        with open(f, 'w') as f2:
-            f2.write(script)
-        args = ['python', f]
-        return subprocess.check_call(args, cwd=TEST_DIR)
-    finally:
-        if os.path.exists(f):
-            os.remove(f)
+    sfilename = os.path.join(test_path, 'notebook_script.py')
+    with open(sfilename, 'w') as sfile:
+        sfile.write(script)
+    rcode = subprocess.check_call(['python', sfilename], cwd=test_path)
+    if os.path.exists(sfilename):
+        os.remove(sfilename)
+    return rcode
 
 
 @pytest.mark.notebook
 @pytest.mark.requires_pufcsv
-def test_10_Minutes_to_Tax_Calculator():
-    assert notebook_run(NB0) == 0
-
-
-@pytest.mark.notebook
-@pytest.mark.requires_pufcsv
-def test_Behavioral_example():
-    assert notebook_run(NB1) == 0
+def test_10minutes_notebook(tests_path):
+    notebook_path = os.path.join(tests_path, '..', '..',
+                                 'read-the-docs', 'notebooks',
+                                 '10_Minutes_to_Tax-Calculator.ipynb')
+    assert notebook_run(tests_path, notebook_path) == 0
