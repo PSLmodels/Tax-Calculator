@@ -708,11 +708,6 @@ def test_diff_table_sum_row(cps_subsample):
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
-
-    print non_digit_cols
-    for col in non_digit_cols:
-        print col, tdiff1[col][-1:], tdiff2[col][-1:]
-
     np.testing.assert_array_equal(tdiff1[non_digit_cols][-1:],
                                   tdiff2[non_digit_cols][-1:])
 
