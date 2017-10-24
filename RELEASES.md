@@ -4,6 +4,22 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+Release 0.13.0 on 2017-??-??
+----------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Add new statistics and top-decile detail to distribution and difference tables
+  [[#1605](https://github.com/open-source-economics/Tax-Calculator/pull/1605)
+  by Martin Holmer]
+
+**New Features**
+- None
+
+**Bug Fixes**
+- None
+
 Release 0.12.0 on 2017-10-20
 ----------------------------
 (last merged pull request is
