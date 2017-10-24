@@ -102,9 +102,10 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Share of Overall Change',
                      'Change as % of After-Tax Income']
 
-DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40',
-                    '40-50', '50-60', '60-70', '70-80',
-                    '80-90', '90-100', 'all', '90-95', '95-99', '99-100']
+DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
+                    '50-60', '60-70', '70-80', '80-90', '90-100',
+                    'all',
+                    '90-95', '95-99', '99-100']
 
 WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 9e99]
@@ -268,27 +269,6 @@ def results(obj, cols=None):
     return tbl
 
 
-def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
-    """
-    Return Pandas DataFrame in which variables in col_list of pdf have
-    their weighted_mean computed using the specifed income_measure, except
-    for certain count-like column variables whose sum is computed.
-    """
-    wadf = pd.DataFrame(pdf.groupby('bins',
-                                    as_index=False).apply(weighted_mean,
-                                                          income_measure),
-                        columns=[income_measure])
-    for col in col_list:
-        if (col == 's006' or col == 'num_returns_StandardDed' or
-                col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
-            wadf[col] = pdf.groupby('bins',
-                                    as_index=False)[col].sum()[col]
-        elif col != income_measure:
-            wadf[col] = pdf.groupby('bins',
-                                    as_index=False).apply(weighted_mean, col)
-    return wadf
-
-
 def create_distribution_table(obj, groupby, income_measure, result_type):
     """
     Get results from object, sort them based on groupby using income_measure,
@@ -304,6 +284,11 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         options for input: 'weighted_deciles', 'webapp_income_bins',
                            'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
+    NOTE: when groupby is 'weighted_deciles', the returned table has three
+          extra rows containing top-decile detail consisting of statistics
+          for the 0.90-0.95 quantile range (bottom half of top decile),
+          for the 0.95-0.99 quantile range, and
+          for the 0.99-1.00 quantile range (top one percent).
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
@@ -328,7 +313,6 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     -------
     distribution table as a Pandas DataFrame
     """
-    # pylint: disable=too-many-locals
     # nested function that specifies calculated columns
     def add_columns(pdf):
         """
@@ -349,6 +333,9 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
     # main logic of create_distribution_table
+    if result_type != 'weighted_sum' and result_type != 'weighted_avg':
+        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
+        raise ValueError(msg)
     assert (income_measure == 'expanded_income' or
             income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
@@ -373,39 +360,36 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
                "'webapp_income_bins' or 'large_income_bins' or "
                "'small_income_bins'")
         raise ValueError(msg)
-    # manipulate the data given specified result_type
-    gpdf = None
-    if result_type == 'weighted_sum':
-        pdf = weighted(pdf, STATS_COLUMNS)
+    # construct weighted_sum table for all result_type values
+    # ... construct bin results
+    pdf = weighted(pdf, STATS_COLUMNS)
+    gpdf = pdf.groupby('bins', as_index=False)
+    dist_table = gpdf[DIST_TABLE_COLUMNS].sum()
+    dist_table.drop('bins', axis=1, inplace=True)
+    # ... append sum row
+    row = get_sums(pdf)[DIST_TABLE_COLUMNS]
+    dist_table = dist_table.append(row)
+    # append top-decile-detail rows
+    if groupby == 'weighted_deciles':
+        pdf = gpdf.get_group(10)  # top decile as its own DataFrame
+        pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
         gpdf = pdf.groupby('bins', as_index=False)
-        gpdf_stat = gpdf[DIST_TABLE_COLUMNS].sum()
-        gpdf_stat.drop('bins', axis=1, inplace=True)
-        sum_row = get_sums(pdf)[DIST_TABLE_COLUMNS]
-    elif result_type == 'weighted_avg':
-        gpdf_stat = weighted_avg_allcols(pdf, DIST_TABLE_COLUMNS,
-                                         income_measure=income_measure)
-        sum_row = get_sums(pdf, not_available=True)[DIST_TABLE_COLUMNS]
-    else:
-        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
-        raise ValueError(msg)
-    # append sum_row
-    dist_table = gpdf_stat.append(sum_row)
-    # append top-decile-detail rows when result_type is 'weighted_sum'
-    if groupby == 'weighted_deciles' and result_type == 'weighted_sum':
-        tdf = gpdf.get_group(10)  # top decile as its own DataFrame
-        tdf = add_quantile_bins(copy.deepcopy(tdf), income_measure, 10)
-        gtdf = tdf.groupby('bins', as_index=False)
-        gtdf_stat = gtdf[DIST_TABLE_COLUMNS].sum()
-        gtdf_stat.drop('bins', axis=1, inplace=True)
+        sums = gpdf[DIST_TABLE_COLUMNS].sum()
+        sums.drop('bins', axis=1, inplace=True)
         # tablulate 90-95 quantile detail group
-        row = gtdf_stat.iloc[[0, 1, 2, 3, 4]].sum()
+        row = sums.iloc[[0, 1, 2, 3, 4]].sum()
         dist_table = dist_table.append(row, ignore_index=True)
         # tablulate 95-99 quantile detail group
-        row = gtdf_stat.iloc[[5, 6, 7, 8]].sum()
+        row = sums.iloc[[5, 6, 7, 8]].sum()
         dist_table = dist_table.append(row, ignore_index=True)
         # extract top percentile detail group
-        row = gtdf_stat.iloc[9]
+        row = sums.iloc[9]
         dist_table = dist_table.append(row, ignore_index=True)
+    # construct weighted_avg table
+    if result_type == 'weighted_avg':
+        for col in DIST_TABLE_COLUMNS:
+            if col != 's006':
+                dist_table[col] /= dist_table['s006']
     # set print display format for float table elements
     pd.options.display.float_format = '{:8,.0f}'.format
     return dist_table

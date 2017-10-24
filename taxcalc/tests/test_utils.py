@@ -58,7 +58,7 @@ def test_validity_of_name_lists():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
 
-
+@pytest.mark.one
 def test_create_tables(cps_subsample):
     # create a current-law Policy object and Calculator object calc1
     rec = Records.cps_constructor(data=cps_subsample)
