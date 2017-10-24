@@ -58,8 +58,9 @@ def test_validity_of_name_lists():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
 
-@pytest.mark.one
+
 def test_create_tables(cps_subsample):
+    # pylint: disable=too-many-statements
     # create a current-law Policy object and Calculator object calc1
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
@@ -143,6 +144,37 @@ def test_create_tables(cps_subsample):
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
+    expected = [14931,
+                276555,
+                7728872,
+                22552703,
+                34008512,
+                50233787,
+                76811377,
+                111167087,
+                123226970,
+                111414038,
+                537434832,
+                66560891,
+                39571078,
+                5282069]
+    assert np.allclose(diff['tot_change'], expected,
+                       atol=0.5, rtol=0.0)
+    expected = ['0.00%',
+                '0.05%',
+                '1.44%',
+                '4.20%',
+                '6.33%',
+                '9.35%',
+                '14.29%',
+                '20.68%',
+                '22.93%',
+                '20.73%',
+                '100.00%',
+                '12.38%',
+                '7.36%',
+                '0.98%']
+    assert np.array_equal(diff['share_of_change'], expected)
     expected = ['0.00%',
                 '0.02%',
                 '0.35%',
@@ -153,8 +185,26 @@ def test_create_tables(cps_subsample):
                 '1.18%',
                 '0.91%',
                 '0.50%',
-                'n/a']
+                'n/a',
+                '0.70%',
+                '0.37%',
+                '0.06%']
     assert np.array_equal(diff['perc_aftertax'], expected)
+    expected = ['-0.00%',
+                '-0.02%',
+                '-0.35%',
+                '-0.79%',
+                '-0.89%',
+                '-0.97%',
+                '-1.11%',
+                '-1.18%',
+                '-0.91%',
+                '-0.50%',
+                'n/a',
+                '-0.70%',
+                '-0.37%',
+                '-0.06%']
+    assert np.array_equal(diff['pc_aftertaxinc'], expected)
 
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
@@ -654,10 +704,15 @@ def test_diff_table_sum_row(cps_subsample):
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change',
-                      'perc_aftertax']
+                      'perc_aftertax', 'pc_aftertaxinc']
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
+
+    print non_digit_cols
+    for col in non_digit_cols:
+        print col, tdiff1[col][-1:], tdiff2[col][-1:]
+
     np.testing.assert_array_equal(tdiff1[non_digit_cols][-1:],
                                   tdiff2[non_digit_cols][-1:])
 
