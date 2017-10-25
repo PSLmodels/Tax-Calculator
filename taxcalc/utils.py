@@ -492,10 +492,10 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
-        diffs = stat_dataframe(gpdf)
+        diffs_without_sums = stat_dataframe(gpdf)
         # calculate sum row
-        row = get_sums(diffs)[diffs.columns]
-        diffs = diffs.append(row)  # pylint: disable=redefined-variable-type
+        row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
+        diffs = diffs_without_sums.append(row)
         # specify some column sum elements to be 'n/a' or '100%'
         non_sum_cols = [c for c in diffs.columns
                         if 'mean' in c or 'perc' in c or 'pc_' in c]
