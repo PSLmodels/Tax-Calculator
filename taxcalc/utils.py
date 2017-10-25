@@ -310,7 +310,10 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
 
     Returns
     -------
-    distribution table as a Pandas DataFrame
+    distribution table as a Pandas DataFrame, with DIST_TABLE_COLUMNS and
+    groupby rows, where the rows run from lowest bin/decile to the highest
+    followed by a sums row with the top-decile detail in an additional three
+    rows following the sums row
     """
     # nested function that specifies calculated columns
     def add_columns(pdf):
@@ -396,9 +399,8 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
 
 def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different res, compare the two tax-diff results,
-    and return the difference statistics as a Pandas DataFrame that is sorted
-    according to the variable specified by the groupby argument.
+    Get results from two different res, construct tax difference results,
+    and return the difference statistics as a table.
 
     Parameters
     ----------
@@ -428,7 +430,10 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
 
     Returns
     -------
-    difference table as a Pandas DataFrame
+    difference table as a Pandas DataFrame, with DIFF_TABLE_COLUMNS and
+    groupby rows, where the rows run from lowest bin/decile to the highest
+    followed by a sums row with the top-decile detail in an additional three
+    rows following the sums row
     """
     # pylint: disable=too-many-statements
     # nested function that actually creates the difference table
