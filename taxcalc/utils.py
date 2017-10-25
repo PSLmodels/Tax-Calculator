@@ -1127,7 +1127,7 @@ def write_graph_file(figure, filename, title):
     -------
     Nothing
     """
-    delete_file(filename)    # work around annoying 'already exists' bokeh msg
+    delete_file(filename)  # work around annoying 'already exists' bokeh msg
     bio.output_file(filename=filename, title=title)
     bio.save(figure)
 
