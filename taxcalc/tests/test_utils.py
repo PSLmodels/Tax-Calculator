@@ -27,6 +27,7 @@ from taxcalc.utils import (STATS_COLUMNS,
                            add_income_bins, add_quantile_bins,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
+                           dec_graph_data, dec_graph_plot,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
@@ -944,3 +945,15 @@ def test_table_columns_labels():
     # check that length of two lists are the same
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
+
+@pytest.mark.one
+def test_dec_graph_plot(cps_subsample):
+    pol = Policy()
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=pol, records=rec)
+    pol.implement_reform({2020: {'_SS_Earnings_c': [9e99]}})
+    calc2 = Calculator(policy=pol, records=rec)
+    gdata = dec_graph_data(calc1, calc2)
+    assert isinstance(gdata, dict)
+    gplot = dec_graph_plot(gdata)
+    assert gplot
