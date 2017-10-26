@@ -1,4 +1,4 @@
-Brown-Khanna GAIN Act of 2017
+**Brown-Khanna GAIN Act of 2017**
 
 Individual Income Tax Provisions to Expand the Earned Income Credit
 
@@ -15,4 +15,4 @@ Supporting Documents and Notes
 **Presets Notes:**
 
 The TaxBrain presets for the GAIN Act of 2017 include all the
-provisions of that reform proposal.
+provisions of that reform proposal as described in the [Tax-Calculator presets](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/BrownKhanna.json).
