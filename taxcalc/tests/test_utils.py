@@ -952,14 +952,29 @@ def test_table_columns_labels():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
 
-@pytest.mark.one
+
 def test_dec_graph_plot(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=rec)
-    pol.implement_reform({2020: {'_SS_Earnings_c': [9e99]}})
+    year = 2020
+    reform = {
+        year: {
+            '_SS_Earnings_c': [9e99],  # OASDI FICA tax on all earnings
+            '_FICA_ss_trt': [0.107484]  # lower rate to keep revenue unchanged
+
+        }
+    }
+    pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
+    calc1.advance_to_year(year)
+    with pytest.raises(ValueError):
+        dec_graph_data(calc1, calc2)
+    calc2.advance_to_year(year)
     gdata = dec_graph_data(calc1, calc2)
     assert isinstance(gdata, dict)
-    gplot = dec_graph_plot(gdata)
+    deciles = gdata['bars'].keys()
+    assert len(deciles) == 12
+    gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
     assert gplot
+    # write_graph_file(gplot, 'test.html', 'Test Plot')

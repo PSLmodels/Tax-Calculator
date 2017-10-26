@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import bokeh.io as bio
 import bokeh.plotting as bp
+from bokeh.models import PrintfTickFormatter
 from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count_gt_zero,
                                weighted_count, weighted_mean,
@@ -107,7 +108,7 @@ DIFF_TABLE_LABELS = ['All Tax Units',
 DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
                     'all',
-                    '90-95', '95-99', '99-100']
+                    '90-95', '95-99', 'Top 1%']
 
 WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 9e99]
@@ -1404,64 +1405,28 @@ def dec_graph_data(calc1, calc2):
     else:
         msg = 'calc1.current_year={} != calc2.current_year={}'
         raise ValueError(msg.format(calc1.current_year, calc2.current_year))
-    # calculate taxes and expanded income
+    # create difference table from the two Calculator objects
     calc1.calc_all()
     calc2.calc_all()
-    """
-    # extract needed output that is assumed unchanged by reform from calc1
-    record_columns = ['s006']
-    if mars != 'ALL':
-        record_columns.append('MARS')
-    record_columns.append('expanded_income')
-    output = [getattr(calc1.records, col) for col in record_columns]
-    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    # create 'tax1' and 'tax2' columns given specified atr_measure
-    if atr_measure == 'itax':
-        dfx['tax1'] = calc1.records.iitax
-        dfx['tax2'] = calc2.records.iitax
-    elif atr_measure == 'ptax':
-        dfx['tax1'] = calc1.records.payrolltax
-        dfx['tax2'] = calc2.records.payrolltax
-    elif atr_measure == 'combined':
-        dfx['tax1'] = calc1.records.combined
-        dfx['tax2'] = calc2.records.combined
-    # select filing-status subgroup, if any
-    if mars != 'ALL':
-        dfx = dfx[dfx['MARS'] == mars]
-    # create 'bins' column
-    dfx = add_quantile_bins(dfx, 'expanded_income', 100)
-    # split dfx into groups specified by 'bins' column
-    gdfx = dfx.groupby('bins', as_index=False)
-    # apply weighted_mean function to percentile-grouped income/tax values
-    avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
-    avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
-    avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
-    # compute average tax rates for each included income percentile
-    included = np.array(avginc_series >= min_avginc, dtype=bool)
-    atr1_series = np.zeros_like(avginc_series)
-    atr1_series[included] = avgtax1_series[included] / avginc_series[included]
-    atr2_series = np.zeros_like(avginc_series)
-    atr2_series[included] = avgtax2_series[included] / avginc_series[included]
-    """
-    # construct DataFrame containing the data required by dec_graph_plot
-    """
-    lines = pd.DataFrame()
-    lines['base'] = atr1_series
-    lines['reform'] = atr2_series
-    # include only percentiles with average income no less than min_avginc
-    lines = lines[included]
-    """
-    # construct dictionary containing plot lines and auto-generated labels
+    diff_table = create_difference_table(calc1.records, calc2.records,
+                                         groupby='weighted_deciles',
+                                         income_measure='expanded_income',
+                                         tax_to_diff='combined')
+    # construct dictionary containing the bar data required by dec_graph_plot
+    bars = dict()
+    for idx in range(0, 9):  # bottom nine income deciles
+        bars[DECILE_ROW_NAMES[idx]] = diff_table['pc_aftertaxinc'][idx]
+    for idx in range(11, 14):  # detail for top income decile
+        bars[DECILE_ROW_NAMES[idx]] = diff_table['pc_aftertaxinc'][idx]
+    # construct dictionary containing bar data and auto-generated labels
     data = dict()
-    """
-    data['lines'] = lines
-    """
-    data['ylabel'] = 'ylabel'
-    xlabel_str = 'Baseline Expanded-Income Percentile'
-    data['xlabel'] = xlabel_str
-    title_str = 'Average Tax Rate by Income Percentile'
-    title_str = '{} for {}'.format(title_str, year)
-    data['title'] = title_str
+    data['bars'] = bars
+    xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
+    data['xlabel'] = xlabel
+    ylabel = 'Expanded Income Percentile Group'
+    data['ylabel'] = ylabel
+    title_str = 'Change in After-Tax Income by Income Percentile Group'
+    data['title'] = '{} for {}'.format(title_str, year)
     return data
 
 
@@ -1470,8 +1435,7 @@ def dec_graph_plot(data,
                    height=500,
                    xlabel='',
                    ylabel='',
-                   title='',
-                   legendloc='bottom_right'):
+                   title=''):
     """
     Plot stacked decile graph using data returned from dec_graph_data function.
 
@@ -1493,10 +1457,6 @@ def dec_graph_plot(data,
 
     title : string
         graph title; if '', then use title generated by dec_graph_data
-
-    legendloc : string
-        options: 'top_right', 'top_left', 'bottom_left', 'bottom_right'
-        specifies location of the legend in the plot
 
     Returns
     -------
@@ -1533,32 +1493,32 @@ def dec_graph_plot(data,
     # pylint: disable=too-many-arguments
     if title == '':
         title = data['title']
-    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    bar_keys = sorted(data['bars'].keys())
+    fig = bp.figure(plot_width=width, plot_height=height, title=title,
+                    y_range=bar_keys)
     fig.title.text_font_size = '12pt'
-    """
-    lines = data['lines']
-    fig.line(lines.index, lines.base, line_color='blue', legend='Baseline')
-    fig.line(lines.index, lines.reform, line_color='red', legend='Reform')
-    fig.circle(0, 0, visible=False)  # force zero to be included on y axis
+    fig.outline_line_color = None
+    fig.axis.axis_line_color = None
+    fig.axis.minor_tick_line_color = None
+    fig.axis.axis_label_text_font_size = '12pt'
+    fig.axis.axis_label_text_font_style = 'normal'
+    fig.axis.major_label_text_font_size = '12pt'
     if xlabel == '':
         xlabel = data['xlabel']
     fig.xaxis.axis_label = xlabel
-    fig.xaxis.axis_label_text_font_size = '12pt'
-    fig.xaxis.axis_label_text_font_style = 'normal'
+    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+d%%')
     if ylabel == '':
         ylabel = data['ylabel']
     fig.yaxis.axis_label = ylabel
-    fig.yaxis.axis_label_text_font_size = '12pt'
-    fig.yaxis.axis_label_text_font_style = 'normal'
-    fig.legend.location = legendloc
-    fig.legend.label_text_font = 'times'
-    fig.legend.label_text_font_style = 'italic'
-    fig.legend.label_width = 2
-    fig.legend.label_height = 2
-    fig.legend.label_standoff = 2
-    fig.legend.glyph_width = 14
-    fig.legend.glyph_height = 14
-    fig.legend.spacing = 5
-    fig.legend.padding = 5
-    """
+    fig.ygrid.grid_line_color = None
+    # plot bars
+    yidx = 0
+    for idx in bar_keys:
+        val = data['bars'][idx]
+        fig.rect(x=(val / 2.0),   # x-coordinate of center of the rectangle
+                 y=(yidx + 0.5),  # y-coordinate of center of the rectangle
+                 width=abs(val),  # width of the rectangle
+                 height=0.8,      # height of the rectangle
+                 color='blue')
+        yidx += 1
     return fig
