@@ -476,8 +476,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
                                'perc_aftertax', 'pc_aftertaxinc']
             for col in percent_columns:
-                newvals = ['{:.2f}%'.format(val * 100) for val in sdf[col]]
-                sdf[col] = pd.Series(newvals, index=sdf.index)
+                sdf[col] *= 100.0
             return sdf
         # main logic of diff_table_stats function
         # add bin column to res2 given specified groupby and income_measure
@@ -501,12 +500,12 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         # calculate sum row
         row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
         diffs = diffs_without_sums.append(row)
-        # specify some column sum elements to be 'n/a' or '100%'
+        # specify some column sum elements to be np.nan and another to be 100
         non_sum_cols = [c for c in diffs.columns
                         if 'mean' in c or 'perc' in c or 'pc_' in c]
         for col in non_sum_cols:
-            diffs.loc['sums', col] = 'n/a'
-        diffs.loc['sums', 'share_of_change'] = '100.00%'
+            diffs.loc['sums', col] = np.nan
+        diffs.loc['sums', 'share_of_change'] = 100.0  # to avoid rounding error
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
@@ -519,8 +518,6 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             gpdf = pdf.groupby('bins', as_index=False)
             sdf = stat_dataframe(gpdf)
             diffs = diffs.append(sdf, ignore_index=True)
-        # set print display format for float table elements
-        pd.options.display.float_format = '{:8,.0f}'.format
         return diffs
     # main logic of create_difference_table
     isdf1 = isinstance(res1, pd.DataFrame)
@@ -538,6 +535,8 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     res2['pc_aftertaxinc'] = ((res2['aftertax_income'] /
                                res1['aftertax_income']) - 1.0)
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
+    # set print display format for float table elements
+    pd.options.display.float_format = '{:10,.2f}'.format
     return diffs
 
 

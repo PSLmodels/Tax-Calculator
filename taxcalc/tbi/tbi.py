@@ -128,8 +128,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     bin_row_names_n = [x + '_' + str(year_n) for x in WEBBIN_ROW_NAMES]
     agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
     dist_column_types = [float] * len(DIST_TABLE_LABELS)
-    diff_column_types = [int, int, str, int, str, float, float, str, str, str]
-    assert len(diff_column_types) == len(DIFF_TABLE_LABELS)
+    diff_column_types = [float] * len(DIFF_TABLE_LABELS)
     info = dict()
     for tbl in summ:
         info[tbl] = {'row_names': [], 'col_types': []}
