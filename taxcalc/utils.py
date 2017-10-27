@@ -1511,6 +1511,8 @@ def dec_graph_plot(data,
         ylabel = data['ylabel']
     fig.yaxis.axis_label = ylabel
     fig.ygrid.grid_line_color = None
+    # plot thick x-axis grid line at zero
+    fig.line(x=[0, 0], y=[0, 13], line_width=1, line_color='black')
     # plot bars
     yidx = 0
     for idx in bar_keys:
@@ -1521,5 +1523,4 @@ def dec_graph_plot(data,
                  height=0.8,      # height of the rectangle
                  color='blue')
         yidx += 1
-    fig.line([0, 0], [0, 13], line_width=2)
     return fig
