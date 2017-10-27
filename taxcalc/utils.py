@@ -1521,4 +1521,5 @@ def dec_graph_plot(data,
                  height=0.8,      # height of the rectangle
                  color='blue')
         yidx += 1
+    fig.line([0, 0], [0, 13], line_width=2)
     return fig
