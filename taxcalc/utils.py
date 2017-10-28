@@ -1414,10 +1414,14 @@ def dec_graph_data(calc1, calc2):
                                          tax_to_diff='combined')
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
-    for idx in range(0, 10):  # the ten income deciles
-        bars[DECILE_ROW_NAMES[idx]] = diff_table['pc_aftertaxinc'][idx]
-    for idx in range(11, 14):  # detail for top income decile
-        bars[DECILE_ROW_NAMES[idx]] = diff_table['pc_aftertaxinc'][idx]
+    for idx in range(0, 14):  # the ten income deciles, all, plus top details
+        info = dict()
+        info['label'] = DECILE_ROW_NAMES[idx]
+        info['value'] = diff_table['pc_aftertaxinc'][idx]
+        if info['label'] == 'all':
+            info['label'] = '---------'
+            info['value'] = 0
+        bars[idx] = info
     # construct dictionary containing bar data and auto-generated labels
     data = dict()
     data['bars'] = bars
@@ -1490,12 +1494,13 @@ def dec_graph_plot(data,
     raster graphics file.  There is no option to make the bokeh.plotting
     figure generate a vector graphics file such as an EPS file.
     """
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-locals
     if title == '':
         title = data['title']
     bar_keys = sorted(data['bars'].keys())
+    bar_labels = [data['bars'][key]['label'] for key in bar_keys]
     fig = bp.figure(plot_width=width, plot_height=height, title=title,
-                    y_range=bar_keys)
+                    y_range=bar_labels)
     fig.title.text_font_size = '12pt'
     fig.outline_line_color = None
     fig.axis.axis_line_color = None
@@ -1512,24 +1517,25 @@ def dec_graph_plot(data,
     fig.yaxis.axis_label = ylabel
     fig.ygrid.grid_line_color = None
     # plot thick x-axis grid line at zero
-    fig.line(x=[0, 0], y=[0, 13], line_width=1, line_color='black')
+    fig.line(x=[0, 0], y=[0, 14], line_width=1, line_color='black')
     # plot bars
     barheight = 0.8
     bcolor = 'blue'
     yidx = 0
     for idx in bar_keys:
-        blen = data['bars'][idx]
+        bval = data['bars'][idx]['value']
+        blabel = data['bars'][idx]['label']
         bheight = barheight
-        if idx == '90-95':
+        if blabel == '90-95':
             bheight *= 0.5
             bcolor = 'red'
-        elif idx == '95-99':
+        elif blabel == '95-99':
             bheight *= 0.4
-        elif idx == 'Top 1%':
+        elif blabel == 'Top 1%':
             bheight *= 0.1
-        fig.rect(x=(blen / 2.0),   # x-coordinate of center of the rectangle
+        fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
                  y=(yidx + 0.5),   # y-coordinate of center of the rectangle
-                 width=abs(blen),  # width of the rectangle
+                 width=abs(bval),  # width of the rectangle
                  height=bheight,   # height of the rectangle
                  color=bcolor)
         yidx += 1
