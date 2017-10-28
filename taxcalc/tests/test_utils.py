@@ -952,7 +952,7 @@ def test_table_columns_labels():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
 
-
+@pytest.mark.one
 def test_dec_graph_plot(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
@@ -974,7 +974,7 @@ def test_dec_graph_plot(cps_subsample):
     gdata = dec_graph_data(calc1, calc2)
     assert isinstance(gdata, dict)
     deciles = gdata['bars'].keys()
-    assert len(deciles) == 12
+    assert len(deciles) == 13
     gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
     assert gplot
-    # write_graph_file(gplot, 'test.html', 'Test Plot')
+    write_graph_file(gplot, 'test.html', 'Test Plot')

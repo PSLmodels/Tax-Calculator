@@ -1414,7 +1414,7 @@ def dec_graph_data(calc1, calc2):
                                          tax_to_diff='combined')
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
-    for idx in range(0, 9):  # bottom nine income deciles
+    for idx in range(0, 10):  # the ten income deciles
         bars[DECILE_ROW_NAMES[idx]] = diff_table['pc_aftertaxinc'][idx]
     for idx in range(11, 14):  # detail for top income decile
         bars[DECILE_ROW_NAMES[idx]] = diff_table['pc_aftertaxinc'][idx]
@@ -1514,13 +1514,23 @@ def dec_graph_plot(data,
     # plot thick x-axis grid line at zero
     fig.line(x=[0, 0], y=[0, 13], line_width=1, line_color='black')
     # plot bars
+    barheight = 0.8
+    bcolor = 'blue'
     yidx = 0
     for idx in bar_keys:
-        val = data['bars'][idx]
-        fig.rect(x=(val / 2.0),   # x-coordinate of center of the rectangle
-                 y=(yidx + 0.5),  # y-coordinate of center of the rectangle
-                 width=abs(val),  # width of the rectangle
-                 height=0.8,      # height of the rectangle
-                 color='blue')
+        blen = data['bars'][idx]
+        bheight = barheight
+        if idx == '90-95':
+            bheight *= 0.5
+            bcolor = 'red'
+        elif idx == '95-99':
+            bheight *= 0.4
+        elif idx == 'Top 1%':
+            bheight *= 0.1
+        fig.rect(x=(blen / 2.0),   # x-coordinate of center of the rectangle
+                 y=(yidx + 0.5),   # y-coordinate of center of the rectangle
+                 width=abs(blen),  # width of the rectangle
+                 height=bheight,   # height of the rectangle
+                 color=bcolor)
         yidx += 1
     return fig
