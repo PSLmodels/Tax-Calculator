@@ -975,6 +975,6 @@ def test_dec_graph_plot(cps_subsample):
     assert isinstance(gdata, dict)
     deciles = gdata['bars'].keys()
     assert len(deciles) == 14
-    gplot = dec_graph_plot(gdata, xlabel=' ', ylabel=' ')
+    gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
     assert gplot
     # write_graph_file(gplot, 'test.html', 'Test Plot')
