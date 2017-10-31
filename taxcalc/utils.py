@@ -53,7 +53,9 @@ DIST_TABLE_COLUMNS = ['s006',
                       'refund',
                       'iitax',
                       'payrolltax',
-                      'combined']
+                      'combined',
+                      'expanded_income',
+                      'aftertax_income']
 
 DIST_TABLE_LABELS = ['Returns',
                      'AGI',
@@ -73,7 +75,9 @@ DIST_TABLE_LABELS = ['Returns',
                      'Refundable Credits',
                      'Individual Income Tax Liabilities',
                      'Payroll Tax Liablities',
-                     'Combined Payroll and Individual Income Tax Liabilities']
+                     'Combined Payroll and Individual Income Tax Liabilities',
+                     'Expanded Income',
+                     'After-Tax Expanded Income']
 
 # Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
 # DIFF_TABLE_LABELS list below; this correspondence allows us to use this
@@ -86,7 +90,8 @@ DIFF_TABLE_COLUMNS = ['count',
                       'mean',
                       'tot_change',
                       'share_of_change',
-                      'perc_aftertax']
+                      'perc_aftertax',
+                      'pc_aftertaxinc']
 
 DIFF_TABLE_LABELS = ['All Tax Units',
                      'Tax Units with Tax Cut',
@@ -96,10 +101,21 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Average Tax Change',
                      'Total Tax Difference',
                      'Share of Overall Change',
-                     'Change as % of Aftertax Income']
+                     'Change as % of After-Tax Income',
+                     '% Change in After-Tax Income']
+
+DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
+                    '50-60', '60-70', '70-80', '80-90', '90-100',
+                    'all',
+                    '90-95', '95-99', '99-100']
 
 WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 9e99]
+
+WEBBIN_ROW_NAMES = ['<$10K', '$10-20K', '$20-30K', '$30-40K',
+                    '$40-50K', '$50-75K', '$75-100K',
+                    '$100-200K', '$200-500K',
+                    '$500-1000K', '>$1000K', 'all']
 
 LARGE_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                      200000, 9e99]
@@ -211,21 +227,18 @@ def weighted(pdf, col_names):
     return agg
 
 
-def get_sums(pdf, not_available=False):
+def get_sums(pdf):
     """
-    Compute unweighted sum of items in each column of a Pandas DataFrame.
+    Compute unweighted sum of items in each column of Pandas DataFrame, pdf.
 
     Returns
     -------
-    Pandas Series object containing column sums indexed by pdf colum names.
+    Pandas Series object containing column sums indexed by pdf column names.
     """
-    sums = collections.defaultdict(lambda: 0)
+    sums = dict()
     for col in pdf.columns.values.tolist():
         if col != 'bins':
-            if not_available:
-                sums[col] = 'n/a'
-            else:
-                sums[col] = (pdf[col]).sum()
+            sums[col] = pdf[col].sum()
     return pd.Series(sums, name='sums')
 
 
@@ -255,27 +268,6 @@ def results(obj, cols=None):
     return tbl
 
 
-def weighted_avg_allcols(pdf, col_list, income_measure='expanded_income'):
-    """
-    Return Pandas DataFrame in which variables in col_list of pdf have
-    their weighted_mean computed using the specifed income_measure, except
-    for certain count-like column variables whose sum is computed.
-    """
-    wadf = pd.DataFrame(pdf.groupby('bins',
-                                    as_index=False).apply(weighted_mean,
-                                                          income_measure),
-                        columns=[income_measure])
-    for col in col_list:
-        if (col == 's006' or col == 'num_returns_StandardDed' or
-                col == 'num_returns_ItemDed' or col == 'num_returns_AMT'):
-            wadf[col] = pdf.groupby('bins',
-                                    as_index=False)[col].sum()[col]
-        elif col != income_measure:
-            wadf[col] = pdf.groupby('bins',
-                                    as_index=False).apply(weighted_mean, col)
-    return wadf
-
-
 def create_distribution_table(obj, groupby, income_measure, result_type):
     """
     Get results from object, sort them based on groupby using income_measure,
@@ -291,6 +283,11 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         options for input: 'weighted_deciles', 'webapp_income_bins',
                            'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
+    NOTE: when groupby is 'weighted_deciles', the returned table has three
+          extra rows containing top-decile detail consisting of statistics
+          for the 0.90-0.95 quantile range (bottom half of top decile),
+          for the 0.95-0.99 quantile range, and
+          for the 0.99-1.00 quantile range (top one percent).
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
@@ -313,7 +310,10 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
 
     Returns
     -------
-    distribution table as a Pandas DataFrame
+    distribution table as a Pandas DataFrame, with DIST_TABLE_COLUMNS and
+    groupby rows, where the rows run from lowest bin/decile to the highest
+    followed by a sums row with the top-decile detail in an additional three
+    rows following the sums row
     """
     # nested function that specifies calculated columns
     def add_columns(pdf):
@@ -335,6 +335,9 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
     # main logic of create_distribution_table
+    if result_type != 'weighted_sum' and result_type != 'weighted_avg':
+        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
+        raise ValueError(msg)
     assert (income_measure == 'expanded_income' or
             income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
@@ -359,21 +362,36 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
                "'webapp_income_bins' or 'large_income_bins' or "
                "'small_income_bins'")
         raise ValueError(msg)
-    # manipulate the data given specified result_type
-    if result_type == 'weighted_sum':
-        pdf = weighted(pdf, STATS_COLUMNS)
+    # construct weighted_sum table for all result_type values
+    # ... construct bin results
+    pdf = weighted(pdf, STATS_COLUMNS)
+    gpdf = pdf.groupby('bins', as_index=False)
+    dist_table = gpdf[DIST_TABLE_COLUMNS].sum()
+    dist_table.drop('bins', axis=1, inplace=True)
+    # ... append sum row
+    row = get_sums(pdf)[DIST_TABLE_COLUMNS]
+    dist_table = dist_table.append(row)
+    # append top-decile-detail rows
+    if groupby == 'weighted_deciles':
+        pdf = gpdf.get_group(10)  # top decile as its own DataFrame
+        pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
         gpdf = pdf.groupby('bins', as_index=False)
-        gpdf_mean = gpdf[DIST_TABLE_COLUMNS].sum()
-        gpdf_mean.drop('bins', axis=1, inplace=True)
-        sum_row = get_sums(pdf)[DIST_TABLE_COLUMNS]
-    elif result_type == 'weighted_avg':
-        gpdf_mean = weighted_avg_allcols(pdf, DIST_TABLE_COLUMNS,
-                                         income_measure=income_measure)
-        sum_row = get_sums(pdf, not_available=True)[DIST_TABLE_COLUMNS]
-    else:
-        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
-        raise ValueError(msg)
-    dist_table = gpdf_mean.append(sum_row)
+        sums = gpdf[DIST_TABLE_COLUMNS].sum()
+        sums.drop('bins', axis=1, inplace=True)
+        # tablulate 90-95 quantile detail group
+        row = sums.iloc[[0, 1, 2, 3, 4]].sum()
+        dist_table = dist_table.append(row, ignore_index=True)
+        # tablulate 95-99 quantile detail group
+        row = sums.iloc[[5, 6, 7, 8]].sum()
+        dist_table = dist_table.append(row, ignore_index=True)
+        # extract top percentile detail group
+        row = sums.iloc[9]
+        dist_table = dist_table.append(row, ignore_index=True)
+    # construct weighted_avg table
+    if result_type == 'weighted_avg':
+        for col in DIST_TABLE_COLUMNS:
+            if col != 's006':
+                dist_table[col] /= dist_table['s006']
     # set print display format for float table elements
     pd.options.display.float_format = '{:8,.0f}'.format
     return dist_table
@@ -381,9 +399,8 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
 
 def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different res, compare the two tax-diff results,
-    and return the difference statistics as a Pandas DataFrame that is sorted
-    according to the variable specified by the groupby argument.
+    Get results from two different res, construct tax difference results,
+    and return the difference statistics as a table.
 
     Parameters
     ----------
@@ -397,6 +414,11 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         options for input: 'weighted_deciles', 'webapp_income_bins',
                            'large_income_bins', 'small_income_bins'
         specifies kind of bins used to group filing units
+    NOTE: when groupby is 'weighted_deciles', the returned table has three
+          extra rows containing top-decile detail consisting of statistics
+          for the 0.90-0.95 quantile range (bottom half of top decile),
+          for the 0.95-0.99 quantile range, and
+          for the 0.99-1.00 quantile range (top one percent).
 
     income_measure : String object
         options for input: 'expanded_income', 'c00100'(AGI)
@@ -408,8 +430,12 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
 
     Returns
     -------
-    difference table as a Pandas DataFrame
+    difference table as a Pandas DataFrame, with DIFF_TABLE_COLUMNS and
+    groupby rows, where the rows run from lowest bin/decile to the highest
+    followed by a sums row with the top-decile detail in an additional three
+    rows following the sums row
     """
+    # pylint: disable=too-many-statements
     # nested function that actually creates the difference table
     def diff_table_stats(res2, groupby, income_measure):
         """
@@ -421,12 +447,38 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         income_measure: string naming column used to create res2 bins
         """
         # pylint: disable=too-many-locals
-        def weighted_share_of_total(gpdf, colname, total):
+        def stat_dataframe(gpdf):
             """
-            Nested function that returns the ratio of the
-            weighted_sum(pdf, colname) and specified total.
+            Nested function that returns statistics DataFrame derived from gpdf
             """
-            return weighted_sum(gpdf, colname) / (total + EPSILON)
+            def weighted_share_of_total(gpdf, colname, total):
+                """
+                Nested function that returns the ratio of the
+                weighted_sum(pdf, colname) and specified total
+                """
+                return weighted_sum(gpdf, colname) / (total + EPSILON)
+            # main logic of stat_dataframe function
+            # construct basic stat_dataframe columns
+            sdf = pd.DataFrame()
+            sdf['count'] = gpdf.apply(weighted_count)
+            sdf['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
+            sdf['perc_cut'] = gpdf.apply(weighted_perc_cut, 'tax_diff')
+            sdf['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
+            sdf['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
+            sdf['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
+            sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
+            wtotal = (res2['tax_diff'] * res2['s006']).sum()
+            sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
+                                                'tax_diff', wtotal)
+            sdf['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
+            sdf['pc_aftertaxinc'] = gpdf.apply(weighted_mean, 'pc_aftertaxinc')
+            # convert some columns to percentages
+            percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
+                               'perc_aftertax', 'pc_aftertaxinc']
+            for col in percent_columns:
+                sdf[col] *= 100.0
+            return sdf
+        # main logic of diff_table_stats function
         # add bin column to res2 given specified groupby and income_measure
         if groupby == 'weighted_deciles':
             pdf = add_quantile_bins(res2, income_measure, 10)
@@ -443,34 +495,30 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             raise ValueError(msg)
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
-        # print gpdf.count()  # show unweighted number of filing units per bin
         # create difference table statistics from gpdf in a new DataFrame
-        diffs = pd.DataFrame()
-        diffs['count'] = gpdf.apply(weighted_count)
-        diffs['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
-        diffs['perc_cut'] = gpdf.apply(weighted_perc_cut, 'tax_diff')
-        diffs['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
-        diffs['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
-        diffs['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
-        diffs['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-        wtotal = (res2['tax_diff'] * res2['s006']).sum()
-        diffs['share_of_change'] = gpdf.apply(weighted_share_of_total,
-                                              'tax_diff', wtotal)
-        diffs['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
-        # add sum row at bottom and convert some cols to percentages
-        sum_row = get_sums(diffs)[diffs.columns]
-        difs = diffs.append(sum_row)
-        pct_cols = ['perc_inc', 'perc_cut', 'share_of_change', 'perc_aftertax']
-        for col in pct_cols:
-            newvals = ['{:.2f}%'.format(val * 100) for val in difs[col]]
-            difs[col] = pd.Series(newvals, index=difs.index)
-        # specify some column sum elements to be 'n/a'
-        non_sum_cols = [c for c in difs.columns if 'mean' in c or 'perc' in c]
+        diffs_without_sums = stat_dataframe(gpdf)
+        # calculate sum row
+        row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
+        diffs = diffs_without_sums.append(row)
+        # specify some column sum elements to be np.nan and another to be 100
+        non_sum_cols = [c for c in diffs.columns
+                        if 'mean' in c or 'perc' in c or 'pc_' in c]
         for col in non_sum_cols:
-            difs.loc['sums', col] = 'n/a'
-        # set print display format for float table elements
-        pd.options.display.float_format = '{:8,.0f}'.format
-        return difs
+            diffs.loc['sums', col] = np.nan
+        diffs.loc['sums', 'share_of_change'] = 100.0  # to avoid rounding error
+        # append top-decile-detail rows
+        if groupby == 'weighted_deciles':
+            pdf = gpdf.get_group(10)  # top decile as its own DataFrame
+            pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
+            pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
+                                value=[0, 0, 0, 0, 0], inplace=True)
+            pdf['bins'].replace(to_replace=[6, 7, 8, 9],
+                                value=[1, 1, 1, 1], inplace=True)
+            pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
+            gpdf = pdf.groupby('bins', as_index=False)
+            sdf = stat_dataframe(gpdf)
+            diffs = diffs.append(sdf, ignore_index=True)
+        return diffs
     # main logic of create_difference_table
     isdf1 = isinstance(res1, pd.DataFrame)
     isdf2 = isinstance(res2, pd.DataFrame)
@@ -484,7 +532,11 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
     res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
+    res2['pc_aftertaxinc'] = ((res2['aftertax_income'] /
+                               res1['aftertax_income']) - 1.0)
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
+    # set print display format for float table elements
+    pd.options.display.float_format = '{:10,.2f}'.format
     return diffs
 
 
@@ -1074,7 +1126,7 @@ def write_graph_file(figure, filename, title):
     -------
     Nothing
     """
-    delete_file(filename)    # work around annoying 'already exists' bokeh msg
+    delete_file(filename)  # work around annoying 'already exists' bokeh msg
     bio.output_file(filename=filename, title=title)
     bio.save(figure)
 
