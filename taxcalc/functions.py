@@ -1100,7 +1100,7 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
                    CTC_c, CTC_ps, CTC_prt, prectc, nu05,
                    CTC_c_under5_bonus, XTOT, num,
                    DependentCredit_Child_c, DependentCredit_Nonchild_c,
-                   DependentCredit_c, dep_credit):
+                   DependentCredit_c, FilerCredit_c, dep_credit):
     """
     ChildTaxCredit function computes prectc amount and dependent credit
     """
@@ -1115,7 +1115,8 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
     # calculate and phase-out dependent credit
     dep_credit = (DependentCredit_c * max(0, XTOT - num) +
                   DependentCredit_Child_c * n24 +
-                  DependentCredit_Nonchild_c * max(0, XTOT - n24 - num))
+                  DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
+                  FilerCredit_c[MARS - 1])
     if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
         thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
         excess = c00100 - thresh
