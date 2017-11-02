@@ -328,7 +328,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ALD_Alimony_hc": {
@@ -351,7 +351,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ALD_EducatorExpenses_hc": {
@@ -374,7 +374,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ALD_HSADeduction_hc": {
@@ -397,7 +397,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ALD_IRAContributions_hc": {
@@ -466,7 +466,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ALD_InvInc_ec_rt": {
@@ -512,7 +512,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ALD_Dependents_hc": {
@@ -1431,7 +1431,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "warn",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ID_Casualty_hc": {
@@ -1454,7 +1454,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ID_Casualty_c": {
@@ -1485,7 +1485,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ID_Miscellaneous_frt": {
@@ -1740,7 +1740,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ID_BenefitCap_rt": {
@@ -2237,7 +2237,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
 
@@ -3372,7 +3372,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CDCC_c": {
@@ -3601,7 +3601,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_NIIT_rt": {
@@ -3888,7 +3888,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ETC_pe_Single": {
@@ -3917,7 +3917,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ETC_pe_Married": {
@@ -3946,7 +3946,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_ACTC_rt": {
@@ -4107,7 +4107,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CTC_new_rt": {
@@ -4532,7 +4532,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_ForeignTax_hc": {
@@ -4555,7 +4555,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_ResidentialEnergy_hc": {
@@ -4578,7 +4578,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_GeneralBusiness_hc": {
@@ -4601,7 +4601,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_MinimumTax_hc": {
@@ -4624,7 +4624,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_AmOppRefundable_hc": {
@@ -4647,7 +4647,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_AmOppNonRefundable_hc": {
@@ -4670,7 +4670,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_SchR_hc": {
@@ -4693,7 +4693,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_OtherCredits_hc": {
@@ -4716,7 +4716,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_CR_Education_hc": {
@@ -4739,6 +4739,6 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
+        "compatible_data": {"puf": true, "cps": false}
     }
 }
