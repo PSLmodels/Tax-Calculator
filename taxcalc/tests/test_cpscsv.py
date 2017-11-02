@@ -240,6 +240,6 @@ def test_compatible_data(tests_path, cps_subsample):
                                  c_xx.records.combined) *
                                  c_xx.records.s006).sum()
             if min_reform_change == 0 and pname not in exempt:
-                assert param['compatible_data']['cps'] == False
+                assert param['compatible_data']['cps'] is False
         if max_reform_change != 0 or min_reform_change != 0:
-            assert param['compatible_data']['cps'] == True
+            assert param['compatible_data']['cps'] is True

@@ -394,6 +394,6 @@ def test_compatible_data(tests_path, puf_subsample):
                                  c_xx.records.combined) *
                                  c_xx.records.s006).sum()
             if min_reform_change == 0 and pname not in exempt:
-                assert param['compatible_data']['puf'] == False
+                assert param['compatible_data']['puf'] is False
         if max_reform_change != 0 or min_reform_change != 0:
-            assert param['compatible_data']['puf'] == True
+            assert param['compatible_data']['puf'] is True
