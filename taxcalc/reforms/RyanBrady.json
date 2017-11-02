@@ -72,9 +72,7 @@
             {"2017": [[0, 0, 0, 0, 0]]},
         "_II_em":
             {"2017": [0]},
-        "_DependentCredit_Child_c":
-            {"2017": [500]},
-        "_DependentCredit_Nonchild_c":
+        "_DependentCredit_c":
             {"2017": [500]},
         "_CTC_ps":
             {"2017": [[75000, 150000, 75000, 75000, 75000]]},

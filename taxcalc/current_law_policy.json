@@ -3401,6 +3401,29 @@
         "out_of_range_action": "stop"
     },
 
+
+    "_DependentCredit_c": {
+        "long_name": "Nonrefundable credit for dependents",
+        "description": "This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child Tax Credit",
+        "irs_ref": "",
+        "notes": "The Ryan-Brady tax proposal sets this at $500",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_DependentCredit_Child_c": {
         "long_name": "Nonrefundable credit for children, on top of the child tax credit",
         "description": "This nonrefundable credit is applied to children and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
