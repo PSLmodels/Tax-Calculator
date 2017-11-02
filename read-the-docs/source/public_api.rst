@@ -52,12 +52,6 @@ taxcalc.decorators
 .. automodule:: taxcalc.decorators
    :members:
 
-taxcalc.dropq.dropq
--------------------
-
-.. automodule:: taxcalc.dropq.dropq
-   :members:
-
 taxcalc.functions
 -----------------
 
@@ -106,6 +100,12 @@ taxcalc.TaxCalcIO
 -----------------
 
 .. autoclass:: taxcalc.TaxCalcIO
+   :members:
+
+taxcalc.tbi.tbi
+-------------------
+
+.. automodule:: taxcalc.tbi.tbi
    :members:
 
 taxcalc.utils

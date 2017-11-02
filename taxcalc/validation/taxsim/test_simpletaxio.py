@@ -19,7 +19,7 @@ INPUT_CONTENTS = (
     '4 2015 0 2 0 4039 15000 0    0 0 50000 70000 0 0 0 0 0 0 0 0    0 -3000\n'
 )
 REFORM_CONTENTS = """
-// Example of a reform file suitable for the read_json_param_files function.
+// Example of a reform file suitable for the read_json_param_objects function.
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within the "policy" object, the primary keys are parameters and

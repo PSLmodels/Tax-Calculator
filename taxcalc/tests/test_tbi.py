@@ -1,12 +1,11 @@
 """
-test_dropq.py uses only PUF input data because the dropq algorithm
-is designed to work exclusively with private IRS-SOI PUF input data.
+Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
 """
 import numpy as np
 import pandas as pd
 import pytest
-from taxcalc.dropq.dropq_utils import *
-from taxcalc.dropq import *
+from taxcalc.tbi.tbi_utils import *
+from taxcalc.tbi import *
 from taxcalc import (Policy, Records, Calculator,
                      multiyear_diagnostic_table, results)
 
@@ -28,8 +27,6 @@ USER_MODS = {
     },
     'growdiff_response': {
     },
-    'gdp_elasticity': {
-    }
 }
 
 
@@ -39,7 +36,7 @@ USER_MODS = {
                           (2017, 10)])
 def test_check_years_errors(start_year, year_n):
     with pytest.raises(ValueError):
-        check_years(start_year, year_n)
+        check_years_return_first_year(year_n, start_year, use_puf_not_cps=True)
 
 
 def test_check_user_mods_errors():
@@ -61,30 +58,45 @@ def test_check_user_mods_errors():
 
 
 @pytest.mark.requires_pufcsv
-def test_run_nth_year_value_errors(puf_subsample):
+def test_run_nth_year_value_errors():
     usermods = USER_MODS
+    # test for growdiff_response not allowed error
     usermods['growdiff_response'] = {2018: {'_AINTS': [0.02]}}
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, puf_subsample, usermods, False)
+        run_nth_year_gdp_elast_model(1, 2013,
+                                     use_puf_not_cps=True,
+                                     use_full_sample=False,
+                                     user_mods=usermods,
+                                     gdp_elasticity=0.36,
+                                     return_dict=False)
     usermods['growdiff_response'] = dict()
+    # test for behavior not allowed error
     with pytest.raises(ValueError):
-        run_nth_year_gdp_elast_model(1, 2013, puf_subsample, usermods, False)
+        run_nth_year_gdp_elast_model(1, 2013,
+                                     use_puf_not_cps=True,
+                                     use_full_sample=False,
+                                     user_mods=usermods,
+                                     gdp_elasticity=0.36,
+                                     return_dict=False)
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('resjson', [True, False])
-def test_run_tax_calc_model(puf_subsample, resjson):
-    res = run_nth_year_tax_calc_model(2, 2016, puf_subsample, USER_MODS,
-                                      return_json=resjson)
+@pytest.mark.parametrize('resdict', [True, False])
+def test_run_tax_calc_model(resdict):
+    res = run_nth_year_tax_calc_model(2, 2016,
+                                      use_puf_not_cps=resdict,
+                                      use_full_sample=False,
+                                      user_mods=USER_MODS,
+                                      return_dict=resdict)
     assert isinstance(res, dict)
     dump = False  # set to True in order to dump returned results and fail test
     for tbl in sorted(res.keys()):
-        if resjson:
+        if resdict:
             assert isinstance(res[tbl], dict)
         else:
             assert isinstance(res[tbl], pd.DataFrame)
         if dump:
-            if resjson:
+            if resdict:
                 cols = sorted(res[tbl].keys())
             else:
                 cols = sorted(list(res[tbl]))
@@ -95,17 +107,32 @@ def test_run_tax_calc_model(puf_subsample, resjson):
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('resjson', [True, False])
-def test_run_gdp_elast_model(puf_subsample, resjson):
+@pytest.mark.parametrize('resdict', [True, False])
+def test_run_gdp_elast_model_1(resdict):
     usermods = USER_MODS
     usermods['behavior'] = dict()
-    usermods['gdp_elasticity'] = {'value': 0.36}
-    res = run_nth_year_gdp_elast_model(2, 2016, puf_subsample, usermods,
-                                       return_json=resjson)
-    if resjson:
+    res = run_nth_year_gdp_elast_model(2, 2016,
+                                       use_puf_not_cps=True,
+                                       use_full_sample=False,
+                                       user_mods=usermods,
+                                       gdp_elasticity=0.36,
+                                       return_dict=resdict)
+    if resdict:
         assert isinstance(res, dict)
     else:
         assert isinstance(res, float)
+
+
+def test_run_gdp_elast_model_2():
+    usermods = USER_MODS
+    usermods['behavior'] = dict()
+    res = run_nth_year_gdp_elast_model(0, 2014,  # forces no automatic zero
+                                       use_puf_not_cps=False,
+                                       use_full_sample=False,
+                                       user_mods=usermods,
+                                       gdp_elasticity=0.36,
+                                       return_dict=False)
+    assert res == 0.0
 
 
 def test_random_seed_from_subdict():
@@ -134,11 +161,11 @@ def test_chooser_error():
         chooser(dframe['zeros'])
 
 
-def test_create_json_table():
+def test_create_dict_table():
     # test correct usage
     dframe = pd.DataFrame(data=[[1., 2, 3], [4, 5, 6], [7, 8, 9]],
                           columns=['a', 'b', 'c'])
-    ans = create_json_table(dframe)
+    ans = create_dict_table(dframe)
     exp = {'0': ['1.00', '2', '3'],
            '1': ['4.00', '5', '6'],
            '2': ['7.00', '8', '9']}
@@ -147,7 +174,7 @@ def test_create_json_table():
     dframe = pd.DataFrame(data=[[1, 2, 3], [4, 5, 6], [7, 8, 9]],
                           columns=['a', 'b', 'c'], dtype='i2')
     with pytest.raises(NotImplementedError):
-        create_json_table(dframe)
+        create_dict_table(dframe)
 
 
 @pytest.mark.requires_pufcsv
@@ -166,7 +193,6 @@ def test_with_pufcsv(puf_fullsample):
     usermods['behavior'] = {}
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
-    usermods['gdp_elasticity'] = {}
     seed = random_seed(usermods)
     assert seed == 1574318062
     # create a Policy object (pol) containing reform policy parameters
@@ -183,19 +209,19 @@ def test_with_pufcsv(puf_fullsample):
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     assert taxes_fullsample is not None
     fulls_reform_revenue = float(taxes_fullsample.loc[analysis_year])
-    # create a Public Use File object
-    tax_data = puf_fullsample
     # call run_nth_year_tax_calc_model function
     resdict = run_nth_year_tax_calc_model(year_n, start_year,
-                                          tax_data, usermods,
-                                          return_json=True)
+                                          use_puf_not_cps=True,
+                                          use_full_sample=True,
+                                          user_mods=usermods,
+                                          return_dict=True)
     total = resdict['aggr_2']
-    dropq_reform_revenue = float(total['combined_tax_9']) * 1e-9
-    # assert that dropq revenue is similar to the fullsample calculation
-    diff = abs(fulls_reform_revenue - dropq_reform_revenue)
+    tbi_reform_revenue = float(total['combined_tax_9']) * 1e-9
+    # assert that tbi revenue is similar to the fullsample calculation
+    diff = abs(fulls_reform_revenue - tbi_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue
     frmt = 'f,d,adiff,pdiff=  {:.4f}  {:.4f}  {:.4f}  {}'
-    print(frmt.format(fulls_reform_revenue, dropq_reform_revenue,
+    print(frmt.format(fulls_reform_revenue, tbi_reform_revenue,
                       diff, proportional_diff))
     assert proportional_diff < 0.0001  # one-hundredth of one percent
     # assert 1 == 2  # uncomment to force test failure with above print out

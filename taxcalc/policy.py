@@ -192,8 +192,8 @@ class Policy(ParametersBase):
         if last_reform_year > self.end_year:
             msg = 'ERROR: reform provision in year={} > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
-        # validate reform parameter names
-        self._validate_parameter_names(reform)
+        # validate reform parameter names and types
+        self._validate_parameter_names_types(reform)
         if not self._ignore_errors and len(self.reform_errors) > 0:
             raise ValueError(self.reform_errors)
         # implement the reform year by year
@@ -341,17 +341,19 @@ class Policy(ParametersBase):
 
     # ----- begin private methods of Policy class -----
 
-    def _validate_parameter_names(self, reform):
+    def _validate_parameter_names_types(self, reform):
         """
-        Check validity of parameter names used in specified reform dictionary.
+        Check validity of parameter names and parameter types used
+        in the specified reform dictionary.
         """
-        clp_names = set(self.default_data().keys())
-        for year in sorted(list(reform.keys())):
+        # pylint: disable=too-many-branches,too-many-nested-blocks
+        data_names = set(self._vals.keys())
+        for year in sorted(reform.keys()):
             for name in reform[year]:
                 if name.endswith('_cpi'):
                     if isinstance(reform[year][name], bool):
                         pname = name[:-4]  # root parameter name
-                        if pname not in clp_names:
+                        if pname not in data_names:
                             msg = 'invalid parameter name {} in {}'
                             self.reform_errors += (
                                 'ERROR: ' + msg.format(name, year) + '\n'
@@ -361,12 +363,57 @@ class Policy(ParametersBase):
                         self.reform_errors += (
                             'ERROR: ' + msg.format(name, year) + '\n'
                         )
-                else:
-                    if name not in clp_names:
+                else:  # if name does not end with '_cpi'
+                    if name not in data_names:
                         msg = 'invalid parameter name {} in {}'
                         self.reform_errors += (
                             'ERROR: ' + msg.format(name, year) + '\n'
                         )
+                    else:
+                        # check parameter value type
+                        bool_type = self._vals[name]['boolean_value']
+                        int_type = self._vals[name]['integer_value']
+                        assert isinstance(reform[year][name], list)
+                        pvalue = reform[year][name][0]
+                        if isinstance(pvalue, list):
+                            scalar = False  # parameter value is a list
+                        else:
+                            scalar = True  # parameter value is a scalar
+                            pvalue = [pvalue]  # make scalar a single-item list
+                        for idx in range(0, len(pvalue)):
+                            if scalar:
+                                pname = name
+                            else:
+                                pname = '{}_{}'.format(name, idx)
+                            pvalue_boolean = (isinstance(pvalue[idx], bool) or
+                                              (isinstance(pvalue[idx], int) and
+                                               (pvalue[idx] == 0 or
+                                                pvalue[idx] == 1)))
+                            if bool_type:
+                                if not pvalue_boolean:
+                                    msg = '{} {} value {} is not boolean'
+                                    self.reform_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
+                            elif int_type:
+                                if not isinstance(pvalue[idx], int):
+                                    msg = '{} {} value {} is not integer'
+                                    self.reform_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
+                            else:  # param is neither bool_type nor int_type
+                                if not (isinstance(pvalue[idx], float) or
+                                        isinstance(pvalue[idx], int)):
+                                    msg = '{} {} value {} is not a number'
+                                    self.reform_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
 
     def _validate_parameter_values(self, parameters_set):
         """
@@ -376,6 +423,8 @@ class Policy(ParametersBase):
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-nested-blocks
+        rounding_error = 100.0
+        # above handles non-rounding of inflation-indexed parameter values
         clp = self.current_law_version()
         parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
@@ -387,6 +436,13 @@ class Policy(ParametersBase):
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
                         vvalue = getattr(clp, pname)
+                        if vop == 'min':
+                            vvalue -= rounding_error
+                        # the follow branch can never be reached, so it
+                        # is commented out because it can never be tested
+                        # (see test_range_infomation in test_policy.py)
+                        # --> elif vop == 'max':
+                        # -->    vvalue += rounding_error
                     else:
                         vvalue = getattr(self, vval)
                 else:

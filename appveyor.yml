@@ -1,4 +1,5 @@
-# Environment loosely based on https://github.com/conda/conda/blob/master/appveyor.yml
+# This appveyor environment is loosely based on one at
+# https://github.com/conda/conda/blob/master/appveyor.yml
 
 environment:
 
@@ -15,15 +16,15 @@ environment:
       CONDA_ENV: taxcalc-dev
 
 init:
-  # Use AppVeyor's provided Miniconda: https://www.appveyor.com/docs/installed-software#python
-  - if "%ARCH%" == "64" set MINICONDA=C:\Miniconda35-x64
-  - if "%ARCH%" == "32" set MINICONDA=C:\Miniconda35
+  # Use AppVeyor's provided Miniconda, which is available from
+  # https://www.appveyor.com/docs/installed-software#python
+  - if "%ARCH%" == "64" set MINICONDA=C:\Miniconda36-x64
+  - if "%ARCH%" == "32" set MINICONDA=C:\Miniconda36
   - set PATH=%MINICONDA%;%MINICONDA%/Scripts;%MINICONDA%/Library/bin;%PATH%
 
 install:
-  # Update to a known good conda
-  # (to workaround http://help.appveyor.com/discussions/problems/4910)
-  - conda install -q -y conda=4.2.13
+  # Update to a recent version of conda that is consistent with Python 3.6
+  - conda install -q -y conda>=4.3.0
   - continuous_integration\\setup_conda_environment.cmd
 
 build_script:

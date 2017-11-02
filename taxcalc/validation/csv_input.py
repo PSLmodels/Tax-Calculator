@@ -82,11 +82,11 @@ def randomize_data(xdf, taxyear, rnseed):
         # randomize nonzero variable amounts
         old = xdf[varname]
         oldint = old.round(decimals=0)
-        oldint = oldint.astype(dtype=np.int64)
+        oldint = oldint.astype(dtype=np.int32)
         rfactor = np.random.normal(loc=nmean, scale=nsdev, size=num)
         addon = oldint * rfactor  # addon is zero if oldint is zero
         raw = oldint + addon.round(decimals=0)
-        raw = raw.astype(dtype=np.int64)
+        raw = raw.astype(dtype=np.int32)
         if oldint.min() < 0:
             new = raw
         else:

@@ -141,35 +141,41 @@ def test_multi_year_reform():
         wfactor[syr + i] = 1.0 + wratelist[i]
     # confirm that parameters have current-law values
     assert_allclose(getattr(pol, '_EITC_c'),
-                    Policy._expand_array(np.array([[487, 3250, 5372, 6044],
-                                                   [496, 3305, 5460, 6143],
-                                                   [503, 3359, 5548, 6242],
-                                                   [506, 3373, 5572, 6269],
-                                                   [510, 3400, 5616, 6318]]),
-                                         inflate=True,
-                                         inflation_rates=iratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([[487, 3250, 5372, 6044],
+                                  [496, 3305, 5460, 6143],
+                                  [503, 3359, 5548, 6242],
+                                  [506, 3373, 5572, 6269],
+                                  [510, 3400, 5616, 6318]],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=iratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     assert_allclose(getattr(pol, '_II_em'),
-                    Policy._expand_array(np.array([3900, 3950, 4000, 4050,
-                                                   4050]),
-                                         inflate=True,
-                                         inflation_rates=iratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([3900, 3950, 4000, 4050, 4050],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=iratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     assert_allclose(getattr(pol, '_CTC_c'),
-                    Policy._expand_array(np.array([1000]),
-                                         inflate=False,
-                                         inflation_rates=iratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([1000],
+                                 dtype=np.float64), False,
+                        inflate=False,
+                        inflation_rates=iratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     # this parameter uses a different indexing rate
     assert_allclose(getattr(pol, '_SS_Earnings_c'),
-                    Policy._expand_array(np.array([113700, 117000,
-                                                   118500, 118500, 127200]),
-                                         inflate=True,
-                                         inflation_rates=wratelist,
-                                         num_years=nyrs),
+                    Policy._expand_array(
+                        np.array([113700, 117000, 118500, 118500, 127200],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=wratelist,
+                        num_years=nyrs),
                     atol=0.01, rtol=0.0)
     # specify multi-year reform using a dictionary of year_provisions dicts
     reform = {
@@ -325,28 +331,34 @@ def test_create_parameters_from_file(policyfile):
     ppo = Policy(parameter_dict=policy)
     inf_rates = ppo.inflation_rates()
     assert_allclose(ppo._almdep,
-                    Policy._expand_array(np.array([7150, 7250, 7400]),
-                                         inflate=True,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([7150, 7250, 7400],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._almsep,
-                    Policy._expand_array(np.array([40400, 41050]),
-                                         inflate=True,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([40400, 41050],
+                                 dtype=np.float64), False,
+                        inflate=True,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt5,
-                    Policy._expand_array(np.array([0.33]),
-                                         inflate=False,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([0.33]), False,
+                        inflate=False,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt7,
-                    Policy._expand_array(np.array([0.396]),
-                                         inflate=False,
-                                         inflation_rates=inf_rates,
-                                         num_years=ppo.num_years),
+                    Policy._expand_array(
+                        np.array([0.396]), False,
+                        inflate=False,
+                        inflation_rates=inf_rates,
+                        num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
 
 
@@ -430,7 +442,7 @@ def test_parameters_get_default_start_year():
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for Calculator read_json_param_files().
+// Example of reform file suitable for Calculator read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // The primary keys are policy parameters and secondary keys are years.
@@ -474,7 +486,7 @@ REFORM_CONTENTS = """
 @pytest.fixture(scope='module', name='reform_file')
 def fixture_reform_file():
     """
-    Temporary reform file for Calculator read_json_param_files function.
+    Temporary reform file for Calculator read_json_param_objects() function.
     """
     with tempfile.NamedTemporaryFile(mode='a', delete=False) as rfile:
         rfile.write(REFORM_CONTENTS)
@@ -488,7 +500,7 @@ def fixture_reform_file():
 
 
 @pytest.mark.parametrize("set_year", [False, True])
-def test_read_json_param_files_and_implement_reform(reform_file, set_year):
+def test_read_json_param_and_implement_reform(reform_file, set_year):
     """
     Test reading and translation of reform file into a reform dictionary
     that is then used to call implement_reform method.
@@ -497,7 +509,7 @@ def test_read_json_param_files_and_implement_reform(reform_file, set_year):
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    param_dict = Calculator.read_json_param_files(reform_file.name, None)
+    param_dict = Calculator.read_json_param_objects(reform_file.name, None)
     policy.implement_reform(param_dict['policy'])
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1
@@ -700,10 +712,10 @@ def test_clp_section_titles(tests_path):
             'New AGI Surtax': 0,
             'Lump-Sum Tax': 0
         },
-        # 'Universal Basic Income': {
-        #     'UBI Benefit By Age': 0,
-        #     'UBI Benefit Taxability': 0
-        # },
+        'Universal Basic Income': {
+            'UBI Benefits': 0,
+            'UBI Taxability': 0
+        },
         '': {  # empty section_1 implies parameter is not displayed in TaxBrain
             '': 0
         }
@@ -749,6 +761,24 @@ def test_json_reform_suffixes(tests_path):
         assert unmatched == 'UNMATCHED SUFFIXES'
 
 
+def test_description_punctuation(tests_path):
+    """
+    Check that each description ends in a period.
+    """
+    # read JSON file into a dictionary
+    path = os.path.join(tests_path, '..', 'current_law_policy.json')
+    with open(path, 'r') as jsonfile:
+        dct = json.load(jsonfile)
+    all_desc_ok = True
+    for param in dct.keys():
+        if not dct[param]['description'].endswith('.'):
+            all_desc_ok = False
+            print('param,description=',
+                  str(param),
+                  dct[param]['description'])
+    assert all_desc_ok
+
+
 def test_range_infomation(tests_path):
     """
     Check consistency of range-related info in current_law_policy.json file.
@@ -768,13 +798,17 @@ def test_range_infomation(tests_path):
         range = param.get('range', None)
         if range:
             json_range_params.add(pname)
-            assert param['out_of_range_action'] in warn_stop_list
+            oor_action = param['out_of_range_action']
+            assert oor_action in warn_stop_list
             range_items = range.items()
             assert len(range_items) == 2
             for vop, vval in range_items:
                 assert vop in min_max_list
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
+                        if vop != 'min' or oor_action != 'warn':
+                            msg = 'USES DEFAULT FOR min OR FOR error'
+                            assert pname == msg
                         continue
                     elif vval in clpdict:
                         if vop == 'min':
@@ -804,10 +838,14 @@ def test_range_infomation(tests_path):
     assert len(clp.reform_errors) == 0
 
 
-def test_validate_param_names_errors():
+def test_validate_param_names_types_errors():
     """
-    Check detection of invalid policy parameters in reforms.
+    Check detection of invalid policy parameter names and types in reforms.
     """
+    pol0 = Policy()
+    ref0 = {2020: {'_STD_cpi': 2}}
+    with pytest.raises(ValueError):
+        pol0.implement_reform(ref0)
     pol1 = Policy()
     ref1 = {2020: {'_badname_cpi': True}}
     with pytest.raises(ValueError):
@@ -820,6 +858,18 @@ def test_validate_param_names_errors():
     ref3 = {2020: {'_badname': [0.4]}}
     with pytest.raises(ValueError):
         pol3.implement_reform(ref3)
+    pol4 = Policy()
+    ref4 = {2020: {'_EITC_MinEligAge': [21.4]}}
+    with pytest.raises(ValueError):
+        pol4.implement_reform(ref4)
+    pol5 = Policy()
+    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
+    with pytest.raises(ValueError):
+        pol5.implement_reform(ref5)
+    pol6 = Policy()
+    ref6 = {2021: {'_II_em': ['not-a-number']}}
+    with pytest.raises(ValueError):
+        pol6.implement_reform(ref6)
 
 
 def test_validate_param_values_warnings_errors():
@@ -846,10 +896,14 @@ def test_validate_param_values_warnings_errors():
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5)
     assert len(pol5.reform_errors) == 0
-    pol6 = Policy()
-    ref6 = {2026: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
-    pol6.implement_reform(ref6)
-    assert len(pol6.reform_errors) > 0
+    # raise stdded for everybody but widows, leaving widow value unchanged,
+    # which is the logic TaxBrain has been using at least until 2017-10-05
+    # when this "7" test was added
+    pol7 = Policy()
+    ref7 = {2013: {'_STD': [[20000, 20000, 20000, 20000, 12200]]}}
+    pol7.implement_reform(ref7)
+    assert pol7.reform_errors == ''
+    assert pol7.reform_warnings == ''
 
 
 def test_indexing_rates_for_update():

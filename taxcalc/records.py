@@ -14,10 +14,6 @@ from taxcalc.growfactors import Growfactors
 from taxcalc.utils import read_egg_csv, read_egg_json
 
 
-PUFCSV_YEAR = 2009
-CPSCSV_YEAR = 2014
-
-
 class Records(object):
     """
     Constructor for the tax-filing-unit Records class.
@@ -100,6 +96,9 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
+    PUFCSV_YEAR = 2009
+    CPSCSV_YEAR = 2014
+
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     PUF_WEIGHTS_FILENAME = 'puf_weights.csv'
     PUF_RATIOS_FILENAME = 'puf_ratios.csv'
@@ -173,7 +172,7 @@ class Records(object):
     @staticmethod
     def cps_constructor(data=None,
                         exact_calculations=False,
-                        growfactors=Growfactors()):
+                        gfactors=Growfactors()):
         """
         Static method returns a Records object instantiated with CPS
         input data.  This works in a analogous way to Records(), which
@@ -188,10 +187,10 @@ class Records(object):
             data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
         return Records(data=data,
                        exact_calculations=exact_calculations,
-                       gfactors=growfactors,
+                       gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       start_year=CPSCSV_YEAR)
+                       start_year=Records.CPSCSV_YEAR)
 
     @property
     def data_year(self):
@@ -213,7 +212,7 @@ class Records(object):
         Also, does extrapolation, reweighting, adjusting for new current year.
         """
         self._current_year += 1
-        # apply variable extrapolation growfactors
+        # apply variable extrapolation grow factors
         if self.gfactors is not None:
             self._blowup(self.current_year)
         # apply variable adjustment ratios
@@ -417,7 +416,7 @@ class Records(object):
                 READ_VARS.add(varname)
                 if varname in Records.INTEGER_READ_VARS:
                     setattr(self, varname,
-                            taxdf[varname].astype(np.int64).values)
+                            taxdf[varname].astype(np.int32).values)
                 else:
                     setattr(self, varname,
                             taxdf[varname].astype(np.float64).values)
@@ -433,7 +432,7 @@ class Records(object):
         for varname in ZEROED_VARS:
             if varname in Records.INTEGER_VARS:
                 setattr(self, varname,
-                        np.zeros(self.dim, dtype=np.int64))
+                        np.zeros(self.dim, dtype=np.int32))
             else:
                 setattr(self, varname,
                         np.zeros(self.dim, dtype=np.float64))

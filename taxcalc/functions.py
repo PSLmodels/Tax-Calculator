@@ -1102,6 +1102,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 def ChildTaxCredit(n24, MARS, c00100, exact,
                    CTC_c, CTC_ps, CTC_prt, prectc, nu05,
                    CTC_c_under5_bonus, XTOT, num,
+                   DependentCredit_Child_c, DependentCredit_Nonchild_c,
                    DependentCredit_c, dep_credit):
     """
     ChildTaxCredit function computes prectc amount and dependent credit
@@ -1115,7 +1116,9 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
     # calculate and phase-out dependent credit
-    dep_credit = DependentCredit_c * max(0, XTOT - num)
+    dep_credit = (DependentCredit_c * max(0, XTOT - num) +
+                  DependentCredit_Child_c * n24 +
+                  DependentCredit_Nonchild_c * max(0, XTOT - n24 - num))
     if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
         thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
         excess = c00100 - thresh
@@ -1474,7 +1477,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 @iterate_jit(nopython=True)
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
-            CTC_new_ps, CTC_new_prt,
+            CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
             ctc_new):
@@ -1483,8 +1486,9 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
     """
     if n24 > 0:
         posagi = max(c00100, 0.)
-        ctc_new = min(CTC_new_rt * posagi,
-                      CTC_new_c * n24 + CTC_new_c_under5_bonus * nu05)
+        ctc_new = CTC_new_c * n24 + CTC_new_c_under5_bonus * nu05
+        if not CTC_new_for_all:
+            ctc_new = min(CTC_new_rt * posagi, ctc_new)
         ymax = CTC_new_ps[MARS - 1]
         if posagi > ymax:
             ctc_new_reduced = max(0.,

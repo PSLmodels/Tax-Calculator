@@ -11,7 +11,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ACGNS": {
@@ -26,7 +29,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ACPIM": {
@@ -41,12 +47,15 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ACPIU": {
         "long_name": "ACPIU additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.",
+        "description": "Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.  Note that non-zero values of this parameter will not affect historically known values of policy parameters.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -56,7 +65,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ADIVS": {
@@ -71,7 +83,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AINTS": {
@@ -86,7 +101,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AIPD": {
@@ -101,7 +119,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHCI": {
@@ -116,7 +137,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHCL": {
@@ -131,7 +155,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHEI": {
@@ -146,7 +173,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHEL": {
@@ -161,7 +191,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASCHF": {
@@ -176,7 +209,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ASOCSEC": {
@@ -191,7 +227,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_ATXPY": {
@@ -206,7 +245,10 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AUCOMP": {
@@ -221,12 +263,15 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     },
 
     "_AWAGE": {
         "long_name": "AWAGE additive difference from default projection",
-        "description": "Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.",
+        "description": "Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -236,6 +281,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "value": [0.0]
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -9e99, "max": 9e99}
     }
 }

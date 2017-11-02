@@ -4,13 +4,16 @@ Go
 [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-Release 0.Y.Z on 2017-??-??
-----------------------------
+
+2017-??-?? Release 0.13.0
+-------------------------
 (last merged pull request is
-[#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
-- None
+- Add new statistics and top-decile detail to distribution and difference tables
+  [[#1605](https://github.com/open-source-economics/Tax-Calculator/pull/1605)
+  by Martin Holmer]
 
 **New Features**
 - None
@@ -18,8 +21,66 @@ Release 0.Y.Z on 2017-??-??
 **Bug Fixes**
 - None
 
-Release 0.11.0 on 2017-09-21
-----------------------------
+
+2017-10-20 Release 0.12.0
+-------------------------
+(last merged pull request is
+[#1600](https://github.com/open-source-economics/Tax-Calculator/pull/1600))
+
+**API Changes**
+- Rename read_json_param_files as read_json_param_objects
+  [[#1563](https://github.com/open-source-economics/Tax-Calculator/pull/1563)
+  by Martin Holmer]
+- Remove arrays_not_lists argument from read_json_param_objects
+  [[#1568](https://github.com/open-source-economics/Tax-Calculator/pull/1568)
+  by Martin Holmer]
+- Rename dropq as tbi (taxbrain interface) and refactor run_nth_year_*_model functions so that either puf.csv or cps.csv can be used as input data
+  [[#1577](https://github.com/open-source-economics/Tax-Calculator/pull/1577)
+  by Martin Holmer]
+- Change Calculator class constructor so that it makes a deep copy of each specified object for internal use
+  [[#1582](https://github.com/open-source-economics/Tax-Calculator/pull/1582)
+  by Martin Holmer]
+- Rename and reorder difference table columns
+  [[#1584](https://github.com/open-source-economics/Tax-Calculator/pull/1584)
+  by Martin Holmer]
+
+**New Features**
+- Add Calculator.reform_documentation that generates plain text documentation of a reform
+  [[#1564](https://github.com/open-source-economics/Tax-Calculator/pull/1564)
+  by Martin Holmer]
+- Enhance stats_summary.py script and its output
+  [[#1566](https://github.com/open-source-economics/Tax-Calculator/pull/1566)
+  by Amy Xu]
+- Add reform documentation as standard output from Tax-Calculator CLI, tc
+  [[#1567](https://github.com/open-source-economics/Tax-Calculator/pull/1567)
+  by Martin Holmer]
+- Add parameter type checking to Policy.implement_reform method
+  [[#1585](https://github.com/open-source-economics/Tax-Calculator/pull/1585)
+  by Martin Holmer]
+- Add `_CTC_new_for_all` policy parameter to allow credits for those with negative AGI
+  [[#1595](https://github.com/open-source-economics/Tax-Calculator/pull/1595)
+  by Martin Holmer]
+- Narrow range of legal values for `_CDCC_c` policy parameter
+  [[#1597](https://github.com/open-source-economics/Tax-Calculator/pull/1597)
+  by Matt Jensen]
+- Make several UBI policy parameters available to external applications like TaxBrain
+  [[#1599](https://github.com/open-source-economics/Tax-Calculator/pull/1599)
+  by Matt Jensen]
+
+**Bug Fixes**
+- Relax _STD and _STD_Dep minimum value warning logic
+  [[#1578](https://github.com/open-source-economics/Tax-Calculator/pull/1578)
+  by Martin Holmer]
+- Fix macro-elasticity model logic so that GDP change in year t depends on tax rate changes in year t-1
+  [[#1579](https://github.com/open-source-economics/Tax-Calculator/pull/1579)
+  by Martin Holmer]
+- Fix bugs in automatic generation of reform documentation having to do with policy parameters that are boolean scalars
+  [[#1596](https://github.com/open-source-economics/Tax-Calculator/pull/1596)
+  by Martin Holmer]
+
+
+2017-09-21 Release 0.11.0
+-------------------------
 (last merged pull request is
 [#1555](https://github.com/open-source-economics/Tax-Calculator/pull/1555))
 
@@ -45,8 +106,9 @@ Release 0.11.0 on 2017-09-21
 **Bug Fixes**
 - None
 
-Release 0.10.2 on 2017-09-13
-----------------------------
+
+2017-09-13 Release 0.10.2
+-------------------------
 
 **API Changes**
 - None
@@ -59,8 +121,9 @@ Release 0.10.2 on 2017-09-13
   [[34561ff](https://github.com/open-source-economics/Tax-Calculator/commit/34561ffdeb23c632e248d760c0e34417df0b41f3)
   by Martin Holmer]
 
-Release 0.10.1 on 2017-09-08
-----------------------------
+
+2017-09-08 Release 0.10.1
+-------------------------
 
 **API Changes**
 - None
@@ -73,8 +136,9 @@ Release 0.10.1 on 2017-09-08
   [[5536792](https://github.com/open-source-economics/Tax-Calculator/commit/5536792538c3f3e687cccc9e38b20949ac68cb9a)
   by Martin Holmer]
 
-Release 0.10.0 on 2017-08-28
-----------------------------
+
+2017-08-28 Release 0.10.0
+-------------------------
 (last merged pull request is
 [#1531](https://github.com/open-source-economics/Tax-Calculator/pull/1531))
 
@@ -99,8 +163,9 @@ Release 0.10.0 on 2017-08-28
 **Bug Fixes**
 - None
 
-Release 0.9.2 on 2017-07-26
----------------------------
+
+2017-07-26 Release 0.9.2
+------------------------
 (last merged pull request is
 [#1490](https://github.com/open-source-economics/Tax-Calculator/pull/1490))
 
@@ -126,8 +191,9 @@ Release 0.9.2 on 2017-07-26
   [[#1473](https://github.com/open-source-economics/Tax-Calculator/pull/1473)
   by Martin Holmer]
 
-Release 0.9.1 on 2017-07-06
----------------------------
+
+2017-07-06 Release 0.9.1
+------------------------
 (last merged pull request is
 [#1438](https://github.com/open-source-economics/Tax-Calculator/pull/1438))
 
@@ -150,8 +216,9 @@ Release 0.9.1 on 2017-07-06
   [[#1450](https://github.com/open-source-economics/Tax-Calculator/pull/1450)
   by Martin Holmer]
 
-Release 0.9.0 on 2017-06-14
----------------------------
+
+2017-06-14 Release 0.9.0
+------------------------
 (last merged pull request is
 [#1431](https://github.com/open-source-economics/Tax-Calculator/pull/1431))
 
@@ -185,8 +252,9 @@ Release 0.9.0 on 2017-06-14
   [[#1426](https://github.com/open-source-economics/Tax-Calculator/pull/1426)
   by Martin Holmer]
 
-Release 0.8.5 on 2017-06-08
----------------------------
+
+2017-06-08 Release 0.8.5
+------------------------
 (last merged pull request is
 [#1416](https://github.com/open-source-economics/Tax-Calculator/pull/1416))
 
@@ -214,8 +282,8 @@ Release 0.8.5 on 2017-06-08
   by Martin Holmer]
 
 
-Release 0.8.4 on 2017-05-12
----------------------------
+2017-05-12 Release 0.8.4
+------------------------
 (last merged pull request is
 [#1363](https://github.com/open-source-economics/Tax-Calculator/pull/1363))
 
@@ -238,8 +306,8 @@ Release 0.8.4 on 2017-05-12
 - None
 
 
-Release 0.8.3 on 2017-05-01
----------------------------
+2017-05-01 Release 0.8.3
+------------------------
 (last merged pull request is
 [#1328](https://github.com/open-source-economics/Tax-Calculator/pull/1328))
 
@@ -264,8 +332,8 @@ Release 0.8.3 on 2017-05-01
 - None
 
 
-Release 0.8.2 on 2017-04-13
----------------------------
+2017-04-13 Release 0.8.2
+------------------------
 (last merged pull request is
 [#1295](https://github.com/open-source-economics/Tax-Calculator/pull/1295))
 
@@ -281,8 +349,8 @@ Release 0.8.2 on 2017-04-13
   by Matt Jensen]
 
 
-Release 0.8.1 on 2017-04-13
----------------------------
+2017-04-13 Release 0.8.1
+------------------------
 (last merged pull request is
 [#1293](https://github.com/open-source-economics/Tax-Calculator/pull/1293))
 
@@ -317,8 +385,8 @@ Release 0.8.1 on 2017-04-13
 - None
 
 
-Release 0.8.0 on 2017-03-24
----------------------------
+2017-03-24 Release 0.8.0
+------------------------
 (last merged pull request is
 [#1260](https://github.com/open-source-economics/Tax-Calculator/pull/1260))
 
@@ -349,8 +417,8 @@ Release 0.8.0 on 2017-03-24
 - None
 
 
-Release 0.7.9 on 2017-03-08
----------------------------
+2017-03-08 Release 0.7.9
+------------------------
 (last merged pull request is
 [#1228](https://github.com/open-source-economics/Tax-Calculator/pull/1228))
 
@@ -372,8 +440,8 @@ Release 0.7.9 on 2017-03-08
   by Peter Steinberg]
 
 
-Release 0.7.8 on 2017-03-01
----------------------------
+2017-03-01 Release 0.7.8
+------------------------
 (last merged pull request is
 [#1206](https://github.com/open-source-economics/Tax-Calculator/pull/1206))
 
@@ -396,8 +464,8 @@ Release 0.7.8 on 2017-03-01
 - None
 
 
-Release 0.7.7 on 2017-02-16
----------------------------
+2017-02-16 Release 0.7.7
+------------------------
 (last merged pull request is
 [#1197](https://github.com/open-source-economics/Tax-Calculator/pull/1197))
 
@@ -413,8 +481,8 @@ Release 0.7.7 on 2017-02-16
   by Anderson Frailey]
 
 
-Release 0.7.6 on 2017-02-15
----------------------------
+2017-02-15 Release 0.7.6
+------------------------
 (last merged pull request is
 [#1192](https://github.com/open-source-economics/Tax-Calculator/pull/1192))
 
@@ -439,8 +507,8 @@ Release 0.7.6 on 2017-02-15
   by Martin Holmer]
 
 
-Release 0.7.5 on 2017-01-31
----------------------------
+2017-01-31 Release 0.7.5
+------------------------
 (last merged pull request is
 [#1169](https://github.com/open-source-economics/Tax-Calculator/pull/1169))
 
@@ -464,8 +532,8 @@ Release 0.7.5 on 2017-01-31
   by Anderson Frailey]
 
 
-Release 0.7.4 on 2017-01-24
----------------------------
+2017-01-24 Release 0.7.4
+------------------------
 (last merged pull request is
 [#1152](https://github.com/open-source-economics/Tax-Calculator/pull/1152))
 
@@ -486,8 +554,8 @@ Release 0.7.4 on 2017-01-24
   by Matt Jensen]
 
 
-Release 0.7.3 on 2017-01-24
----------------------------
+2017-01-24 Release 0.7.3
+------------------------
 (last merged pull request is
 [#1113](https://github.com/open-source-economics/Tax-Calculator/pull/1113))
 
@@ -531,8 +599,8 @@ Release 0.7.3 on 2017-01-24
   by Zach Risher]
 
 
-Release 0.7.2 on 2016-12-05
----------------------------
+2016-12-05 Release 0.7.2
+------------------------
 (last merged pull request is
 [#1082](https://github.com/open-source-economics/Tax-Calculator/pull/1082))
 
@@ -557,8 +625,8 @@ Release 0.7.2 on 2016-12-05
 - None
 
 
-Release 0.7.1 on 2016-11-15
----------------------------
+2016-11-15 Release 0.7.1
+------------------------
 (last merged pull request is
 [#1060](https://github.com/open-source-economics/Tax-Calculator/pull/1060))
 
@@ -579,8 +647,8 @@ Release 0.7.1 on 2016-11-15
 - None
 
 
-Release 0.7.0 on 2016-11-09
----------------------------
+2016-11-09 Release 0.7.0
+------------------------
 (last merged pull request is
 [#1044](https://github.com/open-source-economics/Tax-Calculator/pull/1044))
 
@@ -598,8 +666,8 @@ Release 0.7.0 on 2016-11-09
   by Martin Holmer]
 
 
-Release 0.6.9 on 2016-11-09
----------------------------
+2016-11-09 Release 0.6.9
+------------------------
 (last merged pull request is
 [#1039](https://github.com/open-source-economics/Tax-Calculator/pull/1039))
 
@@ -644,8 +712,8 @@ Release 0.6.9 on 2016-11-09
   by Martin Holmer]
 
 
-Release 0.6.8 on 2016-10-07
----------------------------
+2016-10-07 Release 0.6.8
+------------------------
 (last merged pull request is
 [#970](https://github.com/open-source-economics/Tax-Calculator/pull/970))
 
@@ -669,8 +737,8 @@ Release 0.6.8 on 2016-10-07
 - None
 
 
-Release 0.6.7 on 2016-09-29
----------------------------
+2016-09-29 Release 0.6.7
+------------------------
 (last merged pull request is
 [#945](https://github.com/open-source-economics/Tax-Calculator/pull/945))
 
@@ -706,8 +774,8 @@ Release 0.6.7 on 2016-09-29
   by Martin Holmer]
 
 
-Release 0.6.6 on 2016-08-13
----------------------------
+2016-08-13 Release 0.6.6
+------------------------
 (last merged pull request is
 [#844](https://github.com/open-source-economics/Tax-Calculator/pull/844))
 
@@ -741,8 +809,8 @@ Release 0.6.6 on 2016-08-13
   [[#842](https://github.com/open-source-economics/Tax-Calculator/pull/842)]
 
 
-Release 0.6.5 on 2016-07-12
----------------------------
+2016-07-12 Release 0.6.5
+------------------------
 (last merged pull request is
 [#820](https://github.com/open-source-economics/Tax-Calculator/pull/820))
 
@@ -759,8 +827,8 @@ Release 0.6.5 on 2016-07-12
 - Remove Numba dependency
 
 
-Release 0.6.4 on 2016-06-17
----------------------------
+2016-06-17 Release 0.6.4
+------------------------
 (last merged pull request is
 [#794](https://github.com/open-source-economics/Tax-Calculator/pull/794))
 
@@ -780,8 +848,8 @@ Release 0.6.4 on 2016-06-17
   bug in the Windows conda package for Pandas 0.16.2
 
 
-Release 0.6.3 on 2016-05-09
----------------------------
+2016-05-09 Release 0.6.3
+------------------------
 (last merged pull request is
 [#727](https://github.com/open-source-economics/Tax-Calculator/pull/727))
 
@@ -802,7 +870,7 @@ Release 0.6.3 on 2016-05-09
 - Exclude dependents from EITC eligibility
 
 
-Release 0.6.2 and before
-------------------------
+Before Release 0.6.2
+--------------------
 See commit history for pull requests before
 [#650](https://github.com/open-source-economics/Tax-Calculator/pull/650)

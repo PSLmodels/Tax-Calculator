@@ -55,6 +55,7 @@ class TaxCalcIO(object):
     -------
     class instance: TaxCalcIO
     """
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self, input_data, tax_year, reform, assump):
         # pylint: disable=too-many-branches,too-many-statements
@@ -122,9 +123,11 @@ class TaxCalcIO(object):
         else:
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             self.errmsg += 'ERROR: {}\n'.format(msg)
-        # create OUTPUT file name and delete any existing output file
+        # create OUTPUT file name and delete any existing output files
         self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
         delete_file(self._output_filename)
+        delete_file(self._output_filename.replace('.csv', '.db'))
+        delete_file(self._output_filename.replace('.csv', '-doc.text'))
         delete_file(self._output_filename.replace('.csv', '-tab.text'))
         delete_file(self._output_filename.replace('.csv', '-atr.html'))
         delete_file(self._output_filename.replace('.csv', '-mtr.html'))
@@ -132,6 +135,7 @@ class TaxCalcIO(object):
         self.behavior_has_any_response = False
         self.calc = None
         self.calc_clp = None
+        self.param_dict = None
 
     def init(self, input_data, tax_year, reform, assump,
              growdiff_response,
@@ -161,21 +165,21 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
         # get parameter dictionaries from --reform and --assump files
-        param_dict = Calculator.read_json_param_files(reform, assump)
+        paramdict = Calculator.read_json_param_objects(reform, assump)
         # create Behavior object
         beh = Behavior()
-        beh.update_behavior(param_dict['behavior'])
+        beh.update_behavior(paramdict['behavior'])
         self.behavior_has_any_response = beh.has_any_response()
         # create gdiff_baseline object
         gdiff_baseline = Growdiff()
-        gdiff_baseline.update_growdiff(param_dict['growdiff_baseline'])
+        gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
         # create Growfactors clp object that incorporates gdiff_baseline
         gfactors_clp = Growfactors()
         gdiff_baseline.apply_to(gfactors_clp)
         # specify gdiff_response object
         if growdiff_response is None:
             gdiff_response = Growdiff()
-            gdiff_response.update_growdiff(param_dict['growdiff_response'])
+            gdiff_response.update_growdiff(paramdict['growdiff_response'])
         elif isinstance(growdiff_response, Growdiff):
             gdiff_response = growdiff_response
         else:
@@ -198,7 +202,7 @@ class TaxCalcIO(object):
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
             try:
-                pol.implement_reform(param_dict['policy'])
+                pol.implement_reform(paramdict['policy'])
                 self.errmsg += pol.reform_errors
             except ValueError as valerr_msg:
                 self.errmsg += valerr_msg.__str__()
@@ -224,11 +228,11 @@ class TaxCalcIO(object):
         if aging_input_data:
             if self.cps_input_data:
                 recs = Records.cps_constructor(
-                    growfactors=gfactors_ref,
+                    gfactors=gfactors_ref,
                     exact_calculations=exact_calculations
                 )
                 recs_clp = Records.cps_constructor(
-                    growfactors=gfactors_clp,
+                    gfactors=gfactors_clp,
                     exact_calculations=exact_calculations
                 )
             else:  # if not cps_input_data
@@ -256,7 +260,7 @@ class TaxCalcIO(object):
             self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Calculator objects
         con = Consumption()
-        con.update_consumption(param_dict['consumption'])
+        con.update_consumption(paramdict['consumption'])
         self.calc = Calculator(policy=pol, records=recs,
                                verbose=True,
                                consumption=con,
@@ -266,6 +270,8 @@ class TaxCalcIO(object):
                                    verbose=False,
                                    consumption=con,
                                    sync_years=aging_input_data)
+        # remember parameter dictionary for reform documentation
+        self.param_dict = paramdict
 
     def tax_year(self):
         """
@@ -358,6 +364,7 @@ class TaxCalcIO(object):
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
+            self.write_doc_file()
         # optionally write --sqldb output to SQLite3 database
         if output_sqldb:
             self.write_sqldb_file(mtr_paytax, mtr_inctax)
@@ -391,14 +398,23 @@ class TaxCalcIO(object):
         outdf.to_csv(self._output_filename, columns=column_order,
                      index=False, float_format='%.2f')
 
+    def write_doc_file(self):
+        """
+        Write reform documentation to text file.
+        """
+        doc = Calculator.reform_documentation(self.param_dict)
+        doc_fname = self._output_filename.replace('.csv', '-doc.text')
+        with open(doc_fname, 'w') as dfile:
+            dfile.write(doc)
+
     def write_sqldb_file(self, mtr_paytax, mtr_inctax):
         """
         Write dump output to SQLite3 database table dump.
         """
         outdf = self.dump_output(mtr_inctax, mtr_paytax)
         assert len(outdf.index) == self.calc.records.dim
-        dbfilename = '{}.db'.format(self._output_filename[:-4])
-        dbcon = sqlite3.connect(dbfilename)
+        db_fname = self._output_filename.replace('.csv', '.db')
+        dbcon = sqlite3.connect(db_fname)
         outdf.to_sql('dump', dbcon, if_exists='replace', index=False)
         dbcon.close()
 

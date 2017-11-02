@@ -29,9 +29,7 @@ def test_response_json(tests_path):
         if response_file:
             # pylint: disable=protected-access
             (con, beh, gdiff_base,
-             gdiff_resp) = (
-                 Calculator._read_json_econ_assump_text(jpf_text,
-                                                        arrays_not_lists=True))
+             gdiff_resp) = Calculator._read_json_econ_assump_text(jpf_text)
             cons = Consumption()
             cons.update_consumption(con)
             behv = Behavior()

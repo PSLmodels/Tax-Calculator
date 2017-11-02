@@ -235,36 +235,30 @@ def test_mtr(tests_path, puf_path):
 
 
 @pytest.mark.requires_pufcsv
-def test_credit_reforms(puf_path):
+def test_credit_reforms(puf_subsample):
     """
-    Test personal credit reforms using small puf.csv sub-sample
+    Test personal credit reforms using puf.csv subsample
     """
-    # pylint: disable=too-many-locals
+    rec = Records(data=puf_subsample)
     reform_year = 2017
-    fullsample = pd.read_csv(puf_path)
-    subsample = fullsample.sample(frac=0.05,  # pylint: disable=no-member
-                                  random_state=180)
     # create current-law Calculator object, calc1
-    recs1 = Records(data=subsample)
-    calc1 = Calculator(policy=Policy(), records=recs1)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     calc1.advance_to_year(reform_year)
     calc1.calc_all()
     itax1 = (calc1.records.iitax * calc1.records.s006).sum()
     # create personal-refundable-credit-reform Calculator object, calc2
-    recs2 = Records(data=subsample)
-    policy2 = Policy()
     reform = {reform_year: {'_II_credit': [[1000, 1000, 1000, 1000, 1000]]}}
-    policy2.implement_reform(reform)
-    calc2 = Calculator(policy=policy2, records=recs2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(reform_year)
     calc2.calc_all()
     itax2 = (calc2.records.iitax * calc2.records.s006).sum()
     # create personal-nonrefundable-credit-reform Calculator object, calc3
-    recs3 = Records(data=subsample)
-    policy3 = Policy()
     reform = {reform_year: {'_II_credit_nr': [[1000, 1000, 1000, 1000, 1000]]}}
-    policy3.implement_reform(reform)
-    calc3 = Calculator(policy=policy3, records=recs3)
+    pol = Policy()
+    pol.implement_reform(reform)
+    calc3 = Calculator(policy=pol, records=rec)
     calc3.advance_to_year(reform_year)
     calc3.calc_all()
     itax3 = (calc3.records.iitax * calc3.records.s006).sum()

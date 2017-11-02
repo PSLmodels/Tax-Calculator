@@ -27,8 +27,10 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
-from taxcalc.behavior import Behavior
 from taxcalc.consumption import Consumption
+from taxcalc.behavior import Behavior
+from taxcalc.growdiff import Growdiff
+from taxcalc.growfactors import Growfactors
 # import pdb
 
 
@@ -39,47 +41,29 @@ class Calculator(object):
     Parameters
     ----------
     policy: Policy class object
-        this argument must be specified
-        IMPORTANT NOTE: never pass the same Policy object to more than one
-        Calculator.  In other words, when specifying more
-        than one Calculator object, do this::
-
-            pol1 = Policy()
-            rec1 = Records()
-            calc1 = Calculator(policy=pol1, records=rec1)
-            pol2 = Policy()
-            rec2 = Records()
-            calc2 = Calculator(policy=pol2, records=rec2)
+        this argument must be specified and object is copied for internal use
 
     records: Records class object
-        this argument must be specified
-        IMPORTANT NOTE: never pass the same Records object to more than one
-        Calculator.  In other words, when specifying more
-        than one Calculator object, do this::
-
-            pol1 = Policy()
-            rec1 = Records()
-            calc1 = Calculator(policy=pol1, records=rec1)
-            pol2 = Policy()
-            rec2 = Records()
-            calc2 = Calculator(policy=pol2, records=rec2)
+        this argument must be specified and object is copied for internal use
 
     verbose: boolean
         specifies whether or not to write to stdout data-loaded and
         data-extrapolated progress reports; default value is true.
 
     sync_years: boolean
-        specifies whether or not to syncronize policy year and records year;
+        specifies whether or not to synchronize policy year and records year;
         default value is true.
 
     consumption: Consumption class object
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
-        no consumption responses assumed in marginal tax rate calculations.
+        no consumption responses assumed in marginal tax rate calculations;
+        when argument is an object it is copied for internal use
 
     behavior: Behavior class object
-        specifies behaviorial responses used by Calculator; default is None,
-        which implies no behavioral responses to policy reform.
+        specifies behavioral responses used by Calculator; default is None,
+        which implies no behavioral responses to policy reform;
+        when argument is an object it is copied for internal use
 
     Raises
     ------
@@ -89,17 +73,29 @@ class Calculator(object):
     Returns
     -------
     class instance: Calculator
+
+    Notes
+    -----
+    The most efficient way to specify current-law and reform Calculator
+    objects is as follows:
+         pol = Policy()
+         rec = Records()
+         calc1 = Calculator(policy=pol, records=rec)  # current-law
+         pol.implement_reform(...)
+         calc2 = Calculator(policy=pol, records=rec)  # reform
+    All calculations are done on the internal copies of the Policy and
+    Records objects passed to each of the two Calculator constructors.
     """
 
     def __init__(self, policy=None, records=None, verbose=True,
                  sync_years=True, consumption=None, behavior=None):
         # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
-            self.policy = policy
+            self.policy = copy.deepcopy(policy)
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self.records = records
+            self.records = copy.deepcopy(records)
         else:
             raise ValueError('must specify records as a Records object')
         if self.policy.current_year < self.records.data_year:
@@ -107,7 +103,7 @@ class Calculator(object):
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
-            self.consumption = consumption
+            self.consumption = copy.deepcopy(consumption)
             while self.consumption.current_year < self.policy.current_year:
                 next_year = self.consumption.current_year + 1
                 self.consumption.set_year(next_year)
@@ -116,7 +112,7 @@ class Calculator(object):
         if behavior is None:
             self.behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
-            self.behavior = behavior
+            self.behavior = copy.deepcopy(behavior)
             while self.behavior.current_year < self.policy.current_year:
                 next_year = self.behavior.current_year + 1
                 self.behavior.set_year(next_year)
@@ -184,6 +180,13 @@ class Calculator(object):
         Calculator class current calendar year property.
         """
         return self.policy.current_year
+
+    @property
+    def data_year(self):
+        """
+        Calculator class initial (i.e., first) records data year property.
+        """
+        return self.records.data_year
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
                            'e00900p', 'e00300',
@@ -349,65 +352,74 @@ class Calculator(object):
         """
         Return Calculator object same as self except with current-law policy.
         """
-        clp = self.policy.current_law_version()
-        recs = copy.deepcopy(self.records)
-        cons = copy.deepcopy(self.consumption)
-        behv = copy.deepcopy(self.behavior)
-        calc = Calculator(policy=clp, records=recs, sync_years=False,
-                          consumption=cons, behavior=behv)
-        return calc
+        return Calculator(policy=self.policy.current_law_version(),
+                          records=copy.deepcopy(self.records),
+                          sync_years=False,
+                          consumption=copy.deepcopy(self.consumption),
+                          behavior=copy.deepcopy(self.behavior))
 
     @staticmethod
-    def read_json_param_files(reform_filename, assump_filename,
-                              arrays_not_lists=True):
+    def read_json_param_objects(reform, assump):
         """
-        Read JSON files and call Calculator.read_json_*_text methods
-        returning a single dictionary containing five key:dict pairs:
+        Read JSON reform and assump objects and
+        return a single dictionary containing five key:dict pairs:
         'policy':dict, 'consumption':dict, 'behavior':dict,
         'growdiff_baseline':dict and 'growdiff_response':dict.
 
-        Note that either of the first two parameters may be None, in which
-        case an empty dictionary or empty dictionaries will be returned.
+        Note that either of the first two parameters may be None.
+        If reform is None, the dict in the 'policy':dict pair is empty.
+        If assump is None, the dict in the 'consumption':dict pair,
+        in the 'behavior':dict pair, in the 'growdiff_baseline':dict pair,
+        and in the 'growdiff_response':dict pair, are all empty.
 
         Also note that either of the first two parameters can be strings
-        containing the JSON parameter file contents (rather than filename),
-        in which case the file reading is skipped and the read_json_*_text
-        method is called.
+        containing a valid JSON string (rather than a filename),
+        in which case the file reading is skipped and the appropriate
+        read_json_*_text method is called.
+
+        The reform file contents or JSON string must be like this:
+        {"policy": {...}}
+        and the assump file contents or JSON string must be like:
+        {"consumption": {...},
+         "behavior": {...},
+         "growdiff_baseline": {...},
+         "growdiff_response": {...}
+        }
+
+        The returned dictionary contains parameter lists (not arrays).
         """
         # first process second assump parameter
-        if assump_filename is None:
+        if assump is None:
             cons_dict = dict()
             behv_dict = dict()
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
-        elif isinstance(assump_filename, str):
-            if os.path.isfile(assump_filename):
-                txt = open(assump_filename, 'r').read()
+        elif isinstance(assump, six.string_types):
+            if os.path.isfile(assump):
+                txt = open(assump, 'r').read()
             else:
-                txt = assump_filename
+                txt = assump
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
-             gdiff_resp_dict) = (
-                 Calculator._read_json_econ_assump_text(txt,
-                                                        arrays_not_lists))
+             gdiff_resp_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
-            raise ValueError('assump_filename is neither None nor str')
+            raise ValueError('assump is neither None nor string')
         # next process first reform parameter
-        if reform_filename is None:
+        if reform is None:
             rpol_dict = dict()
-        elif isinstance(reform_filename, str):
-            if os.path.isfile(reform_filename):
-                txt = open(reform_filename, 'r').read()
+        elif isinstance(reform, six.string_types):
+            if os.path.isfile(reform):
+                txt = open(reform, 'r').read()
             else:
-                txt = reform_filename
+                txt = reform
             rpol_dict = (
                 Calculator._read_json_policy_reform_text(txt,
-                                                         arrays_not_lists,
                                                          gdiff_base_dict,
-                                                         gdiff_resp_dict))
+                                                         gdiff_resp_dict)
+            )
         else:
-            raise ValueError('reform_filename is neither None nor str')
+            raise ValueError('reform is neither None nor string')
         # finally construct and return single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict
@@ -420,6 +432,157 @@ class Calculator(object):
     REQUIRED_REFORM_KEYS = set(['policy'])
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
                                 'growdiff_baseline', 'growdiff_response'])
+
+    @staticmethod
+    def reform_documentation(params):
+        """
+        Generate reform documentation.
+
+        Parameters
+        ----------
+        params: dict
+            compound dictionary structured as dict returned from
+            the static Calculator method read_json_param_objects()
+
+        Returns
+        -------
+        doc: String
+            the documentation for the policy reform specified in params
+        """
+        # pylint: disable=too-many-statements,too-many-branches
+
+        # nested function used only in reform_documentation
+        def param_doc(years, change, base):
+            """
+            Parameters
+            ----------
+            years: list of change years
+            change: dictionary of parameter changes
+            base: Policy or Growdiff object with baseline values
+            syear: parameter start calendar year
+
+            Returns
+            -------
+            doc: String
+            """
+
+            # nested function used only in param_doc
+            def lines(text, num_indent_spaces, max_line_length=77):
+                """
+                Return list of text lines, each one of which is no longer
+                than max_line_length, with the second and subsequent lines
+                being indented by the number of specified num_indent_spaces;
+                each line in the list ends with the '\n' character
+                """
+                if len(text) < max_line_length:
+                    # all text fits on one line
+                    line = text + '\n'
+                    return [line]
+                # all text does not fix on one line
+                first_line = True
+                line_list = list()
+                words = text.split()
+                while len(words) > 0:
+                    if first_line:
+                        line = ''
+                        first_line = False
+                    else:
+                        line = ' ' * num_indent_spaces
+                    while (len(words) > 0 and
+                           (len(words[0]) + len(line)) < max_line_length):
+                        line += words.pop(0) + ' '
+                    line = line[:-1] + '\n'
+                    line_list.append(line)
+                return line_list
+
+            # begin main logic of param_doc
+            # pylint: disable=too-many-nested-blocks
+            assert len(years) == len(change.keys())
+            basevals = getattr(base, '_vals', None)
+            assert isinstance(basevals, dict)
+            doc = ''
+            for year in years:
+                # write year
+                base.set_year(year)
+                doc += '{}:\n'.format(year)
+                # write info for each param in year
+                for param in sorted(change[year].keys()):
+                    # ... write param:value line
+                    pval = change[year][param]
+                    if isinstance(pval, list):
+                        pval = pval[0]
+                        if basevals[param]['boolean_value']:
+                            if isinstance(pval, list):
+                                pval = [True if item else
+                                        False for item in pval]
+                            else:
+                                pval = bool(pval)
+                    doc += ' {} : {}\n'.format(param, pval)
+                    # ... write optional param-index line
+                    if isinstance(pval, list):
+                        pval = basevals[param]['col_label']
+                        pval = [str(item) for item in pval]
+                        doc += ' ' * (4 + len(param)) + '{}\n'.format(pval)
+                    # ... write name line
+                    if param.endswith('_cpi'):
+                        rootparam = param[:-4]
+                        name = '{} inflation indexing status'.format(rootparam)
+                    else:
+                        name = basevals[param]['long_name']
+                    for line in lines('name: ' + name, 6):
+                        doc += '  ' + line
+                    # ... write optional desc line
+                    if not param.endswith('_cpi'):
+                        desc = basevals[param]['description']
+                        for line in lines('desc: ' + desc, 6):
+                            doc += '  ' + line
+                    # ... write baseline_value line
+                    if isinstance(base, Policy):
+                        if param.endswith('_cpi'):
+                            rootparam = param[:-4]
+                            bval = basevals[rootparam].get('cpi_inflated',
+                                                           False)
+                        else:
+                            bval = getattr(base, param[1:], None)
+                            if isinstance(bval, np.ndarray):
+                                # pylint: disable=no-member
+                                bval = bval.tolist()
+                                if basevals[param]['boolean_value']:
+                                    bval = [True if item else
+                                            False for item in bval]
+                            elif basevals[param]['boolean_value']:
+                                bval = bool(bval)
+                        doc += '  baseline_value: {}\n'.format(bval)
+                    else:  # if base is Growdiff object
+                        # all Growdiff parameters have zero as default value
+                        doc += '  baseline_value: 0.0\n'
+            return doc
+
+        # begin main logic of reform_documentation
+        # create Policy object with pre-reform (i.e., baseline) values
+        # ... create gdiff_baseline object
+        gdb = Growdiff()
+        gdb.update_growdiff(params['growdiff_baseline'])
+        # ... create Growfactors clp object that incorporates gdiff_baseline
+        gfactors_clp = Growfactors()
+        gdb.apply_to(gfactors_clp)
+        # ... create Policy object containing pre-reform parameter values
+        clp = Policy(gfactors=gfactors_clp)
+        # generate documentation text
+        doc = 'REFORM DOCUMENTATION\n'
+        doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
+        years = sorted(params['growdiff_baseline'].keys())
+        if len(years) == 0:
+            doc += 'none: using default baseline growth assumptions\n'
+        else:
+            doc += param_doc(years, params['growdiff_baseline'], gdb)
+        doc += 'Policy Reform Parameter Values by Year:\n'
+        years = sorted(params['policy'].keys())
+        if len(years) == 0:
+            doc += 'none: using current-law policy parameters\n'
+        else:
+            doc += param_doc(years, params['policy'], clp)
+        return doc
 
     # ----- begin private methods of Calculator class -----
 
@@ -498,7 +661,7 @@ class Calculator(object):
         IITAX(self.policy, self.records)
 
     @staticmethod
-    def _read_json_policy_reform_text(text_string, arrays_not_lists,
+    def _read_json_policy_reform_text(text_string,
                                       growdiff_baseline_dict,
                                       growdiff_response_dict):
         """
@@ -519,8 +682,7 @@ class Calculator(object):
 
         Returned dictionary prdict has integer years as primary keys and
         string parameters as secondary keys.  This returned dictionary is
-        suitable as the argument to the Policy implement_reform(prdict)
-        method ONLY if the function argument arrays_not_lists is True.
+        suitable as the argument to the Policy implement_reform(prdict) method.
         """
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
@@ -555,11 +717,11 @@ class Calculator(object):
         tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'],
                                                       growdiff_baseline_dict,
                                                       growdiff_response_dict)
-        prdict = Calculator._convert_parameter_dict(tdict, arrays_not_lists)
+        prdict = Calculator._convert_parameter_dict(tdict)
         return prdict
 
     @staticmethod
-    def _read_json_econ_assump_text(text_string, arrays_not_lists):
+    def _read_json_econ_assump_text(text_string):
         """
         Strip //-comments from text_string and return 4 dict based on the JSON.
 
@@ -588,8 +750,7 @@ class Calculator(object):
         These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the Behavior.update_behavior(behv_dict) method, or
-        the Growdiff.update_growdiff(gdiff_dict) method,
-        but ONLY if the function argument arrays_not_lists is True.
+        the Growdiff.update_growdiff(gdiff_dict) method.
         """
         # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
@@ -623,29 +784,24 @@ class Calculator(object):
                 raise ValueError(msg.format(rkey))
         # convert the assumption dictionaries in raw_dict
         key = 'consumption'
-        cons_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                       arrays_not_lists)
+        cons_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'behavior'
-        behv_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                       arrays_not_lists)
+        behv_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_baseline'
-        gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                             arrays_not_lists)
+        gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_response'
-        gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key],
-                                                             arrays_not_lists)
+        gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
         return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict)
 
     @staticmethod
-    def _convert_parameter_dict(param_key_dict, arrays_not_lists):
+    def _convert_parameter_dict(param_key_dict):
         """
         Converts specified param_key_dict into a dictionary whose primary
-        keys are calendary years, and hence, is suitable as the argument to
+        keys are calendar years, and hence, is suitable as the argument to
         the Policy.implement_reform() method, or
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or
-        the Growdiff.update_growdiff() method,
-        but only if function argument is arrays_not_lists=True.
+        the Growdiff.update_growdiff() method.
 
         Specified input dictionary has string parameter primary keys and
         string years as secondary keys.
@@ -670,10 +826,7 @@ class Calculator(object):
                     raise ValueError(msg.format(skey))
                 else:
                     year = int(skey)
-                if isinstance(val, list) and arrays_not_lists:
-                    rdict[year] = np.array(val)
-                else:
-                    rdict[year] = val
+                rdict[year] = val
             year_param[pkey] = rdict
         # convert year_param dictionary to year_key_dict dictionary
         year_key_dict = dict()

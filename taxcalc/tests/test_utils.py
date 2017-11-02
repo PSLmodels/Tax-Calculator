@@ -17,6 +17,7 @@ import pytest
 from taxcalc import Policy, Records, Behavior, Calculator
 from taxcalc.utils import (STATS_COLUMNS,
                            DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
+                           DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
                            create_distribution_table, create_difference_table,
                            weighted_count_lt_zero, weighted_count_gt_zero,
                            weighted_count, weighted_sum, weighted_mean,
@@ -59,102 +60,157 @@ def test_validity_of_name_lists():
 
 
 def test_create_tables(cps_subsample):
+    # pylint: disable=too-many-statements
     # create a current-law Policy object and Calculator object calc1
-    policy1 = Policy()
-    records1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=policy1, records=records1)
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
     reform = {2013: {'_II_rt1': [0.15]}}
-    policy2 = Policy()
-    policy2.implement_reform(reform)
-    records2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=policy2, records=records2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
 
     # test creating various difference tables
+
     diff = create_difference_table(calc1.records, calc2.records,
                                    groupby='large_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
-    expected = ['0.00%',
-                '0.01%',
-                '0.41%',
-                '0.84%',
-                '0.92%',
-                '1.10%',
-                '1.15%',
-                '1.04%',
-                '0.78%',
-                '0.27%',
-                'n/a']
-    assert np.array_equal(diff['perc_aftertax'], expected)
+    expected = [0.00,
+                0.01,
+                0.41,
+                0.84,
+                0.92,
+                1.10,
+                1.15,
+                1.04,
+                0.78,
+                0.27,
+                np.nan]
+    assert np.allclose(diff['perc_aftertax'], expected,
+                       atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
                                    groupby='webapp_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
-    expected = ['0.00%',
-                '0.01%',
-                '0.41%',
-                '0.84%',
-                '0.92%',
-                '1.10%',
-                '1.15%',
-                '1.04%',
-                '0.78%',
-                '0.30%',
-                '0.08%',
-                '0.07%',
-                'n/a']
-    assert np.array_equal(diff['perc_aftertax'], expected)
+    expected = [0.00,
+                0.01,
+                0.41,
+                0.84,
+                0.92,
+                1.10,
+                1.15,
+                1.04,
+                0.78,
+                0.30,
+                0.08,
+                0.07,
+                np.nan]
+    assert np.allclose(diff['perc_aftertax'], expected,
+                       atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
                                    groupby='small_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
-    expected = ['0.00%',
-                '0.01%',
-                '0.02%',
-                '0.16%',
-                '0.64%',
-                '0.82%',
-                '0.87%',
-                '0.92%',
-                '1.10%',
-                '1.15%',
-                '1.04%',
-                '0.78%',
-                '0.30%',
-                '0.08%',
-                '0.09%',
-                '0.07%',
-                '0.05%',
-                '0.02%',
-                '0.00%',
-                'n/a']
-    assert np.array_equal(diff['perc_aftertax'], expected)
+    expected = [0.00,
+                0.01,
+                0.02,
+                0.16,
+                0.64,
+                0.82,
+                0.87,
+                0.92,
+                1.10,
+                1.15,
+                1.04,
+                0.78,
+                0.30,
+                0.08,
+                0.09,
+                0.07,
+                0.05,
+                0.02,
+                0.00,
+                np.nan]
+    assert np.allclose(diff['perc_aftertax'], expected,
+                       atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
                                    groupby='weighted_deciles',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
-    expected = ['0.00%',
-                '0.02%',
-                '0.35%',
-                '0.79%',
-                '0.89%',
-                '0.97%',
-                '1.11%',
-                '1.18%',
-                '0.91%',
-                '0.50%',
-                'n/a']
-    assert np.array_equal(diff['perc_aftertax'], expected)
+    expected = [14931,
+                276555,
+                7728872,
+                22552703,
+                34008512,
+                50233787,
+                76811377,
+                111167087,
+                123226970,
+                111414038,
+                537434832,
+                66560891,
+                39571078,
+                5282069]
+    assert np.allclose(diff['tot_change'], expected,
+                       atol=0.5, rtol=0.0)
+    expected = [0.00,
+                0.05,
+                1.44,
+                4.20,
+                6.33,
+                9.35,
+                14.29,
+                20.68,
+                22.93,
+                20.73,
+                100.00,
+                12.38,
+                7.36,
+                0.98]
+    assert np.allclose(diff['share_of_change'], expected,
+                       atol=0.005, rtol=0.0)
+    expected = [0.00,
+                0.02,
+                0.35,
+                0.79,
+                0.89,
+                0.97,
+                1.11,
+                1.18,
+                0.91,
+                0.50,
+                np.nan,
+                0.70,
+                0.37,
+                0.06]
+    assert np.allclose(diff['perc_aftertax'], expected,
+                       atol=0.005, rtol=0.0, equal_nan=True)
+    expected = [-0.00,
+                -0.02,
+                -0.35,
+                -0.79,
+                -0.89,
+                -0.97,
+                -1.11,
+                -1.18,
+                -0.91,
+                -0.50,
+                np.nan,
+                -0.70,
+                -0.37,
+                -0.06]
+    assert np.allclose(diff['pc_aftertaxinc'], expected,
+                       atol=0.005, rtol=0.0, equal_nan=True)
 
     with pytest.raises(ValueError):
         create_difference_table(calc1.records, calc2.records,
@@ -163,11 +219,13 @@ def test_create_tables(cps_subsample):
                                 tax_to_diff='iitax')
 
     # test creating various distribution tables
+
     dist = create_distribution_table(calc2.records,
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
+
     expected = [-8851215,
                 -99666120,
                 -123316561,
@@ -178,7 +236,10 @@ def test_create_tables(cps_subsample):
                 978487989,
                 1709504845,
                 7631268907,
-                10605027933]
+                10605027933,
+                4171055704,
+                2751003155,
+                709210048]
     assert np.allclose(dist['iitax'], expected,
                        atol=0.5, rtol=0.0)
     expected = [1202,
@@ -191,8 +252,43 @@ def test_create_tables(cps_subsample):
                 112788,
                 131260,
                 146001,
-                583832]
+                583832,
+                75279,
+                56819,
+                13903]
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+    expected = [158456013,
+                1351981790,
+                2383726863,
+                3408544081,
+                4569232020,
+                6321944661,
+                8520304098,
+                11817197884,
+                17299173380,
+                41117720202,
+                96948280992,
+                21687950798,
+                15093608351,
+                4336161053]
+    assert np.allclose(dist['expanded_income'].tolist(), expected,
+                       atol=0.5, rtol=0.0)
+    expected = [147367698,
+                1354827269,
+                2351611947,
+                3192405234,
+                4157431713,
+                5454468907,
+                7125788590,
+                9335613303,
+                13417244946,
+                29691084873,
+                76227844481,
+                15608893056,
+                10854804442,
+                3227387375]
+    assert np.allclose(dist['aftertax_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
     dist = create_distribution_table(calc2.records,
@@ -256,7 +352,7 @@ def test_diff_count_precision():
     """
     Estimate bootstrap standard error and confidence interval for count
     statistics ('tax_cut' and 'tax_inc') in difference table generated
-    using puf.csv input data taking no account of dropq fuzzing and
+    using puf.csv input data taking no account of tbi privacy fuzzing and
     assuming all filing units in each bin have the same weight.  These
     assumptions imply that the estimates produced here are likely to
     over-estimate the precision of the count statistics.
@@ -574,8 +670,8 @@ def test_add_quantile_bins():
 
 
 def test_dist_table_sum_row(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=recs)
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
     tb1 = create_distribution_table(calc.records,
                                     groupby='small_income_bins',
@@ -594,17 +690,15 @@ def test_dist_table_sum_row(cps_subsample):
 
 
 def test_diff_table_sum_row(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
     # create a current-law Policy object and Calculator calc1
-    policy1 = Policy()
-    records1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=policy1, records=records1)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator calc2
     reform = {2013: {'_II_rt4': [0.56]}}
-    policy2 = Policy()
-    policy2.implement_reform(reform)
-    records2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=policy2, records=records2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
     # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1.records, calc2.records,
@@ -616,7 +710,7 @@ def test_diff_table_sum_row(cps_subsample):
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
     non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change',
-                      'perc_aftertax']
+                      'perc_aftertax', 'pc_aftertaxinc']
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
@@ -628,21 +722,21 @@ def test_mtr_graph_data(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars='bad',
-                               income_measure='agi',
-                               dollar_weighting=True)
+        mtr_graph_data(calc, calc, mars='bad',
+                       income_measure='agi',
+                       dollar_weighting=True)
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars=0,
-                               income_measure='expanded_income',
-                               dollar_weighting=True)
+        mtr_graph_data(calc, calc, mars=0,
+                       income_measure='expanded_income',
+                       dollar_weighting=True)
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars=list())
+        mtr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
+        mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, mtr_measure='badtax')
+        mtr_graph_data(calc, calc, mtr_measure='badtax')
     with pytest.raises(ValueError):
-        gdata = mtr_graph_data(calc, calc, income_measure='badincome')
+        mtr_graph_data(calc, calc, income_measure='badincome')
     gdata = mtr_graph_data(calc, calc, mars=1,
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
@@ -651,25 +745,25 @@ def test_mtr_graph_data(cps_subsample):
 
 
 def test_atr_graph_data(cps_subsample):
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample))
+    pol = Policy()
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=pol, records=rec)
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, mars='bad')
+        atr_graph_data(calc, calc, mars='bad')
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, mars=0)
+        atr_graph_data(calc, calc, mars=0)
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, mars=list())
+        atr_graph_data(calc, calc, mars=list())
     with pytest.raises(ValueError):
-        gdata = atr_graph_data(calc, calc, atr_measure='badtax')
+        atr_graph_data(calc, calc, atr_measure='badtax')
     gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
     gdata = atr_graph_data(calc, calc, atr_measure='itax')
     gdata = atr_graph_data(calc, calc, atr_measure='ptax')
     assert isinstance(gdata, dict)
     with pytest.raises(ValueError):
-        calcx = Calculator(policy=Policy(),
-                           records=Records.cps_constructor(data=cps_subsample))
+        calcx = Calculator(policy=pol, records=rec)
         calcx.advance_to_year(2020)
-        gdata = atr_graph_data(calcx, calc)
+        atr_graph_data(calcx, calc)
 
 
 def test_xtr_graph_plot(cps_subsample):
@@ -721,29 +815,30 @@ def test_write_graph_file(cps_subsample):
 
 
 def test_multiyear_diagnostic_table(cps_subsample):
-    behv = Behavior()
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample),
-                      behavior=behv)
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    beh = Behavior()
+    calc = Calculator(policy=pol, records=rec, behavior=beh)
     with pytest.raises(ValueError):
-        adt = multiyear_diagnostic_table(calc, 0)
+        multiyear_diagnostic_table(calc, 0)
     with pytest.raises(ValueError):
-        adt = multiyear_diagnostic_table(calc, 20)
+        multiyear_diagnostic_table(calc, 20)
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, pd.DataFrame)
-    behv.update_behavior({2013: {'_BE_sub': [0.3]}})
+    beh.update_behavior({2013: {'_BE_sub': [0.3]}})
+    calc = Calculator(policy=pol, records=rec, behavior=beh)
     assert calc.behavior.has_response()
     adt = multiyear_diagnostic_table(calc, 3)
     assert isinstance(adt, pd.DataFrame)
 
 
 def test_myr_diag_table_wo_behv(cps_subsample):
-    pol = Policy()
     reform = {
         2013: {
             '_II_rt7': [0.33],
             '_PT_rt7': [0.33],
         }}
+    pol = Policy()
     pol.implement_reform(reform)
     calc = Calculator(policy=pol,
                       records=Records.cps_constructor(data=cps_subsample))
@@ -791,19 +886,17 @@ def test_ce_aftertax_income(cps_subsample):
     cmin = 1000
     assert con == round(certainty_equivalent(con, 0, cmin), 6)
     # test with require_no_agg_tax_change equal to False
+    rec = Records.cps_constructor(data=cps_subsample)
     cyr = 2020
     # specify calc1 and calc_all() for cyr
-    pol1 = Policy()
-    rec1 = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=pol1, records=rec1)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     calc1.advance_to_year(cyr)
     calc1.calc_all()
     # specify calc2 and calc_all() for cyr
-    pol2 = Policy()
     reform = {2018: {'_II_em': [0.0]}}
-    pol2.implement_reform(reform)
-    rec2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=pol2, records=rec2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
     cedict = ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=False)
@@ -851,3 +944,9 @@ def test_bootstrap_se_ci():
     assert abs(bsd['se'] / 23.02 - 1) < 0.02
     assert abs(bsd['cilo'] / 45.9 - 1) < 0.02
     assert abs(bsd['cihi'] / 135.4 - 1) < 0.03
+
+
+def test_table_columns_labels():
+    # check that length of two lists are the same
+    assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
+    assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)

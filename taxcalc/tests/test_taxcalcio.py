@@ -397,9 +397,12 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
-    # if tries were successful, remove the output file
+    # if tries were successful, remove output file and doc file
     if os.path.isfile(outfilepath):
         os.remove(outfilepath)
+    docfilepath = outfilepath.replace('.csv', '-doc.text')
+    if os.path.isfile(docfilepath):
+        os.remove(docfilepath)
 
 
 def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):

@@ -11,6 +11,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
         "value": [0.0],
         "validations": {"min": 0.0}
     },
@@ -27,6 +29,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
         "value": [0.0],
         "validations": {"max": 0.0}
     },
@@ -43,6 +47,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
         "value": [false],
         "validations": {"min": false, "max": true}
     },
@@ -59,6 +65,8 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
         "value": [0.0],
         "validations": {"max": 0.0}
     },
@@ -75,6 +83,8 @@
         "cpi_inflated": false,
         "col_var": "c00100",
         "col_label": ["AGI < 50k", "50k <= AGI < 100k", "100k <= AGI"],
+        "boolean_value": false,
+        "integer_value": false,
         "value": [[0.0, 0.0, 0.0]],
         "validations": {"max": 0.0}
     }

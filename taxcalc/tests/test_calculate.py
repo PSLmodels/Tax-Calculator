@@ -3,13 +3,11 @@ import json
 from io import StringIO
 import tempfile
 import copy
+import six
 import pytest
 import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
-from taxcalc import create_distribution_table
-from taxcalc import create_difference_table
-from taxcalc import create_diagnostic_table
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -54,46 +52,46 @@ def fixture_policyfile():
     os.remove(f.name)
 
 
-def test_make_Calculator(cps_subsample):
-    parm = Policy(start_year=2014, num_years=9)
-    assert parm.current_year == 2014
-    recs = Records.cps_constructor(data=cps_subsample)
+def test_make_calculator(cps_subsample):
+    pol = Policy(start_year=2014, num_years=9)
+    assert pol.current_year == 2014
+    rec = Records.cps_constructor(data=cps_subsample)
     consump = Consumption()
     consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == 2013
-    calc = Calculator(policy=parm, records=recs, consumption=consump,
-                      behavior=Behavior())
+    calc = Calculator(policy=pol, records=rec,
+                      consumption=consump, behavior=Behavior())
     assert calc.current_year == 2014
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
-        calc = Calculator(policy=None, records=recs)
+        Calculator(policy=None, records=rec)
     with pytest.raises(ValueError):
-        calc = Calculator(policy=parm, records=None)
+        Calculator(policy=pol, records=None)
     with pytest.raises(ValueError):
-        calc = Calculator(policy=parm, records=recs, behavior=list())
+        Calculator(policy=pol, records=rec, behavior=list())
     with pytest.raises(ValueError):
-        calc = Calculator(policy=parm, records=recs, consumption=list())
+        Calculator(policy=pol, records=rec, consumption=list())
 
 
-def test_make_Calculator_deepcopy(cps_subsample):
-    parm = Policy()
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=parm, records=recs)
+def test_make_calculator_deepcopy(cps_subsample):
+    pol = Policy()
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=pol, records=rec)
     calc2 = copy.deepcopy(calc1)
     assert isinstance(calc2, Calculator)
 
 
-def test_make_Calculator_with_policy_reform(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    year = recs.current_year
+def test_make_calculator_with_policy_reform(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
-    reform = {2013: {'_II_em': np.array([4000]), '_II_em_cpi': False,
+    reform = {2013: {'_II_em': [4000], '_II_em_cpi': False,
                      '_STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
-                     "_STD_Aged_cpi": False}}
+                     '_STD_Aged_cpi': False}}
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
-    calc = Calculator(policy=pol, records=recs)
+    calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
     assert calc.policy.II_em == 4000
@@ -107,9 +105,9 @@ def test_make_Calculator_with_policy_reform(cps_subsample):
                        np.array([1600, 1300, 1300, 1600, 1600]))
 
 
-def test_make_Calculator_with_multiyear_reform(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    year = recs.current_year
+def test_make_calculator_with_multiyear_reform(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
     reform = {2015: {}, 2016: {}}
@@ -118,7 +116,7 @@ def test_make_Calculator_with_multiyear_reform(cps_subsample):
     reform[2016]['_STD_Aged'] = [[1600, 1300, 1600, 1300, 1600]]
     pol.implement_reform(reform)
     # create a Calculator object using this policy-reform
-    calc = Calculator(policy=pol, records=recs)
+    calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
     assert calc.policy.II_em == 3950
@@ -133,7 +131,7 @@ def test_make_Calculator_with_multiyear_reform(cps_subsample):
                        np.array([1600, 1300, 1600, 1300, 1600]))
 
 
-def test_Calculator_advance_to_year(cps_subsample):
+def test_calculator_advance_to_year(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     calc = Calculator(policy=pol, records=rec)
@@ -143,21 +141,21 @@ def test_Calculator_advance_to_year(cps_subsample):
         calc.advance_to_year(2015)
 
 
-def test_make_Calculator_raises_on_no_policy(cps_subsample):
+def test_make_calculator_raises_on_no_policy(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     with pytest.raises(ValueError):
-        calc = Calculator(records=rec)
+        Calculator(records=rec)
 
 
-def test_Calculator_attr_access_to_policy(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=recs)
+def test_calculator_attr_access_to_policy(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=rec)
     assert hasattr(calc.records, 'c01000')
     assert hasattr(calc.policy, '_AMT_Child_em')
     assert hasattr(calc, 'policy')
 
 
-def test_Calculator_current_law_version(cps_subsample):
+def test_calculator_current_law_version(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     reform = {2013: {'_II_rt7': [0.45]}}
@@ -169,35 +167,9 @@ def test_Calculator_current_law_version(cps_subsample):
     assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
 
 
-def test_Calculator_create_distribution_table(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=recs)
-    calc.calc_all()
-    dist_labels = ['Returns', 'AGI', 'Standard Deduction Filers',
-                   'Standard Deduction', 'Itemizers',
-                   'Itemized Deduction', 'Personal Exemption',
-                   'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers',
-                   'AMT', 'Tax before Credits', 'Non-refundable Credits',
-                   'Tax before Refundable Credits', 'Refundable Credits',
-                   'Individual Income Tax Liabilities',
-                   'Payroll Tax Liablities',
-                   'Combined Payroll and Individual Income Tax Liabilities']
-    dt1 = create_distribution_table(calc.records,
-                                    groupby="weighted_deciles",
-                                    income_measure='expanded_income',
-                                    result_type="weighted_sum")
-    dt1.columns = dist_labels
-    dt2 = create_distribution_table(calc.records,
-                                    groupby="small_income_bins",
-                                    income_measure='expanded_income',
-                                    result_type="weighted_avg")
-    assert isinstance(dt1, pd.DataFrame)
-    assert isinstance(dt2, pd.DataFrame)
-
-
-def test_Calculator_mtr(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=recs)
+def test_calculator_mtr(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=rec)
     recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
     (mtr_ptx, mtr_itx, mtr_combined) = calc.mtr(variable_str='e00200p',
                                                 zero_out_calculated_vars=True)
@@ -207,7 +179,7 @@ def test_Calculator_mtr(cps_subsample):
     assert np.array_equal(mtr_combined, mtr_ptx) is False
     assert np.array_equal(mtr_ptx, mtr_itx) is False
     with pytest.raises(ValueError):
-        (_, _, mtr_combined) = calc.mtr(variable_str='bad_income_type')
+        calc.mtr(variable_str='bad_income_type')
     (_, _, mtr_combined) = calc.mtr(variable_str='e00200s')
     assert type(mtr_combined) == np.ndarray
     (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
@@ -221,7 +193,7 @@ def test_Calculator_mtr(cps_subsample):
     assert type(mtr_combined) == np.ndarray
 
 
-def test_Calculator_mtr_when_PT_rates_differ():
+def test_calculator_mtr_when_PT_rates_differ():
     reform = {2013: {'_II_rt1': [0.40],
                      '_II_rt2': [0.40],
                      '_II_rt3': [0.40],
@@ -240,48 +212,17 @@ def test_Calculator_mtr_when_PT_rates_differ():
         u'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
         u'1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
     )
-    pol1 = Policy()
-    rec1 = Records(pd.read_csv(StringIO(funit)))
-    calc1 = Calculator(policy=pol1, records=rec1)
+    rec = Records(pd.read_csv(StringIO(funit)))
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
     (_, mtr1, _) = calc1.mtr(variable_str='p23250')
-    pol2 = Policy()
-    pol2.implement_reform(reform)
-    rec2 = Records(pd.read_csv(StringIO(funit)))
-    calc2 = Calculator(policy=pol2, records=rec2)
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
     (_, mtr2, _) = calc2.mtr(variable_str='p23250')
     assert np.allclose(mtr1, mtr2, rtol=0.0, atol=1e-06)
 
 
-def test_Calculator_create_difference_table(cps_subsample):
-    # create current-law Policy object and use to create Calculator calc1
-    cps1 = Records.cps_constructor(data=cps_subsample)
-    year = cps1.current_year
-    calc1 = Calculator(policy=Policy(), records=cps1)
-    calc1.calc_all()
-    # create policy-reform Policy object and use to create Calculator calc2
-    policy2 = Policy()
-    reform = {year: {'_II_rt7': [0.45]}}
-    policy2.implement_reform(reform)
-    cps2 = Records.cps_constructor(data=cps_subsample)
-    calc2 = Calculator(policy=policy2, records=cps2)
-    calc2.calc_all()
-    # create difference table and check that it is a Pandas DataFrame
-    dtable = create_difference_table(calc1.records, calc2.records,
-                                     groupby='weighted_deciles',
-                                     income_measure='expanded_income',
-                                     tax_to_diff='payrolltax')
-    assert isinstance(dtable, pd.DataFrame)
-
-
-def test_Calculator_create_diagnostic_table(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=recs)
-    calc.calc_all()
-    adt = create_diagnostic_table(calc)
-    assert isinstance(adt, pd.DataFrame)
-
-
-def test_make_Calculator_increment_years_first(cps_subsample):
+def test_make_calculator_increment_years_first(cps_subsample):
     # create Policy object with policy reform
     syr = 2013
     pol = Policy(start_year=syr, num_years=5)
@@ -293,8 +234,8 @@ def test_make_Calculator_increment_years_first(cps_subsample):
     reform[2016]['_II_em_cpi'] = False
     pol.implement_reform(reform)
     # create Calculator object with Policy object as modified by reform
-    recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=pol, records=recs)
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=pol, records=rec)
     # compare expected policy parameter values with those embedded in calc
     irates = pol.inflation_rates()
     irate2015 = irates[2015 - syr]
@@ -316,6 +257,7 @@ def test_ID_HC_vs_BS(cps_subsample):
     Test that complete haircut of itemized deductions produces same
     results as a 100% benefit surtax with no benefit deduction.
     """
+    rec = Records.cps_constructor(data=cps_subsample)
     # specify complete-haircut reform policy and Calculator object
     hc_reform = {2013: {'_ID_Medical_hc': [1.0],
                         '_ID_StateLocalTax_hc': [1.0],
@@ -326,48 +268,45 @@ def test_ID_HC_vs_BS(cps_subsample):
                         '_ID_Charity_hc': [1.0]}}
     hc_policy = Policy()
     hc_policy.implement_reform(hc_reform)
-    hc_recs = Records.cps_constructor(data=cps_subsample)
-    hc_calc = Calculator(policy=hc_policy, records=hc_recs)
+    hc_calc = Calculator(policy=hc_policy, records=rec)
+    hc_calc.calc_all()
     # specify benefit-surtax reform policy and Calculator object
     bs_reform = {2013: {'_ID_BenefitSurtax_crt': [0.0],
                         '_ID_BenefitSurtax_trt': [1.0]}}
     bs_policy = Policy()
     bs_policy.implement_reform(bs_reform)
-    bs_recs = Records.cps_constructor(data=cps_subsample)
-    bs_calc = Calculator(policy=bs_policy, records=bs_recs)
-    # compare calculated tax results generated by the two reforms
-    hc_calc.calc_all()
+    bs_calc = Calculator(policy=bs_policy, records=rec)
     bs_calc.calc_all()
+    # compare calculated tax results generated by the two reforms
     assert np.allclose(hc_calc.records.payrolltax,
                        bs_calc.records.payrolltax)
     assert np.allclose(hc_calc.records.iitax,
                        bs_calc.records.iitax)
 
 
-def test_Calculator_using_nonstd_input(rawinputfile):
+def test_calculator_using_nonstd_input(rawinputfile):
     # check Calculator handling of raw, non-standard input data with no aging
-    policy = Policy()
-    policy.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
-    nonpuf = Records(data=rawinputfile.name,
+    pol = Policy()
+    pol.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
+    nonstd = Records(data=rawinputfile.name,
                      gfactors=None,  # keeps raw data unchanged
                      weights=None,
                      start_year=RAWINPUTFILE_YEAR)  # set raw input data year
-    assert nonpuf.dim == RAWINPUTFILE_FUNITS
-    calc = Calculator(policy=policy,
-                      records=nonpuf,
+    assert nonstd.dim == RAWINPUTFILE_FUNITS
+    calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == RAWINPUTFILE_YEAR
     calc.calc_all()
-    exp_iitax = np.zeros((nonpuf.dim,))
-    assert np.allclose(nonpuf.iitax, exp_iitax)
+    exp_iitax = np.zeros((nonstd.dim,))
+    assert np.allclose(calc.records.iitax, exp_iitax)
     mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)
-    exp_mtr_ptax = np.zeros((nonpuf.dim,))
+    exp_mtr_ptax = np.zeros((nonstd.dim,))
     exp_mtr_ptax.fill(0.153)
     assert np.allclose(mtr_ptax, exp_mtr_ptax)
 
 
 REFORM_CONTENTS = """
-// Example of a reform file suitable for read_json_param_files() function.
+// Example of a reform file suitable for read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within each "policy" object, the primary keys are parameters and
@@ -412,7 +351,7 @@ REFORM_CONTENTS = """
 @pytest.fixture(scope='module', name='reform_file')
 def fixture_reform_file():
     """
-    Temporary reform file for read_json_param_files() function.
+    Temporary reform file for read_json_param_objects() function.
     """
     rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     rfile.write(REFORM_CONTENTS)
@@ -427,7 +366,7 @@ def fixture_reform_file():
 
 
 ASSUMP_CONTENTS = """
-// Example of an assump file suitable for the read_json_param_files() function.
+// Example of assump file suitable for the read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within each "behavior", "consumption" and "growth" object, the
@@ -460,17 +399,6 @@ def fixture_assump_file():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_read_json_reform_file_two_ways(reform_file, assump_file):
-    """
-    Test when using file name and file contents in read_json_param_files
-    """
-    pd1 = Calculator.read_json_param_files(reform_file.name, assump_file.name,
-                                           arrays_not_lists=False)
-    pd2 = Calculator.read_json_param_files(REFORM_CONTENTS, ASSUMP_CONTENTS,
-                                           arrays_not_lists=False)
-    assert pd1 == pd2
-
-
 @pytest.mark.parametrize("set_year", [False, True])
 def test_read_json_reform_file_and_implement_reform(reform_file,
                                                     assump_file,
@@ -480,26 +408,26 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     that is then used to call implement_reform method and Calculate.calc_all()
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
-    policy = Policy()
+    pol = Policy()
     if set_year:
-        policy.set_year(2015)
-    param_dict = Calculator.read_json_param_files(reform_file.name,
-                                                  assump_file.name)
-    policy.implement_reform(param_dict['policy'])
-    syr = policy.start_year
-    amt_brk1 = policy._AMT_brk1
+        pol.set_year(2015)
+    param_dict = Calculator.read_json_param_objects(reform_file.name,
+                                                    assump_file.name)
+    pol.implement_reform(param_dict['policy'])
+    syr = pol.start_year
+    amt_brk1 = pol._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
     assert amt_brk1[2016 - syr] > 200000
     assert amt_brk1[2017 - syr] == 300000
     assert amt_brk1[2018 - syr] > 300000
-    ii_em = policy._II_em
+    ii_em = pol._II_em
     assert ii_em[2016 - syr] == 6000
     assert ii_em[2017 - syr] == 6000
     assert ii_em[2018 - syr] == 7500
     assert ii_em[2019 - syr] > 7500
     assert ii_em[2020 - syr] == 9000
     assert ii_em[2021 - syr] > 9000
-    amt_em = policy._AMT_em
+    amt_em = pol._AMT_em
     assert amt_em[2016 - syr, 0] > amt_em[2015 - syr, 0]
     assert amt_em[2017 - syr, 0] > amt_em[2016 - syr, 0]
     assert amt_em[2018 - syr, 0] == amt_em[2017 - syr, 0]
@@ -507,7 +435,7 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
     assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
     assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
-    add4aged = policy._ID_Medical_frt_add4aged
+    add4aged = pol._ID_Medical_frt_add4aged
     assert add4aged[2015 - syr] == -0.025
     assert add4aged[2016 - syr] == -0.025
     assert add4aged[2017 - syr] == 0.0
@@ -575,13 +503,13 @@ def fixture_bad3reformfile():
 def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
                                    bad3reformfile):
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(bad1reformfile.name, None)
+        Calculator.read_json_param_objects(bad1reformfile.name, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(bad2reformfile.name, None)
+        Calculator.read_json_param_objects(bad2reformfile.name, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(bad3reformfile.name, None)
+        Calculator.read_json_param_objects(bad3reformfile.name, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(list(), None)
+        Calculator.read_json_param_objects(list(), None)
 
 
 @pytest.fixture(scope='module', name='bad1assumpfile')
@@ -649,53 +577,48 @@ def fixture_bad3assumpfile():
 def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
                                    bad3assumpfile):
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, bad1assumpfile.name)
+        Calculator.read_json_param_objects(None, bad1assumpfile.name)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, bad2assumpfile.name)
+        Calculator.read_json_param_objects(None, bad2assumpfile.name)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, bad3assumpfile.name)
+        Calculator.read_json_param_objects(None, bad3assumpfile.name)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, 'unknown_file_name')
+        Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
-        Calculator.read_json_param_files(None, list())
+        Calculator.read_json_param_objects(None, list())
 
 
 def test_convert_parameter_dict():
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({2013: {'2013': [40000]}},
-                                                   arrays_not_lists=True)
+        Calculator._convert_parameter_dict({2013: {'2013': [40000]}})
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({'_II_em': {2013: [40000]}},
-                                                   arrays_not_lists=True)
+        Calculator._convert_parameter_dict({'_II_em': {2013: [40000]}})
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({4567: {2013: [40000]}},
-                                                   arrays_not_lists=True)
+        Calculator._convert_parameter_dict({4567: {2013: [40000]}})
     with pytest.raises(ValueError):
-        rdict = Calculator._convert_parameter_dict({'_II_em': 40000},
-                                                   arrays_not_lists=True)
-    rdict = Calculator._convert_parameter_dict({'_II_em': {'2013': [40000]}},
-                                               arrays_not_lists=False)
+        Calculator._convert_parameter_dict({'_II_em': 40000})
+    rdict = Calculator._convert_parameter_dict({'_II_em': {'2013': [40000]}})
     assert isinstance(rdict, dict)
 
 
 def test_calc_all(reform_file, rawinputfile):
     cyr = 2016
-    policy = Policy()
-    param_dict = Calculator.read_json_param_files(reform_file.name, None)
-    policy.implement_reform(param_dict['policy'])
-    policy.set_year(cyr)
-    nonpuf = Records(data=rawinputfile.name, gfactors=None,
+    pol = Policy()
+    param_dict = Calculator.read_json_param_objects(reform_file.name, None)
+    pol.implement_reform(param_dict['policy'])
+    pol.set_year(cyr)
+    nonstd = Records(data=rawinputfile.name, gfactors=None,
                      weights=None, start_year=cyr)
-    assert nonpuf.dim == RAWINPUTFILE_FUNITS
-    calc = Calculator(policy=policy,
-                      records=nonpuf,
+    assert nonstd.dim == RAWINPUTFILE_FUNITS
+    calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == cyr
     calc.calc_all()
 
 
 def test_translate_json_reform_suffixes_mars_indexed():
-    # test read_json_param_files(...) using MARS-indexed parameter suffixes
+    # test read_json_param_objects()
+    # using MARS-indexed parameter suffixes
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_STD_single": {"2018": [18000], "2016": [16000]},
@@ -709,9 +632,8 @@ def test_translate_json_reform_suffixes_mars_indexed():
         "_AWAGE": {"2013": [0.01]}},
       "growdiff_response": {}
     }"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=assump_json,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1,
+                                                assump=assump_json)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_STD": {"2016": [[16000.00, 12600.00, 6300.00,  9300.00, 12600.00]],
@@ -720,9 +642,8 @@ def test_translate_json_reform_suffixes_mars_indexed():
                "2019": [[18592.20, 13874.23, 6937.11, 10240.50, 19000.00]]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=assump_json,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2,
+                                                assump=assump_json)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -737,15 +658,14 @@ def test_translate_json_reform_suffixes_mars_indexed():
 
 
 def test_translate_json_reform_suffixes_mars_non_indexed():
-    # test read_json_param_files(...) using MARS-indexed parameter suffixes
+    # test read_json_param_objects()
+    # using MARS-indexed parameter suffixes
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_AMEDT_ec_joint": {"2018": [400000], "2016": [300000]},
       "_AMEDT_ec_separate": {"2017": [150000], "2019": [200000]}
     }}"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1, assump=None)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_AMEDT_ec": {"2016": [[200000, 300000, 125000, 200000, 200000]],
@@ -754,9 +674,7 @@ def test_translate_json_reform_suffixes_mars_non_indexed():
                     "2019": [[200000, 400000, 200000, 200000, 200000]]},
       "_II_em": {"2015": [15000], "2020": [20000]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2, assump=None)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -771,7 +689,8 @@ def test_translate_json_reform_suffixes_mars_non_indexed():
 
 
 def test_translate_json_reform_suffixes_eic():
-    # test read_json_param_files(...) using EIC-indexed parameter suffixes
+    # test read_json_param_objects(...)
+    # using EIC-indexed parameter suffixes
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_EITC_c_0kids": {"2018": [510], "2019": [510]},
@@ -779,18 +698,14 @@ def test_translate_json_reform_suffixes_eic():
       "_EITC_c_2kids": {"2018": [5616], "2019": [5616]},
       "_EITC_c_3+kids": {"2019": [6318], "2018": [6318]}
     }}"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1, assump=None)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_EITC_c": {"2019": [[510, 3400, 5616, 6318]],
                   "2018": [[510, 3400, 5616, 6318]]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2, assump=None)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -805,7 +720,8 @@ def test_translate_json_reform_suffixes_eic():
 
 
 def test_translate_json_reform_suffixes_idedtype():
-    # test read_json_param_files(...) using idedtype-indexed parameter suffixes
+    # test read_json_param_objects(...)
+    # using idedtype-indexed parameter suffixes
     json1 = """{"policy": {
       "_ID_BenefitCap_rt": {"2019": [0.2]},
       "_ID_BenefitCap_Switch_medical": {"2019": [false]},
@@ -815,9 +731,7 @@ def test_translate_json_reform_suffixes_idedtype():
       "_ID_BenefitCap_Switch_charity": {"2019": [false]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
-    pdict1 = Calculator.read_json_param_files(reform_filename=json1,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict1 = Calculator.read_json_param_objects(reform=json1, assump=None)
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
@@ -826,9 +740,7 @@ def test_translate_json_reform_suffixes_idedtype():
       },
       "_ID_BenefitCap_rt": {"2019": [0.2]}
     }}"""
-    pdict2 = Calculator.read_json_param_files(reform_filename=json2,
-                                              assump_filename=None,
-                                              arrays_not_lists=True)
+    pdict2 = Calculator.read_json_param_objects(reform=json2, assump=None)
     rdict2 = pdict2['policy']
     assert len(rdict2) == len(rdict1)
     for year in rdict2.keys():
@@ -846,9 +758,9 @@ def test_translate_json_reform_suffixes_idedtype():
                                atol=0.01, rtol=0.0)
 
 
-def test_read_json_param_files_with_suffixes_and_errors():
+def test_read_json_param_with_suffixes_and_errors():
     # test interaction of policy parameter suffixes and reform errors
-    # (fails without 0.10.2 bug fix as reported by Hank Doupe in TB PR#641)
+    # (fails without 0.10.2 bug fix as reported by Hank Doupe in PB PR#641)
     reform = {
         u'policy': {
             u'_II_brk4_separate': {u'2017': [5000.0]},
@@ -868,9 +780,77 @@ def test_read_json_param_files_with_suffixes_and_errors():
         }
     }
     json_reform = json.dumps(reform)
-    params = Calculator.read_json_param_files(json_reform, None)
+    params = Calculator.read_json_param_objects(json_reform, None)
     assert isinstance(params, dict)
     pol = Policy()
     pol.implement_reform(params['policy'])
     assert len(pol.reform_errors) > 0
     assert len(pol.reform_warnings) > 0
+
+
+def test_noreform_documentation():
+    reform_json = """
+    {
+    "policy": {}
+    }
+    """
+    assump_json = """
+    {
+    "consumption": {},
+    "behavior": {},
+    "growdiff_baseline": {},
+    "growdiff_response": {}
+    }
+    """
+    params = Calculator.read_json_param_objects(reform_json, assump_json)
+    assert isinstance(params, dict)
+    actual_doc = Calculator.reform_documentation(params)
+    expected_doc = (
+        'REFORM DOCUMENTATION\n'
+        'Baseline Growth-Difference Assumption Values by Year:\n'
+        'none: using default baseline growth assumptions\n'
+        'Policy Reform Parameter Values by Year:\n'
+        'none: using current-law policy parameters\n'
+    )
+    assert actual_doc == expected_doc
+
+
+def test_reform_documentation():
+    reform_json = """
+    {
+    "policy": {
+      "_II_em_cpi": {"2016": false,
+                     "2018": true},
+      "_II_em": {"2016": [5000],
+                 "2018": [6000],
+                 "2020": [7000]},
+      "_EITC_indiv": {"2017": [true]},
+      "_STD_Aged_cpi": {"2016": false},
+      "_STD_Aged": {"2016": [[1600, 1300, 1300, 1600, 1600]],
+                    "2020": [[2000, 2000, 2000, 2000, 2000]]},
+      "_ID_BenefitCap_Switch_medical": {"2020": [false]},
+      "_ID_BenefitCap_Switch_casualty": {"2020": [false]},
+      "_ID_BenefitCap_Switch_misc": {"2020": [false]},
+      "_ID_BenefitCap_Switch_interest": {"2020": [false]},
+      "_ID_BenefitCap_Switch_charity": {"2020": [false]}
+      }
+    }
+    """
+    assump_json = """
+    {
+    "consumption": {},
+    "behavior": {},
+    // increase baseline inflation rate by one percentage point in 2014+
+    // (has no effect on known policy parameter values)
+    "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
+    "growdiff_response": {}
+    }
+    """
+    params = Calculator.read_json_param_objects(reform_json, assump_json)
+    assert isinstance(params, dict)
+    doc = Calculator.reform_documentation(params)
+    assert isinstance(doc, six.string_types)
+    dump = False  # set to True to print documentation and force test failure
+    if dump:
+        print(doc)
+        assert 1 == 2
