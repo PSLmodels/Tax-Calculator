@@ -191,7 +191,6 @@ def test_compatible_data(tests_path, cps_subsample):
 
     for pname in allparams:
         param = allparams[pname]
-        print pname
         max_listed = param['range']['max']
         # Handle links to other params or self
         if isinstance(max_listed, unicode):
