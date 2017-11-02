@@ -3483,7 +3483,7 @@
         "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
         "boolean_value": false,
         "integer_value": false,
-        "value": [[0, 0, 0, 0, 0]],
+        "value": [[0.0, 0.0, 0.0, 0.0, 0.0]],
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
