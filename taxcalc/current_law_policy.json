@@ -1012,6 +1012,26 @@
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"
     },
+        
+    "_ID_StateLocalTax_fraction_agi": {
+        "long_name": "Maximum state and local income and sales taxes deduction as a fraction of AGI.",
+        "description": "This decimal fraction sets the max state and local income and sales tax deduction as a decimal fraction of agi.",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Income And Sales Taxes",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "value": [1],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
 
     "_ID_StateLocalTax_c": {
         "long_name": "Ceiling on the amount of state and local income and sales taxes deduction allowed (dollars)",
