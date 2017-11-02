@@ -3404,7 +3404,7 @@
 
     "_DependentCredit_c": {
         "long_name": "Nonrefundable credit for dependents",
-        "description": "This nonrefundable credit is applied to dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
+        "description": "This nonrefundable credit is applied to (child and non-child) dependents and phases out with the Child Tax Credit. The dependent credit's phaseout begins when the CTC's phaseout ends.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "",
