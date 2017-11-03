@@ -1734,6 +1734,31 @@ def LumpSumTax(DSI, num, XTOT,
 
 
 @iterate_jit(nopython=True)
+def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben, ss_ben,
+                    other_ben, BEN_Benefit_switch, total_ben):
+    """
+    Calculate total benefit value
+    """
+    if not BEN_Benefit_switch[0]:  # SSI
+        ssi_ben = 0.
+    if not BEN_Benefit_switch[1]:  # SNAP
+        snap_ben = 0.
+    if not BEN_Benefit_switch[2]:  # Veterans Benefits
+        vet_ben = 0.
+    if not BEN_Benefit_switch[3]:  # Medicare
+        mcare_ben = 0.
+    if not BEN_Benefit_switch[4]:  # Medicaid
+        mcaid_ben = 0.
+    if not BEN_Benefit_switch[5]:  # Social Security
+        ss_ben = 0.
+    if not BEN_Benefit_switch[6]:  # Other benefits
+        other_ben = 0.
+    total_ben = (ssi_ben + snap_ben + vet_ben + mcare_ben + mcaid_ben +
+                 ss_ben + other_ben)
+    return total_ben
+
+
+@iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02400, c02500,
                  c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
                  expanded_income):

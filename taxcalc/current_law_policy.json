@@ -4800,5 +4800,27 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"
+    },
+
+    "_BEN_Benefit_switch": {
+        "long_name": "Benefit inclusion switch",
+        "description": "Benefit programs can be repealed by switching their indicator in this parameter to false.",
+        "section_1": "Benefits",
+        "section_2": "Benefit Repeal",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2014"],
+        "start_year": 2014,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": ["ssi", "snap", "vet", "medicare", "medicaid", "social security", "other"],
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [[true, true, true, true, true, true, true]],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     }
 }

@@ -659,6 +659,7 @@ class Calculator(object):
         C1040(self.policy, self.records)
         CTC_new(self.policy, self.records)
         IITAX(self.policy, self.records)
+        BenefitPrograms(self.policy, self.records)
 
     @staticmethod
     def _read_json_policy_reform_text(text_string,
