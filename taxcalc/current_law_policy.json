@@ -3073,7 +3073,7 @@
 
     "_PT_capitalshare": {
         "long_name": "Share of business income eligible for pass-through rates",
-        "description": "Share of business income, which can include Sch C, partnership/ S corporation, and other Sch E, eligible for the reduced pass-through rates",
+        "description": "Share of business income, which can include Sch C, partnership/ S corporation, and other Sch E, eligible for the reduced pass-through rates.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "",
