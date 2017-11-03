@@ -696,7 +696,8 @@ def test_clp_section_titles(tests_path):
         'Nonrefundable Credits': {
             'Child And Dependent Care': 0,
             'Child Tax Credit': 0,
-            'Misc. Credit Limits': 0
+            'Misc. Credit Limits': 0,
+            'Nonrefundable Personal Credit': 0
         },
         'Other Taxes': {
             'Net Investment Income Tax': 0,
