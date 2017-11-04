@@ -5,7 +5,7 @@
       "name": "Increase OASDI payroll tax rate by 1 pts",
       "output_type": "payrolltax",
       "compare_with": {},
-      "expected": "Tax-Calculator,63.1,65.6,69.1,71.7"
+      "expected": "Tax-Calculator,63.2,65.5,69.1,71.9"
   },
 
   "2": {
@@ -14,7 +14,7 @@
       "name": "Increase OASDI maximum taxable earnings to $177,500",
       "output_type": "payrolltax",
       "compare_with": {"Budget Options": [40, 46, 49, 51]},
-      "expected": "Tax-Calculator,48.7,57.3,53.4,55.1"
+      "expected": "Tax-Calculator,49.0,57.6,53.5,55.2"
   },
 
   "3": {
@@ -23,7 +23,7 @@
       "name": "Increase HI payroll tax rate by 1 pts",
       "output_type": "payrolltax",
       "compare_with": {"Budget Options": [73, 77, 82, 87]},
-      "expected": "Tax-Calculator,75.1,78.7,82.2,85.3"
+      "expected": "Tax-Calculator,75.3,78.5,82.2,85.6"
   },
 
   "4": {
@@ -53,7 +53,7 @@
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [39.3, 41.5, 44.1, 46.8],
                        "Budget Options": [35, 37, 38, 40]},
-      "expected": "Tax-Calculator,39.2,40.2,41.3,43.4"
+      "expected": "Tax-Calculator,39.2,40.2,40.9,42.6"
   },
 
   "7": {
@@ -71,7 +71,7 @@
       "name": "No deduction for student-loan interest",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [1.8, 1.9, 1.9, 2.1]},
-      "expected": "Tax-Calculator,1.8,2.0,2.1,2.2"
+      "expected": "Tax-Calculator,1.9,2.0,2.1,2.2"
   },
 
   "9": {
@@ -80,7 +80,7 @@
       "name": "Eliminate adjustment for self-employment tax",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,3.7,3.9,4.3,4.5"
+      "expected": "Tax-Calculator,3.7,3.8,4.3,4.4"
   },
 
 
@@ -91,7 +91,7 @@
       "name": "Eliminate adjustment for self-employed health insurance",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,5.5,5.6,5.8,5.8"
+      "expected": "Tax-Calculator,5.5,5.6,5.9,5.9"
   },
 
   "11": {
@@ -100,7 +100,7 @@
       "name": "Eliminate adjustment for alimony payments",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,3.1,3.3,3.5,3.4"
+      "expected": "Tax-Calculator,3.2,3.3,3.5,3.4"
   },
 
   "12": {
@@ -118,7 +118,7 @@
       "name": "Increase personal and dependent exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-33.0,-35.2,-40.0,-41.5"
+      "expected": "Tax-Calculator,-33.0,-31.5,-34.5,-35.9"
   },
 
   "14": {
@@ -127,7 +127,7 @@
       "name": "Increase personal exemption phaseout starting AGI by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.1,-0.1,-0.1,-0.2"
+      "expected": "Tax-Calculator,-0.1,-0.1,-0.1,-0.1"
   },
 
   "15": {
@@ -136,7 +136,7 @@
       "name": "Increase personal exemption phaseout rate by 1 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.3,0.3,0.3,0.3"
+      "expected": "Tax-Calculator,0.2,0.3,0.3,0.3"
   },
 
   "16": {
@@ -145,7 +145,7 @@
       "name": "Increase standard deduction by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-1.0,-2.6,-4.1,-4.3"
+      "expected": "Tax-Calculator,-1.0,-0.6,-1.1,-1.1"
   },
 
   "17": {
@@ -154,7 +154,7 @@
       "name": "Increase additional stdded for aged/blind by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.3,-0.3,-0.5,-0.5"
+      "expected": "Tax-Calculator,-0.3,-0.3,-0.3,-0.4"
   },
 
   "18": {
@@ -163,7 +163,7 @@
     "name": "Eliminate real estate itemded",
     "output_type": "iitax",
     "compare_with": {"Tax Expenditure": [34.0, 36.4, 38.8, 41.0]},
-    "expected": "Tax-Calculator,35.7,37.8,39.7,41.5"
+    "expected": "Tax-Calculator,36.1,37.8,39.7,41.7"
   },
 
   "19": {
@@ -172,7 +172,7 @@
       "name": "Eliminate interest-paid itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]},
-      "expected": "Tax-Calculator,70.6,76.0,80.8,85.4"
+      "expected": "Tax-Calculator,71.4,76.0,80.9,85.8"
   },
 
   "20": {
@@ -182,7 +182,7 @@
       "name": "Eliminate both real-estate and state-local-tax itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]},
-      "expected": "Tax-Calculator,98.9,104.8,110.5,115.7"
+      "expected": "Tax-Calculator,99.8,105.0,110.6,116.2"
   },
 
   "21": {
@@ -191,7 +191,7 @@
       "name": "Eliminate state-local-tax itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [59.2, 63.0, 66.9, 70.7]},
-      "expected": "Tax-Calculator,66.1,69.5,73.0,76.3"
+      "expected": "Tax-Calculator,66.7,69.6,73.1,76.6"
   },
 
   "22": {
@@ -200,7 +200,7 @@
       "name": "Eliminate medical itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [11.0, 12.4, 12.7, 13.9]},
-      "expected": "Tax-Calculator,6.9,7.4,6.9,7.2"
+      "expected": "Tax-Calculator,7.0,7.3,7.0,7.4"
   },
 
   "23": {
@@ -218,7 +218,7 @@
       "name": "Eliminate charity itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [45.6, 47.0, 48.5, 50.1]},
-      "expected": "Tax-Calculator,48.1,51.1,53.8,56.4"
+      "expected": "Tax-Calculator,48.7,51.2,53.8,56.7"
   },
 
   "25": {
@@ -236,7 +236,7 @@
       "name": "Increase itemded maximum phaseout from 80% to 90%",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.1,0.1,0.1,0.1"
+      "expected": "Tax-Calculator,0.2,0.1,0.1,0.2"
   },
 
   "27": {
@@ -245,7 +245,7 @@
       "name": "Increase itemded phaseout starting AGI by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.1,0.1,0.0,0.0"
+      "expected": "Tax-Calculator,0.1,0.2,0.2,0.2"
   },
 
   "28": {
@@ -254,7 +254,7 @@
       "name": "Increase itemded phaseout rate by 1 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,4.2,4.4,4.6,4.7"
+      "expected": "Tax-Calculator,4.3,4.4,4.7,4.9"
   },
 
   "29": {
@@ -264,7 +264,7 @@
       "name": "Limit tax value of itemded to 6% of AGI",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [11, 9, 8, 7]},
-      "expected": "Tax-Calculator,20.8,21.9,22.9,24.3"
+      "expected": "Tax-Calculator,21.1,21.6,22.7,24.1"
   },
 
   "30": {
@@ -278,7 +278,7 @@
       "name": "Raise LTCG/QDIV tax rates by 2 pts, no behavioral response",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,18.8,20.5,20.9,21.3"
+      "expected": "Tax-Calculator,20.8,19.2,21.0,22.0"
   },
 
   "31": {
@@ -293,7 +293,7 @@
       "name": "Raise LTCG/QDIV tax rates by 2 pts, with behavioral response",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [4.6, 5, 5.3, 5.6]},
-      "expected": "Tax-Calculator,4.3,4.5,4.6,4.7"
+      "expected": "Tax-Calculator,4.8,4.7,4.8,5.1"
   },
 
   "32": {
@@ -315,7 +315,7 @@
       "name": "Increase tax rate in each bracket by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [56, 60, 65, 69]},
-      "expected": "Tax-Calculator,59.4,61.9,64.6,67.1"
+      "expected": "Tax-Calculator,60.0,62.1,65.1,67.8"
   },
 
   "33": {
@@ -337,7 +337,7 @@
       "name": "Increase top four rates by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [11, 12, 14, 15]},
-      "expected": "Tax-Calculator,13.7,14.3,14.9,15.4"
+      "expected": "Tax-Calculator,14.2,14.5,15.3,15.8"
   },
 
   "34": {
@@ -359,7 +359,7 @@
       "name": "Increase top two rates by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [7, 8, 9, 10]},
-      "expected": "Tax-Calculator,8.8,9.1,9.4,9.7"
+      "expected": "Tax-Calculator,9.1,9.3,9.7,10.0"
   },
 
   "35": {
@@ -368,7 +368,7 @@
       "name": "Increase AMT exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-1.1,-2.4,-3.9,-4.0"
+      "expected": "Tax-Calculator,-1.1,-0.4,-0.9,-0.9"
   },
 
   "36": {
@@ -377,7 +377,7 @@
       "name": "Increase AMT exemption phaseout starting AMTI by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.5,-3.2,-4.1,-4.2"
+      "expected": "Tax-Calculator,-2.5,-2.3,-2.8,-2.8"
   },
 
   "37": {
@@ -395,7 +395,7 @@
       "name": "Increase AMT rate under the surtax threshold by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,27.4,29.6,31.5,32.6"
+      "expected": "Tax-Calculator,28.0,29.6,31.7,33.0"
   },
 
   "39": {
@@ -404,7 +404,7 @@
       "name": "Increase AMT rate above the surtax threshold by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,8.7,9.4,10.0,10.5"
+      "expected": "Tax-Calculator,8.8,9.4,10.1,10.6"
   },
 
   "40": {
@@ -413,7 +413,7 @@
       "name": "Increase AMT surtax threshold by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.5,-0.6,-0.8,-0.9"
+      "expected": "Tax-Calculator,-0.5,-0.4,-0.5,-0.5"
   },
 
   "41": {
@@ -422,7 +422,7 @@
       "name": "Eliminate child tax credit",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [57.3, 57.0, 57.1, 56.8]},
-      "expected": "Tax-Calculator,51.3,50.9,50.2,49.8"
+      "expected": "Tax-Calculator,51.2,50.9,50.2,49.7"
   },
 
   "42": {
@@ -449,7 +449,7 @@
       "name": "Total EITC cost",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [70.4, 71.1, 72.2, 69.9]},
-      "expected": "Tax-Calculator,67.3,67.0,67.4,69.1"
+      "expected": "Tax-Calculator,67.3,67.1,67.5,69.0"
   },
 
   "45": {
@@ -467,7 +467,7 @@
       "name": "Increase EITC phaseout starting AGI by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.1,-2.6,-3.1,-3.2"
+      "expected": "Tax-Calculator,-2.1,-1.8,-2.0,-2.0"
   },
 
   "47": {
@@ -476,7 +476,7 @@
       "name": "Increase maximum EITC amount by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-1.9,-3.0,-4.1,-4.2"
+      "expected": "Tax-Calculator,-2.0,-1.4,-1.7,-1.8"
   },
 
   "48": {
@@ -485,7 +485,7 @@
       "name": "Increase additional child tax credit rate by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.9,-0.8,-0.8,-0.8"
+      "expected": "Tax-Calculator,-0.9,-0.8,-0.8,-0.7"
   },
 
   "49": {
@@ -503,7 +503,7 @@
       "name": "Eliminate Net Investment Income Tax",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [-32.6, -34.7, -36.6, -38.9]},
-      "expected": "Tax-Calculator,-36.4,-39.7,-40.6,-41.6"
+      "expected": "Tax-Calculator,-40.2,-36.8,-40.9,-42.9"
   },
 
   "51": {
@@ -512,7 +512,7 @@
       "name": "Increase Net Investment Income Tax threshold by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.4,-0.5,-0.5,-0.5"
+      "expected": "Tax-Calculator,-0.4,-0.4,-0.5,-0.5"
   },
 
   "52": {
@@ -521,7 +521,7 @@
       "name": "New $1000 personal refundable credit, no phaseout",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-164.4,-170.2,-177.1,-184.0"
+      "expected": "Tax-Calculator,-164.4,-166.5,-171.6,-178.3"
   },
 
   "53": {
@@ -532,7 +532,7 @@
       "name": "New $1000 personal refundable credit, 0.01 po above $10K AGI",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-107.7,-110.9,-115.3,-119.9"
+      "expected": "Tax-Calculator,-107.4,-107.5,-110.1,-114.3"
   },
 
   "54": {
@@ -544,7 +544,7 @@
       "output_type": "iitax",
       "compare_with": {"Tax Foundation": [321, "ten-year(2016-25)",
                                           "static", "estimate"]},
-      "expected": "Tax-Calculator,42.2,43.3,42.7,43.5"
+      "expected": "Tax-Calculator,42.4,44.5,44.1,45.3"
   },
 
   "55": {
@@ -555,7 +555,7 @@
       "name": "Limit amount of S&L deduction to 2% AGI",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [44.1, 86.6, 87.1, 91.2]},
-      "expected": "Tax-Calculator,86.2,90.3,94.6,98.9"
+      "expected": "Tax-Calculator,86.1,90.5,95.3,99.8"
   }
 
 }
