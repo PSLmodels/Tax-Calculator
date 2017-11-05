@@ -75,7 +75,7 @@ def test_constant_inflation_rate_with_reform():
     irate2021 = pirates[2021 - syr]
     # check implied inflation rate just before reform
     grate = float(pol._II_em[2020 - syr]) / float(pol._II_em[2019 - syr])
-    assert round(grate - 1.0, 6) == round(irate2019, 6)
+    assert round(grate - 1.0, 4) == round(irate2019, 4)
     # check implied inflation rate just after reform
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
     assert round(grate - 1.0, 6) == round(irate2021, 6)
