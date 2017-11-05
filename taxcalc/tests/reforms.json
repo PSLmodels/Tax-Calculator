@@ -118,7 +118,7 @@
       "name": "Increase personal and dependent exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-33.0,-31.5,-34.5,-35.9"
+      "expected": "Tax-Calculator,-33.0,-32.3,-35.4,-36.8"
   },
 
   "14": {
@@ -145,7 +145,7 @@
       "name": "Increase standard deduction by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-1.0,-0.6,-1.1,-1.1"
+      "expected": "Tax-Calculator,-1.0,-1.1,-1.6,-1.6"
   },
 
   "17": {
@@ -154,7 +154,7 @@
       "name": "Increase additional stdded for aged/blind by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.3,-0.3,-0.3,-0.4"
+      "expected": "Tax-Calculator,-0.3,-0.3,-0.4,-0.4"
   },
 
   "18": {
@@ -245,7 +245,7 @@
       "name": "Increase itemded phaseout starting AGI by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.1,0.2,0.2,0.2"
+      "expected": "Tax-Calculator,0.1,0.2,0.1,0.2"
   },
 
   "28": {
@@ -368,7 +368,7 @@
       "name": "Increase AMT exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-1.1,-0.4,-0.9,-0.9"
+      "expected": "Tax-Calculator,-1.1,-0.9,-1.4,-1.4"
   },
 
   "36": {
@@ -377,7 +377,7 @@
       "name": "Increase AMT exemption phaseout starting AMTI by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.5,-2.3,-2.8,-2.8"
+      "expected": "Tax-Calculator,-2.5,-2.5,-3.0,-3.0"
   },
 
   "37": {
@@ -413,7 +413,7 @@
       "name": "Increase AMT surtax threshold by $10,000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.5,-0.4,-0.5,-0.5"
+      "expected": "Tax-Calculator,-0.5,-0.5,-0.6,-0.6"
   },
 
   "41": {
@@ -467,7 +467,7 @@
       "name": "Increase EITC phaseout starting AGI by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.1,-1.8,-2.0,-2.0"
+      "expected": "Tax-Calculator,-2.1,-2.0,-2.2,-2.2"
   },
 
   "47": {
@@ -476,7 +476,7 @@
       "name": "Increase maximum EITC amount by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.0,-1.4,-1.7,-1.8"
+      "expected": "Tax-Calculator,-2.0,-1.7,-2.1,-2.2"
   },
 
   "48": {
@@ -521,7 +521,7 @@
       "name": "New $1000 personal refundable credit, no phaseout",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-164.4,-166.5,-171.6,-178.3"
+      "expected": "Tax-Calculator,-164.4,-167.3,-172.4,-179.2"
   },
 
   "53": {
@@ -532,7 +532,7 @@
       "name": "New $1000 personal refundable credit, 0.01 po above $10K AGI",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-107.4,-107.5,-110.1,-114.3"
+      "expected": "Tax-Calculator,-107.4,-108.3,-110.9,-115.2"
   },
 
   "54": {
