@@ -713,32 +713,42 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
     # define pass-through income eligible for PT schedule
-    pt_passive = PT_eligibleRate_passive_TCJA * (e02000 - e26270)
-    if e26270 + e00900 != 0:
-        pt_active = PT_eligibleRate_active_TCJA * (e00900 + e26270 + e00200)
-    else:
-        pt_active = 0
     if max(PT_eligibleRate_active_TCJA, PT_eligibleRate_passive_TCJA) > 0:
+        pt_passive = PT_eligibleRate_passive_TCJA * (e02000 - e26270)
+        if e26270 + e00900 != 0:
+            pt_active = PT_eligibleRate_active_TCJA * (e00900 + e26270 + e00200)
+        else:
+            pt_active = 0
         pt_taxinc = max(0., pt_passive + pt_active)
+        if pt_taxinc >= taxable_income:
+            pt_taxinc = taxable_income
+            reg_taxinc = 0.
+        else:
+            # pt_taxinc is unchanged
+            reg_taxinc = taxable_income - pt_taxinc
+        reg_tbase = pt_taxinc
+        pt_tbase = 0.0
     else:
         pt_taxinc = max(0., e00900 + e26270)
-    if pt_taxinc >= taxable_income:
-        pt_taxinc = taxable_income
-        reg_taxinc = 0.
-    else:
-        # pt_taxinc is unchanged
-        reg_taxinc = taxable_income - pt_taxinc
+        if pt_taxinc >= taxable_income:
+            pt_taxinc = taxable_income
+            reg_taxinc = 0.
+        else:
+            # pt_taxinc is unchanged
+            reg_taxinc = taxable_income - pt_taxinc
+        reg_tbase = 0.0
+        pt_tbase = reg_taxinc
     # compute Schedule X,Y,Z tax using the two components of taxable income,
     # stacking pass-through taxable income on top of regular taxable income
     if reg_taxinc > 0.:
-        reg_tax = Taxes(reg_taxinc, MARS, 0.0,
+        reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
                         II_rt1, II_rt2, II_rt3, II_rt4,
                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
         reg_tax = 0.
     if pt_taxinc > 0.:
-        pt_tax = Taxes(pt_taxinc, MARS, reg_taxinc,
+        pt_tax = Taxes(pt_taxinc, MARS, pt_tbase,
                        PT_rt1, PT_rt2, PT_rt3, PT_rt4,
                        PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
                        PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
