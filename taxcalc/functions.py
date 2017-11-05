@@ -716,7 +716,8 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     if max(PT_eligibleRate_active_TCJA, PT_eligibleRate_passive_TCJA) > 0:
         pt_passive = PT_eligibleRate_passive_TCJA * (e02000 - e26270)
         if e26270 + e00900 != 0:
-            pt_active = PT_eligibleRate_active_TCJA * (e00900 + e26270 + e00200)
+            pt_active = (PT_eligibleRate_active_TCJA *
+                         (e00900 + e26270 + e00200))
         else:
             pt_active = 0
         pt_taxinc = max(0., pt_passive + pt_active)
