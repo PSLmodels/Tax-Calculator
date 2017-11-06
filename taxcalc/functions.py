@@ -714,7 +714,10 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
     # define pass-through income eligible for PT schedule
-    pt_passive = PT_EligibleRate_passive * (e02000 - e26270)
+    if PT_EligibleRate_passive > 0.:
+        pt_passive = PT_EligibleRate_passive * (e02000 - e26270)
+    else:
+        pt_passive = 0
     pt_active_gross = e00900 + e26270
     if (pt_active_gross > 0) and PT_wages_active_income:
         pt_active_gross = pt_active_gross + e00200
