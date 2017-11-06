@@ -91,7 +91,7 @@ def test_create_tables(cps_subsample):
                 0.78,
                 0.27,
                 np.nan]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
@@ -112,7 +112,7 @@ def test_create_tables(cps_subsample):
                 0.08,
                 0.07,
                 np.nan]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
@@ -138,9 +138,9 @@ def test_create_tables(cps_subsample):
                 0.07,
                 0.05,
                 0.02,
-                0.00,
+                0.0,
                 np.nan]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
@@ -162,7 +162,7 @@ def test_create_tables(cps_subsample):
                 66560891,
                 39571078,
                 5282069]
-    assert np.allclose(diff['tot_change'], expected,
+    assert np.allclose(diff['tot_change'].values, expected,
                        atol=0.5, rtol=0.0)
     expected = [0.00,
                 0.05,
@@ -178,7 +178,7 @@ def test_create_tables(cps_subsample):
                 12.38,
                 7.36,
                 0.98]
-    assert np.allclose(diff['share_of_change'], expected,
+    assert np.allclose(diff['share_of_change'].values, expected,
                        atol=0.005, rtol=0.0)
     expected = [0.00,
                 0.02,
@@ -194,7 +194,7 @@ def test_create_tables(cps_subsample):
                 0.70,
                 0.37,
                 0.06]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
     expected = [-0.00,
                 -0.02,
@@ -210,7 +210,7 @@ def test_create_tables(cps_subsample):
                 -0.70,
                 -0.37,
                 -0.06]
-    assert np.allclose(diff['pc_aftertaxinc'], expected,
+    assert np.allclose(diff['pc_aftertaxinc'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     with pytest.raises(ValueError):
@@ -241,7 +241,7 @@ def test_create_tables(cps_subsample):
                 4171055704,
                 2751003155,
                 709210048]
-    assert np.allclose(dist['iitax'], expected,
+    assert np.allclose(dist['iitax'].values, expected,
                        atol=0.5, rtol=0.0)
     expected = [1202,
                 1688,
