@@ -5,6 +5,8 @@ PRIVATE utility functions for Tax-Calculator PUBLIC utility functions.
 # pep8 --ignore=E402 utilsprvt.py
 # pylint --disable=locally-disabled utilsprvt.py
 
+import numpy as np
+
 
 EPSILON = 1e-9
 
@@ -12,13 +14,18 @@ EPSILON = 1e-9
 def weighted_count_lt_zero(pdf, col_name, tolerance=-0.001):
     """
     Return weighted count of negative Pandas DateFrame col_name items.
+    If condition is not met by any items, the result of applying sum to an
+    empty dataframe is NaN.  This is undesirable and 0 is returned instead.
     """
-    return pdf[pdf[col_name] < tolerance]['s006'].sum()
+    res = pdf[pdf[col_name] < tolerance]['s006'].sum()
+    return res if not np.isnan(res) else 0
 
 
 def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
     """
     Return weighted count of positive Pandas DateFrame col_name items.
+    If condition is not met by any items, the result of applying sum to an
+    empty dataframe is NaN.  This is undesirable and 0 is returned instead.
     """
     return pdf[pdf[col_name] > tolerance]['s006'].sum()
 
