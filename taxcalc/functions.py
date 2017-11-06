@@ -705,42 +705,35 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
            II_rt6, II_rt7, II_rt8,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-           II_brk6, II_brk7, PT_eligibleRate_active_TCJA,
-           PT_eligibleRate_passive_TCJA):
+           II_brk6, II_brk7, PT_EligibleRate_active,
+           PT_EligibleRate_passive, PT_wages_active_income,
+           PT_top_stacking):
     """
     Return Schedule X, Y, Z tax amount for specified taxable_income.
     """
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
     # define pass-through income eligible for PT schedule
-    if max(PT_eligibleRate_active_TCJA, PT_eligibleRate_passive_TCJA) > 0:
-        pt_passive = PT_eligibleRate_passive_TCJA * (e02000 - e26270)
-        if e26270 + e00900 != 0:
-            pt_active = (PT_eligibleRate_active_TCJA *
-                         (e00900 + e26270 + e00200))
-        else:
-            pt_active = 0
-        pt_taxinc = max(0., pt_passive + pt_active)
-        if pt_taxinc >= taxable_income:
-            pt_taxinc = taxable_income
-            reg_taxinc = 0.
-        else:
-            # pt_taxinc is unchanged
-            reg_taxinc = taxable_income - pt_taxinc
-        reg_tbase = pt_taxinc
-        pt_tbase = 0.0
+    pt_passive = PT_EligibleRate_passive * (e02000 - e26270)
+    pt_active_gross = e00900 + e26270
+    if (pt_active_gross > 0) and PT_wages_active_income:
+        pt_active_gross = pt_active_gross + e00200
+    pt_active = PT_EligibleRate_active * pt_active_gross
+    pt_taxinc = max(0., pt_passive + pt_active)
+    if pt_taxinc >= taxable_income:
+        pt_taxinc = taxable_income
+        reg_taxinc = 0.
     else:
-        pt_taxinc = max(0., e00900 + e26270)
-        if pt_taxinc >= taxable_income:
-            pt_taxinc = taxable_income
-            reg_taxinc = 0.
-        else:
-            # pt_taxinc is unchanged
-            reg_taxinc = taxable_income - pt_taxinc
-        reg_tbase = 0.0
+        # pt_taxinc is unchanged
+        reg_taxinc = taxable_income - pt_taxinc
+    # determine stacking order
+    if PT_top_stacking:
+        reg_tbase = 0.
         pt_tbase = reg_taxinc
-    # compute Schedule X,Y,Z tax using the two components of taxable income,
-    # stacking pass-through taxable income on top of regular taxable income
+    else:
+        reg_tbase = pt_taxinc
+        pt_tbase = 0.
+    # compute Schedule X,Y,Z tax using the two components of taxable income
     if reg_taxinc > 0.:
         reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
                         II_rt1, II_rt2, II_rt3, II_rt4,
@@ -767,8 +760,9 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
               II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
               II_rt6, II_rt7, II_rt8,
               II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-              II_brk6, II_brk7, PT_eligibleRate_active_TCJA,
-              PT_eligibleRate_passive_TCJA, c05200):
+              II_brk6, II_brk7, PT_EligibleRate_active,
+              PT_EligibleRate_passive, PT_wages_active_income,
+              PT_top_stacking, c05200):
     """
     SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
     """
@@ -780,8 +774,9 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
                     II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                     II_rt6, II_rt7, II_rt8,
                     II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                    II_brk6, II_brk7, PT_eligibleRate_active_TCJA,
-                    PT_eligibleRate_passive_TCJA)
+                    II_brk6, II_brk7, PT_EligibleRate_active,
+                    PT_EligibleRate_passive, PT_wages_active_income,
+                    PT_top_stacking)
     return c05200
 
 
@@ -792,8 +787,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
-             CG_nodiff, PT_eligibleRate_active_TCJA,
-             PT_eligibleRate_passive_TCJA,
+             CG_nodiff, PT_EligibleRate_active, PT_EligibleRate_passive,
+             PT_wages_active_income, PT_top_stacking,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
              dwks10, dwks13, dwks14, dwks19, c05700, taxbc):
     """
@@ -872,8 +867,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                        II_brk6, II_brk7, PT_eligibleRate_active_TCJA,
-                        PT_eligibleRate_passive_TCJA)
+                        II_brk6, II_brk7, PT_EligibleRate_active,
+                        PT_EligibleRate_passive, PT_wages_active_income,
+                        PT_top_stacking)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = c05200
