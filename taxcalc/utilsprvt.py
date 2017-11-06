@@ -27,7 +27,8 @@ def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
     If condition is not met by any items, the result of applying sum to an
     empty dataframe is NaN.  This is undesirable and 0 is returned instead.
     """
-    return pdf[pdf[col_name] > tolerance]['s006'].sum()
+    res = pdf[pdf[col_name] > tolerance]['s006'].sum()
+    return res if not np.isnan(res) else 0
 
 
 def weighted_count(pdf):
