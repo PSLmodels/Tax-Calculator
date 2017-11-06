@@ -140,7 +140,6 @@ def test_create_tables(cps_subsample):
                 0.02,
                 np.nan,
                 np.nan]
-    print('here', diff['perc_aftertax'], diff['perc_aftertax'] - expected)
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
