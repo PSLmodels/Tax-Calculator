@@ -16,7 +16,9 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
-- None
+- Add capability to model pass-through tax rate eligiblity rules in TCJA
+  [[#1620](https://github.com/open-source-economics/Tax-Calculator/pull/1620)
+  by Cody Kallen]
 
 **Bug Fixes**
 - None
