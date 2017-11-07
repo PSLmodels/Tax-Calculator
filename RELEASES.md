@@ -19,7 +19,7 @@ for a complete commit history.
 - None
 
 **Bug Fixes**
-- Fix bugs that were exposed after Pandas update to 0.21.0
+- Resolve compatibility issues with Pandas 0.21.0
   [[#1629](https://github.com/open-source-economics/Tax-Calculator/pull/1629)
   by Hank Doupe]
 
