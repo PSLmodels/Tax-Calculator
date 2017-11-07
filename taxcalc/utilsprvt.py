@@ -17,8 +17,7 @@ def weighted_count_lt_zero(pdf, col_name, tolerance=-0.001):
     If condition is not met by any items, the result of applying sum to an
     empty dataframe is NaN.  This is undesirable and 0 is returned instead.
     """
-    res = pdf[pdf[col_name] < tolerance]['s006'].sum()
-    return res if not np.isnan(res) else 0
+    return pdf[pdf[col_name] < tolerance]['s006'].zsum()
 
 
 def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
@@ -27,15 +26,14 @@ def weighted_count_gt_zero(pdf, col_name, tolerance=0.001):
     If condition is not met by any items, the result of applying sum to an
     empty dataframe is NaN.  This is undesirable and 0 is returned instead.
     """
-    res = pdf[pdf[col_name] > tolerance]['s006'].sum()
-    return res if not np.isnan(res) else 0
+    return pdf[pdf[col_name] > tolerance]['s006'].zsum()
 
 
 def weighted_count(pdf):
     """
     Return weighted count of items in Pandas DataFrame.
     """
-    return pdf['s006'].sum()
+    return pdf['s006'].zsum()
 
 
 def weighted_mean(pdf, col_name):
@@ -43,8 +41,8 @@ def weighted_mean(pdf, col_name):
     Return weighted mean of Pandas DataFrame col_name items.
     """
     if len(pdf) > 0:
-        return ((pdf[col_name] * pdf['s006']).sum() /
-                (pdf['s006'].sum() + EPSILON))
+        return ((pdf[col_name] * pdf['s006']).zsum() /
+                (pdf['s006'].zsum() + EPSILON))
     else:
         return 0
 
@@ -55,8 +53,8 @@ def wage_weighted(pdf, col_name):
     """
     swght = 's006'
     wage = 'e00200'
-    return (((pdf[col_name] * pdf[swght] * pdf[wage]).sum()) /
-            ((pdf[swght] * pdf[wage]).sum() + EPSILON))
+    return (((pdf[col_name] * pdf[swght] * pdf[wage]).zsum()) /
+            ((pdf[swght] * pdf[wage]).zsum() + EPSILON))
 
 
 def agi_weighted(pdf, col_name):
@@ -65,8 +63,8 @@ def agi_weighted(pdf, col_name):
     """
     swght = 's006'
     agi = 'c00100'
-    return ((pdf[col_name] * pdf[swght] * pdf[agi]).sum() /
-            ((pdf[swght] * pdf[agi]).sum() + EPSILON))
+    return ((pdf[col_name] * pdf[swght] * pdf[agi]).zsum() /
+            ((pdf[swght] * pdf[agi]).zsum() + EPSILON))
 
 
 def expanded_income_weighted(pdf, col_name):
@@ -75,8 +73,8 @@ def expanded_income_weighted(pdf, col_name):
     """
     swght = 's006'
     expinc = 'expanded_income'
-    return ((pdf[col_name] * pdf[swght] * pdf[expinc]).sum() /
-            ((pdf[swght] * pdf[expinc]).sum() + EPSILON))
+    return ((pdf[col_name] * pdf[swght] * pdf[expinc]).zsum() /
+            ((pdf[swght] * pdf[expinc]).zsum() + EPSILON))
 
 
 def weighted_perc_inc(pdf, col_name):

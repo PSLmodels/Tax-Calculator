@@ -126,6 +126,16 @@ SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      1999999, 4999999, 9999999, 9e99]
 
 
+def zsum(self):
+    """
+    pandas 0.21.0 changes sum() behavior so that the result of applying sum
+    over an empty DataFrame is NaN. Since we apply the sum function over
+    grouped DataFrames that may or not be empty, it makes more sense for us
+    to have a sum() function that returns 0 instead of NaN.
+    """
+    return self.sum() if len(self) > 0 else 0
+
+
 def unweighted_sum(pdf, col_name):
     """
     Return unweighted sum of Pandas DataFrame col_name items.
