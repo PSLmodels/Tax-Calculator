@@ -791,7 +791,6 @@ section.</p>
 <p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
 <p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
 <p><a href="#pol-standard-deduction">Standard Deduction</a></p>
-<p><a href="#pol-personal-refundable-credit">Personal Refundable Credit</a></p>
 <p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
 <p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
 <p><a href="#pol-personal-income">Personal Income</a></p>
@@ -853,15 +852,6 @@ section.</p>
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
-<h3 id="pol-personal-refundable-credit">Personal Refundable Credit</h3>
-
-<!-- Personal Refundable Credit @ Personal Refundable Credit Maximum Amount -->
-
-<!-- Personal Refundable Credit @ Personal Refundable Credit Phaseout Rate -->
-
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
 <h3 id="pol-itemized-deductions">Itemized Deductions</h3>
 
 <!-- Itemized Deductions @ Medical Expenses -->
@@ -919,6 +909,8 @@ section.</p>
 
 <!-- Nonrefundable Credits @ Misc. Credit Limits -->
 
+<!-- Nonrefundable Credits @ Personal Nonrefundable Credit -->
+
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
@@ -936,6 +928,8 @@ section.</p>
 <!-- Refundable Credits @ Additional Child Tax Credit -->
 
 <!-- Refundable Credits @ New Refundable Child Tax Credit -->
+
+<!-- Refundable Credits @ Personal Refundable Credit -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
