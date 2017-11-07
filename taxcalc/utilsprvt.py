@@ -40,11 +40,8 @@ def weighted_mean(pdf, col_name):
     """
     Return weighted mean of Pandas DataFrame col_name items.
     """
-    if len(pdf) > 0:
-        return ((pdf[col_name] * pdf['s006']).zsum() /
-                (pdf['s006'].zsum() + EPSILON))
-    else:
-        return 0
+    return ((pdf[col_name] * pdf['s006']).zsum() /
+            (pdf['s006'].zsum() + EPSILON))
 
 
 def wage_weighted(pdf, col_name):
