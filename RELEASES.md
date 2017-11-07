@@ -5,10 +5,10 @@ Go
 for a complete commit history.
 
 
-2017-??-?? Release 0.13.0
+2017-11-07 Release 0.13.0
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1632](https://github.com/open-source-economics/Tax-Calculator/pull/1632))
 
 **API Changes**
 - Add new statistics and top-decile detail to distribution and difference tables
@@ -16,8 +16,29 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
+- Add expanded_income and aftertax_income to distribution table
+  [[#1602](https://github.com/open-source-economics/Tax-Calculator/pull/1602)
+  by Maritn Holmer]
+- Add utility functions that generate a change-in-aftertax-income-by-decile graph
+  [[#1606](https://github.com/open-source-economics/Tax-Calculator/pull/1606)
+  by Martin Holmer]
+- Add new dependent credits for children and non-children dependents
+  [[#1615](https://github.com/open-source-economics/Tax-Calculator/pull/1615)
+  by Cody Kallen]
+- Add new non-refundable credit for filer and spouse
+  [[#1618](https://github.com/open-source-economics/Tax-Calculator/pull/1618)
+  by Cody Kallen]
 - Add capability to model pass-through tax rate eligiblity rules in TCJA
   [[#1620](https://github.com/open-source-economics/Tax-Calculator/pull/1620)
+  by Cody Kallen]
+- Make several Personal Nonrefundable Credit parameters available to external applications like TaxBrain
+  [[#1622](https://github.com/open-source-economics/Tax-Calculator/pull/1622)
+  by Matt Jensen]
+- Extend extrapolation to 2027 and update to June 2017 CBO baseline
+  [[#1624](https://github.com/open-source-economics/Tax-Calculator/pull/1624)
+  by Anderson Frailey]
+- Add new reform JSON file for the Tax Cuts and Jobs Act
+  [[#1625](https://github.com/open-source-economics/Tax-Calculator/pull/1625)
   by Cody Kallen]
 
 **Bug Fixes**
