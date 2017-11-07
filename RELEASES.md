@@ -24,6 +24,9 @@ for a complete commit history.
 - Resolve compatibility issues with Pandas 0.21.0
   [[#1629](https://github.com/open-source-economics/Tax-Calculator/pull/1629)
   by Hank Doupe]
+- Cleaner solution to compatibility issues with Pandas 0.21.0
+  [[#1634](https://github.com/open-source-economics/Tax-Calculator/pull/1634)
+  by Hank Doupe]
 
 
 2017-10-20 Release 0.12.0
