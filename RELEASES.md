@@ -18,7 +18,7 @@ for a complete commit history.
 **New Features**
 - Add expanded_income and aftertax_income to distribution table
   [[#1602](https://github.com/open-source-economics/Tax-Calculator/pull/1602)
-  by Maritn Holmer]
+  by Martin Holmer]
 - Add utility functions that generate a change-in-aftertax-income-by-decile graph
   [[#1606](https://github.com/open-source-economics/Tax-Calculator/pull/1606)
   by Martin Holmer]
