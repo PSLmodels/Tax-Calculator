@@ -140,14 +140,14 @@ def unweighted_sum(pdf, col_name):
     """
     Return unweighted sum of Pandas DataFrame col_name items.
     """
-    return pdf[col_name].sum()
+    return pdf[col_name].zsum()
 
 
 def weighted_sum(pdf, col_name):
     """
     Return weighted sum of Pandas DataFrame col_name items.
     """
-    return (pdf[col_name] * pdf['s006']).sum()
+    return (pdf[col_name] * pdf['s006']).zsum()
 
 
 def add_quantile_bins(pdf, income_measure, num_bins,
@@ -249,7 +249,7 @@ def get_sums(pdf):
     sums = dict()
     for col in pdf.columns.values.tolist():
         if col != 'bins':
-            sums[col] = pdf[col].sum()
+            sums[col] = pdf[col].zsum()
     return pd.Series(sums, name='sums')
 
 
@@ -478,7 +478,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             sdf['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
             sdf['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
             sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-            wtotal = (res2['tax_diff'] * res2['s006']).sum()
+            wtotal = (res2['tax_diff'] * res2['s006']).zsum()
             sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                                 'tax_diff', wtotal)
             sdf['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
