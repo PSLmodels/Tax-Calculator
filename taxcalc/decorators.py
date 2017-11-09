@@ -54,8 +54,7 @@ class GetReturnNode(ast.NodeVisitor):
         """
         if isinstance(node.value, ast.Tuple):
             return [e.id for e in node.value.elts]
-        else:
-            return [node.value.id]
+        return [node.value.id]
 
 
 def create_apply_function_string(sigout, sigin, parameters):
@@ -192,8 +191,7 @@ def make_apply_function(func, out_args, in_args, parameters,
          {"jitted_f": jitted_f}, fakeglobals)
     if do_jit:
         return jit(**kwargs)(fakeglobals['ap_func'])
-    else:
-        return fakeglobals['ap_func']
+    return fakeglobals['ap_func']
 
 
 def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):

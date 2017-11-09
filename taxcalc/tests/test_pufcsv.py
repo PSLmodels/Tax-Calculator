@@ -59,7 +59,7 @@ def test_agg(tests_path, puf_fullsample):
     for line in diff:
         diff_lines.append(line)
     # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
+    if diff_lines:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
@@ -220,7 +220,7 @@ def test_mtr(tests_path, puf_path):
     for line in diff:
         diff_lines.append(line)
     # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
+    if diff_lines:
         new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)

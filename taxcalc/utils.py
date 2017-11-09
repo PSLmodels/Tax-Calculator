@@ -129,11 +129,11 @@ SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
 def zsum(self):
     """
     pandas 0.21.0 changes sum() behavior so that the result of applying sum
-    over an empty DataFrame is NaN. Since we apply the sum function over
-    grouped DataFrames that may or not be empty, it makes more sense for us
-    to have a sum() function that returns 0 instead of NaN.
+    over an empty Series is NaN.  Since we apply the sum() function over
+    grouped DataFrames that may contain an empty Series, it makes more sense
+    for us to have a sum() function that returns zero instead of NaN.
     """
-    return self.sum() if len(self) > 0 else 0
+    return self.sum() if self.size > 0 else 0
 
 
 def unweighted_sum(pdf, col_name):
@@ -1164,8 +1164,7 @@ def isoelastic_utility_function(consumption, crra, cmin):
     if consumption >= cmin:
         if crra == 1.0:
             return math.log(consumption)
-        else:
-            return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
+        return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
     else:  # if consumption < cmin
         if crra == 1.0:
             tu_at_cmin = math.log(cmin)
@@ -1230,11 +1229,9 @@ def certainty_equivalent(exputil, crra, cmin):
     if exputil >= tu_at_cmin:
         if crra == 1.0:
             return math.exp(exputil)
-        else:
-            return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
-    else:
-        mu_at_cmin = math.pow(cmin, -crra)
-        return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
+        return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
+    mu_at_cmin = math.pow(cmin, -crra)
+    return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
 
 
 def ce_aftertax_income(calc1, calc2,

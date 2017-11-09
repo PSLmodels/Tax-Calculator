@@ -114,7 +114,7 @@ def cli_tc_main():
     # instantiate taxcalcio object and do tax analysis
     tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
                      reform=args.reform, assump=args.assump)
-    if len(tcio.errmsg) > 0:
+    if tcio.errmsg:
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
@@ -124,7 +124,7 @@ def cli_tc_main():
               growdiff_response=None,
               aging_input_data=aging,
               exact_calculations=args.exact)
-    if len(tcio.errmsg) > 0:
+    if tcio.errmsg:
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
