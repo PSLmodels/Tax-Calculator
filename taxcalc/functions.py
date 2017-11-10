@@ -719,6 +719,7 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     if (pt_active_gross > 0) and PT_wages_active_income:
         pt_active_gross = pt_active_gross + e00200
     pt_active = PT_EligibleRate_active * pt_active_gross
+    pt_active = min(pt_active, e00900 + e26270)
     pt_taxinc = max(0., pt_passive + pt_active)
     if pt_taxinc >= taxable_income:
         pt_taxinc = taxable_income
