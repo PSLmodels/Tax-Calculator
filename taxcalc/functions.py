@@ -689,14 +689,14 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, c04800,
-           PT_exclusion_rt, PT_exclusion_limit, e00900,
+           PT_exclusion_rt, PT_exclusion_wage_limit, e00900,
            e26270, e00200):
     """
     TaxInc function: ...
     """
     pt_exclusion = max(0., PT_exclusion_rt * (e00900 + e26270))
     if e26270 > 0.:
-        pt_exclusion = min(pt_exclusion, e00200 * PT_exclusion_limit)
+        pt_exclusion = min(pt_exclusion, e00200 * PT_exclusion_wage_limit)
     c04800 = max(0., c00100 - max(c04470, standard) - c04600 -
                  pt_exclusion)
     return c04800

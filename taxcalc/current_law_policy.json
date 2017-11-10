@@ -3115,7 +3115,7 @@
         "out_of_range_action": "stop"
     },
 
-    "_PT_exclusion_limit": {
+    "_PT_exclusion_wage_limit": {
         "long_name": "Limit on pass-through income exclusion",
         "description": "If taxpayer has partnership/ S corporation income, the amount of business income excluded from taxable income may not exceed this fraction of wages.",
         "section_1": "Personal Income",
