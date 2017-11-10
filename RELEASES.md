@@ -1,8 +1,38 @@
 TAX-CALCULATOR RELEASE HISTORY
 ==============================
-Go
-[here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
+Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
+
+
+2017-11-10 Release 0.13.1
+-------------------------
+(last merged pull request is
+[#1654](https://github.com/open-source-economics/Tax-Calculator/pull/1654))
+
+**API Changes**
+- None
+
+**New Features**
+- Add household and family identifiers from the CPS for the cps.csv.gz file that ships with taxcalc
+  [[#1635](https://github.com/open-source-economics/Tax-Calculator/pull/1635)
+  by Anderson Frailey]
+- Improved documentation for the cps.csv.gz file that ships with taxcalc
+  [[#1648](https://github.com/open-source-economics/Tax-Calculator/pull/1648)
+  by Martin Holmer]
+- Add parameter for the business income exclusion in the Senate TCJA Chairman's mark
+  [[#1651](https://github.com/open-source-economics/Tax-Calculator/pull/1648)
+  by Cody Kallen]
+- Add TCJA reform file for the Senate Chairman's mark
+  [[#1652](https://github.com/open-source-economics/Tax-Calculator/pull/1652)
+  by Cody Kallen]
+- Add FIPS state codes to the cps.csv.gz file that ships with taxcalc
+  [[#1653](https://github.com/open-source-economics/Tax-Calculator/pull/1653)
+  by Anderson Frailey]
+
+**Bug Fixes**
+- Fix an edge case related to new pass-through parameters that caused some extreme MTRs
+  [[#1645](https://github.com/open-source-economics/Tax-Calculator/pull/1645)
+  by Cody Kallen, reported by Richard Evans]
 
 
 2017-11-07 Release 0.13.0
