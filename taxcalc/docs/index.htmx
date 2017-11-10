@@ -801,13 +801,15 @@ section.</p>
 <p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
 <p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
 <p><a href="#pol-standard-deduction">Standard Deduction</a></p>
+<p><a href="#pol-personal-refundable-credit">Personal Refundable Credit</a></p>
+<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
 <p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
 <p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
 <p><a href="#pol-personal-income">Personal Income</a></p>
-<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
 <p><a href="#pol-other-taxes">Other Taxes</a></p>
 <p><a href="#pol-refundable-credits">Refundable Credits</a></p>
 <p><a href="#pol-surtaxes">Surtaxes</a></p>
+<p><a href="#pol-ubi">Universal Basic Income</a></p>
 <p><a href="#pol-other-parameters">Other Parameters</a></p>
 
 
@@ -862,6 +864,26 @@ section.</p>
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
+<h3 id="pol-personal-refundable-credit">Personal Refundable Credit</h3>
+
+<!-- Personal Refundable Credit @ Personal Refundable Credit Maximum Amount -->
+
+<!-- Personal Refundable Credit @ Personal Refundable Credit Phaseout Rate -->
+
+
+<h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
+
+<!-- Nonrefundable Credits @ Child And Dependent Care -->
+
+<!-- Nonrefundable Credits @ Child Tax Credit -->
+
+<!-- Nonrefundable Credits @ Misc. Credit Limits -->
+
+<!-- Nonrefundable Credits @ Personal Nonrefundable Credit -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
 <h3 id="pol-itemized-deductions">Itemized Deductions</h3>
 
 <!-- Itemized Deductions @ Medical Expenses -->
@@ -911,19 +933,6 @@ section.</p>
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
-<h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
-
-<!-- Nonrefundable Credits @ Child And Dependent Care -->
-
-<!-- Nonrefundable Credits @ Child Tax Credit -->
-
-<!-- Nonrefundable Credits @ Misc. Credit Limits -->
-
-<!-- Nonrefundable Credits @ Personal Nonrefundable Credit -->
-
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
 <h3 id="pol-other-taxes">Other Taxes</h3>
 
 <!-- Other Taxes @ Net Investment Income Tax -->
@@ -939,8 +948,6 @@ section.</p>
 
 <!-- Refundable Credits @ New Refundable Child Tax Credit -->
 
-<!-- Refundable Credits @ Personal Refundable Credit -->
-
 <p><a href="#pol">Back to Section Contents</a></p>
 
 
@@ -951,6 +958,15 @@ section.</p>
 <!-- Surtaxes @ New AGI Surtax -->
 
 <!-- Surtaxes @ Lump-Sum Tax -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-ubi">Universal Basic Income</h3>
+
+<!-- Universal Basic Income @ UBI Benefits -->
+
+<!-- Universal Basic Income @ UBI Taxability -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 
