@@ -816,8 +816,8 @@
     "_II_credit": {
         "long_name": "Personal refundable credit maximum amount",
         "description": "This credit amount is fully refundable and is phased out based on AGI. It is available to tax units who would otherwise not file.",
-        "section_1": "Personal Refundable Credit",
-        "section_2": "Personal Refundable Credit Maximum Amount",
+	"section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -846,8 +846,8 @@
     "_II_credit_ps": {
         "long_name": "Personal refundable credit phaseout start",
         "description": "The personal refundable credit amount will be reduced for taxpayers with AGI higher than this threshold level.",
-        "section_1": "",
-        "section_2": "",
+	"section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
@@ -876,8 +876,8 @@
     "_II_credit_prt": {
         "long_name": "Personal refundable credit phaseout rate",
         "description": "The personal refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the _II_credit_ps threshold.",
-        "section_1": "Personal Refundable Credit",
-        "section_2": "Personal Refundable Credit Phaseout Rate",
+	"section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",

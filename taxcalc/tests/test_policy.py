@@ -692,11 +692,6 @@ def test_section_titles(tests_path):
             'Additional Standard Deduction For Blind And Aged': 0
             # 'Standard Deduction For Dependents': 0
         },
-        'Personal Refundable Credit': {
-            'Personal Refundable Credit Maximum Amount': 0,
-            # 'Personal Exemption Phaseout Starting Income': 0,
-            'Personal Refundable Credit Phaseout Rate': 0
-        },
         'Nonrefundable Credits': {
             'Misc. Credit Limits': 0,
             'Child And Dependent Care': 0,
@@ -732,7 +727,8 @@ def test_section_titles(tests_path):
         'Refundable Credits': {
             'Earned Income Tax Credit': 0,
             'Additional Child Tax Credit': 0,
-            'New Refundable Child Tax Credit': 0
+            'New Refundable Child Tax Credit': 0,
+            'Personal Refundable Credit': 0
         },
         'Surtaxes': {
             'New Minimum Tax': 0,
