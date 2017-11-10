@@ -56,7 +56,7 @@ def policy_param_text(pname, param):
     """
     Extract info from param for pname and return as HTML string.
     """
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches,len-as-condition
     sec1 = param['section_1']
     if len(sec1) > 0:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
@@ -197,6 +197,7 @@ def response_param_text(pname, ptype, param):
     """
     Extract info from param for pname of ptype and return as HTML string.
     """
+    # pylint: disable=len-as-condition
     sec1 = param['section_1']
     if len(sec1) > 0:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])

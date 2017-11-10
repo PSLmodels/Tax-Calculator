@@ -5,8 +5,6 @@ PRIVATE utility functions for Tax-Calculator PUBLIC utility functions.
 # pep8 --ignore=E402 utilsprvt.py
 # pylint --disable=locally-disabled utilsprvt.py
 
-import numpy as np
-
 
 EPSILON = 1e-9
 
