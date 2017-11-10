@@ -467,6 +467,12 @@
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_puf, taxdata_cps"
     },
+    "fips": {
+      "type": "int",
+      "desc": "FIPS state code",
+      "form": {},
+      "availability": "taxdata_cps"
+    },
     "h_seq": {
       "type": "int",
       "desc": "Household sequence number in the CPS",
