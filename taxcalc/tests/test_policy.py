@@ -764,7 +764,7 @@ def test_section_titles(tests_path):
         for sec2title in VALID[sec1title]:
             assert sec2title in CLP[sec1title]
     # check validity of parameter section titles in docs/index.htmx skeleton
-    path = os.path.join(tests_path, '..', 'docs', 'index.htmx')  # TODO: change
+    path = os.path.join(tests_path, '..', '..', 'docs', 'index.htmx')
     with open(path, 'r') as htmxfile:
         htmx_text = htmxfile.read()
     htmxdict = generate_section_dictionary(htmx_text)

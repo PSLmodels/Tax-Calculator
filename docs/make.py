@@ -1,5 +1,6 @@
 """
-Adds JSON information to input HTML and writes augmented HTML file.
+Reads skeletal index.htmx file and writes fleshed-out index.html file
+containing information from several JSON files.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 make.py
@@ -10,21 +11,24 @@ import sys
 import json
 from collections import OrderedDict
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..'))
+sys.path.append(os.path.join(CUR_PATH, '..'))
 # pylint: disable=import-error,wrong-import-position
 from taxcalc import Policy
 
 
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 INPUT_FILENAME = 'index.htmx'
-INPUT_PATH = os.path.join(CUR_PATH, INPUT_FILENAME)
-POLICY_PATH = os.path.join(CUR_PATH, '..', 'current_law_policy.json')
-IOVARS_PATH = os.path.join(CUR_PATH, '..', 'records_variables.json')
-CONSUMPTION_PATH = os.path.join(CUR_PATH, '..', 'consumption.json')
-BEHAVIOR_PATH = os.path.join(CUR_PATH, '..', 'behavior.json')
-GROWDIFF_PATH = os.path.join(CUR_PATH, '..', 'growdiff.json')
 OUTPUT_FILENAME = 'index.html'
-OUTPUT_PATH = os.path.join(CUR_PATH, OUTPUT_FILENAME)
+
+CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
+TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
+
+INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
+POLICY_PATH = os.path.join(TAXCALC_PATH, 'current_law_policy.json')
+IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
+CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
+BEHAVIOR_PATH = os.path.join(TAXCALC_PATH, 'behavior.json')
+GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
+OUTPUT_PATH = os.path.join(CURDIR_PATH, OUTPUT_FILENAME)
 
 
 def main():
