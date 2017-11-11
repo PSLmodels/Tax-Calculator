@@ -27,6 +27,10 @@ The following reform proposals have been specified in reforms files:
 
 - [2017 Brown-Khanna GAIN Act](BrownKhanna.json)
 
+- [2017 Tax Cuts and Jobs Act, House version](TCJA_House.json)
+
+- [2017 Tax Cuts and Jobs Act, Senate version](TCJA_Senate.json)
+
 ## Structure and Syntax of Reform Files
 
 The reform files are JSON files.  JSON, which stands for JavaScript

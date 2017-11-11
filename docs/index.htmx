@@ -233,9 +233,9 @@ entering the following:
 Expected output (after about twenty seconds) is <kbd>PASSED
 TEST</kbd>.  If you get <kbd>FAILED TEST</kbd>, something went wrong
 in the installation process.  If the installation test fails, please
-report your experience on
-the <a href="http://list.ospc.org/mailman/listinfo/users_list.ospc.org">Tax-Calculator
-users mailing list</a> or in an email to one of the core maintainers
+report your experience by creating a new issue at
+<a href="https://github.com/open-source-economics/Tax-Calculator/issues">
+this website</a> or by sending an email to one of the core maintainers
 of Tax-Calculator listed at the bottom of the <i>What is TaxBrain?</i>
 page at <a href="http://www.ospc.org/taxbrain/">this website</a>.
 
