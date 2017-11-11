@@ -238,8 +238,9 @@ def test_mtr(tests_path, puf_path):
 def test_mtr_pt_active(puf_subsample):
     """
     Test whether including wages in active income causes
-    MTRs on e00900p and e26270 to be less than -1
+    MTRs on e00900p and e26270 to be less than -1 (i.e., -100%)
     """
+    # pylint: disable=too-many-locals
     rec = Records(data=puf_subsample)
     reform_year = 2018
     # create current-law Calculator object, calc1

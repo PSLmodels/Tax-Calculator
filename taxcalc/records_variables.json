@@ -455,7 +455,7 @@
       "form": {"2013-2016": "6251"},
       "availability": "taxdata_puf"
     },
-    "ffpos":{
+    "ffpos": {
       "type": "int",
       "desc": "Unique family identifier in the CPS",
       "form": {},
