@@ -457,7 +457,7 @@
     },
     "ffpos": {
       "type": "int",
-      "desc": "Unique family identifier in the CPS",
+      "desc": "CPS unique family identifier (not used in tax-calculation logic)",
       "form": {},
       "availability": "taxdata_cps"
     },
@@ -469,13 +469,13 @@
     },
     "fips": {
       "type": "int",
-      "desc": "FIPS state code",
+      "desc": "FIPS state code (not used in tax-calculation logic)",
       "form": {},
       "availability": "taxdata_cps"
     },
     "h_seq": {
       "type": "int",
-      "desc": "Household sequence number in the CPS",
+      "desc": "CPS household sequence number (not used in tax-calculation logic)",
       "form": {},
       "availability": "taxdata_cps"
     },
