@@ -35,6 +35,12 @@ def main():
     with open(INPUT_PATH, 'r') as ifile:
         text = ifile.read()
 
+    # augment text variable with do-not-edit warning
+    old = '<!-- #WARN# -->'
+    new = ('<!-- *** NEVER EDIT THIS FILE BY HAND *** -->\n'
+           '<!-- *** INSTEAD EDIT index.htmx FILE *** -->')
+    text = text.replace(old, new)
+
     # augment text variable with information from JSON files
     text = policy_params(POLICY_PATH, text)
     text = io_variables('read', IOVARS_PATH, text)
