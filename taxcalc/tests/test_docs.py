@@ -10,7 +10,9 @@ import os
 
 def test_docs_up_to_date(tests_path):
     """
-    Check that index.html is older than all of its dependencies.
+    Check that index.html timestamp is greater than the timestamps
+    of all of its dependencies, where a timestamp is the time a file
+    was last modified.
     """
     code_path = os.path.join(tests_path, '..')
     docs_path = os.path.join(code_path, '..', 'docs')
