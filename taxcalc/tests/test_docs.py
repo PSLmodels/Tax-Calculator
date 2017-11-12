@@ -6,12 +6,14 @@ Tests for Tax-Calculator docs.
 # pylint --disable=locally-disabled test_docs.py
 
 import os
+import pytest
 
 
+@pytest.mark.local_test
 def test_docs_up_to_date(tests_path):
     """
-    Check that index.html timestamp is greater than the timestamps
-    of all of its dependencies, where a timestamp is the time a file
+    Check that index.html timestamp is greater than the timestamp
+    of each of its dependencies, where a timestamp is the time a file
     was last modified.
     """
     code_path = os.path.join(tests_path, '..')
