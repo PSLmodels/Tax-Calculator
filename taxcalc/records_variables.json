@@ -457,7 +457,7 @@
     },
     "ffpos": {
       "type": "int",
-      "desc": "CPS household family identifier (not used in tax-calculation logic)",
+      "desc": "CPS family identifier within household (not used in tax-calculation logic)",
       "form": {},
       "availability": "taxdata_cps"
     },
