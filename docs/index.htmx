@@ -508,9 +508,9 @@ part of this section.</p>
 formats from a single tc run.</p>
 
 <p>The remaining examples use neither the <kbd>--dump</kbd> nor the
-<kbd>--sqldb</kbd> option, and thus, produce minimal output.  But
-either or both of those options could be used in all the subsequent
-examples.</p>
+<kbd>--sqldb</kbd> option, and thus, produce minimal output for the
+reform.  But either or both of those options could be used in all the
+subsequent examples to generate more complete output for the reform.</p>
 
 <p><pre>
 (5)$ tc test.csv 2021 --reform ref3.json
@@ -650,7 +650,10 @@ developer website</a>.</p>
 files or SQLite3 database files, there is an enormous range of
 software tools that can be used to tabulate the output.  You can use
 SAS or R, Stata or MATLAB, or even import output into a spreadsheet
-(but this would seem to be the least useful option).  The main point
+(but this would seem to be the least useful option).  If you just
+want to compare the contents of two output files, you can use your
+favorite graphical diff program to view the two files <q>side by side</q>
+with highlighting of numbers that are different.  The main point
 is to use a software tool that is available to you and that you have
 experience using.</p>
 
