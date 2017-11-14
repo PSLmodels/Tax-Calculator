@@ -59,7 +59,7 @@ def test_agg(tests_path, puf_fullsample):
     for line in diff:
         diff_lines.append(line)
     # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
+    if diff_lines:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
@@ -220,7 +220,7 @@ def test_mtr(tests_path, puf_path):
     for line in diff:
         diff_lines.append(line)
     # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
+    if diff_lines:
         new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)
@@ -232,6 +232,60 @@ def test_mtr(tests_path, puf_path):
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
+
+
+@pytest.mark.requires_pufcsv
+def test_mtr_pt_active(puf_subsample):
+    """
+    Test whether including wages in active income causes
+    MTRs on e00900p and e26270 to be less than -1 (i.e., -100%)
+    """
+    # pylint: disable=too-many-locals
+    rec = Records(data=puf_subsample)
+    reform_year = 2018
+    # create current-law Calculator object, calc1
+    pol1 = Policy()
+    calc1 = Calculator(policy=pol1, records=rec)
+    calc1.advance_to_year(reform_year)
+    calc1.calc_all()
+    mtr1_e00900p = calc1.mtr('e00900p')[2]
+    mtr1_e26270 = calc1.mtr('e26270')[2]
+    assert min(mtr1_e00900p) > -1
+    assert min(mtr1_e26270) > -1
+    # change PT rates, calc2
+    reform2 = {reform_year: {'_PT_rt7': [0.35]}}
+    pol2 = Policy()
+    pol2.implement_reform(reform2)
+    calc2 = Calculator(policy=pol2, records=rec)
+    calc2.advance_to_year(reform_year)
+    calc2.calc_all()
+    mtr2_e00900p = calc2.mtr('e00900p')[2]
+    mtr2_e26270 = calc2.mtr('e26270')[2]
+    assert min(mtr2_e00900p) > -1
+    assert min(mtr2_e26270) > -1
+    # change PT_wages_active_income
+    reform3 = {reform_year: {'_PT_wages_active_income': [True]}}
+    pol3 = Policy()
+    pol3.implement_reform(reform3)
+    calc3 = Calculator(policy=pol3, records=rec)
+    calc3.advance_to_year(reform_year)
+    calc3.calc_all()
+    mtr3_e00900p = calc3.mtr('e00900p')[2]
+    mtr3_e26270 = calc3.mtr('e26270')[2]
+    assert min(mtr3_e00900p) > -1
+    assert min(mtr3_e26270) > -1
+    # change PT rates and PT_wages_active_income
+    reform4 = {reform_year: {'_PT_wages_active_income': [True],
+                             '_PT_rt7': [0.35]}}
+    pol4 = Policy()
+    pol4.implement_reform(reform4)
+    calc4 = Calculator(policy=pol4, records=rec)
+    calc4.advance_to_year(reform_year)
+    calc4.calc_all()
+    mtr4_e00900p = calc4.mtr('e00900p')[2]
+    mtr4_e26270 = calc4.mtr('e26270')[2]
+    assert min(mtr4_e00900p) > -1
+    assert min(mtr4_e26270) > -1
 
 
 @pytest.mark.requires_pufcsv

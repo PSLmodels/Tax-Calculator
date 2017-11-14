@@ -200,5 +200,4 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
                                             num_decimals=5)
         gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
         return gdp_elast_total
-    else:
-        return gdp_effect
+    return gdp_effect

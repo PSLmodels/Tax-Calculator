@@ -122,7 +122,7 @@ class Calculator(object):
             if verbose:
                 print('You loaded data for ' +
                       str(self.records.data_year) + '.')
-                if len(self.records.IGNORED_VARS) > 0:
+                if self.records.IGNORED_VARS:
                     print('Your data include the following unused ' +
                           'variables that will be ignored:')
                     for var in self.records.IGNORED_VARS:
@@ -482,13 +482,13 @@ class Calculator(object):
                 first_line = True
                 line_list = list()
                 words = text.split()
-                while len(words) > 0:
+                while words:
                     if first_line:
                         line = ''
                         first_line = False
                     else:
                         line = ' ' * num_indent_spaces
-                    while (len(words) > 0 and
+                    while (words and
                            (len(words[0]) + len(line)) < max_line_length):
                         line += words.pop(0) + ' '
                     line = line[:-1] + '\n'
@@ -572,16 +572,16 @@ class Calculator(object):
         doc = 'REFORM DOCUMENTATION\n'
         doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
         years = sorted(params['growdiff_baseline'].keys())
-        if len(years) == 0:
-            doc += 'none: using default baseline growth assumptions\n'
-        else:
+        if years:
             doc += param_doc(years, params['growdiff_baseline'], gdb)
+        else:
+            doc += 'none: using default baseline growth assumptions\n'
         doc += 'Policy Reform Parameter Values by Year:\n'
         years = sorted(params['policy'].keys())
-        if len(years) == 0:
-            doc += 'none: using current-law policy parameters\n'
-        else:
+        if years:
             doc += param_doc(years, params['policy'], clp)
+        else:
+            doc += 'none: using current-law policy parameters\n'
         return doc
 
     # ----- begin private methods of Calculator class -----

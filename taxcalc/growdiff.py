@@ -42,7 +42,7 @@ class Growdiff(ParametersBase):
 
     JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
     DEFAULTS_FILENAME = 'growdiff.json'
-    DEFAULT_NUM_YEARS = 14  # must be same as Policy.DEFAULT_NUM_YEARS
+    DEFAULT_NUM_YEARS = 15  # must be same as Policy.DEFAULT_NUM_YEARS
 
     def __init__(self, growdiff_dict=None,
                  start_year=JSON_START_YEAR,

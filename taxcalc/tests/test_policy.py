@@ -75,7 +75,7 @@ def test_constant_inflation_rate_with_reform():
     irate2021 = pirates[2021 - syr]
     # check implied inflation rate just before reform
     grate = float(pol._II_em[2020 - syr]) / float(pol._II_em[2019 - syr])
-    assert round(grate - 1.0, 6) == round(irate2019, 6)
+    assert round(grate - 1.0, 4) == round(irate2019, 4)
     # check implied inflation rate just after reform
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
     assert round(grate - 1.0, 6) == round(irate2021, 6)
@@ -628,16 +628,43 @@ def test_current_law_version():
     assert clp_mte_2016 == clv_mte_2016
 
 
-def test_clp_section_titles(tests_path):
+def test_section_titles(tests_path):
     """
-    Check section titles in current_law_policy.json file.
+    Check section titles in current_law_policy.json and index.htmx files.
     """
-    # specify expected section titles
+    def generate_section_dictionary(html_text):
+        """
+        Returns dictionary of section titles that is
+        structured like the VALID_SECTION dictionary (see below) and
+        extracted from the specified html_text.
+        """
+        sdict = dict()
+        for line in html_text.splitlines():
+            if line == '<!--  @  -->':  # the last policy parameter line
+                sdict[''] = {'': 0}
+                break  # out of line loop
+            secline = (line.startswith('<!--') and
+                       line.endswith('-->') and
+                       '@' in line)
+            if secline:
+                info = line.replace('<!--', '', 1).replace('-->', '', 1)
+                seclist = info.split('@', 1)
+                sec1 = seclist[0].strip()
+                sec2 = seclist[1].strip()
+                if sec1 not in sdict:
+                    sdict[sec1] = {}
+                sdict[sec1][sec2] = 0
+        return sdict
+    # begin main logic of test_section_titles
+    # specify expected section titles ordered as on TaxBrain
     ided_ceiling_pct = ('Ceiling On The Benefit Of Itemized Deductions '
                         'As A Percent Of Deductible Expenses')
     cgqd_tax_same = ('Tax All Capital Gains And Dividends The Same '
                      'As Regular Taxable Income')
-    VALID_SECTION = {
+    VALID = {
+        '': {  # empty section_1 implies parameter is not displayed in TaxBrain
+            '': 0
+        },
         'Payroll Taxes': {
             'Social Security FICA': 0,
             'Medicare FICA': 0,
@@ -665,10 +692,11 @@ def test_clp_section_titles(tests_path):
             'Additional Standard Deduction For Blind And Aged': 0
             # 'Standard Deduction For Dependents': 0
         },
-        'Personal Refundable Credit': {
-            'Personal Refundable Credit Maximum Amount': 0,
-            # 'Personal Refundable Credit Phaseout Start': 0,
-            'Personal Refundable Credit Phaseout Rate': 0
+        'Nonrefundable Credits': {
+            'Misc. Credit Limits': 0,
+            'Child And Dependent Care': 0,
+            'Child Tax Credit': 0,
+            'Personal Nonrefundable Credit': 0
         },
         'Itemized Deductions': {
             'Medical Expenses': 0,
@@ -693,19 +721,14 @@ def test_clp_section_titles(tests_path):
             'Pass-Through': 0,
             'Alternative Minimum Tax': 0
         },
-        'Nonrefundable Credits': {
-            'Child And Dependent Care': 0,
-            'Child Tax Credit': 0,
-            'Misc. Credit Limits': 0
-        },
         'Other Taxes': {
-            'Net Investment Income Tax': 0,
-            '': 0
+            'Net Investment Income Tax': 0
         },
         'Refundable Credits': {
             'Earned Income Tax Credit': 0,
             'Additional Child Tax Credit': 0,
-            'New Refundable Child Tax Credit': 0
+            'New Refundable Child Tax Credit': 0,
+            'Personal Refundable Credit': 0
         },
         'Surtaxes': {
             'New Minimum Tax': 0,
@@ -715,23 +738,48 @@ def test_clp_section_titles(tests_path):
         'Universal Basic Income': {
             'UBI Benefits': 0,
             'UBI Taxability': 0
-        },
-        '': {  # empty section_1 implies parameter is not displayed in TaxBrain
-            '': 0
         }
     }
-    # read current_law_policy.json file into a dictionary
+    # check validity of parameter section titles in current_law_policy.json
     path = os.path.join(tests_path, '..', 'current_law_policy.json')
     with open(path, 'r') as clpfile:
         clpdict = json.load(clpfile)
-    # check validity of parameter section titles
+    # ... make sure ever clpdict section title is in VALID dict
+    CLP = dict()  # dictionary of clp section titles structured like VALID
     for pname in clpdict:
         param = clpdict[pname]
         assert isinstance(param, dict)
         sec1title = param['section_1']
-        assert sec1title in VALID_SECTION
+        assert sec1title in VALID
         sec2title = param['section_2']
-        assert sec2title in VALID_SECTION[sec1title]
+        assert sec2title in VALID[sec1title]
+        if sec1title not in CLP:
+            CLP[sec1title] = {}
+        if sec2title not in CLP[sec1title]:
+            CLP[sec1title][sec2title] = 0
+    # ... make sure every VALID section title is in clpdict
+    for sec1title in VALID:
+        assert isinstance(VALID[sec1title], dict)
+        assert sec1title in CLP
+        for sec2title in VALID[sec1title]:
+            assert sec2title in CLP[sec1title]
+    # check validity of parameter section titles in docs/index.htmx skeleton
+    path = os.path.join(tests_path, '..', '..', 'docs', 'index.htmx')
+    with open(path, 'r') as htmxfile:
+        htmx_text = htmxfile.read()
+    htmxdict = generate_section_dictionary(htmx_text)
+    # ... make sure every htmxdict section title is in VALID dict
+    for sec1title in htmxdict:
+        assert isinstance(htmxdict[sec1title], dict)
+        assert sec1title in VALID
+        for sec2title in htmxdict[sec1title]:
+            assert sec2title in VALID[sec1title]
+    # ... make sure every VALID section title is in htmxdict
+    for sec1title in VALID:
+        assert isinstance(VALID[sec1title], dict)
+        assert sec1title in htmxdict
+        for sec2title in VALID[sec1title]:
+            assert sec2title in htmxdict[sec1title]
 
 
 def test_json_reform_suffixes(tests_path):

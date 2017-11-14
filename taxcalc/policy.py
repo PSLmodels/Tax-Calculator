@@ -51,7 +51,7 @@ class Policy(ParametersBase):
     DEFAULTS_FILENAME = 'current_law_policy.json'
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     LAST_KNOWN_YEAR = 2017  # last year for which indexed param vals are known
-    LAST_BUDGET_YEAR = 2026  # increases by one every calendar year
+    LAST_BUDGET_YEAR = 2027  # increases by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     def __init__(self,
@@ -173,7 +173,7 @@ class Policy(ParametersBase):
         # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('ERROR: reform is not a dictionary')
-        if len(reform) == 0:
+        if not reform:
             return  # no reform to implement
         reform_years = sorted(list(reform.keys()))
         for year in reform_years:
@@ -194,7 +194,7 @@ class Policy(ParametersBase):
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
         self._validate_parameter_names_types(reform)
-        if not self._ignore_errors and len(self.reform_errors) > 0:
+        if not self._ignore_errors and self.reform_errors:
             raise ValueError(self.reform_errors)
         # implement the reform year by year
         precall_current_year = self.current_year
@@ -326,7 +326,7 @@ class Policy(ParametersBase):
         # - group params with suffix into param_base:year:suffix dictionary
         gdict = suffix_group_dict(indict)
         # - add to odict the consolidated values for parameters with a suffix
-        if len(gdict) > 0:
+        if gdict:
             odict.update(with_suffix(gdict,
                                      growdiff_baseline_dict,
                                      growdiff_response_dict))
@@ -406,8 +406,7 @@ class Policy(ParametersBase):
                                         '\n'
                                     )
                             else:  # param is neither bool_type nor int_type
-                                if not (isinstance(pvalue[idx], float) or
-                                        isinstance(pvalue[idx], int)):
+                                if not isinstance(pvalue[idx], (float, int)):
                                     msg = '{} {} value {} is not a number'
                                     self.reform_errors += (
                                         'ERROR: ' +
@@ -459,13 +458,13 @@ class Policy(ParametersBase):
                         out_of_range = True
                         msg = '{} {} value {} < min value {}'
                         extra = self._vals[pname]['out_of_range_minmsg']
-                        if len(extra) > 0:
+                        if extra:
                             msg += ' {}'.format(extra)
                     if vop == 'max' and pvalue[idx] > vvalue[idx]:
                         out_of_range = True
                         msg = '{} {} value {} > max value {}'
                         extra = self._vals[pname]['out_of_range_maxmsg']
-                        if len(extra) > 0:
+                        if extra:
                             msg += ' {}'.format(extra)
                     if out_of_range:
                         action = self._vals[pname]['out_of_range_action']
@@ -473,7 +472,7 @@ class Policy(ParametersBase):
                             name = pname
                         else:
                             name = '{}_{}'.format(pname, idx[1])
-                            if len(extra) > 0:
+                            if extra:
                                 msg += '_{}'.format(idx[1])
                         if action == 'warn':
                             self.reform_warnings += (

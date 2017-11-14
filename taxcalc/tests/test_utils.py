@@ -27,6 +27,7 @@ from taxcalc.utils import (STATS_COLUMNS,
                            add_income_bins, add_quantile_bins,
                            multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
+                           dec_graph_data, dec_graph_plot,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
@@ -90,7 +91,7 @@ def test_create_tables(cps_subsample):
                 0.78,
                 0.27,
                 np.nan]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
@@ -111,7 +112,7 @@ def test_create_tables(cps_subsample):
                 0.08,
                 0.07,
                 np.nan]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
@@ -137,9 +138,9 @@ def test_create_tables(cps_subsample):
                 0.07,
                 0.05,
                 0.02,
-                0.00,
+                0.0,
                 np.nan]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     diff = create_difference_table(calc1.records, calc2.records,
@@ -161,7 +162,7 @@ def test_create_tables(cps_subsample):
                 66560891,
                 39571078,
                 5282069]
-    assert np.allclose(diff['tot_change'], expected,
+    assert np.allclose(diff['tot_change'].values, expected,
                        atol=0.5, rtol=0.0)
     expected = [0.00,
                 0.05,
@@ -177,7 +178,7 @@ def test_create_tables(cps_subsample):
                 12.38,
                 7.36,
                 0.98]
-    assert np.allclose(diff['share_of_change'], expected,
+    assert np.allclose(diff['share_of_change'].values, expected,
                        atol=0.005, rtol=0.0)
     expected = [0.00,
                 0.02,
@@ -193,7 +194,7 @@ def test_create_tables(cps_subsample):
                 0.70,
                 0.37,
                 0.06]
-    assert np.allclose(diff['perc_aftertax'], expected,
+    assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
     expected = [-0.00,
                 -0.02,
@@ -209,7 +210,7 @@ def test_create_tables(cps_subsample):
                 -0.70,
                 -0.37,
                 -0.06]
-    assert np.allclose(diff['pc_aftertaxinc'], expected,
+    assert np.allclose(diff['pc_aftertaxinc'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     with pytest.raises(ValueError):
@@ -240,7 +241,7 @@ def test_create_tables(cps_subsample):
                 4171055704,
                 2751003155,
                 709210048]
-    assert np.allclose(dist['iitax'], expected,
+    assert np.allclose(dist['iitax'].values, expected,
                        atol=0.5, rtol=0.0)
     expected = [1202,
                 1688,
@@ -950,3 +951,30 @@ def test_table_columns_labels():
     # check that length of two lists are the same
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
+
+
+def test_dec_graph_plot(cps_subsample):
+    pol = Policy()
+    rec = Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=pol, records=rec)
+    year = 2020
+    reform = {
+        year: {
+            '_SS_Earnings_c': [9e99],  # OASDI FICA tax on all earnings
+            '_FICA_ss_trt': [0.107484]  # lower rate to keep revenue unchanged
+
+        }
+    }
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec)
+    calc1.advance_to_year(year)
+    with pytest.raises(ValueError):
+        dec_graph_data(calc1, calc2)
+    calc2.advance_to_year(year)
+    gdata = dec_graph_data(calc1, calc2)
+    assert isinstance(gdata, dict)
+    deciles = gdata['bars'].keys()
+    assert len(deciles) == 14
+    gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
+    assert gplot
+    # write_graph_file(gplot, 'test.html', 'Test Plot')

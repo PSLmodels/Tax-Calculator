@@ -1,14 +1,44 @@
 TAX-CALCULATOR RELEASE HISTORY
 ==============================
-Go
-[here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
+Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
 
-2017-??-?? Release 0.13.0
+2017-11-10 Release 0.13.1
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1655](https://github.com/open-source-economics/Tax-Calculator/pull/1655))
+
+**API Changes**
+- None
+
+**New Features**
+- Add household and family identifiers from the CPS for the cps.csv.gz file that ships with taxcalc
+  [[#1635](https://github.com/open-source-economics/Tax-Calculator/pull/1635)
+  by Anderson Frailey]
+- Improved documentation for the cps.csv.gz file that ships with taxcalc
+  [[#1648](https://github.com/open-source-economics/Tax-Calculator/pull/1648)
+  by Martin Holmer]
+- Add parameter for the business income exclusion in the Senate TCJA Chairman's mark
+  [[#1651](https://github.com/open-source-economics/Tax-Calculator/pull/1648)
+  by Cody Kallen]
+- Add TCJA reform file for the Senate Chairman's mark
+  [[#1652](https://github.com/open-source-economics/Tax-Calculator/pull/1652)
+  by Cody Kallen]
+- Add FIPS state codes to the cps.csv.gz file that ships with taxcalc
+  [[#1653](https://github.com/open-source-economics/Tax-Calculator/pull/1653)
+  by Anderson Frailey]
+
+**Bug Fixes**
+- Fix an edge case related to new pass-through parameters that caused some extreme MTRs
+  [[#1645](https://github.com/open-source-economics/Tax-Calculator/pull/1645)
+  by Cody Kallen, reported by Richard Evans]
+
+
+2017-11-07 Release 0.13.0
+-------------------------
+(last merged pull request is
+[#1632](https://github.com/open-source-economics/Tax-Calculator/pull/1632))
 
 **API Changes**
 - Add new statistics and top-decile detail to distribution and difference tables
@@ -16,10 +46,38 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
-- None
+- Add expanded_income and aftertax_income to distribution table
+  [[#1602](https://github.com/open-source-economics/Tax-Calculator/pull/1602)
+  by Martin Holmer]
+- Add utility functions that generate a change-in-aftertax-income-by-decile graph
+  [[#1606](https://github.com/open-source-economics/Tax-Calculator/pull/1606)
+  by Martin Holmer]
+- Add new dependent credits for children and non-children dependents
+  [[#1615](https://github.com/open-source-economics/Tax-Calculator/pull/1615)
+  by Cody Kallen]
+- Add new non-refundable credit for filer and spouse
+  [[#1618](https://github.com/open-source-economics/Tax-Calculator/pull/1618)
+  by Cody Kallen]
+- Add capability to model pass-through tax rate eligiblity rules in TCJA
+  [[#1620](https://github.com/open-source-economics/Tax-Calculator/pull/1620)
+  by Cody Kallen]
+- Make several Personal Nonrefundable Credit parameters available to external applications like TaxBrain
+  [[#1622](https://github.com/open-source-economics/Tax-Calculator/pull/1622)
+  by Matt Jensen]
+- Extend extrapolation to 2027 and update to June 2017 CBO baseline
+  [[#1624](https://github.com/open-source-economics/Tax-Calculator/pull/1624)
+  by Anderson Frailey]
+- Add new reform JSON file for the Tax Cuts and Jobs Act
+  [[#1625](https://github.com/open-source-economics/Tax-Calculator/pull/1625)
+  by Cody Kallen]
 
 **Bug Fixes**
-- None
+- Resolve compatibility issues with Pandas 0.21.0
+  [[#1629](https://github.com/open-source-economics/Tax-Calculator/pull/1629)
+  by Hank Doupe]
+- Cleaner solution to compatibility issues with Pandas 0.21.0
+  [[#1634](https://github.com/open-source-economics/Tax-Calculator/pull/1634)
+  by Hank Doupe]
 
 
 2017-10-20 Release 0.12.0

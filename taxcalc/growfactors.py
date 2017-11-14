@@ -50,8 +50,6 @@ class Growfactors(object):
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
         if isinstance(growfactors_filename, six.string_types):
-            # pylint: disable=redefined-variable-type
-            # (above because pylint mistakenly thinks gfdf is not a DataFrame)
             if os.path.isfile(growfactors_filename):
                 gfdf = pd.read_csv(growfactors_filename,
                                    index_col='YEAR')

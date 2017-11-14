@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import bokeh.io as bio
 import bokeh.plotting as bp
+from bokeh.models import PrintfTickFormatter
 from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count_gt_zero,
                                weighted_count, weighted_mean,
@@ -107,7 +108,7 @@ DIFF_TABLE_LABELS = ['All Tax Units',
 DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
                     'all',
-                    '90-95', '95-99', '99-100']
+                    '90-95', '95-99', 'Top 1%']
 
 WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 9e99]
@@ -125,18 +126,28 @@ SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      1999999, 4999999, 9999999, 9e99]
 
 
+def zsum(self):
+    """
+    pandas 0.21.0 changes sum() behavior so that the result of applying sum
+    over an empty Series is NaN.  Since we apply the sum() function over
+    grouped DataFrames that may contain an empty Series, it makes more sense
+    for us to have a sum() function that returns zero instead of NaN.
+    """
+    return self.sum() if self.size > 0 else 0
+
+
 def unweighted_sum(pdf, col_name):
     """
     Return unweighted sum of Pandas DataFrame col_name items.
     """
-    return pdf[col_name].sum()
+    return pdf[col_name].zsum()
 
 
 def weighted_sum(pdf, col_name):
     """
     Return weighted sum of Pandas DataFrame col_name items.
     """
-    return (pdf[col_name] * pdf['s006']).sum()
+    return (pdf[col_name] * pdf['s006']).zsum()
 
 
 def add_quantile_bins(pdf, income_measure, num_bins,
@@ -238,7 +249,7 @@ def get_sums(pdf):
     sums = dict()
     for col in pdf.columns.values.tolist():
         if col != 'bins':
-            sums[col] = pdf[col].sum()
+            sums[col] = pdf[col].zsum()
     return pd.Series(sums, name='sums')
 
 
@@ -467,7 +478,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             sdf['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
             sdf['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
             sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-            wtotal = (res2['tax_diff'] * res2['s006']).sum()
+            wtotal = (res2['tax_diff'] * res2['s006']).zsum()
             sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                                 'tax_diff', wtotal)
             sdf['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
@@ -1153,8 +1164,7 @@ def isoelastic_utility_function(consumption, crra, cmin):
     if consumption >= cmin:
         if crra == 1.0:
             return math.log(consumption)
-        else:
-            return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
+        return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
     else:  # if consumption < cmin
         if crra == 1.0:
             tu_at_cmin = math.log(cmin)
@@ -1219,11 +1229,9 @@ def certainty_equivalent(exputil, crra, cmin):
     if exputil >= tu_at_cmin:
         if crra == 1.0:
             return math.exp(exputil)
-        else:
-            return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
-    else:
-        mu_at_cmin = math.pow(cmin, -crra)
-        return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
+        return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
+    mu_at_cmin = math.pow(cmin, -crra)
+    return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
 
 
 def ce_aftertax_income(calc1, calc2,
@@ -1382,3 +1390,160 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     bsest['cilo'] = stat[int(round(alpha * num_samples)) - 1]
     bsest['cihi'] = stat[int(round((1 - alpha) * num_samples)) - 1]
     return bsest
+
+
+def dec_graph_data(calc1, calc2):
+    """
+    Prepare data needed by dec_graph_plot utility function.
+
+    Parameters
+    ----------
+    calc1 : a Calculator object that refers to baseline policy
+
+    calc2 : a Calculator object that refers to reform policy
+
+    Returns
+    -------
+    dictionary object suitable for passing to dec_graph_plot utility function
+    """
+    # check that two calculator objects have the same current_year
+    if calc1.current_year == calc2.current_year:
+        year = calc1.current_year
+    else:
+        msg = 'calc1.current_year={} != calc2.current_year={}'
+        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
+    # create difference table from the two Calculator objects
+    calc1.calc_all()
+    calc2.calc_all()
+    diff_table = create_difference_table(calc1.records, calc2.records,
+                                         groupby='weighted_deciles',
+                                         income_measure='expanded_income',
+                                         tax_to_diff='combined')
+    # construct dictionary containing the bar data required by dec_graph_plot
+    bars = dict()
+    for idx in range(0, 14):  # the ten income deciles, all, plus top details
+        info = dict()
+        info['label'] = DECILE_ROW_NAMES[idx]
+        info['value'] = diff_table['pc_aftertaxinc'][idx]
+        if info['label'] == 'all':
+            info['label'] = '---------'
+            info['value'] = 0
+        bars[idx] = info
+    # construct dictionary containing bar data and auto-generated labels
+    data = dict()
+    data['bars'] = bars
+    xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
+    data['xlabel'] = xlabel
+    ylabel = 'Expanded Income Percentile Group'
+    data['ylabel'] = ylabel
+    title_str = 'Change in After-Tax Income by Income Percentile Group'
+    data['title'] = '{} for {}'.format(title_str, year)
+    return data
+
+
+def dec_graph_plot(data,
+                   width=850,
+                   height=500,
+                   xlabel='',
+                   ylabel='',
+                   title=''):
+    """
+    Plot stacked decile graph using data returned from dec_graph_data function.
+
+    Parameters
+    ----------
+    data : dictionary object returned from dec_graph_data() utility function
+
+    width : integer
+        width of plot expressed in pixels
+
+    height : integer
+        height of plot expressed in pixels
+
+    xlabel : string
+        x-axis label; if '', then use label generated by dec_graph_data
+
+    ylabel : string
+        y-axis label; if '', then use label generated by dec_graph_data
+
+    title : string
+        graph title; if '', then use title generated by dec_graph_data
+
+    Returns
+    -------
+    bokeh.plotting figure object containing a raster graphics plot
+
+    Notes
+    -----
+    USAGE EXAMPLE::
+
+      gdata = dec_graph_data(calc1, calc2)
+      gplot = dec_graph_plot(gdata)
+
+    THEN when working interactively in a Python notebook::
+
+      bp.show(gplot)
+
+    OR when executing script using Python command-line interpreter::
+
+      bio.output_file('graph-name.html', title='Change in After-Tax Income')
+      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
+
+    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
+
+    To convert the visualized graph into a PNG-formatted file, click on
+    the "Save" icon on the Toolbar (located in the top-right corner of
+    the visualized graph) and a PNG-formatted file will written to your
+    Download directory.
+
+    The ONLY output option the bokeh.plotting figure has is HTML format,
+    which (as described above) can be converted into a PNG-formatted
+    raster graphics file.  There is no option to make the bokeh.plotting
+    figure generate a vector graphics file such as an EPS file.
+    """
+    # pylint: disable=too-many-arguments,too-many-locals
+    if title == '':
+        title = data['title']
+    bar_keys = sorted(data['bars'].keys())
+    bar_labels = [data['bars'][key]['label'] for key in bar_keys]
+    fig = bp.figure(plot_width=width, plot_height=height, title=title,
+                    y_range=bar_labels)
+    fig.title.text_font_size = '12pt'
+    fig.outline_line_color = None
+    fig.axis.axis_line_color = None
+    fig.axis.minor_tick_line_color = None
+    fig.axis.axis_label_text_font_size = '12pt'
+    fig.axis.axis_label_text_font_style = 'normal'
+    fig.axis.major_label_text_font_size = '12pt'
+    if xlabel == '':
+        xlabel = data['xlabel']
+    fig.xaxis.axis_label = xlabel
+    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+d%%')
+    if ylabel == '':
+        ylabel = data['ylabel']
+    fig.yaxis.axis_label = ylabel
+    fig.ygrid.grid_line_color = None
+    # plot thick x-axis grid line at zero
+    fig.line(x=[0, 0], y=[0, 14], line_width=1, line_color='black')
+    # plot bars
+    barheight = 0.8
+    bcolor = 'blue'
+    yidx = 0
+    for idx in bar_keys:
+        bval = data['bars'][idx]['value']
+        blabel = data['bars'][idx]['label']
+        bheight = barheight
+        if blabel == '90-95':
+            bheight *= 0.5
+            bcolor = 'red'
+        elif blabel == '95-99':
+            bheight *= 0.4
+        elif blabel == 'Top 1%':
+            bheight *= 0.1
+        fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
+                 y=(yidx + 0.5),   # y-coordinate of center of the rectangle
+                 width=abs(bval),  # width of the rectangle
+                 height=bheight,   # height of the rectangle
+                 color=bcolor)
+        yidx += 1
+    return fig

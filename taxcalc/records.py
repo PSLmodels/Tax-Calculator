@@ -381,7 +381,7 @@ class Records(object):
         Adjust value of income variables to match SOI distributions
         Note: adjustment must leave variables as numpy.ndarray type
         """
-        if len(self.ADJ) != 0:
+        if self.ADJ.size > 0:
             # Interest income
             adj_array = self.ADJ['INT{}'.format(year)][self.agi_bin].values
             self.e00300 *= adj_array
@@ -469,8 +469,6 @@ class Records(object):
         elif isinstance(weights, six.string_types):
             weights_path = os.path.join(Records.CUR_PATH, weights)
             if os.path.isfile(weights_path):
-                # pylint: disable=redefined-variable-type
-                # (above because pylint mistakenly thinks WT not a DataFrame)
                 WT = pd.read_csv(weights_path)
             else:
                 # cannot call read_egg_ function in unit tests
@@ -496,8 +494,6 @@ class Records(object):
         elif isinstance(ratios, six.string_types):
             ratios_path = os.path.join(Records.CUR_PATH, ratios)
             if os.path.isfile(ratios_path):
-                # pylint: disable=redefined-variable-type
-                # (above because pylint mistakenly thinks ADJ not a DataFrame)
                 ADJ = pd.read_csv(ratios_path,
                                   index_col=0)
             else:

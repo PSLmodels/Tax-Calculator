@@ -455,11 +455,29 @@
       "form": {"2013-2016": "6251"},
       "availability": "taxdata_puf"
     },
+    "ffpos": {
+      "type": "int",
+      "desc": "CPS family identifier within household (not used in tax-calculation logic)",
+      "form": {},
+      "availability": "taxdata_cps"
+    },
     "filer": {
       "type": "int",
       "desc": "1 if unit files an income tax return; 0 if not (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_puf, taxdata_cps"
+    },
+    "fips": {
+      "type": "int",
+      "desc": "FIPS state code (not used in tax-calculation logic)",
+      "form": {},
+      "availability": "taxdata_cps"
+    },
+    "h_seq": {
+      "type": "int",
+      "desc": "CPS household sequence number (not used in tax-calculation logic)",
+      "form": {},
+      "availability": "taxdata_cps"
     },
     "k1bx14p": {
       "type": "float",
