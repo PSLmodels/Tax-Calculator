@@ -1468,9 +1468,9 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
     # Part II of 2005 Form 8812
-    if n24 > 0 and n24 <= 2 and c82890 > 0:
+    if n24 > 0 and n24 < ACTC_ChildNum and c82890 > 0:
         c82940 = min(c82890, c82935)
-    if n24 > 2:
+    if n24 >= ACTC_ChildNum:
         if c82890 >= c82935:
             c82940 = c82935
         else:
