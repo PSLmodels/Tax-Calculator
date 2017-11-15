@@ -1,4 +1,26 @@
 {
+    "_cpi_offset": {
+        "long_name": "Decimal offset ADDED to unchained CPI to get parameter indexing rate",
+        "description": "Current-law values are zero; reforms that introduce indexing with chained CPI would have values around -0.0025.",
+        "section_1": "",
+        "section_2": "",
+        "irs_ref": "",
+        "notes": "See April 2013 CBO report entitled 'What Would Be the Effect on the Deficit of Using the Chained CPI to Index Benefit Programs and the Tax Code?', which includes this: 'The chained CPI grows more slowly than the traditional CPI does: an average of about 0.25 percentage points more slowly per year over the past decade.' <https://www.cbo.gov/publication/44089>",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -0.005, "max": 0.005},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_FICA_ss_trt": {
         "long_name": "Social Security payroll tax rate",
         "description": "Social Security FICA rate, including both employer and employee.",

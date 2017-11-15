@@ -591,6 +591,37 @@ def test_order_of_cpi_and_level_reforms():
         assert mte[2017 - syr] == 500000
 
 
+@pytest.mark.one
+def test_chained_cpi_reform():
+    """
+    Test that _cpi_offset policy parameter works as expected.
+    """
+    # specify reform without and with chained CPI indexing
+    pem = 10000
+    with_unchained_cpi = {
+        2016: {'_cpi_offset': [0.0]},
+        2018: {'_II_em': [pem]}
+    }
+    with_chained_cpi = {
+        2016: {'_cpi_offset': [0.0]},
+        # TODO:                ^^^     change to -0.0025
+        2018: {'_II_em': [pem]}
+    }
+    syr = Policy.JSON_START_YEAR
+    pol_unchained = Policy(start_year=syr)
+    pol_chained = Policy(start_year=syr)
+    pol_unchained.implement_reform(with_unchained_cpi)
+    pol_chained.implement_reform(with_chained_cpi)
+    # check _II_em values in the two reforms for several years
+    pem_chained = pol_chained._II_em
+    pem_unchained = pol_unchained._II_em
+    assert pem_chained[2016 - syr] == pem_unchained[2016 - syr]
+    assert pem_chained[2017 - syr] == pem_unchained[2017 - syr]  # TODO: <
+    assert pem_chained[2018 - syr] == pem
+    assert pem_unchained[2018 - syr] == pem
+    assert pem_chained[2019 - syr] == pem_unchained[2019 - syr]  # TODO: <
+
+
 def test_misspecified_reforms():
     """
     Demonstrate pitfalls of careless specification of policy reforms.
