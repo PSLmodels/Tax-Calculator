@@ -517,7 +517,7 @@
     },
     "n1821": {
       "type": "int",
-      "desc": "Number of people over 18 and under 21 years old in the filing unit",
+      "desc": "Number of people age 18-20 years old in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
