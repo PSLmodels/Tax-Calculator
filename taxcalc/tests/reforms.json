@@ -491,10 +491,10 @@
   "49": {
       "start_year": 2015,
       "value": {"_ACTC_ChildNum": [2]},
-      "name": "Lower additional CTC minimum number of children to two",
+      "name": "Lower Additional CTC ChildNum from three to two",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.0,0.0,0.0,0.0"
+      "expected": "Tax-Calculator,-0.0,-0.0,-0.0,-0.0"
   },
 
   "50": {
