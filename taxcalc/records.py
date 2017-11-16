@@ -105,6 +105,7 @@ class Records(object):
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
     VAR_INFO_FILENAME = 'records_variables.json'
+    BENEFIT_FILENAME = 'cps_benefits_extrap.csv.gz'
 
     def __init__(self,
                  data='puf.csv',
@@ -112,6 +113,7 @@ class Records(object):
                  gfactors=Growfactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
+                 benefits=BENEFIT_FILENAME,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments
         self._data_year = start_year
@@ -146,6 +148,9 @@ class Records(object):
         self._read_weights(weights)
         self.ADJ = None
         self._read_ratios(adjust_ratios)
+        # read extrapolated benefit variables
+        self.BEN = None
+        self._read_benefits(benefits)
         # weights must be same size as tax record data
         if not self.WT.empty and self.dim != len(self.WT):
             # scale-up sub-sample weights by year-specific factor
@@ -190,6 +195,7 @@ class Records(object):
                        gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
+                       benefits=Records.BENEFIT_FILENAME,
                        start_year=Records.CPSCSV_YEAR)
 
     @property
@@ -386,6 +392,23 @@ class Records(object):
             adj_array = self.ADJ['INT{}'.format(year)][self.agi_bin].values
             self.e00300 *= adj_array
 
+    def _extrapolate_benefits(self, year):
+        """
+        Extrapolate benefit variables
+        """
+        ben = self.BEN['ssi_benefits_{}'.format(year)][self.RECID].values
+        self.ssi_ben = np.nan_to_num(ben)
+        ben = self.BEN['snap_benefits_{}'.format(year)][self.RECID].values
+        self.snap_ben = np.nan_to_num(ben)
+        ben = self.BEN['vb_benefits_{}'.format(year)][self.RECID].values
+        self.vet_ben = np.nan_to_num(ben)
+        ben = self.BEN['ss_benefits_{}'.format(year)][self.RECID].values
+        self.ss_ben = np.nan_to_num(ben)
+        ben = self.BEN['medicare_benefits_{}'.format(year)][self.RECID].values
+        self.mcare_ben = np.nan_to_num(ben)
+        ben = self.BEN['medicaid_benefits_{}'.format(year)][self.RECID].values
+        self.mcaid_ben = np.nan_to_num(ben)
+
     def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
@@ -509,3 +532,28 @@ class Records(object):
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
         self.ADJ = ADJ
+
+    def _read_benefits(self, benefits):
+        """
+        Read Records extrapolated benefits from a file or uses a specified
+        DataFrame or creates an empty DataFrame if None. Should only be
+        used with the cps.csv file
+        """
+        if benefits is None:
+            BEN = pd.DataFrame({'Nothing': []})
+            setattr(self, 'BEN', BEN)
+            return
+        if isinstance(benefits, pd.DataFrame):
+            BEN = benefits
+        elif isinstance(benefits, six.string_types):
+            benefits_path = os.path.join(Records.CUR_PATH, benefits)
+            if os.path.isfile(benefits_path):
+                BEN = pd.read_csv(benefits_path)
+            else:
+                # cannot call read_egg_ function in unit tests
+                BEN = read_egg_csv(os.path.basename(benefits_path))
+        else:
+            msg = 'benefits is not Nont or a string or a Pandas DataFrame'
+            raise ValueError(msg)
+        assert isinstance(BEN, pd.DataFrame)
+        self.BEN = BEN

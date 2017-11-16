@@ -23,8 +23,8 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
-                               FairShareTax, LumpSumTax, ExpandIncome,
-                               AfterTaxIncome)
+                               FairShareTax, LumpSumTax, BenefitPrograms,
+                               ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption

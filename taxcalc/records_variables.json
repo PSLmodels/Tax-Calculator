@@ -491,6 +491,18 @@
       "form": {"2013-2016": "1065 (Schedule K-1) box 14"},
       "availability": "taxdata_puf"
     },
+    "mcaid_ben": {
+      "type": "float",
+      "desc": "Imputed Medicaid benefits",
+      "form": {"2013-2016": "imputed using the C-TAM model"},
+      "availability": "taxdata_cps"
+    },
+    "mcare_ben": {
+      "type": "float",
+      "desc": "Imputed Medicare benefits",
+      "form": {"2013-2016": "imputed using the C-TAM model"},
+      "availability": "taxdata_cps"
+    },
     "n24": {
       "type": "int",
       "desc": "Number of children eligible for Child Tax Credit",
@@ -526,6 +538,12 @@
       "desc": "Number of people 21 years old or older in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
+    },
+    "other_ben": {
+      "type": "float",
+      "desc": "Non-imputed benefits",
+      "form": {"2013-2016": "determined using government benefit program data"},
+      "availability": "taxdata_cps"
     },
     "p08000": {
       "type": "float",
@@ -564,33 +582,15 @@
       "form": {"2013-2016": "not used in filing unit tax calculations"},
       "availability": "taxdata_puf, taxdata_cps"
     },
-    "ssi_ben": {
-      "type": "float",
-      "desc": "Imputed SSI benefits",
-      "form": {"2013-2016": "imputed using the C-TAM model"},
-      "availability": "taxdata_cps"
-    },
     "snap_ben": {
       "type": "float",
       "desc": "Imputed SNAP benefits",
       "form": {"2013-2016": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
-    "vet_ben": {
+    "ssi_ben": {
       "type": "float",
-      "desc": "Imputed Veteran's benefits",
-      "form": {"2013-2016": "imputed using the C-TAM model"},
-      "availability": "taxdata_cps"
-    },
-    "mcare_ben": {
-      "type": "float",
-      "desc": "Imputed Medicare benefits",
-      "form": {"2013-2016": "imputed using the C-TAM model"},
-      "availability": "taxdata_cps"
-    },
-    "mcaid_ben": {
-      "type": "float",
-      "desc": "Imputed Medicaid benefits",
+      "desc": "Imputed SSI benefits",
       "form": {"2013-2016": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
@@ -600,10 +600,10 @@
       "form": {"2013-2016": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
-    "other_ben": {
+    "vet_ben": {
       "type": "float",
-      "desc": "Non-imputed benefits",
-      "form": {"2013-2016": "determined using government benefit program data"},
+      "desc": "Imputed Veteran's benefits",
+      "form": {"2013-2016": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     }
   },
@@ -1086,9 +1086,44 @@
       "desc": "After tax income is equal to expanded_income minus combined",
       "form": {}
     },
-    "total_ben": {
+    "ben_total": {
       "type": "float",
-      "desc": "Total benefits recieved by that tax u",
+      "desc": "Total benefits recieved by that tax unit",
+      "form": {}
+    },
+    "ben_welfare": {
+      "type": "float",
+      "desc": "Perceived benefits received after accounting for deadweight loss",
+      "form": {}
+    },
+    "ssi_ben_welfare": {
+      "type": "float",
+      "desc": "Perceived SSI benefits after accounting for deadweight loss",
+      "form": {}
+    },
+    "snap_ben_welfare": {
+      "type": "float",
+      "desc": "Perceived SNAP benefits after accounting for deadweight loss",
+      "form": {}
+    },
+    "vet_ben_welfare": {
+      "type": "float",
+      "desc": "Perceived veterans benefits after accounting for deadweight loss",
+      "form": {}
+    },
+    "mcare_ben_welfare": {
+      "type": "float",
+      "desc": "Perceived Medicare benefits after accounting for deadweight loss",
+      "form": {}
+    },
+    "mcaid_ben_welfare": {
+      "type": "float",
+      "desc": "Perceived Medicaid benefits after accounting for deadweight loss",
+      "form": {}
+    },
+    "ss_ben_welfare": {
+      "type": "float",
+      "desc": "Perceived Social Security benefits after accounting for deadweight loss",
       "form": {}
     }
   }
