@@ -591,35 +591,48 @@ def test_order_of_cpi_and_level_reforms():
         assert mte[2017 - syr] == 500000
 
 
-@pytest.mark.one
-def test_chained_cpi_reform():
+@pytest.mark.parametrize("offset", [0.0, -0.0025])
+def test_chained_cpi_reform(offset):
     """
     Test that _cpi_offset policy parameter works as expected.
     """
-    # specify reform without and with chained CPI indexing
+    # specify reform without using cpi_offset parameter
     pem = 10000
-    with_unchained_cpi = {
-        2016: {'_cpi_offset': [0.0]},
-        2018: {'_II_em': [pem]}
+    bare_reform = {
+        2022: {'_II_em': [pem]}
     }
-    with_chained_cpi = {
-        2016: {'_cpi_offset': [0.0]},
-        # TODO:                ^^^     change to -0.0025
-        2018: {'_II_em': [pem]}
+    with_reform = {
+        2022: {'_II_em': [pem]},
+        2020: {'_cpi_offset': [offset]}
     }
     syr = Policy.JSON_START_YEAR
-    pol_unchained = Policy(start_year=syr)
-    pol_chained = Policy(start_year=syr)
-    pol_unchained.implement_reform(with_unchained_cpi)
-    pol_chained.implement_reform(with_chained_cpi)
-    # check _II_em values in the two reforms for several years
-    pem_chained = pol_chained._II_em
-    pem_unchained = pol_unchained._II_em
-    assert pem_chained[2016 - syr] == pem_unchained[2016 - syr]
-    assert pem_chained[2017 - syr] == pem_unchained[2017 - syr]  # TODO: <
-    assert pem_chained[2018 - syr] == pem
-    assert pem_unchained[2018 - syr] == pem
-    assert pem_chained[2019 - syr] == pem_unchained[2019 - syr]  # TODO: <
+    pol_bare = Policy(start_year=syr)
+    pol_bare.implement_reform(bare_reform)
+    pol_with = Policy(start_year=syr)
+    pol_with.implement_reform(with_reform)
+    # check relative _II_em values in the two reforms for several years
+    pem_bare = pol_bare._II_em
+    pem_with = pol_with._II_em
+    if offset == 0:
+        assert pem_with[2019 - syr] == pem_bare[2019 - syr]
+        assert pem_with[2020 - syr] == pem_bare[2020 - syr]
+        assert pem_with[2021 - syr] == pem_bare[2021 - syr]
+        assert pem_with[2022 - syr] == pem
+        assert pem_bare[2022 - syr] == pem
+        assert pem_with[2023 - syr] == pem_bare[2023 - syr]
+    elif offset < 0:
+        assert pem_with[2019 - syr] == pem_bare[2019 - syr]
+        assert pem_with[2020 - syr] == pem_bare[2020 - syr]
+        assert pem_with[2021 - syr] < pem_bare[2021 - syr]
+        assert pem_with[2022 - syr] == pem
+        assert pem_bare[2022 - syr] == pem
+        assert pem_with[2023 - syr] < pem_bare[2023 - syr]
+    # check exact _II_em values for 2023,
+    # which are 2022 values indexed by 2022 inflation rates
+    unchained_cpi = pol_bare.inflation_rates()[2022 - syr]
+    assert pem_bare[2023 - syr] == round(pem * (1 + unchained_cpi), 2)
+    chained_cpi = unchained_cpi + offset
+    assert pem_with[2023 - syr] == round(pem * (1 + chained_cpi), 2)
 
 
 def test_misspecified_reforms():
