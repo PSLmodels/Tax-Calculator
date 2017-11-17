@@ -4,6 +4,34 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2017-11-?? Release 0.13.2
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- None
+
+**New Features**
+- Add TCJA_House_Amended JSON policy reform file
+  [[#1664](https://github.com/open-source-economics/Tax-Calculator/pull/1664)
+  by Cody Kallen and Matt Jensen]
+- Add `_cpi_offset` policy parameter that can be used to specify chained CPI indexing reforms
+  [[#1667](https://github.com/open-source-economics/Tax-Calculator/pull/1667)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Fix `_ACTC_ChildNum` policy parameter documentation and logic
+  [[#1666](https://github.com/open-source-economics/Tax-Calculator/pull/1666)
+  by Martin Holmer, reported by Ernie Tedeschi]
+- Fix documentation for mis-named `n1821` input variable
+  [[#1672](https://github.com/open-source-economics/Tax-Calculator/pull/1672)
+  by Martin Holmer, reported by Max Ghenis]
+- Fix logic of run_nth_year_gdp_elast_model function in the TaxBrainInterface
+  [[#1677](https://github.com/open-source-economics/Tax-Calculator/pull/1677)
+  by Martin Holmer, reported by Hank Doupe]
+
+
 2017-11-10 Release 0.13.1
 -------------------------
 (last merged pull request is
