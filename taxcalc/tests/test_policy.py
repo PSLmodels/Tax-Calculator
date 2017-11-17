@@ -6,7 +6,7 @@ import tempfile
 import numpy as np
 from numpy.testing import assert_allclose
 import pytest
-from taxcalc import Policy, Calculator
+from taxcalc import Policy, Calculator, Growfactors, Growdiff
 
 
 @pytest.fixture(scope='module', name='policyfile')
@@ -627,12 +627,27 @@ def test_chained_cpi_reform(offset):
         assert pem_with[2022 - syr] == pem
         assert pem_bare[2022 - syr] == pem
         assert pem_with[2023 - syr] < pem_bare[2023 - syr]
-    # check exact _II_em values for 2023,
-    # which are 2022 values indexed by 2022 inflation rates
+    # check exact _II_em values for 2023, which are
+    # equal to 2022 values indexed by 2022 inflation rates
     unchained_cpi = pol_bare.inflation_rates()[2022 - syr]
     assert pem_bare[2023 - syr] == round(pem * (1 + unchained_cpi), 2)
     chained_cpi = unchained_cpi + offset
     assert pem_with[2023 - syr] == round(pem * (1 + chained_cpi), 2)
+    # check that _STD value for 2023 with chained CPI indexing is
+    # equal to _STD value for 2023 when specifying chained CPI indexing
+    # as a difference in assumed inflation rates
+    if offset != 0:
+        # ... compute _STD value using difference-in-growth-factors approach
+        growfactors = Growfactors()
+        growdiff = Growdiff()
+        growdiff.update_growdiff({2020: {'_ACPIU': [offset]}})
+        growdiff.apply_to(growfactors)
+        pol = Policy(gfactors=growfactors, start_year=syr)
+        pol.implement_reform(bare_reform)
+        # ... compare the _STD values derived from the two approaches
+        assert_allclose(pol_with._STD[2023 - syr],
+                        pol._STD[2023 - syr],
+                        atol=0.01, rtol=0.0)
 
 
 def test_misspecified_reforms():
