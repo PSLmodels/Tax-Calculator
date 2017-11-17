@@ -709,6 +709,9 @@ def test_section_titles(tests_path):
         '': {  # empty section_1 implies parameter is not displayed in TaxBrain
             '': 0
         },
+        'Parameter Indexing': {
+            'Offsets': 0
+        },
         'Payroll Taxes': {
             'Social Security FICA': 0,
             'Medicare FICA': 0,
