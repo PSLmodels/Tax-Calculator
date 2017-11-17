@@ -19,6 +19,12 @@ for a complete commit history.
 - Add `_cpi_offset` policy parameter that can be used to specify chained CPI indexing reforms
   [[#1667](https://github.com/open-source-economics/Tax-Calculator/pull/1667)
   by Martin Holmer]
+- Add new policy parameter that changes the stacking order of child/dependent credits
+  [[#1676](https://github.com/open-source-economics/Tax-Calculator/pull/1676)
+  by Matt Jensen as suggested by Cody Kallen]
+- Add TCJA_Senate_Chairman_Modified_Mark JSON policy reform file
+  [[#1678](https://github.com/open-source-economics/Tax-Calculator/pull/1678)
+  by Cody Kallen and Sean Wang]
 
 **Bug Fixes**
 - Fix `_ACTC_ChildNum` policy parameter documentation and logic
