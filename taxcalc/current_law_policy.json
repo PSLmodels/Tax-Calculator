@@ -3599,6 +3599,28 @@
         "out_of_range_action": "stop"
     },
 
+    "_DependentCredit_before_CTC": {
+        "long_name": "Stack the Dependent Credit before the Child Tax Credit",
+        "description": "Stack the draw down of the Dependent Credit against liabilities before the drawdown of the Child Tax Credit.",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child Tax Credit",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_FilerCredit_c": {
         "long_name": "Nonrefundable credit for filer and spouse",
         "description": "This nonrefundable credit is applied to the filer and spouse and phases out with the Child Tax Credit. The filer credit's phaseout begins when the CTC's phaseout ends.",

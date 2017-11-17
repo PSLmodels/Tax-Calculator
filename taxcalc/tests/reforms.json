@@ -556,6 +556,25 @@
       "output_type": "iitax",
       "compare_with": {"Budget Options": [44.1, 86.6, 87.1, 91.2]},
       "expected": "Tax-Calculator,86.1,90.5,95.3,99.8"
+  },
+
+  "56": {
+      "start_year": 2017,
+      "value": {"_DependentCredit_before_CTC": [true],
+                "_DependentCredit_Child_c": [500]},
+      "name": "Stack dependent credit before CTC",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-13.2,-12.9,-12.3,-12.1"
+  },
+
+    "57": {
+      "start_year": 2017,
+      "value": {"_DependentCredit_Child_c": [500]},
+      "name": "Stack dependent credit before CTC",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-7.9,-7.7,-7.3,-7.2"
   }
 
 }
