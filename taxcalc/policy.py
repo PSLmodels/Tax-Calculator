@@ -196,6 +196,10 @@ class Policy(ParametersBase):
         self._validate_parameter_names_types(reform)
         if not self._ignore_errors and self.reform_errors:
             raise ValueError(self.reform_errors)
+        # optionally apply cpi_offset to inflation_rates and re-initialize
+        if Policy._cpi_offset_in_reform(reform):
+            self._apply_cpi_offset(reform)
+            self.set_default_vals()
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()
@@ -340,6 +344,40 @@ class Policy(ParametersBase):
         self._ignore_errors = True
 
     # ----- begin private methods of Policy class -----
+
+    @staticmethod
+    def _cpi_offset_in_reform(reform):
+        """
+        Return true if cpi_offset is in reform; otherwise return false.
+        """
+        for year in reform:
+            for name in reform[year]:
+                if name == '_cpi_offset':
+                    return True
+        return False
+
+    def _apply_cpi_offset(self, reform):
+        """
+        Apply CPI offset to inflation rates and
+        revert indexed parameter values in preparation for re-indexing.
+        """
+        # extrapolate cpi_offset reform
+        self.set_year(self.start_year)
+        for year in sorted(reform.keys()):
+            self.set_year(year)
+            if '_cpi_offset' in reform[year]:
+                oreform = {'_cpi_offset': reform[year]['_cpi_offset']}
+                self._update({year: oreform})
+        self.set_year(self.start_year)
+        # adjust inflation rates
+        cpi_offset = getattr(self, '_cpi_offset')
+        for idx in range(0, self.num_years):
+            infrate = round(self._inflation_rates[idx] + cpi_offset[idx], 6)
+            self._inflation_rates[idx] = infrate
+        # revert CPI-indexed parameter values to current_law_policy.json values
+        for name in self._vals.keys():
+            if self._vals[name]['cpi_inflated']:
+                setattr(self, name, self._vals[name]['value'])
 
     def _validate_parameter_names_types(self, reform):
         """

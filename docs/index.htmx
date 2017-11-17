@@ -801,6 +801,7 @@ section.</p>
 
 <h3>Section Contents</h3>
 
+<p><a href="#pol-parameter-indexing">Parameter Indexing</a></p>
 <p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
 <p><a href="#pol-social-security-taxability">Social Security Taxability</a></p>
 <p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
@@ -815,6 +816,13 @@ section.</p>
 <p><a href="#pol-surtaxes">Surtaxes</a></p>
 <p><a href="#pol-ubi">Universal Basic Income</a></p>
 <p><a href="#pol-other-parameters">Other Parameters</a></p>
+
+
+<h3 id="pol-parameter-indexing"></a>Parameter Indexing</h3>
+
+<!-- Parameter Indexing @ Offsets -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
 
 
 <h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
