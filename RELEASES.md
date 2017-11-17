@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2017-11-?? Release 0.13.2
+2017-11-17 Release 0.13.2
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1677](https://github.com/open-source-economics/Tax-Calculator/pull/1677))
 
 **API Changes**
 - None
@@ -22,9 +22,6 @@ for a complete commit history.
 - Add new policy parameter that changes the stacking order of child/dependent credits
   [[#1676](https://github.com/open-source-economics/Tax-Calculator/pull/1676)
   by Matt Jensen as suggested by Cody Kallen]
-- Add TCJA_Senate_Chairman_Modified_Mark JSON policy reform file
-  [[#1678](https://github.com/open-source-economics/Tax-Calculator/pull/1678)
-  by Cody Kallen and Sean Wang]
 
 **Bug Fixes**
 - Fix `_ACTC_ChildNum` policy parameter documentation and logic
