@@ -21,7 +21,7 @@ for a complete commit history.
   by Martin Holmer]
 - Add new policy parameter that changes the stacking order of child/dependent credits
   [[#1676](https://github.com/open-source-economics/Tax-Calculator/pull/1676)
-  by Matt Jensen as suggested by Cody Kallen]
+  by Matt Jensen as suggested by Cody Kallen with need identified by Joint Economic Committee staff]
 
 **Bug Fixes**
 - Fix `_ACTC_ChildNum` policy parameter documentation and logic
