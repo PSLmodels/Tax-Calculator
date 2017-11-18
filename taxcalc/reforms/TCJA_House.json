@@ -12,6 +12,7 @@
 // -  Changes to above-the-line deductions (8)
 // -  Changes to itemized deductions (9)
 // -  Repeal of certain credits (10)
+// -  Adopt Chained CPI for parameter indexing (11)
 // Reform_Parameter_Map:
 // - 1: _II_rt*
 // - 2: _PT_rt*
@@ -23,6 +24,7 @@
 // - 8: _ALD_*
 // - 9: _ID_*
 // - 10: _CR_SchR_hc, _LLC_Ecpense_c
+// - 11: _cpi_offset
 {
   "policy": {
         "_II_rt1":
@@ -132,6 +134,8 @@
         "_CR_SchR_hc":
             {"2018": [1]},
         "_LLC_Expense_c":
-            {"2018": [0]}
+            {"2018": [0]},
+        "_cpi_offset":
+            {"2018": [-0.0025]}
   }
 }
