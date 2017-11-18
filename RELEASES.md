@@ -7,7 +7,7 @@ for a complete commit history.
 2017-11-17 Release 0.13.2
 -------------------------
 (last merged pull request is
-[#1677](https://github.com/open-source-economics/Tax-Calculator/pull/1677))
+[#1680](https://github.com/open-source-economics/Tax-Calculator/pull/1680))
 
 **API Changes**
 - None
@@ -22,6 +22,9 @@ for a complete commit history.
 - Add new policy parameter that changes the stacking order of child/dependent credits
   [[#1676](https://github.com/open-source-economics/Tax-Calculator/pull/1676)
   by Matt Jensen as suggested by Cody Kallen with need identified by Joint Economic Committee staff]
+- Add to several TCJA reform files the provision for chained CPI indexing
+  [[#1680](https://github.com/open-source-economics/Tax-Calculator/pull/1680)
+  by Matt Jensen]
 
 **Bug Fixes**
 - Fix `_ACTC_ChildNum` policy parameter documentation and logic
