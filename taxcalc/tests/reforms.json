@@ -575,6 +575,14 @@
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,-7.9,-7.7,-7.3,-7.2"
-  }
+  },
 
+      "58": {
+      "start_year": 2017,
+      "value": {"_cpi_offset": [-0.0025]},
+      "name": "Stack dependent credit before CTC",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,0.0,2.2,4.6,7.2"
+  }
 }
