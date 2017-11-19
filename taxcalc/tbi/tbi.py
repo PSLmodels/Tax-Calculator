@@ -25,22 +25,12 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
 from taxcalc import (results, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
+                     DECILE_ROW_NAMES, WEBBIN_ROW_NAMES,
                      proportional_change_in_gdp, Growdiff, Growfactors, Policy)
-
-
-# specify constants
-DEC_ROW_NAMES = ['perc0-10', 'perc10-20', 'perc20-30', 'perc30-40',
-                 'perc40-50', 'perc50-60', 'perc60-70', 'perc70-80',
-                 'perc80-90', 'perc90-100', 'all']
-
-BIN_ROW_NAMES = ['less_than_10', 'ten_twenty', 'twenty_thirty', 'thirty_forty',
-                 'forty_fifty', 'fifty_seventyfive', 'seventyfive_hundred',
-                 'hundred_twohundred', 'twohundred_fivehundred',
-                 'fivehundred_thousand', 'thousand_up', 'all']
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
-GDP_ELAST_ROW_NAMES = ['gdp_elasticity']
+GDP_ELAST_ROW_NAMES = ['gdp_proportional_change']
 
 
 def reform_warnings_errors(user_mods):
@@ -134,12 +124,11 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         return res
 
     # optionally construct JSON-like results dictionaries for year n
-    dec_row_names_n = [x + '_' + str(year_n) for x in DEC_ROW_NAMES]
-    bin_row_names_n = [x + '_' + str(year_n) for x in BIN_ROW_NAMES]
+    dec_row_names_n = [x + '_' + str(year_n) for x in DECILE_ROW_NAMES]
+    bin_row_names_n = [x + '_' + str(year_n) for x in WEBBIN_ROW_NAMES]
     agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
     dist_column_types = [float] * len(DIST_TABLE_LABELS)
-    diff_column_types = [int, int, str, int, str, float, float, str, str]
-    assert len(diff_column_types) == len(DIFF_TABLE_LABELS)
+    diff_column_types = [float] * len(DIFF_TABLE_LABELS)
     info = dict()
     for tbl in summ:
         info[tbl] = {'row_names': [], 'col_types': []}
@@ -188,7 +177,7 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
 
     # calculate gdp_effect
     fyear = check_years_return_first_year(year_n, start_year, use_puf_not_cps)
-    if (start_year + year_n) > fyear:
+    if year_n > 0 and (start_year + year_n) > fyear:
         # create calc1 and calc2 calculated for year_n - 1
         (calc1, calc2, _) = calculate((year_n - 1), start_year,
                                       use_puf_not_cps,
@@ -211,5 +200,4 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
                                             num_decimals=5)
         gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
         return gdp_elast_total
-    else:
-        return gdp_effect
+    return gdp_effect

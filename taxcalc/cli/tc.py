@@ -33,7 +33,7 @@ def cli_tc_main():
                      'file, with the OUTPUT computed from the INPUT for the '
                      'TAXYEAR using Tax-Calculator. The OUTPUT file is a '
                      'CSV-formatted file that contains tax information for '
-                     'each INPUT filing unit.'))
+                     'each INPUT filing unit under the reform.'))
     parser.add_argument('INPUT', nargs='?',
                         help=('INPUT is name of CSV-formatted file that '
                               'contains for each filing unit variables used '
@@ -48,8 +48,8 @@ def cli_tc_main():
                         default=0)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
-                              'No --reform implies use of current-law '
-                              'policy.'),
+                              'No --reform implies a "null" reform (that is, '
+                              'current-law policy).'),
                         default=None)
     parser.add_argument('--assump',
                         help=('ASSUMP is name of optional JSON economic '
@@ -83,17 +83,17 @@ def cli_tc_main():
                         action="store_true")
     parser.add_argument('--dump',
                         help=('optional flag that causes OUTPUT to contain '
-                              'all INPUT variables (possibly extrapolated '
-                              'to TAXYEAR) and all calculated tax variables, '
-                              'where all the variables are named using their '
-                              'internal Tax-Calculator names.  No --dump '
-                              'option implies OUTPUT contains minimal tax '
-                              'output.'),
+                              'all INPUT variables (extrapolated to TAXYEAR) '
+                              'and all calculated tax variables for the '
+                              'reform, where all the variables are named '
+                              'using their internal Tax-Calculator names.  No '
+                              '--dump option implies OUTPUT contains minimal '
+                              'tax output for the reform.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--sqldb',
-                        help=('optional flag that writes SQLite database with '
-                              'dump table containing same output as '
+                        help=('optional flag that writes SQLite database '
+                              'with dump table containing same output as '
                               'produced by --dump option.'),
                         default=False,
                         action="store_true")
@@ -114,7 +114,7 @@ def cli_tc_main():
     # instantiate taxcalcio object and do tax analysis
     tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
                      reform=args.reform, assump=args.assump)
-    if len(tcio.errmsg) > 0:
+    if tcio.errmsg:
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
@@ -124,7 +124,7 @@ def cli_tc_main():
               growdiff_response=None,
               aging_input_data=aging,
               exact_calculations=args.exact)
-    if len(tcio.errmsg) > 0:
+    if tcio.errmsg:
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1

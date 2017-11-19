@@ -248,7 +248,7 @@ def test_ctor_errors(input_data, reform, assump):
     """
     tcio = TaxCalcIO(input_data=input_data, tax_year=2013,
                      reform=reform, assump=assump)
-    assert len(tcio.errmsg) > 0
+    assert tcio.errmsg
 
 
 @pytest.mark.parametrize("year, ref, asm, gdr", [
@@ -288,7 +288,7 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2,
                      tax_year=year,
                      reform=reform,
                      assump=assump)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=recdf,
               tax_year=year,
               reform=reform,
@@ -296,7 +296,7 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2,
               growdiff_response=gdiff_response,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) > 0
+    assert tcio.errmsg
 
 
 def test_creation_with_aging(rawinputfile, reformfile0):
@@ -308,7 +308,7 @@ def test_creation_with_aging(rawinputfile, reformfile0):
                      tax_year=taxyear,
                      reform=reformfile0.name,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=rawinputfile.name,
               tax_year=taxyear,
               reform=reformfile0.name,
@@ -316,14 +316,14 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               growdiff_response=Growdiff(),
               aging_input_data=True,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     assert tcio.tax_year() == taxyear
     taxyear = 2016
     tcio = TaxCalcIO(input_data=rawinputfile.name,
                      tax_year=taxyear,
                      reform=None,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=rawinputfile.name,
               tax_year=taxyear,
               reform=None,
@@ -331,7 +331,7 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               growdiff_response=None,
               aging_input_data=True,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     assert tcio.tax_year() == taxyear
 
 
@@ -346,7 +346,7 @@ def test_ctor_init_with_cps_files():
               growdiff_response=None,
               aging_input_data=True,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     assert tcio.tax_year() == txyr
     # specify invalid tax_year for cps.csv input data
     txyr = 2013
@@ -355,7 +355,7 @@ def test_ctor_init_with_cps_files():
               growdiff_response=None,
               aging_input_data=True,
               exact_calculations=False)
-    assert len(tcio.errmsg) > 0
+    assert tcio.errmsg
 
 
 def test_output_otions(rawinputfile, reformfile1, assumpfile1):
@@ -367,7 +367,7 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
                      tax_year=taxyear,
                      reform=reformfile1.name,
                      assump=assumpfile1.name)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=rawinputfile.name,
               tax_year=taxyear,
               reform=reformfile1.name,
@@ -375,7 +375,7 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     outfilepath = tcio.output_filepath()
     # --ceeu output and standard output
     try:
@@ -414,7 +414,7 @@ def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
                      tax_year=taxyear,
                      reform=reformfile1.name,
                      assump=assumpfile1.name)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=rawinputfile.name,
               tax_year=taxyear,
               reform=reformfile1.name,
@@ -422,7 +422,7 @@ def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     outfilepath = tcio.output_filepath()
     dbfilepath = outfilepath.replace('.csv', '.db')
     # --sqldb output
@@ -459,7 +459,7 @@ def test_no_tables_or_graphs(reformfile1):
                      tax_year=2020,
                      reform=reformfile1.name,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=idf,
               tax_year=2020,
               reform=reformfile1.name,
@@ -467,7 +467,7 @@ def test_no_tables_or_graphs(reformfile1):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     # create TaxCalcIO tables file
     tcio.analyze(writing_output_file=False,
                  output_tables=True,
@@ -503,7 +503,7 @@ def test_tables(reformfile1):
                      tax_year=2020,
                      reform=reformfile1.name,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=idf,
               tax_year=2020,
               reform=reformfile1.name,
@@ -511,7 +511,7 @@ def test_tables(reformfile1):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     # create TaxCalcIO tables file
     tcio.analyze(writing_output_file=False, output_tables=True)
     # delete tables file
@@ -539,7 +539,7 @@ def test_graphs(reformfile1):
                      tax_year=2020,
                      reform=reformfile1.name,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=idf,
               tax_year=2020,
               reform=reformfile1.name,
@@ -547,7 +547,7 @@ def test_graphs(reformfile1):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.analyze(writing_output_file=False, output_graphs=True)
     # delete graph files
     output_filename = tcio.output_filepath()
@@ -570,7 +570,7 @@ def test_ceeu_output1(lumpsumreformfile):
                      tax_year=taxyear,
                      reform=lumpsumreformfile.name,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=recdf,
               tax_year=taxyear,
               reform=lumpsumreformfile.name,
@@ -578,7 +578,7 @@ def test_ceeu_output1(lumpsumreformfile):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.analyze(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
 
@@ -594,7 +594,7 @@ def test_ceeu_output2():
                      tax_year=taxyear,
                      reform=None,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=recdf,
               tax_year=taxyear,
               reform=None,
@@ -602,7 +602,7 @@ def test_ceeu_output2():
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.analyze(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
 
@@ -618,7 +618,7 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
                      tax_year=taxyear,
                      reform=lumpsumreformfile.name,
                      assump=assumpfile2.name)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=recdf,
               tax_year=taxyear,
               reform=lumpsumreformfile.name,
@@ -626,7 +626,7 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.analyze(writing_output_file=False, output_ceeu=True)
     assert tcio.tax_year() == taxyear
 
@@ -660,7 +660,7 @@ def test_analyze_warnings_print(warnreformfile):
                      tax_year=taxyear,
                      reform=warnreformfile.name,
                      assump=None)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.init(input_data=recdf,
               tax_year=taxyear,
               reform=warnreformfile.name,
@@ -668,7 +668,7 @@ def test_analyze_warnings_print(warnreformfile):
               growdiff_response=None,
               aging_input_data=False,
               exact_calculations=False)
-    assert len(tcio.errmsg) == 0
+    assert not tcio.errmsg
     tcio.analyze(writing_output_file=False, output_ceeu=False)
     assert tcio.tax_year() == taxyear
 

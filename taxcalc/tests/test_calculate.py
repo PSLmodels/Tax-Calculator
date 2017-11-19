@@ -8,9 +8,6 @@ import pytest
 import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Behavior, Consumption
-from taxcalc import create_distribution_table
-from taxcalc import create_difference_table
-from taxcalc import create_diagnostic_table
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -170,32 +167,6 @@ def test_calculator_current_law_version(cps_subsample):
     assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
 
 
-def test_calculator_create_distribution_table(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=rec)
-    calc.calc_all()
-    dist_labels = ['Returns', 'AGI', 'Standard Deduction Filers',
-                   'Standard Deduction', 'Itemizers',
-                   'Itemized Deduction', 'Personal Exemption',
-                   'Taxable Income', 'Regular Tax', 'AMTI', 'AMT Filers',
-                   'AMT', 'Tax before Credits', 'Non-refundable Credits',
-                   'Tax before Refundable Credits', 'Refundable Credits',
-                   'Individual Income Tax Liabilities',
-                   'Payroll Tax Liablities',
-                   'Combined Payroll and Individual Income Tax Liabilities']
-    dt1 = create_distribution_table(calc.records,
-                                    groupby="weighted_deciles",
-                                    income_measure='expanded_income',
-                                    result_type="weighted_sum")
-    dt1.columns = dist_labels
-    dt2 = create_distribution_table(calc.records,
-                                    groupby="small_income_bins",
-                                    income_measure='expanded_income',
-                                    result_type="weighted_avg")
-    assert isinstance(dt1, pd.DataFrame)
-    assert isinstance(dt2, pd.DataFrame)
-
-
 def test_calculator_mtr(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
@@ -249,34 +220,6 @@ def test_calculator_mtr_when_PT_rates_differ():
     calc2 = Calculator(policy=pol, records=rec)
     (_, mtr2, _) = calc2.mtr(variable_str='p23250')
     assert np.allclose(mtr1, mtr2, rtol=0.0, atol=1e-06)
-
-
-def test_calculator_create_difference_table(cps_subsample):
-    # create current-law Policy object and use to create Calculator calc1
-    rec = Records.cps_constructor(data=cps_subsample)
-    year = rec.current_year
-    pol = Policy()
-    calc1 = Calculator(policy=pol, records=rec)
-    calc1.calc_all()
-    # create policy-reform Policy object and use to create Calculator calc2
-    reform = {year: {'_II_rt7': [0.45]}}
-    pol.implement_reform(reform)
-    calc2 = Calculator(policy=pol, records=rec)
-    calc2.calc_all()
-    # create difference table and check that it is a Pandas DataFrame
-    dtable = create_difference_table(calc1.records, calc2.records,
-                                     groupby='weighted_deciles',
-                                     income_measure='expanded_income',
-                                     tax_to_diff='payrolltax')
-    assert isinstance(dtable, pd.DataFrame)
-
-
-def test_calculator_create_diagnostic_table(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=rec)
-    calc.calc_all()
-    adt = create_diagnostic_table(calc)
-    assert isinstance(adt, pd.DataFrame)
 
 
 def test_make_calculator_increment_years_first(cps_subsample):
@@ -694,9 +637,9 @@ def test_translate_json_reform_suffixes_mars_indexed():
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_STD": {"2016": [[16000.00, 12600.00, 6300.00,  9300.00, 12600.00]],
-               "2017": [[16524.80, 13013.28, 6506.64,  9605.04, 17000.00]],
-               "2018": [[18000.00, 13432.31, 6716.15,  9914.32, 17547.40]],
-               "2019": [[18592.20, 13874.23, 6937.11, 10240.50, 19000.00]]},
+               "2017": [[16363.20, 12886.02, 6443.01,  9511.11, 17000.00]],
+               "2018": [[18000.00, 13304.82, 6652.41,  9820.22, 17552.50]],
+               "2019": [[18583.20, 13735.90, 6867.95,  10138.4, 19000.00]]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
     pdict2 = Calculator.read_json_param_objects(reform=json2,

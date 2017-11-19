@@ -98,10 +98,10 @@ def test_agg(tests_path):
         if actline == expline:
             continue
         diffs = line_diff_list(actline, expline, small)
-        if len(diffs) > 0:
+        if diffs:
             diff_lines.extend(diffs)
     # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
+    if diff_lines:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(actual_results)
