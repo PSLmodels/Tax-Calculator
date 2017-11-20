@@ -588,7 +588,7 @@
       "59": {
       "start_year": 2017,
       "value": {"_PT_rt7": [0.35]},
-      "name": "Wages included in (positive) active business income eligible for PT rates",
+      "name": "Top pass through rate at 0.35",
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,-18.2,-18.1,-17.9,-18.0"
@@ -597,7 +597,7 @@
       "start_year": 2017,
       "value": {"_PT_wages_active_income": [true],
                 "_PT_rt7": [0.35]},
-      "name": "Wages included in (positive) active business income eligible for PT rates",
+      "name": "Top pass through rate at 0.35 AND wages included in (positive) active business income eligible for PT rates",
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,-18.2,-18.1,-17.9,-18.0"
