@@ -82,23 +82,23 @@ def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
         param = allparams[pname]
         max_listed = param['range']['max']
         # Handle links to other params or self
-        if isinstance(max_listed, unicode):
+        if isinstance(max_listed, str):
             if max_listed == 'default':
                 max_val = param['value'][-1]
             else:
                 max_val = allparams[max_listed]['value'][0]
-        if not isinstance(max_listed, unicode):
+        if not isinstance(max_listed, str):
             if isinstance(param['value'][0], list):
                 max_val = [max_listed] * len(param['value'][0])
             else:
                 max_val = max_listed
         min_listed = param['range']['min']
-        if isinstance(min_listed, unicode):
+        if isinstance(min_listed, str):
             if min_listed == 'default':
                 min_val = param['value'][-1]
             else:
                 min_val = allparams[min_listed]['value'][0]
-        if not isinstance(min_listed, unicode):
+        if not isinstance(min_listed, str):
             if isinstance(param['value'][0], list):
                 min_val = [min_listed] * len(param['value'][0])
             else:
