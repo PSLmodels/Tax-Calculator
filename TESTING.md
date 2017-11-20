@@ -82,6 +82,16 @@ using as many as four CPU cores for parallel execution of the tests.
 If you want sequential execution of the tests (which will take at
 least twice as long to execute), simply omit the `-n4` option.
 
+If you would like to reduce the test suite's runtime, you can run:
+
+```
+py.test -m "not pre_release" -n4
+``` 
+
+But the `"not pre_release"` option should never be used after 
+adding a new parameter to `current_law_policy.json` or 
+preparing a new taxcalc release. 
+
 Testing with validation/tests
 -----------------------------
 
