@@ -12,6 +12,7 @@ import pytest
 import numpy as np
 import pandas as pd
 import copy
+import six
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator
 
@@ -82,23 +83,23 @@ def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
         param = allparams[pname]
         max_listed = param['range']['max']
         # Handle links to other params or self
-        if isinstance(max_listed, str):
+        if isinstance(max_listed, six.string_types):
             if max_listed == 'default':
                 max_val = param['value'][-1]
             else:
                 max_val = allparams[max_listed]['value'][0]
-        if not isinstance(max_listed, str):
+        if not isinstance(max_listed, six.string_types):
             if isinstance(param['value'][0], list):
                 max_val = [max_listed] * len(param['value'][0])
             else:
                 max_val = max_listed
         min_listed = param['range']['min']
-        if isinstance(min_listed, str):
+        if isinstance(min_listed, six.string_types):
             if min_listed == 'default':
                 min_val = param['value'][-1]
             else:
                 min_val = allparams[min_listed]['value'][0]
-        if not isinstance(min_listed, str):
+        if not isinstance(min_listed, six.string_types):
             if isinstance(param['value'][0], list):
                 min_val = [min_listed] * len(param['value'][0])
             else:
