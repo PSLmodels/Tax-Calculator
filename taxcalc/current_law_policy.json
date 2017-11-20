@@ -18,7 +18,8 @@
         "range": {"min": -0.005, "max": 0.005},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_FICA_ss_trt": {
@@ -1762,7 +1763,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": false}
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_ID_BenefitCap_rt": {
@@ -3164,7 +3165,8 @@
         "range": {"min": 0.0, "max": 1.0},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_PT_EligibleRate_passive": {
@@ -3186,7 +3188,8 @@
         "range": {"min": 0.0, "max": 1.0},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_PT_wages_active_income": {
@@ -3208,7 +3211,8 @@
         "range": {"min": false, "max": true},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_PT_top_stacking": {
@@ -3230,7 +3234,8 @@
         "range": {"min": false, "max": true},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_PT_exclusion_rt": {
@@ -3252,7 +3257,8 @@
         "range": {"min": 0.0, "max": 1.0},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_PT_exclusion_wage_limit": {
@@ -3274,7 +3280,8 @@
         "range": {"min": 0.0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_AMT_em": {
@@ -3708,7 +3715,8 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_DependentCredit_Child_c": {
@@ -3753,7 +3761,8 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_DependentCredit_before_CTC": {
@@ -3775,7 +3784,8 @@
         "range": {"min": false, "max": true},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_FilerCredit_c": {
@@ -3797,7 +3807,8 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_NIIT_thd": {

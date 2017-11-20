@@ -387,14 +387,17 @@ def test_compatible_data(tests_path, puf_subsample):
             '_AGI_surtax_trt': [0.5],
             '_ID_AmountCap_rt': [0.5],
             '_II_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
-            '_ID_BenefitCap_rt': [0.5]
+            '_ID_BenefitCap_rt': [0.5],
+            '_DependentCredit_Child_c': [500],
+            '_PT_exclusion_rt': [.2],
+            '_PT_rt7': [.35]
         }
     }
 
     p_xx.implement_reform(reform_xx)
     rec_xx = Records(data=puf_subsample)
     c_xx = Calculator(policy=p_xx, records=rec_xx)
-    c_xx.advance_to_year(2017)
+    c_xx.advance_to_year(2018)
     c_xx.calc_all()
 
     for pname in allparams:
@@ -432,7 +435,7 @@ def test_compatible_data(tests_path, puf_subsample):
         p_yy = Policy()
         p_yy.implement_reform(max_reform)
         c_yy = Calculator(policy=p_yy, records=rec_yy)
-        c_yy.advance_to_year(2017)
+        c_yy.advance_to_year(2018)
         c_yy.calc_all()
         max_reform_change = ((c_yy.records.combined - c_xx.records.combined) *
                              c_xx.records.s006).sum()
@@ -442,12 +445,14 @@ def test_compatible_data(tests_path, puf_subsample):
             p_yy = Policy()
             p_yy.implement_reform(min_reform)
             c_yy = Calculator(policy=p_yy, records=rec_xx)
-            c_yy.advance_to_year(2017)
+            c_yy.advance_to_year(2018)
             c_yy.calc_all()
             min_reform_change = ((c_yy.records.combined -
                                  c_xx.records.combined) *
                                  c_xx.records.s006).sum()
             if min_reform_change == 0 and pname not in exempt:
+                print(pname)
                 assert param['compatible_data']['puf'] is False
         if max_reform_change != 0 or min_reform_change != 0:
+            print(pname)
             assert param['compatible_data']['puf'] is True
