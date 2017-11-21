@@ -1,0 +1,18 @@
+// Repeals AMT and raises regular tax rates in the top three brackets
+// from (0.33, 0.35, 0.396) to (0.35, 0.37, 0.42) beginning in 2018.
+{
+    "policy": {
+	// repeal AMT by setting AMT tax rates to zero
+	"_AMT_rt1": {"2018": [0.0]},
+	"_AMT_rt2": {"2018": [0.0]},
+	// raise tax rates in the top three brackets
+	// ... raise non-AMT rates on non-pass-through income
+	"_II_rt5": {"2018": [0.350]},
+	"_II_rt6": {"2018": [0.370]},
+	"_II_rt7": {"2018": [0.420]},
+	// ... raise non-AMT rates on pass-through income
+	"_PT_rt5": {"2018": [0.350]},
+	"_PT_rt6": {"2018": [0.370]},
+	"_PT_rt7": {"2018": [0.420]}
+    }
+}
