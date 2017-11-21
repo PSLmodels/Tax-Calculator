@@ -162,8 +162,10 @@ def test_puf_var_stats(tests_path, puf_fullsample):
             calc.increment_year()
     # write tables to new CSV files
     mean_path = os.path.join(tests_path, MEAN_FILENAME + '-new')
+    table_mean.sort_index(inplace=True)
     table_mean.to_csv(mean_path, header=year_headers, float_format='%8.3f')
     corr_path = os.path.join(tests_path, CORR_FILENAME + '-new')
+    table_corr.sort_index(inplace=True)
     table_corr.to_csv(corr_path, float_format='%8.3f')
     # compare new and old CSV files
     diffs_in_mean, mean_msg = differences(mean_path, mean_path[:-4], 'MEAN')
