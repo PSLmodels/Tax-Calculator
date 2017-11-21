@@ -91,6 +91,8 @@
             {"2018": [550], "2022": [450], "2025": [350]},
         "_DependentCredit_Nonchild_c":
             {"2018": [500]},
+        "_DependentCredit_before_CTC":
+            {"2018": [true]},
         "_ACTC_Income_thd":
             {"2018": [2500.0]},
         "_AMT_rt1":
@@ -108,6 +110,6 @@
         "_ID_Miscellaneous_hc":
             {"2018": [1]},
         "_cpi_offset":
-            {"2018": [-0.0025]}
+            {"2017": [-0.0025]}
   }
 }
