@@ -131,6 +131,9 @@
         "_DependentCredit_Nonchild_c":
             {"2018": [500],
              "2026": [0]},
+        "_DependentCredit_before_CTC":
+            {"2018": [true],
+             "2026": [false]},
         "_ACTC_Income_thd":
             {"2018": [2500],
              "2026": [3000]},
