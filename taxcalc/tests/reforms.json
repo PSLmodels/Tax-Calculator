@@ -587,19 +587,21 @@
   }, 
       "59": {
       "start_year": 2017,
-      "value": {"_PT_rt7": [0.35]},
-      "name": "Top pass through rate at 0.35",
+      "value": {"_PT_rt7": [0.35],
+                "_PT_EligibleRate_active": [0.7]},
+      "name": "Top pass through rate at 0.35 AND 70% of active business inc eligible for lower rate",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-18.2,-18.1,-17.9,-18.0"
+      "expected": "Tax-Calculator,-14.8,-14.7,-14.6,-14.7"
   },
       "60": {
       "start_year": 2017,
       "value": {"_PT_wages_active_income": [true],
+                "_PT_EligibleRate_active": [0.7],
                 "_PT_rt7": [0.35]},
-      "name": "Top pass through rate at 0.35 AND wages included in (positive) active business income eligible for PT rates",
+      "name": "Top pass through rate at 0.35 AND 70% of active business inc eligible for lower rate AND wages included in (positive) active business income eligible for PT rates",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-18.2,-18.1,-17.9,-18.0"
+      "expected": "Tax-Calculator,-16.5,-16.5,-16.4,-16.5"
   }
 }
