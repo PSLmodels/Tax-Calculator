@@ -1373,7 +1373,8 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc,
                          c07180, c07200, c07220, c07230, c07240,
-                         c07260, c07300, c07400, c07600, c08000):
+                         c07260, c07300, c07400, c07600, c08000,
+                         DependentCredit_before_CTC):
     """
     NonRefundableCredits function sequentially limits credits to tax liability
 
@@ -1400,6 +1401,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Retirement savings credit - Form 8880
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
+    if DependentCredit_before_CTC:
+        # Dependent credit
+        dep_credit = min(dep_credit, avail)
+        avail = avail - dep_credit
     # Child tax credit
     c07220 = min(prectc, avail)
     avail = avail - c07220
@@ -1415,9 +1420,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Schedule R credit
     c07200 = min(c07200, avail)
     avail = avail - c07200
-    # Dependent credit
-    dep_credit = min(dep_credit, avail)
-    avail = avail - dep_credit
+    if not DependentCredit_before_CTC:
+        # Dependent credit
+        dep_credit = min(dep_credit, avail)
+        avail = avail - dep_credit
     # Other credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000

@@ -10,6 +10,7 @@
 // -  Repeal Alternative Minimum Tax (6)
 // -  Repeal of domestic production deduction
 // -  Changes to itemized deductions (8)
+// -  Adopt Chained CPI for parameter indexing (9)
 // Reform_Parameter_Map:
 // - 1: _II_rt*
 // - 2: _PT_rt*
@@ -19,6 +20,7 @@
 // - 6: _AMT_rt*
 // - 7: _ALD_DomesticProduction_hc
 // - 8: _ID_*
+// - 9: _cpi_offset
 {
   "policy": {
         "_II_rt1":
@@ -104,6 +106,8 @@
         "_ID_RealEstate_hc":
             {"2018": [1]},
         "_ID_Miscellaneous_hc":
-            {"2018": [1]}
+            {"2018": [1]},
+        "_cpi_offset":
+            {"2018": [-0.0025]}
   }
 }
