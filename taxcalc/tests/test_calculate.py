@@ -298,6 +298,7 @@ def test_calculator_using_nonstd_input(rawinputfile):
     assert calc.current_year == RAWINPUTFILE_YEAR
     calc.calc_all()
     assert calc.weighted_total('e00200') == 0
+    assert calc.total_weight() == 0
     varlist = ['RECID', 'MARS']
     pdf = calc.dataframe(varlist)
     assert pdf.shape == (RAWINPUTFILE_FUNITS, len(varlist))

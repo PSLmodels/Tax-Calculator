@@ -183,6 +183,14 @@ class Calculator(object):
         weight = getattr(self.records, 's006')
         return (variable * weight).sum()
 
+    def total_weight(self):
+        """
+        Return all-filing-unit total of sampling weights.
+        NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
+        """
+        weight = getattr(self.records, 's006')
+        return weight.sum()
+
     def dataframe(self, variable_list):
         """
         Return pandas DataFrame containing the listed Records variables.
