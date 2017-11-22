@@ -263,9 +263,9 @@ class Calculator(object):
 
         Returns
         -------
-        mtr_payrolltax: an array of marginal payroll tax rates.
-        mtr_incometax: an array of marginal individual income tax rates.
-        mtr_combined: an array of marginal combined tax rates, which is
+        mtr_payrolltax: a numpy array of marginal payroll tax rates.
+        mtr_incometax: a numpy array of marginal individual income tax rates.
+        mtr_combined: a numpy array of marginal combined tax rates, which is
                       the sum of mtr_payrolltax and mtr_incometax.
 
         Notes

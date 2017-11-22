@@ -162,7 +162,10 @@ class Behavior(ParametersBase):
                 sub = np.zeros(calc_x.records.dim)
             else:
                 # proportional change in marginal net-of-tax rates on earnings
-                pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
+                nearone = 0.999999
+                mtr_x = np.where(wage_mtr_x > nearone, nearone, wage_mtr_x)
+                mtr_y = np.where(wage_mtr_y > nearone, nearone, wage_mtr_y)
+                pch = ((1. - mtr_y) / (1. - mtr_x)) - 1.
                 if calc_y.behavior.BE_subinc_wrt_earnings:
                     # Note: e00200 is filing unit's wages+salaries
                     sub = calc_y.behavior.BE_sub * pch * calc_x.records.e00200
