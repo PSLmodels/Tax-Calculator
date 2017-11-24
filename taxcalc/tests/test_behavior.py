@@ -80,7 +80,7 @@ def test_behavioral_response_calculator(cps_subsample):
     behv2.update_behavior(behavior2)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv2)
     assert calc2.behavior.has_response() is True
-    calc2_behv2 = Behavior.response(calc1, calc2)
+    calc2_behv2 = Behavior.response(calc1, calc2, trace=True)
     behavior3 = {year: {'_BE_inc': [-0.2], '_BE_cg': [-0.8]}}
     behv3 = Behavior()
     behv3.update_behavior(behavior3)
@@ -98,7 +98,7 @@ def test_behavioral_response_calculator(cps_subsample):
     behv5.update_behavior(behavior5)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv5)
     assert calc2.behavior.has_response() is True
-    calc2_behv5 = Behavior.response(calc1, calc2, trace=True)
+    calc2_behv5 = Behavior.response(calc1, calc2)
     # check that total income tax liability differs across the
     # six sets of behavioral-response elasticities
     assert (calc2_behv0.records.iitax.sum() !=
