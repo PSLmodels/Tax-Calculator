@@ -118,8 +118,8 @@ def calculate(year_n, start_year,
             # otherwise read from taxcalc package "egg"
             input_path = None  # pragma: no cover
             full_sample = read_egg_csv('cps.csv.gz')  # pragma: no cover
-        sampling_frac = 0.05  # TODO: using same as for puf for now
-        sampling_seed = 180  # TODO: using same as for puf for now
+        sampling_frac = 0.03
+        sampling_seed = 180
     if input_path:
         full_sample = pd.read_csv(input_path)
     if use_full_sample:
