@@ -17,29 +17,12 @@ import six
 from taxcalc import Policy, Records, Calculator
 
 
-@pytest.mark.requires_pufcsv
-@pytest.mark.pre_release
-@pytest.mark.parametrize('puftest', [True, False])
-def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
-    """
+NPARAMS = len(Policy.default_data())
 
-    """
-
-    clppath = os.path.join(tests_path, '..', 'current_law_policy.json')
-    pfile = open(clppath, 'r')
-    allparams = json.load(pfile)
-    pfile.close()
-    assert isinstance(allparams, dict)
-
-    # These parameters are exempt because they are not active under
-    # current law and activating them would deactive other parameters.
-
-    exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
-
-    p_xx = Policy()
-
+@pytest.fixture(scope="module")
+def reform_xx():
     # Set baseline to activate parameters that are inactive under current law.
-    reform_xx = {
+    _reform_xx = {
         2017: {
             '_CTC_new_refund_limited': [True],
             '_FST_AGI_trt': [0.5],
@@ -67,7 +50,30 @@ def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
             '_PT_rt7': [.35]
         }
     }
+    return _reform_xx
 
+
+@pytest.fixture(scope="module")
+def allparams():
+    return Policy.default_data(metadata=True)
+
+
+@pytest.fixture(scope="module")
+def sorted_param_names(allparams):
+    return sorted(list(allparams.keys()))
+
+
+@pytest.fixture(params=[i for i in range(0, NPARAMS)], scope="module")
+def allparams_i(request, allparams, sorted_param_names):
+    param_id = request.param
+    pname = sorted_param_names[param_id]
+    return {pname: allparams[pname]}
+
+@pytest.fixture(params=[True, False], scope="module")
+def tc_objs(request, reform_xx, puf_subsample, cps_subsample):
+    puftest = request.param
+    p_xx = Policy()
+    print("here", puftest)
     p_xx.implement_reform(reform_xx)
     if puftest:
         print('puftest')
@@ -79,68 +85,86 @@ def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
     c_xx.advance_to_year(2018)
     c_xx.calc_all()
 
-    for pname in allparams:
-        param = allparams[pname]
-        max_listed = param['range']['max']
-        # Handle links to other params or self
-        if isinstance(max_listed, six.string_types):
-            if max_listed == 'default':
-                max_val = param['value'][-1]
-            else:
-                max_val = allparams[max_listed]['value'][0]
-        if not isinstance(max_listed, six.string_types):
-            if isinstance(param['value'][0], list):
-                max_val = [max_listed] * len(param['value'][0])
-            else:
-                max_val = max_listed
-        min_listed = param['range']['min']
-        if isinstance(min_listed, six.string_types):
-            if min_listed == 'default':
-                min_val = param['value'][-1]
-            else:
-                min_val = allparams[min_listed]['value'][0]
-        if not isinstance(min_listed, six.string_types):
-            if isinstance(param['value'][0], list):
-                min_val = [min_listed] * len(param['value'][0])
-            else:
-                min_val = min_listed
-        # Create reform dictionaries
-        max_reform = copy.deepcopy(reform_xx)
-        min_reform = copy.deepcopy(reform_xx)
-        max_reform[2017][str(pname)] = [max_val]
-        min_reform[2017][str(pname)] = [min_val]
-        # Assess whether max reform changes results
-        if puftest:
-            rec_yy = Records(data=puf_subsample)
+    return p_xx, rec_xx, c_xx, puftest
+
+
+@pytest.mark.requires_pufcsv
+@pytest.mark.pre_release
+def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx, tc_objs, allparams_i):
+    """
+
+    """
+
+    p_xx, rec_xx, c_xx, puftest = tc_objs
+
+    # These parameters are exempt because they are not active under
+    # current law and activating them would deactive other parameters.
+    exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
+
+    assert len(allparams_i) == 1
+    pname = list(allparams_i.keys())[0]
+    param = allparams_i[pname]
+
+    max_listed = param['range']['max']
+    # Handle links to other params or self
+    if isinstance(max_listed, six.string_types):
+        if max_listed == 'default':
+            max_val = param['value'][-1]
         else:
-            rec_yy = Records.cps_constructor(data=cps_subsample)
+            max_val = allparams[max_listed]['value'][0]
+    if not isinstance(max_listed, six.string_types):
+        if isinstance(param['value'][0], list):
+            max_val = [max_listed] * len(param['value'][0])
+        else:
+            max_val = max_listed
+    min_listed = param['range']['min']
+    if isinstance(min_listed, six.string_types):
+        if min_listed == 'default':
+            min_val = param['value'][-1]
+        else:
+            min_val = allparams[min_listed]['value'][0]
+    if not isinstance(min_listed, six.string_types):
+        if isinstance(param['value'][0], list):
+            min_val = [min_listed] * len(param['value'][0])
+        else:
+            min_val = min_listed
+    # Create reform dictionaries
+    max_reform = copy.deepcopy(reform_xx)
+    min_reform = copy.deepcopy(reform_xx)
+    max_reform[2017][str(pname)] = [max_val]
+    min_reform[2017][str(pname)] = [min_val]
+    # Assess whether max reform changes results
+    if puftest:
+        rec_yy = Records(data=puf_subsample)
+    else:
+        rec_yy = Records.cps_constructor(data=cps_subsample)
+    p_yy = Policy()
+    p_yy.implement_reform(max_reform)
+    c_yy = Calculator(policy=p_yy, records=rec_yy)
+    c_yy.advance_to_year(2018)
+    c_yy.calc_all()
+    max_reform_change = ((c_yy.records.combined - c_xx.records.combined) *
+                         c_xx.records.s006).sum()
+    min_reform_change = 0
+    # Assess whether min reform changes results, if max reform did not
+    if max_reform_change == 0:
         p_yy = Policy()
-        p_yy.implement_reform(max_reform)
-        c_yy = Calculator(policy=p_yy, records=rec_yy)
+        p_yy.implement_reform(min_reform)
+        c_yy = Calculator(policy=p_yy, records=rec_xx)
         c_yy.advance_to_year(2018)
         c_yy.calc_all()
-        max_reform_change = ((c_yy.records.combined - c_xx.records.combined) *
+        min_reform_change = ((c_yy.records.combined -
+                             c_xx.records.combined) *
                              c_xx.records.s006).sum()
-        min_reform_change = 0
-        # Assess whether min reform changes results, if max reform did not
-        if max_reform_change == 0:
-            p_yy = Policy()
-            p_yy.implement_reform(min_reform)
-            c_yy = Calculator(policy=p_yy, records=rec_xx)
-            c_yy.advance_to_year(2018)
-            c_yy.calc_all()
-            min_reform_change = ((c_yy.records.combined -
-                                 c_xx.records.combined) *
-                                 c_xx.records.s006).sum()
-            if min_reform_change == 0 and pname not in exempt:
-                print(pname)
-                if puftest:
-                    assert param['compatible_data']['puf'] is False
-                else:
-                    assert param['compatible_data']['cps'] is False
-        if max_reform_change != 0 or min_reform_change != 0:
+        if min_reform_change == 0 and pname not in exempt:
             print(pname)
             if puftest:
-                assert param['compatible_data']['puf'] is True
+                assert param['compatible_data']['puf'] is False
             else:
-                assert param['compatible_data']['cps'] is True
+                assert param['compatible_data']['cps'] is False
+    if max_reform_change != 0 or min_reform_change != 0:
+        print(pname)
+        if puftest:
+            assert param['compatible_data']['puf'] is True
+        else:
+            assert param['compatible_data']['cps'] is True
