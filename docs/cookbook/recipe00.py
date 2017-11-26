@@ -12,7 +12,7 @@ calc1 = Calculator(policy=pol, records=recs)
 
 # NOTE: calc1 now contains a PRIVATE COPY of pol and a PRIVATE COPY of recs,
 #       so we can continue to use pol and recs in this script without any
-#       concern about side effects from Calculator method calls.
+#       concern about side effects from Calculator method calls on calc1.
 
 # calculate aggregate current-law income tax liabilities for 2018
 calc1.advance_to_year(2018)
@@ -40,6 +40,42 @@ itax_rev2 = calc2.weighted_total('iitax')
 print(Calculator.reform_documentation(params))
 
 # print total revenue estimates for 2018
-# (estimates in billons of dollars rounded to nearest tenth of a billion)
-print('2018_CLP_itax_rev($B)= {:.1f}'.format(itax_rev1 * 1e-9))
-print('2018_REF_itax_rev($B)= {:.1f}'.format(itax_rev2 * 1e-9))
+# (estimates in billons of dollars rounded to nearest hundredth of a billion)
+print('2018_CLP_itax_rev($B)= {:.2f}'.format(itax_rev1 * 1e-9))
+print('2018_REF_itax_rev($B)= {:.2f}'.format(itax_rev2 * 1e-9))
+print('')
+
+# generate several other standard results tables:
+
+# aggregate diagnostic tables for 2018
+# read source code at following URL for details
+# http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_diagnostic_table
+clp_diagnostic_table = create_diagnostic_table(calc1)
+ref_diagnostic_table = create_diagnostic_table(calc2)
+
+# income-tax difference table extract for 2018 by expanded-income decile
+# read following source code for details:
+# http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_difference_table
+diff_table = create_difference_table(calc1.records, calc2.records,
+                                     groupby='weighted_deciles',
+                                     income_measure='expanded_income',
+                                     tax_to_diff='iitax')
+assert isinstance(diff_table, pd.DataFrame)
+diff_extract = pd.DataFrame()
+dif_colnames = ['count', 'tot_change', 'mean', 'pc_aftertaxinc']
+ext_colnames = ['funits(#m)', 'total_diff($b)', 'mean_diff($)', 'aftertaxinc_diff(%)']
+scaling_factors = [1e-6, 1e-9, 1e0, 1e0]
+for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
+    diff_extract[ename] = diff_table[dname] * sfactor
+
+print('CLP diagnostic table for 2018:')
+print(clp_diagnostic_table)
+print('')
+print('REF diagnostic table for 2018:')
+print(ref_diagnostic_table)
+print('')
+print('Extract of 2018 income-tax difference table by expanded-income decile:')
+print(diff_extract)
+print('Note: deciles are numbered 0-9 with top decile divided into bottom 5%,')
+print('      next 4%, and top 1%, in the lines numbered 11-13, respectively')
+
