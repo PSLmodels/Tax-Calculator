@@ -48,21 +48,21 @@ following an existing recipe</p>
 
 <h2 id="setup">Preliminaries: Kitchen Setup</h2>
 
-<p>Text goes here.</p>
+<p><i>coming soon</i></p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
 
 <h2 id="techniques">Preliminaries: Recipe Techniques</h2>
 
-<p>Text goes here.</p>
+<p><i>coming soon</i></p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
 
 <h2 id="ingredients">Preliminaries: Recipe Ingredients</h2>
 
-<p>Text goes here.</p>
+<p><i>coming soon</i></p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
@@ -83,7 +83,20 @@ following an existing recipe.</p>
 
 <h2 id="recipe00">Basic Recipes: Static Analysis of a Simple Reform</h2>
 
-<p>Text goes here.</p>
+<p>The is the recipe you should follow first.  Mastering this recipe
+is a prerequiste for all the other recipes in this cookbook.</p>
+
+<p><b>Ingredients</b></p>
+
+<p><a href="cookbook/ingredients/repeal_amt.json">AMT-repeal-plus-higher-tax-rates reform</a></p>
+ 
+<p><b>Instructions</b></p>
+
+<p><a href="cookbook/recipe00.py">Step-by-step instructions</a></p>
+
+<p><b>Results</b></p>
+
+<p><a href="cookbook/recipe00.res">Expected results</a></p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 

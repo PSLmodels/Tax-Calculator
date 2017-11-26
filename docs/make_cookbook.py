@@ -1,10 +1,10 @@
 """
-Reads skeletal index.htmx file and writes fleshed-out index.html file
-containing information from several JSON files.
+Reads skeletal cookbook.htmx file and writes fleshed-out cookbook.html file
+containing information from recipe and ingredient files.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 make_index.py
-# pylint --disable=locally-disabled make_index.py
+# pep8 --ignore=E402 make_cookbook.py
+# pylint --disable=locally-disabled make_cookbook.py
 
 import os
 import sys
@@ -16,18 +16,13 @@ sys.path.append(os.path.join(CUR_PATH, '..'))
 from taxcalc import Policy
 
 
-INPUT_FILENAME = 'index.htmx'
-OUTPUT_FILENAME = 'index.html'
+INPUT_FILENAME = 'cookbook.htmx'
+OUTPUT_FILENAME = 'cookbook.html'
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
-TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
+COOKBOOK_PATH = os.path.join(CURDIR_PATH, 'cookbook')
 
 INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
-POLICY_PATH = os.path.join(TAXCALC_PATH, 'current_law_policy.json')
-IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
-CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
-BEHAVIOR_PATH = os.path.join(TAXCALC_PATH, 'behavior.json')
-GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
 OUTPUT_PATH = os.path.join(CURDIR_PATH, OUTPUT_FILENAME)
 
 
@@ -42,10 +37,10 @@ def main():
     # augment text variable with do-not-edit warning
     old = '<!-- #WARN# -->'
     new = ('<!-- *** NEVER EDIT THIS FILE BY HAND *** -->\n'
-           '<!-- *** INSTEAD EDIT index.htmx FILE *** -->')
+           '<!-- *** INSTEAD EDIT cookbook.htmx FILE *** -->')
     text = text.replace(old, new)
 
-    # augment text variable with information from JSON files
+    # augment text variable with recipie ingredients, instructions, results
     text = policy_params(POLICY_PATH, text)
     text = io_variables('read', IOVARS_PATH, text)
     text = io_variables('calc', IOVARS_PATH, text)
