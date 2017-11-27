@@ -110,7 +110,7 @@ Combined Liability ($b)          2,468.22
 With Income Tax <= 0 (#m)           79.01
 With Combined Tax <= 0 (#m)         49.54
 
-Extract of 2018 distribution tables by expanded-income decile:
+Extract of 2018 distribution tables by baseline expanded-income decile:
     funits(#m)  itax1($b)  itax2($b)  aftertax_inc1($b)  aftertax_inc2($b)
 0        16.99      -1.65      -1.65              -5.30              -5.31
 1        16.99     -12.65     -12.82             168.67             168.85

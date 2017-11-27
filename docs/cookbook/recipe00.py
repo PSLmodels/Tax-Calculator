@@ -102,7 +102,7 @@ print('REF diagnostic table for 2018:')
 print(ref_diagnostic_table)
 print('')
 
-print('Extract of 2018 distribution tables by expanded-income decile:')
+print('Extract of 2018 distribution tables by baseline expanded-income decile:')
 print(dist_extract)
 print('Note: deciles are numbered 0-9 with top decile divided into bottom 5%,')
 print('      next 4%, and top 1%, in the lines numbered 11-13, respectively')
