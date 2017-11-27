@@ -1,7 +1,5 @@
 from __future__ import print_function  # necessary only if using Python 2.7
-
 from taxcalc import *
-
 
 # use publicly-available CPS input file
 recs = Records.cps_constructor()
