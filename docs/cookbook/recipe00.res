@@ -2,6 +2,7 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2014.
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2014.
+
 REFORM DOCUMENTATION
 Baseline Growth-Difference Assumption Values by Year:
 none: using default baseline growth assumptions

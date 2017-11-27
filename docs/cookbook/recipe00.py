@@ -37,6 +37,7 @@ calc2.calc_all()
 itax_rev2 = calc2.weighted_total('iitax')
 
 # print reform documentation
+print('')
 print(Calculator.reform_documentation(params))
 
 # print total revenue estimates for 2018
@@ -54,15 +55,23 @@ clp_diagnostic_table = create_diagnostic_table(calc1)
 ref_diagnostic_table = create_diagnostic_table(calc2)
 
 # income-tax distribution for 2018 with CLP and REF results side-by-side
-# read source code at following URL for details
+# read source code at following URLs for details
+# http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#results
 # http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_distribution_table
-dist_table1 = create_distribution_table(calc1.records,
+res1 = results(calc1.records)
+assert isinstance(res1, pd.DataFrame)
+res2 = results(calc2.records)
+assert isinstance(res2, pd.DataFrame)
+dist_table1 = create_distribution_table(res1,
                                         groupby='weighted_deciles',
                                         income_measure='expanded_income',
                                         result_type='weighted_sum')
-dist_table2 = create_distribution_table(calc2.records,
+res2['expanded_income_baseline'] = res1['expanded_income']
+exp_inc_baseline = 'expanded_income_baseline'
+dist_table2 = create_distribution_table(res2,
                                         groupby='weighted_deciles',
-                                        income_measure='expanded_income',
+                                        # so can compare the two dist tables:
+                                        income_measure=exp_inc_baseline,
                                         result_type='weighted_sum')
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
@@ -105,4 +114,3 @@ print('Extract of 2018 income-tax difference table by expanded-income decile:')
 print(diff_extract)
 print('Note: deciles are numbered 0-9 with top decile divided into bottom 5%,')
 print('      next 4%, and top 1%, in the lines numbered 11-13, respectively')
-
