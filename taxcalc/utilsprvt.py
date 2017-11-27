@@ -72,16 +72,6 @@ def expanded_income_weighted(pdf, col_name):
             ((pdf[swght] * pdf[expinc]).zsum() + EPSILON))
 
 
-def base_aftertax_income_weighted(pdf, col_name):
-    """
-    Return aftertax-income-weighted mean of Pandas DataFrame col_name items.
-    """
-    swght = 's006'
-    batinc = 'aftertax_income_baseline'
-    return ((pdf[col_name] * pdf[swght] * pdf[batinc]).zsum() /
-            ((pdf[swght] * pdf[batinc]).zsum() + EPSILON))
-
-
 def weighted_perc_inc(pdf, col_name):
     """
     Return weighted fraction (not percent) of positive values for the

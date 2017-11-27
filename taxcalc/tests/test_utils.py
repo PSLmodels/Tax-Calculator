@@ -90,7 +90,7 @@ def test_create_tables(cps_subsample):
                 1.04,
                 0.76,
                 0.19,
-                np.nan]
+                0.70]
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
@@ -111,7 +111,7 @@ def test_create_tables(cps_subsample):
                 0.26,
                 0.08,
                 0.06,
-                np.nan]
+                0.70]
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
@@ -138,8 +138,8 @@ def test_create_tables(cps_subsample):
                 0.07,
                 0.04,
                 0.02,
-                0.0,
-                np.nan]
+                np.nan,
+                0.70]
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
@@ -190,7 +190,7 @@ def test_create_tables(cps_subsample):
                 1.18,
                 0.91,
                 0.37,
-                np.nan,
+                0.70,
                 0.69,
                 0.34,
                 0.06]
@@ -206,7 +206,7 @@ def test_create_tables(cps_subsample):
                 -1.18,
                 -0.91,
                 -0.37,
-                np.nan,
+                -0.70,
                 -0.69,
                 -0.34,
                 -0.06]
@@ -710,8 +710,7 @@ def test_diff_table_sum_row(cps_subsample):
                                      groupby='large_income_bins',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
-    non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change',
-                      'perc_aftertax', 'pc_aftertaxinc']
+    non_digit_cols = ['mean', 'perc_inc', 'perc_cut']
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
