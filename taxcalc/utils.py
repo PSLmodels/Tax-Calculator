@@ -481,13 +481,10 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             wtotal = (res2['tax_diff'] * res2['s006']).zsum()
             sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                                 'tax_diff', wtotal)
-            sdf['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
-            sdf['pc_aftertaxinc'] = gpdf.apply(weighted_mean, 'pc_aftertaxinc')
-            # convert some columns to percentages
-            percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
-                               'perc_aftertax', 'pc_aftertaxinc']
-            for col in percent_columns:
-                sdf[col] *= 100.0
+            res2['afinc1'] = res1['aftertax_income']
+            res2['afinc2'] = res2['aftertax_income']
+            sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
+            sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
             return sdf
         # main logic of diff_table_stats function
         # add bin column to res2 given specified groupby and income_measure
@@ -516,7 +513,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
                         if 'mean' in c or 'perc' in c or 'pc_' in c]
         for col in non_sum_cols:
             diffs.loc['sums', col] = np.nan
-        diffs.loc['sums', 'share_of_change'] = 100.0  # to avoid rounding error
+        diffs.loc['sums', 'share_of_change'] = 1.0  # to avoid rounding error
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
@@ -542,10 +539,19 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
-    res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
-    res2['pc_aftertaxinc'] = ((res2['aftertax_income'] /
-                               res1['aftertax_income']) - 1.0)
+    res2['atinc1'] = res1['aftertax_income']
+    res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
+    diffs['perc_aftertax'] = diffs['tot_change'] / diffs['atinc1']
+    diffs['pc_aftertaxinc'] = ((diffs['atinc2'] / diffs['atinc1']) - 1.0)
+    # delete intermediate atinc1 and atinc2 columns
+    del diffs['atinc1']
+    del diffs['atinc2']
+    # convert some columns to percentages
+    percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
+                       'perc_aftertax', 'pc_aftertaxinc']
+    for col in percent_columns:
+        diffs[col] *= 100.0
     # set print display format for float table elements
     pd.options.display.float_format = '{:10,.2f}'.format
     return diffs
