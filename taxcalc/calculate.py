@@ -183,6 +183,14 @@ class Calculator(object):
         weight = getattr(self.records, 's006')
         return (variable * weight).sum()
 
+    def total_weight(self):
+        """
+        Return all-filing-unit total of sampling weights.
+        NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
+        """
+        weight = getattr(self.records, 's006')
+        return weight.sum()
+
     def dataframe(self, variable_list):
         """
         Return pandas DataFrame containing the listed Records variables.
@@ -263,9 +271,9 @@ class Calculator(object):
 
         Returns
         -------
-        mtr_payrolltax: an array of marginal payroll tax rates.
-        mtr_incometax: an array of marginal individual income tax rates.
-        mtr_combined: an array of marginal combined tax rates, which is
+        mtr_payrolltax: a numpy array of marginal payroll tax rates.
+        mtr_incometax: a numpy array of marginal individual income tax rates.
+        mtr_combined: a numpy array of marginal combined tax rates, which is
                       the sum of mtr_payrolltax and mtr_incometax.
 
         Notes

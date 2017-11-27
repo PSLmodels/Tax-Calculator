@@ -24,6 +24,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count, weighted_mean,
                                wage_weighted, agi_weighted,
                                expanded_income_weighted,
+                               base_aftertax_income_weighted,
                                weighted_perc_inc, weighted_perc_cut,
                                EPSILON)
 
@@ -481,8 +482,10 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             wtotal = (res2['tax_diff'] * res2['s006']).zsum()
             sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                                 'tax_diff', wtotal)
-            sdf['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
-            sdf['pc_aftertaxinc'] = gpdf.apply(weighted_mean, 'pc_aftertaxinc')
+            sdf['perc_aftertax'] = gpdf.apply(
+                base_aftertax_income_weighted, 'perc_aftertax')
+            sdf['pc_aftertaxinc'] = gpdf.apply(
+                base_aftertax_income_weighted, 'pc_aftertaxinc')
             # convert some columns to percentages
             percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
                                'perc_aftertax', 'pc_aftertaxinc']
@@ -541,6 +544,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     assert income_measure == 'expanded_income' or income_measure == 'c00100'
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
+    res2['aftertax_income_baseline'] = res1['aftertax_income']
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
     res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
     res2['pc_aftertaxinc'] = ((res2['aftertax_income'] /
