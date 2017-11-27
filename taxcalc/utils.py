@@ -373,12 +373,11 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
                "'webapp_income_bins' or 'large_income_bins' or "
                "'small_income_bins'")
         raise ValueError(msg)
-    # construct weighted_sum table for all result_type values
+    # construct weighted_sum table
     # ... construct bin results
     pdf = weighted(pdf, STATS_COLUMNS)
     gpdf = pdf.groupby('bins', as_index=False)
     dist_table = gpdf[DIST_TABLE_COLUMNS].sum()
-    dist_table.drop('bins', axis=1, inplace=True)
     # ... append sum row
     row = get_sums(pdf)[DIST_TABLE_COLUMNS]
     dist_table = dist_table.append(row)
@@ -393,8 +392,9 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
         gpdf = pdf.groupby('bins', as_index=False)
         rows = gpdf[DIST_TABLE_COLUMNS].sum()
-        rows.drop('bins', axis=1, inplace=True)
         dist_table = dist_table.append(rows, ignore_index=True)
+    # remove bins column from dist_table
+    dist_table.drop('bins', axis=1, inplace=True)
     # construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
