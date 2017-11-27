@@ -104,6 +104,25 @@ Combined Liability ($b)          2,516.68
 With Income Tax <= 0 (#m)           72.03
 With Combined Tax <= 0 (#m)         48.62
 
+Extract of 2018 distribution tables by expanded-income decile:
+    funits(#m)  itax1($b)  itax2($b)  aftertax_inc1($b)  aftertax_inc2($b)
+0        16.99      -1.65      -1.65              -5.30              -5.30
+1        16.99     -12.65     -12.65             168.67             168.68
+2        16.99     -15.20     -15.21             287.66             287.67
+3        16.99     -12.74     -12.77             402.40             402.43
+4        16.99       2.69       2.63             520.45             520.51
+5        16.99      27.14      27.06             665.73             665.81
+6        16.99      63.42      63.37             861.52             861.57
+7        16.99     119.61     119.53           1,153.42           1,153.50
+8        16.99     212.26     212.15           1,629.28           1,629.39
+9        16.99     904.62     900.66           3,599.33           3,603.29
+10      169.89   1,287.51   1,283.12           9,283.16           9,287.55
+11        8.49     463.66     461.14           1,796.20           1,798.71
+12        6.80     270.40     269.76           1,199.98           1,200.62
+13        1.70     170.57     169.77             603.16             603.96
+Note: deciles are numbered 0-9 with top decile divided into bottom 5%,
+      next 4%, and top 1%, in the lines numbered 11-13, respectively
+
 Extract of 2018 income-tax difference table by expanded-income decile:
     funits(#m)  total_diff($b)  mean_diff($)  aftertaxinc_diff(%)
 0        16.99            0.00          0.00                 0.00
