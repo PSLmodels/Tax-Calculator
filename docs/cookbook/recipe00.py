@@ -20,7 +20,7 @@ calc1.calc_all()
 itax_rev1 = calc1.weighted_total('iitax')
 
 # read JSON reform file and use (the default) static analysis assumptions
-reform_filename = './ingredients/repeal_amt.json'
+reform_filename = './ingredients/raise_stdded_and_rates.json'
 params = Calculator.read_json_param_objects(reform=reform_filename,
                                             assump=None)
 
@@ -55,20 +55,16 @@ clp_diagnostic_table = create_diagnostic_table(calc1)
 ref_diagnostic_table = create_diagnostic_table(calc2)
 
 # income-tax distribution for 2018 with CLP and REF results side-by-side
-# read source code at following URLs for details
-# http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#results
+# read source code at following URL for details
 # http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_distribution_table
-res1 = results(calc1.records)
-assert isinstance(res1, pd.DataFrame)
-res2 = results(calc2.records)
-assert isinstance(res2, pd.DataFrame)
-dist_table1 = create_distribution_table(res1,
+dist_table1 = create_distribution_table(calc1.records,
                                         groupby='weighted_deciles',
                                         income_measure='expanded_income',
                                         result_type='weighted_sum')
-res2['expanded_income_baseline'] = res1['expanded_income']
+setattr(calc2.records, 'expanded_income_baseline',
+        getattr(calc1.records, 'expanded_income'))
 exp_inc_baseline = 'expanded_income_baseline'
-dist_table2 = create_distribution_table(res2,
+dist_table2 = create_distribution_table(calc2.records,
                                         groupby='weighted_deciles',
                                         # so can compare the two dist tables:
                                         income_measure=exp_inc_baseline,
@@ -91,8 +87,10 @@ diff_table = create_difference_table(calc1.records, calc2.records,
                                      tax_to_diff='iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
-dif_colnames = ['count', 'tot_change', 'mean', 'pc_aftertaxinc', 'perc_aftertax']
-ext_colnames = ['funits(#m)', 'total_diff($b)', 'mean_diff($)', 'aftertaxinc_diff(%)', 'perc_aftertax(%)']
+dif_colnames = ['count', 'tot_change', 'mean',
+                'pc_aftertaxinc']
+ext_colnames = ['funits(#m)', 'agg_diff($b)', 'mean_diff($)',
+                'aftertaxinc_diff(%)']
 scaling_factors = [1e-6, 1e-9, 1e0, 1e0, 1e0]
 for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
     diff_extract[ename] = diff_table[dname] * sfactor
