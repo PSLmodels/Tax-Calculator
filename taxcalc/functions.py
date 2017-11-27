@@ -1745,7 +1745,7 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
     # compute expanded income as AGI plus several additional amounts
-    expanded_income = (c00100 +  # adjusted gross income
+    expanded_income = (c00100 +  # adjusted gross income, AGI
                        c02900_in_ei +  # ajustments to AGI
                        e00400 +  # non-taxable interest income
                        invinc_agi_ec +  # AGI-excluded taxable invest income
