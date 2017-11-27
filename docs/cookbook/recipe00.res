@@ -124,20 +124,36 @@ Note: deciles are numbered 0-9 with top decile divided into bottom 5%,
       next 4%, and top 1%, in the lines numbered 11-13, respectively
 
 Extract of 2018 income-tax difference table by expanded-income decile:
-    funits(#m)  total_diff($b)  mean_diff($)  aftertaxinc_diff(%)
-0        16.99            0.00          0.00                 0.00
-1        16.99           -0.00         -0.16                 0.00
-2        16.99           -0.01         -0.64                 0.00
-3        16.99           -0.03         -1.56                 0.01
-4        16.99           -0.06         -3.57                 0.01
-5        16.99           -0.08         -4.89                 0.01
-6        16.99           -0.06         -3.31                 0.01
-7        16.99           -0.08         -4.65                 0.01
-8        16.99           -0.11         -6.36                 0.01
-9        16.99           -3.96       -233.19                 0.21
-10      169.89           -4.39           nan                  nan
-11        8.49           -0.35        -40.65                 0.03
-12        6.79           -7.43     -1,093.70                 0.47
-13        1.70            3.82      2,243.60                 0.07
+    funits(#m)  total_diff($b)  mean_diff($)  aftertaxinc_diff(%)  \
+0        16.99            0.00          0.00                -0.00   
+1        16.99           -0.00         -0.16                 0.00   
+2        16.99           -0.01         -0.64                 0.00   
+3        16.99           -0.03         -1.56                 0.01   
+4        16.99           -0.06         -3.57                 0.01   
+5        16.99           -0.08         -4.89                 0.01   
+6        16.99           -0.06         -3.31                 0.01   
+7        16.99           -0.08         -4.65                 0.01   
+8        16.99           -0.11         -6.36                 0.01   
+9        16.99           -3.96       -233.19                 0.11   
+10      169.89           -4.39           nan                  nan   
+11        8.49           -0.35        -40.65                 0.03   
+12        6.79           -7.43     -1,093.70                 0.54   
+13        1.70            3.82      2,243.60                -0.36   
+
+    perc_aftertax(%)  
+0              -0.00  
+1              -0.00  
+2              -0.00  
+3              -0.01  
+4              -0.01  
+5              -0.01  
+6              -0.01  
+7              -0.01  
+8              -0.01  
+9              -0.11  
+10               nan  
+11             -0.03  
+12             -0.54  
+13              0.36  
 Note: deciles are numbered 0-9 with top decile divided into bottom 5%,
       next 4%, and top 1%, in the lines numbered 11-13, respectively
