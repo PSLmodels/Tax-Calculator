@@ -710,7 +710,7 @@ def test_diff_table_sum_row(cps_subsample):
                                      groupby='large_income_bins',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
-    non_digit_cols = ['mean', 'perc_inc', 'perc_cut']
+    non_digit_cols = ['perc_inc', 'perc_cut']
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])

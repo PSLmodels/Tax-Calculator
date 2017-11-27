@@ -502,12 +502,12 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
         diffs_without_sums = stat_dataframe(gpdf)
-        # calculate sum row
+        # calculate sum row (with explicit calculation of mean statistic)
         row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
+        row['mean'] = row['tot_change'] / row['count']
         diffs = diffs_without_sums.append(row)
         # specify some column sum elements to be np.nan and another to be 100
-        non_sum_cols = [c for c in diffs.columns
-                        if 'mean' in c or 'perc' in c or 'pc_' in c]
+        non_sum_cols = [c for c in diffs.columns if 'perc_' in c]
         for col in non_sum_cols:
             diffs.loc['sums', col] = np.nan
         diffs.loc['sums', 'share_of_change'] = 1.0  # to avoid rounding error
