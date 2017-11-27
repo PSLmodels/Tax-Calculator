@@ -373,12 +373,11 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
                "'webapp_income_bins' or 'large_income_bins' or "
                "'small_income_bins'")
         raise ValueError(msg)
-    # construct weighted_sum table for all result_type values
+    # construct weighted_sum table
     # ... construct bin results
     pdf = weighted(pdf, STATS_COLUMNS)
     gpdf = pdf.groupby('bins', as_index=False)
     dist_table = gpdf[DIST_TABLE_COLUMNS].sum()
-    dist_table.drop('bins', axis=1, inplace=True)
     # ... append sum row
     row = get_sums(pdf)[DIST_TABLE_COLUMNS]
     dist_table = dist_table.append(row)
@@ -386,18 +385,16 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     if groupby == 'weighted_deciles':
         pdf = gpdf.get_group(10)  # top decile as its own DataFrame
         pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
+        pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
+                            value=[0, 0, 0, 0, 0], inplace=True)
+        pdf['bins'].replace(to_replace=[6, 7, 8, 9],
+                            value=[1, 1, 1, 1], inplace=True)
+        pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
         gpdf = pdf.groupby('bins', as_index=False)
-        sums = gpdf[DIST_TABLE_COLUMNS].sum()
-        sums.drop('bins', axis=1, inplace=True)
-        # tablulate 90-95 quantile detail group
-        row = sums.iloc[[0, 1, 2, 3, 4]].sum()
-        dist_table = dist_table.append(row, ignore_index=True)
-        # tablulate 95-99 quantile detail group
-        row = sums.iloc[[5, 6, 7, 8]].sum()
-        dist_table = dist_table.append(row, ignore_index=True)
-        # extract top percentile detail group
-        row = sums.iloc[9]
-        dist_table = dist_table.append(row, ignore_index=True)
+        rows = gpdf[DIST_TABLE_COLUMNS].sum()
+        dist_table = dist_table.append(rows, ignore_index=True)
+    # remove bins column from dist_table
+    dist_table.drop('bins', axis=1, inplace=True)
     # construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
@@ -543,7 +540,7 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
     res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
     diffs['perc_aftertax'] = diffs['tot_change'] / diffs['atinc1']
-    diffs['pc_aftertaxinc'] = ((diffs['atinc2'] / diffs['atinc1']) - 1.0)
+    diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
     # delete intermediate atinc1 and atinc2 columns
     del diffs['atinc1']
     del diffs['atinc2']
