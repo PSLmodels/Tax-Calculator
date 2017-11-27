@@ -978,3 +978,62 @@ def test_dec_graph_plot(cps_subsample):
     gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
     assert gplot
     # write_graph_file(gplot, 'test.html', 'Test Plot')
+
+@pytest.mark.one
+def test_dist_vs_diff_table():
+    # create two DataFrame objects suitable for passing to create_di*_table
+    wght = np.array([1.0] * 100, dtype=np.int64)
+    itax1 = np.array([10.0 * (w + 1) for w in range(0,100)], dtype=np.float64)
+    itax2 = np.array([11.0 * (w + 1) for w in range(0,100)], dtype=np.float64)
+    einc = np.array([100.0 * (w + 1) for w in range(0,100)], dtype=np.float64)
+    ainc1 = einc - itax1
+    ainc2 = einc - itax2
+    df1 = pd.DataFrame()
+    df2 = pd.DataFrame()
+    df1['s006'] = wght
+    df2['s006'] = wght
+    df1['iitax'] = itax1
+    df2['iitax'] = itax2
+    df1['expanded_income'] = einc
+    df2['expanded_income'] = einc
+    df1['aftertax_income'] = ainc1
+    df2['aftertax_income'] = ainc2
+    zeros = np.zeros(wght.shape)
+    for col in DIST_TABLE_COLUMNS:
+        if col not in df1:
+            df1[col] = zeros
+            df2[col] = zeros
+    # create two distribution tables and extract selected columns
+    dist1 = create_distribution_table(df1, groupby='weighted_deciles',
+                                      result_type='weighted_sum',
+                                      income_measure='expanded_income')
+    dist2 = create_distribution_table(df2, groupby='weighted_deciles',
+                                      result_type='weighted_sum',
+                                      income_measure='expanded_income')
+    edist1 = pd.DataFrame()
+    edist2 = pd.DataFrame()
+    for col in ['s006', 'iitax', 'expanded_income', 'aftertax_income']:
+        edist1[col] = dist1[col]
+        edist2[col] = dist2[col]
+    print "DIST1:"
+    print edist1
+    print "DIST2:"
+    print edist2
+    # create difference table and extract selected columns
+    diff = create_difference_table(df1, df2, groupby='weighted_deciles',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='iitax')
+    ediff = pd.DataFrame()
+    for col in ['count', 'tot_change', 'pc_aftertaxinc']:
+        ediff[col] = diff[col]
+    print "DIFF:"
+    print ediff
+
+    implied_diff = dist2['iitax'] - dist1['iitax']
+    actual_diff = diff['tot_change']
+    assert np.allclose(implied_diff, actual_diff)
+
+    implied_diff = 100 * (dist2['aftertax_income'] /
+                          dist1['aftertax_income'] - 1.0)
+    actual_diff = diff['pc_aftertaxinc']
+    assert np.allclose(implied_diff, actual_diff)
