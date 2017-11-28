@@ -1125,7 +1125,7 @@
         "out_of_range_action": "stop"
     },
         
-    "_ID_StateLocalTax_fraction_agi": {
+    "_ID_StateLocalTax_crt": {
         "long_name": "Maximum state and local income and sales taxes deduction as a fraction of AGI.",
         "description": "This decimal fraction sets the max state and local income and sales tax deduction as a decimal fraction of agi.",
         "section_1": "Itemized Deductions",
