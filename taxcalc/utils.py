@@ -287,7 +287,7 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     Parameters
     ----------
     obj : any object with array-like attributes named as in STATS_COLUMNS list
-        Examples include a Tax-Calculator Records object and a
+        Examples include a Tax-Calculator Calculator object and a
         Pandas DataFrame object.
 
     groupby : String object
@@ -326,6 +326,7 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     followed by a sums row with the top-decile detail in an additional three
     rows following the sums row
     """
+    # pylint: disable=too-many-branches
     # nested function that specifies calculated columns
     def add_columns(pdf):
         """
@@ -357,7 +358,10 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         columns = STATS_COLUMNS + [income_measure]
     else:
         columns = None
-    res = results(obj, cols=columns)
+    if isinstance(obj, pd.DataFrame):
+        res = results(obj, cols=columns)
+    else:
+        res = results(obj.records, cols=columns)
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
@@ -412,10 +416,10 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
 
     Parameters
     ----------
-    res1 : baseline object is either a Tax-Calculator Records object or
+    res1 : baseline object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
-    res2 : reform object is either a Tax-Calculator Records object or
+    res2 : reform object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
     groupby : String object
@@ -525,13 +529,13 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             diffs = diffs.append(sdf, ignore_index=True)
         return diffs
     # main logic of create_difference_table
-    isdf1 = isinstance(res1, pd.DataFrame)
-    isdf2 = isinstance(res2, pd.DataFrame)
-    assert isdf1 == isdf2
-    if not isdf1:
+    is_dframe1 = isinstance(res1, pd.DataFrame)
+    is_dframe2 = isinstance(res2, pd.DataFrame)
+    assert is_dframe1 == is_dframe2
+    if not is_dframe1:
         assert res1.current_year == res2.current_year
-        res1 = results(res1)
-        res2 = results(res2)
+        res1 = results(res1.records)
+        res2 = results(res2.records)
     assert income_measure == 'expanded_income' or income_measure == 'c00100'
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
@@ -1418,7 +1422,7 @@ def dec_graph_data(calc1, calc2):
     # create difference table from the two Calculator objects
     calc1.calc_all()
     calc2.calc_all()
-    diff_table = create_difference_table(calc1.records, calc2.records,
+    diff_table = create_difference_table(calc1, calc2,
                                          groupby='weighted_deciles',
                                          income_measure='expanded_income',
                                          tax_to_diff='combined')
