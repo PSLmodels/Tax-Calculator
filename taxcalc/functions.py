@@ -516,8 +516,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
 
         ID_Miscellaneous_c : Ceiling on miscellaneous expense deduction
 
-	ID_StateLocalTax_crt : Deduction for state and local taxes;
-	ceiling as a decimal fraction of AGI
+        ID_StateLocalTax_crt : Deduction for state and local taxes;
+        ceiling as a decimal fraction of AGI
 
     Taxpayer Characteristics:
         e17500_capped : Medical expenses, capped by ItemDedCap
@@ -555,8 +555,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
     c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
                  ID_RealEstate_c[MARS - 1])
     if ID_StateLocalTax_crt < 1:
-        c18300 = min(c18400 + c18500, 
-		     ID_StateLocalTax_crt * max(c00100, 0))
+        c18300 = min(c18400 + c18500,
+                     ID_StateLocalTax_crt * max(c00100, 0))
     else:
         c18300 = c18400 + c18500
     # Interest paid
