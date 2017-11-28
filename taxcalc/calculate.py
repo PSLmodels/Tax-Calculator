@@ -13,6 +13,7 @@ import re
 import copy
 import six
 import numpy as np
+import pandas as pd
 from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                DependentCare, ALD_InvInc_ec_base, CapGains,
@@ -136,23 +137,9 @@ class Calculator(object):
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year
 
-    def calc_all(self, zero_out_calc_vars=False):
-        """
-        Call all tax-calculation functions.
-        """
-        # conducts static analysis of Calculator object for current_year
-        assert self.records.current_year == self.policy.current_year
-        self._calc_one_year(zero_out_calc_vars)
-        BenefitSurtax(self)
-        BenefitLimitation(self)
-        FairShareTax(self.policy, self.records)
-        LumpSumTax(self.policy, self.records)
-        ExpandIncome(self.policy, self.records)
-        AfterTaxIncome(self.policy, self.records)
-
     def increment_year(self):
         """
-        Advance all objects to next year.
+        Advance all embedded objects to next year.
         """
         next_year = self.policy.current_year + 1
         self.records.increment_year()
@@ -173,6 +160,45 @@ class Calculator(object):
         for _ in range(iteration):
             self.increment_year()
         assert self.records.current_year == year
+
+    def calc_all(self, zero_out_calc_vars=False):
+        """
+        Call all tax-calculation functions for the current_year.
+        """
+        # conducts static analysis of Calculator object for current_year
+        assert self.records.current_year == self.policy.current_year
+        self._calc_one_year(zero_out_calc_vars)
+        BenefitSurtax(self)
+        BenefitLimitation(self)
+        FairShareTax(self.policy, self.records)
+        LumpSumTax(self.policy, self.records)
+        ExpandIncome(self.policy, self.records)
+        AfterTaxIncome(self.policy, self.records)
+
+    def weighted_total(self, variable_name):
+        """
+        Return all-filing-unit weighted total of named Records variable.
+        """
+        variable = getattr(self.records, variable_name)
+        weight = getattr(self.records, 's006')
+        return (variable * weight).sum()
+
+    def total_weight(self):
+        """
+        Return all-filing-unit total of sampling weights.
+        NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
+        """
+        weight = getattr(self.records, 's006')
+        return weight.sum()
+
+    def dataframe(self, variable_list):
+        """
+        Return pandas DataFrame containing the listed Records variables.
+        """
+        pdf = pd.DataFrame()
+        for varname in variable_list:
+            pdf[varname] = getattr(self.records, varname)
+        return pdf
 
     @property
     def current_year(self):
@@ -245,9 +271,9 @@ class Calculator(object):
 
         Returns
         -------
-        mtr_payrolltax: an array of marginal payroll tax rates.
-        mtr_incometax: an array of marginal individual income tax rates.
-        mtr_combined: an array of marginal combined tax rates, which is
+        mtr_payrolltax: a numpy array of marginal payroll tax rates.
+        mtr_incometax: a numpy array of marginal individual income tax rates.
+        mtr_combined: a numpy array of marginal combined tax rates, which is
                       the sum of mtr_payrolltax and mtr_incometax.
 
         Notes

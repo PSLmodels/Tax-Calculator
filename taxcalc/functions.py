@@ -1,5 +1,11 @@
 """
 Tax-Calculator functions that calculate payroll and individual income taxes.
+
+Note: the cpi_offset policy parameter is the only policy parameter
+that does not appear here; it is used in the policy.py file to
+possibly adjust the price inflation rate used to index policy
+parameters (as would be done in a reform that introduces chained-CPI
+indexing).
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 functions.py
@@ -1374,7 +1380,8 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc,
                          c07180, c07200, c07220, c07230, c07240,
-                         c07260, c07300, c07400, c07600, c08000):
+                         c07260, c07300, c07400, c07600, c08000,
+                         DependentCredit_before_CTC):
     """
     NonRefundableCredits function sequentially limits credits to tax liability
 
@@ -1401,6 +1408,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Retirement savings credit - Form 8880
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
+    if DependentCredit_before_CTC:
+        # Dependent credit
+        dep_credit = min(dep_credit, avail)
+        avail = avail - dep_credit
     # Child tax credit
     c07220 = min(prectc, avail)
     avail = avail - c07220
@@ -1416,9 +1427,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Schedule R credit
     c07200 = min(c07200, avail)
     avail = avail - c07200
-    # Dependent credit
-    dep_credit = min(dep_credit, avail)
-    avail = avail - dep_credit
+    if not DependentCredit_before_CTC:
+        # Dependent credit
+        dep_credit = min(dep_credit, avail)
+        avail = avail - dep_credit
     # Other credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
@@ -1475,9 +1487,9 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
     # Part II of 2005 Form 8812
-    if n24 > 0 and n24 <= 2 and c82890 > 0:
+    if n24 > 0 and n24 < ACTC_ChildNum and c82890 > 0:
         c82940 = min(c82890, c82935)
-    if n24 > 2:
+    if n24 >= ACTC_ChildNum:
         if c82890 >= c82935:
             c82940 = c82935
         else:
@@ -1740,7 +1752,7 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
     # compute expanded income as AGI plus several additional amounts
-    expanded_income = (c00100 +  # adjusted gross income
+    expanded_income = (c00100 +  # adjusted gross income, AGI
                        c02900_in_ei +  # ajustments to AGI
                        e00400 +  # non-taxable interest income
                        invinc_agi_ec +  # AGI-excluded taxable invest income

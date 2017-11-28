@@ -1,9 +1,9 @@
-// Title: Tax Cuts and Jobs Act, House version, Chairman's mark (as of 11-3-17)
-// Reform_File_Author: Cody Kallen
-// Reform_Reference: https://waysandmeans.house.gov/wp-content/uploads/2017/11/20171106-Amendment-in-the-Nature-of-a-Substitute-to-H.R.-1.pdf
+// Title: Tax Cuts and Jobs Act, House version, Amended (as of 11-9-17)
+// Reform_File_Author: Cody Kallen and Matt Jensen
+// Reform_Reference: https://waysandmeans.house.gov/chairman-brady-offers-second-amendment-tax-cuts-jobs-act/
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
-// -  New pass-through income tax schedule, with qualifying rules (2)
+// -  New pass-through income tax schedule, with approximated qualifying rules (2)
 // -  New standard deductions (3)
 // -  Repeal personal exemption (4)
 // -  New nonrefundable credits, phase-out with child tax credit (5)
@@ -52,33 +52,41 @@
         "_II_brk5":
             {"2018": [[1207000, 1614000, 1207000, 1310500, 1614000]]},
         "_II_brk6":
-            {"2018": [[2000000, 2000000, 2000000, 2000000, 2000000]]},
+            {"2018": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
         "_PT_rt1":
-            {"2018": [0.12]},
+            {"2018": [0.11],
+             "2020": [0.10],
+             "2022": [0.09]},
         "_PT_rt2":
-            {"2018": [0.25]},
+            {"2018": [0.12]},
         "_PT_rt3":
             {"2018": [0.25]},
         "_PT_rt4":
-            {"2018": [0.25]},
+            {"2018": [0.26],
+             "2020": [0.27],
+             "2022": [0.28]},
         "_PT_rt5":
-            {"2018": [0.31]},
-        "_PT_rt6":
             {"2018": [0.25]},
+        "_PT_rt6":
+            {"2018": [0.31]},
         "_PT_rt7":
             {"2018": [0.25]},
+        "_PT_rt8":
+            {"2018": [0.25]},
         "_PT_brk1":
-            {"2018": [[45000, 90000, 45000, 67500, 90000]]},
+            {"2018": [[37500, 75000, 37500, 56250, 75000]]},
         "_PT_brk2":
-            {"2018": [[200000, 260000, 130000, 200000, 260000]]},
+            {"2018": [[45000, 90000, 45000, 67500, 90000]]},
         "_PT_brk3":
-            {"2018": [[500000, 1000000, 500000, 500000, 1000000]]},
+            {"2018": [[75000, 150000, 75000, 112500, 150000]]},
         "_PT_brk4":
-            {"2018": [[1000000, 1200000, 1000000, 1000000, 1200000]]},
+            {"2018": [[112500, 225000, 112500, 168750, 225000]]},
         "_PT_brk5":
-            {"2018": [[1207000, 1614000, 1207000, 1310500, 1614000]]},
+            {"2018": [[1000000, 1200000, 1000000, 1000000, 1200000]]},
         "_PT_brk6":
-            {"2018": [[2000000, 2000000, 2000000, 2000000, 2000000]]},
+            {"2018": [[1207000, 1614000, 1207000, 1310500, 1614000]]},
+        "_PT_brk7":
+            {"2018": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
         "_PT_EligibleRate_active":
             {"2018": [0.3]},
         "_PT_EligibleRate_passive":

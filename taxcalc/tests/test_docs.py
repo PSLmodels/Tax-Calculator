@@ -20,7 +20,7 @@ def test_docs_up_to_date(tests_path):
     docs_path = os.path.join(code_path, '..', 'docs')
     target = os.path.join(docs_path, 'index.html')
     dependencies = [os.path.join(docs_path, 'index.htmx'),
-                    os.path.join(docs_path, 'make.py'),
+                    os.path.join(docs_path, 'make_index.py'),
                     os.path.join(code_path, 'current_law_policy.json'),
                     os.path.join(code_path, 'consumption.json'),
                     os.path.join(code_path, 'behavior.json'),
@@ -35,6 +35,6 @@ def test_docs_up_to_date(tests_path):
         msg = 'Tax-Calculator/docs/index.html IS NOT UP-TO-DATE\n'
         msg += 'FIX BY DOING THIS:                             \n'
         msg += ' $ cd Tax-Calculator/docs                      \n'
-        msg += ' $ python make.py                              \n'
+        msg += ' $ python make_index.py                        \n'
         msg += 'AND INCLUDE UPDATED index.html IN NEXT COMMIT  \n'
         raise ValueError(msg)

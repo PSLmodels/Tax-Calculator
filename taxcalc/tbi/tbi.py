@@ -177,7 +177,7 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
 
     # calculate gdp_effect
     fyear = check_years_return_first_year(year_n, start_year, use_puf_not_cps)
-    if (start_year + year_n) > fyear:
+    if year_n > 0 and (start_year + year_n) > fyear:
         # create calc1 and calc2 calculated for year_n - 1
         (calc1, calc2, _) = calculate((year_n - 1), start_year,
                                       use_puf_not_cps,

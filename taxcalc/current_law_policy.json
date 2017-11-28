@@ -1,4 +1,26 @@
 {
+    "_cpi_offset": {
+        "long_name": "Decimal offset ADDED to unchained CPI to get parameter indexing rate",
+        "description": "Current-law values are zero; reforms that introduce indexing with chained CPI would have values around -0.0025.",
+        "section_1": "Parameter Indexing",
+        "section_2": "Offsets",
+        "irs_ref": "",
+        "notes": "See April 2013 CBO report entitled 'What Would Be the Effect on the Deficit of Using the Chained CPI to Index Benefit Programs and the Tax Code?', which includes this: 'The chained CPI grows more slowly than the traditional CPI does: an average of about 0.25 percentage points more slowly per year over the past decade.' <https://www.cbo.gov/publication/44089>",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -0.005, "max": 0.005},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_FICA_ss_trt": {
         "long_name": "Social Security payroll tax rate",
         "description": "Social Security FICA rate, including both employer and employee.",
@@ -3619,6 +3641,28 @@
         "out_of_range_action": "stop"
     },
 
+    "_DependentCredit_before_CTC": {
+        "long_name": "Stack the Dependent Credit before the Child Tax Credit",
+        "description": "Stack the draw down of the Dependent Credit against liabilities before the drawdown of the Child Tax Credit.",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child Tax Credit",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_FilerCredit_c": {
         "long_name": "Nonrefundable credit for filer and spouse",
         "description": "This nonrefundable credit is applied to the filer and spouse and phases out with the Child Tax Credit. The filer credit's phaseout begins when the CTC's phaseout ends.",
@@ -4084,11 +4128,11 @@
     },
 
     "_ACTC_ChildNum": {
-        "long_name": "Additional Child Tax Credit minimum number of qualified children",
-        "description": "Families with this number of qualified children or more may qualify for the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.",
+        "long_name": "Additional Child Tax Credit minimum number of qualified children for different formula",
+        "description": "Families with this number of qualified children or more may qualify for a different formula to calculate the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.",
         "section_1": "Refundable Credits",
         "section_2": "Additional Child Tax Credit",
-        "irs_ref": "Form 8812, Part III. ",
+        "irs_ref": "Form 8812, Part II. ",
         "notes": "",
         "row_var": "FLPDYR",
         "row_label": ["2013"],

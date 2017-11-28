@@ -5,7 +5,7 @@ Tests of Tax-Calculator utility functions.
 # pep8 --ignore=E402 test_utils.py
 # pylint --disable=locally-disabled test_utils.py
 #
-# pylint: disable=missing-docstring,no-member,protected-access
+# pylint: disable=missing-docstring,no-member,protected-access,too-many-lines
 
 import os
 import math
@@ -83,14 +83,14 @@ def test_create_tables(cps_subsample):
     expected = [0.00,
                 0.01,
                 0.41,
-                0.84,
-                0.92,
-                1.10,
-                1.15,
+                0.76,
+                0.85,
+                1.06,
+                1.14,
                 1.04,
-                0.78,
-                0.27,
-                np.nan]
+                0.76,
+                0.19,
+                0.70]
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
@@ -102,16 +102,16 @@ def test_create_tables(cps_subsample):
     expected = [0.00,
                 0.01,
                 0.41,
-                0.84,
-                0.92,
-                1.10,
-                1.15,
+                0.76,
+                0.85,
+                1.06,
+                1.14,
                 1.04,
-                0.78,
-                0.30,
+                0.76,
+                0.26,
                 0.08,
-                0.07,
-                np.nan]
+                0.06,
+                0.70]
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
@@ -123,23 +123,23 @@ def test_create_tables(cps_subsample):
     expected = [0.00,
                 0.01,
                 0.02,
-                0.16,
-                0.64,
-                0.82,
-                0.87,
-                0.92,
-                1.10,
-                1.15,
-                1.04,
+                0.15,
+                0.58,
+                0.73,
                 0.78,
-                0.30,
+                0.85,
+                1.06,
+                1.14,
+                1.04,
+                0.76,
+                0.26,
                 0.08,
-                0.09,
+                0.08,
                 0.07,
-                0.05,
+                0.04,
                 0.02,
-                0.0,
-                np.nan]
+                np.nan,
+                0.70]
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
@@ -180,35 +180,35 @@ def test_create_tables(cps_subsample):
                 0.98]
     assert np.allclose(diff['share_of_change'].values, expected,
                        atol=0.005, rtol=0.0)
-    expected = [0.00,
+    expected = [0.01,
                 0.02,
-                0.35,
-                0.79,
-                0.89,
-                0.97,
-                1.11,
+                0.33,
+                0.70,
+                0.81,
+                0.91,
+                1.07,
                 1.18,
                 0.91,
-                0.50,
-                np.nan,
-                0.70,
                 0.37,
+                0.70,
+                0.69,
+                0.34,
                 0.06]
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
-    expected = [-0.00,
+    expected = [-0.01,
                 -0.02,
-                -0.35,
-                -0.79,
-                -0.89,
-                -0.97,
-                -1.11,
+                -0.33,
+                -0.70,
+                -0.81,
+                -0.91,
+                -1.07,
                 -1.18,
                 -0.91,
-                -0.50,
-                np.nan,
-                -0.70,
                 -0.37,
+                -0.70,
+                -0.69,
+                -0.34,
                 -0.06]
     assert np.allclose(diff['pc_aftertaxinc'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
@@ -329,7 +329,7 @@ def test_create_tables(cps_subsample):
                        atol=0.5, rtol=0.0)
 
     setattr(calc2.records, 'expanded_income_baseline',
-            getattr(calc2.records, 'expanded_income'))
+            getattr(calc1.records, 'expanded_income'))
     dist = create_distribution_table(calc2.records,
                                      groupby='webapp_income_bins',
                                      income_measure='expanded_income_baseline',
@@ -710,8 +710,7 @@ def test_diff_table_sum_row(cps_subsample):
                                      groupby='large_income_bins',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
-    non_digit_cols = ['mean', 'perc_inc', 'perc_cut', 'share_of_change',
-                      'perc_aftertax', 'pc_aftertaxinc']
+    non_digit_cols = ['perc_inc', 'perc_cut']
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
@@ -978,3 +977,54 @@ def test_dec_graph_plot(cps_subsample):
     gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
     assert gplot
     # write_graph_file(gplot, 'test.html', 'Test Plot')
+
+
+@pytest.mark.parametrize("use_baseline", [False, True])
+def test_dist_vs_diff_table(use_baseline):
+    # pylint: disable=too-many-locals
+    # create two DataFrame objects suitable for passing to create_di*_table
+    wght = np.array(200 * [1.0])
+    itax1 = np.array(2 * [10.0 * (w + 1) for w in range(0, 100)])
+    itax2 = np.array(2 * [11.0 * (w + 1) for w in range(0, 100)])
+    einc = np.array(2 * [100.0 * (w + 1) for w in range(0, 100)])
+    ainc1 = einc - itax1
+    ainc2 = einc - itax2
+    df1 = pd.DataFrame()
+    df2 = pd.DataFrame()
+    df1['s006'] = wght
+    df2['s006'] = wght
+    df1['iitax'] = itax1
+    df2['iitax'] = itax2
+    df1['expanded_income'] = einc
+    df2['expanded_income'] = einc
+    df1['aftertax_income'] = ainc1
+    df2['aftertax_income'] = ainc2
+    zeros = np.zeros(wght.shape)
+    for col in DIST_TABLE_COLUMNS:
+        if col not in df1:
+            df1[col] = zeros
+            df2[col] = zeros
+    # create two distribution tables
+    dist1 = create_distribution_table(df1, groupby='weighted_deciles',
+                                      result_type='weighted_sum',
+                                      income_measure='expanded_income')
+    if use_baseline:
+        df2['expanded_income_baseline'] = df1['expanded_income']
+        inc_measure = 'expanded_income_baseline'
+    else:
+        inc_measure = 'expanded_income'
+    dist2 = create_distribution_table(df2, groupby='weighted_deciles',
+                                      result_type='weighted_sum',
+                                      income_measure=inc_measure)
+    # create difference table
+    diff = create_difference_table(df1, df2, groupby='weighted_deciles',
+                                   income_measure='expanded_income',
+                                   tax_to_diff='iitax')
+    # compare implied (difference in dist) stats and actual diff stats
+    implied_diff = dist2['iitax'] - dist1['iitax']
+    actual_diff = diff['tot_change']
+    assert np.allclose(implied_diff, actual_diff)
+    implied_diff = 100 * (dist2['aftertax_income'] /
+                          dist1['aftertax_income'] - 1.0)
+    actual_diff = diff['pc_aftertaxinc']
+    assert np.allclose(implied_diff, actual_diff)
