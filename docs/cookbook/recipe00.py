@@ -55,17 +55,16 @@ ref_diagnostic_table = create_diagnostic_table(calc2)
 # income-tax distribution for 2018 with CLP and REF results side-by-side
 # read source code at following URL for details
 # http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_distribution_table
+expinc = 'expanded_income_baseline'
+setattr(calc1.records, expinc, getattr(calc1.records, 'expanded_income'))
+setattr(calc2.records, expinc, getattr(calc1.records, 'expanded_income'))
 dist_table1 = create_distribution_table(calc1.records,
                                         groupby='weighted_deciles',
-                                        income_measure='expanded_income',
+                                        income_measure=expinc,
                                         result_type='weighted_sum')
-setattr(calc2.records, 'expanded_income_baseline',
-        getattr(calc1.records, 'expanded_income'))
-exp_inc_baseline = 'expanded_income_baseline'
 dist_table2 = create_distribution_table(calc2.records,
                                         groupby='weighted_deciles',
-                                        # so can compare the two dist tables:
-                                        income_measure=exp_inc_baseline,
+                                        income_measure=expinc,
                                         result_type='weighted_sum')
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
