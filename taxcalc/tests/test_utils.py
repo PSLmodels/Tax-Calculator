@@ -328,8 +328,8 @@ def test_create_tables(cps_subsample):
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
-    setattr(calc2.records, 'expanded_income_baseline',
-            getattr(calc1.records, 'expanded_income'))
+    calc2.add_records_variable('expanded_income_baseline',
+                               calc1, 'expanded_income')
     dist = create_distribution_table(calc2.records,
                                      groupby='webapp_income_bins',
                                      income_measure='expanded_income_baseline',
