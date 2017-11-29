@@ -18,7 +18,7 @@ calc1.calc_all()
 itax_rev1 = calc1.weighted_total('iitax')
 
 # read JSON reform file and use (the default) static analysis assumptions
-reform_filename = './ingredients/raise_stdded_and_rates.json'
+reform_filename = './ingredients/raise_rates_and_stdded.json'
 params = Calculator.read_json_param_objects(reform=reform_filename,
                                             assump=None)
 
@@ -55,18 +55,24 @@ ref_diagnostic_table = create_diagnostic_table(calc2)
 # income-tax distribution for 2018 with CLP and REF results side-by-side
 # read source code at following URL for details
 # http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_distribution_table
-expincbase = 'expanded_income_baseline'
-calc1.add_records_variable(expincbase, calc1, 'expanded_income')
-calc2.add_records_variable(expincbase, calc1, 'expanded_income')
 dist_table1 = create_distribution_table(calc1,
                                         groupby='weighted_deciles',
-                                        income_measure=expincbase,
-                                        result_type='weighted_sum')
-dist_table2 = create_distribution_table(calc2,
-                                        groupby='weighted_deciles',
-                                        income_measure=expincbase,
+                                        income_measure='expanded_income',
                                         result_type='weighted_sum')
 assert isinstance(dist_table1, pd.DataFrame)
+import numpy
+if numpy.allclose(calc2.records.expanded_income,
+                  calc1.records.expanded_income):
+    print("******** EXPANDED_INCOME IS SAME ********\n")
+    income_measure = 'expanded_income'
+else:
+    print("******** EXPANDED_INCOME DIFFERS ********\n")
+    income_measure = 'expanded_income_baseline'
+    calc2.add_records_variable(income_measure, calc1, 'expanded_income')
+dist_table2 = create_distribution_table(calc2,
+                                        groupby='weighted_deciles',
+                                        income_measure=income_measure,
+                                        result_type='weighted_sum')
 assert isinstance(dist_table2, pd.DataFrame)
 dist_extract = pd.DataFrame()
 dist_extract['funits(#m)'] = dist_table1['s006'] * 1e-6
