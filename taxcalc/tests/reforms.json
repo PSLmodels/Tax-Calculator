@@ -603,5 +603,28 @@
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,-16.5,-16.5,-16.4,-16.5"
+  },
+      "61": {
+      "start_year": 2017,
+      "value": {"_CTC_new_c": [1000],
+                "_CTC_new_rt": [0.153],
+                "_CTC_new_refund_limited": [true],
+                "_CTC_new_refund_limit_payroll_rt": [1]},
+      "name": "CTC new with 15.3% phase in and refund limit to OASDI",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-66.2,-66.4,-66.8,-67.0"
+  }, 
+      "62": {
+      "start_year": 2017,
+      "value": {"_CTC_new_c": [1000],
+                "_CTC_new_rt": [0.153],
+                "_CTC_new_refund_limited": [true],
+                "_CTC_new_refund_limit_payroll_rt": [1],
+                "_CTC_new_refund_limited_all_payroll": [true]},
+      "name": "CTC new with 15.3% phase in and refund limit to all payroll taxes",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-67.5,-67.7,-68.0,-68.1"
   }
 }

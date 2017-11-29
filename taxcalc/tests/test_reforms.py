@@ -100,7 +100,7 @@ def fixture_reforms_dict(tests_path):
     return json.loads(rjson)
 
 
-NUM_REFORMS = 60
+NUM_REFORMS = 62
 
 
 @pytest.mark.requires_pufcsv

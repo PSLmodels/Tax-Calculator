@@ -4313,6 +4313,28 @@
         "out_of_range_action": "stop"
     },
 
+    "_CTC_new_refund_limited_all_payroll": {
+        "long_name": "New child tax credit refund limit applies to all FICA taxes, not just OASDI",
+        "description": "Specifies whether the new child tax credit refund limit rate (_CTC_new_refund_limit_payroll_rt) applies to all FICA taxes (true) or just OASDI taxes (false).",
+        "section_1": "Refundable Credits",
+        "section_2": "New Refundable Child Tax Credit",
+        "irs_ref": "",
+        "notes": "If the new CTC is limited, set this parameter to true to limit the refundability to all FICA taxes or false to limit refundabiity to OASDI taxes.",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_FST_AGI_trt": {
         "long_name": "New minimum tax; rate as a decimal fraction of AGI",
         "description": "Individual income taxes and the employee share of payroll taxes are credited against this minimum tax, so the surtax is the difference between the tax rate times AGI and the credited taxes. The new minimum tax is similar to the Fair Share Tax, except that no credits are exempted from the base.",
