@@ -195,9 +195,8 @@ class Calculator(object):
         """
         Return pandas DataFrame containing the listed Records variables.
         """
-        pdf = pd.DataFrame()
-        for varname in variable_list:
-            pdf[varname] = getattr(self.records, varname)
+        arrays = [getattr(self.records, vname) for vname in variable_list]
+        pdf = pd.DataFrame(data=np.column_stack(arrays), columns=variable_list)
         return pdf
 
     def add_records_variable(self, dst_name, src_calc, src_name):
