@@ -150,6 +150,32 @@ def weighted_sum(pdf, col_name):
     return (pdf[col_name] * pdf['s006']).zsum()
 
 
+def results(obj, cols=None):
+    """
+    Get cols results from object and organize them into a table.
+
+    Parameters
+    ----------
+    obj : any object with array-like attributes named as in STATS_COLUMNS list
+          Examples include a Tax-Calculator Records object and a
+          Pandas DataFrame object
+
+    cols : list of object results columns to put into table
+           if None, the use STATS_COLUMNS as cols list
+
+    Returns
+    -------
+    table : Pandas DataFrame object
+    """
+    if cols is None:
+        columns = STATS_COLUMNS
+    else:
+        columns = cols
+    arrays = [getattr(obj, name) for name in columns]
+    table = pd.DataFrame(data=np.column_stack(arrays), columns=columns)
+    return table
+
+
 def add_quantile_bins(pdf, income_measure, num_bins,
                       weight_by_income_measure=False, labels=None):
     """
@@ -226,18 +252,6 @@ def add_income_bins(pdf, income_measure,
     return pdf
 
 
-def weighted(pdf, col_names):
-    """
-    Return Pandas DataFrame in which each pdf column variable has been
-    multiplied by the s006 weight variable in the specified Pandas DataFrame.
-    """
-    agg = pdf
-    for colname in col_names:
-        if not colname.startswith('s006'):
-            agg[colname] = pdf[colname] * pdf['s006']
-    return agg
-
-
 def get_sums(pdf):
     """
     Compute unweighted sum of items in each column of Pandas DataFrame, pdf.
@@ -251,32 +265,6 @@ def get_sums(pdf):
         if col != 'bins':
             sums[col] = pdf[col].zsum()
     return pd.Series(sums, name='sums')
-
-
-def results(obj, cols=None):
-    """
-    Get cols results from object and organize them into a table.
-
-    Parameters
-    ----------
-    obj : any object with array-like attributes named as in STATS_COLUMNS list
-          Examples include a Tax-Calculator Records object and a
-          Pandas DataFrame object
-
-    cols : list of object results columns to put into table
-           if None, the use STATS_COLUMNS as cols list
-
-    Returns
-    -------
-    table : Pandas DataFrame object
-    """
-    if cols is None:
-        columns = STATS_COLUMNS
-    else:
-        columns = cols
-    arrays = [getattr(obj, name) for name in columns]
-    tbl = pd.DataFrame(data=np.column_stack(arrays), columns=columns)
-    return tbl
 
 
 def create_distribution_table(obj, groupby, income_measure, result_type):
@@ -346,6 +334,19 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         # weight of returns with positive Alternative Minimum Tax (AMT)
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
+
+    # nested function that weights the variables
+    def weighted(pdf, col_names):
+        """
+        Return Pandas DataFrame in which each pdf column variable has been
+        multiplied by s006 weight variable in the specified Pandas DataFrame.
+        """
+        agg = pdf
+        for colname in col_names:
+            if not colname.startswith('s006'):
+                agg[colname] = pdf[colname] * pdf['s006']
+        return agg
+
     # main logic of create_distribution_table
     if result_type != 'weighted_sum' and result_type != 'weighted_avg':
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
