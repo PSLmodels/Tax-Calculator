@@ -334,6 +334,23 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         # weight of returns with positive Alternative Minimum Tax (AMT)
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
+
+    # nested function that specifies calculated columns
+    def stat_dataframe(gpdf):
+        """
+        Nested function that returns statistics DataFrame derived from the
+        specified grouped Dataframe object, gpdf.
+        """
+        sdf = pd.DataFrame()
+        unweighted_columns = set(['s006', 'num_returns_StandardDed',
+                                  'num_returns_ItemDed', 'num_returns_AMT'])
+        for col in unweighted_columns:
+            sdf[col] = gpdf.apply(unweighted_sum, col)
+        weighted_columns = set(DIST_TABLE_COLUMNS) - unweighted_columns
+        for col in weighted_columns:
+            sdf[col] = gpdf.apply(weighted_sum, col)
+        return sdf
+
     # main logic of create_distribution_table
     if result_type != 'weighted_sum' and result_type != 'weighted_avg':
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
@@ -353,29 +370,23 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        pdfu = add_quantile_bins(res, income_measure, 10)
+        pdf = add_quantile_bins(res, income_measure, 10)
     elif groupby == 'webapp_income_bins':
-        pdfu = add_income_bins(res, income_measure, bin_type='webapp')
+        pdf = add_income_bins(res, income_measure, bin_type='webapp')
     elif groupby == 'large_income_bins':
-        pdfu = add_income_bins(res, income_measure, bin_type='tpc')
+        pdf = add_income_bins(res, income_measure, bin_type='tpc')
     elif groupby == 'small_income_bins':
-        pdfu = add_income_bins(res, income_measure, bin_type='soi')
+        pdf = add_income_bins(res, income_measure, bin_type='soi')
     else:
         msg = ("groupby must be either 'weighted_deciles' or "
                "'webapp_income_bins' or 'large_income_bins' or "
                "'small_income_bins'")
         raise ValueError(msg)
     # construct weighted_sum table
-    # ... weight pdfu variables
-    pdf = pdfu
-    for colname in STATS_COLUMNS:
-        if colname != 's006':
-            pdf[colname] = pdfu[colname] * pdfu['s006']
-    # ... construct bin results
     gpdf = pdf.groupby('bins', as_index=False)
-    dist_table = gpdf[DIST_TABLE_COLUMNS].sum()
-    # ... append sum row
-    row = get_sums(pdf)[DIST_TABLE_COLUMNS]
+    dist_table = stat_dataframe(gpdf)
+    # append sum row
+    row = get_sums(dist_table)[dist_table.columns]
     dist_table = dist_table.append(row)
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
@@ -387,11 +398,9 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
                             value=[1, 1, 1, 1], inplace=True)
         pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
         gpdf = pdf.groupby('bins', as_index=False)
-        rows = gpdf[DIST_TABLE_COLUMNS].sum()
+        rows = stat_dataframe(gpdf)
         dist_table = dist_table.append(rows, ignore_index=True)
-    # remove bins column from dist_table
-    dist_table.drop('bins', axis=1, inplace=True)
-    # construct weighted_avg table
+    # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
             if col != 's006':
