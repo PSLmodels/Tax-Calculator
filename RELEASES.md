@@ -11,7 +11,7 @@ for a complete commit history.
 
 **API Changes**
 - Change first argument(s) passed to `create_distribution_table` and `create_difference_table` utility functions
-  [[#1712](https://github.com/open-source-economics/Tax-Calculator/pull/1712)
+  [[#1708](https://github.com/open-source-economics/Tax-Calculator/pull/1708)
   by Martin Holmer]
 
 **New Features**
