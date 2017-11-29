@@ -58,11 +58,11 @@ ref_diagnostic_table = create_diagnostic_table(calc2)
 expinc = 'expanded_income_baseline'
 setattr(calc1.records, expinc, getattr(calc1.records, 'expanded_income'))
 setattr(calc2.records, expinc, getattr(calc1.records, 'expanded_income'))
-dist_table1 = create_distribution_table(calc1.records,
+dist_table1 = create_distribution_table(calc1,
                                         groupby='weighted_deciles',
                                         income_measure=expinc,
                                         result_type='weighted_sum')
-dist_table2 = create_distribution_table(calc2.records,
+dist_table2 = create_distribution_table(calc2,
                                         groupby='weighted_deciles',
                                         income_measure=expinc,
                                         result_type='weighted_sum')
@@ -78,7 +78,7 @@ dist_extract['aftertax_inc2($b)'] = dist_table2['aftertax_income'] * 1e-9
 # income-tax difference table extract for 2018 by expanded-income decile
 # read source code at following URL for details
 # http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_difference_table
-diff_table = create_difference_table(calc1.records, calc2.records,
+diff_table = create_difference_table(calc1, calc2,
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
