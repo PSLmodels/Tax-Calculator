@@ -4,6 +4,25 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2017-12-?? Release 0.14.0
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Change first argument(s) passed to `create_distribution_table` and `create_difference_table` utility functions
+  [[#1708](https://github.com/open-source-economics/Tax-Calculator/pull/1708)
+  by Martin Holmer]
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Fix Behavior.response method to handle very high marginal tax rates
+  [[#1698](https://github.com/open-source-economics/Tax-Calculator/pull/1698)
+  by Martin Holmer, reported by Richard Evans and Jason DeBacker]
+
+
 2017-11-17 Release 0.13.2
 -------------------------
 (last merged pull request is
