@@ -75,7 +75,7 @@ def test_create_tables(cps_subsample):
 
     # test creating various difference tables
 
-    diff = create_difference_table(calc1.records, calc2.records,
+    diff = create_difference_table(calc1, calc2,
                                    groupby='large_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
@@ -94,7 +94,7 @@ def test_create_tables(cps_subsample):
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
-    diff = create_difference_table(calc1.records, calc2.records,
+    diff = create_difference_table(calc1, calc2,
                                    groupby='webapp_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
@@ -115,7 +115,7 @@ def test_create_tables(cps_subsample):
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
-    diff = create_difference_table(calc1.records, calc2.records,
+    diff = create_difference_table(calc1, calc2,
                                    groupby='small_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
@@ -143,7 +143,7 @@ def test_create_tables(cps_subsample):
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
-    diff = create_difference_table(calc1.records, calc2.records,
+    diff = create_difference_table(calc1, calc2,
                                    groupby='weighted_deciles',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
@@ -214,14 +214,14 @@ def test_create_tables(cps_subsample):
                        atol=0.005, rtol=0.0, equal_nan=True)
 
     with pytest.raises(ValueError):
-        create_difference_table(calc1.records, calc2.records,
+        create_difference_table(calc1, calc2,
                                 groupby='bad_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
 
     # test creating various distribution tables
 
-    dist = create_distribution_table(calc2.records,
+    dist = create_distribution_table(calc2,
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -292,7 +292,7 @@ def test_create_tables(cps_subsample):
     assert np.allclose(dist['aftertax_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
-    dist = create_distribution_table(calc2.records,
+    dist = create_distribution_table(calc2,
                                      groupby='webapp_income_bins',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -330,20 +330,20 @@ def test_create_tables(cps_subsample):
 
     setattr(calc2.records, 'expanded_income_baseline',
             getattr(calc1.records, 'expanded_income'))
-    dist = create_distribution_table(calc2.records,
+    dist = create_distribution_table(calc2,
                                      groupby='webapp_income_bins',
                                      income_measure='expanded_income_baseline',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
 
     with pytest.raises(ValueError):
-        create_distribution_table(calc2.records,
+        create_distribution_table(calc2,
                                   groupby='small_income_bins',
                                   income_measure='expanded_income',
                                   result_type='bad_result_type')
 
     with pytest.raises(ValueError):
-        create_distribution_table(calc2.records,
+        create_distribution_table(calc2,
                                   groupby='bad_bins',
                                   income_measure='expanded_income',
                                   result_type='weighted_sum')
@@ -674,16 +674,16 @@ def test_dist_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
-    tb1 = create_distribution_table(calc.records,
+    tb1 = create_distribution_table(calc,
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
-    tb2 = create_distribution_table(calc.records,
+    tb2 = create_distribution_table(calc,
                                     groupby='large_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
     assert np.allclose(tb1[-1:], tb2[-1:])
-    tb3 = create_distribution_table(calc.records,
+    tb3 = create_distribution_table(calc,
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_avg')
@@ -702,11 +702,11 @@ def test_diff_table_sum_row(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
     # create two difference tables and compare their content
-    tdiff1 = create_difference_table(calc1.records, calc2.records,
+    tdiff1 = create_difference_table(calc1, calc2,
                                      groupby='small_income_bins',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
-    tdiff2 = create_difference_table(calc1.records, calc2.records,
+    tdiff2 = create_difference_table(calc1, calc2,
                                      groupby='large_income_bins',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
