@@ -221,7 +221,7 @@ def test_create_tables(cps_subsample):
 
     # test creating various distribution tables
 
-    dist = create_distribution_table(calc2,
+    dist = create_distribution_table(calc2.dataframe(STATS_COLUMNS),
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
