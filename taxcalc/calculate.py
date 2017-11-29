@@ -200,6 +200,17 @@ class Calculator(object):
             pdf[varname] = getattr(self.records, varname)
         return pdf
 
+    def add_records_variable(self, dst_name, src_calc, src_name):
+        """
+        Add new variable with name dst_name to this Calculator object's
+        embedded Records object with the new variable being the variable with
+        the src_name in the embedded Records object of the src_calc object.
+        """
+        assert getattr(self.records, dst_name, None) is None
+        assert isinstance(src_calc, Calculator)
+        assert getattr(src_calc.records, src_name, None) is not None
+        setattr(self.records, dst_name, getattr(src_calc.records, src_name))
+
     @property
     def current_year(self):
         """
