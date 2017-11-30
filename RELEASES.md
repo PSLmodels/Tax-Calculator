@@ -34,6 +34,9 @@ for a complete commit history.
 - Fix Behavior.response method to handle very high marginal tax rates
   [[#1698](https://github.com/open-source-economics/Tax-Calculator/pull/1698)
   by Martin Holmer, reported by Richard Evans and Jason DeBacker]
+- Fix `create_distribution_table` to generate correct details on top decile
+  [[#1712](https://github.com/open-source-economics/Tax-Calculator/pull/1712)
+  by Martin Holmer]
 
 
 2017-11-17 Release 0.13.2
