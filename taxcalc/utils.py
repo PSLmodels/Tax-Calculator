@@ -150,32 +150,6 @@ def weighted_sum(pdf, col_name):
     return (pdf[col_name] * pdf['s006']).zsum()
 
 
-def results(obj, cols=None):
-    """
-    Get cols results from object and organize them into a table.
-
-    Parameters
-    ----------
-    obj : any object with array-like attributes named as in STATS_COLUMNS list
-          Examples include a Tax-Calculator Records object and a
-          Pandas DataFrame object
-
-    cols : list of object results columns to put into table
-           if None, the use STATS_COLUMNS as cols list
-
-    Returns
-    -------
-    table : Pandas DataFrame object
-    """
-    if cols is None:
-        columns = STATS_COLUMNS
-    else:
-        columns = cols
-    arrays = [getattr(obj, name) for name in columns]
-    table = pd.DataFrame(data=np.column_stack(arrays), columns=columns)
-    return table
-
-
 def add_quantile_bins(pdf, income_measure, num_bins,
                       weight_by_income_measure=False, labels=None):
     """
@@ -359,14 +333,14 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
             income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
             income_measure == 'c00100_baseline')
-    if income_measure not in STATS_COLUMNS:
+    if income_measure in STATS_COLUMNS:
+        columns = STATS_COLUMNS
+    else:
         columns = STATS_COLUMNS + [income_measure]
-    else:
-        columns = None
     if isinstance(obj, pd.DataFrame):
-        res = results(obj, cols=columns)
+        res = copy.deepcopy(obj)
     else:
-        res = results(obj.records, cols=columns)
+        res = obj.dataframe(columns)
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
@@ -410,17 +384,17 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     return dist_table
 
 
-def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
+def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different res, construct tax difference results,
+    Get results from two different obj, construct tax difference results,
     and return the difference statistics as a table.
 
     Parameters
     ----------
-    res1 : baseline object is either a Tax-Calculator Calculator object or
+    obj1 : baseline object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
-    res2 : reform object is either a Tax-Calculator Calculator object or
+    obj2 : reform object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
     groupby : String object
@@ -530,13 +504,16 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             diffs = diffs.append(sdf, ignore_index=True)
         return diffs
     # main logic of create_difference_table
-    is_dframe1 = isinstance(res1, pd.DataFrame)
-    is_dframe2 = isinstance(res2, pd.DataFrame)
+    is_dframe1 = isinstance(obj1, pd.DataFrame)
+    is_dframe2 = isinstance(obj2, pd.DataFrame)
     assert is_dframe1 == is_dframe2
-    if not is_dframe1:
-        assert res1.current_year == res2.current_year
-        res1 = results(res1.records)
-        res2 = results(res2.records)
+    if is_dframe1:
+        res1 = copy.deepcopy(obj1)
+        res2 = copy.deepcopy(obj2)
+    else:
+        assert obj1.current_year == obj2.current_year
+        res1 = obj1.dataframe(STATS_COLUMNS)
+        res2 = obj2.dataframe(STATS_COLUMNS)
     assert income_measure == 'expanded_income' or income_measure == 'c00100'
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]

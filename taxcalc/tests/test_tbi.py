@@ -6,8 +6,7 @@ import pandas as pd
 import pytest
 from taxcalc.tbi.tbi_utils import *
 from taxcalc.tbi import *
-from taxcalc import (Policy, Records, Calculator,
-                     multiyear_diagnostic_table, results)
+from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
 USER_MODS = {
