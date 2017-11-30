@@ -230,7 +230,7 @@ class TaxCalcIO(object):
             msg = msg.format(tax_year, pol.end_year)
             self.errmsg += 'ERROR: {}\n'.format(msg)
         # any errors imply cannot proceed with calculations
-        if len(self.errmsg) > 0:
+        if self.errmsg:
             return
         # set policy to tax_year
         pol.set_year(tax_year)
@@ -337,7 +337,7 @@ class TaxCalcIO(object):
         """
         # pylint: disable=too-many-arguments,too-many-branches
         # in order to use print(), pylint: disable=superfluous-parens
-        if len(self.calc.policy.reform_warnings) > 0:
+        if self.calc.policy.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):   (read documentation)\n{}{}'
             print(warn.format(self.calc.policy.reform_warnings,
                               'CONTINUING WITH CALCULATIONS...'))

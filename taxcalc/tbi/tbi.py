@@ -24,7 +24,7 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    summary,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
-from taxcalc import (results, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
+from taxcalc import (STATS_COLUMNS, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      DECILE_ROW_NAMES, WEBBIN_ROW_NAMES,
                      proportional_change_in_gdp, Growdiff, Growfactors, Policy)
 
@@ -96,8 +96,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                      behavior_allowed=True)
 
     # extract raw results from calc1 and calc2
-    rawres1 = results(calc1.records)
-    rawres2 = results(calc2.records)
+    rawres1 = calc1.dataframe(STATS_COLUMNS)
+    rawres2 = calc2.dataframe(STATS_COLUMNS)
 
     # seed random number generator with a seed value based on user_mods
     seed = random_seed(user_mods)
@@ -177,7 +177,7 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
 
     # calculate gdp_effect
     fyear = check_years_return_first_year(year_n, start_year, use_puf_not_cps)
-    if (start_year + year_n) > fyear:
+    if year_n > 0 and (start_year + year_n) > fyear:
         # create calc1 and calc2 calculated for year_n - 1
         (calc1, calc2, _) = calculate((year_n - 1), start_year,
                                       use_puf_not_cps,
@@ -200,5 +200,4 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
                                             num_decimals=5)
         gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
         return gdp_elast_total
-    else:
-        return gdp_effect
+    return gdp_effect

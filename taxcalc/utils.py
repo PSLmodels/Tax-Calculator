@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import bokeh.io as bio
 import bokeh.plotting as bp
+from bokeh.models import PrintfTickFormatter
 from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count_gt_zero,
                                weighted_count, weighted_mean,
@@ -107,7 +108,7 @@ DIFF_TABLE_LABELS = ['All Tax Units',
 DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
                     'all',
-                    '90-95', '95-99', '99-100']
+                    '90-95', '95-99', 'Top 1%']
 
 WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
                       199999, 499999, 1000000, 9e99]
@@ -125,18 +126,28 @@ SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      1999999, 4999999, 9999999, 9e99]
 
 
+def zsum(self):
+    """
+    pandas 0.21.0 changes sum() behavior so that the result of applying sum
+    over an empty Series is NaN.  Since we apply the sum() function over
+    grouped DataFrames that may contain an empty Series, it makes more sense
+    for us to have a sum() function that returns zero instead of NaN.
+    """
+    return self.sum() if self.size > 0 else 0
+
+
 def unweighted_sum(pdf, col_name):
     """
     Return unweighted sum of Pandas DataFrame col_name items.
     """
-    return pdf[col_name].sum()
+    return pdf[col_name].zsum()
 
 
 def weighted_sum(pdf, col_name):
     """
     Return weighted sum of Pandas DataFrame col_name items.
     """
-    return (pdf[col_name] * pdf['s006']).sum()
+    return (pdf[col_name] * pdf['s006']).zsum()
 
 
 def add_quantile_bins(pdf, income_measure, num_bins,
@@ -215,18 +226,6 @@ def add_income_bins(pdf, income_measure,
     return pdf
 
 
-def weighted(pdf, col_names):
-    """
-    Return Pandas DataFrame in which each pdf column variable has been
-    multiplied by the s006 weight variable in the specified Pandas DataFrame.
-    """
-    agg = pdf
-    for colname in col_names:
-        if not colname.startswith('s006'):
-            agg[colname] = pdf[colname] * pdf['s006']
-    return agg
-
-
 def get_sums(pdf):
     """
     Compute unweighted sum of items in each column of Pandas DataFrame, pdf.
@@ -238,34 +237,8 @@ def get_sums(pdf):
     sums = dict()
     for col in pdf.columns.values.tolist():
         if col != 'bins':
-            sums[col] = pdf[col].sum()
+            sums[col] = pdf[col].zsum()
     return pd.Series(sums, name='sums')
-
-
-def results(obj, cols=None):
-    """
-    Get cols results from object and organize them into a table.
-
-    Parameters
-    ----------
-    obj : any object with array-like attributes named as in STATS_COLUMNS list
-          Examples include a Tax-Calculator Records object and a
-          Pandas DataFrame object
-
-    cols : list of object results columns to put into table
-           if None, the use STATS_COLUMNS as cols list
-
-    Returns
-    -------
-    table : Pandas DataFrame object
-    """
-    if cols is None:
-        columns = STATS_COLUMNS
-    else:
-        columns = cols
-    arrays = [getattr(obj, name) for name in columns]
-    tbl = pd.DataFrame(data=np.column_stack(arrays), columns=columns)
-    return tbl
 
 
 def create_distribution_table(obj, groupby, income_measure, result_type):
@@ -276,7 +249,7 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     Parameters
     ----------
     obj : any object with array-like attributes named as in STATS_COLUMNS list
-        Examples include a Tax-Calculator Records object and a
+        Examples include a Tax-Calculator Calculator object and a
         Pandas DataFrame object.
 
     groupby : String object
@@ -315,6 +288,7 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     followed by a sums row with the top-decile detail in an additional three
     rows following the sums row
     """
+    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     # nested function that specifies calculated columns
     def add_columns(pdf):
         """
@@ -334,6 +308,23 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         # weight of returns with positive Alternative Minimum Tax (AMT)
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
+
+    # nested function that specifies calculated columns
+    def stat_dataframe(gpdf):
+        """
+        Nested function that returns statistics DataFrame derived from the
+        specified grouped Dataframe object, gpdf.
+        """
+        sdf = pd.DataFrame()
+        unweighted_columns = set(['s006', 'num_returns_StandardDed',
+                                  'num_returns_ItemDed', 'num_returns_AMT'])
+        for col in unweighted_columns:
+            sdf[col] = gpdf.apply(unweighted_sum, col)
+        weighted_columns = set(DIST_TABLE_COLUMNS) - unweighted_columns
+        for col in weighted_columns:
+            sdf[col] = gpdf.apply(weighted_sum, col)
+        return sdf
+
     # main logic of create_distribution_table
     if result_type != 'weighted_sum' and result_type != 'weighted_avg':
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
@@ -342,11 +333,14 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
             income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
             income_measure == 'c00100_baseline')
-    if income_measure not in STATS_COLUMNS:
-        columns = STATS_COLUMNS + [income_measure]
+    if income_measure in STATS_COLUMNS:
+        columns = STATS_COLUMNS
     else:
-        columns = None
-    res = results(obj, cols=columns)
+        columns = STATS_COLUMNS + [income_measure]
+    if isinstance(obj, pd.DataFrame):
+        res = copy.deepcopy(obj)
+    else:
+        res = obj.dataframe(columns)
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
@@ -362,32 +356,25 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
                "'webapp_income_bins' or 'large_income_bins' or "
                "'small_income_bins'")
         raise ValueError(msg)
-    # construct weighted_sum table for all result_type values
-    # ... construct bin results
-    pdf = weighted(pdf, STATS_COLUMNS)
+    # construct weighted_sum table
     gpdf = pdf.groupby('bins', as_index=False)
-    dist_table = gpdf[DIST_TABLE_COLUMNS].sum()
-    dist_table.drop('bins', axis=1, inplace=True)
-    # ... append sum row
-    row = get_sums(pdf)[DIST_TABLE_COLUMNS]
+    dist_table = stat_dataframe(gpdf)
+    # append sum row
+    row = get_sums(dist_table)[dist_table.columns]
     dist_table = dist_table.append(row)
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
         pdf = gpdf.get_group(10)  # top decile as its own DataFrame
         pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
+        pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
+                            value=[0, 0, 0, 0, 0], inplace=True)
+        pdf['bins'].replace(to_replace=[6, 7, 8, 9],
+                            value=[1, 1, 1, 1], inplace=True)
+        pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
         gpdf = pdf.groupby('bins', as_index=False)
-        sums = gpdf[DIST_TABLE_COLUMNS].sum()
-        sums.drop('bins', axis=1, inplace=True)
-        # tablulate 90-95 quantile detail group
-        row = sums.iloc[[0, 1, 2, 3, 4]].sum()
-        dist_table = dist_table.append(row, ignore_index=True)
-        # tablulate 95-99 quantile detail group
-        row = sums.iloc[[5, 6, 7, 8]].sum()
-        dist_table = dist_table.append(row, ignore_index=True)
-        # extract top percentile detail group
-        row = sums.iloc[9]
-        dist_table = dist_table.append(row, ignore_index=True)
-    # construct weighted_avg table
+        rows = stat_dataframe(gpdf)
+        dist_table = dist_table.append(rows, ignore_index=True)
+    # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
             if col != 's006':
@@ -397,17 +384,17 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     return dist_table
 
 
-def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
+def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different res, construct tax difference results,
+    Get results from two different obj, construct tax difference results,
     and return the difference statistics as a table.
 
     Parameters
     ----------
-    res1 : baseline object is either a Tax-Calculator Records object or
+    obj1 : baseline object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
-    res2 : reform object is either a Tax-Calculator Records object or
+    obj2 : reform object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
     groupby : String object
@@ -467,16 +454,13 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             sdf['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
             sdf['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
             sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-            wtotal = (res2['tax_diff'] * res2['s006']).sum()
+            wtotal = (res2['tax_diff'] * res2['s006']).zsum()
             sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                                 'tax_diff', wtotal)
-            sdf['perc_aftertax'] = gpdf.apply(weighted_mean, 'perc_aftertax')
-            sdf['pc_aftertaxinc'] = gpdf.apply(weighted_mean, 'pc_aftertaxinc')
-            # convert some columns to percentages
-            percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
-                               'perc_aftertax', 'pc_aftertaxinc']
-            for col in percent_columns:
-                sdf[col] *= 100.0
+            res2['afinc1'] = res1['aftertax_income']
+            res2['afinc2'] = res2['aftertax_income']
+            sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
+            sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
             return sdf
         # main logic of diff_table_stats function
         # add bin column to res2 given specified groupby and income_measure
@@ -497,15 +481,15 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
         diffs_without_sums = stat_dataframe(gpdf)
-        # calculate sum row
+        # calculate sum row (with explicit calculation of mean statistic)
         row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
+        row['mean'] = row['tot_change'] / row['count']
         diffs = diffs_without_sums.append(row)
         # specify some column sum elements to be np.nan and another to be 100
-        non_sum_cols = [c for c in diffs.columns
-                        if 'mean' in c or 'perc' in c or 'pc_' in c]
+        non_sum_cols = [c for c in diffs.columns if 'perc_' in c]
         for col in non_sum_cols:
             diffs.loc['sums', col] = np.nan
-        diffs.loc['sums', 'share_of_change'] = 100.0  # to avoid rounding error
+        diffs.loc['sums', 'share_of_change'] = 1.0  # to avoid rounding error
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
@@ -520,21 +504,33 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             diffs = diffs.append(sdf, ignore_index=True)
         return diffs
     # main logic of create_difference_table
-    isdf1 = isinstance(res1, pd.DataFrame)
-    isdf2 = isinstance(res2, pd.DataFrame)
-    assert isdf1 == isdf2
-    if not isdf1:
-        assert res1.current_year == res2.current_year
-        res1 = results(res1)
-        res2 = results(res2)
+    is_dframe1 = isinstance(obj1, pd.DataFrame)
+    is_dframe2 = isinstance(obj2, pd.DataFrame)
+    assert is_dframe1 == is_dframe2
+    if is_dframe1:
+        res1 = copy.deepcopy(obj1)
+        res2 = copy.deepcopy(obj2)
+    else:
+        assert obj1.current_year == obj2.current_year
+        res1 = obj1.dataframe(STATS_COLUMNS)
+        res2 = obj2.dataframe(STATS_COLUMNS)
     assert income_measure == 'expanded_income' or income_measure == 'c00100'
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
-    res2['perc_aftertax'] = res2['tax_diff'] / res1['aftertax_income']
-    res2['pc_aftertaxinc'] = ((res2['aftertax_income'] /
-                               res1['aftertax_income']) - 1.0)
+    res2['atinc1'] = res1['aftertax_income']
+    res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
+    diffs['perc_aftertax'] = diffs['tot_change'] / diffs['atinc1']
+    diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
+    # delete intermediate atinc1 and atinc2 columns
+    del diffs['atinc1']
+    del diffs['atinc2']
+    # convert some columns to percentages
+    percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
+                       'perc_aftertax', 'pc_aftertaxinc']
+    for col in percent_columns:
+        diffs[col] *= 100.0
     # set print display format for float table elements
     pd.options.display.float_format = '{:10,.2f}'.format
     return diffs
@@ -1153,8 +1149,7 @@ def isoelastic_utility_function(consumption, crra, cmin):
     if consumption >= cmin:
         if crra == 1.0:
             return math.log(consumption)
-        else:
-            return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
+        return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
     else:  # if consumption < cmin
         if crra == 1.0:
             tu_at_cmin = math.log(cmin)
@@ -1219,11 +1214,9 @@ def certainty_equivalent(exputil, crra, cmin):
     if exputil >= tu_at_cmin:
         if crra == 1.0:
             return math.exp(exputil)
-        else:
-            return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
-    else:
-        mu_at_cmin = math.pow(cmin, -crra)
-        return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
+        return math.pow((exputil * (1.0 - crra)), (1.0 / (1.0 - crra)))
+    mu_at_cmin = math.pow(cmin, -crra)
+    return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
 
 
 def ce_aftertax_income(calc1, calc2,
@@ -1382,3 +1375,160 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     bsest['cilo'] = stat[int(round(alpha * num_samples)) - 1]
     bsest['cihi'] = stat[int(round((1 - alpha) * num_samples)) - 1]
     return bsest
+
+
+def dec_graph_data(calc1, calc2):
+    """
+    Prepare data needed by dec_graph_plot utility function.
+
+    Parameters
+    ----------
+    calc1 : a Calculator object that refers to baseline policy
+
+    calc2 : a Calculator object that refers to reform policy
+
+    Returns
+    -------
+    dictionary object suitable for passing to dec_graph_plot utility function
+    """
+    # check that two calculator objects have the same current_year
+    if calc1.current_year == calc2.current_year:
+        year = calc1.current_year
+    else:
+        msg = 'calc1.current_year={} != calc2.current_year={}'
+        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
+    # create difference table from the two Calculator objects
+    calc1.calc_all()
+    calc2.calc_all()
+    diff_table = create_difference_table(calc1, calc2,
+                                         groupby='weighted_deciles',
+                                         income_measure='expanded_income',
+                                         tax_to_diff='combined')
+    # construct dictionary containing the bar data required by dec_graph_plot
+    bars = dict()
+    for idx in range(0, 14):  # the ten income deciles, all, plus top details
+        info = dict()
+        info['label'] = DECILE_ROW_NAMES[idx]
+        info['value'] = diff_table['pc_aftertaxinc'][idx]
+        if info['label'] == 'all':
+            info['label'] = '---------'
+            info['value'] = 0
+        bars[idx] = info
+    # construct dictionary containing bar data and auto-generated labels
+    data = dict()
+    data['bars'] = bars
+    xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
+    data['xlabel'] = xlabel
+    ylabel = 'Expanded Income Percentile Group'
+    data['ylabel'] = ylabel
+    title_str = 'Change in After-Tax Income by Income Percentile Group'
+    data['title'] = '{} for {}'.format(title_str, year)
+    return data
+
+
+def dec_graph_plot(data,
+                   width=850,
+                   height=500,
+                   xlabel='',
+                   ylabel='',
+                   title=''):
+    """
+    Plot stacked decile graph using data returned from dec_graph_data function.
+
+    Parameters
+    ----------
+    data : dictionary object returned from dec_graph_data() utility function
+
+    width : integer
+        width of plot expressed in pixels
+
+    height : integer
+        height of plot expressed in pixels
+
+    xlabel : string
+        x-axis label; if '', then use label generated by dec_graph_data
+
+    ylabel : string
+        y-axis label; if '', then use label generated by dec_graph_data
+
+    title : string
+        graph title; if '', then use title generated by dec_graph_data
+
+    Returns
+    -------
+    bokeh.plotting figure object containing a raster graphics plot
+
+    Notes
+    -----
+    USAGE EXAMPLE::
+
+      gdata = dec_graph_data(calc1, calc2)
+      gplot = dec_graph_plot(gdata)
+
+    THEN when working interactively in a Python notebook::
+
+      bp.show(gplot)
+
+    OR when executing script using Python command-line interpreter::
+
+      bio.output_file('graph-name.html', title='Change in After-Tax Income')
+      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
+
+    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
+
+    To convert the visualized graph into a PNG-formatted file, click on
+    the "Save" icon on the Toolbar (located in the top-right corner of
+    the visualized graph) and a PNG-formatted file will written to your
+    Download directory.
+
+    The ONLY output option the bokeh.plotting figure has is HTML format,
+    which (as described above) can be converted into a PNG-formatted
+    raster graphics file.  There is no option to make the bokeh.plotting
+    figure generate a vector graphics file such as an EPS file.
+    """
+    # pylint: disable=too-many-arguments,too-many-locals
+    if title == '':
+        title = data['title']
+    bar_keys = sorted(data['bars'].keys())
+    bar_labels = [data['bars'][key]['label'] for key in bar_keys]
+    fig = bp.figure(plot_width=width, plot_height=height, title=title,
+                    y_range=bar_labels)
+    fig.title.text_font_size = '12pt'
+    fig.outline_line_color = None
+    fig.axis.axis_line_color = None
+    fig.axis.minor_tick_line_color = None
+    fig.axis.axis_label_text_font_size = '12pt'
+    fig.axis.axis_label_text_font_style = 'normal'
+    fig.axis.major_label_text_font_size = '12pt'
+    if xlabel == '':
+        xlabel = data['xlabel']
+    fig.xaxis.axis_label = xlabel
+    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+d%%')
+    if ylabel == '':
+        ylabel = data['ylabel']
+    fig.yaxis.axis_label = ylabel
+    fig.ygrid.grid_line_color = None
+    # plot thick x-axis grid line at zero
+    fig.line(x=[0, 0], y=[0, 14], line_width=1, line_color='black')
+    # plot bars
+    barheight = 0.8
+    bcolor = 'blue'
+    yidx = 0
+    for idx in bar_keys:
+        bval = data['bars'][idx]['value']
+        blabel = data['bars'][idx]['label']
+        bheight = barheight
+        if blabel == '90-95':
+            bheight *= 0.5
+            bcolor = 'red'
+        elif blabel == '95-99':
+            bheight *= 0.4
+        elif blabel == 'Top 1%':
+            bheight *= 0.1
+        fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
+                 y=(yidx + 0.5),   # y-coordinate of center of the rectangle
+                 width=abs(bval),  # width of the rectangle
+                 height=bheight,   # height of the rectangle
+                 color=bcolor)
+        yidx += 1
+    return fig

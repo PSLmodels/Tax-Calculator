@@ -6,8 +6,7 @@ import pandas as pd
 import pytest
 from taxcalc.tbi.tbi_utils import *
 from taxcalc.tbi import *
-from taxcalc import (Policy, Records, Calculator,
-                     multiyear_diagnostic_table, results)
+from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
 
 
 USER_MODS = {
@@ -33,7 +32,7 @@ USER_MODS = {
 @pytest.mark.parametrize('start_year, year_n',
                          [(2000, 0),
                           (2013, -1),
-                          (2017, 10)])
+                          (2018, 10)])
 def test_check_years_errors(start_year, year_n):
     with pytest.raises(ValueError):
         check_years_return_first_year(year_n, start_year, use_puf_not_cps=True)
@@ -126,7 +125,19 @@ def test_run_gdp_elast_model_1(resdict):
 def test_run_gdp_elast_model_2():
     usermods = USER_MODS
     usermods['behavior'] = dict()
-    res = run_nth_year_gdp_elast_model(0, 2014,  # forces no automatic zero
+    res = run_nth_year_gdp_elast_model(0, 2014,  # forces automatic zero
+                                       use_puf_not_cps=False,
+                                       use_full_sample=False,
+                                       user_mods=usermods,
+                                       gdp_elasticity=0.36,
+                                       return_dict=False)
+    assert res == 0.0
+
+
+def test_run_gdp_qelast_model_3():
+    usermods = USER_MODS
+    usermods['behavior'] = dict()
+    res = run_nth_year_gdp_elast_model(0, 2017,  # forces automatic zero
                                        use_puf_not_cps=False,
                                        use_full_sample=False,
                                        user_mods=usermods,

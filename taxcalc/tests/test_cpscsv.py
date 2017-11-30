@@ -15,9 +15,11 @@ Read tax-calculator/TESTING.md for details.
 import os
 import sys
 import json
+import numpy as np
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
+from taxcalc import Growfactors
 
 
 def line_diff_list(actline, expline, small):
@@ -65,7 +67,7 @@ def test_agg(tests_path):
     """
     Test current-law aggregate taxes using cps.csv file.
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-statements,too-many-locals
     nyrs = 10
     # create a Policy object (clp) containing current-law policy parameters
     clp = Policy()
@@ -73,8 +75,10 @@ def test_agg(tests_path):
     rec = Records.cps_constructor()
     # create a Calculator object using clp policy and cps records
     calc = Calculator(policy=clp, records=rec)
+    calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = multiyear_diagnostic_table(calc, nyrs)
+    taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt to a string with a trailing EOL character
     actual_results = adt.to_string() + '\n'
     act = actual_results.splitlines(True)
@@ -89,17 +93,17 @@ def test_agg(tests_path):
     if sys.version_info.major == 2:
         small = epsilon  # tighter test for Python 2.7
     else:
-        small = 0.1 + epsilon  # looser test for Python 3.x
+        small = 0.1 + epsilon  # looser test for Python 3.6
     diff_lines = list()
     assert len(act) == len(exp)
     for actline, expline in zip(act, exp):
         if actline == expline:
             continue
         diffs = line_diff_list(actline, expline, small)
-        if len(diffs) > 0:
+        if diffs:
             diff_lines.extend(diffs)
     # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
+    if diff_lines:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(actual_results)
@@ -113,6 +117,44 @@ def test_agg(tests_path):
         for line in diff_lines:
             msg += line
         msg += '-------------------------------------------------\n'
+        raise ValueError(msg)
+    # create aggregate diagnostic table using unweighted sub-sample of records
+    cps_filepath = os.path.join(tests_path, '..', 'cps.csv.gz')
+    fullsample = pd.read_csv(cps_filepath)
+    rn_seed = 180  # to ensure sub-sample is always the same
+    subfrac = 0.03  # sub-sample fraction
+    subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
+    rec_subsample = Records(data=subsample,
+                            gfactors=Growfactors(),
+                            weights=Records.CPS_WEIGHTS_FILENAME,
+                            adjust_ratios=Records.CPS_RATIOS_FILENAME,
+                            start_year=Records.CPSCSV_YEAR)
+    calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
+    adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
+    # compare combined tax liability from full and sub samples for each year
+    taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
+    reltol = 0.01  # maximum allowed relative difference in tax liability
+    # TODO: skip first year because of BUG in cps_weights.csv file
+    taxes_subsample = taxes_subsample[1:]  # TODO: eliminate code
+    taxes_fullsample = taxes_fullsample[1:]  # TODO: eliminate code
+    if not np.allclose(taxes_subsample, taxes_fullsample,
+                       atol=0.0, rtol=reltol):
+        msg = 'CPSCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'
+        msg += 'WHEN subfrac={:.3f}, rtol={:.4f}, seed={}\n'.format(subfrac,
+                                                                    reltol,
+                                                                    rn_seed)
+        it_sub = np.nditer(taxes_subsample, flags=['f_index'])
+        it_all = np.nditer(taxes_fullsample, flags=['f_index'])
+        while not it_sub.finished:
+            cyr = it_sub.index + calc_start_year
+            tax_sub = float(it_sub[0])
+            tax_all = float(it_all[0])
+            reldiff = abs(tax_sub - tax_all) / abs(tax_all)
+            if reldiff > reltol:
+                msgstr = ' year,sub,full,reldiff= {}\t{:.2f}\t{:.2f}\t{:.4f}\n'
+                msg += msgstr.format(cyr, tax_sub, tax_all, reldiff)
+            it_sub.iternext()
+            it_all.iternext()
         raise ValueError(msg)
 
 

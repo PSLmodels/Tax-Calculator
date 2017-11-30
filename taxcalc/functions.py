@@ -1,5 +1,11 @@
 """
 Tax-Calculator functions that calculate payroll and individual income taxes.
+
+Note: the cpi_offset policy parameter is the only policy parameter
+that does not appear here; it is used in the policy.py file to
+possibly adjust the price inflation rate used to index policy
+parameters (as would be done in a reform that introduces chained-CPI
+indexing).
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 functions.py
@@ -688,16 +694,22 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, c04800):
+def TaxInc(c00100, standard, c04470, c04600, c04800,
+           PT_exclusion_rt, PT_exclusion_wage_limit, e00900,
+           e26270, e00200):
     """
     TaxInc function: ...
     """
-    c04800 = max(0., c00100 - max(c04470, standard) - c04600)
+    pt_exclusion = max(0., PT_exclusion_rt * (e00900 + e26270))
+    if e26270 > 0.:
+        pt_exclusion = min(pt_exclusion, e00200 * PT_exclusion_wage_limit)
+    c04800 = max(0., c00100 - max(c04470, standard) - c04600 -
+                 pt_exclusion)
     return c04800
 
 
 @jit(nopython=True)
-def SchXYZ(taxable_income, MARS, e00900, e26270,
+def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
            PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
            PT_rt6, PT_rt7, PT_rt8,
            PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
@@ -705,30 +717,45 @@ def SchXYZ(taxable_income, MARS, e00900, e26270,
            II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
            II_rt6, II_rt7, II_rt8,
            II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-           II_brk6, II_brk7):
+           II_brk6, II_brk7, PT_EligibleRate_active,
+           PT_EligibleRate_passive, PT_wages_active_income,
+           PT_top_stacking):
     """
     Return Schedule X, Y, Z tax amount for specified taxable_income.
     """
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
-    pt_taxinc = max(0., e00900 + e26270)  # non-negative pass-through income
+    # define pass-through income eligible for PT schedule
+    pt_passive = PT_EligibleRate_passive * (e02000 - e26270)
+    pt_active_gross = e00900 + e26270
+    if (pt_active_gross > 0) and PT_wages_active_income:
+        pt_active_gross = pt_active_gross + e00200
+    pt_active = PT_EligibleRate_active * pt_active_gross
+    pt_active = min(pt_active, e00900 + e26270)
+    pt_taxinc = max(0., pt_passive + pt_active)
     if pt_taxinc >= taxable_income:
         pt_taxinc = taxable_income
         reg_taxinc = 0.
     else:
         # pt_taxinc is unchanged
         reg_taxinc = taxable_income - pt_taxinc
-    # compute Schedule X,Y,Z tax using the two components of taxable income,
-    # stacking pass-through taxable income on top of regular taxable income
+    # determine stacking order
+    if PT_top_stacking:
+        reg_tbase = 0.
+        pt_tbase = reg_taxinc
+    else:
+        reg_tbase = pt_taxinc
+        pt_tbase = 0.
+    # compute Schedule X,Y,Z tax using the two components of taxable income
     if reg_taxinc > 0.:
-        reg_tax = Taxes(reg_taxinc, MARS, 0.0,
+        reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
                         II_rt1, II_rt2, II_rt3, II_rt4,
                         II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                         II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
     else:
         reg_tax = 0.
     if pt_taxinc > 0.:
-        pt_tax = Taxes(pt_taxinc, MARS, reg_taxinc,
+        pt_tax = Taxes(pt_taxinc, MARS, pt_tbase,
                        PT_rt1, PT_rt2, PT_rt3, PT_rt4,
                        PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
                        PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
@@ -738,7 +765,7 @@ def SchXYZ(taxable_income, MARS, e00900, e26270,
 
 
 @iterate_jit(nopython=True)
-def SchXYZTax(c04800, MARS, e00900, e26270,
+def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
               PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
               PT_rt6, PT_rt7, PT_rt8,
               PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
@@ -746,12 +773,13 @@ def SchXYZTax(c04800, MARS, e00900, e26270,
               II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
               II_rt6, II_rt7, II_rt8,
               II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-              II_brk6, II_brk7,
-              c05200):
+              II_brk6, II_brk7, PT_EligibleRate_active,
+              PT_EligibleRate_passive, PT_wages_active_income,
+              PT_top_stacking, c05200):
     """
     SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
     """
-    c05200 = SchXYZ(c04800, MARS, e00900, e26270,
+    c05200 = SchXYZ(c04800, MARS, e00900, e26270, e02000, e00200,
                     PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
                     PT_rt6, PT_rt7, PT_rt8,
                     PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
@@ -759,18 +787,21 @@ def SchXYZTax(c04800, MARS, e00900, e26270,
                     II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                     II_rt6, II_rt7, II_rt8,
                     II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                    II_brk6, II_brk7)
+                    II_brk6, II_brk7, PT_EligibleRate_active,
+                    PT_EligibleRate_passive, PT_wages_active_income,
+                    PT_top_stacking)
     return c05200
 
 
 @iterate_jit(nopython=True)
-def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
-             e24515, e24518, MARS, c04800, c05200, e00900, e26270,
+def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
+             e24515, e24518, MARS, c04800, c05200, e00900, e26270, e02000,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
              II_brk1, II_brk2, II_brk3, II_brk4, II_brk5, II_brk6, II_brk7,
              PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5, PT_rt6, PT_rt7, PT_rt8,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
-             CG_nodiff,
+             CG_nodiff, PT_EligibleRate_active, PT_EligibleRate_passive,
+             PT_wages_active_income, PT_top_stacking,
              CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
              dwks10, dwks13, dwks14, dwks19, c05700, taxbc):
     """
@@ -841,7 +872,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
         dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
         dwks40 = dwks1 - dwks39
         dwks41 = 0.28 * dwks40
-        dwks42 = SchXYZ(dwks19, MARS, e00900, e26270,
+        dwks42 = SchXYZ(dwks19, MARS, e00900, e26270, e02000, e00200,
                         PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
                         PT_rt6, PT_rt7, PT_rt8,
                         PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
@@ -849,7 +880,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990,
                         II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
                         II_rt6, II_rt7, II_rt8,
                         II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                        II_brk6, II_brk7)
+                        II_brk6, II_brk7, PT_EligibleRate_active,
+                        PT_EligibleRate_passive, PT_wages_active_income,
+                        PT_top_stacking)
         dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
                   lowest_rate_tax + highest_rate_incremental_tax)
         dwks44 = c05200
@@ -1099,7 +1132,8 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 def ChildTaxCredit(n24, MARS, c00100, exact,
                    CTC_c, CTC_ps, CTC_prt, prectc, nu05,
                    CTC_c_under5_bonus, XTOT, num,
-                   DependentCredit_c, dep_credit):
+                   DependentCredit_Child_c, DependentCredit_Nonchild_c,
+                   DependentCredit_c, FilerCredit_c, dep_credit):
     """
     ChildTaxCredit function computes prectc amount and dependent credit
     """
@@ -1112,7 +1146,10 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
     # calculate and phase-out dependent credit
-    dep_credit = DependentCredit_c * max(0, XTOT - num)
+    dep_credit = (DependentCredit_c * max(0, XTOT - num) +
+                  DependentCredit_Child_c * n24 +
+                  DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
+                  FilerCredit_c[MARS - 1])
     if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
         thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
         excess = c00100 - thresh
@@ -1336,7 +1373,8 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc,
                          c07180, c07200, c07220, c07230, c07240,
-                         c07260, c07300, c07400, c07600, c08000):
+                         c07260, c07300, c07400, c07600, c08000,
+                         DependentCredit_before_CTC):
     """
     NonRefundableCredits function sequentially limits credits to tax liability
 
@@ -1363,6 +1401,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Retirement savings credit - Form 8880
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
+    if DependentCredit_before_CTC:
+        # Dependent credit
+        dep_credit = min(dep_credit, avail)
+        avail = avail - dep_credit
     # Child tax credit
     c07220 = min(prectc, avail)
     avail = avail - c07220
@@ -1378,9 +1420,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Schedule R credit
     c07200 = min(c07200, avail)
     avail = avail - c07200
-    # Dependent credit
-    dep_credit = min(dep_credit, avail)
-    avail = avail - dep_credit
+    if not DependentCredit_before_CTC:
+        # Dependent credit
+        dep_credit = min(dep_credit, avail)
+        avail = avail - dep_credit
     # Other credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
@@ -1437,9 +1480,9 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
     # Part II of 2005 Form 8812
-    if n24 > 0 and n24 <= 2 and c82890 > 0:
+    if n24 > 0 and n24 < ACTC_ChildNum and c82890 > 0:
         c82940 = min(c82890, c82935)
-    if n24 > 2:
+    if n24 >= ACTC_ChildNum:
         if c82890 >= c82935:
             c82940 = c82935
         else:
@@ -1474,7 +1517,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
-            ctc_new):
+            ctc_new, CTC_new_refund_limited_all_payroll, payrolltax):
     """
     Compute new refundable child tax credit with numeric parameters
     """
@@ -1490,7 +1533,10 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             ctc_new = min(ctc_new, ctc_new_reduced)
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
-            limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
+            if not CTC_new_refund_limited_all_payroll:
+                limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
+            if CTC_new_refund_limited_all_payroll:
+                limit_new = CTC_new_refund_limit_payroll_rt * payrolltax
             limited_new = max(0., refund_new - limit_new)
             ctc_new = max(0., ctc_new - limited_new)
     else:
@@ -1702,7 +1748,7 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
     # compute expanded income as AGI plus several additional amounts
-    expanded_income = (c00100 +  # adjusted gross income
+    expanded_income = (c00100 +  # adjusted gross income, AGI
                        c02900_in_ei +  # ajustments to AGI
                        e00400 +  # non-taxable interest income
                        invinc_agi_ec +  # AGI-excluded taxable invest income

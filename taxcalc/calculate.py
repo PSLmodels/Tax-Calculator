@@ -13,6 +13,7 @@ import re
 import copy
 import six
 import numpy as np
+import pandas as pd
 from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                DependentCare, ALD_InvInc_ec_base, CapGains,
@@ -122,7 +123,7 @@ class Calculator(object):
             if verbose:
                 print('You loaded data for ' +
                       str(self.records.data_year) + '.')
-                if len(self.records.IGNORED_VARS) > 0:
+                if self.records.IGNORED_VARS:
                     print('Your data include the following unused ' +
                           'variables that will be ignored:')
                     for var in self.records.IGNORED_VARS:
@@ -136,23 +137,9 @@ class Calculator(object):
                       str(self.records.current_year) + '.')
         assert self.policy.current_year == self.records.current_year
 
-    def calc_all(self, zero_out_calc_vars=False):
-        """
-        Call all tax-calculation functions.
-        """
-        # conducts static analysis of Calculator object for current_year
-        assert self.records.current_year == self.policy.current_year
-        self._calc_one_year(zero_out_calc_vars)
-        BenefitSurtax(self)
-        BenefitLimitation(self)
-        FairShareTax(self.policy, self.records)
-        LumpSumTax(self.policy, self.records)
-        ExpandIncome(self.policy, self.records)
-        AfterTaxIncome(self.policy, self.records)
-
     def increment_year(self):
         """
-        Advance all objects to next year.
+        Advance all embedded objects to next year.
         """
         next_year = self.policy.current_year + 1
         self.records.increment_year()
@@ -173,6 +160,55 @@ class Calculator(object):
         for _ in range(iteration):
             self.increment_year()
         assert self.records.current_year == year
+
+    def calc_all(self, zero_out_calc_vars=False):
+        """
+        Call all tax-calculation functions for the current_year.
+        """
+        # conducts static analysis of Calculator object for current_year
+        assert self.records.current_year == self.policy.current_year
+        self._calc_one_year(zero_out_calc_vars)
+        BenefitSurtax(self)
+        BenefitLimitation(self)
+        FairShareTax(self.policy, self.records)
+        LumpSumTax(self.policy, self.records)
+        ExpandIncome(self.policy, self.records)
+        AfterTaxIncome(self.policy, self.records)
+
+    def weighted_total(self, variable_name):
+        """
+        Return all-filing-unit weighted total of named Records variable.
+        """
+        variable = getattr(self.records, variable_name)
+        weight = getattr(self.records, 's006')
+        return (variable * weight).sum()
+
+    def total_weight(self):
+        """
+        Return all-filing-unit total of sampling weights.
+        NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
+        """
+        weight = getattr(self.records, 's006')
+        return weight.sum()
+
+    def dataframe(self, variable_list):
+        """
+        Return pandas DataFrame containing the listed Records variables.
+        """
+        arrays = [getattr(self.records, vname) for vname in variable_list]
+        pdf = pd.DataFrame(data=np.column_stack(arrays), columns=variable_list)
+        return pdf
+
+    def add_records_variable(self, dst_name, src_calc, src_name):
+        """
+        Add new variable with name dst_name to this Calculator object's
+        embedded Records object with the new variable being the variable with
+        the src_name in the embedded Records object of the src_calc object.
+        """
+        assert getattr(self.records, dst_name, None) is None
+        assert isinstance(src_calc, Calculator)
+        assert getattr(src_calc.records, src_name, None) is not None
+        setattr(self.records, dst_name, getattr(src_calc.records, src_name))
 
     @property
     def current_year(self):
@@ -245,9 +281,9 @@ class Calculator(object):
 
         Returns
         -------
-        mtr_payrolltax: an array of marginal payroll tax rates.
-        mtr_incometax: an array of marginal individual income tax rates.
-        mtr_combined: an array of marginal combined tax rates, which is
+        mtr_payrolltax: a numpy array of marginal payroll tax rates.
+        mtr_incometax: a numpy array of marginal individual income tax rates.
+        mtr_combined: a numpy array of marginal combined tax rates, which is
                       the sum of mtr_payrolltax and mtr_incometax.
 
         Notes
@@ -498,13 +534,13 @@ class Calculator(object):
                 first_line = True
                 line_list = list()
                 words = text.split()
-                while len(words) > 0:
+                while words:
                     if first_line:
                         line = ''
                         first_line = False
                     else:
                         line = ' ' * num_indent_spaces
-                    while (len(words) > 0 and
+                    while (words and
                            (len(words[0]) + len(line)) < max_line_length):
                         line += words.pop(0) + ' '
                     line = line[:-1] + '\n'
@@ -588,16 +624,16 @@ class Calculator(object):
         doc = 'REFORM DOCUMENTATION\n'
         doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
         years = sorted(params['growdiff_baseline'].keys())
-        if len(years) == 0:
-            doc += 'none: using default baseline growth assumptions\n'
-        else:
+        if years:
             doc += param_doc(years, params['growdiff_baseline'], gdb)
+        else:
+            doc += 'none: using default baseline growth assumptions\n'
         doc += 'Policy Reform Parameter Values by Year:\n'
         years = sorted(params['policy'].keys())
-        if len(years) == 0:
-            doc += 'none: using current-law policy parameters\n'
-        else:
+        if years:
             doc += param_doc(years, params['policy'], clp)
+        else:
+            doc += 'none: using current-law policy parameters\n'
         return doc
 
     # ----- begin private methods of Calculator class -----

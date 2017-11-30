@@ -5,6 +5,7 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 # pep8 --ignore=E402 behavior.py
 # pylint --disable=locally-disabled behavior.py
 
+from __future__ import print_function
 import copy
 import numpy as np
 from taxcalc.policy import Policy
@@ -108,7 +109,7 @@ class Behavior(ParametersBase):
         return False
 
     @staticmethod
-    def response(calc_x, calc_y):
+    def response(calc_x, calc_y, trace=False):
         """
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
@@ -145,6 +146,27 @@ class Behavior(ParametersBase):
           rate elasticity of -0.792.
         """
         # pylint: disable=too-many-statements,too-many-locals,too-many-branches
+
+        # nested function used only in response
+        def trace_output(varname, variable, histbins, pweight, dweight):
+            """
+            Print trace output for specified variable.
+            """
+            print('*** TRACE for variable {}'.format(varname))
+            hist = np.histogram(variable, bins=histbins)
+            print('*** Histogram:')
+            print(hist[0])
+            print(hist[1])
+            if pweight.sum() != 0:
+                out = '*** Person-weighted mean= {:.2f}'
+                mean = (variable * pweight).sum() / pweight.sum()
+                print(out.format(mean))
+            if dweight.sum() != 0:
+                out = '*** Dollar-weighted mean= {:.2f}'
+                mean = (variable * dweight).sum() / dweight.sum()
+                print(out.format(mean))
+
+        # begin main logic of response
         assert calc_x.records.dim == calc_y.records.dim
         assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
@@ -162,13 +184,29 @@ class Behavior(ParametersBase):
                 sub = np.zeros(calc_x.records.dim)
             else:
                 # proportional change in marginal net-of-tax rates on earnings
-                pch = ((1. - wage_mtr_y) / (1. - wage_mtr_x)) - 1.
+                nearone = 0.999999
+                mtr_x = np.where(wage_mtr_x > nearone, nearone, wage_mtr_x)
+                mtr_y = np.where(wage_mtr_y > nearone, nearone, wage_mtr_y)
+                pch = ((1. - mtr_y) / (1. - mtr_x)) - 1.
                 if calc_y.behavior.BE_subinc_wrt_earnings:
                     # Note: e00200 is filing unit's wages+salaries
                     sub = calc_y.behavior.BE_sub * pch * calc_x.records.e00200
                 else:
                     # Note: c04800 is filing unit's taxable income
                     sub = calc_y.behavior.BE_sub * pch * calc_x.records.c04800
+                    if trace:
+                        trace_output('pch', pch,
+                                     [-9e99, -1.00, -0.50, -0.20, -0.10,
+                                      -0.00001, 0.00001,
+                                      0.10, 0.20, 0.50, 1.00, 9e99],
+                                     calc_x.records.s006,
+                                     calc_x.records.c04800)
+                        trace_output('sub', sub,
+                                     [-9e99, -1e3,
+                                      -0.1, 0.1,
+                                      1e3, 1e4, 1e5, 1e6, 9e99],
+                                     calc_x.records.s006,
+                                     np.zeros(calc_x.records.dim))
             # calculate magnitude of income effect
             if calc_y.behavior.BE_inc == 0.0:
                 inc = np.zeros(calc_x.records.dim)

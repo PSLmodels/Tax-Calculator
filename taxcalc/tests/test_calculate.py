@@ -297,6 +297,11 @@ def test_calculator_using_nonstd_input(rawinputfile):
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == RAWINPUTFILE_YEAR
     calc.calc_all()
+    assert calc.weighted_total('e00200') == 0
+    assert calc.total_weight() == 0
+    varlist = ['RECID', 'MARS']
+    pdf = calc.dataframe(varlist)
+    assert pdf.shape == (RAWINPUTFILE_FUNITS, len(varlist))
     exp_iitax = np.zeros((nonstd.dim,))
     assert np.allclose(calc.records.iitax, exp_iitax)
     mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)
@@ -637,9 +642,9 @@ def test_translate_json_reform_suffixes_mars_indexed():
     rdict1 = pdict1['policy']
     json2 = """{"policy": {
       "_STD": {"2016": [[16000.00, 12600.00, 6300.00,  9300.00, 12600.00]],
-               "2017": [[16524.80, 13013.28, 6506.64,  9605.04, 17000.00]],
-               "2018": [[18000.00, 13432.31, 6716.15,  9914.32, 17547.40]],
-               "2019": [[18592.20, 13874.23, 6937.11, 10240.50, 19000.00]]},
+               "2017": [[16363.20, 12886.02, 6443.01,  9511.11, 17000.00]],
+               "2018": [[18000.00, 13304.82, 6652.41,  9820.22, 17552.50]],
+               "2019": [[18583.20, 13735.90, 6867.95,  10138.4, 19000.00]]},
       "_II_em": {"2020": [20000], "2015": [15000]}
     }}"""
     pdict2 = Calculator.read_json_param_objects(reform=json2,
