@@ -3,6 +3,19 @@ TAX-CALCULATOR RELEASE HISTORY
 Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
+2017-12-XX Release 0.XX.X
+-------------------------
+(last merged pull request is
+[#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
+
+**API Changes**
+
+**New Features**
+- Add new policy parameter for refunding New CTC against all payroll taxes
+  [[#1716](https://github.com/open-source-economics/Tax-Calculator/pull/1716)
+  by Matt Jensen as suggested by Ernie Tedeschi]
+
+**Bug Fixes**
 
 2017-11-17 Release 0.13.2
 -------------------------
