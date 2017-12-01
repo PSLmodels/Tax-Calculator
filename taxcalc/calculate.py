@@ -32,8 +32,8 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
-from taxcalc.utils import (DIST_VARIABLES,
-                           create_distribution_table)
+from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
+                           DIFF_VARIABLES, create_difference_table)
 # import pdb
 
 
@@ -282,6 +282,51 @@ class Calculator(object):
                                             income_measure=imeasure,
                                             result_type=result_type)
         return dt1, dt2
+
+    def difference_table(self, calc,
+                         groupby='weighted_deciles',
+                         income_measure='expanded_income',
+                         tax_to_diff='combined'):
+        """
+        Get results from self and calc, sort them based on groupby using
+        income_measure, and return tax-difference table as a Pandas dataframe.
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline
+
+        groupby : String object
+            options for input: 'weighted_deciles', 'webapp_income_bins',
+                               'large_income_bins', 'small_income_bins';
+            determines how the columns in returned tables are sorted
+        NOTE: when groupby is 'weighted_deciles', the returned table has three
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent).
+
+        income_measure : String object
+            options for input: 'expanded_income' or 'c00100'(AGI)
+
+        tax_to_diff : String object
+            options for input: 'iitax', 'payrolltax', 'combined'
+            specifies which tax to difference
+
+        Typical usage
+        -------------
+        diff = calc1.difference_table(calc2)
+        (where calc1 is a baseline Calculator object
+        and calc2 is a reform Calculator object)
+        """
+        assert isinstance(calc, Calculator)
+        assert self.current_year == calc.current_year
+        diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
+                                       calc.dataframe(DIFF_VARIABLES),
+                                       groupby=groupby,
+                                       income_measure=income_measure,
+                                       tax_to_diff=tax_to_diff)
+        return diff
 
     @property
     def current_year(self):
