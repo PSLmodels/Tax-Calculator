@@ -1,3 +1,6 @@
+"""
+Specify what is available to import from the taxcalc package.
+"""
 from taxcalc.calculate import *
 from taxcalc.policy import *
 from taxcalc.behavior import *

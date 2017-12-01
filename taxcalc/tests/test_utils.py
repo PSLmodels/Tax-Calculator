@@ -292,7 +292,7 @@ def test_create_tables(cps_subsample):
     assert np.allclose(dist['aftertax_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
-    dist = create_distribution_table(calc2,
+    dist = create_distribution_table(calc2.dataframe(STATS_COLUMNS),
                                      groupby='webapp_income_bins',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -327,26 +327,6 @@ def test_create_tables(cps_subsample):
                 583832]
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
                        atol=0.5, rtol=0.0)
-
-    calc2.add_records_variable('expanded_income_baseline',
-                               calc1, 'expanded_income')
-    dist = create_distribution_table(calc2,
-                                     groupby='webapp_income_bins',
-                                     income_measure='expanded_income_baseline',
-                                     result_type='weighted_sum')
-    assert isinstance(dist, pd.DataFrame)
-
-    with pytest.raises(ValueError):
-        create_distribution_table(calc2,
-                                  groupby='small_income_bins',
-                                  income_measure='expanded_income',
-                                  result_type='bad_result_type')
-
-    with pytest.raises(ValueError):
-        create_distribution_table(calc2,
-                                  groupby='bad_bins',
-                                  income_measure='expanded_income',
-                                  result_type='weighted_sum')
 
 
 def test_diff_count_precision():
@@ -674,16 +654,16 @@ def test_dist_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
-    tb1 = create_distribution_table(calc,
+    tb1 = create_distribution_table(calc.dataframe(STATS_COLUMNS),
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
-    tb2 = create_distribution_table(calc,
+    tb2 = create_distribution_table(calc.dataframe(STATS_COLUMNS),
                                     groupby='large_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
     assert np.allclose(tb1[-1:], tb2[-1:])
-    tb3 = create_distribution_table(calc,
+    tb3 = create_distribution_table(calc.dataframe(STATS_COLUMNS),
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_avg')

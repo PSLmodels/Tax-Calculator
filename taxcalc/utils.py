@@ -1,5 +1,5 @@
 """
-PUBLIC utility functions for Tax-Calculator.
+PUBLIC low-level utility functions for Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 utils.py
@@ -241,16 +241,16 @@ def get_sums(pdf):
     return pd.Series(sums, name='sums')
 
 
-def create_distribution_table(obj, groupby, income_measure, result_type):
+def create_distribution_table(vdf, groupby, income_measure, result_type):
     """
-    Get results from object, sort them based on groupby using income_measure,
+    Get results from vdf, sort them based on groupby using income_measure,
     manipulate them based on result_type, and return them as a table.
 
     Parameters
     ----------
-    obj : any object with array-like attributes named as in STATS_COLUMNS list
-        Examples include a Tax-Calculator Calculator object and a
-        Pandas DataFrame object.
+    vdf : Pandas DataFrame including columns named as in STATS_COLUMNS list
+        for example, object returned from Calculator dataframe method in a
+        call like this: vdf = calc.dataframe(STATS_COLUMNS)
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
@@ -326,21 +326,19 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         return sdf
 
     # main logic of create_distribution_table
-    if result_type != 'weighted_sum' and result_type != 'weighted_avg':
-        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
-        raise ValueError(msg)
+    assert isinstance(vdf, pd.DataFrame)
+    assert (groupby == 'weighted_deciles' or
+            groupby == 'webapp_income_bins' or
+            groupby == 'large_income_bins' or
+            groupby == 'small_income_bins')
+    assert result_type == 'weighted_sum' or result_type == 'weighted_avg'
     assert (income_measure == 'expanded_income' or
             income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
             income_measure == 'c00100_baseline')
-    if income_measure in STATS_COLUMNS:
-        columns = STATS_COLUMNS
-    else:
-        columns = STATS_COLUMNS + [income_measure]
-    if isinstance(obj, pd.DataFrame):
-        res = copy.deepcopy(obj)
-    else:
-        res = obj.dataframe(columns)
+    assert income_measure in vdf
+    # copy vdf and add variable columns
+    res = copy.deepcopy(vdf)
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
@@ -351,11 +349,6 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         pdf = add_income_bins(res, income_measure, bin_type='tpc')
     elif groupby == 'small_income_bins':
         pdf = add_income_bins(res, income_measure, bin_type='soi')
-    else:
-        msg = ("groupby must be either 'weighted_deciles' or "
-               "'webapp_income_bins' or 'large_income_bins' or "
-               "'small_income_bins'")
-        raise ValueError(msg)
     # construct weighted_sum table
     gpdf = pdf.groupby('bins', as_index=False)
     dist_table = stat_dataframe(gpdf)

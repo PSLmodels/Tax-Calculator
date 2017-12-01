@@ -195,20 +195,8 @@ class Calculator(object):
         """
         Return pandas DataFrame containing the listed Records variables.
         """
-        arrays = [getattr(self.records, vname) for vname in variable_list]
-        pdf = pd.DataFrame(data=np.column_stack(arrays), columns=variable_list)
-        return pdf
-
-    def add_records_variable(self, dst_name, src_calc, src_name):
-        """
-        Add new variable with name dst_name to this Calculator object's
-        embedded Records object with the new variable being the variable with
-        the src_name in the embedded Records object of the src_calc object.
-        """
-        assert getattr(self.records, dst_name, None) is None
-        assert isinstance(src_calc, Calculator)
-        assert getattr(src_calc.records, src_name, None) is not None
-        setattr(self.records, dst_name, getattr(src_calc.records, src_name))
+        arys = [getattr(self.records, vname) for vname in variable_list]
+        return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
     @property
     def current_year(self):
