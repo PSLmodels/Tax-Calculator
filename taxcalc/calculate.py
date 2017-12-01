@@ -32,7 +32,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
-from taxcalc.utils import (STATS_COLUMNS,
+from taxcalc.utils import (DIST_VARIABLES,
                            create_distribution_table)
 # import pdb
 
@@ -263,14 +263,14 @@ class Calculator(object):
                 income_measure == 'c00100')
         assert (result_type == 'weighted_sum' or
                 result_type == 'weighted_avg')
-        dt1 = create_distribution_table(self.dataframe(STATS_COLUMNS),
+        dt1 = create_distribution_table(self.dataframe(DIST_VARIABLES),
                                         groupby=groupby,
                                         income_measure=income_measure,
                                         result_type=result_type)
         if calc is None:
             dt2 = None
         else:
-            var_dataframe = calc.dataframe(STATS_COLUMNS)
+            var_dataframe = calc.dataframe(DIST_VARIABLES)
             assert calc.current_year == self.current_year
             if have_same_income_measure(self, calc, income_measure):
                 imeasure = income_measure

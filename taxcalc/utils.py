@@ -28,14 +28,15 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                EPSILON)
 
 
-STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
-                 'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
-                 'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
-                 'payrolltax', 'combined', 's006']
-
 # Items in the DIST_TABLE_COLUMNS list below correspond to the items in the
 # DIST_TABLE_LABELS list below; this correspondence allows us to use this
 # labels list to map a label to the correct column in a distribution table.
+
+DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
+                  'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
+                  'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
+                  'payrolltax', 'combined', 's006']
+
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
                       'num_returns_StandardDed',
@@ -83,6 +84,10 @@ DIST_TABLE_LABELS = ['Returns',
 # Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
 # DIFF_TABLE_LABELS list below; this correspondence allows us to use this
 # labels list to map a label to the correct column in a difference table.
+
+DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
+                  'iitax', 'payrolltax', 'combined', 's006']
+
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
                       'perc_cut',
@@ -333,8 +338,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
             groupby == 'small_income_bins')
     assert result_type == 'weighted_sum' or result_type == 'weighted_avg'
     assert (income_measure == 'expanded_income' or
-            income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
+            income_measure == 'c00100' or
             income_measure == 'c00100_baseline')
     assert income_measure in vdf
     # copy vdf and add variable columns
@@ -377,18 +382,20 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     return dist_table
 
 
-def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
+def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different obj, construct tax difference results,
+    Get results from two different vdf, construct tax difference results,
     and return the difference statistics as a table.
 
     Parameters
     ----------
-    obj1 : baseline object is either a Tax-Calculator Calculator object or
-           a Pandas DataFrame including columns in STATS_COLUMNS list
+    vdf1 : Pandas DataFrame object including columns in the DIFF_VARIABLES
+           list drawn from a baseline Calculator object using the
+           Calculator.dataframe method
 
-    obj2 : reform object is either a Tax-Calculator Calculator object or
-           a Pandas DataFrame including columns in STATS_COLUMNS list
+    vdf2 : Pandas DataFrame object including columns in the DIFF_VARIABLES
+           list drawn from a baseline Calculator object using the
+           Calculator.dataframe method
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
@@ -455,6 +462,7 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
             sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
             sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
             return sdf
+
         # main logic of diff_table_stats function
         # add bin column to res2 given specified groupby and income_measure
         if groupby == 'weighted_deciles':
@@ -465,11 +473,6 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
             pdf = add_income_bins(res2, income_measure, bin_type='tpc')
         elif groupby == 'small_income_bins':
             pdf = add_income_bins(res2, income_measure, bin_type='soi')
-        else:
-            msg = ("groupby must be either "
-                   "'weighted_deciles' or 'webapp_income_bins' "
-                   "or 'large_income_bins' or 'small_income_bins'")
-            raise ValueError(msg)
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
@@ -497,17 +500,20 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
             diffs = diffs.append(sdf, ignore_index=True)
         return diffs
     # main logic of create_difference_table
-    is_dframe1 = isinstance(obj1, pd.DataFrame)
-    is_dframe2 = isinstance(obj2, pd.DataFrame)
-    assert is_dframe1 == is_dframe2
-    if is_dframe1:
-        res1 = copy.deepcopy(obj1)
-        res2 = copy.deepcopy(obj2)
-    else:
-        assert obj1.current_year == obj2.current_year
-        res1 = obj1.dataframe(STATS_COLUMNS)
-        res2 = obj2.dataframe(STATS_COLUMNS)
-    assert income_measure == 'expanded_income' or income_measure == 'c00100'
+    assert isinstance(vdf1, pd.DataFrame)
+    assert isinstance(vdf2, pd.DataFrame)
+    assert (groupby == 'weighted_deciles' or
+            groupby == 'webapp_income_bins' or
+            groupby == 'large_income_bins' or
+            groupby == 'small_income_bins')
+    assert (income_measure == 'expanded_income' or
+            income_measure == 'c00100')
+    assert income_measure in vdf1
+    assert (tax_to_diff == 'iitax' or
+            tax_to_diff == 'payrolltax' or
+            tax_to_diff == 'combined')
+    res1 = copy.deepcopy(vdf1)
+    res2 = copy.deepcopy(vdf2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
@@ -1370,30 +1376,25 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(calc1, calc2):
+def dec_graph_data(vdf1, vdf2, year):
     """
     Prepare data needed by dec_graph_plot utility function.
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    vdf1 : a Pandas DataFrame object that refers to baseline policy and
+           contains variable in the DIFF_VARIABLES list
 
-    calc2 : a Calculator object that refers to reform policy
+    vdf2 : a Pandas DataFrame object that refers to reform policy and
+           contains variable in the DIFF_VARIABLES list
+
+    year : calendar year from which the vdf1 and vdf2 data are drawn
 
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
     """
-    # check that two calculator objects have the same current_year
-    if calc1.current_year == calc2.current_year:
-        year = calc1.current_year
-    else:
-        msg = 'calc1.current_year={} != calc2.current_year={}'
-        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
-    # create difference table from the two Calculator objects
-    calc1.calc_all()
-    calc2.calc_all()
-    diff_table = create_difference_table(calc1, calc2,
+    diff_table = create_difference_table(vdf1, vdf2,
                                          groupby='weighted_deciles',
                                          income_measure='expanded_income',
                                          tax_to_diff='combined')
