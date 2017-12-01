@@ -859,3 +859,24 @@ def test_reform_documentation():
     if dump:
         print(doc)
         assert 1 == 2
+
+
+def test_distribution_tables(cps_subsample):
+    pol = Policy()
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=pol, records=recs)
+    assert calc1.current_year == 2014
+    calc1.calc_all()
+    dt1, dt2 = calc1.distribution_tables(None)
+    assert isinstance(dt1, pd.DataFrame)
+    assert dt2 is None
+    dt1, dt2 = calc1.distribution_tables(calc1)
+    assert isinstance(dt1, pd.DataFrame)
+    assert isinstance(dt2, pd.DataFrame)
+    reform = {2014: {'_UBI1': [1000], '_UBI2': [1000], '_UBI3': [1000]}}
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=recs)
+    calc2.calc_all()
+    dt1, dt2 = calc1.distribution_tables(calc2)
+    assert isinstance(dt1, pd.DataFrame)
+    assert isinstance(dt2, pd.DataFrame)
