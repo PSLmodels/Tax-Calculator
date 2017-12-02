@@ -3,19 +3,6 @@ TAX-CALCULATOR RELEASE HISTORY
 Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 
-2017-12-XX Release 0.XX.X
--------------------------
-(last merged pull request is
-[#XXXX](https://github.com/open-source-economics/Tax-Calculator/pull/XXXX))
-
-**API Changes**
-
-**New Features**
-- Add new policy parameter for refunding New CTC against all payroll taxes
-  [[#1716](https://github.com/open-source-economics/Tax-Calculator/pull/1716)
-  by Matt Jensen as suggested by Ernie Tedeschi]
-
-**Bug Fixes**
 
 2017-12-?? Release 0.14.0
 -------------------------
@@ -23,12 +10,14 @@ for a complete commit history.
 [#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
-- Change first argument(s) passed to `create_distribution_table` and `create_difference_table` utility functions
-  [[#1708](https://github.com/open-source-economics/Tax-Calculator/pull/1708)
+- Change arguments for the three create-table utility functions and add easier to use Calculator methods that generate results tables
+  [[#1718](https://github.com/open-source-economics/Tax-Calculator/pull/1718)
   by Martin Holmer]
 
 **New Features**
-- None
+- Add new policy parameter for refunding New CTC against all payroll taxes
+  [[#1716](https://github.com/open-source-economics/Tax-Calculator/pull/1716)
+  by Matt Jensen as suggested by Ernie Tedeschi]
 
 **Bug Fixes**
 - Fix Behavior.response method to handle very high marginal tax rates

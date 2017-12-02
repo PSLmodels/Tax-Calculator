@@ -16,7 +16,7 @@ from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
 from taxcalc.utils import (add_income_bins, add_quantile_bins,
                            create_difference_table, create_distribution_table,
-                           STATS_COLUMNS, DIST_TABLE_COLUMNS,
+                           DIST_VARIABLES, DIST_TABLE_COLUMNS,
                            WEBAPP_INCOME_BINS, read_egg_csv)
 
 
@@ -149,7 +149,7 @@ def calculate(year_n, start_year,
     assert calc1.current_year == start_year
 
     # compute mask array
-    res1 = calc1.dataframe(STATS_COLUMNS)
+    res1 = calc1.dataframe(DIST_VARIABLES)
     if use_puf_not_cps:
         # create pre-reform Calculator instance with extra income
         recs1p = Records(data=copy.deepcopy(sample),
@@ -169,7 +169,7 @@ def calculate(year_n, start_year,
         # compute mask showing which of the calc1 and calc1p results differ;
         # mask is true if a filing unit's income tax liability changed after
         # a dollar was added to the filing unit's wage and salary income
-        res1p = calc1p.dataframe(STATS_COLUMNS)
+        res1p = calc1p.dataframe(DIST_VARIABLES)
         mask = np.logical_not(  # pylint: disable=no-member
             np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
         )
@@ -347,7 +347,7 @@ def create_results_columns(df1, df2, mask):
                  'num_returns_AMT',
                  's006'])
     columns_to_create = (set(DIST_TABLE_COLUMNS) |
-                         set(STATS_COLUMNS)) - skips
+                         set(DIST_VARIABLES)) - skips
     do_fuzzing = np.any(mask)
     if do_fuzzing:
         df2['mask'] = mask

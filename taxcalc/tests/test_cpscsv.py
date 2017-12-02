@@ -18,8 +18,7 @@ import json
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
-from taxcalc import Growfactors
+from taxcalc import Policy, Records, Calculator, Growfactors
 
 
 def line_diff_list(actline, expline, small):
@@ -77,7 +76,7 @@ def test_agg(tests_path):
     calc = Calculator(policy=clp, records=rec)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = multiyear_diagnostic_table(calc, nyrs)
+    adt = calc.diagnostic_table(nyrs)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt to a string with a trailing EOL character
     actual_results = adt.to_string() + '\n'
@@ -130,7 +129,7 @@ def test_agg(tests_path):
                             adjust_ratios=Records.CPS_RATIOS_FILENAME,
                             start_year=Records.CPSCSV_YEAR)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
-    adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
+    adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
     reltol = 0.01  # maximum allowed relative difference in tax liability
