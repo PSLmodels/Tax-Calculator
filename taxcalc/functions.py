@@ -1517,7 +1517,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
-            ctc_new):
+            ctc_new, CTC_new_refund_limited_all_payroll, payrolltax):
     """
     Compute new refundable child tax credit with numeric parameters
     """
@@ -1533,7 +1533,10 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             ctc_new = min(ctc_new, ctc_new_reduced)
         if ctc_new > 0. and CTC_new_refund_limited:
             refund_new = max(0., ctc_new - c09200)
-            limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
+            if not CTC_new_refund_limited_all_payroll:
+                limit_new = CTC_new_refund_limit_payroll_rt * ptax_oasdi
+            if CTC_new_refund_limited_all_payroll:
+                limit_new = CTC_new_refund_limit_payroll_rt * payrolltax
             limited_new = max(0., refund_new - limit_new)
             ctc_new = max(0., ctc_new - limited_new)
     else:
