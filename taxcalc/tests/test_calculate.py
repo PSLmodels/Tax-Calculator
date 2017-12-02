@@ -895,3 +895,10 @@ def test_difference_table(cps_subsample):
     calc2.calc_all()
     diff = calc1.difference_table(calc2)
     assert isinstance(diff, pd.DataFrame)
+
+
+def test_diagnostic_table(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=recs)
+    adt = calc.diagnostic_table(3)
+    assert isinstance(adt, pd.DataFrame)

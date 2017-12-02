@@ -646,40 +646,6 @@ def create_diagnostic_table(vdf, year):
     return pdf
 
 
-def multiyear_diagnostic_table(calc, num_years=0):
-    """
-    Generate multi-year diagnostic table from specified Calculator object.
-    This function leaves the specified calc object unchanged.
-
-    Parameters
-    ----------
-    calc : Calculator class object
-
-    num_years : integer (must be between 1 and number of available calc years)
-
-    Returns
-    -------
-    Pandas DataFrame object containing the multi-year diagnostic table
-    """
-    if num_years < 1:
-        msg = 'num_year={} is less than one'.format(num_years)
-        raise ValueError(msg)
-    max_num_years = calc.policy.end_year - calc.policy.current_year + 1
-    if num_years > max_num_years:
-        msg = ('num_year={} is greater '
-               'than max_num_years={}').format(num_years, max_num_years)
-        raise ValueError(msg)
-    cal = copy.deepcopy(calc)
-    dtlist = list()
-    for iyr in range(1, num_years + 1):
-        cal.calc_all()
-        dtlist.append(create_diagnostic_table(cal.dataframe(DIST_VARIABLES),
-                                              cal.current_year))
-        if iyr < num_years:
-            cal.increment_year()
-    return pd.concat(dtlist, axis=1)
-
-
 def mtr_graph_data(calc1, calc2,
                    mars='ALL',
                    mtr_measure='combined',

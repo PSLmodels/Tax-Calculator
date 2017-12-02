@@ -5,7 +5,7 @@ Tax-Calculator federal tax Calculator class.
 # pep8 --ignore=E402 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
-# pylint: disable=invalid-name,no-value-for-parameter
+# pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
 import os
 import json
@@ -33,7 +33,8 @@ from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
-                           DIFF_VARIABLES, create_difference_table)
+                           DIFF_VARIABLES, create_difference_table,
+                           create_diagnostic_table)
 # import pdb
 
 
@@ -199,6 +200,36 @@ class Calculator(object):
         """
         arys = [getattr(self.records, vname) for vname in variable_list]
         return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
+
+    def diagnostic_table(self, num_years):
+        """
+        Generate multi-year diagnostic table;
+        this method leaves the Calculator object unchanged.
+
+        Parameters
+        ----------
+        num_years : Integer
+            number of years to include in diagnostic table starting
+            with the Calculator object's current_year (must be at least
+            one and no more than what would exceed Policy end_year
+
+        Returns
+        -------
+        Pandas DataFrame object containing the multi-year diagnostic table
+        """
+        assert num_years >= 1
+        max_num_years = self.policy.end_year - self.policy.current_year + 1
+        assert num_years <= max_num_years
+        calc = copy.deepcopy(self)
+        tlist = list()
+        for iyr in range(1, num_years + 1):
+            calc.calc_all()
+            diag = create_diagnostic_table(calc.dataframe(DIST_VARIABLES),
+                                           calc.current_year)
+            tlist.append(diag)
+            if iyr < num_years:
+                calc.increment_year()
+        return pd.concat(tlist, axis=1)
 
     def distribution_tables(self, calc,
                             groupby='weighted_deciles',

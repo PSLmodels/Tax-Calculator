@@ -26,7 +26,6 @@ from taxcalc.utils import (DIST_VARIABLES,
                            expanded_income_weighted,
                            weighted_perc_inc, weighted_perc_cut,
                            add_income_bins, add_quantile_bins,
-                           multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
                            dec_graph_data, dec_graph_plot,
                            xtr_graph_plot, write_graph_file,
@@ -793,67 +792,6 @@ def test_write_graph_file(cps_subsample):
             os.remove(htmlfname)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
-
-
-def test_multiyear_diagnostic_table(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    pol = Policy()
-    beh = Behavior()
-    calc = Calculator(policy=pol, records=rec, behavior=beh)
-    with pytest.raises(ValueError):
-        multiyear_diagnostic_table(calc, 0)
-    with pytest.raises(ValueError):
-        multiyear_diagnostic_table(calc, 20)
-    adt = multiyear_diagnostic_table(calc, 3)
-    assert isinstance(adt, pd.DataFrame)
-    beh.update_behavior({2013: {'_BE_sub': [0.3]}})
-    calc = Calculator(policy=pol, records=rec, behavior=beh)
-    assert calc.behavior.has_response()
-    adt = multiyear_diagnostic_table(calc, 3)
-    assert isinstance(adt, pd.DataFrame)
-
-
-def test_myr_diag_table_wo_behv(cps_subsample):
-    reform = {
-        2013: {
-            '_II_rt7': [0.33],
-            '_PT_rt7': [0.33],
-        }}
-    pol = Policy()
-    pol.implement_reform(reform)
-    calc = Calculator(policy=pol,
-                      records=Records.cps_constructor(data=cps_subsample))
-    calc.calc_all()
-    liabilities_x = (calc.records.combined *
-                     calc.records.s006).sum()
-    adt = multiyear_diagnostic_table(calc, 1)
-    # extract combined liabilities as a float and
-    # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[19].tolist()[0] * 1e9
-    assert np.allclose(liabilities_x, liabilities_y, atol=0.01, rtol=0.0)
-
-
-def test_myr_diag_table_w_behv(cps_subsample):
-    pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample)
-    year = rec.current_year
-    beh = Behavior()
-    calc = Calculator(policy=pol, records=rec, behavior=beh)
-    assert calc.current_year == year
-    reform = {year: {'_II_rt7': [0.33], '_PT_rt7': [0.33]}}
-    pol.implement_reform(reform)
-    reform_behav = {year: {'_BE_sub': [0.4], '_BE_cg': [-3.67]}}
-    beh.update_behavior(reform_behav)
-    calc_clp = calc.current_law_version()
-    calc_beh = Behavior.response(calc_clp, calc)
-    calc_beh.calc_all()
-    liabilities_x = (calc_beh.records.combined *
-                     calc_beh.records.s006).sum()
-    adt = multiyear_diagnostic_table(calc_beh, 1)
-    # extract combined liabilities as a float and
-    # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[19].tolist()[0] * 1e9
-    assert np.allclose(liabilities_x, liabilities_y, atol=0.01, rtol=0.0)
 
 
 def test_ce_aftertax_income(cps_subsample):
