@@ -60,8 +60,6 @@ Policy Reform Parameter Values by Year:
 2018_CLP_itax_rev($B)= 1287.51
 2018_REF_itax_rev($B)= 1234.66
 
-******** EXPANDED_INCOME IS SAME ********
-
 CLP diagnostic table for 2018:
                                      2018
 Returns (#m)                       169.89

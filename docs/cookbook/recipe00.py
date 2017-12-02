@@ -47,32 +47,12 @@ print('')
 # generate several other standard results tables:
 
 # aggregate diagnostic tables for 2018
-# read source code at following URL for details
-# http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_diagnostic_table
-clp_diagnostic_table = create_diagnostic_table(calc1)
-ref_diagnostic_table = create_diagnostic_table(calc2)
+clp_diagnostic_table = calc1.diagnostic_table(1)
+ref_diagnostic_table = calc2.diagnostic_table(1)
 
 # income-tax distribution for 2018 with CLP and REF results side-by-side
-# read source code at following URL for details
-# http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_distribution_table
-dist_table1 = create_distribution_table(calc1,
-                                        groupby='weighted_deciles',
-                                        income_measure='expanded_income',
-                                        result_type='weighted_sum')
+dist_table1, dist_table2 = calc1.distribution_tables(calc2)
 assert isinstance(dist_table1, pd.DataFrame)
-import numpy
-if numpy.allclose(calc2.records.expanded_income,
-                  calc1.records.expanded_income):
-    print("******** EXPANDED_INCOME IS SAME ********\n")
-    income_measure = 'expanded_income'
-else:
-    print("******** EXPANDED_INCOME DIFFERS ********\n")
-    income_measure = 'expanded_income_baseline'
-    calc2.add_records_variable(income_measure, calc1, 'expanded_income')
-dist_table2 = create_distribution_table(calc2,
-                                        groupby='weighted_deciles',
-                                        income_measure=income_measure,
-                                        result_type='weighted_sum')
 assert isinstance(dist_table2, pd.DataFrame)
 dist_extract = pd.DataFrame()
 dist_extract['funits(#m)'] = dist_table1['s006'] * 1e-6
@@ -82,12 +62,7 @@ dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income'] * 1e-9
 dist_extract['aftertax_inc2($b)'] = dist_table2['aftertax_income'] * 1e-9
 
 # income-tax difference table extract for 2018 by expanded-income decile
-# read source code at following URL for details
-# http://taxcalc.readthedocs.io/en/latest/_modules/taxcalc/utils.html#create_difference_table
-diff_table = create_difference_table(calc1, calc2,
-                                     groupby='weighted_deciles',
-                                     income_measure='expanded_income',
-                                     tax_to_diff='iitax')
+diff_table = calc1.difference_table(calc2, tax_to_diff='iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
 dif_colnames = ['count', 'tot_change', 'mean',
