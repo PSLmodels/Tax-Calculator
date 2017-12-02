@@ -34,8 +34,8 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 
 DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
-                  'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
-                  'payrolltax', 'combined', 's006']
+                  'c05800', 'othertaxes', 'refund', 'c07100', 'surtax',
+                  'iitax', 'payrolltax', 'combined', 's006']
 
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
@@ -535,27 +535,31 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     return diffs
 
 
-def create_diagnostic_table(calc):
+def create_diagnostic_table(vdf, year):
     """
-    Extract diagnostic table from specified Calculator object.
-    This function leaves the specified calc object unchanged.
+    Extract single-year diagnostic table from Pandas DataFrame object
+    derived from a Calculator object using the dataframe(DIST_VARIABLES)
+    method.
 
     Parameters
     ----------
-    calc : Calculator class object
+    vdf : Pandas DataFrame object containing the variables
+
+    year : calendar year for which variables were drawn from Calculator object
 
     Returns
     -------
-    Pandas DataFrame object containing the table for calc.current_year
+    Pandas DataFrame object containing the diagnostic table
     """
+    # pylint: disable=too-many-statements
     def diagnostic_table_odict(recs):
         """
         Nested function that extracts diagnostic table dictionary from
-        the specified Records object, recs.
+        the specified Pandas DataFrame object, vdf.
 
         Parameters
         ----------
-        recs : Records class object
+        vdf : Pandas DataFrame object containing the variables
 
         Returns
         -------
@@ -566,77 +570,77 @@ def create_diagnostic_table(calc):
         in_billions = 1.0e-9
         odict = collections.OrderedDict()
         # total number of filing units
-        odict['Returns (#m)'] = recs.s006.sum() * in_millions
+        wghts = vdf['s006']
+        odict['Returns (#m)'] = wghts.sum() * in_millions
         # adjusted gross income
-        odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
+        agi = vdf['c00100']
+        odict['AGI ($b)'] = (agi * wghts).sum() * in_billions
         # number of itemizers
-        num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
+        num = (wghts[(vdf['c04470'] > 0.) * (agi > 0.)].sum())
         odict['Itemizers (#m)'] = num * in_millions
         # itemized deduction
-        ided1 = recs.c04470 * recs.s006
-        val = ided1[recs.c04470 > 0.].sum()
+        ided1 = vdf['c04470'] * wghts
+        val = ided1[vdf['c04470'] > 0.].sum()
         odict['Itemized Deduction ($b)'] = val * in_billions
         # number of standard deductions
-        num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        num = wghts[(vdf['standard'] > 0.) * (agi > 0.)].sum()
         odict['Standard Deduction Filers (#m)'] = num * in_millions
         # standard deduction
-        sded1 = recs.standard * recs.s006
-        val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        sded1 = recs.standard * wghts
+        val = sded1[(vdf['standard'] > 0.) * (agi > 0.)].sum()
         odict['Standard Deduction ($b)'] = val * in_billions
         # personal exemption
-        val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
+        val = (vdf['c04600'] * wghts)[agi > 0.].sum()
         odict['Personal Exemption ($b)'] = val * in_billions
         # taxable income
-        val = (recs.c04800 * recs.s006).sum()
+        val = (vdf['c04800'] * wghts).sum()
         odict['Taxable Income ($b)'] = val * in_billions
         # regular tax liability
-        val = (recs.taxbc * recs.s006).sum()
+        val = (vdf['taxbc'] * wghts).sum()
         odict['Regular Tax ($b)'] = val * in_billions
         # AMT taxable income
-        odict['AMT Income ($b)'] = ((recs.c62100 * recs.s006).sum() *
+        odict['AMT Income ($b)'] = ((vdf['c62100'] * wghts).sum() *
                                     in_billions)
         # total AMT liability
-        odict['AMT Liability ($b)'] = ((recs.c09600 * recs.s006).sum() *
+        odict['AMT Liability ($b)'] = ((vdf['c09600'] * wghts).sum() *
                                        in_billions)
         # number of people paying AMT
-        odict['AMT Filers (#m)'] = (recs.s006[recs.c09600 > 0.].sum() *
+        odict['AMT Filers (#m)'] = (wghts[vdf['c09600'] > 0.].sum() *
                                     in_millions)
         # tax before credits
-        val = (recs.c05800 * recs.s006).sum()
+        val = (vdf['c05800'] * wghts).sum()
         odict['Tax before Credits ($b)'] = val * in_billions
         # refundable credits
-        val = (recs.refund * recs.s006).sum()
+        val = (vdf['refund'] * wghts).sum()
         odict['Refundable Credits ($b)'] = val * in_billions
         # nonrefundable credits
-        val = (recs.c07100 * recs.s006).sum()
+        val = (vdf['c07100'] * wghts).sum()
         odict['Nonrefundable Credits ($b)'] = val * in_billions
         # reform surtaxes (part of federal individual income tax liability)
-        val = (recs.surtax * recs.s006).sum()
+        val = (vdf['surtax'] * wghts).sum()
         odict['Reform Surtaxes ($b)'] = val * in_billions
         # other taxes on Form 1040
-        val = (recs.othertaxes * recs.s006).sum()
+        val = (vdf['othertaxes'] * wghts).sum()
         odict['Other Taxes ($b)'] = val * in_billions
         # federal individual income tax liability
-        val = (recs.iitax * recs.s006).sum()
+        val = (vdf['iitax'] * wghts).sum()
         odict['Ind Income Tax ($b)'] = val * in_billions
         # OASDI+HI payroll tax liability (including employer share)
-        val = (recs.payrolltax * recs.s006).sum()
+        val = (vdf['payrolltax'] * wghts).sum()
         odict['Payroll Taxes ($b)'] = val * in_billions
         # combined income and payroll tax liability
-        val = (recs.combined * recs.s006).sum()
+        val = (vdf['combined'] * wghts).sum()
         odict['Combined Liability ($b)'] = val * in_billions
         # number of tax units with non-positive income tax liability
-        num = (recs.s006[recs.iitax <= 0]).sum()
+        num = (wghts[vdf['iitax'] <= 0]).sum()
         odict['With Income Tax <= 0 (#m)'] = num * in_millions
         # number of tax units with non-positive combined tax liability
-        num = (recs.s006[recs.combined <= 0]).sum()
+        num = (wghts[vdf['combined'] <= 0]).sum()
         odict['With Combined Tax <= 0 (#m)'] = num * in_millions
         return odict
     # tabulate diagnostic table
-    odict = diagnostic_table_odict(calc.records)
-    pdf = pd.DataFrame(data=odict,
-                       index=[calc.current_year],
-                       columns=odict.keys())
+    odict = diagnostic_table_odict(vdf)
+    pdf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
     pdf = pdf.transpose()
     pd.options.display.float_format = '{:8,.1f}'.format
     return pdf
@@ -669,7 +673,8 @@ def multiyear_diagnostic_table(calc, num_years=0):
     dtlist = list()
     for iyr in range(1, num_years + 1):
         cal.calc_all()
-        dtlist.append(create_diagnostic_table(cal))
+        dtlist.append(create_diagnostic_table(cal.dataframe(DIST_VARIABLES),
+                                              cal.current_year))
         if iyr < num_years:
             cal.increment_year()
     return pd.concat(dtlist, axis=1)
