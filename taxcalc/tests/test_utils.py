@@ -221,7 +221,7 @@ def test_create_tables(cps_subsample):
 
     # test creating various distribution tables
 
-    dist = create_distribution_table(calc2,
+    dist = create_distribution_table(calc2.dataframe(STATS_COLUMNS),
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -238,9 +238,9 @@ def test_create_tables(cps_subsample):
                 1709504845,
                 7631268907,
                 10605027933,
-                4171055704,
-                2751003155,
-                709210048]
+                1655597977,
+                2537684742,
+                3437986189]
     assert np.allclose(dist['iitax'].values, expected,
                        atol=0.5, rtol=0.0)
     expected = [1202,
@@ -254,9 +254,9 @@ def test_create_tables(cps_subsample):
                 131260,
                 146001,
                 583832,
-                75279,
-                56819,
-                13903]
+                70258,
+                59834,
+                15909]
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
                        atol=0.5, rtol=0.0)
     expected = [158456013,
@@ -270,9 +270,9 @@ def test_create_tables(cps_subsample):
                 17299173380,
                 41117720202,
                 96948280992,
-                21687950798,
-                15093608351,
-                4336161053]
+                12723790026,
+                15769741079,
+                12624189098]
     assert np.allclose(dist['expanded_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
     expected = [147367698,
@@ -286,9 +286,9 @@ def test_create_tables(cps_subsample):
                 13417244946,
                 29691084873,
                 76227844481,
-                15608893056,
-                10854804442,
-                3227387375]
+                9546216325,
+                11603328920,
+                8541539628]
     assert np.allclose(dist['aftertax_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
@@ -977,54 +977,3 @@ def test_dec_graph_plot(cps_subsample):
     gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
     assert gplot
     # write_graph_file(gplot, 'test.html', 'Test Plot')
-
-
-@pytest.mark.parametrize("use_baseline", [False, True])
-def test_dist_vs_diff_table(use_baseline):
-    # pylint: disable=too-many-locals
-    # create two DataFrame objects suitable for passing to create_di*_table
-    wght = np.array(200 * [1.0])
-    itax1 = np.array(2 * [10.0 * (w + 1) for w in range(0, 100)])
-    itax2 = np.array(2 * [11.0 * (w + 1) for w in range(0, 100)])
-    einc = np.array(2 * [100.0 * (w + 1) for w in range(0, 100)])
-    ainc1 = einc - itax1
-    ainc2 = einc - itax2
-    df1 = pd.DataFrame()
-    df2 = pd.DataFrame()
-    df1['s006'] = wght
-    df2['s006'] = wght
-    df1['iitax'] = itax1
-    df2['iitax'] = itax2
-    df1['expanded_income'] = einc
-    df2['expanded_income'] = einc
-    df1['aftertax_income'] = ainc1
-    df2['aftertax_income'] = ainc2
-    zeros = np.zeros(wght.shape)
-    for col in DIST_TABLE_COLUMNS:
-        if col not in df1:
-            df1[col] = zeros
-            df2[col] = zeros
-    # create two distribution tables
-    dist1 = create_distribution_table(df1, groupby='weighted_deciles',
-                                      result_type='weighted_sum',
-                                      income_measure='expanded_income')
-    if use_baseline:
-        df2['expanded_income_baseline'] = df1['expanded_income']
-        inc_measure = 'expanded_income_baseline'
-    else:
-        inc_measure = 'expanded_income'
-    dist2 = create_distribution_table(df2, groupby='weighted_deciles',
-                                      result_type='weighted_sum',
-                                      income_measure=inc_measure)
-    # create difference table
-    diff = create_difference_table(df1, df2, groupby='weighted_deciles',
-                                   income_measure='expanded_income',
-                                   tax_to_diff='iitax')
-    # compare implied (difference in dist) stats and actual diff stats
-    implied_diff = dist2['iitax'] - dist1['iitax']
-    actual_diff = diff['tot_change']
-    assert np.allclose(implied_diff, actual_diff)
-    implied_diff = 100 * (dist2['aftertax_income'] /
-                          dist1['aftertax_income'] - 1.0)
-    actual_diff = diff['pc_aftertaxinc']
-    assert np.allclose(implied_diff, actual_diff)

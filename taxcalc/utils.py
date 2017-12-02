@@ -150,32 +150,6 @@ def weighted_sum(pdf, col_name):
     return (pdf[col_name] * pdf['s006']).zsum()
 
 
-def results(obj, cols=None):
-    """
-    Get cols results from object and organize them into a table.
-
-    Parameters
-    ----------
-    obj : any object with array-like attributes named as in STATS_COLUMNS list
-          Examples include a Tax-Calculator Records object and a
-          Pandas DataFrame object
-
-    cols : list of object results columns to put into table
-           if None, the use STATS_COLUMNS as cols list
-
-    Returns
-    -------
-    table : Pandas DataFrame object
-    """
-    if cols is None:
-        columns = STATS_COLUMNS
-    else:
-        columns = cols
-    arrays = [getattr(obj, name) for name in columns]
-    table = pd.DataFrame(data=np.column_stack(arrays), columns=columns)
-    return table
-
-
 def add_quantile_bins(pdf, income_measure, num_bins,
                       weight_by_income_measure=False, labels=None):
     """
@@ -334,6 +308,23 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         # weight of returns with positive Alternative Minimum Tax (AMT)
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
+
+    # nested function that specifies calculated columns
+    def stat_dataframe(gpdf):
+        """
+        Nested function that returns statistics DataFrame derived from the
+        specified grouped Dataframe object, gpdf.
+        """
+        sdf = pd.DataFrame()
+        unweighted_columns = set(['s006', 'num_returns_StandardDed',
+                                  'num_returns_ItemDed', 'num_returns_AMT'])
+        for col in unweighted_columns:
+            sdf[col] = gpdf.apply(unweighted_sum, col)
+        weighted_columns = set(DIST_TABLE_COLUMNS) - unweighted_columns
+        for col in weighted_columns:
+            sdf[col] = gpdf.apply(weighted_sum, col)
+        return sdf
+
     # main logic of create_distribution_table
     if result_type != 'weighted_sum' and result_type != 'weighted_avg':
         msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
@@ -342,40 +333,34 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
             income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
             income_measure == 'c00100_baseline')
-    if income_measure not in STATS_COLUMNS:
+    if income_measure in STATS_COLUMNS:
+        columns = STATS_COLUMNS
+    else:
         columns = STATS_COLUMNS + [income_measure]
-    else:
-        columns = None
     if isinstance(obj, pd.DataFrame):
-        res = results(obj, cols=columns)
+        res = copy.deepcopy(obj)
     else:
-        res = results(obj.records, cols=columns)
+        res = obj.dataframe(columns)
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        pdfu = add_quantile_bins(res, income_measure, 10)
+        pdf = add_quantile_bins(res, income_measure, 10)
     elif groupby == 'webapp_income_bins':
-        pdfu = add_income_bins(res, income_measure, bin_type='webapp')
+        pdf = add_income_bins(res, income_measure, bin_type='webapp')
     elif groupby == 'large_income_bins':
-        pdfu = add_income_bins(res, income_measure, bin_type='tpc')
+        pdf = add_income_bins(res, income_measure, bin_type='tpc')
     elif groupby == 'small_income_bins':
-        pdfu = add_income_bins(res, income_measure, bin_type='soi')
+        pdf = add_income_bins(res, income_measure, bin_type='soi')
     else:
         msg = ("groupby must be either 'weighted_deciles' or "
                "'webapp_income_bins' or 'large_income_bins' or "
                "'small_income_bins'")
         raise ValueError(msg)
     # construct weighted_sum table
-    # ... weight pdfu variables
-    pdf = pdfu
-    for colname in STATS_COLUMNS:
-        if colname != 's006':
-            pdf[colname] = pdfu[colname] * pdfu['s006']
-    # ... construct bin results
     gpdf = pdf.groupby('bins', as_index=False)
-    dist_table = gpdf[DIST_TABLE_COLUMNS].sum()
-    # ... append sum row
-    row = get_sums(pdf)[DIST_TABLE_COLUMNS]
+    dist_table = stat_dataframe(gpdf)
+    # append sum row
+    row = get_sums(dist_table)[dist_table.columns]
     dist_table = dist_table.append(row)
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
@@ -387,11 +372,9 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
                             value=[1, 1, 1, 1], inplace=True)
         pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
         gpdf = pdf.groupby('bins', as_index=False)
-        rows = gpdf[DIST_TABLE_COLUMNS].sum()
+        rows = stat_dataframe(gpdf)
         dist_table = dist_table.append(rows, ignore_index=True)
-    # remove bins column from dist_table
-    dist_table.drop('bins', axis=1, inplace=True)
-    # construct weighted_avg table
+    # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
             if col != 's006':
@@ -401,17 +384,17 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     return dist_table
 
 
-def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
+def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different res, construct tax difference results,
+    Get results from two different obj, construct tax difference results,
     and return the difference statistics as a table.
 
     Parameters
     ----------
-    res1 : baseline object is either a Tax-Calculator Calculator object or
+    obj1 : baseline object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
-    res2 : reform object is either a Tax-Calculator Calculator object or
+    obj2 : reform object is either a Tax-Calculator Calculator object or
            a Pandas DataFrame including columns in STATS_COLUMNS list
 
     groupby : String object
@@ -521,13 +504,16 @@ def create_difference_table(res1, res2, groupby, income_measure, tax_to_diff):
             diffs = diffs.append(sdf, ignore_index=True)
         return diffs
     # main logic of create_difference_table
-    is_dframe1 = isinstance(res1, pd.DataFrame)
-    is_dframe2 = isinstance(res2, pd.DataFrame)
+    is_dframe1 = isinstance(obj1, pd.DataFrame)
+    is_dframe2 = isinstance(obj2, pd.DataFrame)
     assert is_dframe1 == is_dframe2
-    if not is_dframe1:
-        assert res1.current_year == res2.current_year
-        res1 = results(res1.records)
-        res2 = results(res2.records)
+    if is_dframe1:
+        res1 = copy.deepcopy(obj1)
+        res2 = copy.deepcopy(obj2)
+    else:
+        assert obj1.current_year == obj2.current_year
+        res1 = obj1.dataframe(STATS_COLUMNS)
+        res2 = obj2.dataframe(STATS_COLUMNS)
     assert income_measure == 'expanded_income' or income_measure == 'c00100'
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
