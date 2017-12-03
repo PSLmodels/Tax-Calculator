@@ -301,8 +301,9 @@ class Calculator(object):
         if calc is None:
             dt2 = None
         else:
-            var_dataframe = calc.dataframe(DIST_VARIABLES)
             assert calc.current_year == self.current_year
+            assert calc.records.dim == self.records.dim
+            var_dataframe = calc.dataframe(DIST_VARIABLES)
             if have_same_income_measure(self, calc, income_measure):
                 imeasure = income_measure
             else:
@@ -351,7 +352,8 @@ class Calculator(object):
         and calc2 is a reform Calculator object)
         """
         assert isinstance(calc, Calculator)
-        assert self.current_year == calc.current_year
+        assert calc.current_year == self.current_year
+        assert calc.records.dim == self.records.dim
         diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
                                        calc.dataframe(DIFF_VARIABLES),
                                        groupby=groupby,
