@@ -800,6 +800,10 @@ def test_section_titles(tests_path):
         'Universal Basic Income': {
             'UBI Benefits': 0,
             'UBI Taxability': 0
+        },
+        'Benefits': {
+            'Benefit Repeal': 0,
+            'Benefit Multiple': 0
         }
     }
     # check validity of parameter section titles in current_law_policy.json
