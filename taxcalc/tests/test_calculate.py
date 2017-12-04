@@ -297,6 +297,11 @@ def test_calculator_using_nonstd_input(rawinputfile):
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == RAWINPUTFILE_YEAR
     calc.calc_all()
+    assert calc.weighted_total('e00200') == 0
+    assert calc.total_weight() == 0
+    varlist = ['RECID', 'MARS']
+    pdf = calc.dataframe(varlist)
+    assert pdf.shape == (RAWINPUTFILE_FUNITS, len(varlist))
     exp_iitax = np.zeros((nonstd.dim,))
     assert np.allclose(calc.records.iitax, exp_iitax)
     mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)

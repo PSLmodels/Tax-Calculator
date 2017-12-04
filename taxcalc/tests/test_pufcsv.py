@@ -75,8 +75,7 @@ def test_agg(tests_path, puf_fullsample):
     fullsample = puf_fullsample
     rn_seed = 180  # to ensure sub-sample is always the same
     subfrac = 0.05  # sub-sample fraction
-    subsample = fullsample.sample(frac=subfrac,  # pylint: disable=no-member
-                                  random_state=rn_seed)
+    subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
     rec_subsample = Records(data=subsample)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
     adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)

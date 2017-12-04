@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
-from taxcalc.utils import (add_income_bins, add_quantile_bins, results,
+from taxcalc.utils import (add_income_bins, add_quantile_bins,
                            create_difference_table, create_distribution_table,
                            STATS_COLUMNS, DIST_TABLE_COLUMNS,
                            WEBAPP_INCOME_BINS, read_egg_csv)
@@ -118,8 +118,8 @@ def calculate(year_n, start_year,
             # otherwise read from taxcalc package "egg"
             input_path = None  # pragma: no cover
             full_sample = read_egg_csv('cps.csv.gz')  # pragma: no cover
-        sampling_frac = 0.05  # TODO: using same as for puf for now
-        sampling_seed = 180  # TODO: using same as for puf for now
+        sampling_frac = 0.03
+        sampling_seed = 180
     if input_path:
         full_sample = pd.read_csv(input_path)
     if use_full_sample:
@@ -149,7 +149,7 @@ def calculate(year_n, start_year,
     assert calc1.current_year == start_year
 
     # compute mask array
-    res1 = results(calc1.records)
+    res1 = calc1.dataframe(STATS_COLUMNS)
     if use_puf_not_cps:
         # create pre-reform Calculator instance with extra income
         recs1p = Records(data=copy.deepcopy(sample),
@@ -169,7 +169,7 @@ def calculate(year_n, start_year,
         # compute mask showing which of the calc1 and calc1p results differ;
         # mask is true if a filing unit's income tax liability changed after
         # a dollar was added to the filing unit's wage and salary income
-        res1p = results(calc1p.records)
+        res1p = calc1p.dataframe(STATS_COLUMNS)
         mask = np.logical_not(  # pylint: disable=no-member
             np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
         )
