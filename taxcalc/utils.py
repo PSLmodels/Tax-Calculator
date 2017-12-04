@@ -676,7 +676,7 @@ def multiyear_diagnostic_table(calc, num_years=0):
     return pd.concat(dtlist, axis=1)
 
 
-def mtr_graph_data(calc1, calc2,
+def mtr_graph_data(vdf, year,
                    mars='ALL',
                    mtr_measure='combined',
                    mtr_variable='e00200p',
@@ -689,9 +689,11 @@ def mtr_graph_data(calc1, calc2,
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    vdf : a Pandas DataFrame object containing variables and marginal tax rates
+        (See Calculator.mtr_graph method for required elements of vdf.)
 
-    calc2 : a Calculator object that refers to reform policy
+    year : integer
+        specifies calendar year of the data in vdf
 
     mars : integer or string
         specifies which filing status subgroup to show in the graph
@@ -754,9 +756,6 @@ def mtr_graph_data(calc1, calc2,
     """
     # pylint: disable=too-many-arguments,too-many-statements,
     # pylint: disable=too-many-locals,too-many-branches
-    # check that two calculator objects have the same current_year
-    assert calc1.current_year == calc2.current_year
-    year = calc1.current_year
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -806,35 +805,10 @@ def mtr_graph_data(calc1, calc2,
         msg = ('mtr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(mtr_measure))
-    # calculate marginal tax rates
-    (mtr1_ptax, mtr1_itax,
-     mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    (mtr2_ptax, mtr2_itax,
-     mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    # extract needed output that is assumed unchanged by reform from calc1
-    record_columns = ['s006']
-    if mars != 'ALL':
-        record_columns.append('MARS')
-    record_columns.append(income_var)
-    output = [getattr(calc1.records, col) for col in record_columns]
-    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    # set mtr given specified mtr_measure
-    if mtr_measure == 'itax':
-        dfx['mtr1'] = mtr1_itax
-        dfx['mtr2'] = mtr2_itax
-    elif mtr_measure == 'ptax':
-        dfx['mtr1'] = mtr1_ptax
-        dfx['mtr2'] = mtr2_ptax
-    elif mtr_measure == 'combined':
-        dfx['mtr1'] = mtr1_combined
-        dfx['mtr2'] = mtr2_combined
-    # select filing-status subgroup, if any
-    if mars != 'ALL':
-        dfx = dfx[dfx['MARS'] == mars]
+    # . . check vdf
+    assert isinstance(vdf, pd.DataFrame)
     # create 'bins' column given specified income_var and dollar_weighting
-    dfx = add_quantile_bins(dfx, income_var, 100,
+    dfx = add_quantile_bins(vdf, income_var, 100,
                             weight_by_income_measure=dollar_weighting)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)

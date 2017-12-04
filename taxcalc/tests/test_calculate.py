@@ -859,3 +859,17 @@ def test_reform_documentation():
     if dump:
         print(doc)
         assert 1 == 2
+
+
+def test_mtr_graph(cps_subsample):
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample))
+    fig = calc.mtr_graph(calc,
+                         mars=2,
+                         income_measure='wages',
+                         mtr_measure='ptax')
+    assert fig
+    fig = calc.mtr_graph(calc,
+                         income_measure='agi',
+                         mtr_measure='itax')
+    assert fig

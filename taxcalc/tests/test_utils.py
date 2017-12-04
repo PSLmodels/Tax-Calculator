@@ -721,23 +721,29 @@ def test_diff_table_sum_row(cps_subsample):
 def test_mtr_graph_data(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
+    year = calc.current_year,
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars='bad',
+        mtr_graph_data(None, year, mars='bad',
                        income_measure='agi',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars=0,
+        mtr_graph_data(None, year, mars=0,
                        income_measure='expanded_income',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars=list())
+        mtr_graph_data(None, year, mars=list())
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
+        mtr_graph_data(None, year, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mtr_measure='badtax')
+        mtr_graph_data(None, year, mtr_measure='badtax')
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, income_measure='badincome')
-    gdata = mtr_graph_data(calc, calc, mars=1,
+        mtr_graph_data(None, year, income_measure='badincome')
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'MARS', 'e00200'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    vdf = vdf[vdf['MARS'] == 1]
+    gdata = mtr_graph_data(vdf, year, mars=1,
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
                            dollar_weighting=True)
@@ -770,12 +776,19 @@ def test_xtr_graph_plot(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample),
                       behavior=Behavior())
-    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'MARS', 'c00100'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='ptax',
                            income_measure='agi',
                            dollar_weighting=False)
     gplot = xtr_graph_plot(gdata)
     assert gplot
-    gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
+    vdf = calc.dataframe(['s006', 'expanded_income'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='itax',
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='expanded_income',
                            dollar_weighting=False)
@@ -790,7 +803,11 @@ def temporary_filename(suffix=''):
 def test_write_graph_file(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
-    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'e00200', 'c00100'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='ptax',
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='agi',
                            dollar_weighting=False)

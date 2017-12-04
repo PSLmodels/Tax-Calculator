@@ -19,8 +19,8 @@ from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.calculate import Calculator
 from taxcalc.utils import (delete_file, ce_aftertax_income,
-                           atr_graph_data, mtr_graph_data,
-                           xtr_graph_plot, write_graph_file,
+                           atr_graph_data, xtr_graph_plot,
+                           write_graph_file,
                            add_quantile_bins,
                            unweighted_sum, weighted_sum)
 
@@ -521,10 +521,9 @@ class TaxCalcIO(object):
         mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
         mtr_title = 'MTR by Income Percentile'
         if pos_wght_sum:
-            mtr_data = mtr_graph_data(self.calc_clp, self.calc,
-                                      alt_e00200p_text='Taxpayer Earnings')
-            mtr_plot = xtr_graph_plot(mtr_data)
-            write_graph_file(mtr_plot, mtr_fname, mtr_title)
+            fig = self.calc_clp.mtr_graph(self.calc,
+                                          alt_e00200p_text='Taxpayer Earnings')
+            write_graph_file(fig, mtr_fname, mtr_title)
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(mtr_fname, mtr_title, reason)

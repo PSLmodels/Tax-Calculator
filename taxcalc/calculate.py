@@ -5,7 +5,7 @@ Tax-Calculator federal tax Calculator class.
 # pep8 --ignore=E402 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
-# pylint: disable=invalid-name,no-value-for-parameter
+# pylint: disable=too-many-lines,invalid-name,no-value-for-parameter
 
 import os
 import json
@@ -32,6 +32,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
+from taxcalc.utils import mtr_graph_data, xtr_graph_plot
 # import pdb
 
 
@@ -383,6 +384,157 @@ class Calculator(object):
                                     mtr_combined, np.nan)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
+
+    def mtr_graph(self, calc,
+                  mars='ALL',
+                  mtr_measure='combined',
+                  mtr_variable='e00200p',
+                  alt_e00200p_text='',
+                  mtr_wrt_full_compen=False,
+                  income_measure='expanded_income',
+                  dollar_weighting=False):
+        """
+        Create marginal tax rate graph that can be written to an HTML
+        file (using the write_graph_file utility function) or shown on
+        the screen immediately in an interactive or notebook session
+        (following the instructions in the documentation of the
+        xtr_graph_plot utility function).
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline
+
+        mars : integer or string
+            specifies which filing status subgroup to show in the graph
+
+            - 'ALL': include all filing units in sample
+
+            - 1: include only single filing units
+
+            - 2: include only married-filing-jointly filing units
+
+            - 3: include only married-filing-separately filing units
+
+            - 4: include only head-of-household filing units
+
+        mtr_measure : string
+            specifies which marginal tax rate to show on graph's y axis
+
+            - 'itax': marginal individual income tax rate
+
+            - 'ptax': marginal payroll tax rate
+
+            - 'combined': sum of marginal income and payroll tax rates
+
+        mtr_variable : string
+            any string in the Calculator.VALID_MTR_VARS set
+            specifies variable to change in order to compute marginal tax rates
+
+        alt_e00200p_text : string
+            text to use in place of mtr_variable
+            when mtr_variable is 'e00200p';
+            if empty string then use 'e00200p'
+
+        mtr_wrt_full_compen : boolean
+            see documentation of Calculator.mtr()
+            argument wrt_full_compensation
+            (value has an effect only if mtr_variable is 'e00200p')
+
+        income_measure : string
+            specifies which income variable to show on the graph's x axis
+
+            - 'wages': wage and salary income (e00200)
+
+            - 'agi': adjusted gross income, AGI (c00100)
+
+            - 'expanded_income': sum of AGI, non-taxable interest income,
+              non-taxable social security benefits, and employer share of
+              FICA taxes.
+
+        dollar_weighting : boolean
+            False implies both income_measure percentiles on x axis
+            and mtr values for each percentile on the y axis are
+            computed without using dollar income_measure weights (just
+            sampling weights); True implies both income_measure
+            percentiles on x axis and mtr values for each percentile
+            on the y axis are computed using dollar income_measure
+            weights (in addition to sampling weights).  Specifying
+            True produces a graph x axis that shows income_measure
+            (not filing unit) percentiles.
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object, which can be
+        written to an HTML file (using the write_graph_file utility function)
+        or shown on the screen immediately in an interactive or notebook
+        session (using the show_graph_now utility function)
+        """
+        # pylint: disable=too-many-arguments,too-many-locals
+        # check that two Calculator objects are comparable
+        assert calc.current_year == self.current_year
+        assert calc.records.dim == self.records.dim
+        # check validity of mars parameter
+        assert mars == 'ALL' or (mars >= 1 and mars <= 4)
+        # check validity of income_measure
+        assert (income_measure == 'expanded_income' or
+                income_measure == 'agi' or
+                income_measure == 'wages')
+        if income_measure == 'expanded_income':
+            income_variable = 'expanded_income'
+        elif income_measure == 'agi':
+            income_variable = 'c00100'
+        elif income_measure == 'wages':
+            income_variable = 'e00200'
+        # check validity of mtr_measure parameter
+        assert (mtr_measure == 'combined' or
+                mtr_measure == 'itax' or
+                mtr_measure == 'ptax')
+        # calculate marginal tax rates
+        (mtr1_ptax, mtr1_itax,
+         mtr1_combined) = self.mtr(variable_str=mtr_variable,
+                                   wrt_full_compensation=mtr_wrt_full_compen)
+        (mtr2_ptax, mtr2_itax,
+         mtr2_combined) = calc.mtr(variable_str=mtr_variable,
+                                   wrt_full_compensation=mtr_wrt_full_compen)
+        if mtr_measure == 'combined':
+            mtr1 = mtr1_combined
+            mtr2 = mtr2_combined
+        elif mtr_measure == 'itax':
+            mtr1 = mtr1_itax
+            mtr2 = mtr2_itax
+        elif mtr_measure == 'ptax':
+            mtr1 = mtr1_ptax
+            mtr2 = mtr2_ptax
+        # extract datafames needed by mtr_graph_data utility function
+        record_variables = ['s006']
+        if mars != 'ALL':
+            record_variables.append('MARS')
+        record_variables.append(income_variable)
+        vdf = self.dataframe(record_variables)
+        vdf['mtr1'] = mtr1
+        vdf['mtr2'] = mtr2
+        # select filing-status subgroup, if any
+        if mars != 'ALL':
+            vdf = vdf[vdf['MARS'] == mars]
+        # construct data for graph
+        data = mtr_graph_data(vdf,
+                              year=self.current_year,
+                              mars=mars,
+                              mtr_measure=mtr_measure,
+                              alt_e00200p_text=alt_e00200p_text,
+                              mtr_wrt_full_compen=mtr_wrt_full_compen,
+                              income_measure=income_measure,
+                              dollar_weighting=dollar_weighting)
+        # construct figure from data
+        fig = xtr_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='',
+                             legendloc='bottom_right')
+        return fig
 
     def current_law_version(self):
         """
