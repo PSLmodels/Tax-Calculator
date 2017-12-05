@@ -558,9 +558,9 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
     c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
                  ID_RealEstate_c[MARS - 1])
     c18400 = min(c18400,
-                     ID_StateLocalTax_crt * max(c00100, 0))
+                 ID_StateLocalTax_crt * max(c00100, 0))
     c18500 = min(c18500,
-                     ID_RealEstate_crt * max(c00100, 0))
+                 ID_RealEstate_crt * max(c00100, 0))
     c18300 = c18400 + c18500
     # Interest paid
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
