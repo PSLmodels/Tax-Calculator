@@ -469,6 +469,7 @@ class Calculator(object):
         """
         # pylint: disable=too-many-arguments,too-many-locals
         # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.records.dim == self.records.dim
         # check validity of mars parameter
@@ -550,6 +551,7 @@ class Calculator(object):
         calc : Calculator object
             calc represents the reform while self represents the baseline,
             where both self and calc have calculated taxes for this year
+            before being used by this method
 
         mars : integer or string
             specifies which filing status subgroup to show in the graph
@@ -582,6 +584,7 @@ class Calculator(object):
         graph that is a bokeh.plotting figure object
         """
         # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.records.dim == self.records.dim
         # check validity of function arguments
@@ -589,7 +592,7 @@ class Calculator(object):
         assert (atr_measure == 'combined' or
                 atr_measure == 'itax' or
                 atr_measure == 'ptax')
-        assert min_avginc > 0.
+        assert min_avginc > 0
         # extract needed output that is assumed unchanged by reform from self
         record_variables = ['s006']
         if mars != 'ALL':
@@ -623,6 +626,47 @@ class Calculator(object):
                              ylabel='',
                              title='',
                              legendloc='bottom_right')
+        return fig
+
+    def decile_graph(self, calc):
+        """
+        Create graph that shows percentage change in aftertax expanded
+        income (from going from policy in self to policy in calc) for
+        each expanded-income decile and subgroups of the top decile.
+        The graph can be written to an HTML file (using the
+        write_graph_file utility function) or shown on the screen
+        immediately in an interactive or notebook session (following
+        the instructions in the documentation of the xtr_graph_plot
+        utility function).
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline,
+            where both self and calc have calculated taxes for this year
+            before being used by this method
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object
+        """
+        # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.records.dim == self.records.dim
+        diff_table = self.difference_table(calc,
+                                           groupby='weighted_deciles',
+                                           income_measure='expanded_income',
+                                           tax_to_diff='combined')
+        # construct data for graph
+        data = dec_graph_data(diff_table, year=self.current_year)
+        # construct figure from data
+        fig = dec_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='')
         return fig
 
     def current_law_version(self):

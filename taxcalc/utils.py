@@ -915,7 +915,7 @@ def atr_graph_data(vdf, year,
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(atr_measure))
     # . . check min_avginc value
-    assert min_avginc > 0.
+    assert min_avginc > 0
     # . . check vdf object
     assert isinstance(vdf, pd.DataFrame)
     # create 'bins' column
@@ -1326,33 +1326,22 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(calc1, calc2):
+def dec_graph_data(diff_table, year):
     """
     Prepare data needed by dec_graph_plot utility function.
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    diff_table : a Pandas DataFrame object returned from the
+        Calculator class difference_table method
 
-    calc2 : a Calculator object that refers to reform policy
+    year : integer
+        specifies calendar year of the data in the diff_table
 
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
     """
-    # check that two calculator objects have the same current_year
-    if calc1.current_year == calc2.current_year:
-        year = calc1.current_year
-    else:
-        msg = 'calc1.current_year={} != calc2.current_year={}'
-        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
-    # create difference table from the two Calculator objects
-    calc1.calc_all()
-    calc2.calc_all()
-    diff_table = create_difference_table(calc1, calc2,
-                                         groupby='weighted_deciles',
-                                         income_measure='expanded_income',
-                                         tax_to_diff='combined')
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
     for idx in range(0, 14):  # the ten income deciles, all, plus top details
