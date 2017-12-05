@@ -31,7 +31,8 @@ from taxcalc.utils import (STATS_COLUMNS,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
-                           certainty_equivalent, ce_aftertax_income)
+                           certainty_equivalent,
+                           ce_aftertax_expanded_income)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -875,7 +876,7 @@ def test_myr_diag_table_w_behv(cps_subsample):
     assert np.allclose(liabilities_x, liabilities_y, atol=0.01, rtol=0.0)
 
 
-def test_ce_aftertax_income(cps_subsample):
+def test_ce_aftertax_exp_income(cps_subsample):
     # test certainty_equivalent() function with con>cmin
     con = 5000
     cmin = 1000
@@ -899,16 +900,19 @@ def test_ce_aftertax_income(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
-    cedict = ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=False)
-    assert cedict['year'] == cyr
+    df1 = calc1.dataframe(['s006', 'combined', 'expanded_income'])
+    df2 = calc2.dataframe(['s006', 'combined', 'expanded_income'])
+    cedict = ce_aftertax_expanded_income(df1, df2,
+                                         require_no_agg_tax_change=False)
+    assert isinstance(cedict, dict)
     # test with require_no_agg_tax_change equal to True
     with pytest.raises(ValueError):
-        ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True)
+        ce_aftertax_expanded_income(df1, df2, require_no_agg_tax_change=True)
     # test with require_no_agg_tax_change equal to False and custom_params
     params = {'crra_list': [0, 2], 'cmin_value': 2000}
     with pytest.raises(ValueError):
-        ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True,
-                           custom_params=params)
+        ce_aftertax_expanded_income(df1, df2, require_no_agg_tax_change=True,
+                                    custom_params=params)
 
 
 def test_read_egg_csv():

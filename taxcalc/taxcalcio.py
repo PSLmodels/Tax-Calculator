@@ -18,7 +18,7 @@ from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.calculate import Calculator
-from taxcalc.utils import (delete_file, ce_aftertax_income,
+from taxcalc.utils import (delete_file,
                            atr_graph_data, mtr_graph_data,
                            xtr_graph_plot, write_graph_file,
                            add_quantile_bins,
@@ -350,14 +350,16 @@ class TaxCalcIO(object):
                 ceeu_results += '                  '
                 ceeu_results += 'when specifying "behavior" with --assump '
                 ceeu_results += 'option'
-            elif self.calc.records.s006.sum() <= 0.:
+            elif self.calc.total_weight() <= 0.:
                 ceeu_results = 'SKIP --ceeu output because '
                 ceeu_results += 'sum of weights is not positive'
             else:
                 self.calc_clp.calc_all()
                 calc_clp_calculated = True
-                cedict = ce_aftertax_income(self.calc_clp, self.calc,
-                                            require_no_agg_tax_change=False)
+                cedict = self.calc_clp.ce_aftertax_income(
+                    self.calc,
+                    custom_params=None,
+                    require_no_agg_tax_change=False)
                 ceeu_results = TaxCalcIO.ceeu_output(cedict)
         else:
             ceeu_results = None
