@@ -113,7 +113,7 @@ class Records(object):
                  gfactors=Growfactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
-                 benefits=BENEFIT_FILENAME,
+                 benefits=None,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments
         self._data_year = start_year
