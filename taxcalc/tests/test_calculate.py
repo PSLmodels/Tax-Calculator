@@ -861,6 +861,49 @@ def test_reform_documentation():
         assert 1 == 2
 
 
+def test_distribution_tables(cps_subsample):
+    pol = Policy()
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=pol, records=recs)
+    assert calc1.current_year == 2014
+    calc1.calc_all()
+    dt1, dt2 = calc1.distribution_tables(None)
+    assert isinstance(dt1, pd.DataFrame)
+    assert dt2 is None
+    dt1, dt2 = calc1.distribution_tables(calc1)
+    assert isinstance(dt1, pd.DataFrame)
+    assert isinstance(dt2, pd.DataFrame)
+    reform = {2014: {'_UBI1': [1000], '_UBI2': [1000], '_UBI3': [1000]}}
+    pol.implement_reform(reform)
+    assert not pol.reform_errors
+    calc2 = Calculator(policy=pol, records=recs)
+    calc2.calc_all()
+    dt1, dt2 = calc1.distribution_tables(calc2)
+    assert isinstance(dt1, pd.DataFrame)
+    assert isinstance(dt2, pd.DataFrame)
+
+
+def test_difference_table(cps_subsample):
+    pol = Policy()
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc1 = Calculator(policy=pol, records=recs)
+    assert calc1.current_year == 2014
+    reform = {2014: {'_SS_Earnings_c': [9e99]}}
+    pol.implement_reform(reform)
+    assert not pol.reform_errors
+    calc2 = Calculator(policy=pol, records=recs)
+    calc2.calc_all()
+    diff = calc1.difference_table(calc2)
+    assert isinstance(diff, pd.DataFrame)
+
+
+def test_diagnostic_table(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc = Calculator(policy=Policy(), records=recs)
+    adt = calc.diagnostic_table(3)
+    assert isinstance(adt, pd.DataFrame)
+
+
 def test_mtr_graph(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
