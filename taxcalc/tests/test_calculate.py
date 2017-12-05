@@ -873,3 +873,12 @@ def test_mtr_graph(cps_subsample):
                          income_measure='agi',
                          mtr_measure='itax')
     assert fig
+
+
+def test_atr_graph(cps_subsample):
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample))
+    fig = calc.atr_graph(calc, mars=2, atr_measure='itax')
+    assert fig
+    fig = calc.atr_graph(calc, atr_measure='ptax')
+    assert fig

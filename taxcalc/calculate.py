@@ -32,7 +32,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
-from taxcalc.utils import mtr_graph_data, xtr_graph_plot
+from taxcalc.utils import mtr_graph_data, atr_graph_data, xtr_graph_plot
 # import pdb
 
 
@@ -465,10 +465,7 @@ class Calculator(object):
 
         Returns
         -------
-        graph that is a bokeh.plotting figure object, which can be
-        written to an HTML file (using the write_graph_file utility function)
-        or shown on the screen immediately in an interactive or notebook
-        session (using the show_graph_now utility function)
+        graph that is a bokeh.plotting figure object
         """
         # pylint: disable=too-many-arguments,too-many-locals
         # check that two Calculator objects are comparable
@@ -526,6 +523,98 @@ class Calculator(object):
                               mtr_wrt_full_compen=mtr_wrt_full_compen,
                               income_measure=income_measure,
                               dollar_weighting=dollar_weighting)
+        # construct figure from data
+        fig = xtr_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='',
+                             legendloc='bottom_right')
+        return fig
+
+    def atr_graph(self, calc,
+                  mars='ALL',
+                  atr_measure='combined',
+                  min_avginc=1000):
+        """
+        Create average tax rate graph that can be written to an HTML
+        file (using the write_graph_file utility function) or shown on
+        the screen immediately in an interactive or notebook session
+        (following the instructions in the documentation of the
+        xtr_graph_plot utility function).  The graph shows the mean
+        average tax rate for each expanded-income percentile.
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline,
+            where both self and calc have calculated taxes for this year
+
+        mars : integer or string
+            specifies which filing status subgroup to show in the graph
+
+            - 'ALL': include all filing units in sample
+
+            - 1: include only single filing units
+
+            - 2: include only married-filing-jointly filing units
+
+            - 3: include only married-filing-separately filing units
+
+            - 4: include only head-of-household filing units
+
+        atr_measure : string
+            specifies which average tax rate to show on graph's y axis
+
+            - 'itax': average individual income tax rate
+
+            - 'ptax': average payroll tax rate
+
+            - 'combined': sum of average income and payroll tax rates
+
+        min_avginc : float
+            specifies the minimum average expanded income for a percentile to
+            be included in the graph data; value must be positive
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object
+        """
+        # check that two Calculator objects are comparable
+        assert calc.current_year == self.current_year
+        assert calc.records.dim == self.records.dim
+        # check validity of function arguments
+        assert mars == 'ALL' or (mars >= 1 and mars <= 4)
+        assert (atr_measure == 'combined' or
+                atr_measure == 'itax' or
+                atr_measure == 'ptax')
+        assert min_avginc > 0.
+        # extract needed output that is assumed unchanged by reform from self
+        record_variables = ['s006']
+        if mars != 'ALL':
+            record_variables.append('MARS')
+        record_variables.append('expanded_income')
+        vdf = self.dataframe(record_variables)
+        # create 'tax1' and 'tax2' columns given specified atr_measure
+        if atr_measure == 'combined':
+            vdf['tax1'] = self.records.combined
+            vdf['tax2'] = calc.records.combined
+        elif atr_measure == 'itax':
+            vdf['tax1'] = self.records.iitax
+            vdf['tax2'] = calc.records.iitax
+        elif atr_measure == 'ptax':
+            vdf['tax1'] = self.records.payrolltax
+            vdf['tax2'] = calc.records.payrolltax
+        # select filing-status subgroup, if any
+        if mars != 'ALL':
+            vdf = vdf[vdf['MARS'] == mars]
+        # construct data for graph
+        data = atr_graph_data(vdf,
+                              year=self.current_year,
+                              mars=mars,
+                              atr_measure=atr_measure,
+                              min_avginc=min_avginc)
         # construct figure from data
         fig = xtr_graph_plot(data,
                              width=850,
@@ -733,7 +822,6 @@ class Calculator(object):
                         else:
                             bval = getattr(base, param[1:], None)
                             if isinstance(bval, np.ndarray):
-                                # pylint: disable=no-member
                                 bval = bval.tolist()
                                 if basevals[param]['boolean_value']:
                                     bval = [True if item else

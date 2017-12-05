@@ -754,22 +754,24 @@ def test_atr_graph_data(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=pol, records=rec)
+    year = calc.current_year
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars='bad')
+        atr_graph_data(None, year, mars='bad')
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars=0)
+        atr_graph_data(None, year, mars=0)
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars=list())
+        atr_graph_data(None, year, mars=list())
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, atr_measure='badtax')
-    gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
-    gdata = atr_graph_data(calc, calc, atr_measure='itax')
-    gdata = atr_graph_data(calc, calc, atr_measure='ptax')
+        atr_graph_data(None, year, atr_measure='badtax')
+    calc.calc_all()
+    vdf = calc.dataframe(['s006', 'MARS', 'expanded_income'])
+    tax = 0.20 * np.ones_like(vdf['expanded_income'])
+    vdf['tax1'] = tax
+    vdf['tax2'] = tax
+    gdata = atr_graph_data(vdf, year, mars=1, atr_measure='combined')
+    gdata = atr_graph_data(vdf, year, atr_measure='itax')
+    gdata = atr_graph_data(vdf, year, atr_measure='ptax')
     assert isinstance(gdata, dict)
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=pol, records=rec)
-        calcx.advance_to_year(2020)
-        atr_graph_data(calcx, calc)
 
 
 def test_xtr_graph_plot(cps_subsample):
