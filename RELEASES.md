@@ -10,20 +10,26 @@ for a complete commit history.
 [#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
-- Change arguments for the three create-table utility functions and add easier to use Calculator methods that generate results tables
+- Add several Calculator table methods and revise table utilities to not use Calculator object(s)
   [[#1718](https://github.com/open-source-economics/Tax-Calculator/pull/1718)
+  by Martin Holmer]
+- Add several Calculator graph methods and revise graph utilities to not use Calculator object(s)
+  [[#1722](https://github.com/open-source-economics/Tax-Calculator/pull/1722)
   by Martin Holmer]
 
 **New Features**
-- Add new policy parameter for refunding New CTC against all payroll taxes
+- Add new policy parameter for refunding the new CTC against all payroll taxes
   [[#1716](https://github.com/open-source-economics/Tax-Calculator/pull/1716)
   by Matt Jensen as suggested by Ernie Tedeschi]
+- Remove calculation of AGI tables from the TaxBrain Interface, tbi
+  [[#1724](https://github.com/open-source-economics/Tax-Calculator/pull/1724)
+  by Martin Holmer as suggested by Matt Jensen and Hank Doupe]
 
 **Bug Fixes**
 - Fix Behavior.response method to handle very high marginal tax rates
   [[#1698](https://github.com/open-source-economics/Tax-Calculator/pull/1698)
   by Martin Holmer, reported by Richard Evans and Jason DeBacker]
-- Fix `create_distribution_table` to generate correct details on top decile
+- Fix `create_distribution_table` to generate correct details for the top decile
   [[#1712](https://github.com/open-source-economics/Tax-Calculator/pull/1712)
   by Martin Holmer]
 
