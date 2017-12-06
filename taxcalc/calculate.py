@@ -200,6 +200,12 @@ class Calculator(object):
         pdf = pd.DataFrame(data=np.column_stack(arrays), columns=variable_list)
         return pdf
 
+    def array(self, variable_name):
+        """
+        Return numpy ndarray containing the named Records variable.
+        """
+        return getattr(self.records, variable_name)
+
     def add_records_variable(self, dst_name, src_calc, src_name):
         """
         Add new variable with name dst_name to this Calculator object's
