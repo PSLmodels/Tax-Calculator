@@ -52,7 +52,7 @@ following an existing recipe</p>
 these recipes.  First, follow
 <a href="http://open-source-economics.github.io/Tax-Calculator/#cli-install-test">these instructions</a> on installing Anaconda and a taxcalc package on
 your computer. And second, install the recipes and ingredients in this
-cookbook on your computer.  There are several ways to do that.  If you
+cookbook on your computer.  There are several ways to do this.  If you
 have cloned the Tax-Calculator repository (see the
 <a href="http://taxcalc.readthedocs.io/en/latest/contributor_guide.html">
 Contributor Guide</a>), then the recipes are located in the
@@ -61,24 +61,75 @@ cloned the repository, you have a couple of choices. You can download
 the source code as a zip file by clicking on the green <q>Clone or
 download</q> button on
 <a href="https://github.com/open-source-economics/Tax-Calculator">
-this page</a>. Or you can copy and paste the recipes and ingredients
-to your local computer.  If you follow this last option, you may need
-to edit file paths in the recipes depending on how you've organized
-the copy-and-pasted files.
+this page</a>. This choice has the advantage of replicating the
+directory structure and file names we use in our test kitchen.  Or you
+can copy and paste the recipes and ingredients, as needed, to your
+local computer.  If you make this second choice, you may need to edit
+file paths in the recipes depending on how you've organized and named
+the copied-and-pasted files.</p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
 
 <h2 id="techniques">Preliminaries: Recipe Techniques</h2>
 
-<p><i>coming soon</i></p>
+<p>As with any cookbook, the best approach is to follow a recipe
+exactly the first time and then, if needed, modify the recipe to get
+the exactly the <q>dish</q> you want. Remember to copy a recipe file
+and give it a new file name before you start to modify the recipe.</p>
+
+<p>The Calculator object is the central object in Tax-Calculator and
+it is created by passing four secondary objects (a Policy object, a
+Records object, a Behavior object, and a Consumption object) to the
+Calculator class constructor. When modifying a recipe, following a
+few rules will minimize the chance of running into problems.</p>
+
+<p>Fully specify Consumption, Behavior, Records, and Policy objects
+before passing them to the Calculator class constructor.</p>
+
+<p>After initializing a Calculator object, manipulate it using only
+Calculator class methods.</p>
+
+<p>Following these two rules means avoiding the manipulation of a
+Calculator object's private internal objects.  You should definitely
+avoid trying to change those internal Calculator objects.  And if you
+find yourself wanting to read those internal objects, look for a way
+to do that using public Calculator methods.  If no Calculator methods
+allow you to get out of the Calculator object the information you
+need, <a href="https://github.com/open-source-economics/Tax-Calculator/issues">create
+a new issue</a> asking for a Tax-Calculator enhancement.</p>
+
+<p id="execution">The recipes in this cookbook are Python scripts that
+can be executed from the command line like this:
+<pre>
+python recipe00.py > recipe00.out
+diff recipe00.out recipe00.res
+</pre>
+Your kitchen setup would be validated if the above <kbd>diff</kbd>
+command yields no differences. Of course, you can substitute your
+favorite graphical diff tool for <kbd>diff</kbd> to get an easier
+to read set of differences.</p>
+
+<p>Some people like to use Tax-Calculator inside an interactive
+notebook.  You should be able to load a recipe into an empty notebook
+and execute it there.  If you want to work that way, the recipes may
+require some modification to show results interactively.  But if you
+are a notebook user, you will know how to make a recipe work in a
+notebook.</p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
 
 <h2 id="ingredients">Preliminaries: Recipe Ingredients</h2>
 
-<p><i>coming soon</i></p>
+<p>All the ingredients needed for the recipes are included in
+the <kbd>Tax-Calculator/docs/cookbook/ingredients</kbd> directory.  If
+you organize the recipes and ingredients in a different way than they
+are organized in our test kitchen, you will need to change the file
+path for each ingredient in each recipe.</p>
+
+<p>Just like with recipe modification, copy and rename an ingredient
+file before you make modifications to it.</p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
@@ -99,12 +150,15 @@ following an existing recipe.</p>
 
 <h2 id="recipe00">Basic Recipe: Static Analysis of a Simple Reform</h2>
 
-<p>The is the recipe you should follow first.  Mastering this recipe
--is a prerequisite for all the other recipes in this cookbook.</p>
+<p>This is the recipe you should follow first.  Mastering this recipe
+is a prerequisite for all the other recipes in this cookbook.</p>
 
 <p><b>Ingredients</b></p>
 
-<p><a href="cookbook/ingredients/repeal_amt.json">AMT-repeal-plus-higher-tax-rates reform</a> in the <kbd>ingredients/repeal_amt.json</kbd> file</p>
+
+<p><a href="cookbook/ingredients/raise_rates_and_stdded.json">Policy
+reform</a> in the <kbd>ingredients/raise_rates_and_stdded.json</kbd>
+file</p>
  
 <p><b>Instructions</b></p>
 
@@ -112,7 +166,9 @@ following an existing recipe.</p>
 
 <p><b>Results</b></p>
 
-<p><a href="cookbook/recipe00.res">Expected results</a> from executing <kbd>python recipe00.py</kbd> at the command prompt</p>
+<p><a href="cookbook/recipe00.res">Expected results</a> from
+executing <kbd>python recipe00.py</kbd> at the command prompt as shown
+<a href="#execution">above</a>.</p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
