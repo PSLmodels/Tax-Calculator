@@ -3,6 +3,11 @@ from taxcalc import *
 
 # use publicly-available CPS input file
 recs = Records.cps_constructor()
+# NOTE: if you have access to the restricted-use IRS-SOI PUF-based input file
+#       and you have that file (named 'puf.csv') located in the directory
+#       where this script is located, then you can substitute the following
+#       statement for the prior statement:
+# recs = Records()
 
 # specify Calculator object for static analysis of current-law policy
 pol = Policy()
@@ -72,6 +77,10 @@ ext_colnames = ['funits(#m)', 'agg_diff($b)', 'mean_diff($)',
 scaling_factors = [1e-6, 1e-9, 1e0, 1e0, 1e0]
 for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
     diff_extract[ename] = diff_table[dname] * sfactor
+
+# generate a graph and save in an HTML file
+fig = calc1.decile_graph(calc2)
+write_graph_file(fig, 'recipe00-graph.html', 'recipe00 graph')
 
 print('CLP diagnostic table for 2018:')
 print(clp_diagnostic_table)
