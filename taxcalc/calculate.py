@@ -203,6 +203,12 @@ class Calculator(object):
         arys = [getattr(self.records, vname) for vname in variable_list]
         return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
+    def array(self, variable_name):
+        """
+        Return numpy ndarray containing the named Records variable.
+        """
+        return getattr(self.records, variable_name)
+
     def diagnostic_table(self, num_years):
         """
         Generate multi-year diagnostic table;
