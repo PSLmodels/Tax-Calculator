@@ -228,6 +228,9 @@ class Records(object):
             wt_colname = 'WT{}'.format(self.current_year)
             if wt_colname in self.WT.columns:
                 self.s006 = self.WT[wt_colname] * 0.01
+        # extrapolate benefit values
+        if self.BEN.size > 0:
+            self._extrapolate_benefits(self.current_year)
 
     def set_current_year(self, new_current_year):
         """
@@ -396,18 +399,26 @@ class Records(object):
         """
         Extrapolate benefit variables
         """
-        ben = self.BEN['ssi_benefits_{}'.format(year)][self.RECID].values
-        self.ssi_ben = np.nan_to_num(ben)
-        ben = self.BEN['snap_benefits_{}'.format(year)][self.RECID].values
-        self.snap_ben = np.nan_to_num(ben)
-        ben = self.BEN['vb_benefits_{}'.format(year)][self.RECID].values
-        self.vet_ben = np.nan_to_num(ben)
-        ben = self.BEN['ss_benefits_{}'.format(year)][self.RECID].values
-        self.ss_ben = np.nan_to_num(ben)
-        ben = self.BEN['medicare_benefits_{}'.format(year)][self.RECID].values
-        self.mcare_ben = np.nan_to_num(ben)
-        ben = self.BEN['medicaid_benefits_{}'.format(year)][self.RECID].values
-        self.mcaid_ben = np.nan_to_num(ben)
+        ben_nan = self.BEN['ssi_benefits_{}'.format(year)][self.RECID].values
+        ben = np.nan_to_num(ben_nan)
+        setattr(self, 'ssi_ben', ben)
+        ben_nan = self.BEN['snap_benefits_{}'.format(year)][self.RECID].values
+        ben = np.nan_to_num(ben_nan)
+        setattr(self, 'snap_ben', ben)
+        ben_nan = self.BEN['vb_benefits_{}'.format(year)][self.RECID].values
+        ben = np.nan_to_num(ben_nan)
+        setattr(self, 'vet_ben', ben)
+        ben_nan = self.BEN['ss_benefits_{}'.format(year)][self.RECID].values
+        ben = np.nan_to_num(ben_nan)
+        setattr(self, 'ss_ben', ben)
+        ben_nan = self.BEN[('medicare_' +
+                            'benefits_{}'.format(year))][self.RECID].values
+        ben = np.nan_to_num(ben_nan)
+        setattr(self, 'mcare_ben', ben)
+        ben_nan = self.BEN[('medicaid_' +
+                            'benefits_{}'.format(year))][self.RECID].values
+        ben = np.nan_to_num(ben_nan)
+        setattr(self, 'mcaid_ben', ben)
 
     def _read_data(self, data, exact_calcs):
         """
