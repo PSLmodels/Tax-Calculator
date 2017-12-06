@@ -301,7 +301,11 @@ def test_calculator_using_nonstd_input(rawinputfile):
     assert calc.total_weight() == 0
     varlist = ['RECID', 'MARS']
     pdf = calc.dataframe(varlist)
+    assert isinstance(pdf, pd.DataFrame)
     assert pdf.shape == (RAWINPUTFILE_FUNITS, len(varlist))
+    mars = calc.array('MARS')
+    assert isinstance(mars, np.ndarray)
+    assert mars.shape == (RAWINPUTFILE_FUNITS,)
     exp_iitax = np.zeros((nonstd.dim,))
     assert np.allclose(calc.records.iitax, exp_iitax)
     mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)
