@@ -838,6 +838,10 @@ def test_ce_aftertax_income(cps_subsample):
     calc2.calc_all()
     cedict = ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=False)
     assert cedict['year'] == cyr
+    np.allclose(cedict['ceeu1'], [55641, 27167, 5726, 2229, 1565],
+                atol=0.5, rtol=0.0)
+    np.allclose(cedict['ceeu2'], [54629, 26698, 5710, 2229, 1565],
+                atol=0.5, rtol=0.0)
     # test with require_no_agg_tax_change equal to True
     with pytest.raises(ValueError):
         ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True)
