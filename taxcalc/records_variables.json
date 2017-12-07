@@ -21,7 +21,7 @@
     "MARS": {
       "required": true,
       "type": "int",
-      "desc": "Filing (marital) status: line number of the checked box",
+      "desc": "Filing (marital) status: line number of the checked box [1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er)]",
       "form": {"2013-2016": "1040 lines 1-5"},
       "availability": "taxdata_puf, taxdata_cps"
     },
