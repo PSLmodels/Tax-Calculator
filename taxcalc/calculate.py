@@ -394,10 +394,12 @@ class Calculator(object):
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
             zero_out_calculated_vars=False,
+            calc_all_already_called=False,
             wrt_full_compensation=True):
         """
         Calculates the marginal payroll, individual income, and combined
-        tax rates for every tax filing unit.
+        tax rates for every tax filing unit, leaving the Calculator object
+        in exactly the same state as it would be in after a calc_all() call.
 
         The marginal tax rates are approximated as the change in tax
         liability caused by a small increase (the finite_diff) in the variable
@@ -431,6 +433,12 @@ class Calculator(object):
             specifies value of zero_out_calc_vars parameter used in calls
             of Calculator.calc_all() method.
 
+        calc_all_already_called: boolean
+            specifies whether self has already had its Calculor.calc_all()
+            method called, in which case this method will not do a final
+            calc_all() call but use the incoming embedded Records object
+            as the outgoing Records object embedding in self.
+
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
             are computed with respect to (wrt) changes in total compensation
@@ -438,13 +446,17 @@ class Calculator(object):
 
         Returns
         -------
-        mtr_payrolltax: a numpy array of marginal payroll tax rates.
-        mtr_incometax: a numpy array of marginal individual income tax rates.
-        mtr_combined: a numpy array of marginal combined tax rates, which is
+        A tuple of numpy arrays in the following order:
+        mtr_payrolltax: an array of marginal payroll tax rates.
+        mtr_incometax: an array of marginal individual income tax rates.
+        mtr_combined: an array of marginal combined tax rates, which is
                       the sum of mtr_payrolltax and mtr_incometax.
 
         Notes
         -----
+        The arguments zero_out_calculated_vars and calc_all_already_called
+        cannot both be true.
+
         Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
         'e00200s', spouse wage/salary earnings (also included in e00200);
@@ -465,7 +477,9 @@ class Calculator(object):
         'e19800',  Charity cash contributions;
         'e20100',  Charity non-cash contributions.
         """
-        # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-statements
+        # pylint: disable=too-many-locals,too-many-branches
+        assert not zero_out_calculated_vars or not calc_all_already_called
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
             msg = 'mtr variable_str="{}" is not valid'
@@ -508,7 +522,8 @@ class Calculator(object):
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, 'records', recs0)
-        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
+        if not calc_all_already_called or zero_out_calculated_vars:
+            self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         payrolltax_base = copy.deepcopy(self.records.payrolltax)
         incometax_base = copy.deepcopy(self.records.iitax)
         combined_taxes_base = incometax_base + payrolltax_base
