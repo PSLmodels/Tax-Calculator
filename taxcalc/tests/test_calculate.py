@@ -170,27 +170,28 @@ def test_calculator_current_law_version(cps_subsample):
 def test_calculator_mtr(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
-    recs_pre_e00200p = copy.deepcopy(calc.records.e00200p)
-    (mtr_ptx, mtr_itx, mtr_combined) = calc.mtr(variable_str='e00200p',
-                                                zero_out_calculated_vars=True)
-    recs_post_e00200p = copy.deepcopy(calc.records.e00200p)
+    recs_pre_e00200p = copy.deepcopy(calc.array('e00200p'))
+    (mtr_ptx, mtr_itx, mtr_cmb) = calc.mtr(variable_str='e00200p',
+                                           zero_out_calculated_vars=True)
+    recs_post_e00200p = copy.deepcopy(calc.array('e00200p'))
     assert np.allclose(recs_post_e00200p, recs_pre_e00200p)
-    assert type(mtr_combined) == np.ndarray
-    assert np.array_equal(mtr_combined, mtr_ptx) is False
+    assert np.array_equal(mtr_cmb, mtr_ptx) is False
     assert np.array_equal(mtr_ptx, mtr_itx) is False
     with pytest.raises(ValueError):
         calc.mtr(variable_str='bad_income_type')
     (_, _, mtr_combined) = calc.mtr(variable_str='e00200s')
-    assert type(mtr_combined) == np.ndarray
+    assert isinstance(mtr_combined, np.ndarray)
     (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
                                     negative_finite_diff=True)
-    assert type(mtr_combined) == np.ndarray
+    assert isinstance(mtr_combined, np.ndarray)
     (_, _, mtr_combined) = calc.mtr(variable_str='e00900p')
-    assert type(mtr_combined) == np.ndarray
+    assert isinstance(mtr_combined, np.ndarray)
     (_, _, mtr_combined) = calc.mtr(variable_str='e01700')
-    assert type(mtr_combined) == np.ndarray
+    assert isinstance(mtr_combined, np.ndarray)
     (_, _, mtr_combined) = calc.mtr(variable_str='e26270')
-    assert type(mtr_combined) == np.ndarray
+    assert isinstance(mtr_combined, np.ndarray)
+    (_, _, mtr_combined) = calc.mtr(variable_str='e00200p')
+    assert np.allclose(mtr_combined, mtr_cmb)
 
 
 def test_calculator_mtr_when_PT_rates_differ():
