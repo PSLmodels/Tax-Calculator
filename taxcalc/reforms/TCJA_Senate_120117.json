@@ -9,22 +9,20 @@
 // -  Repeal Alternative Minimum Tax (6)
 // -  Repeal of domestic production deduction (7)
 // -  Changes to itemized deductions (8)
+// -  Switch to chained CPI from CPI-U for tax paramter adjustment (9)
 // Reform_Parameter_Map:
-// - 1: _II_rt*
-// - 2: _PT_rt*
-// - 3: _STD, _STD_Dep, _STD_Aged
+// - 1: _II_*
+// - 2: _PT_*
+// - 3: _STD
 // - 4: _II_em
 // - 5: _DependentCredit_*, _CTC_c, _CTC_ps, _ACTC_Income_thd
 // - 6: _AMT_rt*
 // - 7: _ALD_DomesticProduction_hc
 // - 8: _ID_*
+// - 9: _cpi_offset
 // Note: _II_rt*, _PT_rt*, _STD and _II_em are rounded to the nearest integer value.
 {
     "policy": {
-        "_cpi_offset":
-            {"2017": [-0.0025]},
-		"_DependentCredit_before_CTC":
-            {"2018": [true]},    
         "_II_rt1":
             {"2018": [0.1],
              "2026": [0.1]},
@@ -131,14 +129,16 @@
         "_DependentCredit_Nonchild_c":
             {"2018": [500],
              "2026": [0]},
+        "_DependentCredit_before_CTC":
+            {"2018": [true]},  
         "_ACTC_Income_thd":
             {"2018": [2500],
              "2026": [3000]},
         "_AMT_em":
-            {"2018": [[70300,109400,70300,70300,109400]],
+            {"2018": [[70300,109400,54700,70300,109400]],
              "2026": [[65561, 102024, 51012, 65561, 102024]]},
         "_AMT_em_ps":
-            {"2018": [[156300,208400,156300,156300,208400]],
+            {"2018": [[156300,208400,104200,156300,208400]],
              "2026": [[145731, 194268, 97134, 145731, 194268]]},
         "_ALD_DomesticProduction_hc":
             {"2018": [1],
@@ -152,17 +152,22 @@
         "_ID_Charity_crt_all":
             {"2018": [0.6],
              "2026": [0.5]},
+        "_ID_Casualty_hc":
+            {"2018": [1],
+             "2026": [0]},
         "_ID_StateLocalTax_hc":
             {"2018": [1],
              "2026": [0]},
         "_ID_RealEstate_c":
-            {"2018": [[10000, 10000, 10000, 10000, 10000]],
+            {"2018": [[10000, 10000, 5000, 10000, 10000]],
              "2026": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
         "_ID_Miscellaneous_hc":
             {"2018": [1],
              "2026": [0]},
         "_ID_Medical_frt":
             {"2018": [0.075],
-             "2019": [0.1]}
+             "2019": [0.1]},
+        "_cpi_offset":
+            {"2017": [-0.0025]}  
     }
 }
