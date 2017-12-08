@@ -18,11 +18,8 @@ from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.calculate import Calculator
-from taxcalc.utils import (delete_file, ce_aftertax_income,
-                           atr_graph_data, mtr_graph_data,
-                           xtr_graph_plot, write_graph_file,
-                           add_quantile_bins,
-                           unweighted_sum, weighted_sum)
+from taxcalc.utils import (delete_file, write_graph_file,
+                           add_quantile_bins, unweighted_sum, weighted_sum)
 
 
 class TaxCalcIO(object):
@@ -361,14 +358,16 @@ class TaxCalcIO(object):
                 ceeu_results += '                  '
                 ceeu_results += 'when specifying "behavior" with --assump '
                 ceeu_results += 'option'
-            elif self.calc.records.s006.sum() <= 0.:
+            elif self.calc.total_weight() <= 0.:
                 ceeu_results = 'SKIP --ceeu output because '
                 ceeu_results += 'sum of weights is not positive'
             else:
                 self.calc_clp.calc_all()
                 calc_clp_calculated = True
-                cedict = ce_aftertax_income(self.calc_clp, self.calc,
-                                            require_no_agg_tax_change=False)
+                cedict = self.calc_clp.ce_aftertax_income(
+                    self.calc,
+                    custom_params=None,
+                    require_no_agg_tax_change=False)
                 ceeu_results = TaxCalcIO.ceeu_output(cedict)
         else:
             ceeu_results = None
@@ -523,19 +522,17 @@ class TaxCalcIO(object):
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
         if pos_wght_sum:
-            atr_data = atr_graph_data(self.calc_clp, self.calc)
-            atr_plot = xtr_graph_plot(atr_data)
-            write_graph_file(atr_plot, atr_fname, atr_title)
+            fig = self.calc_clp.atr_graph(self.calc)
+            write_graph_file(fig, atr_fname, atr_title)
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(atr_fname, atr_title, reason)
         mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
         mtr_title = 'MTR by Income Percentile'
         if pos_wght_sum:
-            mtr_data = mtr_graph_data(self.calc_clp, self.calc,
-                                      alt_e00200p_text='Taxpayer Earnings')
-            mtr_plot = xtr_graph_plot(mtr_data)
-            write_graph_file(mtr_plot, mtr_fname, mtr_title)
+            fig = self.calc_clp.mtr_graph(self.calc,
+                                          alt_e00200p_text='Taxpayer Earnings')
+            write_graph_file(fig, mtr_fname, mtr_title)
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(mtr_fname, mtr_title, reason)
