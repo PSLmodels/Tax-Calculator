@@ -358,11 +358,6 @@ def create_results_columns(df1, df2, mask):
            columns_to_create, do_fuzzing)
     create(df1, df2, 'agg', 'expanded_income_baseline', '_agg',
            columns_to_create, do_fuzzing)
-    df2['c00100_baseline'] = df1['c00100']  # c00100 is AGI
-    create(df1, df2, 'dec', 'c00100_baseline', '_adec',
-           columns_to_create, do_fuzzing)
-    create(df1, df2, 'bin', 'c00100_baseline', '_abin',
-           columns_to_create, do_fuzzing)
     return df2
 
 
@@ -493,94 +488,6 @@ def summary(df1, df2, mask):
                                   result_type='weighted_sum')
     dist2_xbin.drop(dist2_xbin.index[0], inplace=True)
     summ['dist2_xbin'] = dist2_xbin
-
-    # create difference tables grouped by adec
-    df2['iitax'] = df2['iitax_adec']
-    summ['diff_itax_adec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='c00100',
-                                tax_to_diff='iitax')
-
-    df2['payrolltax'] = df2['payrolltax_adec']
-    summ['diff_ptax_adec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='c00100',
-                                tax_to_diff='payrolltax')
-
-    df2['combined'] = df2['combined_adec']
-    summ['diff_comb_adec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='c00100',
-                                tax_to_diff='combined')
-
-    # create difference tables grouped by abin (removing negative-income bin)
-    df2['iitax'] = df2['iitax_abin']
-    diff_itax_abin = \
-        create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
-                                income_measure='c00100',
-                                tax_to_diff='iitax')
-    diff_itax_abin.drop(diff_itax_abin.index[0], inplace=True)
-    summ['diff_itax_abin'] = diff_itax_abin
-
-    df2['payrolltax'] = df2['payrolltax_abin']
-    diff_ptax_abin = \
-        create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
-                                income_measure='c00100',
-                                tax_to_diff='payrolltax')
-    diff_ptax_abin.drop(diff_ptax_abin.index[0], inplace=True)
-    summ['diff_ptax_abin'] = diff_ptax_abin
-
-    df2['combined'] = df2['combined_abin']
-    diff_comb_abin = \
-        create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
-                                income_measure='c00100',
-                                tax_to_diff='combined')
-    diff_comb_abin.drop(diff_comb_abin.index[0], inplace=True)
-    summ['diff_comb_abin'] = diff_comb_abin
-
-    # create distribution tables grouped by adec
-    summ['dist1_adec'] = \
-        create_distribution_table(df1, groupby='weighted_deciles',
-                                  income_measure='c00100',
-                                  result_type='weighted_sum')
-
-    suffix = '_adec'
-    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
-    for col in df2_cols_with_suffix:
-        root_col_name = col.replace(suffix, '')
-        df2[root_col_name] = df2[col]
-    df2['c00100_baseline'] = df1['c00100']
-    summ['dist2_adec'] = \
-        create_distribution_table(df2, groupby='weighted_deciles',
-                                  income_measure='c00100_baseline',
-                                  result_type='weighted_sum')
-
-    # create distribution tables grouped by abin (removing negative-income bin)
-    dist1_abin = \
-        create_distribution_table(df1, groupby='webapp_income_bins',
-                                  income_measure='c00100',
-                                  result_type='weighted_sum')
-    dist1_abin.drop(dist1_abin.index[0], inplace=True)
-    summ['dist1_abin'] = dist1_abin
-
-    suffix = '_abin'
-    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
-    for col in df2_cols_with_suffix:
-        root_col_name = col.replace(suffix, '')
-        df2[root_col_name] = df2[col]
-    df2['c00100_baseline'] = df1['c00100']
-    dist2_abin = \
-        create_distribution_table(df2, groupby='webapp_income_bins',
-                                  income_measure='c00100_baseline',
-                                  result_type='weighted_sum')
-    dist2_abin.drop(dist2_abin.index[0], inplace=True)
-    summ['dist2_abin'] = dist2_abin
 
     # return dictionary of summary results
     return summ
