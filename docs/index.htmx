@@ -21,8 +21,12 @@ or making an enhancement to the Python source code &mdash; you should go to
 the <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
 
-<p>Please cite the source of your analysis as "Tax-Calculator (Version
-#.#.#)" and link to this site.</p>
+<p>Please cite the source of your analysis as "Tax-Calculator v.
+#.#.#, author's calculations." If you with to link to Tax-Calculator,
+this page is preferred. Additionally, we strongly recommend that you 
+provide a link to the materials required to replicate your
+analysis or, at least, note that those scripts are available 
+upon request.</p>
 
 
 <h2>Document Contents</h2>
