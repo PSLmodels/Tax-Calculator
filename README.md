@@ -57,5 +57,9 @@ API](http://taxcalc.readthedocs.io/en/latest/public_api.html).
 
 Citing Tax-Calculator
 ---------------------
-Tax-Calculator (Version #.#.#)[Source code],
-https://github.com/open-source-economics/tax-calculator
+Please cite the source of your analysis as "Tax-Calculator v. #.#.#, 
+author's calculations." If you wish to link to Tax-Calculator,
+this page is preferred. Additionally, we strongly recommend that you 
+provide a link to the materials required to replicate your
+analysis or, at least, note that those materials are available 
+upon request.
