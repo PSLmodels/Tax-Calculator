@@ -86,9 +86,13 @@ def cli_tc_main():
                               'all INPUT variables (extrapolated to TAXYEAR) '
                               'and all calculated tax variables for the '
                               'reform, where all the variables are named '
-                              'using their internal Tax-Calculator names.  No '
-                              '--dump option implies OUTPUT contains minimal '
-                              'tax output for the reform.'),
+                              'using their internal Tax-Calculator names. '
+                              'No --dump option implies OUTPUT contains '
+                              'minimal tax output for the reform. '
+                              'NOTE: create a space-delimited file named '
+                              'tcdumpvars in directory where output is being '
+                              'written in order to specify a custom set of '
+                              'dump variables.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--sqldb',
@@ -128,10 +132,19 @@ def cli_tc_main():
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
+    if args.dump or args.sqldb:
+        dumpvar_set = tcio.custom_dump_variables()
+        if tcio.errmsg:
+            sys.stderr.write(tcio.errmsg)
+            sys.stderr.write('USAGE: tc --help\n')
+            return 1
+    else:
+        dumpvar_set = None
     tcio.analyze(writing_output_file=True,
                  output_tables=args.tables,
                  output_graphs=args.graphs,
                  output_ceeu=args.ceeu,
+                 dump_varset=dumpvar_set,
                  output_dump=args.dump,
                  output_sqldb=args.sqldb)
     # compare test output with expected test output if --test option specified
