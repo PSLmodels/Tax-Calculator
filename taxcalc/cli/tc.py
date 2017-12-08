@@ -6,6 +6,7 @@ which can be accessed as 'tc' from an installed taxcalc conda package.
 # pep8 --ignore=E402 tc.py
 # pylint --disable=locally-disabled tc.py
 
+import os
 import sys
 import argparse
 import difflib
@@ -132,14 +133,16 @@ def cli_tc_main():
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
+    dumpvar_set = None
     if args.dump or args.sqldb:
-        dumpvar_set = tcio.custom_dump_variables()
-        if tcio.errmsg:
-            sys.stderr.write(tcio.errmsg)
-            sys.stderr.write('USAGE: tc --help\n')
-            return 1
-    else:
-        dumpvar_set = None
+        if os.path.exists('tcdumpvars'):
+            with open('tcdumpvars') as vfile:
+                dump_vars_str = vfile.read()
+            dumpvar_set = tcio.custom_dump_variables(dump_vars_str)
+            if tcio.errmsg:
+                sys.stderr.write(tcio.errmsg)
+                sys.stderr.write('USAGE: tc --help\n')
+                return 1
     tcio.analyze(writing_output_file=True,
                  output_tables=args.tables,
                  output_graphs=args.graphs,

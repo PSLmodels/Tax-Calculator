@@ -273,42 +273,35 @@ class TaxCalcIO(object):
         # remember parameter dictionary for reform documentation
         self.param_dict = paramdict
 
-    def custom_dump_variables(self):
+    def custom_dump_variables(self, tcdumpvars_str):
         """
-        Return set of variable names read from tcdumpvars file or
-        return None if the tcdumpvars file does not exist in the
-        current directory.
+        Return set of variable names extracted from tcdumpvars_str, which
+        contains the contents of the tcdumpvars file in the current directory.
         Also, builds self.errmsg if any custom variables are not valid.
         """
+        assert isinstance(tcdumpvars_str, six.string_types)
         self.errmsg = ''
-        if os.path.exists('tcdumpvars'):
-            # read the file contents into a string
-            with open('tcdumpvars') as vfile:
-                dump_vars_str = vfile.read()
-            # change some delimiter characters into spaces
-            dump_vars_str = dump_vars_str.replace('\n', ' ')
-            dump_vars_str = dump_vars_str.replace(',', ' ')
-            dump_vars_str = dump_vars_str.replace(';', ' ')
-            dump_vars_str = dump_vars_str.replace('|', ' ')
-            # split dump_vars_str into a list of dump variables
-            dump_vars_list = dump_vars_str.split()
-            # check that all dump_vars_list items are valid
-            valid_set = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
-            for var in dump_vars_list:
-                if var not in valid_set:
-                    msg = 'invalid variable name in tcdumpvars file: {}'
-                    msg = msg.format(var)
-                    self.errmsg += 'ERROR: {}\n'.format(msg)
-            # add essential variables even if not on custom list
-            if 'RECID' not in dump_vars_list:
-                dump_vars_list.append('RECID')
-            if 'FLPDYR' not in dump_vars_list:
-                dump_vars_list.append('FLPDYR')
-            # convert list into a set
-            custom_varset = set(dump_vars_list)
-        else:  # if no tcdumpvars file exists in current directory
-            custom_varset = None
-        return custom_varset
+        # change some delimiter characters into spaces
+        dump_vars_str = tcdumpvars_str.replace('\n', ' ')
+        dump_vars_str = dump_vars_str.replace(',', ' ')
+        dump_vars_str = dump_vars_str.replace(';', ' ')
+        dump_vars_str = dump_vars_str.replace('|', ' ')
+        # split dump_vars_str into a list of dump variables
+        dump_vars_list = dump_vars_str.split()
+        # check that all dump_vars_list items are valid
+        valid_set = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+        for var in dump_vars_list:
+            if var not in valid_set:
+                msg = 'invalid variable name in tcdumpvars file: {}'
+                msg = msg.format(var)
+                self.errmsg += 'ERROR: {}\n'.format(msg)
+        # add essential variables even if not on custom list
+        if 'RECID' not in dump_vars_list:
+            dump_vars_list.append('RECID')
+        if 'FLPDYR' not in dump_vars_list:
+            dump_vars_list.append('FLPDYR')
+        # convert list into a set and return
+        return set(dump_vars_list)
 
     def tax_year(self):
         """
