@@ -59,7 +59,7 @@ Citing Tax-Calculator
 ---------------------
 Please cite the source of your analysis as "Tax-Calculator v. #.#.#, 
 author's calculations." If you wish to link to Tax-Calculator,
-this page is preferred. Additionally, we strongly recommend that you 
+http://open-source-economics.github.io/Tax-Calculator/ is preferred. Additionally, we strongly recommend that you 
 provide a link to the materials required to replicate your
 analysis or, at least, note that those materials are available 
 upon request.
