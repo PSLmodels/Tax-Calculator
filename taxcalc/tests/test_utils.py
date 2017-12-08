@@ -15,8 +15,9 @@ import pandas as pd
 import pytest
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Behavior, Calculator
-from taxcalc.utils import (STATS_COLUMNS,
+from taxcalc.utils import (DIST_VARIABLES,
                            DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
+                           DIFF_VARIABLES,
                            DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
                            create_distribution_table, create_difference_table,
                            weighted_count_lt_zero, weighted_count_gt_zero,
@@ -25,9 +26,7 @@ from taxcalc.utils import (STATS_COLUMNS,
                            expanded_income_weighted,
                            weighted_perc_inc, weighted_perc_cut,
                            add_income_bins, add_quantile_bins,
-                           multiyear_diagnostic_table,
                            mtr_graph_data, atr_graph_data,
-                           dec_graph_data, dec_graph_plot,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
@@ -58,7 +57,7 @@ DATA_FLOAT = [[1.0, 2, 'a'],
 
 def test_validity_of_name_lists():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
-    assert set(STATS_COLUMNS).issubset(Records.CALCULATED_VARS | {'s006'})
+    assert set(DIST_VARIABLES).issubset(Records.CALCULATED_VARS | {'s006'})
 
 
 def test_create_tables(cps_subsample):
@@ -76,7 +75,8 @@ def test_create_tables(cps_subsample):
 
     # test creating various difference tables
 
-    diff = create_difference_table(calc1, calc2,
+    diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                   calc2.dataframe(DIFF_VARIABLES),
                                    groupby='large_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
@@ -95,7 +95,8 @@ def test_create_tables(cps_subsample):
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
-    diff = create_difference_table(calc1, calc2,
+    diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                   calc2.dataframe(DIFF_VARIABLES),
                                    groupby='webapp_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
@@ -116,7 +117,8 @@ def test_create_tables(cps_subsample):
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
-    diff = create_difference_table(calc1, calc2,
+    diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                   calc2.dataframe(DIFF_VARIABLES),
                                    groupby='small_income_bins',
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
@@ -144,7 +146,8 @@ def test_create_tables(cps_subsample):
     assert np.allclose(diff['perc_aftertax'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
-    diff = create_difference_table(calc1, calc2,
+    diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                   calc2.dataframe(DIFF_VARIABLES),
                                    groupby='weighted_deciles',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
@@ -214,15 +217,9 @@ def test_create_tables(cps_subsample):
     assert np.allclose(diff['pc_aftertaxinc'].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True)
 
-    with pytest.raises(ValueError):
-        create_difference_table(calc1, calc2,
-                                groupby='bad_bins',
-                                income_measure='expanded_income',
-                                tax_to_diff='iitax')
-
     # test creating various distribution tables
 
-    dist = create_distribution_table(calc2.dataframe(STATS_COLUMNS),
+    dist = create_distribution_table(calc2.dataframe(DIST_VARIABLES),
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -293,7 +290,7 @@ def test_create_tables(cps_subsample):
     assert np.allclose(dist['aftertax_income'].tolist(), expected,
                        atol=0.5, rtol=0.0)
 
-    dist = create_distribution_table(calc2,
+    dist = create_distribution_table(calc2.dataframe(DIST_VARIABLES),
                                      groupby='webapp_income_bins',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -328,26 +325,6 @@ def test_create_tables(cps_subsample):
                 583832]
     assert np.allclose(dist['num_returns_ItemDed'].tolist(), expected,
                        atol=0.5, rtol=0.0)
-
-    calc2.add_records_variable('expanded_income_baseline',
-                               calc1, 'expanded_income')
-    dist = create_distribution_table(calc2,
-                                     groupby='webapp_income_bins',
-                                     income_measure='expanded_income_baseline',
-                                     result_type='weighted_sum')
-    assert isinstance(dist, pd.DataFrame)
-
-    with pytest.raises(ValueError):
-        create_distribution_table(calc2,
-                                  groupby='small_income_bins',
-                                  income_measure='expanded_income',
-                                  result_type='bad_result_type')
-
-    with pytest.raises(ValueError):
-        create_distribution_table(calc2,
-                                  groupby='bad_bins',
-                                  income_measure='expanded_income',
-                                  result_type='weighted_sum')
 
 
 def test_diff_count_precision():
@@ -675,16 +652,16 @@ def test_dist_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
-    tb1 = create_distribution_table(calc,
+    tb1 = create_distribution_table(calc.dataframe(DIST_VARIABLES),
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
-    tb2 = create_distribution_table(calc,
+    tb2 = create_distribution_table(calc.dataframe(DIST_VARIABLES),
                                     groupby='large_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
     assert np.allclose(tb1[-1:], tb2[-1:])
-    tb3 = create_distribution_table(calc,
+    tb3 = create_distribution_table(calc.dataframe(DIST_VARIABLES),
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_avg')
@@ -703,11 +680,13 @@ def test_diff_table_sum_row(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
     # create two difference tables and compare their content
-    tdiff1 = create_difference_table(calc1, calc2,
+    tdiff1 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                     calc2.dataframe(DIFF_VARIABLES),
                                      groupby='small_income_bins',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
-    tdiff2 = create_difference_table(calc1, calc2,
+    tdiff2 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                     calc2.dataframe(DIFF_VARIABLES),
                                      groupby='large_income_bins',
                                      income_measure='expanded_income',
                                      tax_to_diff='iitax')
@@ -722,23 +701,29 @@ def test_diff_table_sum_row(cps_subsample):
 def test_mtr_graph_data(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
+    year = calc.current_year,
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars='bad',
+        mtr_graph_data(None, year, mars='bad',
                        income_measure='agi',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars=0,
+        mtr_graph_data(None, year, mars=0,
                        income_measure='expanded_income',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars=list())
+        mtr_graph_data(None, year, mars=list())
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
+        mtr_graph_data(None, year, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mtr_measure='badtax')
+        mtr_graph_data(None, year, mtr_measure='badtax')
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, income_measure='badincome')
-    gdata = mtr_graph_data(calc, calc, mars=1,
+        mtr_graph_data(None, year, income_measure='badincome')
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'MARS', 'e00200'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    vdf = vdf[vdf['MARS'] == 1]
+    gdata = mtr_graph_data(vdf, year, mars=1,
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
                            dollar_weighting=True)
@@ -749,34 +734,43 @@ def test_atr_graph_data(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=pol, records=rec)
+    year = calc.current_year
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars='bad')
+        atr_graph_data(None, year, mars='bad')
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars=0)
+        atr_graph_data(None, year, mars=0)
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars=list())
+        atr_graph_data(None, year, mars=list())
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, atr_measure='badtax')
-    gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
-    gdata = atr_graph_data(calc, calc, atr_measure='itax')
-    gdata = atr_graph_data(calc, calc, atr_measure='ptax')
+        atr_graph_data(None, year, atr_measure='badtax')
+    calc.calc_all()
+    vdf = calc.dataframe(['s006', 'MARS', 'expanded_income'])
+    tax = 0.20 * np.ones_like(vdf['expanded_income'])
+    vdf['tax1'] = tax
+    vdf['tax2'] = tax
+    gdata = atr_graph_data(vdf, year, mars=1, atr_measure='combined')
+    gdata = atr_graph_data(vdf, year, atr_measure='itax')
+    gdata = atr_graph_data(vdf, year, atr_measure='ptax')
     assert isinstance(gdata, dict)
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=pol, records=rec)
-        calcx.advance_to_year(2020)
-        atr_graph_data(calcx, calc)
 
 
 def test_xtr_graph_plot(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample),
                       behavior=Behavior())
-    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'MARS', 'c00100'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='ptax',
                            income_measure='agi',
                            dollar_weighting=False)
     gplot = xtr_graph_plot(gdata)
     assert gplot
-    gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
+    vdf = calc.dataframe(['s006', 'expanded_income'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='itax',
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='expanded_income',
                            dollar_weighting=False)
@@ -791,7 +785,11 @@ def temporary_filename(suffix=''):
 def test_write_graph_file(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
-    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'e00200', 'c00100'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='ptax',
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='agi',
                            dollar_weighting=False)
@@ -815,68 +813,7 @@ def test_write_graph_file(cps_subsample):
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_multiyear_diagnostic_table(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    pol = Policy()
-    beh = Behavior()
-    calc = Calculator(policy=pol, records=rec, behavior=beh)
-    with pytest.raises(ValueError):
-        multiyear_diagnostic_table(calc, 0)
-    with pytest.raises(ValueError):
-        multiyear_diagnostic_table(calc, 20)
-    adt = multiyear_diagnostic_table(calc, 3)
-    assert isinstance(adt, pd.DataFrame)
-    beh.update_behavior({2013: {'_BE_sub': [0.3]}})
-    calc = Calculator(policy=pol, records=rec, behavior=beh)
-    assert calc.behavior.has_response()
-    adt = multiyear_diagnostic_table(calc, 3)
-    assert isinstance(adt, pd.DataFrame)
-
-
-def test_myr_diag_table_wo_behv(cps_subsample):
-    reform = {
-        2013: {
-            '_II_rt7': [0.33],
-            '_PT_rt7': [0.33],
-        }}
-    pol = Policy()
-    pol.implement_reform(reform)
-    calc = Calculator(policy=pol,
-                      records=Records.cps_constructor(data=cps_subsample))
-    calc.calc_all()
-    liabilities_x = (calc.records.combined *
-                     calc.records.s006).sum()
-    adt = multiyear_diagnostic_table(calc, 1)
-    # extract combined liabilities as a float and
-    # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[19].tolist()[0] * 1e9
-    assert np.allclose(liabilities_x, liabilities_y, atol=0.01, rtol=0.0)
-
-
-def test_myr_diag_table_w_behv(cps_subsample):
-    pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample)
-    year = rec.current_year
-    beh = Behavior()
-    calc = Calculator(policy=pol, records=rec, behavior=beh)
-    assert calc.current_year == year
-    reform = {year: {'_II_rt7': [0.33], '_PT_rt7': [0.33]}}
-    pol.implement_reform(reform)
-    reform_behav = {year: {'_BE_sub': [0.4], '_BE_cg': [-3.67]}}
-    beh.update_behavior(reform_behav)
-    calc_clp = calc.current_law_version()
-    calc_beh = Behavior.response(calc_clp, calc)
-    calc_beh.calc_all()
-    liabilities_x = (calc_beh.records.combined *
-                     calc_beh.records.s006).sum()
-    adt = multiyear_diagnostic_table(calc_beh, 1)
-    # extract combined liabilities as a float and
-    # adopt units of the raw calculator data in liabilities_x
-    liabilities_y = adt.iloc[19].tolist()[0] * 1e9
-    assert np.allclose(liabilities_x, liabilities_y, atol=0.01, rtol=0.0)
-
-
-def test_ce_aftertax_exp_income(cps_subsample):
+def test_ce_aftertax_income(cps_subsample):
     # test certainty_equivalent() function with con>cmin
     con = 5000
     cmin = 1000
@@ -965,6 +902,7 @@ def test_dec_graph_plot(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=rec)
     year = 2020
+    calc1.advance_to_year(year)
     reform = {
         year: {
             '_SS_Earnings_c': [9e99],  # OASDI FICA tax on all earnings
@@ -974,14 +912,9 @@ def test_dec_graph_plot(cps_subsample):
     }
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
-    calc1.advance_to_year(year)
-    with pytest.raises(ValueError):
-        dec_graph_data(calc1, calc2)
     calc2.advance_to_year(year)
-    gdata = dec_graph_data(calc1, calc2)
-    assert isinstance(gdata, dict)
-    deciles = gdata['bars'].keys()
-    assert len(deciles) == 14
-    gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
-    assert gplot
-    # write_graph_file(gplot, 'test.html', 'Test Plot')
+    assert calc1.current_year == calc2.current_year
+    calc1.calc_all()
+    calc2.calc_all()
+    fig = calc1.decile_graph(calc2)
+    assert fig
