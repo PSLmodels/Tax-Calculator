@@ -6,7 +6,7 @@ import pandas as pd
 import pytest
 from taxcalc.tbi.tbi_utils import *
 from taxcalc.tbi import *
-from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
+from taxcalc import Policy, Records, Calculator
 
 
 USER_MODS = {
@@ -216,7 +216,7 @@ def test_with_pufcsv(puf_fullsample):
     while calc.current_year < analysis_year:
         calc.increment_year()
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = multiyear_diagnostic_table(calc, 1)
+    adt = calc.diagnostic_table(1)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     assert taxes_fullsample is not None
     fulls_reform_revenue = float(taxes_fullsample.loc[analysis_year])

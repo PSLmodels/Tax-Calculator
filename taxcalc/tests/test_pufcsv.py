@@ -22,7 +22,7 @@ import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
+from taxcalc import Policy, Records, Calculator
 
 
 @pytest.mark.requires_pufcsv
@@ -41,7 +41,7 @@ def test_agg(tests_path, puf_fullsample):
     calc = Calculator(policy=clp, records=rec)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = multiyear_diagnostic_table(calc, nyrs)
+    adt = calc.diagnostic_table(nyrs)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
@@ -78,7 +78,7 @@ def test_agg(tests_path, puf_fullsample):
     subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
     rec_subsample = Records(data=subsample)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
-    adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
+    adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
     reltol = 0.01  # maximum allowed relative difference in tax liability
