@@ -5,7 +5,7 @@ Tax-Calculator federal tax Calculator class.
 # pep8 --ignore=E402 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
-# pylint: disable=invalid-name,no-value-for-parameter
+# pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
 import os
 import json
@@ -32,6 +32,9 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
+from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
+                           DIFF_VARIABLES, create_difference_table,
+                           create_diagnostic_table)
 # import pdb
 
 
@@ -195,9 +198,8 @@ class Calculator(object):
         """
         Return pandas DataFrame containing the listed Records variables.
         """
-        arrays = [getattr(self.records, vname) for vname in variable_list]
-        pdf = pd.DataFrame(data=np.column_stack(arrays), columns=variable_list)
-        return pdf
+        arys = [getattr(self.records, vname) for vname in variable_list]
+        return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
     def array(self, variable_name):
         """
@@ -205,16 +207,165 @@ class Calculator(object):
         """
         return getattr(self.records, variable_name)
 
-    def add_records_variable(self, dst_name, src_calc, src_name):
+    def diagnostic_table(self, num_years):
         """
-        Add new variable with name dst_name to this Calculator object's
-        embedded Records object with the new variable being the variable with
-        the src_name in the embedded Records object of the src_calc object.
+        Generate multi-year diagnostic table;
+        this method leaves the Calculator object unchanged.
+
+        Parameters
+        ----------
+        num_years : Integer
+            number of years to include in diagnostic table starting
+            with the Calculator object's current_year (must be at least
+            one and no more than what would exceed Policy end_year
+
+        Returns
+        -------
+        Pandas DataFrame object containing the multi-year diagnostic table
         """
-        assert getattr(self.records, dst_name, None) is None
-        assert isinstance(src_calc, Calculator)
-        assert getattr(src_calc.records, src_name, None) is not None
-        setattr(self.records, dst_name, getattr(src_calc.records, src_name))
+        assert num_years >= 1
+        max_num_years = self.policy.end_year - self.policy.current_year + 1
+        assert num_years <= max_num_years
+        calc = copy.deepcopy(self)
+        tlist = list()
+        for iyr in range(1, num_years + 1):
+            calc.calc_all()
+            diag = create_diagnostic_table(calc.dataframe(DIST_VARIABLES),
+                                           calc.current_year)
+            tlist.append(diag)
+            if iyr < num_years:
+                calc.increment_year()
+        return pd.concat(tlist, axis=1)
+
+    def distribution_tables(self, calc,
+                            groupby='weighted_deciles',
+                            income_measure='expanded_income',
+                            result_type='weighted_sum'):
+        """
+        Get results from self and calc, sort them based on groupby using
+        income_measure, manipulate grouped statistics based on result_type,
+        and return tables as a pair of Pandas dataframes.
+        Note that the returned tables have consistent income groups (based
+        on the self income_measure) even though the income_measure in self
+        and the income_measure in calc are different.
+
+        Parameters
+        ----------
+        calc : Calculator object or None
+            typically represents the reform while self represents the baseline;
+            if calc is None, the second returned table is None
+
+        groupby : String object
+            options for input: 'weighted_deciles', 'webapp_income_bins',
+                               'large_income_bins', 'small_income_bins';
+            determines how the columns in returned tables are sorted
+        NOTE: when groupby is 'weighted_deciles', the returned table has three
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent).
+
+        income_measure : String object
+            options for input: 'expanded_income' or 'c00100'(AGI)
+
+        result_type : String object
+            options for input: 'weighted_sum' or 'weighted_avg';
+            determines how whether or not table entries are averages or totals
+
+        Typical usage
+        -------------
+        dist1, dist2 = calc1.distribution_tables(calc2)
+        OR
+        dist1, _ = calc1.distribution_tables(None)
+        (where calc1 is a baseline Calculator object
+        and calc2 is a reform Calculator object)
+        """
+        # nested function used only by this method
+        def have_same_income_measure(calc1, calc2, income_measure):
+            """
+            Return true if calc1 and calc2 contain the same income_measure;
+            otherwise, return false.  (Note that "same" means nobody's
+            income_measure differs by more than one cent.)
+            """
+            im1 = getattr(calc1.records, income_measure)
+            im2 = getattr(calc2.records, income_measure)
+            return np.allclose(im1, im2, rtol=0.0, atol=0.01)
+        # main logic of method
+        assert calc is None or isinstance(calc, Calculator)
+        assert (groupby == 'weighted_deciles' or
+                groupby == 'webapp_income_bins' or
+                groupby == 'large_income_bins' or
+                groupby == 'small_income_bins')
+        assert (income_measure == 'expanded_income' or
+                income_measure == 'c00100')
+        assert (result_type == 'weighted_sum' or
+                result_type == 'weighted_avg')
+        dt1 = create_distribution_table(self.dataframe(DIST_VARIABLES),
+                                        groupby=groupby,
+                                        income_measure=income_measure,
+                                        result_type=result_type)
+        if calc is None:
+            dt2 = None
+        else:
+            assert calc.current_year == self.current_year
+            assert calc.records.dim == self.records.dim
+            var_dataframe = calc.dataframe(DIST_VARIABLES)
+            if have_same_income_measure(self, calc, income_measure):
+                imeasure = income_measure
+            else:
+                imeasure = income_measure + '_baseline'
+                var_dataframe[imeasure] = getattr(self.records, income_measure)
+            dt2 = create_distribution_table(var_dataframe,
+                                            groupby=groupby,
+                                            income_measure=imeasure,
+                                            result_type=result_type)
+        return dt1, dt2
+
+    def difference_table(self, calc,
+                         groupby='weighted_deciles',
+                         income_measure='expanded_income',
+                         tax_to_diff='combined'):
+        """
+        Get results from self and calc, sort them based on groupby using
+        income_measure, and return tax-difference table as a Pandas dataframe.
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline
+
+        groupby : String object
+            options for input: 'weighted_deciles', 'webapp_income_bins',
+                               'large_income_bins', 'small_income_bins';
+            determines how the columns in returned tables are sorted
+        NOTE: when groupby is 'weighted_deciles', the returned table has three
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent).
+
+        income_measure : String object
+            options for input: 'expanded_income' or 'c00100'(AGI)
+
+        tax_to_diff : String object
+            options for input: 'iitax', 'payrolltax', 'combined'
+            specifies which tax to difference
+
+        Typical usage
+        -------------
+        diff = calc1.difference_table(calc2)
+        (where calc1 is a baseline Calculator object
+        and calc2 is a reform Calculator object)
+        """
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.records.dim == self.records.dim
+        diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
+                                       calc.dataframe(DIFF_VARIABLES),
+                                       groupby=groupby,
+                                       income_measure=income_measure,
+                                       tax_to_diff=tax_to_diff)
+        return diff
 
     @property
     def current_year(self):
