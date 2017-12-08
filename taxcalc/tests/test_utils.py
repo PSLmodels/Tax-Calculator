@@ -30,7 +30,8 @@ from taxcalc.utils import (DIST_VARIABLES,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
-                           certainty_equivalent, ce_aftertax_income)
+                           certainty_equivalent,
+                           ce_aftertax_expanded_income)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -836,20 +837,23 @@ def test_ce_aftertax_income(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(cyr)
     calc2.calc_all()
-    cedict = ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=False)
-    assert cedict['year'] == cyr
+    df1 = calc1.dataframe(['s006', 'combined', 'expanded_income'])
+    df2 = calc2.dataframe(['s006', 'combined', 'expanded_income'])
+    cedict = ce_aftertax_expanded_income(df1, df2,
+                                         require_no_agg_tax_change=False)
+    assert isinstance(cedict, dict)
     np.allclose(cedict['ceeu1'], [55641, 27167, 5726, 2229, 1565],
                 atol=0.5, rtol=0.0)
     np.allclose(cedict['ceeu2'], [54629, 26698, 5710, 2229, 1565],
                 atol=0.5, rtol=0.0)
     # test with require_no_agg_tax_change equal to True
     with pytest.raises(ValueError):
-        ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True)
+        ce_aftertax_expanded_income(df1, df2, require_no_agg_tax_change=True)
     # test with require_no_agg_tax_change equal to False and custom_params
     params = {'crra_list': [0, 2], 'cmin_value': 2000}
     with pytest.raises(ValueError):
-        ce_aftertax_income(calc1, calc2, require_no_agg_tax_change=True,
-                           custom_params=params)
+        ce_aftertax_expanded_income(df1, df2, require_no_agg_tax_change=True,
+                                    custom_params=params)
 
 
 def test_read_egg_csv():

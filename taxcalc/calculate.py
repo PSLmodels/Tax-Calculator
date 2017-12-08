@@ -35,6 +35,7 @@ from taxcalc.growfactors import Growfactors
 from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            DIFF_VARIABLES, create_difference_table,
                            create_diagnostic_table,
+                           ce_aftertax_expanded_income,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
                            dec_graph_data, dec_graph_plot)
 # import pdb
@@ -1076,6 +1077,46 @@ class Calculator(object):
         else:
             doc += 'none: using current-law policy parameters\n'
         return doc
+
+    def ce_aftertax_income(self, calc,
+                           custom_params=None,
+                           require_no_agg_tax_change=True):
+        """
+        Return dictionary that contains certainty-equivalent of the
+        expected utility of after-tax expanded income computed for
+        several constant-relative-risk-aversion parameter values
+        for each of two Calculator objects: self, which represents
+        the pre-reform situation, and calc, which represents the
+        post-reform situation, both of which MUST have had calc_call()
+        called before being passed to this function.
+
+        IMPORTANT NOTES: These normative welfare calculations are very
+        simple.  It is assumed that utility is a function of only
+        consumption, and that consumption is equal to after-tax
+        income.  This means that any assumed behavioral responses that
+        change work effort will not affect utility via the
+        correpsonding change in leisure.  And any saving response to
+        changes in after-tax income do not affect consumption.
+
+        The cmin value is the consumption level below which marginal
+        utility is considered to be constant.  This allows the handling
+        of filing units with very low or even negative after-tax expanded
+        income in the expected-utility and certainty-equivalent calculations.
+        """
+        # check that calc and self are consistent
+        assert isinstance(calc, Calculator)
+        assert calc.records.dim == self.records.dim
+        assert calc.current_year == self.current_year
+        # extract data from self and calc
+        records_variables = ['s006', 'combined', 'expanded_income']
+        df1 = self.dataframe(records_variables)
+        df2 = calc.dataframe(records_variables)
+        cedict = ce_aftertax_expanded_income(
+            df1, df2,
+            custom_params=custom_params,
+            require_no_agg_tax_change=require_no_agg_tax_change)
+        cedict['year'] = self.current_year
+        return cedict
 
     # ----- begin private methods of Calculator class -----
 
