@@ -27,7 +27,6 @@ from taxcalc.utils import (DIST_VARIABLES,
                            weighted_perc_inc, weighted_perc_cut,
                            add_income_bins, add_quantile_bins,
                            mtr_graph_data, atr_graph_data,
-                           dec_graph_data, dec_graph_plot,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
@@ -701,23 +700,29 @@ def test_diff_table_sum_row(cps_subsample):
 def test_mtr_graph_data(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
+    year = calc.current_year,
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars='bad',
+        mtr_graph_data(None, year, mars='bad',
                        income_measure='agi',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars=0,
+        mtr_graph_data(None, year, mars=0,
                        income_measure='expanded_income',
                        dollar_weighting=True)
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars=list())
+        mtr_graph_data(None, year, mars=list())
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mars='ALL', mtr_variable='e00200s')
+        mtr_graph_data(None, year, mars='ALL', mtr_variable='e00200s')
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, mtr_measure='badtax')
+        mtr_graph_data(None, year, mtr_measure='badtax')
     with pytest.raises(ValueError):
-        mtr_graph_data(calc, calc, income_measure='badincome')
-    gdata = mtr_graph_data(calc, calc, mars=1,
+        mtr_graph_data(None, year, income_measure='badincome')
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'MARS', 'e00200'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    vdf = vdf[vdf['MARS'] == 1]
+    gdata = mtr_graph_data(vdf, year, mars=1,
                            mtr_wrt_full_compen=True,
                            income_measure='wages',
                            dollar_weighting=True)
@@ -728,34 +733,43 @@ def test_atr_graph_data(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=pol, records=rec)
+    year = calc.current_year
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars='bad')
+        atr_graph_data(None, year, mars='bad')
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars=0)
+        atr_graph_data(None, year, mars=0)
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, mars=list())
+        atr_graph_data(None, year, mars=list())
     with pytest.raises(ValueError):
-        atr_graph_data(calc, calc, atr_measure='badtax')
-    gdata = atr_graph_data(calc, calc, mars=1, atr_measure='combined')
-    gdata = atr_graph_data(calc, calc, atr_measure='itax')
-    gdata = atr_graph_data(calc, calc, atr_measure='ptax')
+        atr_graph_data(None, year, atr_measure='badtax')
+    calc.calc_all()
+    vdf = calc.dataframe(['s006', 'MARS', 'expanded_income'])
+    tax = 0.20 * np.ones_like(vdf['expanded_income'])
+    vdf['tax1'] = tax
+    vdf['tax2'] = tax
+    gdata = atr_graph_data(vdf, year, mars=1, atr_measure='combined')
+    gdata = atr_graph_data(vdf, year, atr_measure='itax')
+    gdata = atr_graph_data(vdf, year, atr_measure='ptax')
     assert isinstance(gdata, dict)
-    with pytest.raises(ValueError):
-        calcx = Calculator(policy=pol, records=rec)
-        calcx.advance_to_year(2020)
-        atr_graph_data(calcx, calc)
 
 
 def test_xtr_graph_plot(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample),
                       behavior=Behavior())
-    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'MARS', 'c00100'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='ptax',
                            income_measure='agi',
                            dollar_weighting=False)
     gplot = xtr_graph_plot(gdata)
     assert gplot
-    gdata = mtr_graph_data(calc, calc, mtr_measure='itax',
+    vdf = calc.dataframe(['s006', 'expanded_income'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='itax',
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='expanded_income',
                            dollar_weighting=False)
@@ -770,7 +784,11 @@ def temporary_filename(suffix=''):
 def test_write_graph_file(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))
-    gdata = mtr_graph_data(calc, calc, mtr_measure='ptax',
+    mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
+    vdf = calc.dataframe(['s006', 'e00200', 'c00100'])
+    vdf['mtr1'] = mtr
+    vdf['mtr2'] = mtr
+    gdata = mtr_graph_data(vdf, calc.current_year, mtr_measure='ptax',
                            alt_e00200p_text='Taxpayer Earnings',
                            income_measure='agi',
                            dollar_weighting=False)
@@ -891,11 +909,8 @@ def test_dec_graph_plot(cps_subsample):
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(year)
-    gdata = dec_graph_data(calc1.dataframe(DIFF_VARIABLES),
-                           calc2.dataframe(DIFF_VARIABLES), year)
-    assert isinstance(gdata, dict)
-    deciles = gdata['bars'].keys()
-    assert len(deciles) == 14
-    gplot = dec_graph_plot(gdata, xlabel='', ylabel='')
-    assert gplot
-    # write_graph_file(gplot, 'test.html', 'Test Plot')
+    assert calc1.current_year == calc2.current_year
+    calc1.calc_all()
+    calc2.calc_all()
+    fig = calc1.decile_graph(calc2)
+    assert fig

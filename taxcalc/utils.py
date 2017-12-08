@@ -646,7 +646,7 @@ def create_diagnostic_table(vdf, year):
     return pdf
 
 
-def mtr_graph_data(calc1, calc2,
+def mtr_graph_data(vdf, year,
                    mars='ALL',
                    mtr_measure='combined',
                    mtr_variable='e00200p',
@@ -659,9 +659,11 @@ def mtr_graph_data(calc1, calc2,
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    vdf : a Pandas DataFrame object containing variables and marginal tax rates
+        (See Calculator.mtr_graph method for required elements of vdf.)
 
-    calc2 : a Calculator object that refers to reform policy
+    year : integer
+        specifies calendar year of the data in vdf
 
     mars : integer or string
         specifies which filing status subgroup to show in the graph
@@ -722,11 +724,8 @@ def mtr_graph_data(calc1, calc2,
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-arguments,too-many-statements,
+    # pylint: disable=too-many-arguments,too-many-statements
     # pylint: disable=too-many-locals,too-many-branches
-    # check that two calculator objects have the same current_year
-    assert calc1.current_year == calc2.current_year
-    year = calc1.current_year
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -776,35 +775,10 @@ def mtr_graph_data(calc1, calc2,
         msg = ('mtr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(mtr_measure))
-    # calculate marginal tax rates
-    (mtr1_ptax, mtr1_itax,
-     mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    (mtr2_ptax, mtr2_itax,
-     mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    # extract needed output that is assumed unchanged by reform from calc1
-    record_columns = ['s006']
-    if mars != 'ALL':
-        record_columns.append('MARS')
-    record_columns.append(income_var)
-    output = [getattr(calc1.records, col) for col in record_columns]
-    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    # set mtr given specified mtr_measure
-    if mtr_measure == 'itax':
-        dfx['mtr1'] = mtr1_itax
-        dfx['mtr2'] = mtr2_itax
-    elif mtr_measure == 'ptax':
-        dfx['mtr1'] = mtr1_ptax
-        dfx['mtr2'] = mtr2_ptax
-    elif mtr_measure == 'combined':
-        dfx['mtr1'] = mtr1_combined
-        dfx['mtr2'] = mtr2_combined
-    # select filing-status subgroup, if any
-    if mars != 'ALL':
-        dfx = dfx[dfx['MARS'] == mars]
+    # . . check vdf
+    assert isinstance(vdf, pd.DataFrame)
     # create 'bins' column given specified income_var and dollar_weighting
-    dfx = add_quantile_bins(dfx, income_var, 100,
+    dfx = add_quantile_bins(vdf, income_var, 100,
                             weight_by_income_measure=dollar_weighting)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
@@ -840,7 +814,7 @@ def mtr_graph_data(calc1, calc2,
     return data
 
 
-def atr_graph_data(calc1, calc2,
+def atr_graph_data(vdf, year,
                    mars='ALL',
                    atr_measure='combined',
                    min_avginc=1000):
@@ -849,9 +823,11 @@ def atr_graph_data(calc1, calc2,
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    vdf : a Pandas DataFrame object containing variables and tax liabilities
+        (See Calculator.atr_graph method for required elements of vdf.)
 
-    calc2 : a Calculator object that refers to reform policy
+    year : integer
+        specifies calendar year of the data in vdf
 
     mars : integer or string
         specifies which filing status subgroup to show in the graph
@@ -883,13 +859,7 @@ def atr_graph_data(calc1, calc2,
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
-    # check that two calculator objects have the same current_year
-    if calc1.current_year == calc2.current_year:
-        year = calc1.current_year
-    else:
-        msg = 'calc1.current_year={} != calc2.current_year={}'
-        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
+    # pylint: disable=too-many-locals
     # check validity of function arguments
     # . . check mars value
     if isinstance(mars, six.string_types):
@@ -904,43 +874,22 @@ def atr_graph_data(calc1, calc2,
         msg = 'mars="{}" is neither a string nor an integer'
         raise ValueError(msg.format(mars))
     # . . check atr_measure value
-    if atr_measure == 'itax':
+    if atr_measure == 'combined':
+        atr_str = 'Income+Payroll-Tax'
+    elif atr_measure == 'itax':
         atr_str = 'Income-Tax'
     elif atr_measure == 'ptax':
         atr_str = 'Payroll-Tax'
-    elif atr_measure == 'combined':
-        atr_str = 'Income+Payroll-Tax'
     else:
         msg = ('atr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(atr_measure))
     # . . check min_avginc value
-    assert min_avginc > 0.
-    # calculate taxes and expanded income
-    calc1.calc_all()
-    calc2.calc_all()
-    # extract needed output that is assumed unchanged by reform from calc1
-    record_columns = ['s006']
-    if mars != 'ALL':
-        record_columns.append('MARS')
-    record_columns.append('expanded_income')
-    output = [getattr(calc1.records, col) for col in record_columns]
-    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    # create 'tax1' and 'tax2' columns given specified atr_measure
-    if atr_measure == 'itax':
-        dfx['tax1'] = calc1.records.iitax
-        dfx['tax2'] = calc2.records.iitax
-    elif atr_measure == 'ptax':
-        dfx['tax1'] = calc1.records.payrolltax
-        dfx['tax2'] = calc2.records.payrolltax
-    elif atr_measure == 'combined':
-        dfx['tax1'] = calc1.records.combined
-        dfx['tax2'] = calc2.records.combined
-    # select filing-status subgroup, if any
-    if mars != 'ALL':
-        dfx = dfx[dfx['MARS'] == mars]
+    assert min_avginc > 0
+    # . . check vdf object
+    assert isinstance(vdf, pd.DataFrame)
     # create 'bins' column
-    dfx = add_quantile_bins(dfx, 'expanded_income', 100)
+    dfx = add_quantile_bins(vdf, 'expanded_income', 100)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply weighted_mean function to percentile-grouped income/tax values
@@ -1017,7 +966,7 @@ def xtr_graph_plot(data,
     -----
     USAGE EXAMPLE::
 
-      gdata = mtr_graph_data(calc1, calc2)
+      gdata = mtr_graph_data(...)
       gplot = xtr_graph_plot(gdata)
 
     THEN when working interactively in a Python notebook::
@@ -1347,28 +1296,22 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(vdf1, vdf2, year):
+def dec_graph_data(diff_table, year):
     """
     Prepare data needed by dec_graph_plot utility function.
 
     Parameters
     ----------
-    vdf1 : a Pandas DataFrame object that refers to baseline policy and
-           contains variable in the DIFF_VARIABLES list
+    diff_table : a Pandas DataFrame object returned from the
+        Calculator class difference_table method
 
-    vdf2 : a Pandas DataFrame object that refers to reform policy and
-           contains variable in the DIFF_VARIABLES list
-
-    year : calendar year from which the vdf1 and vdf2 data are drawn
+    year : integer
+        specifies calendar year of the data in the diff_table
 
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
     """
-    diff_table = create_difference_table(vdf1, vdf2,
-                                         groupby='weighted_deciles',
-                                         income_measure='expanded_income',
-                                         tax_to_diff='combined')
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
     for idx in range(0, 14):  # the ten income deciles, all, plus top details
@@ -1427,7 +1370,7 @@ def dec_graph_plot(data,
     -----
     USAGE EXAMPLE::
 
-      gdata = dec_graph_data(calc1, calc2)
+      gdata = dec_graph_data(...)
       gplot = dec_graph_plot(gdata)
 
     THEN when working interactively in a Python notebook::
