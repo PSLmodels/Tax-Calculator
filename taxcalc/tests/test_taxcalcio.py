@@ -363,13 +363,13 @@ def test_ctor_init_with_cps_files():
     MARS;iitax	payrolltax|combined,c00100
     surtax
     RECID
-    FLPDYR   
+    FLPDYR
     """, True, 8),
     ("""
     MARS;iitax	payrolltax|kombined,c00100
     surtax
     RECID
-    FLPDYR   
+    FLPDYR
     """, False, 8)
 ])
 def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
