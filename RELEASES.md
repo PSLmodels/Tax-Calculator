@@ -13,8 +13,11 @@ for a complete commit history.
 - Add several Calculator table methods and revise table utilities to not use Calculator object(s)
   [[#1718](https://github.com/open-source-economics/Tax-Calculator/pull/1718)
   by Martin Holmer]
-- Add several Calculator graph methods and revise graph utilities to not use Calculator object(s)
+- Add several Calculator graph methods and revise graph utilities to not use Calculator objects
   [[#1722](https://github.com/open-source-economics/Tax-Calculator/pull/1722)
+  by Martin Holmer]
+- Add Calculator ce_aftertax_income method and revise corresponding utility to not use Calculator object
+  [[#1723](https://github.com/open-source-economics/Tax-Calculator/pull/1723)
   by Martin Holmer]
 
 **New Features**
@@ -24,6 +27,9 @@ for a complete commit history.
 - Remove calculation of AGI tables from the TaxBrain Interface, tbi
   [[#1724](https://github.com/open-source-economics/Tax-Calculator/pull/1724)
   by Martin Holmer as suggested by Matt Jensen and Hank Doupe]
+- Add ability to specify partial customized CLI `tc --dump` output
+  [[#1735](https://github.com/open-source-economics/Tax-Calculator/pull/1735)
+  by Martin Holmer as suggested by Sean Wang]
 
 **Bug Fixes**
 - Fix Behavior.response method to handle very high marginal tax rates
