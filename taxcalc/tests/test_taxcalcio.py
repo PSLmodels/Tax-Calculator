@@ -358,18 +358,21 @@ def test_ctor_init_with_cps_files():
     assert tcio.errmsg
 
 
-@pytest.mark.parametrize("dumpvar_str, str_valid", [
+@pytest.mark.parametrize("dumpvar_str, str_valid, num_vars", [
     ("""
-    MARS, combined;iitax|  payrolltax
-
-    c00100
-    """, True),
+    MARS;iitax	payrolltax|combined,c00100
+    surtax
+    RECID
+    FLPDYR   
+    """, True, 8),
     ("""
-    MARS
-    kombined
-    """, False)
+    MARS;iitax	payrolltax|kombined,c00100
+    surtax
+    RECID
+    FLPDYR   
+    """, False, 8)
 ])
-def test_custom_dump_variables(dumpvar_str, str_valid):
+def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
     """
     Test TaxCalcIO custom_dump_variables method.
     """
@@ -387,6 +390,8 @@ def test_custom_dump_variables(dumpvar_str, str_valid):
     assert isinstance(varset, set)
     valid = len(tcio.errmsg) == 0
     assert valid == str_valid
+    if valid:
+        assert len(varset) == num_vars
 
 
 def test_output_otions(rawinputfile, reformfile1, assumpfile1):

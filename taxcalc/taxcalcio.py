@@ -278,9 +278,8 @@ class TaxCalcIO(object):
         """
         assert isinstance(tcdumpvars_str, six.string_types)
         self.errmsg = ''
-        # change some delimiter characters into spaces
-        dump_vars_str = tcdumpvars_str.replace('\n', ' ')
-        dump_vars_str = dump_vars_str.replace(',', ' ')
+        # change some common delimiter characters into spaces
+        dump_vars_str = tcdumpvars_str.replace(',', ' ')
         dump_vars_str = dump_vars_str.replace(';', ' ')
         dump_vars_str = dump_vars_str.replace('|', ' ')
         # split dump_vars_str into a list of dump variables
