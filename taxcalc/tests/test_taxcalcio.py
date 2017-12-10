@@ -360,11 +360,11 @@ def test_ctor_init_with_cps_files():
 
 @pytest.mark.parametrize("dumpvar_str, str_valid, num_vars", [
     ("""
-    MARS;iitax	payrolltax|combined,c00100
+    MARS;iitax	payrolltax|combined,
+    c00100
     surtax
-    RECID
-    FLPDYR
-    """, True, 8),
+    """, True, 8),  # these six plus added RECID and FLPDYR
+
     ("""
     MARS;iitax	payrolltax|kombined,c00100
     surtax
