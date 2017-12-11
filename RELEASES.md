@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2017-12-?? Release 0.14.0
+2017-12-11 Release 0.14.0
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1742](https://github.com/open-source-economics/Tax-Calculator/pull/1742))
 
 **API Changes**
 - Add several Calculator table methods and revise table utilities to not use Calculator object(s)
@@ -30,6 +30,9 @@ for a complete commit history.
 - Add ability to specify partial customized CLI `tc --dump` output
   [[#1735](https://github.com/open-source-economics/Tax-Calculator/pull/1735)
   by Martin Holmer as suggested by Sean Wang]
+- Add *Cookbook of Tested Recipes for Python Programming with Tax-Calculator*
+  [[#1740](https://github.com/open-source-economics/Tax-Calculator/pull/1740)
+  by Martin Holmer]
 - Add calculation of two values on the ALL row of the difference table
   [[#1741](https://github.com/open-source-economics/Tax-Calculator/pull/1741)
   by Martin Holmer]

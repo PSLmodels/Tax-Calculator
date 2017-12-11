@@ -16,9 +16,13 @@ div { max-width: 19cm }
 <p>This document tells you how to use Tax-Calculator, an open-source
 federal income and payroll tax simulation model.  The two ways of
 using Tax-Calculator described here require no computer programming.
-If you want to participate in the development of Tax-Calculator
-&mdash; by asking a question, reporting a bug, improving the documentation
-or making an enhancement to the Python source code &mdash; you should go to
+If you are interested in Python programming with Tax-Calculator, you
+should read the tested recipes in our
+<a href="http://open-source-economics.github.io/Tax-Calculator/cookbook.html">
+Tax-Calculator Cookbook</a>. If you want to participate in the
+development of Tax-Calculator &mdash; by asking a question, reporting
+a bug, improving the documentation or making an enhancement to the
+Python source code &mdash; you should go to
 the <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
 
@@ -501,7 +505,7 @@ cents) as in the original dump output.</p>
 <p>This full dump output can be useful for debugging and is small
 when using a number of stylized filing units as input.  But when using
 large samples as input (for example, the <kbd>cps.csv</kbd> input
-file), the size of the dump output can be quite large.  Beginning with
+file), the size of the dump output becomes quite large.  Beginning with
 Tax-Calculator version 0.14.0, there is a way to specify a partial
 dump that includes only variables of interest.  To have <kbd>tc</kbd>
 do a partial dump, create a file named <kbd>tcdumpvars</kbd> in the
@@ -675,10 +679,26 @@ that make sense only with input files that contain representative
 samples of the population such as the <kbd>cps.csv</kbd> file.  The
 name of this option stands for certainty-equivalent expected utility.
 If you want to use this output option, you should read the commented
-Python source code for the <kbd>ce_aftertax_income</kbd> function in
-the <kbd>taxcalc/utils.py</kbd> file at the
+Python source code for the <kbd>ce_aftertax_expanded_income</kbd>
+function in the <kbd>taxcalc/utils.py</kbd> file at the
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
+
+<p>In all the examples in this section, we have executed one tc run at
+at time.  But <b>what if you want to execute many tc runs</b> because
+you want results for many years and/or for several different reforms.
+Unless you are asking for full-dump output, a single tc run should
+take no more than one minute on your computer (even if you are using
+the large <kbd>cps.csv</kbd> input file).  The easiest way to speed up
+the execution of many tc runs is to split them into groups of runs and
+execute each group of runs in a different command-prompt window.  On
+most modern computers that have four CPU cores and a fast disk drive,
+executing four runs in different windows will take not much more time
+than executing a single tc run.  If you have more than one run in each
+group, put them in a Unix/Mac bash script or a Windows batch file, and
+execute one script in each command-prompt window.  If it still takes
+too long, consider splitting the tc runs across more than one
+computer.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 

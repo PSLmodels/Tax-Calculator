@@ -8,7 +8,11 @@ you should begin by reading the [user
 documentation](http://open-source-economics.github.io/Tax-Calculator/)
 that describes how to use Tax-Calculator on your own computer (without
 doing any programming) and how to use the Tax-Calculator web application
-called [TaxBrain](http://www.ospc.org/taxbrain/).
+called [TaxBrain](http://www.ospc.org/taxbrain/).  If you want the most
+flexibility in using Tax-Calculator on your own computer, start
+by reading our [Cookbook of Tested Recipes for Python Programming with
+Tax-Calculator](http://open-source-economics.github.io/Tax-Calculator/cookbook.html).
+
 
 What is Tax-Calculator?
 -----------------------
