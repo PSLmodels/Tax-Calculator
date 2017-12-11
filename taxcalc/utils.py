@@ -491,6 +491,15 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
             pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
+            # TODO: following statement generates this IGNORED error:
+            # ValueError: Buffer dtype mismatch,
+            #             expected 'Python object' but got 'long'
+            # Exception ValueError: "Buffer dtype mismatch,
+            #              expected 'Python object' but got 'long'"
+            #              in 'pandas._libs.lib.is_bool_array' ignored
+            #                                                  ^^^^^^^
+            # It is hoped that Pandas PR#17841, which is scheduled for
+            # inclusion in Pandas version 0.22.0 (Jan 2018), will fix this.
             pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
                                 value=[0, 0, 0, 0, 0], inplace=True)
             pdf['bins'].replace(to_replace=[6, 7, 8, 9],
