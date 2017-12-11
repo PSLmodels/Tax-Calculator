@@ -14,8 +14,9 @@ Tax-Calculator</h1>
 
 <p>This document tells you how to use Tax-Calculator, an open-source
 federal income and payroll tax simulation model, in Python scripts
-that you can run on your own computer.  For other ways of using
-Tax-Calculator, see the
+that you can run on your own computer.  Note that these recipes
+require Tax-Calculator release 0.14.0 or higher.  For other ways of
+using Tax-Calculator, see the
 <a href="https://open-source-economics.github.io/Tax-Calculator/">
 user documentation</a>.</p>
 
@@ -61,11 +62,14 @@ the source code as a zip file by clicking on the green <q>Clone or
 download</q> button on
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 this page</a>. This choice has the advantage of replicating the
-directory structure and file names we use in our test kitchen.  Or you
-can copy and paste the recipes and ingredients, as needed, to your
-local computer.  If you make this second choice, you may need to edit
-file paths in the recipes depending on how you've organized and named
-the copied-and-pasted files.</p>
+directory structure and file names that we use in our test kitchen.
+To comfirm your unzipped installation is valid, execute
+<kbd>python test_recipes.py</kbd> in the
+<kbd>Tax-Calculator/docs/cookbook</kbd> directory.  Or you can copy
+and paste the recipes and ingredients, as needed, to your local
+computer.  If you make this second choice, you may need to edit file
+paths in the recipes depending on how you've organized and named the
+copied-and-pasted files.</p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
@@ -170,6 +174,16 @@ file</p>
 <p><a href="cookbook/recipe00.py">Step-by-step instructions</a> included in the <kbd>recipe00.py</kbd> file</p>
 
 <p><b>Results</b></p>
+
+<p><em>
+When following the recipe as shown below, you will get three instances
+of the same <b>ignored</b> error message from deep inside the Pandas
+library that is being used by Tax-Calculator.  After conferring with
+the Pandas developers, our expectation is these error messages will go
+away when we upgrade to Pandas version 0.22.0, which is scheduled to
+be released in January 2018, and which fixes a bug in the Pandas
+library.  Meanwhile, the error messages are annoying but harmless.
+</em></p>
 
 <p><a href="cookbook/recipe00.res">Expected text results</a> from
 executing <kbd>python recipe00.py > recipe00.out</kbd> at the command
