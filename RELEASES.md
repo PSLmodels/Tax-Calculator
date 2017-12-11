@@ -24,6 +24,9 @@ for a complete commit history.
 - Remove calculation of AGI tables from the TaxBrain Interface, tbi
   [[#1724](https://github.com/open-source-economics/Tax-Calculator/pull/1724)
   by Martin Holmer as suggested by Matt Jensen and Hank Doupe]
+- Add calculation of two values on the ALL row of the difference table
+  [[#1741](https://github.com/open-source-economics/Tax-Calculator/pull/1741)
+  by Martin Holmer]
 
 **Bug Fixes**
 - Fix Behavior.response method to handle very high marginal tax rates
