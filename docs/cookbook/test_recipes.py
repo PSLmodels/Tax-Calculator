@@ -28,8 +28,7 @@ for recipe in RECIPES:
     if os.path.isfile(out_filename):
         os.remove(out_filename)
     try:
-        out = subprocess.check_output(['python', recipe],
-                                      stderr=subprocess.STDOUT)
+        out = subprocess.check_output(['python', recipe])
     except subprocess.CalledProcessError as err:
         print('{} FAIL with error rtncode={}'.format(recipe, err.returncode))
         continue  # to next recipe
