@@ -30,6 +30,9 @@ for a complete commit history.
 - Add ability to specify partial customized CLI `tc --dump` output
   [[#1735](https://github.com/open-source-economics/Tax-Calculator/pull/1735)
   by Martin Holmer as suggested by Sean Wang]
+- Add calculation of two values on the ALL row of the difference table
+  [[#1741](https://github.com/open-source-economics/Tax-Calculator/pull/1741)
+  by Martin Holmer]
 
 **Bug Fixes**
 - Fix Behavior.response method to handle very high marginal tax rates

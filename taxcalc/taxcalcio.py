@@ -358,8 +358,9 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-arguments,too-many-branches
         # in order to use print(), pylint: disable=superfluous-parens
         if self.calc.policy.reform_warnings:
-            warn = 'PARAMETER VALUE WARNING(S):   (read documentation)\n{}{}'
-            print(warn.format(self.calc.policy.reform_warnings,
+            warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'
+            print(warn.format('(read documentation for each parameter)',
+                              self.calc.policy.reform_warnings,
                               'CONTINUING WITH CALCULATIONS...'))
         calc_clp_calculated = False
         if output_dump or output_sqldb:
