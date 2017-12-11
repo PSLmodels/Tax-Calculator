@@ -270,6 +270,35 @@ class TaxCalcIO(object):
         # remember parameter dictionary for reform documentation
         self.param_dict = paramdict
 
+    def custom_dump_variables(self, tcdumpvars_str):
+        """
+        Return set of variable names extracted from tcdumpvars_str, which
+        contains the contents of the tcdumpvars file in the current directory.
+        Also, builds self.errmsg if any custom variables are not valid.
+        """
+        assert isinstance(tcdumpvars_str, six.string_types)
+        self.errmsg = ''
+        # change some common delimiter characters into spaces
+        dump_vars_str = tcdumpvars_str.replace(',', ' ')
+        dump_vars_str = dump_vars_str.replace(';', ' ')
+        dump_vars_str = dump_vars_str.replace('|', ' ')
+        # split dump_vars_str into a list of dump variables
+        dump_vars_list = dump_vars_str.split()
+        # check that all dump_vars_list items are valid
+        valid_set = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+        for var in dump_vars_list:
+            if var not in valid_set:
+                msg = 'invalid variable name in tcdumpvars file: {}'
+                msg = msg.format(var)
+                self.errmsg += 'ERROR: {}\n'.format(msg)
+        # add essential variables even if not on custom list
+        if 'RECID' not in dump_vars_list:
+            dump_vars_list.append('RECID')
+        if 'FLPDYR' not in dump_vars_list:
+            dump_vars_list.append('FLPDYR')
+        # convert list into a set and return
+        return set(dump_vars_list)
+
     def tax_year(self):
         """
         Return calendar year for which TaxCalcIO calculations are being done.
@@ -287,6 +316,7 @@ class TaxCalcIO(object):
                 output_tables=False,
                 output_graphs=False,
                 output_ceeu=False,
+                dump_varset=None,
                 output_dump=False,
                 output_sqldb=False):
         """
@@ -309,6 +339,10 @@ class TaxCalcIO(object):
            whether or not to calculate and write to stdout standard
            certainty-equivalent expected-utility statistics
 
+        dump_varset: set
+           custom set of variables to include in dump and sqldb output;
+           None implies include all variables in dump and sqldb output
+
         output_dump: boolean
            whether or not to replace standard output with all input and
            calculated variables using their Tax-Calculator names
@@ -330,9 +364,11 @@ class TaxCalcIO(object):
                               'CONTINUING WITH CALCULATIONS...'))
         calc_clp_calculated = False
         if output_dump or output_sqldb:
+            # might need marginal tax rates
             (mtr_paytax, mtr_inctax,
              _) = self.calc.mtr(wrt_full_compensation=False)
-        else:  # do not need marginal tax rates
+        else:
+            # definitely do not need marginal tax rates
             mtr_paytax = None
             mtr_inctax = None
         if self.behavior_has_any_response:
@@ -363,11 +399,12 @@ class TaxCalcIO(object):
             ceeu_results = None
         # extract output if writing_output_file
         if writing_output_file:
-            self.write_output_file(output_dump, mtr_paytax, mtr_inctax)
+            self.write_output_file(output_dump, dump_varset,
+                                   mtr_paytax, mtr_inctax)
             self.write_doc_file()
         # optionally write --sqldb output to SQLite3 database
         if output_sqldb:
-            self.write_sqldb_file(mtr_paytax, mtr_inctax)
+            self.write_sqldb_file(dump_varset, mtr_paytax, mtr_inctax)
         # optionally write --tables output to text file
         if output_tables:
             if not calc_clp_calculated:
@@ -384,12 +421,13 @@ class TaxCalcIO(object):
         if ceeu_results:
             print(ceeu_results)
 
-    def write_output_file(self, output_dump, mtr_paytax, mtr_inctax):
+    def write_output_file(self, output_dump, dump_varset,
+                          mtr_paytax, mtr_inctax):
         """
         Write output to CSV-formatted file.
         """
         if output_dump:
-            outdf = self.dump_output(mtr_inctax, mtr_paytax)
+            outdf = self.dump_output(dump_varset, mtr_inctax, mtr_paytax)
             column_order = sorted(outdf.columns)
         else:
             outdf = self.minimal_output()
@@ -407,11 +445,11 @@ class TaxCalcIO(object):
         with open(doc_fname, 'w') as dfile:
             dfile.write(doc)
 
-    def write_sqldb_file(self, mtr_paytax, mtr_inctax):
+    def write_sqldb_file(self, dump_varset, mtr_paytax, mtr_inctax):
         """
         Write dump output to SQLite3 database table dump.
         """
-        outdf = self.dump_output(mtr_inctax, mtr_paytax)
+        outdf = self.dump_output(dump_varset, mtr_inctax, mtr_paytax)
         assert len(outdf.index) == self.calc.records.dim
         db_fname = self._output_filename.replace('.csv', '.db')
         dbcon = sqlite3.connect(db_fname)
@@ -596,23 +634,29 @@ class TaxCalcIO(object):
             txt += '      because "alltax difference" is essentially zero'
         return txt
 
-    def dump_output(self, mtr_inctax, mtr_paytax):
+    def dump_output(self, dump_varset, mtr_inctax, mtr_paytax):
         """
         Extract dump output and return it as Pandas DataFrame.
         """
-        # specify mtr values in percentage terms
-        self.calc.records.mtr_inctax[:] = mtr_inctax * 100.
-        self.calc.records.mtr_paytax[:] = mtr_paytax * 100.
+        if dump_varset is None:
+            varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+        else:
+            varset = dump_varset
         # create and return dump output DataFrame
         odf = pd.DataFrame()
-        varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
         for varname in varset:
-            vardata = getattr(self.calc.records, varname)
+            vardata = self.calc.array(varname)
             if varname in Records.INTEGER_VARS:
                 odf[varname] = vardata
             else:
                 odf[varname] = vardata.round(2)  # rounded to nearest cent
-        odf['FLPDYR'] = self.tax_year()  # tax calculation year
+        # specify mtr values in percentage terms
+        if 'mtr_inctax' in varset:
+            odf['mtr_inctax'] = (mtr_inctax * 100).round(2)
+        if 'mtr_paytax' in varset:
+            odf['mtr_paytax'] = (mtr_paytax * 100).round(2)
+        # specify tax calculation year
+        odf['FLPDYR'] = self.tax_year()
         return odf
 
     @staticmethod
