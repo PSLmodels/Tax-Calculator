@@ -464,6 +464,9 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             return sdf
 
         # main logic of diff_table_stats function
+        # calculate whole-sample perc_cut and perc_inc statistics
+        sums_perc_cut = weighted_perc_cut(res2, 'tax_diff')
+        sums_perc_inc = weighted_perc_inc(res2, 'tax_diff')
         # add bin column to res2 given specified groupby and income_measure
         if groupby == 'weighted_deciles':
             pdf = add_quantile_bins(res2, income_measure, 10)
@@ -477,15 +480,13 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
         diffs_without_sums = stat_dataframe(gpdf)
-        # calculate sum row (with explicit calculation of mean statistic)
+        # calculate sums row
         row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
         row['mean'] = row['tot_change'] / row['count']
+        row['perc_cut'] = sums_perc_cut
+        row['perc_inc'] = sums_perc_inc
+        row['share_of_change'] = 1.0  # avoid rounding error
         diffs = diffs_without_sums.append(row)
-        # specify some column sum elements to be np.nan and another to be 100
-        non_sum_cols = [c for c in diffs.columns if 'perc_' in c]
-        for col in non_sum_cols:
-            diffs.loc['sums', col] = np.nan
-        diffs.loc['sums', 'share_of_change'] = 1.0  # to avoid rounding error
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
