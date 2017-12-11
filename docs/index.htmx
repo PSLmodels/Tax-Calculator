@@ -504,7 +504,7 @@ cents) as in the original dump output.</p>
 <p>This full dump output can be useful for debugging and is small
 when using a number of stylized filing units as input.  But when using
 large samples as input (for example, the <kbd>cps.csv</kbd> input
-file), the size of the dump output can be quite large.  Beginning with
+file), the size of the dump output becomes quite large.  Beginning with
 Tax-Calculator version 0.14.0, there is a way to specify a partial
 dump that includes only variables of interest.  To have <kbd>tc</kbd>
 do a partial dump, create a file named <kbd>tcdumpvars</kbd> in the
@@ -682,6 +682,22 @@ Python source code for the <kbd>ce_aftertax_expanded_income</kbd>
 function in the <kbd>taxcalc/utils.py</kbd> file at the
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
+
+<p>In all the examples in this section, we have executed one tc run at
+at time.  But <b>what if you want to execute many tc runs</b> because
+you want results for many years and/or for several different reforms.
+Unless you are asking for full-dump output, a single tc run should
+take no more than one minute on your computer (even if you are using
+the large <kbd>cps.csv</kbd> input file).  The easiest way to speed up
+the execution of many tc runs is to split them into groups of runs and
+execute each group of runs in a different command-prompt window.  On
+most modern computers that have four CPU cores and a fast disk drive,
+executing four runs in different windows will take not much more time
+than executing a single tc run.  If you have more than one run in each
+group, put them in a Unix/Mac bash script or a Windows batch file, and
+execute one script in each command-prompt window.  If it still takes
+too long, consider splitting the tc runs across more than one
+computer.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
