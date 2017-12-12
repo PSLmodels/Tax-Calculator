@@ -185,23 +185,20 @@ class Calculator(object):
         """
         Return all-filing-unit weighted total of named Records variable.
         """
-        variable = getattr(self.records, variable_name)
-        weight = getattr(self.records, 's006')
-        return (variable * weight).sum()
+        return (self.array(variable_name) * self.array('s006')).sum()
 
     def total_weight(self):
         """
         Return all-filing-unit total of sampling weights.
         NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
         """
-        weight = getattr(self.records, 's006')
-        return weight.sum()
+        return self.array('s006').sum()
 
     def dataframe(self, variable_list):
         """
         Return pandas DataFrame containing the listed Records variables.
         """
-        arys = [getattr(self.records, vname) for vname in variable_list]
+        arys = [self.array(vname) for vname in variable_list]
         return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
     def array(self, variable_name):
@@ -290,8 +287,8 @@ class Calculator(object):
             otherwise, return false.  (Note that "same" means nobody's
             income_measure differs by more than one cent.)
             """
-            im1 = getattr(calc1.records, income_measure)
-            im2 = getattr(calc2.records, income_measure)
+            im1 = calc1.array(income_measure)
+            im2 = calc2.array(income_measure)
             return np.allclose(im1, im2, rtol=0.0, atol=0.01)
         # main logic of method
         assert calc is None or isinstance(calc, Calculator)
@@ -317,7 +314,7 @@ class Calculator(object):
                 imeasure = income_measure
             else:
                 imeasure = income_measure + '_baseline'
-                var_dataframe[imeasure] = getattr(self.records, income_measure)
+                var_dataframe[imeasure] = self.array(income_measure)
             dt2 = create_distribution_table(var_dataframe,
                                             groupby=groupby,
                                             income_measure=imeasure,
@@ -494,17 +491,17 @@ class Calculator(object):
         # save records object in order to restore it after mtr computations
         recs0 = copy.deepcopy(self.records)
         # extract variable array(s) from embedded records object
-        variable = getattr(self.records, variable_str)
+        variable = self.array(variable_str)
         if variable_str == 'e00200p':
-            earnings_var = self.records.e00200
+            earnings_var = self.array('e00200')
         elif variable_str == 'e00200s':
-            earnings_var = self.records.e00200
+            earnings_var = self.array('e00200')
         elif variable_str == 'e00900p':
-            seincome_var = self.records.e00900
+            seincome_var = self.array('e00900')
         elif variable_str == 'e00650':
-            divincome_var = self.records.e00600
+            divincome_var = self.array('e00600')
         elif variable_str == 'e26270':
-            schEincome_var = self.records.e02000
+            schEincome_var = self.array('e02000')
         # calculate level of taxes after a marginal increase in income
         setattr(self.records, variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
@@ -520,15 +517,15 @@ class Calculator(object):
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_chng = copy.deepcopy(self.records.payrolltax)
-        incometax_chng = copy.deepcopy(self.records.iitax)
+        payrolltax_chng = copy.deepcopy(self.array('payrolltax'))
+        incometax_chng = copy.deepcopy(self.array('iitax'))
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, 'records', recs0)
         if not calc_all_already_called or zero_out_calculated_vars:
             self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_base = copy.deepcopy(self.records.payrolltax)
-        incometax_base = copy.deepcopy(self.records.iitax)
+        payrolltax_base = copy.deepcopy(self.array('payrolltax'))
+        incometax_base = copy.deepcopy(self.array('iitax'))
         combined_taxes_base = incometax_base + payrolltax_base
         # compute marginal changes in combined tax liability
         payrolltax_diff = payrolltax_chng - payrolltax_base
@@ -775,14 +772,14 @@ class Calculator(object):
         vdf = self.dataframe(record_variables)
         # create 'tax1' and 'tax2' columns given specified atr_measure
         if atr_measure == 'combined':
-            vdf['tax1'] = self.records.combined
-            vdf['tax2'] = calc.records.combined
+            vdf['tax1'] = self.array('combined')
+            vdf['tax2'] = calc.array('combined')
         elif atr_measure == 'itax':
-            vdf['tax1'] = self.records.iitax
-            vdf['tax2'] = calc.records.iitax
+            vdf['tax1'] = self.array('iitax')
+            vdf['tax2'] = calc.array('iitax')
         elif atr_measure == 'ptax':
-            vdf['tax1'] = self.records.payrolltax
-            vdf['tax2'] = calc.records.payrolltax
+            vdf['tax1'] = self.array('payrolltax')
+            vdf['tax2'] = calc.array('payrolltax')
         # select filing-status subgroup, if any
         if mars != 'ALL':
             vdf = vdf[vdf['MARS'] == mars]
@@ -1152,15 +1149,15 @@ class Calculator(object):
         StdDed(self.policy, self.records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.records.standard)
-        item = copy.deepcopy(self.records.c04470)
-        item_no_limit = copy.deepcopy(self.records.c21060)
-        item_phaseout = copy.deepcopy(self.records.c21040)
+        std = copy.deepcopy(self.array('standard'))
+        item = copy.deepcopy(self.array('c04470'))
+        item_no_limit = copy.deepcopy(self.array('c21060'))
+        item_phaseout = copy.deepcopy(self.array('c21040'))
         self.records.c04470 = np.zeros(self.records.dimension)
         self.records.c21060 = np.zeros(self.records.dimension)
         self.records.c21040 = np.zeros(self.records.dimension)
         self._taxinc_to_amt()
-        std_taxes = copy.deepcopy(self.records.c05800)
+        std_taxes = copy.deepcopy(self.array('c05800'))
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.records.standard = np.zeros(self.records.dimension)
@@ -1168,7 +1165,7 @@ class Calculator(object):
         self.records.c21040 = item_phaseout
         self.records.c04470 = item
         self._taxinc_to_amt()
-        item_taxes = copy.deepcopy(self.records.c05800)
+        item_taxes = copy.deepcopy(self.array('c05800'))
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.records.standard[:] = np.where(item_taxes < std_taxes,
