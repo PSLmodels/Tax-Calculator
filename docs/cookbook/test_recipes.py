@@ -16,7 +16,7 @@ import difflib
 
 
 # print start time
-print('{}'.format(datetime.now()))
+print('{}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
 # make list of recipeNN.py filenames
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -52,4 +52,4 @@ for recipe in RECIPES:
         print('{} PASS'.format(recipe))
 
 # print finish time
-print('{}'.format(datetime.now()))
+print('{}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
