@@ -15,14 +15,22 @@ div { max-width: 19cm }
 <p>This document tells you how to use Tax-Calculator, an open-source
 federal income and payroll tax simulation model.  The two ways of
 using Tax-Calculator described here require no computer programming.
-If you want to participate in the development of Tax-Calculator
-&mdash; by asking a question, reporting a bug, improving the documentation
-or making an enhancement to the Python source code &mdash; you should go to
+If you are interested in Python programming with Tax-Calculator, you
+should read the tested recipes in our
+<a href="http://open-source-economics.github.io/Tax-Calculator/cookbook.html">
+Tax-Calculator Cookbook</a>. If you want to participate in the
+development of Tax-Calculator &mdash; by asking a question, reporting
+a bug, improving the documentation or making an enhancement to the
+Python source code &mdash; you should go to
 the <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
 
-<p>Please cite the source of your analysis as "Tax-Calculator (Version
-#.#.#)" and link to this site.</p>
+<p>Please cite the source of your analysis as <q>Tax-Calculator v.
+#.#.#, author's calculations.</q> If you wish to link to Tax-Calculator,
+this page is preferred. Additionally, we strongly recommend that you 
+provide a link to the materials required to replicate your
+analysis or, at least, note that those materials are available 
+upon request.</p>
 
 
 <h2>Document Contents</h2>
@@ -413,6 +421,21 @@ dividends (<kbd>e00650</kbd>) for each filing unit.  Again, it is your
 responsibility to prepare input data in a way that ensures this
 relationship is true for each filing unit.</p>
 
+<p>Here's an example of how to specify a few stylized filing units
+with and without young children.
+<pre>
+RECID,MARS,XTOT,EIC,n24,...
+   11,   1,   1,  0,  0, ... <== single person with no kids
+   12,   4,   2,  1,  1, ... <== single person with a young kid
+   13,   2,   4,  2,  2, ... <== married couple with two young kids
+</pre>
+Be sure to read the documentation of the <kbd>MARS</kbd>, <kbd>XTOT</kbd>,
+<kbd>EIC</kbd>, and <kbd>n24</kbd> input variables.  Also, there may
+be a need to add of child-age input variables if you want to simulate
+reforms like a child credit bonus for children under five years of
+age.  Also, the universal basic income (UBI) reform is implemented
+using its own set of three age-count input variables.
+
 <p><a href="#cli">Back to Section Contents</a></p>
 
 
@@ -465,9 +488,9 @@ named <kbd>test-20-#-#-doc.text</kbd>.</p>
 name <kbd>test-20-#-#.csv</kbd> as the minimal output file produced in
 example (1).  No other output is generated other than the
 <kbd>test-20-#-#-doc.text</kbd> file.   The
-<kbd>--dump</kbd> option causes all the input variables (including the
-one's understood by Tax-Calculator but not included
-in <kbd>test.csv</kbd>, which are all zero) and all the output
+<kbd>--dump</kbd> option causes <b>all</b> the input variables (including
+the ones understood by Tax-Calculator but not included
+in <kbd>test.csv</kbd>, which are all zero) and <b>all</b> the output
 variables calculated by Tax-Calculator to be included in the output
 file.  For a complete list of input variables, see
 the <a href="#input">Input Variables</a> section.  For a complete list
@@ -478,6 +501,20 @@ example (2) can be used as an input file and it will produce exactly
 the same tax liabilities (apart from rounding errors of one or two
 cents) as in the original dump output.</p>
 
+<p>This full dump output can be useful for debugging and is small
+when using a number of stylized filing units as input.  But when using
+large samples as input (for example, the <kbd>cps.csv</kbd> input
+file), the size of the dump output becomes quite large.  Beginning with
+Tax-Calculator version 0.14.0, there is a way to specify a partial
+dump that includes only variables of interest.  To have <kbd>tc</kbd>
+do a partial dump, create a file named <kbd>tcdumpvars</kbd> in the
+directory where <kbd>tc</kbd> writes output files and in that
+<kbd>tcdumpvars</kbd> file list the names of the variables to be
+included in the partial dump.  You can put the varible names on
+separate lines and/or put several names on one line separated by
+spaces.  If there is no <kbd>tcdumpvars</kbd> file, the
+<kbd>--dump</kbd> option produces a full dump.</p>
+
 <p><pre>
 (3)$ tc test.csv 2020 --sqldb
 </pre></p>
@@ -487,7 +524,9 @@ that the dump output is written not to a CSV-formatted file, but to
 the dump table in an SQLite3 database file, which is
 called <kbd>test-20-#-#.db</kbd> in this example.  Because
 the <kbd>--dump</kbd> option is not used in example (3), minimal
-output will be written to the <kbd>test-20-#-#.csv</kbd> file.</p>
+output will be written to the <kbd>test-20-#-#.csv</kbd> file.
+Note that the presence of the <kbd>tcdumpvars</kbd> file causes
+the contents of the database file to be a partial dump.</p>
 
 <p> Pros and cons of putting dump output in a CSV file or an SQLite3
 database table:  The CSV file is almost twice as large as the
@@ -639,10 +678,26 @@ that make sense only with input files that contain representative
 samples of the population such as the <kbd>cps.csv</kbd> file.  The
 name of this option stands for certainty-equivalent expected utility.
 If you want to use this output option, you should read the commented
-Python source code for the <kbd>ce_aftertax_income</kbd> function in
-the <kbd>taxcalc/utils.py</kbd> file at the
+Python source code for the <kbd>ce_aftertax_expanded_income</kbd>
+function in the <kbd>taxcalc/utils.py</kbd> file at the
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
+
+<p>In all the examples in this section, we have executed one tc run at
+at time.  But <b>what if you want to execute many tc runs</b> because
+you want results for many years and/or for several different reforms.
+Unless you are asking for full-dump output, a single tc run should
+take no more than one minute on your computer (even if you are using
+the large <kbd>cps.csv</kbd> input file).  The easiest way to speed up
+the execution of many tc runs is to split them into groups of runs and
+execute each group of runs in a different command-prompt window.  On
+most modern computers that have four CPU cores and a fast disk drive,
+executing four runs in different windows will take not much more time
+than executing a single tc run.  If you have more than one run in each
+group, put them in a Unix/Mac bash script or a Windows batch file, and
+execute one script in each command-prompt window.  If it still takes
+too long, consider splitting the tc runs across more than one
+computer.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 

@@ -413,6 +413,42 @@ def test_ctor_init_with_cps_files():
     assert tcio.errmsg
 
 
+@pytest.mark.parametrize("dumpvar_str, str_valid, num_vars", [
+    ("""
+    MARS;iitax	payrolltax|combined,
+    c00100
+    surtax
+    """, True, 8),  # these six plus added RECID and FLPDYR
+
+    ("""
+    MARS;iitax	payrolltax|kombined,c00100
+    surtax
+    RECID
+    FLPDYR
+    """, False, 8)
+])
+def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
+    """
+    Test TaxCalcIO custom_dump_variables method.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    year = 2018
+    tcio = TaxCalcIO(input_data=recdf, tax_year=year, reform=None, assump=None)
+    assert not tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=year, reform=None, assump=None,
+              growdiff_response=None,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    varset = tcio.custom_dump_variables(dumpvar_str)
+    assert isinstance(varset, set)
+    valid = len(tcio.errmsg) == 0
+    assert valid == str_valid
+    if valid:
+        assert len(varset) == num_vars
+
+
 def test_output_otions(rawinputfile, reformfile1, assumpfile1):
     """
     Test TaxCalcIO output_ceeu & output_dump options when writing_output_file.
@@ -442,9 +478,22 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.analyze(ceeu)_ok' == 'no'
-    # --dump output
+    # --dump output with full dump
     try:
         tcio.analyze(writing_output_file=True, output_dump=True)
+    except:  # pylint: disable=bare-except
+        if os.path.isfile(outfilepath):
+            try:
+                os.remove(outfilepath)
+            except OSError:
+                pass  # sometimes we can't remove a generated temporary file
+        assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
+
+    # --dump output with partial dump
+    try:
+        tcio.analyze(writing_output_file=True,
+                     dump_varset=set(['combined']),
+                     output_dump=True)
     except:  # pylint: disable=bare-except
         if os.path.isfile(outfilepath):
             try:

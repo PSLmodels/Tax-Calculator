@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Tax-Calculator Cookbook</title>
+<style>
+div { max-width: 19cm }
+</style>
+</head>
+<body>
+<div>
+
+<h1 id="toc">A Cookbook of Tested Recipes for Python Programming with
+Tax-Calculator</h1>
+
+<p>This document tells you how to use Tax-Calculator, an open-source
+federal income and payroll tax simulation model, in Python scripts
+that you can run on your own computer.  Note that these recipes
+require Tax-Calculator release 0.14.0 or higher.  For other ways of
+using Tax-Calculator, see the
+<a href="https://open-source-economics.github.io/Tax-Calculator/">
+user documentation</a>.</p>
+
+<h2>Cookbook Contents</h2>
+
+<p><b>Preliminaries</b></p>
+
+<p><a href="#setup">Kitchen Setup</a> on how to setup your computer to
+follow these recipes</p>
+
+<p><a href="#techniques">Recipe Techniques</a> on rules to follow when
+modifying the recipes in this cookbook</p>
+
+<p><a href="#ingredients">Recipe Ingredients</a> on how get the
+ingredients required for these recipes in your kitchen</p>
+
+<p><a href="#feedback">Recipe Feedback</a> on how request a new recipe
+be added to this cookbook or <br> report problems encountered when
+following an existing recipe</p>
+
+<p><b>Basic Recipe</b></p>
+
+<p><a href="#recipe00">Static Analysis of a Simple Reform</a></p>
+
+<p><b>Other Recipes</b></p>
+
+<p><i>coming soon</i></p>
+
+
+<h2 id="setup">Preliminaries: Kitchen Setup</h2>
+
+<p>You need to setup your computer in certain ways in order to follow
+these recipes.  First, follow
+<a href="http://open-source-economics.github.io/Tax-Calculator/#cli-install-test">these instructions</a> on installing Anaconda and a taxcalc package on
+your computer. And second, install the recipes and ingredients in this
+cookbook on your computer.  There are several ways to do this.  If you
+have cloned the Tax-Calculator repository (see the
+<a href="http://taxcalc.readthedocs.io/en/latest/contributor_guide.html">
+Contributor Guide</a>), then the recipes are located in the
+<kbd>Tax-Calculator/docs/cookbook</kbd> directory.  If you haven't
+cloned the repository, you have a couple of choices. You can download
+the source code as a zip file by clicking on the green <q>Clone or
+download</q> button on
+<a href="https://github.com/open-source-economics/Tax-Calculator">
+this page</a>. This choice has the advantage of replicating the
+directory structure and file names that we use in our test kitchen.
+To comfirm your unzipped installation is valid, execute
+<kbd>python test_recipes.py</kbd> in the
+<kbd>Tax-Calculator/docs/cookbook</kbd> directory to make sure all the
+recipes <kbd>PASS</kbd>.  Or you can copy and paste the recipes and
+ingredients, as needed, to your local computer.  If you make this
+second choice, you may need to edit file paths in the recipes
+depending on how you've organized and named the copied-and-pasted
+files.</p>
+
+<p><a href="#toc">Back to Cookbook Contents</a></p>
+
+
+<h2 id="techniques">Preliminaries: Recipe Techniques</h2>
+
+<p>As with any cookbook, the best approach is to follow a recipe
+exactly the first time and then, if needed, modify the recipe to get
+the exactly the <q>dish</q> you want. Remember to copy a recipe file
+and give it a new file name before you start to modify the recipe.</p>
+
+<p>The Calculator object is the central object in Tax-Calculator and
+it is created by passing four secondary objects (a Policy object, a
+Records object, a Behavior object, and a Consumption object) to the
+Calculator class constructor. When modifying a recipe, following a
+few rules will minimize the chance of running into problems.</p>
+
+<p>Fully specify Consumption, Behavior, Records, and Policy objects
+before passing them to the Calculator class constructor.</p>
+
+<p>After initializing a Calculator object, manipulate it using only
+Calculator class methods.</p>
+
+<p>Following these two rules means avoiding the manipulation of a
+Calculator object's private internal objects.  You should definitely
+avoid trying to change those internal Calculator objects.  And if you
+find yourself wanting to read those internal objects, look for a way
+to do that using public Calculator methods.  If no Calculator methods
+allow you to get out of the Calculator object the information you
+need,
+<a href="https://github.com/open-source-economics/Tax-Calculator/issues">
+create a new issue</a> asking for a Tax-Calculator enhancement.</p>
+
+<p id="execution">The recipes in this cookbook are Python scripts that
+can be executed from the command line like this:
+<pre>
+python recipe00.py > recipe00.out
+diff recipe00.out recipe00.res
+</pre>
+Your kitchen setup and ability to follow a recipe and produce the same
+<q>dish</q> as we produce in our test kitchen would be validated if
+the above <kbd>diff</kbd> command yields no differences. Of course,
+you can substitute your favorite graphical diff program
+for <kbd>diff</kbd> to get an easier to read set of differences.</p>
+
+<p>Some people like to use Tax-Calculator inside an interactive
+notebook.  You should be able to load a recipe into an empty notebook
+and execute it there.  If you want to work that way, the recipes may
+require some modification to show results interactively.  But if you
+are a notebook user, you will know how to make a recipe work in a
+notebook.</p>
+
+<p>After writing an HTML graph file to disk, you can view it in your
+favorite browser.  The easiest way to do that varies by operating
+system.</p>
+
+<p><a href="#toc">Back to Cookbook Contents</a></p>
+
+
+<h2 id="ingredients">Preliminaries: Recipe Ingredients</h2>
+
+<p>All the ingredients needed for the recipes are included in
+the <kbd>Tax-Calculator/docs/cookbook/ingredients</kbd> directory.  If
+you organize the recipes and ingredients in a different way than they
+are organized in our test kitchen, you will need to change the file
+path for each ingredient in each recipe.</p>
+
+<p>Just like with recipe modification, copy and rename an ingredient
+file before you make modifications to it.</p>
+
+<p><a href="#toc">Back to Cookbook Contents</a></p>
+
+
+<h2 id="feedback">Preliminaries: Recipe Feedback</h2>
+
+<p>If you want to request a recipe that makes a new <q>dish</q>,
+create a new issue
+<a href="https://github.com/open-source-economics/Tax-Calculator/issues">here</a>
+providing details on what you want to make and why the existing
+recipes cannot be easily modified to make what you want.</p>
+
+<p>Also, please report, in the same way, any problems you experience
+following an existing recipe.</p>
+
+<p><a href="#toc">Back to Cookbook Contents</a></p>
+
+
+<h2 id="recipe00">Basic Recipe: Static Analysis of a Simple Reform</h2>
+
+<p>This is the recipe you should follow first.  Mastering this recipe
+is a prerequisite for all the other recipes in this cookbook.</p>
+
+<p><b>Ingredients</b></p>
+
+<p><a href="cookbook/ingredients/raise_rates_and_stdded.json"
+target="_blank">Policy reform</a> in
+the <kbd>ingredients/raise_rates_and_stdded.json</kbd> file.</p>
+ 
+<p><b>Instructions</b></p>
+
+<p><a href="recipe00.py.html" target="_blank">Step-by-step
+instructions</a> included in the <kbd>recipe00.py</kbd> file.</p>
+
+<p><b>Results</b></p>
+
+<p><em>
+When following the recipe as shown below, you will get several instances
+of the same <b>ignored</b> error message from deep inside the Pandas
+library that is being used by Tax-Calculator.  After conferring with
+the Pandas developers, our expectation is these error messages will go
+away when we upgrade to Pandas version 0.22.0, which is scheduled to
+be released in January 2018, and which fixes a bug in the Pandas
+library.  Meanwhile, the error messages are annoying but harmless.
+</em></p>
+
+<p><a href="recipe00.res.html" target="_blank">Expected text
+results</a> from executing <kbd>python recipe00.py > recipe00.out</kbd> at
+the command prompt as shown <a href="#execution">above</a>.</p>
+
+<p><a href="recipe00.graph.html" target="_blank">Expected graph</a> (located
+in the same directory as <kbd>recipe00.py</kbd> and named
+<kbd>recipe00.graph.html</kbd>) from executing
+<kbd>python recipe00.py > recipe00.out</kbd> at the command prompt as
+shown <a href="#execution">above</a>. To view the HTML graph file
+generated when you follow the recipe, open it in your favorite
+browser.  For example, on a Mac, you would enter at the command prompt
+the following
+<pre>open recipe00.graph.html</pre>
+to start your default browser showing the graph.</p>
+
+<p><a href="#toc">Back to Cookbook Contents</a></p>
+
+
+</div>
+</body>
+</html>
