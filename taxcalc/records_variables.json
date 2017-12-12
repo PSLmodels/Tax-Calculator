@@ -473,6 +473,12 @@
       "form": {},
       "availability": "taxdata_cps"
     },
+    "fheadidx": {
+      "type": "int",
+      "desc": "Index to persons record of family reference person",
+      "form": {},
+      "availability": "taxdata_cps"
+    },
     "h_seq": {
       "type": "int",
       "desc": "CPS household sequence number (not used in tax-calculation logic)",
