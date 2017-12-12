@@ -845,10 +845,10 @@ class Calculator(object):
         Return Calculator object same as self except with current-law policy.
         """
         return Calculator(policy=self.policy.current_law_version(),
-                          records=copy.deepcopy(self.records),
+                          records=self.records,
                           sync_years=False,
-                          consumption=copy.deepcopy(self.consumption),
-                          behavior=copy.deepcopy(self.behavior))
+                          consumption=self.consumption,
+                          behavior=self.behavior)
 
     @staticmethod
     def read_json_param_objects(reform, assump):
