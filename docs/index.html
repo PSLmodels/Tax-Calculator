@@ -34,6 +34,19 @@ analysis or, at least, note that those materials are available
 upon request.</p>
 
 
+<h2>What's New</h2>
+
+<p><a href="#partdump">Partial Dump</a> capability allows you to
+specify exactly which variables are included in the output file when
+using the <kbd>tc --dump</kbd> option
+
+<p><a href="#fastexec">Faster Execution</a> tip when executing many
+<kbd>tc</kbd> runs that differ by year and/or reform</p>
+
+<p><a href="#marskids">Filing Units</a> example shows how to specify
+filing units with different marital status and numbers of children</p>
+
+
 <h2>Document Contents</h2>
 
 <p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
@@ -422,8 +435,8 @@ dividends (<kbd>e00650</kbd>) for each filing unit.  Again, it is your
 responsibility to prepare input data in a way that ensures this
 relationship is true for each filing unit.</p>
 
-<p>Here's an example of how to specify a few stylized filing units
-with and without young children.
+<p id="marskids">Here's an example of how to specify a few stylized
+filing units with and without young children.
 <pre>
 RECID,MARS,XTOT,EIC,n24,...
    11,   1,   1,  0,  0, ... <== single person with no kids
@@ -502,13 +515,13 @@ example (2) can be used as an input file and it will produce exactly
 the same tax liabilities (apart from rounding errors of one or two
 cents) as in the original dump output.</p>
 
-<p>This full dump output can be useful for debugging and is small
-when using a number of stylized filing units as input.  But when using
-large samples as input (for example, the <kbd>cps.csv</kbd> input
-file), the size of the dump output becomes quite large.  Beginning with
-Tax-Calculator version 0.14.0, there is a way to specify a partial
-dump that includes only variables of interest.  To have <kbd>tc</kbd>
-do a partial dump, create a file named <kbd>tcdumpvars</kbd> in the
+<p id="partdump">This full dump output can be useful for debugging and
+is small when using a several stylized filing units as input.  But when
+using large samples as input (for example, the <kbd>cps.csv</kbd> input
+file), the size of the dump output becomes quite large. For Tax-Calculator
+versions 0.14.0 and higher, there is a way to specify a <b>partial dump</b>
+that includes only variables of interest.  To have <kbd>tc</kbd> do a
+partial dump, create a file named <kbd>tcdumpvars</kbd> in the
 directory where <kbd>tc</kbd> writes output files and in that
 <kbd>tcdumpvars</kbd> file list the names of the variables to be
 included in the partial dump.  You can put the varible names on
@@ -684,21 +697,21 @@ function in the <kbd>taxcalc/utils.py</kbd> file at the
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
 
-<p>In all the examples in this section, we have executed one tc run at
-at time.  But <b>what if you want to execute many tc runs</b> because
-you want results for many years and/or for several different reforms.
-Unless you are asking for full-dump output, a single tc run should
-take no more than one minute on your computer (even if you are using
-the large <kbd>cps.csv</kbd> input file).  The easiest way to speed up
-the execution of many tc runs is to split them into groups of runs and
-execute each group of runs in a different command-prompt window.  On
-most modern computers that have four CPU cores and a fast disk drive,
-executing four runs in different windows will take not much more time
-than executing a single tc run.  If you have more than one run in each
-group, put them in a Unix/Mac bash script or a Windows batch file, and
-execute one script in each command-prompt window.  If it still takes
-too long, consider splitting the tc runs across more than one
-computer.</p>
+<p id="fastexec">In all the examples in this section, we have executed
+one tc run at at time.  But <b>what if you want to execute many tc
+runs</b> because you want results for many years and/or for several
+different reforms.  Unless you are asking for full-dump output, a
+single tc run should take no more than one minute on your computer
+(even if you are using the large <kbd>cps.csv</kbd> input file).  The
+easiest way to speed up the execution of many tc runs is to split them
+into groups of runs and execute each group of runs in a different
+command-prompt window.  On most modern computers that have four CPU
+cores and a fast disk drive, executing four runs in different windows
+will take not much more time than executing a single tc run.  If you
+have more than one run in each group, put them in a Unix/Mac bash
+script or a Windows batch file, and execute one script in each
+command-prompt window.  If it still takes too long, consider splitting
+the tc runs across more than one computer.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
