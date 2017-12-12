@@ -517,15 +517,15 @@ class Calculator(object):
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_chng = copy.deepcopy(self.array('payrolltax'))
-        incometax_chng = copy.deepcopy(self.array('iitax'))
+        payrolltax_chng = self.array('payrolltax')
+        incometax_chng = self.array('iitax')
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, 'records', recs0)
         if not calc_all_already_called or zero_out_calculated_vars:
             self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_base = copy.deepcopy(self.array('payrolltax'))
-        incometax_base = copy.deepcopy(self.array('iitax'))
+        payrolltax_base = self.array('payrolltax')
+        incometax_base = self.array('iitax')
         combined_taxes_base = incometax_base + payrolltax_base
         # compute marginal changes in combined tax liability
         payrolltax_diff = payrolltax_chng - payrolltax_base
