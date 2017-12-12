@@ -432,7 +432,7 @@ class TaxCalcIO(object):
         else:
             outdf = self.minimal_output()
             column_order = outdf.columns
-        assert len(outdf.index) == self.calc.records.dim
+        assert len(outdf.index) == self.calc.records.dimension
         outdf.to_csv(self._output_filename, columns=column_order,
                      index=False, float_format='%.2f')
 
@@ -450,7 +450,7 @@ class TaxCalcIO(object):
         Write dump output to SQLite3 database table dump.
         """
         outdf = self.dump_output(dump_varset, mtr_inctax, mtr_paytax)
-        assert len(outdf.index) == self.calc.records.dim
+        assert len(outdf.index) == self.calc.records.dimension
         db_fname = self._output_filename.replace('.csv', '.db')
         dbcon = sqlite3.connect(db_fname)
         outdf.to_sql('dump', dbcon, if_exists='replace', index=False)

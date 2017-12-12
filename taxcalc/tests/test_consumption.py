@@ -72,7 +72,7 @@ def test_consumption_response(cps_subsample):
     consump.response(rec, 1.0)
     post = rec.e20400
     actual_diff = post - pre
-    expected_diff = np.ones(rec.dim) * mpc
+    expected_diff = np.ones(rec.dimension) * mpc
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
     rec = Records.cps_constructor(data=cps_subsample)

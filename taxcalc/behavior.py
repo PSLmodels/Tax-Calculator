@@ -167,7 +167,7 @@ class Behavior(ParametersBase):
                 print(out.format(mean))
 
         # begin main logic of response
-        assert calc_x.records.dim == calc_y.records.dim
+        assert calc_x.records.dimension == calc_y.records.dimension
         assert calc_x.records.current_year == calc_y.records.current_year
         # calculate sum of substitution and income effects
         if calc_y.behavior.BE_sub == 0.0 and calc_y.behavior.BE_inc == 0.0:
@@ -181,7 +181,7 @@ class Behavior(ParametersBase):
                                                       tax_type='combined')
             # calculate magnitude of substitution effect
             if calc_y.behavior.BE_sub == 0.0:
-                sub = np.zeros(calc_x.records.dim)
+                sub = np.zeros(calc_x.records.dimension)
             else:
                 # proportional change in marginal net-of-tax rates on earnings
                 nearone = 0.999999
@@ -206,10 +206,10 @@ class Behavior(ParametersBase):
                                       -0.1, 0.1,
                                       1e3, 1e4, 1e5, 1e6, 9e99],
                                      calc_x.records.s006,
-                                     np.zeros(calc_x.records.dim))
+                                     np.zeros(calc_x.records.dimension))
             # calculate magnitude of income effect
             if calc_y.behavior.BE_inc == 0.0:
-                inc = np.zeros(calc_x.records.dim)
+                inc = np.zeros(calc_x.records.dimension)
             else:
                 if calc_y.behavior.BE_subinc_wrt_earnings:
                     # proportional change in after-tax income
@@ -228,7 +228,7 @@ class Behavior(ParametersBase):
             si_chg = sub + inc
         # calculate long-term capital-gains effect
         if calc_y.behavior.BE_cg == 0.0:
-            ltcg_chg = np.zeros(calc_x.records.dim)
+            ltcg_chg = np.zeros(calc_x.records.dimension)
         else:
             # calculate marginal tax rates on long-term capital gains
             # (p23250 is filing units' long-term capital gains)
@@ -243,8 +243,8 @@ class Behavior(ParametersBase):
         no_charity_response = (calc_y.behavior.BE_charity.tolist() ==
                                [0.0, 0.0, 0.0])
         if no_charity_response:
-            c_charity_chg = np.zeros(calc_x.records.dim)
-            nc_charity_chg = np.zeros(calc_x.records.dim)
+            c_charity_chg = np.zeros(calc_x.records.dimension)
+            nc_charity_chg = np.zeros(calc_x.records.dimension)
         else:
             # calculate marginal tax rate on charitable contributions
             # e19800 is filing units' cash charitable contributions
@@ -265,7 +265,7 @@ class Behavior(ParametersBase):
                           (calc_x.records.c00100 < 100000))
             high_income = (calc_x.records.c00100 >= 100000)
             # calculate change in cash contributions
-            c_charity_chg = np.zeros(calc_x.records.dim)
+            c_charity_chg = np.zeros(calc_x.records.dimension)
             # AGI < 50000
             c_charity_chg = np.where(low_income,
                                      (calc_y.behavior.BE_charity[0] *
@@ -285,7 +285,7 @@ class Behavior(ParametersBase):
                                       calc_x.records.e19800),
                                      c_charity_chg)
             # calculate change in non-cash contributions
-            nc_charity_chg = np.zeros(calc_x.records.dim)
+            nc_charity_chg = np.zeros(calc_x.records.dimension)
             # AGI < 50000
             nc_charity_chg = np.where(low_income,
                                       (calc_y.behavior.BE_charity[0] *
