@@ -45,6 +45,9 @@ using the <kbd>tc --dump</kbd> option
 <p><a href="#marskids">Filing Units</a> example shows how to specify
 filing units with different marital status and numbers of children</p>
 
+<p>To upgrade to the Tax-Calculator 0.14.0 package, execute this
+command: <kbd>conda update -c ospc taxcalc</kbd></p>
+
 
 <h2>Document Contents</h2>
 
