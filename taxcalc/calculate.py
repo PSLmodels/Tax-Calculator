@@ -93,6 +93,7 @@ class Calculator(object):
     All calculations are done on the internal copies of the Policy and
     Records objects passed to each of the two Calculator constructors.
     """
+    # pylint: disable=too-many-public-methods
 
     def __init__(self, policy=None, records=None, verbose=True,
                  sync_years=True, consumption=None, behavior=None):
@@ -212,6 +213,19 @@ class Calculator(object):
         Set named Records variable to specified variable_value.
         """
         setattr(self.records, variable_name, variable_value)
+
+    def incarray(self, variable_name, variable_add):
+        """
+        Add variable_add to named Records variable.
+        """
+        setattr(self.records, variable_name,
+                self.array(variable_name) + variable_add)
+
+    def zeroarray(self, variable_name):
+        """
+        Set named Records variable to zeros.
+        """
+        setattr(self.records, variable_name, np.zeros(self.records.dimension))
 
     def diagnostic_table(self, num_years):
         """
@@ -1157,14 +1171,14 @@ class Calculator(object):
         item = copy.deepcopy(self.array('c04470'))
         item_no_limit = copy.deepcopy(self.array('c21060'))
         item_phaseout = copy.deepcopy(self.array('c21040'))
-        self.records.c04470 = np.zeros(self.records.dimension)
-        self.records.c21060 = np.zeros(self.records.dimension)
-        self.records.c21040 = np.zeros(self.records.dimension)
+        self.zeroarray('c04470')
+        self.zeroarray('c21060')
+        self.zeroarray('c21040')
         self._taxinc_to_amt()
         std_taxes = copy.deepcopy(self.array('c05800'))
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
-        self.records.standard = np.zeros(self.records.dimension)
+        self.zeroarray('standard')
         self.setarray('c21060', item_no_limit)
         self.setarray('c21040', item_phaseout)
         self.setarray('c04470', item)

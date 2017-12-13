@@ -388,8 +388,8 @@ class Behavior(ParametersBase):
         """
         Implement earnings change induced by earnings response.
         """
-        calc.records.e00200 += change
-        calc.records.e00200p += change
+        calc.incarray('e00200', change)
+        calc.incarray('e00200p', change)
         return calc
 
     @staticmethod
@@ -417,10 +417,10 @@ class Behavior(ParametersBase):
         # confirm that the three parts are consistent with delta_income
         assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
         # add the three parts to different calc.records variables
-        calc.records.e00200 += delta_winc
-        calc.records.e00200p += delta_winc
-        calc.records.e00300 += delta_oinc
-        calc.records.e19200 += delta_ided
+        calc.incarray('e00200', delta_winc)
+        calc.incarray('e00200p', delta_winc)
+        calc.incarray('e00300', delta_oinc)
+        calc.incarray('e19200', delta_ided)
         return calc
 
     @staticmethod
@@ -428,7 +428,7 @@ class Behavior(ParametersBase):
         """
         Implement capital gain change induced by behavioral responses.
         """
-        calc.records.p23250 += cap_gain_change
+        calc.incarray('p23250', cap_gain_change)
         return calc
 
     @staticmethod
@@ -437,8 +437,8 @@ class Behavior(ParametersBase):
         Implement cash charitable contribution change induced
         by behavioral responses.
         """
-        calc.records.e19800 += cash_charity_change
-        calc.records.e20100 += non_cash_charity_change
+        calc.incarray('e19800', cash_charity_change)
+        calc.incarray('e20100', non_cash_charity_change)
         return calc
 
     @staticmethod
