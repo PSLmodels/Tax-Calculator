@@ -69,16 +69,16 @@ def reform_results(reform_dict, puf_data):
     results = list()
     for _ in range(0, num_years):
         calc1.calc_all()
-        prereform = getattr(calc1.records, output_type)
+        prereform = calc1.array(output_type)
         if calc2.behavior.has_response():
             calc_clp = calc2.current_law_version()
             calc2_br = Behavior.response(calc_clp, calc2)
-            postreform = getattr(calc2_br.records, output_type)
+            postreform = calc2_br.array(output_type)
         else:
             calc2.calc_all()
-            postreform = getattr(calc2.records, output_type)
+            postreform = calc2.array(output_type)
         diff = postreform - prereform
-        weighted_sum_diff = (diff * calc1.records.s006).sum() * 1.0e-9
+        weighted_sum_diff = (diff * calc1.array('s006')).sum() * 1.0e-9
         results.append(weighted_sum_diff)
         calc1.increment_year()
         calc2.increment_year()

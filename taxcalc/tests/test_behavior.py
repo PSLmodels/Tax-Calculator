@@ -52,9 +52,9 @@ def test_behavioral_response_calculator(cps_subsample):
     # create reform Calculator object with no behavioral response
     behv = Behavior()
     calc2 = Calculator(policy=pol, records=rec, behavior=behv)
-    # test incorrect use of Behavior._mtr_xy method
+    # test incorrect use of Behavior._mtr12 method
     with pytest.raises(ValueError):
-        Behavior._mtr_xy(calc1, calc2, mtr_of='e00200p', tax_type='nonsense')
+        Behavior._mtr12(calc1, calc2, mtr_of='e00200p', tax_type='nonsense')
     # vary substitution and income effects in Behavior object
     behavior0 = {year: {'_BE_sub': [0.0],
                         '_BE_cg': [0.0],
@@ -101,12 +101,12 @@ def test_behavioral_response_calculator(cps_subsample):
     calc2_behv5 = Behavior.response(calc1, calc2)
     # check that total income tax liability differs across the
     # six sets of behavioral-response elasticities
-    assert (calc2_behv0.records.iitax.sum() !=
-            calc2_behv1.records.iitax.sum() !=
-            calc2_behv2.records.iitax.sum() !=
-            calc2_behv3.records.iitax.sum() !=
-            calc2_behv4.records.iitax.sum() !=
-            calc2_behv5.records.iitax.sum())
+    assert (calc2_behv0.weighted_total('iitax') !=
+            calc2_behv1.weighted_total('iitax') !=
+            calc2_behv2.weighted_total('iitax') !=
+            calc2_behv3.weighted_total('iitax') !=
+            calc2_behv4.weighted_total('iitax') !=
+            calc2_behv5.weighted_total('iitax'))
 
 
 def test_correct_update_behavior():
