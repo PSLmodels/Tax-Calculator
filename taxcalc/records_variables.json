@@ -475,7 +475,7 @@
     },
     "fheadidx": {
       "type": "int",
-      "desc": "Index to persons record of family reference person",
+      "desc": "Index to person record of family reference person",
       "form": {},
       "availability": "taxdata_cps"
     },
