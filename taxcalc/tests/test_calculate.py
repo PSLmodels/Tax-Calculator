@@ -307,7 +307,7 @@ def test_calculator_using_nonstd_input(rawinputfile):
                      gfactors=None,  # keeps raw data unchanged
                      weights=None,
                      start_year=RAWINPUTFILE_YEAR)  # set raw input data year
-    assert nonstd.dimension == RAWINPUTFILE_FUNITS
+    assert nonstd.array_length == RAWINPUTFILE_FUNITS
     calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == RAWINPUTFILE_YEAR
@@ -321,10 +321,10 @@ def test_calculator_using_nonstd_input(rawinputfile):
     mars = calc.array('MARS')
     assert isinstance(mars, np.ndarray)
     assert mars.shape == (RAWINPUTFILE_FUNITS,)
-    exp_iitax = np.zeros((nonstd.dimension,))
+    exp_iitax = np.zeros((nonstd.array_length,))
     assert np.allclose(calc.array('iitax'), exp_iitax)
     mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)
-    exp_mtr_ptax = np.zeros((nonstd.dimension,))
+    exp_mtr_ptax = np.zeros((nonstd.array_length,))
     exp_mtr_ptax.fill(0.153)
     assert np.allclose(mtr_ptax, exp_mtr_ptax)
 
@@ -633,7 +633,7 @@ def test_calc_all(reform_file, rawinputfile):
     pol.set_year(cyr)
     nonstd = Records(data=rawinputfile.name, gfactors=None,
                      weights=None, start_year=cyr)
-    assert nonstd.dimension == RAWINPUTFILE_FUNITS
+    assert nonstd.array_length == RAWINPUTFILE_FUNITS
     calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == cyr

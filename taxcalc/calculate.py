@@ -225,7 +225,7 @@ class Calculator(object):
         """
         Set named Records variable to zeros.
         """
-        setattr(self.records, variable_name, np.zeros(self.records.dimension))
+        setattr(self.records, variable_name, np.zeros(self.array_len))
 
     def diagnostic_table(self, num_years):
         """
@@ -328,7 +328,7 @@ class Calculator(object):
             dt2 = None
         else:
             assert calc.current_year == self.current_year
-            assert calc.records.dimension == self.records.dimension
+            assert calc.array_len == self.array_len
             var_dataframe = calc.dataframe(DIST_VARIABLES)
             if have_same_income_measure(self, calc, income_measure):
                 imeasure = income_measure
@@ -379,7 +379,7 @@ class Calculator(object):
         """
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dimension == self.records.dimension
+        assert calc.array_len == self.array_len
         diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
                                        calc.dataframe(DIFF_VARIABLES),
                                        groupby=groupby,
@@ -400,6 +400,13 @@ class Calculator(object):
         Calculator class initial (i.e., first) records data year property.
         """
         return self.records.data_year
+
+    @property
+    def array_len(self):
+        """
+        Length of arrays in embedded Records object.
+        """
+        return self.records.array_length
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
                            'e00900p', 'e00300',
@@ -660,7 +667,7 @@ class Calculator(object):
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dimension == self.records.dimension
+        assert calc.array_len == self.array_len
         # check validity of mars parameter
         assert mars == 'ALL' or (mars >= 1 and mars <= 4)
         # check validity of income_measure
@@ -775,7 +782,7 @@ class Calculator(object):
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dimension == self.records.dimension
+        assert calc.array_len == self.array_len
         # check validity of function arguments
         assert mars == 'ALL' or (mars >= 1 and mars <= 4)
         assert (atr_measure == 'combined' or
@@ -842,7 +849,7 @@ class Calculator(object):
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dimension == self.records.dimension
+        assert calc.array_len == self.array_len
         diff_table = self.difference_table(calc,
                                            groupby='weighted_deciles',
                                            income_measure='expanded_income',
@@ -1120,7 +1127,7 @@ class Calculator(object):
         """
         # check that calc and self are consistent
         assert isinstance(calc, Calculator)
-        assert calc.records.dimension == self.records.dimension
+        assert calc.array_len == self.array_len
         assert calc.current_year == self.current_year
         # extract data from self and calc
         records_variables = ['s006', 'combined', 'expanded_income']

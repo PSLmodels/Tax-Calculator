@@ -174,7 +174,7 @@ def test_mtr(tests_path, puf_path):
     recid = puf.RECID  # pylint: disable=no-member
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
-    res += '{} = {}\n'.format('Total number of data records', puf.dimension)
+    res += '{} = {}\n'.format('Total number of data records', puf.array_length)
     res += 'PTAX mtr histogram bin edges:\n'
     res += '     {}\n'.format(PTAX_MTR_BIN_EDGES)
     res += 'ITAX mtr histogram bin edges:\n'

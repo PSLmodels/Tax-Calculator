@@ -207,9 +207,9 @@ class Records(object):
         return self.__current_year
 
     @property
-    def dimension(self):
+    def array_length(self):
         """
-        Records class's DataFrame dimension
+        Length of arrays in Records class's DataFrame.
         """
         return self.__dim
 
