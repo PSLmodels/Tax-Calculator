@@ -189,7 +189,6 @@ def test_mtr(tests_path, puf_path):
                                            wrt_full_compensation=False)
         if zero_out:
             # check that calculated variables are consistent
-            crs = calc.records
             assert np.allclose((calc.array('iitax') +
                                 calc.array('payrolltax')),
                                calc.array('combined'))
