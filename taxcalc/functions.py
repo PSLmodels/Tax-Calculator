@@ -465,7 +465,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
             ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
-            ID_Miscellaneous_c):
+            ID_Miscellaneous_c, ID_StateLocalTax_fraction_agi):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
 
@@ -551,7 +551,10 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
                  ID_StateLocalTax_c[MARS - 1])
     c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
                  ID_RealEstate_c[MARS - 1])
-    c18300 = c18400 + c18500
+    if ID_StateLocalTax_fraction_agi<1:
+        c18300 = min(c18400+c18500, ID_StateLocalTax_fraction_agi*max(c00100,0))
+    else:
+        c18300 = c18400 + c18500
     # Interest paid
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
