@@ -207,6 +207,12 @@ class Calculator(object):
         """
         return getattr(self.records, variable_name)
 
+    def setarray(self, variable_name, variable_value):
+        """
+        Set named Records variable to specified variable_value.
+        """
+        setattr(self.records, variable_name, variable_value)
+
     def diagnostic_table(self, num_years):
         """
         Generate multi-year diagnostic table;
@@ -503,17 +509,17 @@ class Calculator(object):
         elif variable_str == 'e26270':
             schEincome_var = self.array('e02000')
         # calculate level of taxes after a marginal increase in income
-        setattr(self.records, variable_str, variable + finite_diff)
+        self.setarray(variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
-            self.records.e00200 = earnings_var + finite_diff
+            self.setarray('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00200s':
-            self.records.e00200 = earnings_var + finite_diff
+            self.setarray('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00900p':
-            self.records.e00900 = seincome_var + finite_diff
+            self.setarray('e00900', seincome_var + finite_diff)
         elif variable_str == 'e00650':
-            self.records.e00600 = divincome_var + finite_diff
+            self.setarray('e00600', divincome_var + finite_diff)
         elif variable_str == 'e26270':
-            self.records.e02000 = schEincome_var + finite_diff
+            self.setarray('e02000', schEincome_var + finite_diff)
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
@@ -547,12 +553,10 @@ class Calculator(object):
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # if variable_str is e00200s, set MTR to NaN for units without a spouse
         if variable_str == 'e00200s':
-            mtr_payrolltax = np.where(self.records.MARS == 2,
-                                      mtr_payrolltax, np.nan)
-            mtr_incometax = np.where(self.records.MARS == 2,
-                                     mtr_incometax, np.nan)
-            mtr_combined = np.where(self.records.MARS == 2,
-                                    mtr_combined, np.nan)
+            mars = self.array('MARS')
+            mtr_payrolltax = np.where(mars == 2, mtr_payrolltax, np.nan)
+            mtr_incometax = np.where(mars == 2, mtr_incometax, np.nan)
+            mtr_combined = np.where(mars == 2, mtr_combined, np.nan)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
@@ -1161,21 +1165,21 @@ class Calculator(object):
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.records.standard = np.zeros(self.records.dimension)
-        self.records.c21060 = item_no_limit
-        self.records.c21040 = item_phaseout
-        self.records.c04470 = item
+        self.setarray('c21060', item_no_limit)
+        self.setarray('c21040', item_phaseout)
+        self.setarray('c04470', item)
         self._taxinc_to_amt()
         item_taxes = copy.deepcopy(self.array('c05800'))
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
-        self.records.standard[:] = np.where(item_taxes < std_taxes,
-                                            0., std)
-        self.records.c04470[:] = np.where(item_taxes < std_taxes,
-                                          item, 0.)
-        self.records.c21060[:] = np.where(item_taxes < std_taxes,
-                                          item_no_limit, 0.)
-        self.records.c21040[:] = np.where(item_taxes < std_taxes,
-                                          item_phaseout, 0.)
+        self.setarray('standard', np.where(item_taxes < std_taxes,
+                                           0., std))
+        self.setarray('c04470', np.where(item_taxes < std_taxes,
+                                         item, 0.))
+        self.setarray('c21060', np.where(item_taxes < std_taxes,
+                                         item_no_limit, 0.))
+        self.setarray('c21040', np.where(item_taxes < std_taxes,
+                                         item_phaseout, 0.))
         # Calculate taxes with optimal itemized deduction
         self._taxinc_to_amt()
         F2441(self.policy, self.records)
