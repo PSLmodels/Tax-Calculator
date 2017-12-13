@@ -147,7 +147,7 @@ class Records(object):
         self.ADJ = None
         self._read_ratios(adjust_ratios)
         # weights must be same size as tax record data
-        if not self.WT.empty and self.__dim != len(self.WT):
+        if not self.WT.empty and self.array_length != len(self.WT):
             # scale-up sub-sample weights by year-specific factor
             sum_full_weights = self.WT.sum()
             self.WT = self.WT.iloc[self.__index]
@@ -439,10 +439,10 @@ class Records(object):
         for varname in ZEROED_VARS:
             if varname in Records.INTEGER_VARS:
                 setattr(self, varname,
-                        np.zeros(self.__dim, dtype=np.int32))
+                        np.zeros(self.array_length, dtype=np.int32))
             else:
                 setattr(self, varname,
-                        np.zeros(self.__dim, dtype=np.float64))
+                        np.zeros(self.array_length, dtype=np.float64))
         # check for valid MARS values
         if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
                                      np.less_equal(self.MARS, 5))):
