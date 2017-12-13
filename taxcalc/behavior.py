@@ -168,7 +168,7 @@ class Behavior(ParametersBase):
 
         # begin main logic of response
         assert calc1.array_len == calc2.array_len
-        assert calc1.records.current_year == calc2.records.current_year
+        assert calc1.current_year == calc2.current_year
         # calculate sum of substitution and income effects
         if calc2.behavior.BE_sub == 0.0 and calc2.behavior.BE_inc == 0.0:
             zero_sub_and_inc = True

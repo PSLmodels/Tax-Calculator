@@ -160,13 +160,13 @@ class Calculator(object):
         increment year functionality by immediately specifying the year
         as input.  New year must be at least the current year.
         """
-        iteration = year - self.records.current_year
+        iteration = year - self.current_year
         if iteration < 0:
             raise ValueError('New current year must be ' +
                              'greater than current year!')
         for _ in range(iteration):
             self.increment_year()
-        assert self.records.current_year == year
+        assert self.current_year == year
 
     def calc_all(self, zero_out_calc_vars=False):
         """
