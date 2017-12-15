@@ -13,10 +13,9 @@ for a complete commit history.
 - None
 
 **New Features**
-- Add policy parameter that can be used to place a cap on the combined state and local income/sales and real estate deductions
+- Add policy parameter that can cap the combined state and local income/sales and real-estate deductions
   [[#1756](https://github.com/open-source-economics/Tax-Calculator/pull/1756)
   by Cody Kallen with helpful discussion from Ernie Tedeschi and Matt Jensen]
-
 - Add percentage change in income by income decile graph to `tc --graphs` output
   [[#175x](https://github.com/open-source-economics/Tax-Calculator/pull/175x)
   by Martin Holmer]
