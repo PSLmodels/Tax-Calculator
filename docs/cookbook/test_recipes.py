@@ -19,7 +19,6 @@ import difflib
 print('{}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 
 # make list of recipeNN.py filenames
-CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 RECIPES = glob.glob('./recipe[0-9][0-9].py')
 
 # execute each recipe in RECIPES list and compare output with expected output

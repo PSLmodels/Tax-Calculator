@@ -72,10 +72,10 @@ def calculate_corr_stats(calc, table):
     Calculate correlation coefficient matrix.
     """
     for varname1 in table.index:
-        var1 = getattr(calc.records, varname1)
+        var1 = calc.array(varname1)
         var1_cc = list()
         for varname2 in table.index:
-            var2 = getattr(calc.records, varname2)
+            var2 = calc.array(varname2)
             cor = np.corrcoef(var1, var2)[0][1]
             var1_cc.append(cor)
         table[varname1] = var1_cc
@@ -85,11 +85,10 @@ def calculate_mean_stats(calc, table, year):
     """
     Calculate weighted means for year.
     """
-    total_weight = calc.records.s006.sum()
+    total_weight = calc.total_weight()
     means = list()
     for varname in table.index:
-        weighted = getattr(calc.records, varname) * calc.records.s006
-        wmean = weighted.sum() / total_weight
+        wmean = calc.weighted_total(varname) / total_weight
         means.append(wmean)
     table[str(year)] = means
 

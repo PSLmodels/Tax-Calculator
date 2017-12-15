@@ -109,15 +109,15 @@ class Behavior(ParametersBase):
         return False
 
     @staticmethod
-    def response(calc_x, calc_y, trace=False):
+    def response(calc1, calc2, trace=False):
         """
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
-        Modify calc_y records to account for behavioral responses that arise
-          from the policy reform that involves moving from calc_x.policy to
-          calc_y.policy.  Neither calc_x nor calc_y need to have had calc_all()
-          executed before calling the Behavior.response(calc_x, calc_y) method.
-        Returns new Calculator object --- a deepcopy of calc_y --- that
+        Modify calc2 records to account for behavioral responses that arise
+          from the policy reform that involves moving from calc1.policy to
+          calc2.policy.  Neither calc1 nor calc2 need to have had calc_all()
+          executed before calling the Behavior.response(calc1, calc2) method.
+        Returns new Calculator object --- a deepcopy of calc2 --- that
           incorporates behavioral responses to the reform.
         Note: the use here of a dollar-change income elasticity (rather than
           a proportional-change elasticity) is consistent with Feldstein and
@@ -167,159 +167,159 @@ class Behavior(ParametersBase):
                 print(out.format(mean))
 
         # begin main logic of response
-        assert calc_x.records.dim == calc_y.records.dim
-        assert calc_x.records.current_year == calc_y.records.current_year
+        assert calc1.array_len == calc2.array_len
+        assert calc1.current_year == calc2.current_year
         # calculate sum of substitution and income effects
-        if calc_y.behavior.BE_sub == 0.0 and calc_y.behavior.BE_inc == 0.0:
+        if calc2.behavior.BE_sub == 0.0 and calc2.behavior.BE_inc == 0.0:
             zero_sub_and_inc = True
         else:
             zero_sub_and_inc = False
             # calculate marginal combined tax rates on taxpayer wages+salary
             # (e00200p is taxpayer's wages+salary)
-            wage_mtr_x, wage_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
-                                                      mtr_of='e00200p',
-                                                      tax_type='combined')
+            wage_mtr1, wage_mtr2 = Behavior._mtr12(calc1, calc2,
+                                                   mtr_of='e00200p',
+                                                   tax_type='combined')
             # calculate magnitude of substitution effect
-            if calc_y.behavior.BE_sub == 0.0:
-                sub = np.zeros(calc_x.records.dim)
+            if calc2.behavior.BE_sub == 0.0:
+                sub = np.zeros(calc1.array_len)
             else:
                 # proportional change in marginal net-of-tax rates on earnings
                 nearone = 0.999999
-                mtr_x = np.where(wage_mtr_x > nearone, nearone, wage_mtr_x)
-                mtr_y = np.where(wage_mtr_y > nearone, nearone, wage_mtr_y)
-                pch = ((1. - mtr_y) / (1. - mtr_x)) - 1.
-                if calc_y.behavior.BE_subinc_wrt_earnings:
+                mtr1 = np.where(wage_mtr1 > nearone, nearone, wage_mtr1)
+                mtr2 = np.where(wage_mtr2 > nearone, nearone, wage_mtr2)
+                pch = ((1. - mtr2) / (1. - mtr1)) - 1.
+                if calc2.behavior.BE_subinc_wrt_earnings:
                     # Note: e00200 is filing unit's wages+salaries
-                    sub = calc_y.behavior.BE_sub * pch * calc_x.records.e00200
+                    sub = calc2.behavior.BE_sub * pch * calc1.array('e00200')
                 else:
                     # Note: c04800 is filing unit's taxable income
-                    sub = calc_y.behavior.BE_sub * pch * calc_x.records.c04800
+                    sub = calc2.behavior.BE_sub * pch * calc1.array('c04800')
                     if trace:
                         trace_output('pch', pch,
                                      [-9e99, -1.00, -0.50, -0.20, -0.10,
                                       -0.00001, 0.00001,
                                       0.10, 0.20, 0.50, 1.00, 9e99],
-                                     calc_x.records.s006,
-                                     calc_x.records.c04800)
+                                     calc1.array('s006'),
+                                     calc1.array('c04800'))
                         trace_output('sub', sub,
                                      [-9e99, -1e3,
                                       -0.1, 0.1,
                                       1e3, 1e4, 1e5, 1e6, 9e99],
-                                     calc_x.records.s006,
-                                     np.zeros(calc_x.records.dim))
+                                     calc1.array('s006'),
+                                     np.zeros(calc1.array_len))
             # calculate magnitude of income effect
-            if calc_y.behavior.BE_inc == 0.0:
-                inc = np.zeros(calc_x.records.dim)
+            if calc2.behavior.BE_inc == 0.0:
+                inc = np.zeros(calc1.array_len)
             else:
-                if calc_y.behavior.BE_subinc_wrt_earnings:
+                if calc2.behavior.BE_subinc_wrt_earnings:
                     # proportional change in after-tax income
                     with np.errstate(invalid='ignore'):
-                        pch = np.where(calc_x.records.aftertax_income > 0.,
-                                       (calc_y.records.aftertax_income /
-                                        calc_x.records.aftertax_income) - 1.,
+                        pch = np.where(calc1.array('aftertax_income') > 0.,
+                                       (calc2.array('aftertax_income') /
+                                        calc1.array('aftertax_income')) - 1.,
                                        0.)
-                    inc = calc_y.behavior.BE_inc * pch * calc_x.records.e00200
+                    inc = calc2.behavior.BE_inc * pch * calc1.array('e00200')
                 else:
                     # dollar change in after-tax income
                     # Note: combined is f.unit's income+payroll tax liability
-                    dch = calc_x.records.combined - calc_y.records.combined
-                    inc = calc_y.behavior.BE_inc * dch
+                    dch = calc1.array('combined') - calc2.array('combined')
+                    inc = calc2.behavior.BE_inc * dch
             # calculate sum of substitution and income effects
             si_chg = sub + inc
         # calculate long-term capital-gains effect
-        if calc_y.behavior.BE_cg == 0.0:
-            ltcg_chg = np.zeros(calc_x.records.dim)
+        if calc2.behavior.BE_cg == 0.0:
+            ltcg_chg = np.zeros(calc1.array_len)
         else:
             # calculate marginal tax rates on long-term capital gains
             # (p23250 is filing units' long-term capital gains)
-            ltcg_mtr_x, ltcg_mtr_y = Behavior._mtr_xy(calc_x, calc_y,
-                                                      mtr_of='p23250',
-                                                      tax_type='iitax')
-            rch = ltcg_mtr_y - ltcg_mtr_x
-            exp_term = np.exp(calc_y.behavior.BE_cg * rch)
-            new_ltcg = calc_x.records.p23250 * exp_term
-            ltcg_chg = new_ltcg - calc_x.records.p23250
+            ltcg_mtr1, ltcg_mtr2 = Behavior._mtr12(calc1, calc2,
+                                                   mtr_of='p23250',
+                                                   tax_type='iitax')
+            rch = ltcg_mtr2 - ltcg_mtr1
+            exp_term = np.exp(calc2.behavior.BE_cg * rch)
+            new_ltcg = calc1.array('p23250') * exp_term
+            ltcg_chg = new_ltcg - calc1.array('p23250')
         # calculate charitable giving effect
-        no_charity_response = (calc_y.behavior.BE_charity.tolist() ==
+        no_charity_response = (calc2.behavior.BE_charity.tolist() ==
                                [0.0, 0.0, 0.0])
         if no_charity_response:
-            c_charity_chg = np.zeros(calc_x.records.dim)
-            nc_charity_chg = np.zeros(calc_x.records.dim)
+            c_charity_chg = np.zeros(calc1.array_len)
+            nc_charity_chg = np.zeros(calc1.array_len)
         else:
             # calculate marginal tax rate on charitable contributions
             # e19800 is filing units' cash charitable contributions
             # e20100 is filing units' non-cash charitable contributions
             # cash:
-            c_charity_mtr_x, c_charity_mtr_y = Behavior._mtr_xy(
-                calc_x, calc_y, mtr_of='e19800', tax_type='combined')
-            c_charity_price_pch = (((1. + c_charity_mtr_y) /
-                                    (1. + c_charity_mtr_x)) - 1.)
+            c_charity_mtr1, c_charity_mtr2 = Behavior._mtr12(
+                calc1, calc2, mtr_of='e19800', tax_type='combined')
+            c_charity_price_pch = (((1. + c_charity_mtr2) /
+                                    (1. + c_charity_mtr1)) - 1.)
             # non-cash:
-            nc_charity_mtr_x, nc_charity_mtr_y = Behavior._mtr_xy(
-                calc_x, calc_y, mtr_of='e20100', tax_type='combined')
-            nc_charity_price_pch = (((1. + nc_charity_mtr_y) /
-                                     (1. + nc_charity_mtr_x)) - 1.)
+            nc_charity_mtr1, nc_charity_mtr2 = Behavior._mtr12(
+                calc1, calc2, mtr_of='e20100', tax_type='combined')
+            nc_charity_price_pch = (((1. + nc_charity_mtr2) /
+                                     (1. + nc_charity_mtr1)) - 1.)
             # identify income bin based on baseline income
-            low_income = (calc_x.records.c00100 < 50000)
-            mid_income = ((calc_x.records.c00100 >= 50000) &
-                          (calc_x.records.c00100 < 100000))
-            high_income = (calc_x.records.c00100 >= 100000)
+            agi = calc1.array('c00100')
+            low_income = (agi < 50000)
+            mid_income = ((agi >= 50000) & (agi < 100000))
+            high_income = (agi >= 100000)
             # calculate change in cash contributions
-            c_charity_chg = np.zeros(calc_x.records.dim)
+            c_charity_chg = np.zeros(calc1.array_len)
             # AGI < 50000
             c_charity_chg = np.where(low_income,
-                                     (calc_y.behavior.BE_charity[0] *
+                                     (calc2.behavior.BE_charity[0] *
                                       c_charity_price_pch *
-                                      calc_x.records.e19800),
+                                      calc1.array('e19800')),
                                      c_charity_chg)
             # 50000 <= AGI < 1000000
             c_charity_chg = np.where(mid_income,
-                                     (calc_y.behavior.BE_charity[1] *
+                                     (calc2.behavior.BE_charity[1] *
                                       c_charity_price_pch *
-                                      calc_x.records.e19800),
+                                      calc1.array('e19800')),
                                      c_charity_chg)
             # 1000000 < AGI
             c_charity_chg = np.where(high_income,
-                                     (calc_y.behavior.BE_charity[2] *
+                                     (calc2.behavior.BE_charity[2] *
                                       c_charity_price_pch *
-                                      calc_x.records.e19800),
+                                      calc1.array('e19800')),
                                      c_charity_chg)
             # calculate change in non-cash contributions
-            nc_charity_chg = np.zeros(calc_x.records.dim)
+            nc_charity_chg = np.zeros(calc1.array_len)
             # AGI < 50000
             nc_charity_chg = np.where(low_income,
-                                      (calc_y.behavior.BE_charity[0] *
+                                      (calc2.behavior.BE_charity[0] *
                                        nc_charity_price_pch *
-                                       calc_x.records.e20100),
+                                       calc1.array('e20100')),
                                       nc_charity_chg)
             # 50000 <= AGI < 1000000
             nc_charity_chg = np.where(mid_income,
-                                      (calc_y.behavior.BE_charity[1] *
+                                      (calc2.behavior.BE_charity[1] *
                                        nc_charity_price_pch *
-                                       calc_x.records.e20100),
+                                       calc1.array('e20100')),
                                       nc_charity_chg)
             # 1000000 < AGI
             nc_charity_chg = np.where(high_income,
-                                      (calc_y.behavior.BE_charity[2] *
+                                      (calc2.behavior.BE_charity[2] *
                                        nc_charity_price_pch *
-                                       calc_x.records.e20100),
+                                       calc1.array('e20100')),
                                       nc_charity_chg)
         # Add behavioral-response changes to income sources
-        calc_y_behv = copy.deepcopy(calc_y)
+        calc2_behv = copy.deepcopy(calc2)
         if not zero_sub_and_inc:
-            if calc_y_behv.behavior.BE_subinc_wrt_earnings:
-                calc_y_behv = Behavior._update_earnings(si_chg,
-                                                        calc_y_behv)
+            if calc2_behv.behavior.BE_subinc_wrt_earnings:
+                calc2_behv = Behavior._update_earnings(si_chg,
+                                                       calc2_behv)
             else:
-                calc_y_behv = Behavior._update_ordinary_income(si_chg,
-                                                               calc_y_behv)
-        calc_y_behv = Behavior._update_cap_gain_income(ltcg_chg,
-                                                       calc_y_behv)
-        calc_y_behv = Behavior._update_charity(c_charity_chg, nc_charity_chg,
-                                               calc_y_behv)
+                calc2_behv = Behavior._update_ordinary_income(si_chg,
+                                                              calc2_behv)
+        calc2_behv = Behavior._update_cap_gain_income(ltcg_chg,
+                                                      calc2_behv)
+        calc2_behv = Behavior._update_charity(c_charity_chg, nc_charity_chg,
+                                              calc2_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
-        calc_y_behv.calc_all()
-        return calc_y_behv
+        calc2_behv.calc_all()
+        return calc2_behv
 
     # ----- begin private methods of Behavior class -----
 
@@ -388,8 +388,8 @@ class Behavior(ParametersBase):
         """
         Implement earnings change induced by earnings response.
         """
-        calc.records.e00200 += change
-        calc.records.e00200p += change
+        calc.incarray('e00200', change)
+        calc.incarray('e00200p', change)
         return calc
 
     @staticmethod
@@ -398,16 +398,15 @@ class Behavior(ParametersBase):
         Implement total taxable income change induced by behavioral response.
         """
         # compute AGI minus itemized deductions, agi_m_ided
-        agi = calc.records.c00100
-        ided = np.where(calc.records.c04470 < calc.records.standard,
-                        0.,
-                        calc.records.c04470)
+        agi = calc.array('c00100')
+        ided = np.where(calc.array('c04470') < calc.array('standard'),
+                        0., calc.array('c04470'))
         agi_m_ided = agi - ided
         # assume behv response only for filing units with positive agi_m_ided
         pos = np.array(agi_m_ided > 0., dtype=bool)
         delta_income = np.where(pos, taxinc_change, 0.)
         # allocate delta_income into three parts
-        winc = calc.records.e00200
+        winc = calc.array('e00200')
         delta_winc = np.zeros_like(agi)
         delta_winc[pos] = delta_income[pos] * winc[pos] / agi_m_ided[pos]
         oinc = agi - winc
@@ -418,10 +417,10 @@ class Behavior(ParametersBase):
         # confirm that the three parts are consistent with delta_income
         assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
         # add the three parts to different calc.records variables
-        calc.records.e00200 += delta_winc
-        calc.records.e00200p += delta_winc
-        calc.records.e00300 += delta_oinc
-        calc.records.e19200 += delta_ided
+        calc.incarray('e00200', delta_winc)
+        calc.incarray('e00200p', delta_winc)
+        calc.incarray('e00300', delta_oinc)
+        calc.incarray('e19200', delta_ided)
         return calc
 
     @staticmethod
@@ -429,7 +428,7 @@ class Behavior(ParametersBase):
         """
         Implement capital gain change induced by behavioral responses.
         """
-        calc.records.p23250 += cap_gain_change
+        calc.incarray('p23250', cap_gain_change)
         return calc
 
     @staticmethod
@@ -438,21 +437,21 @@ class Behavior(ParametersBase):
         Implement cash charitable contribution change induced
         by behavioral responses.
         """
-        calc.records.e19800 += cash_charity_change
-        calc.records.e20100 += non_cash_charity_change
+        calc.incarray('e19800', cash_charity_change)
+        calc.incarray('e20100', non_cash_charity_change)
         return calc
 
     @staticmethod
-    def _mtr_xy(calc_x, calc_y, mtr_of='e00200p', tax_type='combined'):
+    def _mtr12(calc1, calc2, mtr_of='e00200p', tax_type='combined'):
         """
-        Computes marginal tax rates for Calculator objects calc_x and calc_y
+        Computes marginal tax rates for Calculator objects calc1 and calc2
         for specified mtr_of income type and specified tax_type.
         """
-        _, iitax_x, combined_x = calc_x.mtr(mtr_of, wrt_full_compensation=True)
-        _, iitax_y, combined_y = calc_y.mtr(mtr_of, wrt_full_compensation=True)
+        _, iitax1, combined1 = calc1.mtr(mtr_of, wrt_full_compensation=True)
+        _, iitax2, combined2 = calc2.mtr(mtr_of, wrt_full_compensation=True)
         if tax_type == 'combined':
-            return (combined_x, combined_y)
+            return (combined1, combined2)
         elif tax_type == 'iitax':
-            return (iitax_x, iitax_y)
+            return (iitax1, iitax2)
         else:
             raise ValueError('tax_type must be "combined" or "iitax"')

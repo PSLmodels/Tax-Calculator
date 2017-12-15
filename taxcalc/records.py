@@ -114,7 +114,7 @@ class Records(object):
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments
-        self._data_year = start_year
+        self.__data_year = start_year
         # read specified data
         self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
@@ -147,22 +147,22 @@ class Records(object):
         self.ADJ = None
         self._read_ratios(adjust_ratios)
         # weights must be same size as tax record data
-        if not self.WT.empty and self.dim != len(self.WT):
+        if not self.WT.empty and self.array_length != len(self.WT):
             # scale-up sub-sample weights by year-specific factor
             sum_full_weights = self.WT.sum()
-            self.WT = self.WT.iloc[self.index]
+            self.WT = self.WT.iloc[self.__index]
             sum_sub_weights = self.WT.sum()
             factor = sum_full_weights / sum_sub_weights
             self.WT = self.WT * factor
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
-            self._current_year = start_year
+            self.__current_year = start_year
             self.FLPDYR.fill(start_year)
         else:
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # consider applying initial-year grow factors
-        if gfactors is not None and start_year == self._data_year:
+        if gfactors is not None and start_year == self.__data_year:
             self._blowup(start_year)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
@@ -197,26 +197,33 @@ class Records(object):
         """
         Records class original data year property.
         """
-        return self._data_year
+        return self.__data_year
 
     @property
     def current_year(self):
         """
         Records class current calendar year property.
         """
-        return self._current_year
+        return self.__current_year
+
+    @property
+    def array_length(self):
+        """
+        Length of arrays in Records class's DataFrame.
+        """
+        return self.__dim
 
     def increment_year(self):
         """
         Add one to current year.
         Also, does extrapolation, reweighting, adjusting for new current year.
         """
-        self._current_year += 1
+        self.__current_year += 1
         # apply variable extrapolation grow factors
         if self.gfactors is not None:
-            self._blowup(self.current_year)
+            self._blowup(self.__current_year)
         # apply variable adjustment ratios
-        self._adjust(self.current_year)
+        self._adjust(self.__current_year)
         # specify current-year sample weights
         if self.WT is not None:
             wt_colname = 'WT{}'.format(self.current_year)
@@ -229,7 +236,7 @@ class Records(object):
         Unlike increment_year method, extrapolation, reweighting, adjusting
         are skipped.
         """
-        self._current_year = new_current_year
+        self.__current_year = new_current_year
         self.FLPDYR.fill(new_current_year)
 
     @staticmethod
@@ -406,8 +413,8 @@ class Records(object):
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
-        self.dim = len(taxdf)
-        self.index = taxdf.index
+        self.__dim = len(taxdf)
+        self.__index = taxdf.index
         # create class variables using taxdf column names
         READ_VARS = set()
         self.IGNORED_VARS = set()
@@ -432,10 +439,10 @@ class Records(object):
         for varname in ZEROED_VARS:
             if varname in Records.INTEGER_VARS:
                 setattr(self, varname,
-                        np.zeros(self.dim, dtype=np.int32))
+                        np.zeros(self.array_length, dtype=np.int32))
             else:
                 setattr(self, varname,
-                        np.zeros(self.dim, dtype=np.float64))
+                        np.zeros(self.array_length, dtype=np.float64))
         # check for valid MARS values
         if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
                                      np.less_equal(self.MARS, 5))):

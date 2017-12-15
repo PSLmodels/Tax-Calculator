@@ -93,6 +93,7 @@ class Calculator(object):
     All calculations are done on the internal copies of the Policy and
     Records objects passed to each of the two Calculator constructors.
     """
+    # pylint: disable=too-many-public-methods
 
     def __init__(self, policy=None, records=None, verbose=True,
                  sync_years=True, consumption=None, behavior=None):
@@ -159,13 +160,13 @@ class Calculator(object):
         increment year functionality by immediately specifying the year
         as input.  New year must be at least the current year.
         """
-        iteration = year - self.records.current_year
+        iteration = year - self.current_year
         if iteration < 0:
             raise ValueError('New current year must be ' +
                              'greater than current year!')
         for _ in range(iteration):
             self.increment_year()
-        assert self.records.current_year == year
+        assert self.current_year == year
 
     def calc_all(self, zero_out_calc_vars=False):
         """
@@ -185,23 +186,20 @@ class Calculator(object):
         """
         Return all-filing-unit weighted total of named Records variable.
         """
-        variable = getattr(self.records, variable_name)
-        weight = getattr(self.records, 's006')
-        return (variable * weight).sum()
+        return (self.array(variable_name) * self.array('s006')).sum()
 
     def total_weight(self):
         """
         Return all-filing-unit total of sampling weights.
         NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
         """
-        weight = getattr(self.records, 's006')
-        return weight.sum()
+        return self.array('s006').sum()
 
     def dataframe(self, variable_list):
         """
         Return pandas DataFrame containing the listed Records variables.
         """
-        arys = [getattr(self.records, vname) for vname in variable_list]
+        arys = [self.array(vname) for vname in variable_list]
         return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
     def array(self, variable_name):
@@ -209,6 +207,25 @@ class Calculator(object):
         Return numpy ndarray containing the named Records variable.
         """
         return getattr(self.records, variable_name)
+
+    def setarray(self, variable_name, variable_value):
+        """
+        Set named Records variable to specified variable_value.
+        """
+        setattr(self.records, variable_name, variable_value)
+
+    def incarray(self, variable_name, variable_add):
+        """
+        Add variable_add to named Records variable.
+        """
+        setattr(self.records, variable_name,
+                self.array(variable_name) + variable_add)
+
+    def zeroarray(self, variable_name):
+        """
+        Set named Records variable to zeros.
+        """
+        setattr(self.records, variable_name, np.zeros(self.array_len))
 
     def diagnostic_table(self, num_years):
         """
@@ -290,8 +307,8 @@ class Calculator(object):
             otherwise, return false.  (Note that "same" means nobody's
             income_measure differs by more than one cent.)
             """
-            im1 = getattr(calc1.records, income_measure)
-            im2 = getattr(calc2.records, income_measure)
+            im1 = calc1.array(income_measure)
+            im2 = calc2.array(income_measure)
             return np.allclose(im1, im2, rtol=0.0, atol=0.01)
         # main logic of method
         assert calc is None or isinstance(calc, Calculator)
@@ -311,13 +328,13 @@ class Calculator(object):
             dt2 = None
         else:
             assert calc.current_year == self.current_year
-            assert calc.records.dim == self.records.dim
+            assert calc.array_len == self.array_len
             var_dataframe = calc.dataframe(DIST_VARIABLES)
             if have_same_income_measure(self, calc, income_measure):
                 imeasure = income_measure
             else:
                 imeasure = income_measure + '_baseline'
-                var_dataframe[imeasure] = getattr(self.records, income_measure)
+                var_dataframe[imeasure] = self.array(income_measure)
             dt2 = create_distribution_table(var_dataframe,
                                             groupby=groupby,
                                             income_measure=imeasure,
@@ -362,7 +379,7 @@ class Calculator(object):
         """
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dim == self.records.dim
+        assert calc.array_len == self.array_len
         diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
                                        calc.dataframe(DIFF_VARIABLES),
                                        groupby=groupby,
@@ -383,6 +400,13 @@ class Calculator(object):
         Calculator class initial (i.e., first) records data year property.
         """
         return self.records.data_year
+
+    @property
+    def array_len(self):
+        """
+        Length of arrays in embedded Records object.
+        """
+        return self.records.array_length
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
                            'e00900p', 'e00300',
@@ -494,41 +518,41 @@ class Calculator(object):
         # save records object in order to restore it after mtr computations
         recs0 = copy.deepcopy(self.records)
         # extract variable array(s) from embedded records object
-        variable = getattr(self.records, variable_str)
+        variable = self.array(variable_str)
         if variable_str == 'e00200p':
-            earnings_var = self.records.e00200
+            earnings_var = self.array('e00200')
         elif variable_str == 'e00200s':
-            earnings_var = self.records.e00200
+            earnings_var = self.array('e00200')
         elif variable_str == 'e00900p':
-            seincome_var = self.records.e00900
+            seincome_var = self.array('e00900')
         elif variable_str == 'e00650':
-            divincome_var = self.records.e00600
+            divincome_var = self.array('e00600')
         elif variable_str == 'e26270':
-            schEincome_var = self.records.e02000
+            schEincome_var = self.array('e02000')
         # calculate level of taxes after a marginal increase in income
-        setattr(self.records, variable_str, variable + finite_diff)
+        self.setarray(variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
-            self.records.e00200 = earnings_var + finite_diff
+            self.setarray('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00200s':
-            self.records.e00200 = earnings_var + finite_diff
+            self.setarray('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00900p':
-            self.records.e00900 = seincome_var + finite_diff
+            self.setarray('e00900', seincome_var + finite_diff)
         elif variable_str == 'e00650':
-            self.records.e00600 = divincome_var + finite_diff
+            self.setarray('e00600', divincome_var + finite_diff)
         elif variable_str == 'e26270':
-            self.records.e02000 = schEincome_var + finite_diff
+            self.setarray('e02000', schEincome_var + finite_diff)
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_chng = copy.deepcopy(self.records.payrolltax)
-        incometax_chng = copy.deepcopy(self.records.iitax)
+        payrolltax_chng = self.array('payrolltax')
+        incometax_chng = self.array('iitax')
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, 'records', recs0)
         if not calc_all_already_called or zero_out_calculated_vars:
             self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_base = copy.deepcopy(self.records.payrolltax)
-        incometax_base = copy.deepcopy(self.records.iitax)
+        payrolltax_base = self.array('payrolltax')
+        incometax_base = self.array('iitax')
         combined_taxes_base = incometax_base + payrolltax_base
         # compute marginal changes in combined tax liability
         payrolltax_diff = payrolltax_chng - payrolltax_base
@@ -550,12 +574,10 @@ class Calculator(object):
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # if variable_str is e00200s, set MTR to NaN for units without a spouse
         if variable_str == 'e00200s':
-            mtr_payrolltax = np.where(self.records.MARS == 2,
-                                      mtr_payrolltax, np.nan)
-            mtr_incometax = np.where(self.records.MARS == 2,
-                                     mtr_incometax, np.nan)
-            mtr_combined = np.where(self.records.MARS == 2,
-                                    mtr_combined, np.nan)
+            mars = self.array('MARS')
+            mtr_payrolltax = np.where(mars == 2, mtr_payrolltax, np.nan)
+            mtr_incometax = np.where(mars == 2, mtr_incometax, np.nan)
+            mtr_combined = np.where(mars == 2, mtr_combined, np.nan)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
@@ -645,7 +667,7 @@ class Calculator(object):
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dim == self.records.dim
+        assert calc.array_len == self.array_len
         # check validity of mars parameter
         assert mars == 'ALL' or (mars >= 1 and mars <= 4)
         # check validity of income_measure
@@ -760,7 +782,7 @@ class Calculator(object):
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dim == self.records.dim
+        assert calc.array_len == self.array_len
         # check validity of function arguments
         assert mars == 'ALL' or (mars >= 1 and mars <= 4)
         assert (atr_measure == 'combined' or
@@ -775,14 +797,14 @@ class Calculator(object):
         vdf = self.dataframe(record_variables)
         # create 'tax1' and 'tax2' columns given specified atr_measure
         if atr_measure == 'combined':
-            vdf['tax1'] = self.records.combined
-            vdf['tax2'] = calc.records.combined
+            vdf['tax1'] = self.array('combined')
+            vdf['tax2'] = calc.array('combined')
         elif atr_measure == 'itax':
-            vdf['tax1'] = self.records.iitax
-            vdf['tax2'] = calc.records.iitax
+            vdf['tax1'] = self.array('iitax')
+            vdf['tax2'] = calc.array('iitax')
         elif atr_measure == 'ptax':
-            vdf['tax1'] = self.records.payrolltax
-            vdf['tax2'] = calc.records.payrolltax
+            vdf['tax1'] = self.array('payrolltax')
+            vdf['tax2'] = calc.array('payrolltax')
         # select filing-status subgroup, if any
         if mars != 'ALL':
             vdf = vdf[vdf['MARS'] == mars]
@@ -827,7 +849,7 @@ class Calculator(object):
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
-        assert calc.records.dim == self.records.dim
+        assert calc.array_len == self.array_len
         diff_table = self.difference_table(calc,
                                            groupby='weighted_deciles',
                                            income_measure='expanded_income',
@@ -848,10 +870,10 @@ class Calculator(object):
         Return Calculator object same as self except with current-law policy.
         """
         return Calculator(policy=self.policy.current_law_version(),
-                          records=copy.deepcopy(self.records),
+                          records=self.records,
                           sync_years=False,
-                          consumption=copy.deepcopy(self.consumption),
-                          behavior=copy.deepcopy(self.behavior))
+                          consumption=self.consumption,
+                          behavior=self.behavior)
 
     @staticmethod
     def read_json_param_objects(reform, assump):
@@ -1105,7 +1127,7 @@ class Calculator(object):
         """
         # check that calc and self are consistent
         assert isinstance(calc, Calculator)
-        assert calc.records.dim == self.records.dim
+        assert calc.array_len == self.array_len
         assert calc.current_year == self.current_year
         # extract data from self and calc
         records_variables = ['s006', 'combined', 'expanded_income']
@@ -1152,33 +1174,33 @@ class Calculator(object):
         StdDed(self.policy, self.records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.records.standard)
-        item = copy.deepcopy(self.records.c04470)
-        item_no_limit = copy.deepcopy(self.records.c21060)
-        item_phaseout = copy.deepcopy(self.records.c21040)
-        self.records.c04470 = np.zeros(self.records.dim)
-        self.records.c21060 = np.zeros(self.records.dim)
-        self.records.c21040 = np.zeros(self.records.dim)
+        std = copy.deepcopy(self.array('standard'))
+        item = copy.deepcopy(self.array('c04470'))
+        item_no_limit = copy.deepcopy(self.array('c21060'))
+        item_phaseout = copy.deepcopy(self.array('c21040'))
+        self.zeroarray('c04470')
+        self.zeroarray('c21060')
+        self.zeroarray('c21040')
         self._taxinc_to_amt()
-        std_taxes = copy.deepcopy(self.records.c05800)
+        std_taxes = copy.deepcopy(self.array('c05800'))
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
-        self.records.standard = np.zeros(self.records.dim)
-        self.records.c21060 = item_no_limit
-        self.records.c21040 = item_phaseout
-        self.records.c04470 = item
+        self.zeroarray('standard')
+        self.setarray('c21060', item_no_limit)
+        self.setarray('c21040', item_phaseout)
+        self.setarray('c04470', item)
         self._taxinc_to_amt()
-        item_taxes = copy.deepcopy(self.records.c05800)
+        item_taxes = copy.deepcopy(self.array('c05800'))
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
-        self.records.standard[:] = np.where(item_taxes < std_taxes,
-                                            0., std)
-        self.records.c04470[:] = np.where(item_taxes < std_taxes,
-                                          item, 0.)
-        self.records.c21060[:] = np.where(item_taxes < std_taxes,
-                                          item_no_limit, 0.)
-        self.records.c21040[:] = np.where(item_taxes < std_taxes,
-                                          item_phaseout, 0.)
+        self.setarray('standard', np.where(item_taxes < std_taxes,
+                                           0., std))
+        self.setarray('c04470', np.where(item_taxes < std_taxes,
+                                         item, 0.))
+        self.setarray('c21060', np.where(item_taxes < std_taxes,
+                                         item_no_limit, 0.))
+        self.setarray('c21040', np.where(item_taxes < std_taxes,
+                                         item_phaseout, 0.))
         # Calculate taxes with optimal itemized deduction
         self._taxinc_to_amt()
         F2441(self.policy, self.records)
