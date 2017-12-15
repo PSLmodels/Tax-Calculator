@@ -17,7 +17,7 @@ for a complete commit history.
   [[#1756](https://github.com/open-source-economics/Tax-Calculator/pull/1756)
   by Cody Kallen with helpful discussion from Ernie Tedeschi and Matt Jensen]
 - Add percentage change in income by income decile graph to `tc --graphs` output
-  [[#175x](https://github.com/open-source-economics/Tax-Calculator/pull/175x)
+  [[#1758](https://github.com/open-source-economics/Tax-Calculator/pull/1758)
   by Martin Holmer]
 
 **Bug Fixes**
