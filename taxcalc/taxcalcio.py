@@ -546,7 +546,17 @@ class TaxCalcIO(object):
         """
         Write graphs to HTML files.
         """
-        pos_wght_sum = self.calc.total_weight() > 0.
+        pos_wght_sum = self.calc.records.s006.sum() > 0.
+        # income-change-by-decile graph
+        dec_fname = self._output_filename.replace('.csv', '-dec.html')
+        dec_title = 'Income Change by Income Decile'
+        if pos_wght_sum:
+            fig = self.calc_clp.decile_graph(self.calc)
+            write_graph_file(fig, dec_fname, dec_title)
+        else:
+            reason = 'No graph because sum of weights is not positive'
+            TaxCalcIO.write_empty_graph_file(dec_fname, dec_title, reason)
+        # average-tax-rate graph
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
         if pos_wght_sum:
@@ -555,6 +565,7 @@ class TaxCalcIO(object):
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(atr_fname, atr_title, reason)
+        # marginal-tax-rate graph
         mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
         mtr_title = 'MTR by Income Percentile'
         if pos_wght_sum:

@@ -623,32 +623,32 @@ cps-22-ref3-#-doc.text	cps-22-ref3-#-tab.text	cps-22-ref3-#.csv
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.6      -2.1       3.6       0.0       1.5
- 1    17.93     202.8     -15.4      13.7       0.0      -1.7
- 2    17.93     353.5     -19.2      25.3       0.0       6.0
- 3    17.93     513.8     -16.9      47.0       0.0      30.1
- 4    17.93     696.3      -1.2      72.3       0.0      71.2
- 5    17.93     928.0      24.0     104.3       0.0     128.2
- 6    17.93    1246.3      59.9     147.5       0.0     207.4
- 7    17.93    1723.5     121.0     215.3       0.0     336.3
- 8    17.93    2497.1     224.8     317.9       0.0     542.6
- 9    17.93    5949.7    1099.9     517.8       0.0    1617.8
- A   179.26   14107.4    1474.8    1464.8       0.0    2939.6
+ 0    17.93      -3.5      -2.1       3.6       0.0       1.6
+ 1    17.93     201.9     -15.3      13.6       0.0      -1.8
+ 2    17.93     351.9     -19.1      25.0       0.0       5.9
+ 3    17.93     512.8     -17.0      47.2       0.0      30.2
+ 4    17.93     696.2      -1.2      72.5       0.0      71.3
+ 5    17.93     929.0      23.9     104.4       0.0     128.4
+ 6    17.93    1248.8      60.3     148.4       0.0     208.7
+ 7    17.93    1728.2     121.4     215.6       0.0     337.0
+ 8    17.93    2504.8     225.6     318.8       0.0     544.3
+ 9    17.93    5945.2    1089.6     516.7       0.0    1606.3
+ A   179.26   14115.3    1466.0    1465.8       0.0    2931.8
 
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.6       0.0       0.0       0.0       0.0
- 1    17.93     202.8      -0.2       0.0       0.0      -0.2
- 2    17.93     353.5      -1.8       0.0       0.0      -1.8
- 3    17.93     513.8      -4.2       0.0       0.0      -4.2
- 4    17.93     696.3      -7.3       0.0       0.0      -7.3
- 5    17.93     928.0     -11.1       0.0       0.0     -11.1
- 6    17.93    1246.3     -17.5       0.0       0.0     -17.5
- 7    17.93    1723.5     -22.7       0.0       0.0     -22.7
- 8    17.93    2497.1     -31.2       0.0       0.0     -31.2
- 9    17.93    5949.7     -26.3       0.0       0.0     -26.3
- A   179.26   14107.4    -122.3       0.0       0.0    -122.3
+ 0    17.93      -3.5       0.0       0.0       0.0       0.0
+ 1    17.93     201.9      -0.2       0.0       0.0      -0.2
+ 2    17.93     351.9      -1.7       0.0       0.0      -1.7
+ 3    17.93     512.8      -4.2       0.0       0.0      -4.2
+ 4    17.93     696.2      -7.3       0.0       0.0      -7.3
+ 5    17.93     929.0     -11.1       0.0       0.0     -11.1
+ 6    17.93    1248.8     -17.5       0.0       0.0     -17.5
+ 7    17.93    1728.2     -22.7       0.0       0.0     -22.7
+ 8    17.93    2504.8     -31.2       0.0       0.0     -31.2
+ 9    17.93    5945.2     -26.2       0.0       0.0     -26.2
+ A   179.26   14115.3    -122.1       0.0       0.0    -122.1
 </pre></p>
 
 <p>Example (7) produces 2022 static output for the filing units in the
@@ -668,7 +668,7 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24*
-cps-24-ref3-#-atr.html	cps-24-ref3-#-mtr.html
+cps-24-ref3-#-atr.html	cps-24-ref3-#-dec.html  cps-24-ref3-#-mtr.html
 cps-24-ref3-#-doc.text	cps-24-ref3-#.csv
 </pre></p>
 
@@ -686,6 +686,11 @@ in <kbd>cps-24-ref3-#-atr.html</kbd> looks like.</p>
 in <kbd>cps-24-ref3-#-mtr.html</kbd> looks like:</p>
 
 <p><img src="mtr.png" alt="mtr graph"></p>
+
+<p>Here is what the percentage after-tax income change by income
+decile graph in <kbd>cps-24-ref3-#-dec.html</kbd> looks like:</p>
+
+<p><img src="dec.png" alt="dec graph"></p>
 
 <p>There is yet another tc CLI output option that writes to the screen
 results from a normative welfare analysis of the specified policy
