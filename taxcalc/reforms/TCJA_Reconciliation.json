@@ -10,7 +10,7 @@
 // -  Modification of Alternative Minimum Tax exemption (6)
 // -  Repeal of certain above the line deductions (7)
 // -  Changes to itemized deductions (8)
-// -  Switch to chained CPI from CPI-U for tax paramter adjustment (9)
+// -  Switch to chained CPI from CPI-U for tax parameter adjustment (9)
 // Reform_Parameter_Map:
 // - 1: _II_*
 // - 2: _PT_*
