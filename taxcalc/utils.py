@@ -253,9 +253,9 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
 
     Parameters
     ----------
-    vdf : Pandas DataFrame including columns named as in STATS_COLUMNS list
+    vdf : Pandas DataFrame including columns named as in STATS_VARIABLES list
         for example, object returned from Calculator dataframe method in a
-        call like this: vdf = calc.dataframe(STATS_COLUMNS)
+        call like this: vdf = calc.dataframe(STATS_VARIABLES)
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
