@@ -1207,6 +1207,36 @@
         "out_of_range_action": "stop"
     },
 
+    "_ID_AllTaxes_c": {
+        "long_name": "Ceiling on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
+        "description": "The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.",
+        "section_1": "Itemized Deductions",
+        "section_2": "State And Local Income And Sales Taxes",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_ID_InterestPaid_hc": {
         "long_name": "Interest paid deduction haircut",
         "description": "This decimal fraction can be applied to limit the amount of interest paid deduction allowed.",
