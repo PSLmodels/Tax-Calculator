@@ -1207,12 +1207,11 @@
         "out_of_range_action": "stop"
     },
 
-
     "_ID_AllTaxes_c": {
         "long_name": "Ceiling on the amount of state and local income, sales and real estate tax deductions allowed (dollars)",
         "description": "The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.",
         "section_1": "Itemized Deductions",
-        "section_2": "State and Local, And Foreign Real Estate Taxes",
+        "section_2": "State And Local Income And Sales Taxes",
         "irs_ref": "",
         "notes": "",
         "row_var": "FLPDYR",
