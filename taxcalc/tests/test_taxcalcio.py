@@ -584,6 +584,9 @@ def test_no_tables_or_graphs(reformfile1):
     fname = output_filename.replace('.csv', '-atr.html')
     if os.path.isfile(fname):
         os.remove(fname)
+    fname = output_filename.replace('.csv', '-dec.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
     fname = output_filename.replace('.csv', '-mtr.html')
     if os.path.isfile(fname):
         os.remove(fname)
@@ -656,6 +659,9 @@ def test_graphs(reformfile1):
     # delete graph files
     output_filename = tcio.output_filepath()
     fname = output_filename.replace('.csv', '-atr.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
+    fname = output_filename.replace('.csv', '-dec.html')
     if os.path.isfile(fname):
         os.remove(fname)
     fname = output_filename.replace('.csv', '-mtr.html')

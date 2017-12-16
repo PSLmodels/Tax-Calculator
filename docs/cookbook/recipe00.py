@@ -23,7 +23,7 @@ calc1.calc_all()
 itax_rev1 = calc1.weighted_total('iitax')
 
 # read JSON reform file and use (the default) static analysis assumptions
-reform_filename = './ingredients/raise_rates_and_stdded.json'
+reform_filename = './ingredients/reformA.json'
 params = Calculator.read_json_param_objects(reform=reform_filename,
                                             assump=None)
 

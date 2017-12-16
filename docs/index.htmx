@@ -33,6 +33,22 @@ analysis or, at least, note that those materials are available
 upon request.</p>
 
 
+<h2>What's New</h2>
+
+<p><a href="#partdump">Partial Dump</a> capability allows you to
+specify exactly which variables are included in the output file when
+using the <kbd>tc --dump</kbd> option
+
+<p><a href="#fastexec">Faster Execution</a> tip when executing many
+<kbd>tc</kbd> runs that differ by year and/or reform</p>
+
+<p><a href="#marskids">Filing Units</a> example shows how to specify
+filing units with different marital status and numbers of children</p>
+
+<p>To upgrade to the Tax-Calculator 0.14.0 package, execute this
+command: <kbd>conda update -c ospc taxcalc</kbd></p>
+
+
 <h2>Document Contents</h2>
 
 <p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
@@ -421,8 +437,8 @@ dividends (<kbd>e00650</kbd>) for each filing unit.  Again, it is your
 responsibility to prepare input data in a way that ensures this
 relationship is true for each filing unit.</p>
 
-<p>Here's an example of how to specify a few stylized filing units
-with and without young children.
+<p id="marskids">Here's an example of how to specify a few stylized
+filing units with and without young children.
 <pre>
 RECID,MARS,XTOT,EIC,n24,...
    11,   1,   1,  0,  0, ... <== single person with no kids
@@ -501,13 +517,13 @@ example (2) can be used as an input file and it will produce exactly
 the same tax liabilities (apart from rounding errors of one or two
 cents) as in the original dump output.</p>
 
-<p>This full dump output can be useful for debugging and is small
-when using a number of stylized filing units as input.  But when using
-large samples as input (for example, the <kbd>cps.csv</kbd> input
-file), the size of the dump output becomes quite large.  Beginning with
-Tax-Calculator version 0.14.0, there is a way to specify a partial
-dump that includes only variables of interest.  To have <kbd>tc</kbd>
-do a partial dump, create a file named <kbd>tcdumpvars</kbd> in the
+<p id="partdump">This full dump output can be useful for debugging and
+is small when using a several stylized filing units as input.  But when
+using large samples as input (for example, the <kbd>cps.csv</kbd> input
+file), the size of the dump output becomes quite large. For Tax-Calculator
+versions 0.14.0 and higher, there is a way to specify a <b>partial dump</b>
+that includes only variables of interest.  To have <kbd>tc</kbd> do a
+partial dump, create a file named <kbd>tcdumpvars</kbd> in the
 directory where <kbd>tc</kbd> writes output files and in that
 <kbd>tcdumpvars</kbd> file list the names of the variables to be
 included in the partial dump.  You can put the varible names on
@@ -607,32 +623,32 @@ cps-22-ref3-#-doc.text	cps-22-ref3-#-tab.text	cps-22-ref3-#.csv
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.6      -2.1       3.6       0.0       1.5
- 1    17.93     202.8     -15.4      13.7       0.0      -1.7
- 2    17.93     353.5     -19.2      25.3       0.0       6.0
- 3    17.93     513.8     -16.9      47.0       0.0      30.1
- 4    17.93     696.3      -1.2      72.3       0.0      71.2
- 5    17.93     928.0      24.0     104.3       0.0     128.2
- 6    17.93    1246.3      59.9     147.5       0.0     207.4
- 7    17.93    1723.5     121.0     215.3       0.0     336.3
- 8    17.93    2497.1     224.8     317.9       0.0     542.6
- 9    17.93    5949.7    1099.9     517.8       0.0    1617.8
- A   179.26   14107.4    1474.8    1464.8       0.0    2939.6
+ 0    17.93      -3.5      -2.1       3.6       0.0       1.6
+ 1    17.93     201.9     -15.3      13.6       0.0      -1.8
+ 2    17.93     351.9     -19.1      25.0       0.0       5.9
+ 3    17.93     512.8     -17.0      47.2       0.0      30.2
+ 4    17.93     696.2      -1.2      72.5       0.0      71.3
+ 5    17.93     929.0      23.9     104.4       0.0     128.4
+ 6    17.93    1248.8      60.3     148.4       0.0     208.7
+ 7    17.93    1728.2     121.4     215.6       0.0     337.0
+ 8    17.93    2504.8     225.6     318.8       0.0     544.3
+ 9    17.93    5945.2    1089.6     516.7       0.0    1606.3
+ A   179.26   14115.3    1466.0    1465.8       0.0    2931.8
 
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.6       0.0       0.0       0.0       0.0
- 1    17.93     202.8      -0.2       0.0       0.0      -0.2
- 2    17.93     353.5      -1.8       0.0       0.0      -1.8
- 3    17.93     513.8      -4.2       0.0       0.0      -4.2
- 4    17.93     696.3      -7.3       0.0       0.0      -7.3
- 5    17.93     928.0     -11.1       0.0       0.0     -11.1
- 6    17.93    1246.3     -17.5       0.0       0.0     -17.5
- 7    17.93    1723.5     -22.7       0.0       0.0     -22.7
- 8    17.93    2497.1     -31.2       0.0       0.0     -31.2
- 9    17.93    5949.7     -26.3       0.0       0.0     -26.3
- A   179.26   14107.4    -122.3       0.0       0.0    -122.3
+ 0    17.93      -3.5       0.0       0.0       0.0       0.0
+ 1    17.93     201.9      -0.2       0.0       0.0      -0.2
+ 2    17.93     351.9      -1.7       0.0       0.0      -1.7
+ 3    17.93     512.8      -4.2       0.0       0.0      -4.2
+ 4    17.93     696.2      -7.3       0.0       0.0      -7.3
+ 5    17.93     929.0     -11.1       0.0       0.0     -11.1
+ 6    17.93    1248.8     -17.5       0.0       0.0     -17.5
+ 7    17.93    1728.2     -22.7       0.0       0.0     -22.7
+ 8    17.93    2504.8     -31.2       0.0       0.0     -31.2
+ 9    17.93    5945.2     -26.2       0.0       0.0     -26.2
+ A   179.26   14115.3    -122.1       0.0       0.0    -122.1
 </pre></p>
 
 <p>Example (7) produces 2022 static output for the filing units in the
@@ -652,7 +668,7 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24*
-cps-24-ref3-#-atr.html	cps-24-ref3-#-mtr.html
+cps-24-ref3-#-atr.html	cps-24-ref3-#-dec.html  cps-24-ref3-#-mtr.html
 cps-24-ref3-#-doc.text	cps-24-ref3-#.csv
 </pre></p>
 
@@ -671,6 +687,11 @@ in <kbd>cps-24-ref3-#-mtr.html</kbd> looks like:</p>
 
 <p><img src="mtr.png" alt="mtr graph"></p>
 
+<p>Here is what the percentage after-tax income change by income
+decile graph in <kbd>cps-24-ref3-#-dec.html</kbd> looks like:</p>
+
+<p><img src="dec.png" alt="dec graph"></p>
+
 <p>There is yet another tc CLI output option that writes to the screen
 results from a normative welfare analysis of the specified policy
 reform.  This <kbd>--ceeu</kbd> option produces experimental results
@@ -683,21 +704,21 @@ function in the <kbd>taxcalc/utils.py</kbd> file at the
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
 
-<p>In all the examples in this section, we have executed one tc run at
-at time.  But <b>what if you want to execute many tc runs</b> because
-you want results for many years and/or for several different reforms.
-Unless you are asking for full-dump output, a single tc run should
-take no more than one minute on your computer (even if you are using
-the large <kbd>cps.csv</kbd> input file).  The easiest way to speed up
-the execution of many tc runs is to split them into groups of runs and
-execute each group of runs in a different command-prompt window.  On
-most modern computers that have four CPU cores and a fast disk drive,
-executing four runs in different windows will take not much more time
-than executing a single tc run.  If you have more than one run in each
-group, put them in a Unix/Mac bash script or a Windows batch file, and
-execute one script in each command-prompt window.  If it still takes
-too long, consider splitting the tc runs across more than one
-computer.</p>
+<p id="fastexec">In all the examples in this section, we have executed
+one tc run at at time.  But <b>what if you want to execute many tc
+runs</b> because you want results for many years and/or for several
+different reforms.  Unless you are asking for full-dump output, a
+single tc run should take no more than one minute on your computer
+(even if you are using the large <kbd>cps.csv</kbd> input file).  The
+easiest way to speed up the execution of many tc runs is to split them
+into groups of runs and execute each group of runs in a different
+command-prompt window.  On most modern computers that have four CPU
+cores and a fast disk drive, executing four runs in different windows
+will take not much more time than executing a single tc run.  If you
+have more than one run in each group, put them in a Unix/Mac bash
+script or a Windows batch file, and execute one script in each
+command-prompt window.  If it still takes too long, consider splitting
+the tc runs across more than one computer.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
