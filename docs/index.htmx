@@ -274,6 +274,13 @@ the range of tc capabilities, enter the following:
 <pre>$ tc --help</pre>
 </p>
 
+<p>After you have installed the taxcalc package, keep it up to date by
+checking for new releases at
+<a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history">this page</a> and, when there
+is a new release, executing this command:
+<pre>$ conda update -c ospc taxcalc</pre>
+The packages are usually available about an hour after the release.</p>
+
 <p>The basic idea of tc tax analysis is that each tax reform is
 specified in a text file using a simple method to describe the details
 of the reform.  Read the next part of this section to see how policy
