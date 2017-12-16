@@ -13,7 +13,7 @@ import pytest
 from taxcalc import Calculator, Policy  # pylint: disable=import-error
 from taxcalc import Records, Behavior  # pylint: disable=import-error
 
-@pytest.mark.one
+
 def test_reform_json_and_output(tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
@@ -25,7 +25,7 @@ def test_reform_json_and_output(tests_path):
     """
     # pylint: disable=too-many-locals
     # set tracing to True to see test output rather than writing to files
-    tracing = False # setting to True force test failure
+    tracing = False  # setting to True force test failure
     # specify Records object containing cases data
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
@@ -46,7 +46,7 @@ def test_reform_json_and_output(tests_path):
     else:
         outfilename = 'clp.out'
         out_path = os.path.join(tests_path, '..', 'reforms', 'clp.out')
-        with open(out_path,'w') as outfile:
+        with open(out_path, 'w') as outfile:
             dist1.to_string(outfile)
     # check reform file contents and reform results for each reform
     reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
@@ -78,7 +78,7 @@ def test_reform_json_and_output(tests_path):
             else:
                 outname = os.path.basename(jrf).replace('.json', '.out')
                 out_path = os.path.join(tests_path, '..', 'reforms', outname)
-                with open(out_path,'w') as outfile:
+                with open(out_path, 'w') as outfile:
                     diff.to_string(outfile)
         else:  # jrf_text has no "policy" key
             print('ERROR: missing policy key in file: ' +
