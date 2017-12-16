@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2017-12-?? Release 0.14.1
+2017-12-15 Release 0.14.1
 -------------------------
 (last merged pull request is
-[#17xx](https://github.com/open-source-economics/Tax-Calculator/pull/17xx))
+[#1759](https://github.com/open-source-economics/Tax-Calculator/pull/1759))
 
 **API Changes**
 - None
@@ -19,6 +19,9 @@ for a complete commit history.
 - Add percentage change in income by income decile graph to `tc --graphs` output
   [[#1758](https://github.com/open-source-economics/Tax-Calculator/pull/1758)
   by Martin Holmer]
+- Add JSON reform file for TCJA conference bill
+  [[#1759](https://github.com/open-source-economics/Tax-Calculator/pull/1759)
+  by Cody Kallen with review by Matt Jensen and Sean Wang]
 
 **Bug Fixes**
 - None
