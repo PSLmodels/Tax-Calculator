@@ -1,4 +1,4 @@
-// Title: Tax Cuts and Jobs Act, Reconciliation verson
+// Title: Tax Cuts and Jobs Act, Reconciliation version
 // Reform_File_Author: Cody Kallen
 // Reform_Reference: http://docs.house.gov/billsthisweek/20171218/CRPT-115HRPT-466.pdf
 // Reform_Description:
@@ -139,7 +139,7 @@
             {"2018": [[70300, 109400, 54700, 70300, 109400]],
              "2026": [[65462, 101870, 50935, 65461, 101870]]},
         "_AMT_em_ps":
-            {"2018": [[156300, 208400, 104200, 156300, 208400]],
+            {"2018": [[500000, 1000000, 500000, 500000, 1000000]],
              "2026": [[145511, 193974, 96987, 145511, 193974]]},
         "_ALD_DomesticProduction_hc":
             {"2018": [1],
