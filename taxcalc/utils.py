@@ -482,10 +482,9 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         diffs_without_sums = stat_dataframe(gpdf)
         # calculate sums row
         row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
+        row['mean'] = 0
         if row['count'] > 0:
             row['mean'] = row['tot_change'] / row['count']
-        else:
-            row['mean'] = 0
         row['perc_cut'] = sums_perc_cut
         row['perc_inc'] = sums_perc_inc
         row['share_of_change'] = 1.0  # avoid rounding error
