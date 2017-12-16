@@ -14,12 +14,12 @@
 // Reform_Parameter_Map:
 // - 1: _II_rt*
 // - 2: _PT_rt*
-// - 3: _STD, _STD_Dep, _STD_Aged
+// - 3: _STD (can safely ignore WARNINGs about 2026+ values)
 // - 4: _II_em
 // - 5: _DependentCredit_*, _CTC_c, _CTC_ps, _ACTC_Income_thd
 // - 6: _AMT_rt*
 // - 7: _ALD_DomesticProduction_hc
-// - 8: _ID_*
+// - 8: _ID_* (can safely ignore WARNINGs about values for several parameters)
 // Note: _II_rt*, _PT_rt*, _STD and _II_em are rounded to the nearest integer value.
 {
     "policy": {
