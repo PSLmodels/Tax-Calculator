@@ -46,8 +46,8 @@ higher)
 <p><a href="#fastexec">Faster Execution</a> tip when executing many
 <kbd>tc</kbd> runs that differ by year and/or reform</p>
 
-<p>To upgrade to the Tax-Calculator 0.14.1 package, execute this
-command: <kbd>conda update -c ospc taxcalc</kbd></p>
+<p>To upgrade to the newest version of the Tax-Calculator package,
+execute this command: <kbd>conda update -c ospc taxcalc</kbd></p>
 
 
 <h2>Document Contents</h2>
