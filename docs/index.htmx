@@ -47,7 +47,7 @@ higher)
 <kbd>tc</kbd> runs that differ by year and/or reform</p>
 
 <p>To upgrade to the newest version of the Tax-Calculator package,
-execute this command: <kbd>conda update -c ospc taxcalc</kbd></p>
+execute this command:<br><kbd>conda update -c ospc taxcalc</kbd></p>
 
 
 <h2>Document Contents</h2>
