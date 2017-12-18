@@ -42,7 +42,7 @@ def test_reform_json_and_output(tests_path):
         if sys.version_info.major == 2:
             small = epsilon  # tighter test for Python 2.7
         else:
-            small = 0.01 + epsilon  # looser test for Python 3.6
+            small = 0.10 + epsilon  # looser test for Python 3.6
         diff_lines = list()
         assert len(act) == len(exp)
         for actline, expline in zip(act, exp):
