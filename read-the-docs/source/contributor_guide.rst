@@ -119,13 +119,13 @@ the contribution process.
 Workflow
 --------
 
-The following text describes a typical workflow for the Tax-Calculator
-simulation model. Different workflows may be necessary in some
+The following text describes a typical workflow for changing
+Tax-Calculator.  Different workflows may be necessary in some
 situations, in which case other contributors are here to help.
 
-1. Before you edit the calculator on your machine, make sure you have
-   the latest version of the central Tax-Calculator by executing the
-   following **four** Git commands:
+1. Before you edit the Tax-Calculator source code on your machine,
+   make sure you have the latest version of the central Tax-Calculator
+   repository by executing the following **four** Git commands:
 
    a. Tell Git to switch to the master branch in your local repo.
       Navigate to your local tax-calculator directory and enter the
