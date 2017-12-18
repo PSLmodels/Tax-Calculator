@@ -1447,3 +1447,44 @@ def dec_graph_plot(data,
                  color=bcolor)
         yidx += 1
     return fig
+
+
+def line_diff_list(actline, expline, small):
+    """
+    Return a list containing the pair of lines when they differ significantly;
+    otherwise return an empty list.  Significant difference means one or more
+    numbers differ (between actline and expline) by the "small" amount or more.
+    NOTE: this function is typically used in the unit tests.
+    """
+    # embedded function used only in line_diff_list function
+    def isfloat(value):
+        """
+        Return True if value can be cast to float; otherwise return False.
+        """
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+    # begin line_diff_list logic
+    act_line = '<A>' + actline
+    exp_line = '<E>' + expline
+    diffs = list()
+    act_tokens = actline.replace(',', '').split()
+    exp_tokens = expline.replace(',', '').split()
+    for atok, etok in zip(act_tokens, exp_tokens):
+        atok_isfloat = isfloat(atok)
+        etok_isfloat = isfloat(etok)
+        if not atok_isfloat and not etok_isfloat:
+            if atok == etok:
+                continue
+            else:
+                diffs.extend([act_line, exp_line])
+        elif atok_isfloat and etok_isfloat:
+            if abs(float(atok) - float(etok)) < small:
+                continue
+            else:
+                diffs.extend([act_line, exp_line])
+        else:
+            diffs.extend([act_line, exp_line])
+    return diffs

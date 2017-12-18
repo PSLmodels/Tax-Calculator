@@ -7,12 +7,13 @@ Test example JSON policy reform files in taxcalc/reforms directory
 
 from __future__ import print_function
 import os
+import sys
 import glob
 import json
-import difflib
 import pytest
-from taxcalc import Calculator, Policy  # pylint: disable=import-error
-from taxcalc import Records, Behavior  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import Calculator, Policy, Records, Behavior
+from taxcalc import line_diff_list
 
 
 def test_reform_json_and_output(tests_path):
@@ -32,17 +33,24 @@ def test_reform_json_and_output(tests_path):
         """
         with open(base + '.out') as outfile:
             exp_res = outfile.read()
-        expected = exp_res.splitlines(True)
+        exp = exp_res.splitlines(True)
         with open(base + '.res') as resfile:
             act_res = resfile.read()
-        actual = act_res.splitlines(True)
-        diff = difflib.unified_diff(expected, actual,
-                                    fromfile='expected', tofile='actual', n=0)
-        # convert diff generator into a list of lines:
+        act = act_res.splitlines(True)
+        # assure act & exp line lists have differences less than "small" value
+        epsilon = 1e-6
+        if sys.version_info.major == 2:
+            small = epsilon  # tighter test for Python 2.7
+        else:
+            small = 0.01 + epsilon  # looser test for Python 3.6
         diff_lines = list()
-        for line in diff:
-            diff_lines.append(line)
-        # test failure if there are any diff_lines
+        assert len(act) == len(exp)
+        for actline, expline in zip(act, exp):
+            if actline == expline:
+                continue
+            diffs = line_diff_list(actline, expline, small)
+            if diffs:
+                diff_lines.extend(diffs)
         if diff_lines:
             return False
         return True
