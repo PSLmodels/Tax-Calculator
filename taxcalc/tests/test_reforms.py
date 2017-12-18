@@ -40,9 +40,14 @@ def test_reform_json_and_output(tests_path):
         # assure act & exp line lists have differences less than "small" value
         epsilon = 1e-6
         if sys.version_info.major == 2:
-            small = epsilon  # tighter test for Python 2.7
+            # tighter test for Python 2.7
+            small = epsilon
         else:
-            small = 0.10 + epsilon  # looser test for Python 3.6
+            # looser test for Python 3.6
+            if base.endswith('clp'):
+                small = 1.00 + epsilon
+            else:
+                small = 0.10 + epsilon
         diff_lines = list()
         assert len(act) == len(exp)
         for actline, expline in zip(act, exp):
