@@ -9,6 +9,7 @@ from __future__ import print_function
 import os
 import glob
 import json
+import difflib
 import pytest
 from taxcalc import Calculator, Policy  # pylint: disable=import-error
 from taxcalc import Records, Behavior  # pylint: disable=import-error
@@ -23,9 +24,28 @@ def test_reform_json_and_output(tests_path):
     filing units in a single tax_year and compare those results with
     expected results from a text file.
     """
-    # pylint: disable=too-many-locals
-    # set tracing to True to see test output rather than writing to files
-    tracing = False  # setting to True force test failure
+    # pylint: disable=too-many-statements,too-many-locals
+    def res_and_out_are_same(base):
+        """
+        Return true if base.res and base.out file contents are the same;
+        return false if base.res and base.out file contents differ.
+        """
+        with open(base + '.out') as outfile:
+            exp_res = outfile.read()
+        expected = exp_res.splitlines(True)
+        with open(base + '.res') as resfile:
+            act_res = resfile.read()
+        actual = act_res.splitlines(True)
+        diff = difflib.unified_diff(expected, actual,
+                                    fromfile='expected', tofile='actual', n=0)
+        # convert diff generator into a list of lines:
+        diff_lines = list()
+        for line in diff:
+            diff_lines.append(line)
+        # test failure if there are any diff_lines
+        if diff_lines:
+            return False
+        return True
     # specify Records object containing cases data
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
@@ -40,17 +60,18 @@ def test_reform_json_and_output(tests_path):
     calc1.calc_all()
     dist1, _ = calc1.distribution_tables(calc=None,
                                          groupby='large_income_bins')
-    if tracing:
-        print('TRACING: current-law-policy distribution table:')
-        print(dist1)
+    fails = list()
+    res_path = os.path.join(tests_path, '..', 'reforms', 'clp.res')
+    with open(res_path, 'w') as resfile:
+        dist1.to_string(resfile)
+    if res_and_out_are_same(res_path.replace('.res', '')):
+        os.remove(res_path)
     else:
-        outfilename = 'clp.out'
-        out_path = os.path.join(tests_path, '..', 'reforms', 'clp.out')
-        with open(out_path, 'w') as outfile:
-            dist1.to_string(outfile)
+        fails.append(res_path)
     # check reform file contents and reform results for each reform
     reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
-    for jrf in glob.glob(reforms_path):
+    json_reform_files = glob.glob(reforms_path)
+    for jrf in json_reform_files:
         # read contents of jrf (JSON reform file)
         with open(jrf, 'r') as jfile:
             jrf_text = jfile.read()
@@ -71,22 +92,22 @@ def test_reform_json_and_output(tests_path):
             diff = calc1.difference_table(calc2,
                                           groupby='large_income_bins')
             del diff['perc_aftertax']
-            if tracing:
-                print('TRACING: difference table '
-                      'for reform in {}:'.format(os.path.basename(jrf)))
-                print(diff)
+            resname = os.path.basename(jrf).replace('.json', '.res')
+            res_path = os.path.join(tests_path, '..', 'reforms', resname)
+            with open(res_path, 'w') as resfile:
+                diff.to_string(resfile)
+            if res_and_out_are_same(res_path.replace('.res', '')):
+                os.remove(res_path)
             else:
-                outname = os.path.basename(jrf).replace('.json', '.out')
-                out_path = os.path.join(tests_path, '..', 'reforms', outname)
-                with open(out_path, 'w') as outfile:
-                    diff.to_string(outfile)
+                fails.append(res_path)
         else:  # jrf_text has no "policy" key
-            print('ERROR: missing policy key in file: ' +
-                  os.path.basename(jrf))
-            assert False
-    if tracing:
-        print('TRACING: end-of-test failure so can see printed output')
-        assert 1 == 2
+            msg = 'ERROR: missing policy key in file: {}'
+            raise ValueError(msg.format(os.path.basename(jrf)))
+    if fails:
+        msg = 'Following reforms have res-vs-out differences:\n'
+        for ref in fails:
+            msg += '{}\n'.format(os.path.basename(ref))
+        raise ValueError(msg)
 
 
 def reform_results(reform_dict, puf_data):
