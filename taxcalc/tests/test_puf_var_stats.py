@@ -36,7 +36,7 @@ def create_base_table(test_path):
                  'c09600': 'Federal AMT liability'}
     # specify read variable names and descriptions
     unused_var_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
-                          'h_seq', 'ffpos', 'fips',
+                          'h_seq', 'ffpos', 'fips', 'agi_bin',
                           'FLPDYR', 'FLPDMO', 'f2441', 'f3800', 'f6251',
                           'f8582', 'f8606', 'f8829', 'f8910', 'f8936', 'n20',
                           'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
