@@ -127,15 +127,15 @@ situations, in which case other contributors are here to help.
    the latest version of the central Tax-Calculator by executing the
    following **four** Git commands:
 
-   a. Download all of the content from the central Tax-Calculator repo.
+   a. Tell Git to switch to the master branch in your local repo.
       Navigate to your local tax-calculator directory and enter the
       following text at the command line::
 
-        tax-calculator$ git fetch upstream
-
-   b. Tell Git to switch to the master branch in your local repo::
-
         tax-calculator$ git checkout master
+
+   b. Download all of the content from the central Tax-Calculator repo.
+
+        tax-calculator$ git fetch upstream
 
    c. Update your local master branch to contain the latest content of
       the central master branch using `merge`_. This step ensures that
