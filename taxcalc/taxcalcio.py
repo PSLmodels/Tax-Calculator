@@ -432,7 +432,7 @@ class TaxCalcIO(object):
         else:
             outdf = self.minimal_output()
             column_order = outdf.columns
-        assert len(outdf.index) == self.calc.records.dim
+        assert len(outdf.index) == self.calc.array_len
         outdf.to_csv(self._output_filename, columns=column_order,
                      index=False, float_format='%.2f')
 
@@ -450,7 +450,7 @@ class TaxCalcIO(object):
         Write dump output to SQLite3 database table dump.
         """
         outdf = self.dump_output(dump_varset, mtr_inctax, mtr_paytax)
-        assert len(outdf.index) == self.calc.records.dim
+        assert len(outdf.index) == self.calc.array_len
         db_fname = self._output_filename.replace('.csv', '.db')
         dbcon = sqlite3.connect(db_fname)
         outdf.to_sql('dump', dbcon, if_exists='replace', index=False)
@@ -462,29 +462,29 @@ class TaxCalcIO(object):
         """
         # pylint: disable=too-many-locals
         tab_fname = self._output_filename.replace('.csv', '-tab.text')
-        # create list of nontax column results
-        # - weights don't change with reform
-        # - expanded_income may change, but always use baseline expanded income
-        nontax_cols = ['s006', 'expanded_income']
-        nontax = [getattr(self.calc_clp.records, col) for col in nontax_cols]
-        # specify column names for taxes
-        tax_cols = ['iitax', 'payrolltax', 'lumpsum_tax', 'combined']
-        all_cols = nontax_cols + tax_cols
-        # create DataFrame with taxes under the reform
-        reform = [getattr(self.calc.records, col) for col in tax_cols]
-        dist = nontax + reform  # using expanded_income under baseline policy
-        distdf = pd.DataFrame(data=np.column_stack(dist), columns=all_cols)
         # skip tables if there are not some positive weights
-        if distdf['s006'].sum() <= 0.:
+        if self.calc_clp.total_weight() <= 0.:
             with open(tab_fname, 'w') as tfile:
                 msg = 'No tables because sum of weights is not positive\n'
                 tfile.write(msg)
             return
+        # create list of results for nontax variables
+        # - weights don't change with reform
+        # - expanded_income may change, so always use baseline expanded income
+        nontax_vars = ['s006', 'expanded_income']
+        nontax = [self.calc_clp.array(var) for var in nontax_vars]
+        # create list of results for tax variables from reform Calculator
+        tax_vars = ['iitax', 'payrolltax', 'lumpsum_tax', 'combined']
+        reform = [self.calc.array(var) for var in tax_vars]
+        # create DataFrame with tax distribution under reform
+        dist = nontax + reform  # using expanded_income under baseline policy
+        all_vars = nontax_vars + tax_vars
+        distdf = pd.DataFrame(data=np.column_stack(dist), columns=all_vars)
         # create DataFrame with tax differences (reform - baseline)
-        base = [getattr(self.calc_clp.records, col) for col in tax_cols]
-        change = [(reform[idx] - base[idx]) for idx in range(0, len(tax_cols))]
+        base = [self.calc_clp.array(var) for var in tax_vars]
+        change = [(reform[idx] - base[idx]) for idx in range(0, len(tax_vars))]
         diff = nontax + change  # using expanded_income under baseline policy
-        diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_cols)
+        diffdf = pd.DataFrame(data=np.column_stack(diff), columns=all_vars)
         # write each kind of distributional table
         with open(tab_fname, 'w') as tfile:
             TaxCalcIO.write_decile_table(distdf, tfile, tkind='Reform Totals')
@@ -547,6 +547,16 @@ class TaxCalcIO(object):
         Write graphs to HTML files.
         """
         pos_wght_sum = self.calc.records.s006.sum() > 0.
+        # income-change-by-decile graph
+        dec_fname = self._output_filename.replace('.csv', '-dec.html')
+        dec_title = 'Income Change by Income Decile'
+        if pos_wght_sum:
+            fig = self.calc_clp.decile_graph(self.calc)
+            write_graph_file(fig, dec_fname, dec_title)
+        else:
+            reason = 'No graph because sum of weights is not positive'
+            TaxCalcIO.write_empty_graph_file(dec_fname, dec_title, reason)
+        # average-tax-rate graph
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
         if pos_wght_sum:
@@ -555,6 +565,7 @@ class TaxCalcIO(object):
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(atr_fname, atr_title, reason)
+        # marginal-tax-rate graph
         mtr_fname = self._output_filename.replace('.csv', '-mtr.html')
         mtr_title = 'MTR by Income Percentile'
         if pos_wght_sum:
@@ -583,13 +594,13 @@ class TaxCalcIO(object):
         """
         varlist = ['RECID', 'YEAR', 'WEIGHT', 'INCTAX', 'LSTAX', 'PAYTAX']
         odict = dict()
-        crecs = self.calc.records
-        odict['RECID'] = crecs.RECID  # id for tax filing unit
+        scalc = self.calc
+        odict['RECID'] = scalc.array('RECID')  # id for tax filing unit
         odict['YEAR'] = self.tax_year()  # tax calculation year
-        odict['WEIGHT'] = crecs.s006  # sample weight
-        odict['INCTAX'] = crecs.iitax  # federal income taxes
-        odict['LSTAX'] = crecs.lumpsum_tax  # lump-sum tax
-        odict['PAYTAX'] = crecs.payrolltax  # payroll taxes (ee+er)
+        odict['WEIGHT'] = scalc.array('s006')  # sample weight
+        odict['INCTAX'] = scalc.array('iitax')  # federal income taxes
+        odict['LSTAX'] = scalc.array('lumpsum_tax')  # lump-sum tax
+        odict['PAYTAX'] = scalc.array('payrolltax')  # payroll taxes (ee+er)
         odf = pd.DataFrame(data=odict, columns=varlist)
         return odf
 

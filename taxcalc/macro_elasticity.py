@@ -70,11 +70,9 @@ def proportional_change_in_gdp(year, calc1, calc2, elasticity):
         raise ValueError(msg.format(calc1.current_year, year))
     _, _, mtr_combined1 = calc1.mtr()
     _, _, mtr_combined2 = calc2.mtr()
-    avg_mtr1 = ((mtr_combined1 * calc1.records.c00100 *
-                 calc1.records.s006).sum() /
-                (calc1.records.c00100 * calc1.records.s006).sum())
-    avg_mtr2 = ((mtr_combined2 * calc2.records.c00100 *
-                 calc2.records.s006).sum() /
-                (calc2.records.c00100 * calc2.records.s006).sum())
+    avg_mtr1 = ((mtr_combined1 * calc1.array('c00100') *
+                 calc1.array('s006')).sum()) / calc1.weighted_total('c00100')
+    avg_mtr2 = ((mtr_combined2 * calc2.array('c00100') *
+                 calc2.array('s006')).sum()) / calc2.weighted_total('c00100')
     proportional_chg_in_rate = ((1.0 - avg_mtr2) / (1.0 - avg_mtr1)) - 1.0
     return elasticity * proportional_chg_in_rate
