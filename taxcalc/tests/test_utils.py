@@ -32,7 +32,7 @@ from taxcalc.utils import (DIST_VARIABLES,
                            bootstrap_se_ci,
                            certainty_equivalent,
                            ce_aftertax_expanded_income,
-                           line_diff_list)
+                           line_nonsmall_diff_list)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -921,10 +921,10 @@ def test_dec_graph_plot(cps_subsample):
     assert fig
 
 
-def test_line_diff_list():
+def test_line_nonsmalldiff_list():
     epsilon = 1e-6
-    assert line_diff_list('AaA', 'AAA', 0.1)
-    assert not line_diff_list('AAA', 'AAA', 0.1)
-    assert not line_diff_list('12.3', '12.2', 0.1 + epsilon)
-    assert line_diff_list('12.3', '12.2', 0.0 + epsilon)
-    assert line_diff_list('12.3', 'AAA', 0.1 + epsilon)
+    assert line_nonsmall_diff_list('AaA', 'AAA', 0.1)
+    assert not line_nonsmall_diff_list('AAA', 'AAA', 0.1)
+    assert not line_nonsmall_diff_list('12.3', '12.2', 0.1 + epsilon)
+    assert line_nonsmall_diff_list('12.3', '12.2', 0.0 + epsilon)
+    assert line_nonsmall_diff_list('12.3', 'AAA', 0.1 + epsilon)

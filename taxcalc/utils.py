@@ -1449,7 +1449,7 @@ def dec_graph_plot(data,
     return fig
 
 
-def line_diff_list(actline, expline, small):
+def line_nonsmall_diff_list(actline, expline, small):
     """
     Return a list containing the pair of lines when they differ significantly;
     otherwise return an empty list.  Significant difference means one or more
