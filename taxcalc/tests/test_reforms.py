@@ -40,14 +40,9 @@ def test_reform_json_and_output(tests_path):
         # assure act & exp line lists have differences less than "small" value
         epsilon = 1e-6
         if sys.version_info.major == 2:
-            # tighter test for Python 2.7
-            small = epsilon
+            small = epsilon  # tighter test for Python 2.7
         else:
-            # looser test for Python 3.6
-            if base.endswith('clp'):
-                small = 1.00 + epsilon
-            else:
-                small = 0.10 + epsilon
+            small = 0.10 + epsilon  # looser test for Python 3.6
         diff_lines = list()
         assert len(act) == len(exp)
         for actline, expline in zip(act, exp):
@@ -71,19 +66,10 @@ def test_reform_json_and_output(tests_path):
     calc1 = Calculator(policy=Policy(), records=cases, verbose=False)
     calc1.advance_to_year(tax_year)
     calc1.calc_all()
-    dist1, _ = calc1.distribution_tables(calc=None,
-                                         groupby='large_income_bins')
-    fails = list()
-    res_path = os.path.join(tests_path, '..', 'reforms', 'clp.res')
-    with open(res_path, 'w') as resfile:
-        dist1.to_string(resfile)
-    if res_and_out_are_same(res_path.replace('.res', '')):
-        os.remove(res_path)
-    else:
-        fails.append(res_path)
     # check reform file contents and reform results for each reform
     reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
     json_reform_files = glob.glob(reforms_path)
+    failures = list()
     for jrf in json_reform_files:
         # read contents of jrf (JSON reform file)
         with open(jrf, 'r') as jfile:
@@ -112,13 +98,13 @@ def test_reform_json_and_output(tests_path):
             if res_and_out_are_same(res_path.replace('.res', '')):
                 os.remove(res_path)
             else:
-                fails.append(res_path)
+                failures.append(res_path)
         else:  # jrf_text has no "policy" key
             msg = 'ERROR: missing policy key in file: {}'
             raise ValueError(msg.format(os.path.basename(jrf)))
-    if fails:
+    if failures:
         msg = 'Following reforms have res-vs-out differences:\n'
-        for ref in fails:
+        for ref in failures:
             msg += '{}\n'.format(os.path.basename(ref))
         raise ValueError(msg)
 
