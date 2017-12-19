@@ -19,7 +19,7 @@ import numpy as np
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, Growfactors
-from taxcalc import line_nonsmall_diff_list
+from taxcalc import nonsmall_diff_line_list
 
 
 def test_agg(tests_path):
@@ -58,7 +58,7 @@ def test_agg(tests_path):
     for actline, expline in zip(act, exp):
         if actline == expline:
             continue
-        diffs = line_nonsmall_diff_list(actline, expline, small)
+        diffs = nonsmall_diff_line_list(actline, expline, small)
         if diffs:
             diff_lines.extend(diffs)
     # test failure if there are any diff_lines

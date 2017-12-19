@@ -10,11 +10,11 @@ import os
 import sys
 import glob
 import json
-import pandas
 import pytest
+import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Calculator, Policy, Records, Behavior, DIST_TABLE_COLUMNS
-from taxcalc import line_nonsmall_diff_list
+from taxcalc import nonsmall_diff_line_list
 
 
 def test_reform_json_and_output(tests_path):
@@ -55,7 +55,7 @@ def test_reform_json_and_output(tests_path):
             del dist[stat]
         dist = dist[used_dist_stats]
         dist.rename(mapper=renamed_columns, axis='columns', inplace=True)
-        pandas.options.display.float_format = '{:7.0f}'.format
+        pd.options.display.float_format = '{:7.0f}'.format
         with open(resfilename, 'w') as resfile:
             dist.to_string(resfile)
 
@@ -76,13 +76,13 @@ def test_reform_json_and_output(tests_path):
         if sys.version_info.major == 2:
             small = epsilon  # tighter test for Python 2.7
         else:
-            small = 0.10 + epsilon  # looser test for Python 3.6
+            small = epsilon  # looser test for Python 3.6 if necessary
         diff_lines = list()
         assert len(act) == len(exp)
         for actline, expline in zip(act, exp):
             if actline == expline:
                 continue
-            diffs = line_nonsmall_diff_list(actline, expline, small)
+            diffs = nonsmall_diff_line_list(actline, expline, small)
             if diffs:
                 diff_lines.extend(diffs)
         if diff_lines:
