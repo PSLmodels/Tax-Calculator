@@ -465,7 +465,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
             ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
-            ID_Miscellaneous_c, ID_AllTaxes_c):
+            ID_Miscellaneous_c, ID_AllTaxes_c, ID_StateLocalTax_crt,
+            ID_RealEstate_crt):
     """
     ItemDed function: itemized deductions, Form 1040, Schedule A
 
@@ -519,6 +520,12 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
 
         ID_Miscellaneous_c : Ceiling on miscellaneous expense deduction
 
+        ID_StateLocalTax_crt : Deduction for state and local taxes;
+        ceiling as a decimal fraction of AGI
+
+        ID_RealEstate_crt : Deduction for real estate taxes;
+        ceiling as a decimal fraction of AGI
+
     Taxpayer Characteristics:
         e17500_capped : Medical expenses, capped by ItemDedCap
 
@@ -554,6 +561,11 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
                  ID_StateLocalTax_c[MARS - 1])
     c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
                  ID_RealEstate_c[MARS - 1])
+    # following two statements implement a cap on c18400 and c18500 in a way
+    # that those with negative AGI, c00100, are not capped under current law,
+    # hence the 0.0001 rather than zero
+    c18400 = min(c18400, ID_StateLocalTax_crt * max(c00100, 0.0001))
+    c18500 = min(c18500, ID_RealEstate_crt * max(c00100, 0.0001))
     c18300 = min(c18400 + c18500, ID_AllTaxes_c[MARS - 1])
     # Interest paid
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
