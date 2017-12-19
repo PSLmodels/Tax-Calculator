@@ -617,10 +617,17 @@ the <kbd>ref3.json</kbd> file, the content of which is:
     }
 }
 </pre>
-The output options illustrated in the following examples generate
+
+<p>The output options illustrated in the following examples generate
 tables of the post-reform level and the reform-induced change in tax
 liability by income deciles as well as graphs of marginal and average
-tax rates by income percentile.
+tax rates by income percentile and percentage change in aftertax
+income by income decile.  These tables and graphs are meant to provide
+a quick glance at the impact of a reform.  Any serious analysis of a
+reform will involve generating custom tables and graphs using
+<a href="#partdump">partial dump</a> output.  One of many examples
+of this sort of custom analysis is
+<a href="https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/?">here</a>.</p>
 
 <p><pre>
 (7)$ tc cps.csv 2022 --reform ref3.json --tables
