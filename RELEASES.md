@@ -15,7 +15,7 @@ for a complete commit history.
 **New Features**
 - Add two policy parameters that can be used to cap itemized SALT deductions as a fraction of AGI
   [[#1711](https://github.com/open-source-economics/Tax-Calculator/pull/1711)
-  by Derrick Choe with assistance by Cody Kallen and Hank Doupe]
+  by Derrick Choe with assistance from Cody Kallen and Hank Doupe]
 - Update "notes" in `current_law_policy.json` for policy parameters first introduced in TCJA bills
   [[#1765](https://github.com/open-source-economics/Tax-Calculator/pull/1765)
   by Max Ghenis]
