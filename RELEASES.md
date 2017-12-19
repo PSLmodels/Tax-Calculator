@@ -13,7 +13,7 @@ for a complete commit history.
 - None
 
 **New Features**
-- Add two policy parameters that can be used to limit itemized SALT deductions to a fraction of AGI
+- Add two policy parameters that can be used to cap itemized SALT deductions as a fraction of AGI
   [[#1711](https://github.com/open-source-economics/Tax-Calculator/pull/1711)
   by Derrick Choe with assistance by Cody Kallen and Hank Doupe]
 
