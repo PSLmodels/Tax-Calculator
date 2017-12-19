@@ -3723,7 +3723,7 @@
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "",
-        "notes": "",
+        "notes": "First introduced in House TCJA bills",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
