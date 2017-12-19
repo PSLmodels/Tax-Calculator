@@ -31,7 +31,8 @@ from taxcalc.utils import (DIST_VARIABLES,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
                            certainty_equivalent,
-                           ce_aftertax_expanded_income)
+                           ce_aftertax_expanded_income,
+                           nonsmall_diff_line_list)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -918,3 +919,12 @@ def test_dec_graph_plot(cps_subsample):
     calc2.calc_all()
     fig = calc1.decile_graph(calc2)
     assert fig
+
+
+def test_nonsmall_diff_line_list():
+    epsilon = 1e-6
+    assert nonsmall_diff_line_list('AaA', 'AAA', 0.1)
+    assert not nonsmall_diff_line_list('AAA', 'AAA', 0.1)
+    assert not nonsmall_diff_line_list('12.3', '12.2', 0.1 + epsilon)
+    assert nonsmall_diff_line_list('12.3', '12.2', 0.0 + epsilon)
+    assert nonsmall_diff_line_list('12.3', 'AAA', 0.1 + epsilon)
