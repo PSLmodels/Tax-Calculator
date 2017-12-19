@@ -87,7 +87,11 @@ Setup Git
       tax-calculator$ cd taxcalc
       tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n4
       tax-calculator/taxcalc$ cd validation
-      tax-calculator/taxcalc/validation$ ./tests
+      tax-calculator/taxcalc/validation$ bash tests.sh
+
+    If you do have a copy of the OSPC-supplied puf.csv file, then on
+    the second line above omit the '-m "not requires_pufcsv"'
+    expression so as to execute 'py.test -n4'.
 
     If all the tests pass, you're good to go. If they don't pass, enter
     the following updates at the command line and then try running the
