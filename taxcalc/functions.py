@@ -561,10 +561,11 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
                  ID_StateLocalTax_c[MARS - 1])
     c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
                  ID_RealEstate_c[MARS - 1])
-    c18400 = min(c18400,
-                 ID_StateLocalTax_crt * max(c00100, 0.0001))
-    c18500 = min(c18500,
-                 ID_RealEstate_crt * max(c00100, 0.0001))
+    # following two statements implement a cap on c18400 and c18500 in a way
+    # that those with negative AGI, c00100, are not capped under current law,
+    # hence the 0.0001 rather than zero
+    c18400 = min(c18400, ID_StateLocalTax_crt * max(c00100, 0.0001))
+    c18500 = min(c18500, ID_RealEstate_crt * max(c00100, 0.0001))
     c18300 = min(c18400 + c18500, ID_AllTaxes_c[MARS - 1])
     # Interest paid
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
