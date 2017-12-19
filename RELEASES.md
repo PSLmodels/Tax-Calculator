@@ -4,6 +4,28 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2017-12-19 Release 0.14.2
+-------------------------
+(last merged pull request is
+[#1775](https://github.com/open-source-economics/Tax-Calculator/pull/1775))
+
+**API Changes**
+- None
+
+**New Features**
+- Add two policy parameters that can be used to cap itemized SALT deductions as a fraction of AGI
+  [[#1711](https://github.com/open-source-economics/Tax-Calculator/pull/1711)
+  by Derrick Choe with assistance from Cody Kallen and Hank Doupe]
+- Update "notes" in `current_law_policy.json` for policy parameters first introduced in TCJA bills
+  [[#1765](https://github.com/open-source-economics/Tax-Calculator/pull/1765)
+  by Max Ghenis]
+
+**Bug Fixes**
+- Standardize format of ValueError messages raised by Policy.implement_reform method
+  [[#1775](https://github.com/open-source-economics/Tax-Calculator/pull/1775)
+  by Martin Holmer, as reported by Max Ghenis and diagnosed by Hank Doupe]
+
+
 2017-12-15 Release 0.14.1
 -------------------------
 (last merged pull request is
