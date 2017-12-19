@@ -87,7 +87,11 @@ Setup Git
       tax-calculator$ cd taxcalc
       tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n4
       tax-calculator/taxcalc$ cd validation
-      tax-calculator/taxcalc/validation$ ./tests
+      tax-calculator/taxcalc/validation$ bash tests.sh
+
+    If you do have a copy of the OSPC-supplied puf.csv file, then on
+    the second line above omit the '-m "not requires_pufcsv"'
+    expression so as to execute 'py.test -n4'.
 
     If all the tests pass, you're good to go. If they don't pass, enter
     the following updates at the command line and then try running the
@@ -119,29 +123,33 @@ the contribution process.
 Workflow
 --------
 
-The following text describes a typical workflow for the Tax-Calculator
-simulation model. Different workflows may be necessary in some
+The following text describes a typical workflow for changing
+Tax-Calculator.  Different workflows may be necessary in some
 situations, in which case other contributors are here to help.
 
-1. Before you edit the calculator on your machine, make sure you have
-   the latest version of the central Tax-Calculator by executing the
-   following **three** Git commands:
+1. Before you edit the Tax-Calculator source code on your machine,
+   make sure you have the latest version of the central Tax-Calculator
+   repository by executing the following **four** Git commands:
 
-   a. Download all of the content from the central Tax-Calculator repo.
+   a. Tell Git to switch to the master branch in your local repo.
       Navigate to your local tax-calculator directory and enter the
       following text at the command line::
 
-        tax-calculator$ git fetch upstream
-
-   b. Tell Git to switch to the master branch in your local repo::
-
         tax-calculator$ git checkout master
+
+   b. Download all of the content from the central Tax-Calculator repo.
+
+        tax-calculator$ git fetch upstream
 
    c. Update your local master branch to contain the latest content of
       the central master branch using `merge`_. This step ensures that
       you are working with the latest version of the Tax-Calculator::
 
         tax-calculator$ git merge upstream/master
+
+   d. Push the updated master branch in your local repo to your GitHub repo::
+
+        tax-calculator$ git push origin master
 
 2. Create a new `branch`_ on your local machine. Think of your
    branches as a way to organize your projects. If you want to work on

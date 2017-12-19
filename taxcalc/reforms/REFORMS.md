@@ -35,6 +35,8 @@ The following reform proposals have been specified in reforms files:
 
 - [2017 Tax Cuts and Jobs Act, Passed Senate version](TCJA_Senate_120117.json)
 
+- [2017 Tax Cuts and Jobs Act, Conference bill](TCJA_Reconciliation.json)
+
 ## Structure and Syntax of Reform Files
 
 The reform files are JSON files.  JSON, which stands for JavaScript
