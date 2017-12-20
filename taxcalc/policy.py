@@ -424,10 +424,15 @@ class Policy(ParametersBase):
                                 pname = name
                             else:
                                 pname = '{}_{}'.format(name, idx)
-                            pvalue_boolean = (isinstance(pvalue[idx], bool) or
-                                              (isinstance(pvalue[idx], int) and
-                                               (pvalue[idx] == 0 or
-                                                pvalue[idx] == 1)))
+                            pvalue_boolean = (
+                                isinstance(pvalue[idx], bool) or
+                                (isinstance(pvalue[idx], int) and
+                                 (pvalue[idx] == 0 or
+                                  pvalue[idx] == 1)) or
+                                (isinstance(pvalue[idx], float) and
+                                 (pvalue[idx] == 0.0 or
+                                  pvalue[idx] == 1.0))
+                            )
                             if bool_type:
                                 if not pvalue_boolean:
                                     msg = '{} {} value {} is not boolean'
