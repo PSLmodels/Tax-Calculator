@@ -17,29 +17,16 @@ import six
 from taxcalc import Policy, Records, Calculator
 
 
-@pytest.mark.requires_pufcsv
-@pytest.mark.pre_release
-@pytest.mark.parametrize('puftest', [True, False])
-def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
+NPARAMS = len(Policy.default_data())
+BATCHSIZE = 10
+
+@pytest.fixture(scope="module")
+def reform_xx():
     """
-
+    Fixture for reform dictionary
     """
-
-    clppath = os.path.join(tests_path, '..', 'current_law_policy.json')
-    pfile = open(clppath, 'r')
-    allparams = json.load(pfile)
-    pfile.close()
-    assert isinstance(allparams, dict)
-
-    # These parameters are exempt because they are not active under
-    # current law and activating them would deactive other parameters.
-
-    exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
-
-    p_xx = Policy()
-
     # Set baseline to activate parameters that are inactive under current law.
-    reform_xx = {
+    _reform_xx = {
         2017: {
             '_CTC_new_refund_limited': [True],
             '_FST_AGI_trt': [0.5],
@@ -67,7 +54,47 @@ def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
             '_PT_rt7': [.35]
         }
     }
+    return _reform_xx
 
+
+@pytest.fixture(scope="module")
+def allparams():
+    """
+    Get current law parameters
+    """
+    return Policy.default_data(metadata=True)
+
+
+@pytest.fixture(scope="module")
+def sorted_param_names(allparams):
+    """
+    Fixture for storing a sorted parameter list
+    """
+    return sorted(list(allparams.keys()))
+
+
+@pytest.fixture(
+    params=[i for i in range(0, int(np.floor(NPARAMS / BATCHSIZE)) + 1)]
+)
+def allparams_batch(request, allparams, sorted_param_names):
+    """
+    Fixture for grouping Tax-Calculator parameters
+    """
+    ix = request.param
+    ix_start = ix * BATCHSIZE
+    ix_end = min((ix + 1) * BATCHSIZE, NPARAMS)
+    pnames = sorted_param_names[ix_start: ix_end]
+    return {pname: allparams[pname] for pname in pnames}
+
+
+@pytest.fixture(params=[True, False], scope="module")
+def tc_objs(request, reform_xx, puf_subsample, cps_subsample):
+    """
+    Fixture for creating TC objects corresponding to using the PUF and using
+    the CPS (only called twice--once for PUF and once for CPS)
+    """
+    puftest = request.param
+    p_xx = Policy()
     p_xx.implement_reform(reform_xx)
     if puftest:
         print('puftest')
@@ -79,8 +106,27 @@ def test_compatible_data(puftest, tests_path, cps_subsample, puf_subsample):
     c_xx.advance_to_year(2018)
     c_xx.calc_all()
 
-    for pname in allparams:
-        param = allparams[pname]
+    return p_xx, rec_xx, c_xx, puftest
+
+
+@pytest.mark.requires_pufcsv
+@pytest.mark.pre_release
+def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx, tc_objs, allparams_batch):
+    """
+
+    """
+    # Get taxcalc objects from tc_objs fixture
+    p_xx, rec_xx, c_xx, puftest = tc_objs
+
+    # These parameters are exempt because they are not active under
+    # current law and activating them would deactive other parameters.
+    exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
+
+    # assert len(allparams_i) == 1
+    # pname = list(allparams_i.keys())[0]
+    # param = allparams_i[pname]
+    for pname in allparams_batch:
+        param = allparams_batch[pname]
         max_listed = param['range']['max']
         # Handle links to other params or self
         if isinstance(max_listed, six.string_types):
