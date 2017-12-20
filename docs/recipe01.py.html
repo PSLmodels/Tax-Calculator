@@ -1,0 +1,66 @@
+<title>recipe01.py</title><pre>
+from __future__ import print_function  # necessary only if using Python 2.7
+from taxcalc import *
+import urllib as url_lib  # on Python 3.6 use "import urllib.request as url_lib"
+
+# read two reform files from Tax-Calculator website
+BASE_URL = ('https://raw.githubusercontent.com/'
+            'open-source-economics/Tax-Calculator/master/taxcalc/reforms/')
+reform1_name = 'TCJA_House_Amended.json'  # TCJA as orginally passed by House
+reform2_name = 'TCJA_Reconciliation.json'  # TCJA conference committee bill
+reform1_text = url_lib.urlopen(BASE_URL + reform1_name).read()
+reform2_text = url_lib.urlopen(BASE_URL + reform2_name).read()
+
+# specify Policy object for static analysis of reform1
+reform1 = Calculator.read_json_param_objects(reform1_text, None)
+policy1 = Policy()
+policy1.implement_reform(reform1['policy'])
+if policy1.reform_errors:
+    print(policy1.reform_errors)
+    exit(1)
+
+# specify Policy object for static analysis of reform2
+reform2 = Calculator.read_json_param_objects(reform2_text, None)
+policy2 = Policy()
+policy2.implement_reform(reform2['policy'])
+if policy2.reform_errors:
+    print(policy2.reform_errors)
+    exit(1)
+
+# specify Calculator objects using policy1 and policy2 and calculate for 2018
+calc1 = Calculator(policy=policy1, records=Records.cps_constructor())
+calc1.advance_to_year(2018)
+calc1.calc_all()
+calc2 = Calculator(policy=policy2, records=Records.cps_constructor())
+calc2.advance_to_year(2018)
+calc2.calc_all()
+
+# compare aggregate individual income tax revenue in 2018
+iitax_rev1 = calc1.weighted_total('iitax')
+iitax_rev2 = calc2.weighted_total('iitax')
+
+# construct reform2-vs-reform1 difference table with results for income deciles
+diff_table = calc1.difference_table(calc2, tax_to_diff='iitax')
+assert isinstance(diff_table, pd.DataFrame)
+diff_extract = pd.DataFrame()
+dif_colnames = ['count', 'tax_cut', 'tax_inc',
+                'tot_change', 'mean', 'pc_aftertaxinc']
+ext_colnames = ['funits(#m)', 'taxfall(#m)', 'taxrise(#m)',
+                'agg_diff($b)', 'mean_diff($)', 'ataxinc_diff(%)']
+scaling_factors = [1e-6, 1e-6, 1e-6, 1e-9, 1e0, 1e0, 1e0]
+for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
+    diff_extract[ename] = diff_table[dname] * sfactor
+
+# print total revenue estimates for 2018
+# (estimates in billons of dollars rounded to nearest tenth of a billion)
+print('2018_REFORM1_iitax_rev($B)= {:.1f}'.format(iitax_rev1 * 1e-9))
+print('2018_REFORM2_iitax_rev($B)= {:.1f}'.format(iitax_rev2 * 1e-9))
+print('')
+
+print('Extract of 2018 income-tax difference table by expanded-income decile')
+print('(taxfall is count of funits with cut in income tax in reform 2 vs 1)')
+print('(taxrise is count of funits with rise in income tax in reform 2 vs 1)')
+print(diff_extract)
+print('Note: deciles are numbered 0-9 with top decile divided into bottom 5%,')
+print('      next 4%, and top 1%, in the lines numbered 11-13, respectively')
+</pre>
