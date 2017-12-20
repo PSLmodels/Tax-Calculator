@@ -427,11 +427,9 @@ class Policy(ParametersBase):
                             pvalue_boolean = (
                                 isinstance(pvalue[idx], bool) or
                                 (isinstance(pvalue[idx], int) and
-                                 (pvalue[idx] == 0 or
-                                  pvalue[idx] == 1)) or
+                                 (pvalue[idx] == 0 or pvalue[idx] == 1)) or
                                 (isinstance(pvalue[idx], float) and
-                                 (pvalue[idx] == 0.0 or
-                                  pvalue[idx] == 1.0))
+                                 (pvalue[idx] == 0.0 or pvalue[idx] == 1.0))
                             )
                             if bool_type:
                                 if not pvalue_boolean:
