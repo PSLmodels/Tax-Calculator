@@ -40,6 +40,7 @@ for recipe in RECIPES:
     graph = '{}.graph.html'.format(recipe_root)
     if os.path.exists(graph):
         shutil.copy(graph, '..')
+        os.remove(graph)
 
 # make list of ingredient/*json filenames
 INGREDIENTS = glob.glob('ingredients/*json')
