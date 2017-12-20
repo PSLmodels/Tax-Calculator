@@ -16,6 +16,7 @@ Read tax-calculator/TESTING.md for details.
 # pylint --disable=locally-disabled test_pufcsv.py
 
 import os
+import sys
 import json
 import difflib
 import pytest
@@ -23,6 +24,7 @@ import numpy as np
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator
+from taxcalc import nonsmall_diff_line_list
 
 
 @pytest.mark.requires_pufcsv
@@ -45,19 +47,27 @@ def test_agg(tests_path, puf_fullsample):
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
-    # generate differences between actual and expected results
+    # create actual and expected lists of diagnostic table lines
     actual = adtstr.splitlines(True)
     aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.txt')
     with open(aggres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expected = expected_results.splitlines(True)
-    diff = difflib.unified_diff(expected, actual,
-                                fromfile='expected', tofile='actual', n=0)
-    # convert diff generator into a list of lines:
+    expect = expected_results.splitlines(True)
+    # ensure actual and expect lines have differences less than "small" value
+    epsilon = 1e-6
+    if sys.version_info.major == 2:
+        small = epsilon  # tighter test for Python 2.7
+    else:
+        small = 0.1 + epsilon  # looser test for Python 3.6
     diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
+    assert len(actual) == len(expect)
+    for actline, expline in zip(actual, expect):
+        if actline == expline:
+            continue
+        diffs = nonsmall_diff_line_list(actline, expline, small)
+        if diffs:
+            diff_lines.extend(diffs)
     # test failure if there are any diff_lines
     if diff_lines:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
