@@ -23,7 +23,7 @@ for a complete commit history.
 **Bug Fixes**
 - Standardize format of ValueError messages raised by Policy.implement_reform method
   [[#1775](https://github.com/open-source-economics/Tax-Calculator/pull/1775)
-  by Martin Holmer, as reported by Max Ghenis and diagnosed by Hank Doupe]
+  by Martin Holmer, reported by Max Ghenis and diagnosed by Hank Doupe]
 
 
 2017-12-15 Release 0.14.1

@@ -41,9 +41,11 @@ following an existing recipe</p>
 
 <p><a href="#recipe00">Static Analysis of a Simple Reform</a></p>
 
-<p><b>Other Recipes</b></p>
+<p><b>Advanced Recipes</b></p>
 
-<p><i>coming soon</i></p>
+<p><a href="#recipe01">Directly Comparing Two Reforms</a></p>
+
+<p>...more coming soon...</p>
 
 
 <h2 id="setup">Preliminaries: Kitchen Setup</h2>
@@ -171,12 +173,12 @@ the <kbd>ingredients/reformA.json</kbd> file.</p>
 <p><b>Instructions</b></p>
 
 <p><a href="recipe00.py.html" target="_blank">Step-by-step
-instructions</a> included in the <kbd>recipe00.py</kbd> file.</p>
+instructions</a> in the <kbd>recipe00.py</kbd> file.</p>
 
 <p><b>Results</b></p>
 
 <p><em>
-When following the recipe as shown below, you will get several instances
+When following the recipe, you will get several instances
 of the same <b>ignored</b> error message from deep inside the Pandas
 library that is being used by Tax-Calculator.  After conferring with
 the Pandas developers, our expectation is these error messages will go
@@ -195,10 +197,37 @@ in the same directory as <kbd>recipe00.py</kbd> and named
 <kbd>python recipe00.py > recipe00.out</kbd> at the command prompt as
 shown <a href="#execution">above</a>. To view the HTML graph file
 generated when you follow the recipe, open it in your favorite
-browser.  For example, on a Mac, you would enter at the command prompt
-the following
-<pre>open recipe00.graph.html</pre>
-to start your default browser showing the graph.</p>
+browser.  For example, on a Mac, you would enter at the command
+prompt<br><kbd>open recipe00.graph.html</kbd><br>to start your
+default browser showing the graph.</p>
+
+<p><a href="#toc">Back to Cookbook Contents</a></p>
+
+
+<h2 id="recipe01">Advanced Recipe: Directly Comparing Two Reforms</h2>
+
+<p>This is an advanced recipe that should be followed only after
+mastering the <a href="#recipe00">basic recipe</a>.  This recipe
+shows how to compare two reforms (instead of comparing a reform
+to current-law policy) and also shows how to use the reform files
+available on the Tax-Calculator website (instead of reform files
+on your computer's disk).</p>
+
+<p><b>Ingredients</b></p>
+
+<p>No ingredients required because we read reform files from the
+Tax-Calculator website.</p>
+
+<p><b>Instructions</b></p>
+
+<p><a href="recipe01.py.html" target="_blank">Step-by-step
+instructions</a> in the <kbd>recipe01.py</kbd> file.</p>
+
+<p><b>Results</b></p>
+
+<p><a href="recipe01.res.html" target="_blank">Expected text
+results</a> from executing <kbd>python recipe01.py > recipe01.out</kbd> at
+the command prompt as shown <a href="#execution">above</a>.</p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
