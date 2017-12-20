@@ -14,9 +14,9 @@ import numpy as np
 import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
-from taxcalc.utils import (add_income_bins, add_quantile_bins, results,
+from taxcalc.utils import (add_income_bins, add_quantile_bins,
                            create_difference_table, create_distribution_table,
-                           STATS_COLUMNS, DIST_TABLE_COLUMNS,
+                           DIST_VARIABLES, DIST_TABLE_COLUMNS,
                            WEBAPP_INCOME_BINS, read_egg_csv)
 
 
@@ -118,8 +118,8 @@ def calculate(year_n, start_year,
             # otherwise read from taxcalc package "egg"
             input_path = None  # pragma: no cover
             full_sample = read_egg_csv('cps.csv.gz')  # pragma: no cover
-        sampling_frac = 0.05  # TODO: using same as for puf for now
-        sampling_seed = 180  # TODO: using same as for puf for now
+        sampling_frac = 0.03
+        sampling_seed = 180
     if input_path:
         full_sample = pd.read_csv(input_path)
     if use_full_sample:
@@ -149,7 +149,7 @@ def calculate(year_n, start_year,
     assert calc1.current_year == start_year
 
     # compute mask array
-    res1 = results(calc1.records)
+    res1 = calc1.dataframe(DIST_VARIABLES)
     if use_puf_not_cps:
         # create pre-reform Calculator instance with extra income
         recs1p = Records(data=copy.deepcopy(sample),
@@ -169,7 +169,7 @@ def calculate(year_n, start_year,
         # compute mask showing which of the calc1 and calc1p results differ;
         # mask is true if a filing unit's income tax liability changed after
         # a dollar was added to the filing unit's wage and salary income
-        res1p = results(calc1p.records)
+        res1p = calc1p.dataframe(DIST_VARIABLES)
         mask = np.logical_not(  # pylint: disable=no-member
             np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
         )
@@ -347,7 +347,7 @@ def create_results_columns(df1, df2, mask):
                  'num_returns_AMT',
                  's006'])
     columns_to_create = (set(DIST_TABLE_COLUMNS) |
-                         set(STATS_COLUMNS)) - skips
+                         set(DIST_VARIABLES)) - skips
     do_fuzzing = np.any(mask)
     if do_fuzzing:
         df2['mask'] = mask
@@ -357,11 +357,6 @@ def create_results_columns(df1, df2, mask):
     create(df1, df2, 'bin', 'expanded_income_baseline', '_xbin',
            columns_to_create, do_fuzzing)
     create(df1, df2, 'agg', 'expanded_income_baseline', '_agg',
-           columns_to_create, do_fuzzing)
-    df2['c00100_baseline'] = df1['c00100']  # c00100 is AGI
-    create(df1, df2, 'dec', 'c00100_baseline', '_adec',
-           columns_to_create, do_fuzzing)
-    create(df1, df2, 'bin', 'c00100_baseline', '_abin',
            columns_to_create, do_fuzzing)
     return df2
 
@@ -493,94 +488,6 @@ def summary(df1, df2, mask):
                                   result_type='weighted_sum')
     dist2_xbin.drop(dist2_xbin.index[0], inplace=True)
     summ['dist2_xbin'] = dist2_xbin
-
-    # create difference tables grouped by adec
-    df2['iitax'] = df2['iitax_adec']
-    summ['diff_itax_adec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='c00100',
-                                tax_to_diff='iitax')
-
-    df2['payrolltax'] = df2['payrolltax_adec']
-    summ['diff_ptax_adec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='c00100',
-                                tax_to_diff='payrolltax')
-
-    df2['combined'] = df2['combined_adec']
-    summ['diff_comb_adec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='c00100',
-                                tax_to_diff='combined')
-
-    # create difference tables grouped by abin (removing negative-income bin)
-    df2['iitax'] = df2['iitax_abin']
-    diff_itax_abin = \
-        create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
-                                income_measure='c00100',
-                                tax_to_diff='iitax')
-    diff_itax_abin.drop(diff_itax_abin.index[0], inplace=True)
-    summ['diff_itax_abin'] = diff_itax_abin
-
-    df2['payrolltax'] = df2['payrolltax_abin']
-    diff_ptax_abin = \
-        create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
-                                income_measure='c00100',
-                                tax_to_diff='payrolltax')
-    diff_ptax_abin.drop(diff_ptax_abin.index[0], inplace=True)
-    summ['diff_ptax_abin'] = diff_ptax_abin
-
-    df2['combined'] = df2['combined_abin']
-    diff_comb_abin = \
-        create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
-                                income_measure='c00100',
-                                tax_to_diff='combined')
-    diff_comb_abin.drop(diff_comb_abin.index[0], inplace=True)
-    summ['diff_comb_abin'] = diff_comb_abin
-
-    # create distribution tables grouped by adec
-    summ['dist1_adec'] = \
-        create_distribution_table(df1, groupby='weighted_deciles',
-                                  income_measure='c00100',
-                                  result_type='weighted_sum')
-
-    suffix = '_adec'
-    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
-    for col in df2_cols_with_suffix:
-        root_col_name = col.replace(suffix, '')
-        df2[root_col_name] = df2[col]
-    df2['c00100_baseline'] = df1['c00100']
-    summ['dist2_adec'] = \
-        create_distribution_table(df2, groupby='weighted_deciles',
-                                  income_measure='c00100_baseline',
-                                  result_type='weighted_sum')
-
-    # create distribution tables grouped by abin (removing negative-income bin)
-    dist1_abin = \
-        create_distribution_table(df1, groupby='webapp_income_bins',
-                                  income_measure='c00100',
-                                  result_type='weighted_sum')
-    dist1_abin.drop(dist1_abin.index[0], inplace=True)
-    summ['dist1_abin'] = dist1_abin
-
-    suffix = '_abin'
-    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
-    for col in df2_cols_with_suffix:
-        root_col_name = col.replace(suffix, '')
-        df2[root_col_name] = df2[col]
-    df2['c00100_baseline'] = df1['c00100']
-    dist2_abin = \
-        create_distribution_table(df2, groupby='webapp_income_bins',
-                                  income_measure='c00100_baseline',
-                                  result_type='weighted_sum')
-    dist2_abin.drop(dist2_abin.index[0], inplace=True)
-    summ['dist2_abin'] = dist2_abin
 
     # return dictionary of summary results
     return summ

@@ -36,7 +36,7 @@ def create_base_table(test_path):
                  'c09600': 'Federal AMT liability'}
     # specify read variable names and descriptions
     unused_var_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
-                          'h_seq', 'ffpos', 'fips',
+                          'h_seq', 'ffpos', 'fips', 'agi_bin',
                           'FLPDYR', 'FLPDMO', 'f2441', 'f3800', 'f6251',
                           'f8582', 'f8606', 'f8829', 'f8910', 'f8936', 'n20',
                           'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
@@ -72,10 +72,10 @@ def calculate_corr_stats(calc, table):
     Calculate correlation coefficient matrix.
     """
     for varname1 in table.index:
-        var1 = getattr(calc.records, varname1)
+        var1 = calc.array(varname1)
         var1_cc = list()
         for varname2 in table.index:
-            var2 = getattr(calc.records, varname2)
+            var2 = calc.array(varname2)
             cor = np.corrcoef(var1, var2)[0][1]
             var1_cc.append(cor)
         table[varname1] = var1_cc
@@ -85,11 +85,10 @@ def calculate_mean_stats(calc, table, year):
     """
     Calculate weighted means for year.
     """
-    total_weight = calc.records.s006.sum()
+    total_weight = calc.total_weight()
     means = list()
     for varname in table.index:
-        weighted = getattr(calc.records, varname) * calc.records.s006
-        wmean = weighted.sum() / total_weight
+        wmean = calc.weighted_total(varname) / total_weight
         means.append(wmean)
     table[str(year)] = means
 
@@ -149,6 +148,7 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     # create base tables
     table_mean = create_base_table(tests_path)
     table_corr = copy.deepcopy(table_mean)
+    del table_corr['description']
     # add statistics to tables
     year_headers = ['description']
     for year in range(Policy.JSON_START_YEAR, Policy.LAST_BUDGET_YEAR + 1):
@@ -162,9 +162,12 @@ def test_puf_var_stats(tests_path, puf_fullsample):
             calc.increment_year()
     # write tables to new CSV files
     mean_path = os.path.join(tests_path, MEAN_FILENAME + '-new')
-    table_mean.to_csv(mean_path, header=year_headers, float_format='%8.3f')
+    table_mean.sort_index(inplace=True)
+    table_mean.to_csv(mean_path, header=year_headers, float_format='%8.0f')
     corr_path = os.path.join(tests_path, CORR_FILENAME + '-new')
-    table_corr.to_csv(corr_path, float_format='%8.3f')
+    table_corr.sort_index(inplace=True)
+    table_corr.to_csv(corr_path, float_format='%8.2f',
+                      columns=table_corr.index)
     # compare new and old CSV files
     diffs_in_mean, mean_msg = differences(mean_path, mean_path[:-4], 'MEAN')
     diffs_in_corr, corr_msg = differences(corr_path, corr_path[:-4], 'CORR')

@@ -560,21 +560,71 @@
 
   "56": {
       "start_year": 2017,
+      "value": {"_DependentCredit_Child_c": [500]},
+      "name": "Set Dependend Credit for Children at $500",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-7.9,-7.7,-7.3,-7.2"
+  },
+
+    "57": {
+      "start_year": 2017,
       "value": {"_DependentCredit_before_CTC": [true],
                 "_DependentCredit_Child_c": [500]},
-      "name": "Stack dependent credit before CTC",
+      "name": "Set Dependend Credit for Children at $500 AND stack dependent credit before CTC",
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,-13.2,-12.9,-12.3,-12.1"
   },
 
-    "57": {
+      "58": {
       "start_year": 2017,
-      "value": {"_DependentCredit_Child_c": [500]},
-      "name": "Stack dependent credit before CTC",
+      "value": {"_cpi_offset": [-0.0025]},
+      "name": "Adopt cpi_offset similar to chained CPI",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-7.9,-7.7,-7.3,-7.2"
+      "expected": "Tax-Calculator,0.0,2.2,4.6,7.2"
+  }, 
+      "59": {
+      "start_year": 2017,
+      "value": {"_PT_rt7": [0.35],
+                "_PT_EligibleRate_active": [0.7]},
+      "name": "Top pass through rate at 0.35 AND 70% of active business inc eligible for lower rate",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-14.8,-14.7,-14.6,-14.7"
+  },
+      "60": {
+      "start_year": 2017,
+      "value": {"_PT_wages_active_income": [true],
+                "_PT_EligibleRate_active": [0.7],
+                "_PT_rt7": [0.35]},
+      "name": "Top pass through rate at 0.35 AND 70% of active business inc eligible for lower rate AND wages included in (positive) active business income eligible for PT rates",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-16.5,-16.5,-16.4,-16.5"
+  },
+      "61": {
+      "start_year": 2017,
+      "value": {"_CTC_new_c": [1000],
+                "_CTC_new_rt": [0.153],
+                "_CTC_new_refund_limited": [true],
+                "_CTC_new_refund_limit_payroll_rt": [1]},
+      "name": "CTC new with 15.3% phase in and refund limit to OASDI",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-66.2,-66.4,-66.8,-67.0"
+  }, 
+      "62": {
+      "start_year": 2017,
+      "value": {"_CTC_new_c": [1000],
+                "_CTC_new_rt": [0.153],
+                "_CTC_new_refund_limited": [true],
+                "_CTC_new_refund_limit_payroll_rt": [1],
+                "_CTC_new_refund_limited_all_payroll": [true]},
+      "name": "CTC new with 15.3% phase in and refund limit to all payroll taxes",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-67.5,-67.7,-68.0,-68.1"
   }
-
 }

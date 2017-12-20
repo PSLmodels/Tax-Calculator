@@ -4,6 +4,93 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2017-12-19 Release 0.14.2
+-------------------------
+(last merged pull request is
+[#1775](https://github.com/open-source-economics/Tax-Calculator/pull/1775))
+
+**API Changes**
+- None
+
+**New Features**
+- Add two policy parameters that can be used to cap itemized SALT deductions as a fraction of AGI
+  [[#1711](https://github.com/open-source-economics/Tax-Calculator/pull/1711)
+  by Derrick Choe with assistance from Cody Kallen and Hank Doupe]
+- Update "notes" in `current_law_policy.json` for policy parameters first introduced in TCJA bills
+  [[#1765](https://github.com/open-source-economics/Tax-Calculator/pull/1765)
+  by Max Ghenis]
+
+**Bug Fixes**
+- Standardize format of ValueError messages raised by Policy.implement_reform method
+  [[#1775](https://github.com/open-source-economics/Tax-Calculator/pull/1775)
+  by Martin Holmer, as reported by Max Ghenis and diagnosed by Hank Doupe]
+
+
+2017-12-15 Release 0.14.1
+-------------------------
+(last merged pull request is
+[#1759](https://github.com/open-source-economics/Tax-Calculator/pull/1759))
+
+**API Changes**
+- None
+
+**New Features**
+- Add policy parameter that can cap the combined state and local income/sales and real-estate deductions
+  [[#1756](https://github.com/open-source-economics/Tax-Calculator/pull/1756)
+  by Cody Kallen with helpful discussion from Ernie Tedeschi and Matt Jensen]
+- Add percentage change in income by income decile graph to `tc --graphs` output
+  [[#1758](https://github.com/open-source-economics/Tax-Calculator/pull/1758)
+  by Martin Holmer]
+- Add JSON reform file for TCJA conference bill
+  [[#1759](https://github.com/open-source-economics/Tax-Calculator/pull/1759)
+  by Cody Kallen with review by Matt Jensen and Sean Wang]
+
+**Bug Fixes**
+- None
+
+
+2017-12-11 Release 0.14.0
+-------------------------
+(last merged pull request is
+[#1742](https://github.com/open-source-economics/Tax-Calculator/pull/1742))
+
+**API Changes**
+- Add several Calculator table methods and revise table utilities to not use Calculator object(s)
+  [[#1718](https://github.com/open-source-economics/Tax-Calculator/pull/1718)
+  by Martin Holmer]
+- Add several Calculator graph methods and revise graph utilities to not use Calculator objects
+  [[#1722](https://github.com/open-source-economics/Tax-Calculator/pull/1722)
+  by Martin Holmer]
+- Add Calculator ce_aftertax_income method and revise corresponding utility to not use Calculator object
+  [[#1723](https://github.com/open-source-economics/Tax-Calculator/pull/1723)
+  by Martin Holmer]
+
+**New Features**
+- Add new policy parameter for refunding the new CTC against all payroll taxes
+  [[#1716](https://github.com/open-source-economics/Tax-Calculator/pull/1716)
+  by Matt Jensen as suggested by Ernie Tedeschi]
+- Remove calculation of AGI tables from the TaxBrain Interface, tbi
+  [[#1724](https://github.com/open-source-economics/Tax-Calculator/pull/1724)
+  by Martin Holmer as suggested by Matt Jensen and Hank Doupe]
+- Add ability to specify partial customized CLI `tc --dump` output
+  [[#1735](https://github.com/open-source-economics/Tax-Calculator/pull/1735)
+  by Martin Holmer as suggested by Sean Wang]
+- Add *Cookbook of Tested Recipes for Python Programming with Tax-Calculator*
+  [[#1740](https://github.com/open-source-economics/Tax-Calculator/pull/1740)
+  by Martin Holmer]
+- Add calculation of two values on the ALL row of the difference table
+  [[#1741](https://github.com/open-source-economics/Tax-Calculator/pull/1741)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Fix Behavior.response method to handle very high marginal tax rates
+  [[#1698](https://github.com/open-source-economics/Tax-Calculator/pull/1698)
+  by Martin Holmer, reported by Richard Evans and Jason DeBacker]
+- Fix `create_distribution_table` to generate correct details for the top decile
+  [[#1712](https://github.com/open-source-economics/Tax-Calculator/pull/1712)
+  by Martin Holmer]
+
+
 2017-11-17 Release 0.13.2
 -------------------------
 (last merged pull request is

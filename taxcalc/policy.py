@@ -172,25 +172,26 @@ class Policy(ParametersBase):
         """
         # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
-            raise ValueError('ERROR: reform is not a dictionary')
+            raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
         if not reform:
             return  # no reform to implement
         reform_years = sorted(list(reform.keys()))
         for year in reform_years:
             if not isinstance(year, int):
-                msg = 'ERROR: key={} in reform is not an integer calendar year'
-                raise ValueError(msg.format(year))
+                msg = 'ERROR: {} KEY {}'
+                details = 'KEY in reform is not an integer calendar year'
+                raise ValueError(msg.format(year, details))
         # check range of remaining reform_years
         first_reform_year = min(reform_years)
         if first_reform_year < self.start_year:
-            msg = 'ERROR: reform provision in year={} < start_year={}'
+            msg = 'ERROR: {} YEAR reform provision in YEAR < start_year={}'
             raise ValueError(msg.format(first_reform_year, self.start_year))
         if first_reform_year < self.current_year:
-            msg = 'ERROR: reform provision in year={} < current_year={}'
+            msg = 'ERROR: {} YEAR reform provision in YEAR < current_year={}'
             raise ValueError(msg.format(first_reform_year, self.current_year))
         last_reform_year = max(reform_years)
         if last_reform_year > self.end_year:
-            msg = 'ERROR: reform provision in year={} > end_year={}'
+            msg = 'ERROR: {} YEAR reform provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
         self._validate_parameter_names_types(reform)
@@ -392,20 +393,20 @@ class Policy(ParametersBase):
                     if isinstance(reform[year][name], bool):
                         pname = name[:-4]  # root parameter name
                         if pname not in data_names:
-                            msg = 'invalid parameter name {} in {}'
+                            msg = '{} {} unknown parameter name'
                             self.reform_errors += (
-                                'ERROR: ' + msg.format(name, year) + '\n'
+                                'ERROR: ' + msg.format(year, name) + '\n'
                             )
                     else:
-                        msg = 'parameter {} in {} is not true or false'
+                        msg = '{} {} parameter is not true or false'
                         self.reform_errors += (
-                            'ERROR: ' + msg.format(name, year) + '\n'
+                            'ERROR: ' + msg.format(year, name) + '\n'
                         )
                 else:  # if name does not end with '_cpi'
                     if name not in data_names:
-                        msg = 'invalid parameter name {} in {}'
+                        msg = '{} {} unknown parameter name'
                         self.reform_errors += (
-                            'ERROR: ' + msg.format(name, year) + '\n'
+                            'ERROR: ' + msg.format(year, name) + '\n'
                         )
                     else:
                         # check parameter value type

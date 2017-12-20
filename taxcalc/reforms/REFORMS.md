@@ -29,9 +29,13 @@ The following reform proposals have been specified in reforms files:
 
 - [2017 Tax Cuts and Jobs Act, House version](TCJA_House.json)
 
-- [2017 Tax Cuts and Jobs Act, Amended House version](TCJA_House_Amended.json)
+- [2017 Tax Cuts and Jobs Act, Passed House version](TCJA_House_Amended.json)
 
 - [2017 Tax Cuts and Jobs Act, Senate version](TCJA_Senate.json)
+
+- [2017 Tax Cuts and Jobs Act, Passed Senate version](TCJA_Senate_120117.json)
+
+- [2017 Tax Cuts and Jobs Act, Conference bill](TCJA_Reconciliation.json)
 
 ## Structure and Syntax of Reform Files
 

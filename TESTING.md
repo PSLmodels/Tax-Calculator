@@ -92,10 +92,10 @@ But the `"not pre_release"` option should never be used after
 adding a new parameter to `current_law_policy.json` or 
 preparing a new taxcalc release. 
 
-Testing with validation/tests
------------------------------
+Testing with validation/tests.sh
+--------------------------------
 
-The current version of the validation/tests runs only under Mac and
+The current version of the validation tests run only under Mac and
 Linux; if you are working under Windows, skip this second phase of
 testing.  See the [description of the validation
 tests](taxcalc/validation/README.md) for more details.
@@ -106,11 +106,11 @@ directory tree:
 
 ```
 cd taxcalc/validation
-./tests
+bash tests.sh
 ```
 
-This will start executing the validation/tests.  Depending on your
-computer, the execution time for this suite of validation/tests is
+This will start executing the validation tests.  Depending on your
+computer, the execution time for this suite of validation tests is
 roughly one minute.
 
 Interpreting the Test Results
