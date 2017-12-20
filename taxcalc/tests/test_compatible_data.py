@@ -126,9 +126,6 @@ def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
     # current law and activating them would deactive other parameters.
     exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
 
-    # assert len(allparams_i) == 1
-    # pname = list(allparams_i.keys())[0]
-    # param = allparams_i[pname]
     for pname in allparams_batch:
         param = allparams_batch[pname]
         max_listed = param['range']['max']
