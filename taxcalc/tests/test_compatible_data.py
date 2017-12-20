@@ -20,6 +20,7 @@ from taxcalc import Policy, Records, Calculator
 NPARAMS = len(Policy.default_data())
 BATCHSIZE = 10
 
+
 @pytest.fixture(scope="module")
 def reform_xx():
     """
@@ -33,6 +34,8 @@ def reform_xx():
             '_CTC_new_rt': [0.5],
             '_CTC_new_c': [5000],
             '_CTC_new_prt': [0.1],
+            '_CTC_new_refund_limited': [True],
+            '_CTC_new_refund_limit_payroll_rt': [1],
             '_ID_BenefitSurtax_trt': [0.1],
             '_UBI3': [1000],
             '_PT_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
@@ -111,7 +114,8 @@ def tc_objs(request, reform_xx, puf_subsample, cps_subsample):
 
 @pytest.mark.requires_pufcsv
 @pytest.mark.pre_release
-def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx, tc_objs, allparams_batch):
+def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
+                         tc_objs, allparams_batch):
     """
 
     """

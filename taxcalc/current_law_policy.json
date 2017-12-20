@@ -1190,7 +1190,8 @@
         "range": {"min": 0.0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_ID_StateLocalTax_c": {
@@ -1266,7 +1267,8 @@
         "range": {"min": 0.0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_ID_RealEstate_c": {
@@ -1327,7 +1329,8 @@
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_ID_InterestPaid_hc": {
@@ -4434,7 +4437,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": false}
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_CTC_new_rt": {
@@ -4579,7 +4582,8 @@
         "range": {"min": false, "max": true},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_FST_AGI_trt": {
