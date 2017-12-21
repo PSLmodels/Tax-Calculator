@@ -922,6 +922,7 @@ def test_dec_graph_plot(cps_subsample):
 
 
 def test_nonsmall_diffs():
+    assert nonsmall_diffs(['AAA'], ['AAA', 'BBB'])
     assert nonsmall_diffs(['AaA'], ['AAA'])
     assert not nonsmall_diffs(['AAA'], ['AAA'])
     assert nonsmall_diffs(['12.3'], ['12.2'])
