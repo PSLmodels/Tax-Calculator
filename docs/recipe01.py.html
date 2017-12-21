@@ -46,7 +46,7 @@ diff_extract = pd.DataFrame()
 dif_colnames = ['count', 'tax_cut', 'tax_inc',
                 'tot_change', 'mean', 'pc_aftertaxinc']
 ext_colnames = ['funits(#m)', 'taxfall(#m)', 'taxrise(#m)',
-                'agg_diff($b)', 'mean_diff($)', 'ataxinc_diff(%)']
+                'agg_diff($b)', 'mean_diff($)', 'aftertax_income_diff(%)']
 scaling_factors = [1e-6, 1e-6, 1e-6, 1e-9, 1e0, 1e0, 1e0]
 for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
     diff_extract[ename] = diff_table[dname] * sfactor

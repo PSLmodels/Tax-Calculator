@@ -24,20 +24,20 @@ Extract of 2018 income-tax difference table by expanded-income decile
 12        6.79         6.42         0.38        -27.49     -4,046.07   
 13        1.70         1.55         0.15        -20.97    -12,332.42   
 
-    ataxinc_diff(%)  
-0             -1.57  
-1              0.17  
-2             -0.04  
-3              0.26  
-4              0.38  
-5              0.41  
-6              0.20  
-7              0.47  
-8              0.44  
-9              1.67  
-10             0.87  
-11             1.04  
-12             1.98  
-13             1.96  
+    aftertax_income_diff(%)  
+0                     -1.57  
+1                      0.17  
+2                     -0.04  
+3                      0.26  
+4                      0.38  
+5                      0.41  
+6                      0.20  
+7                      0.47  
+8                      0.44  
+9                      1.67  
+10                     0.87  
+11                     1.04  
+12                     1.98  
+13                     1.96  
 Note: deciles are numbered 0-9 with top decile divided into bottom 5%,
       next 4%, and top 1%, in the lines numbered 11-13, respectively
