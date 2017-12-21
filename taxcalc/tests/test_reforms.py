@@ -7,14 +7,13 @@ Test example JSON policy reform files in taxcalc/reforms directory
 
 from __future__ import print_function
 import os
-import sys
 import glob
 import json
 import pytest
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Calculator, Policy, Records, Behavior, DIST_TABLE_COLUMNS
-from taxcalc import nonsmall_diff_line_list
+from taxcalc import nonsmall_diffs
 
 
 def test_reform_json_and_output(tests_path):
@@ -71,23 +70,9 @@ def test_reform_json_and_output(tests_path):
         with open(base + '.res') as resfile:
             act_res = resfile.read()
         act = act_res.splitlines(True)
-        # assure act & exp line lists have differences less than "small" value
-        epsilon = 1e-6
-        if sys.version_info.major == 2:
-            small = epsilon  # tighter test for Python 2.7
-        else:
-            small = epsilon  # looser test for Python 3.6 if necessary
-        diff_lines = list()
-        assert len(act) == len(exp)
-        for actline, expline in zip(act, exp):
-            if actline == expline:
-                continue
-            diffs = nonsmall_diff_line_list(actline, expline, small)
-            if diffs:
-                diff_lines.extend(diffs)
-        if diff_lines:
-            return False
-        return True
+        # check that act & exp have differences no more than small value
+        diffs = nonsmall_diffs(act, exp, small=1e-6)
+        return not diffs
     # specify Records object containing cases data
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')

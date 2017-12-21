@@ -18,8 +18,7 @@ import json
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, Growfactors
-from taxcalc import nonsmall_diff_line_list
+from taxcalc import Policy, Records, Calculator, Growfactors, nonsmall_diffs
 
 
 def test_agg(tests_path):
@@ -47,22 +46,13 @@ def test_agg(tests_path):
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     exp = expected_results.splitlines(True)
-    # ensure act and exp line lists have differences less than "small" value
-    epsilon = 1e-6
+    # ensure act and exp line lists have differences no more than small value
     if sys.version_info.major == 2:
-        small = epsilon  # tighter test for Python 2.7
+        small = 1e-6  # tighter test for Python 2.7
     else:
-        small = 0.1 + epsilon  # looser test for Python 3.6
-    diff_lines = list()
-    assert len(act) == len(exp)
-    for actline, expline in zip(act, exp):
-        if actline == expline:
-            continue
-        diffs = nonsmall_diff_line_list(actline, expline, small)
-        if diffs:
-            diff_lines.extend(diffs)
-    # test failure if there are any diff_lines
-    if diff_lines:
+        small = 0.1 + 1e-6  # looser test for Python 3.6
+    diffs = nonsmall_diffs(act, exp, small)
+    if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(actual_results)
@@ -72,9 +62,6 @@ def test_agg(tests_path):
         msg += '--- if new OK, copy cpscsv_agg_actual.txt to  ---\n'
         msg += '---                 cpscsv_agg_expect.txt     ---\n'
         msg += '---            and rerun test.                ---\n'
-        msg += '-------------------------------------------------\n'
-        for line in diff_lines:
-            msg += line
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
