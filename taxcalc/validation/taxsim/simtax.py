@@ -71,7 +71,7 @@ def main():
                               'If the --records option is specified, the '
                               'output file name will be the same as if the '
                               'option was not specified, except that the '
-                              '".out-simtax" part is replaced by ".records"'),
+                              '"out-simtax" part is replaced by "records"'),
                         default=False,
                         action="store_true")
     parser.add_argument('INPUT', nargs='?', default='',

@@ -118,8 +118,8 @@ def main():
     calc3p = Calculator(policy=policy3p, records=records3p, verbose=False)
     while calc3p.current_year < taxyear:
         calc3p.increment_year()
-    calc3p.records = all_earnings_shift(calc3p.records, param,
-                                        taxpayer_only=True)
+    calc3p.setrecords(all_earnings_shift(calc3p.getrecords(), param,
+                                         taxpayer_only=True)
     calc3p.calc_all()
     records3b = Records()
     policy3b = Policy()
@@ -127,8 +127,8 @@ def main():
     calc3b = Calculator(policy=policy3b, records=records3b, verbose=False)
     while calc3b.current_year < taxyear:
         calc3b.increment_year()
-    calc3b.records = all_earnings_shift(calc3b.records, param,
-                                        taxpayer_only=False)
+    calc3b.setrecords(all_earnings_shift(calc3b.getrecords(), param,
+                                         taxpayer_only=False))
     calc3b.calc_all()
 
     # write calc3 vs calc2 results
@@ -150,9 +150,11 @@ def main():
     # advance calc4 to TAXYEAR, do shifting, and conduct tax calculations
     while calc4.current_year < taxyear:
         calc4.increment_year()
-    calc4.records = some_earnings_shift(calc4.records, calc3p.records,
-                                        calc3b.records, calc2.records,
-                                        param)
+    calc4.setrecords(some_earnings_shift(calc4.getrecords(),
+                                         calc3p.getrecords(),
+                                         calc3b.getrecords(),
+                                         calc2.getrecords(),
+                                         param)
     calc4.calc_all()
 
     # write calc4 vs calc2 results
@@ -261,13 +263,13 @@ def write_tables(calc, calc_base=None):
     tax_cols = ['iitax', 'payrolltax', 'combined']
     all_cols = nontax_cols + tax_cols
     # create DataFrame with weighted tax totals from calc
-    non = [getattr(calc.records, col) for col in nontax_cols]
-    ref = [getattr(calc.records, col) for col in tax_cols]
+    non = [calc.array(col) for col in nontax_cols]
+    ref = [calc.array(col) for col in tax_cols]
     tot = non + ref
     totdf = pd.DataFrame(data=np.column_stack(tot), columns=all_cols)
     # create DataFrame with weighted tax differences if calc_base!=None
     if calc_base is not None:
-        bas = [getattr(calc_base.records, col) for col in tax_cols]
+        bas = [calc_base.array(col) for col in tax_cols]
         chg = [(ref[idx] - bas[idx]) for idx in range(0, len(tax_cols))]
         dif = non + chg
         difdf = pd.DataFrame(data=np.column_stack(dif), columns=all_cols)

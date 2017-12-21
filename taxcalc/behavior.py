@@ -416,7 +416,7 @@ class Behavior(ParametersBase):
         delta_ided[pos] = delta_income[pos] * ided[pos] / agi_m_ided[pos]
         # confirm that the three parts are consistent with delta_income
         assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
-        # add the three parts to different calc.records variables
+        # add the three parts to different records variables embedded in calc
         calc.incarray('e00200', delta_winc)
         calc.incarray('e00200p', delta_winc)
         calc.incarray('e00300', delta_oinc)

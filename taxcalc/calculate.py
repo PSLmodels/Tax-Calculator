@@ -199,6 +199,7 @@ class Calculator(object):
         """
         Return pandas DataFrame containing the listed Records variables.
         """
+        assert isinstance(variable_list, list)
         arys = [self.array(vname) for vname in variable_list]
         return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
@@ -206,7 +207,7 @@ class Calculator(object):
         """
         Return numpy ndarray containing the named Records variable.
         """
-        return getattr(self.records, variable_name)
+        return getattr(self.records, variable_name, None)
 
     def setarray(self, variable_name, variable_value):
         """
@@ -226,6 +227,46 @@ class Calculator(object):
         Set named Records variable to zeros.
         """
         setattr(self.records, variable_name, np.zeros(self.array_len))
+
+    @property
+    def array_len(self):
+        """
+        Length of arrays in embedded Records object.
+        """
+        return self.records.array_length
+
+    def getrecords(self):
+        """
+        Return the complete embedded Records object.
+        """
+        return self.records
+
+    def setrecords(self, records_object):
+        """
+        Set the embedded Records object to specified records_object.
+        """
+        assert isinstance(records_object, Records)
+        self.records = records_object
+
+    def set_records_current_year(self, year):
+        """
+        Set current_year of the embedded Records object.
+        """
+        self.records.set_current_year(year)
+
+    @property
+    def current_year(self):
+        """
+        Calculator class current calendar year property.
+        """
+        return self.policy.current_year
+
+    @property
+    def data_year(self):
+        """
+        Calculator class initial (i.e., first) records data year property.
+        """
+        return self.records.data_year
 
     def diagnostic_table(self, num_years):
         """
@@ -386,27 +427,6 @@ class Calculator(object):
                                        income_measure=income_measure,
                                        tax_to_diff=tax_to_diff)
         return diff
-
-    @property
-    def current_year(self):
-        """
-        Calculator class current calendar year property.
-        """
-        return self.policy.current_year
-
-    @property
-    def data_year(self):
-        """
-        Calculator class initial (i.e., first) records data year property.
-        """
-        return self.records.data_year
-
-    @property
-    def array_len(self):
-        """
-        Length of arrays in embedded Records object.
-        """
-        return self.records.array_length
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
                            'e00900p', 'e00300',

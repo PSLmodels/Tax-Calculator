@@ -546,7 +546,7 @@ class TaxCalcIO(object):
         """
         Write graphs to HTML files.
         """
-        pos_wght_sum = self.calc.records.s006.sum() > 0.
+        pos_wght_sum = self.calc.total_weight() > 0.0
         # income-change-by-decile graph
         dec_fname = self._output_filename.replace('.csv', '-dec.html')
         dec_title = 'Income Change by Income Decile'

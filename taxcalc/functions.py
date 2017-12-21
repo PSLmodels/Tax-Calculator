@@ -1648,9 +1648,9 @@ def BenefitSurtax(calc):
         ben_surtax = (calc.policy.ID_BenefitSurtax_trt *
                       np.where(ben > ben_dedem, ben - ben_dedem, 0.))
         # add ben_surtax to income & combined taxes and to surtax subtotal
-        calc.records.iitax += ben_surtax
-        calc.records.combined += ben_surtax
-        calc.records.surtax += ben_surtax
+        calc.incarray('iitax', ben_surtax)
+        calc.incarray('combined', ben_surtax)
+        calc.incarray('surtax', ben_surtax)
 
 
 def BenefitLimitation(calc):
@@ -1686,9 +1686,9 @@ def BenefitLimitation(calc):
         # Add the difference between the actual benefit and capped benefit
         # to income tax and combined tax liabilities.
         excess_benefit = np.maximum(benefit - benefit_limit, 0)
-        calc.records.iitax += excess_benefit
-        calc.records.surtax += excess_benefit
-        calc.records.combined += excess_benefit
+        calc.incarray('iitax', excess_benefit)
+        calc.incarray('surtax', excess_benefit)
+        calc.incarray('combined', excess_benefit)
 
 
 @iterate_jit(nopython=True)
