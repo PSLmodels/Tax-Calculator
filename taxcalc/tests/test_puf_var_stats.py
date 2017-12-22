@@ -6,6 +6,7 @@ Test generates statistics for puf.csv variables.
 # pylint --disable=locally-disabled test_puf_var_stats.py
 
 import os
+import sys
 import json
 import copy
 import numpy as np
@@ -93,7 +94,7 @@ def calculate_mean_stats(calc, table, year):
     table[str(year)] = means
 
 
-def differences(new_filename, old_filename, stat_kind, small=0.0):
+def differences(new_filename, old_filename, stat_kind, small):
     """
     Return message string if there are differences at least as large as small;
     otherwise (i.e., if there are only small differences) return empty string.
@@ -102,9 +103,8 @@ def differences(new_filename, old_filename, stat_kind, small=0.0):
         new_text = vfile.read()
     with open(old_filename, 'r') as vfile:
         old_text = vfile.read()
-    new = new_text.splitlines(True)
-    old = old_text.splitlines(True)
-    if nonsmall_diffs(new, old, small):
+    if nonsmall_diffs(new_text.splitlines(True),
+                      old_text.splitlines(True), small):
         new_name = os.path.basename(new_filename)
         old_name = os.path.basename(old_filename)
         msg = '{} RESULTS DIFFER:\n'.format(stat_kind)
@@ -126,7 +126,7 @@ def differences(new_filename, old_filename, stat_kind, small=0.0):
 MEAN_FILENAME = 'puf_var_wght_means_by_year.csv'
 CORR_FILENAME = 'puf_var_correl_coeffs_2016.csv'
 
-
+@pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_puf_var_stats(tests_path, puf_fullsample):
     """
@@ -158,10 +158,18 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     table_corr.sort_index(inplace=True)
     table_corr.to_csv(corr_path, float_format='%8.2f',
                       columns=table_corr.index)
-    # compare new and old CSV files for differences no larger than small value
-    mean_msg = differences(mean_path, mean_path[:-4],
-                           'MEAN', small=1.000001)
-    corr_msg = differences(corr_path, corr_path[:-4],
-                           'CORR', small=0.010001)
+    # compare new and old CSV files for nonsmall differences
+    if sys.version_info.major == 2:
+        # tighter tests for Python 2.7
+        mean_msg = differences(mean_path, mean_path[:-4],
+                               'MEAN', small=0.0)
+        corr_msg = differences(corr_path, corr_path[:-4],
+                               'CORR', small=0.0)
+    else:
+        # looser tests for Python 3.6
+        mean_msg = differences(mean_path, mean_path[:-4],
+                               'MEAN', small=1.0)
+        corr_msg = differences(corr_path, corr_path[:-4],
+                               'CORR', small=0.01)
     if mean_msg or corr_msg:
         raise ValueError(mean_msg + corr_msg)
