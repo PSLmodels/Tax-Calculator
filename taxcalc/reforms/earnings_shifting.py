@@ -87,8 +87,7 @@ def main():
     #               no earnings-shifting
     records2 = Records()
     policy2 = Policy()
-    pdict = Calculator.read_json_param_files(reform_filename=REFORM,
-                                             assump_filename=None)
+    pdict = Calculator.read_json_param_objects(REFORM, None)
     policy2.implement_reform(pdict['policy'])
     calc2 = Calculator(policy=policy2, records=records2, verbose=False)
 
@@ -110,8 +109,7 @@ def main():
     #               all earnings-shifting in TAXYEAR
     # create calc3p for taxpayer earnings shifting and
     # create calc3b for both taxpayer and spouse earnings shifting
-    pdict = Calculator.read_json_param_files(reform_filename=REFORM,
-                                             assump_filename=None)
+    pdict = Calculator.read_json_param_files(REFORM, None)
     records3p = Records()
     policy3p = Policy()
     policy3p.implement_reform(pdict['policy'])
@@ -119,7 +117,7 @@ def main():
     while calc3p.current_year < taxyear:
         calc3p.increment_year()
     calc3p.setrecords(all_earnings_shift(calc3p.getrecords(), param,
-                                         taxpayer_only=True)
+                                         taxpayer_only=True))
     calc3p.calc_all()
     records3b = Records()
     policy3b = Policy()
@@ -142,8 +140,7 @@ def main():
     #               probability function below
     records4 = Records()
     policy4 = Policy()
-    pdict = Calculator.read_json_param_files(reform_filename=REFORM,
-                                             assump_filename=None)
+    pdict = Calculator.read_json_param_objects(REFORM, None)
     policy4.implement_reform(pdict['policy'])
     calc4 = Calculator(policy=policy4, records=records4, verbose=False)
 
@@ -154,7 +151,7 @@ def main():
                                          calc3p.getrecords(),
                                          calc3b.getrecords(),
                                          calc2.getrecords(),
-                                         param)
+                                         param))
     calc4.calc_all()
 
     # write calc4 vs calc2 results
