@@ -54,9 +54,9 @@ def test_agg(tests_path, puf_fullsample):
     expect = expected_results.splitlines(True)
     # ensure actual and expect lines have differences no more than small value
     if sys.version_info.major == 2:
-        small = 1e-6  # tighter test for Python 2.7
+        small = 0.0  # tighter test for Python 2.7
     else:
-        small = 0.1 + 1e-6  # looser test for Python 3.6
+        small = 0.1  # looser test for Python 3.6
     diffs = nonsmall_diffs(actual, expect, small)
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
@@ -213,13 +213,11 @@ def test_mtr(tests_path, puf_path):
         res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
     # check for differences between actual and expected results
-    actual = res.splitlines(True)
     mtrres_path = os.path.join(tests_path, 'pufcsv_mtr_expect.txt')
     with open(mtrres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expected = expected_results.splitlines(True)
-    if nonsmall_diffs(actual, expected, small=1e-6):
+    if nonsmall_diffs(res.splitlines(True), expected_results.splitlines(True)):
         new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)
