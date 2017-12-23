@@ -146,7 +146,7 @@ def test_1(input_file):
                                       exact=True, extract_weight=True)
     assert ovar
     SimpleTaxIO.DVAR_NAMES = ['badvar']
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         ovar = SimpleTaxIO.extract_output(simtax.calc, 0)
     SimpleTaxIO.DVAR_NAMES = []
 

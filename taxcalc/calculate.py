@@ -103,11 +103,11 @@ class Calculator(object):
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self.records = copy.deepcopy(records)
+            self.__records = copy.deepcopy(records)
         else:
             raise ValueError('must specify records as a Records object')
-        if self.policy.current_year < self.records.data_year:
-            self.policy.set_year(self.records.data_year)
+        if self.policy.current_year < self.__records.data_year:
+            self.policy.set_year(self.__records.data_year)
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
@@ -126,30 +126,32 @@ class Calculator(object):
                 self.behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
-        if sync_years and self.records.current_year == self.records.data_year:
+        current_year_is_data_year = (
+            self.__records.current_year == self.__records.data_year)
+        if sync_years and current_year_is_data_year:
             if verbose:
                 print('You loaded data for ' +
-                      str(self.records.data_year) + '.')
-                if self.records.IGNORED_VARS:
+                      str(self.__records.data_year) + '.')
+                if self.__records.IGNORED_VARS:
                     print('Your data include the following unused ' +
                           'variables that will be ignored:')
-                    for var in self.records.IGNORED_VARS:
+                    for var in self.__records.IGNORED_VARS:
                         print('  ' +
                               var)
-            while self.records.current_year < self.policy.current_year:
-                self.records.increment_year()
+            while self.__records.current_year < self.policy.current_year:
+                self.__records.increment_year()
             if verbose:
                 print('Tax-Calculator startup automatically ' +
                       'extrapolated your data to ' +
-                      str(self.records.current_year) + '.')
-        assert self.policy.current_year == self.records.current_year
+                      str(self.__records.current_year) + '.')
+        assert self.policy.current_year == self.__records.current_year
 
     def increment_year(self):
         """
         Advance all embedded objects to next year.
         """
         next_year = self.policy.current_year + 1
-        self.records.increment_year()
+        self.__records.increment_year()
         self.policy.set_year(next_year)
         self.consumption.set_year(next_year)
         self.behavior.set_year(next_year)
@@ -173,14 +175,14 @@ class Calculator(object):
         Call all tax-calculation functions for the current_year.
         """
         # conducts static analysis of Calculator object for current_year
-        assert self.records.current_year == self.policy.current_year
+        assert self.__records.current_year == self.policy.current_year
         self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
         BenefitLimitation(self)
-        FairShareTax(self.policy, self.records)
-        LumpSumTax(self.policy, self.records)
-        ExpandIncome(self.policy, self.records)
-        AfterTaxIncome(self.policy, self.records)
+        FairShareTax(self.policy, self.__records)
+        LumpSumTax(self.policy, self.__records)
+        ExpandIncome(self.policy, self.__records)
+        AfterTaxIncome(self.policy, self.__records)
 
     def weighted_total(self, variable_name):
         """
@@ -197,62 +199,70 @@ class Calculator(object):
 
     def dataframe(self, variable_list):
         """
-        Return pandas DataFrame containing the listed Records variables.
+        Return pandas DataFrame containing the listed variables from embedded
+        Records object.
         """
         assert isinstance(variable_list, list)
         arys = [self.array(vname) for vname in variable_list]
         return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
-    def array(self, variable_name):
+    def array(self, variable_name, variable_value=None):
         """
-        Return numpy ndarray containing the named Records variable.
+        If variable_value is None, return numpy ndarray containing the
+         named variable in embedded Records object.
+        If variable_value is not None, set named variable in embedded Records
+         object to specified variable_value.
         """
-        return getattr(self.records, variable_name, None)
-
-    def setarray(self, variable_name, variable_value):
-        """
-        Set named Records variable to specified variable_value.
-        """
-        setattr(self.records, variable_name, variable_value)
+        if variable_value is None:
+            return getattr(self.__records, variable_name)
+        else:
+            assert isinstance(variable_value, np.ndarray)
+            setattr(self.__records, variable_name, variable_value)
 
     def incarray(self, variable_name, variable_add):
         """
-        Add variable_add to named Records variable.
+        Add variable_add to named variable in embedded Records object.
         """
-        setattr(self.records, variable_name,
+        assert isinstance(variable_add, np.ndarray)
+        setattr(self.__records, variable_name,
                 self.array(variable_name) + variable_add)
 
     def zeroarray(self, variable_name):
         """
-        Set named Records variable to zeros.
+        Set named variable in embedded Records object to zeros.
         """
-        setattr(self.records, variable_name, np.zeros(self.array_len))
+        setattr(self.__records, variable_name, np.zeros(self.array_len))
+
+    def records(self, records_object=None):
+        """
+        If records_object is None,
+         return complete embedded Records object.
+        If records_object is not None,
+         set embedded Records object to records_object.
+        """
+        if records_object is None:
+            return self.__records
+        else:
+            assert isinstance(records_object, Records)
+            self.__records = records_object
+
+    def records_current_year(self, year=None):
+        """
+        If year is None, return current_year of embedded Records object.
+        If year is not None, set embedded Records current_year to year.
+        """
+        if year is None:
+            return self.__records.current_year
+        else:
+            assert isinstance(year, int)
+            self.__records.set_current_year(year)
 
     @property
     def array_len(self):
         """
         Length of arrays in embedded Records object.
         """
-        return self.records.array_length
-
-    def getrecords(self):
-        """
-        Return the complete embedded Records object.
-        """
-        return self.records
-
-    def setrecords(self, records_object):
-        """
-        Set the embedded Records object to specified records_object.
-        """
-        assert isinstance(records_object, Records)
-        self.records = records_object
-
-    def set_records_current_year(self, year):
-        """
-        Set current_year of the embedded Records object.
-        """
-        self.records.set_current_year(year)
+        return self.__records.array_length
 
     @property
     def current_year(self):
@@ -266,7 +276,7 @@ class Calculator(object):
         """
         Calculator class initial (i.e., first) records data year property.
         """
-        return self.records.data_year
+        return self.__records.data_year
 
     def diagnostic_table(self, num_years):
         """
@@ -536,7 +546,7 @@ class Calculator(object):
         if negative_finite_diff:
             finite_diff *= -1.0
         # save records object in order to restore it after mtr computations
-        recs0 = copy.deepcopy(self.records)
+        recs0 = copy.deepcopy(self.records())
         # extract variable array(s) from embedded records object
         variable = self.array(variable_str)
         if variable_str == 'e00200p':
@@ -550,25 +560,25 @@ class Calculator(object):
         elif variable_str == 'e26270':
             schEincome_var = self.array('e02000')
         # calculate level of taxes after a marginal increase in income
-        self.setarray(variable_str, variable + finite_diff)
+        self.array(variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
-            self.setarray('e00200', earnings_var + finite_diff)
+            self.array('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00200s':
-            self.setarray('e00200', earnings_var + finite_diff)
+            self.array('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00900p':
-            self.setarray('e00900', seincome_var + finite_diff)
+            self.array('e00900', seincome_var + finite_diff)
         elif variable_str == 'e00650':
-            self.setarray('e00600', divincome_var + finite_diff)
+            self.array('e00600', divincome_var + finite_diff)
         elif variable_str == 'e26270':
-            self.setarray('e02000', schEincome_var + finite_diff)
+            self.array('e02000', schEincome_var + finite_diff)
         if self.consumption.has_response():
-            self.consumption.response(self.records, finite_diff)
+            self.consumption.response(self.__records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         payrolltax_chng = self.array('payrolltax')
         incometax_chng = self.array('iitax')
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
-        setattr(self, 'records', recs0)
+        self.records(recs0)
         if not calc_all_already_called or zero_out_calculated_vars:
             self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         payrolltax_base = self.array('payrolltax')
@@ -890,7 +900,7 @@ class Calculator(object):
         Return Calculator object same as self except with current-law policy.
         """
         return Calculator(policy=self.policy.current_law_version(),
-                          records=self.records,
+                          records=self.__records,
                           sync_years=False,
                           consumption=self.consumption,
                           behavior=self.behavior)
@@ -1166,32 +1176,32 @@ class Calculator(object):
         """
         Call TaxInc through AMT functions.
         """
-        TaxInc(self.policy, self.records)
-        SchXYZTax(self.policy, self.records)
-        GainsTax(self.policy, self.records)
-        AGIsurtax(self.policy, self.records)
-        NetInvIncTax(self.policy, self.records)
-        AMT(self.policy, self.records)
+        TaxInc(self.policy, self.__records)
+        SchXYZTax(self.policy, self.__records)
+        GainsTax(self.policy, self.__records)
+        AGIsurtax(self.policy, self.__records)
+        NetInvIncTax(self.policy, self.__records)
+        AMT(self.policy, self.__records)
 
     def _calc_one_year(self, zero_out_calc_vars=False):
         """
         Call all the functions except those in the calc_all() method.
         """
         if zero_out_calc_vars:
-            self.records.zero_out_changing_calculated_vars()
+            self.__records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
-        EI_PayrollTax(self.policy, self.records)
-        DependentCare(self.policy, self.records)
-        Adj(self.policy, self.records)
-        ALD_InvInc_ec_base(self.policy, self.records)
-        CapGains(self.policy, self.records)
-        SSBenefits(self.policy, self.records)
-        UBI(self.policy, self.records)
-        AGI(self.policy, self.records)
-        ItemDedCap(self.policy, self.records)
-        ItemDed(self.policy, self.records)
-        AdditionalMedicareTax(self.policy, self.records)
-        StdDed(self.policy, self.records)
+        EI_PayrollTax(self.policy, self.__records)
+        DependentCare(self.policy, self.__records)
+        Adj(self.policy, self.__records)
+        ALD_InvInc_ec_base(self.policy, self.__records)
+        CapGains(self.policy, self.__records)
+        SSBenefits(self.policy, self.__records)
+        UBI(self.policy, self.__records)
+        AGI(self.policy, self.__records)
+        ItemDedCap(self.policy, self.__records)
+        ItemDed(self.policy, self.__records)
+        AdditionalMedicareTax(self.policy, self.__records)
+        StdDed(self.policy, self.__records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
         std = copy.deepcopy(self.array('standard'))
@@ -1206,35 +1216,35 @@ class Calculator(object):
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.zeroarray('standard')
-        self.setarray('c21060', item_no_limit)
-        self.setarray('c21040', item_phaseout)
-        self.setarray('c04470', item)
+        self.array('c21060', item_no_limit)
+        self.array('c21040', item_phaseout)
+        self.array('c04470', item)
         self._taxinc_to_amt()
         item_taxes = copy.deepcopy(self.array('c05800'))
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
-        self.setarray('standard', np.where(item_taxes < std_taxes,
-                                           0., std))
-        self.setarray('c04470', np.where(item_taxes < std_taxes,
-                                         item, 0.))
-        self.setarray('c21060', np.where(item_taxes < std_taxes,
-                                         item_no_limit, 0.))
-        self.setarray('c21040', np.where(item_taxes < std_taxes,
-                                         item_phaseout, 0.))
+        self.array('standard', np.where(item_taxes < std_taxes,
+                                        0., std))
+        self.array('c04470', np.where(item_taxes < std_taxes,
+                                      item, 0.))
+        self.array('c21060', np.where(item_taxes < std_taxes,
+                                      item_no_limit, 0.))
+        self.array('c21040', np.where(item_taxes < std_taxes,
+                                      item_phaseout, 0.))
         # Calculate taxes with optimal itemized deduction
         self._taxinc_to_amt()
-        F2441(self.policy, self.records)
-        EITC(self.policy, self.records)
-        ChildTaxCredit(self.policy, self.records)
-        PersonalTaxCredit(self.policy, self.records)
-        AmOppCreditParts(self.policy, self.records)
-        SchR(self.policy, self.records)
-        EducationTaxCredit(self.policy, self.records)
-        NonrefundableCredits(self.policy, self.records)
-        AdditionalCTC(self.policy, self.records)
-        C1040(self.policy, self.records)
-        CTC_new(self.policy, self.records)
-        IITAX(self.policy, self.records)
+        F2441(self.policy, self.__records)
+        EITC(self.policy, self.__records)
+        ChildTaxCredit(self.policy, self.__records)
+        PersonalTaxCredit(self.policy, self.__records)
+        AmOppCreditParts(self.policy, self.__records)
+        SchR(self.policy, self.__records)
+        EducationTaxCredit(self.policy, self.__records)
+        NonrefundableCredits(self.policy, self.__records)
+        AdditionalCTC(self.policy, self.__records)
+        C1040(self.policy, self.__records)
+        CTC_new(self.policy, self.__records)
+        IITAX(self.policy, self.__records)
 
     @staticmethod
     def _read_json_policy_reform_text(text_string,

@@ -153,7 +153,7 @@ class SimpleTaxIO(object):
         for calcyr in self._year_set:
             if calcyr != self.calc.policy.current_year:
                 self.calc.policy.set_year(calcyr)
-                self.calc.set_records_current_year(calcyr)
+                self.calc.records_current_year(calcyr)
             self.calc.calc_all()
             (mtr_ptax, mtr_itax,
              _) = self.calc.mtr(wrt_full_compensation=False)
