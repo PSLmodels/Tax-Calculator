@@ -53,16 +53,17 @@ def fixture_policyfile():
 
 
 def test_make_calculator(cps_subsample):
-    pol = Policy(start_year=2014, num_years=9)
-    assert pol.current_year == 2014
+    syr = 2014
+    pol = Policy(start_year=syr, num_years=9)
+    assert pol.current_year == syr
     rec = Records.cps_constructor(data=cps_subsample)
     consump = Consumption()
-    consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
-    assert consump.current_year == 2013
+    consump.update_consumption({syr: {'_MPC_e20400': [0.05]}})
+    assert consump.current_year == Consumption.JSON_START_YEAR
     calc = Calculator(policy=pol, records=rec,
                       consumption=consump, behavior=Behavior())
-    assert calc.current_year == 2014
-    assert calc.records_current_year() == 2014
+    assert calc.current_year == syr
+    assert calc.records_current_year() == syr
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
         Calculator(policy=None, records=rec)
