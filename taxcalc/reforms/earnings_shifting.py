@@ -28,7 +28,6 @@ earnings_shifting.sum file are discussed at this URL:
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 earnings_shifting.py
-# pylint --disable=locally-disabled earnings_shifting.py
 
 import sys
 import argparse
