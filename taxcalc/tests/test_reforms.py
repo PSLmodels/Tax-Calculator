@@ -61,18 +61,16 @@ def test_reform_json_and_output(tests_path):
     # embedded function used only in test_reform_json_and_output
     def res_and_out_are_same(base):
         """
-        Return true if base.res and base.out file contents are the same;
-        return false if base.res and base.out file contents differ.
+        Return True if base.res and base.out file contents are the same;
+        return False if base.res and base.out file contents differ.
         """
-        with open(base + '.out') as outfile:
-            exp_res = outfile.read()
-        exp = exp_res.splitlines(True)
         with open(base + '.res') as resfile:
             act_res = resfile.read()
-        act = act_res.splitlines(True)
-        # check that act & exp have differences no more than small value
-        diffs = nonsmall_diffs(act, exp, small=1e-6)
-        return not diffs
+        with open(base + '.out') as outfile:
+            exp_res = outfile.read()
+        # check to see if act_res & exp_res have differences
+        return not nonsmall_diffs(act_res.splitlines(True),
+                                  exp_res.splitlines(True))
     # specify Records object containing cases data
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
