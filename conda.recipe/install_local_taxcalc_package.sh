@@ -15,7 +15,7 @@ echo "BUILD-PREP..."
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
     echo "==> Uninstalling existing taxcalc package"
-    conda uninstall --yes taxcalc 2>&1 > /dev/null
+    conda uninstall taxcalc --yes 2>&1 > /dev/null
     echo "==> Continuing to build new taxcalc package"
 fi
 
@@ -38,14 +38,8 @@ conda build $NOHASH --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
 echo "INSTALLATION..."
 #OLD#conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
 #OLD# doesn't work in conda 4.4.0 or 4.4.1
-#OLD# see https://github.com/ContinuumIO/anaconda-issues/issues/7876
-#OLD# conda install --use-local can't find the built package with 4.4.0+
-#OLD# the Continuum staff seems pretty careless in putting out new versions
-#NEW# below works with conda 4.4.1, but users may need to customize ADIR
-#NEW# because recently Continuum started installing Anaconda in
-#NEW# either the ~/anaconda2 or ~/anaconda3 directory
-ADIR=~/anaconda/conda-bld/osx-64
-conda install --offline $ADIR/taxcalc-0.0.0-py27_0.tar.bz2 2>&1 > /dev/null
+#OLD# see https://github.com/conda/conda/issues/6520
+conda install -c local taxcalc=0.0.0 --yes 2>&1 > /dev/null
 
 # clean-up after package build
 echo "CLEAN-UP..."
