@@ -114,8 +114,8 @@ class Behavior(ParametersBase):
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
         Modify calc2 records to account for behavioral responses that arise
-          from the policy reform that involves moving from calc1.policy to
-          calc2.policy.  Neither calc1 nor calc2 need to have had calc_all()
+          from the policy reform that involves moving from calc1 policy to
+          calc2 policy.  Neither calc1 nor calc2 need to have had calc_all()
           executed before calling the Behavior.response(calc1, calc2) method.
         Returns new Calculator object --- a deepcopy of calc2 --- that
           incorporates behavioral responses to the reform.

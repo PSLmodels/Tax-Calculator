@@ -96,14 +96,14 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
-    assert calc.policy.II_em == 4000
-    assert np.allclose(calc.policy._II_em,
+    assert calc.param('II_em') == 4000
+    assert np.allclose(calc.param('_II_em'),
                        np.array([4000] * Policy.DEFAULT_NUM_YEARS))
     exp_STD_Aged = [[1600, 1300, 1300,
                      1600, 1600]] * Policy.DEFAULT_NUM_YEARS
-    assert np.allclose(calc.policy._STD_Aged,
+    assert np.allclose(calc.param('_STD_Aged'),
                        np.array(exp_STD_Aged))
-    assert np.allclose(calc.policy.STD_Aged,
+    assert np.allclose(calc.param('STD_Aged'),
                        np.array([1600, 1300, 1300, 1600, 1600]))
 
 
@@ -120,16 +120,16 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     # create a Calculator object using this policy-reform
     calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
+    assert pol.num_years == Policy.DEFAULT_NUM_YEARS
     assert calc.current_year == year
-    assert calc.policy.II_em == 3950
-    assert calc.policy.num_years == Policy.DEFAULT_NUM_YEARS
+    assert calc.param('II_em') == 3950
     exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
-    assert np.allclose(calc.policy._II_em,
+    assert np.allclose(calc.param('_II_em'),
                        np.array(exp_II_em))
     calc.increment_year()
     calc.increment_year()
     assert calc.current_year == 2016
-    assert np.allclose(calc.policy.STD_Aged,
+    assert np.allclose(calc.param('STD_Aged'),
                        np.array([1600, 1300, 1600, 1300, 1600]))
 
 
@@ -157,8 +157,8 @@ def test_calculator_current_law_version(cps_subsample):
     calc = Calculator(policy=pol, records=rec)
     calc_clp = calc.current_law_version()
     assert isinstance(calc_clp, Calculator)
-    assert calc.policy.II_rt6 == calc_clp.policy.II_rt6
-    assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
+    assert calc.param('II_rt6') == calc_clp.param('II_rt6')
+    assert calc.param('II_rt7') != calc_clp.param('II_rt7')
 
 
 def test_calculator_mtr(cps_subsample):
@@ -256,9 +256,9 @@ def test_make_calculator_increment_years_first(cps_subsample):
                              [std5, std5, std5, std5, std5],
                              [std6, std6, std6, std6, std6],
                              [std7, std7, std7, std7, std7]])
-    assert np.allclose(calc.policy._STD_Aged, exp_STD_Aged)
+    assert np.allclose(calc.param('_STD_Aged'), exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    assert np.allclose(calc.policy._II_em, exp_II_em)
+    assert np.allclose(calc.param('_II_em'), exp_II_em)
 
 
 def test_ID_HC_vs_BS(cps_subsample):

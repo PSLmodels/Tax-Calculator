@@ -99,20 +99,20 @@ class Calculator(object):
                  sync_years=True, consumption=None, behavior=None):
         # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
-            self.policy = copy.deepcopy(policy)
+            self.__policy = copy.deepcopy(policy)
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
             self.__records = copy.deepcopy(records)
         else:
             raise ValueError('must specify records as a Records object')
-        if self.policy.current_year < self.__records.data_year:
-            self.policy.set_year(self.__records.data_year)
+        if self.__policy.current_year < self.__records.data_year:
+            self.__policy.set_year(self.__records.data_year)
         if consumption is None:
             self.consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
             self.consumption = copy.deepcopy(consumption)
-            while self.consumption.current_year < self.policy.current_year:
+            while self.consumption.current_year < self.__policy.current_year:
                 next_year = self.consumption.current_year + 1
                 self.consumption.set_year(next_year)
         else:
@@ -121,7 +121,7 @@ class Calculator(object):
             self.behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
             self.behavior = copy.deepcopy(behavior)
-            while self.behavior.current_year < self.policy.current_year:
+            while self.behavior.current_year < self.__policy.current_year:
                 next_year = self.behavior.current_year + 1
                 self.behavior.set_year(next_year)
         else:
@@ -138,21 +138,21 @@ class Calculator(object):
                     for var in self.__records.IGNORED_VARS:
                         print('  ' +
                               var)
-            while self.__records.current_year < self.policy.current_year:
+            while self.__records.current_year < self.__policy.current_year:
                 self.__records.increment_year()
             if verbose:
                 print('Tax-Calculator startup automatically ' +
                       'extrapolated your data to ' +
                       str(self.__records.current_year) + '.')
-        assert self.policy.current_year == self.__records.current_year
+        assert self.__policy.current_year == self.__records.current_year
 
     def increment_year(self):
         """
         Advance all embedded objects to next year.
         """
-        next_year = self.policy.current_year + 1
+        next_year = self.__policy.current_year + 1
         self.__records.increment_year()
-        self.policy.set_year(next_year)
+        self.__policy.set_year(next_year)
         self.consumption.set_year(next_year)
         self.behavior.set_year(next_year)
 
@@ -175,14 +175,14 @@ class Calculator(object):
         Call all tax-calculation functions for the current_year.
         """
         # conducts static analysis of Calculator object for current_year
-        assert self.__records.current_year == self.policy.current_year
+        assert self.__records.current_year == self.__policy.current_year
         self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
         BenefitLimitation(self)
-        FairShareTax(self.policy, self.__records)
-        LumpSumTax(self.policy, self.__records)
-        ExpandIncome(self.policy, self.__records)
-        AfterTaxIncome(self.policy, self.__records)
+        FairShareTax(self.__policy, self.__records)
+        LumpSumTax(self.__policy, self.__records)
+        ExpandIncome(self.__policy, self.__records)
+        AfterTaxIncome(self.__policy, self.__records)
 
     def weighted_total(self, variable_name):
         """
@@ -264,12 +264,42 @@ class Calculator(object):
         """
         return self.__records.array_length
 
+    def param(self, param_name, param_value=None):
+        """
+        If param_value is None, return named parameter in
+         embedded Policy object.
+        If param_value is not None, set named parameter in
+         embedded Policy object to specified param_value.
+        """
+        if param_value is None:
+            return getattr(self.__policy, param_name)
+        else:
+            setattr(self.__policy, param_name, param_value)
+
+    @property
+    def reform_warnings(self):
+        """
+        Calculator class embedded Policy object's reform_warnings.
+        """
+        return self.__policy.reform_warnings
+
+    def policy_current_year(self, year=None):
+        """
+        If year is None, return current_year of embedded Policy object.
+        If year is not None, set embedded Policy current_year to year.
+        """
+        if year is None:
+            return self.__policy.current_year
+        else:
+            assert isinstance(year, int)
+            self.__policy.set_year(year)
+
     @property
     def current_year(self):
         """
         Calculator class current calendar year property.
         """
-        return self.policy.current_year
+        return self.__policy.current_year
 
     @property
     def data_year(self):
@@ -295,7 +325,7 @@ class Calculator(object):
         Pandas DataFrame object containing the multi-year diagnostic table
         """
         assert num_years >= 1
-        max_num_years = self.policy.end_year - self.policy.current_year + 1
+        max_num_years = self.__policy.end_year - self.__policy.current_year + 1
         assert num_years <= max_num_years
         calc = copy.deepcopy(self)
         tlist = list()
@@ -592,10 +622,10 @@ class Calculator(object):
         mtr_on_earnings = (variable_str == 'e00200p' or
                            variable_str == 'e00200s')
         if wrt_full_compensation and mtr_on_earnings:
-            adj = np.where(variable < self.policy.SS_Earnings_c,
-                           0.5 * (self.policy.FICA_ss_trt +
-                                  self.policy.FICA_mc_trt),
-                           0.5 * self.policy.FICA_mc_trt)
+            adj = np.where(variable < self.param('SS_Earnings_c'),
+                           0.5 * (self.param('FICA_ss_trt') +
+                                  self.param('FICA_mc_trt')),
+                           0.5 * self.param('FICA_mc_trt'))
         else:
             adj = 0.0
         # compute marginal tax rates
@@ -899,7 +929,7 @@ class Calculator(object):
         """
         Return Calculator object same as self except with current-law policy.
         """
-        return Calculator(policy=self.policy.current_law_version(),
+        return Calculator(policy=self.__policy.current_law_version(),
                           records=self.__records,
                           sync_years=False,
                           consumption=self.consumption,
@@ -1176,12 +1206,12 @@ class Calculator(object):
         """
         Call TaxInc through AMT functions.
         """
-        TaxInc(self.policy, self.__records)
-        SchXYZTax(self.policy, self.__records)
-        GainsTax(self.policy, self.__records)
-        AGIsurtax(self.policy, self.__records)
-        NetInvIncTax(self.policy, self.__records)
-        AMT(self.policy, self.__records)
+        TaxInc(self.__policy, self.__records)
+        SchXYZTax(self.__policy, self.__records)
+        GainsTax(self.__policy, self.__records)
+        AGIsurtax(self.__policy, self.__records)
+        NetInvIncTax(self.__policy, self.__records)
+        AMT(self.__policy, self.__records)
 
     def _calc_one_year(self, zero_out_calc_vars=False):
         """
@@ -1190,18 +1220,18 @@ class Calculator(object):
         if zero_out_calc_vars:
             self.__records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
-        EI_PayrollTax(self.policy, self.__records)
-        DependentCare(self.policy, self.__records)
-        Adj(self.policy, self.__records)
-        ALD_InvInc_ec_base(self.policy, self.__records)
-        CapGains(self.policy, self.__records)
-        SSBenefits(self.policy, self.__records)
-        UBI(self.policy, self.__records)
-        AGI(self.policy, self.__records)
-        ItemDedCap(self.policy, self.__records)
-        ItemDed(self.policy, self.__records)
-        AdditionalMedicareTax(self.policy, self.__records)
-        StdDed(self.policy, self.__records)
+        EI_PayrollTax(self.__policy, self.__records)
+        DependentCare(self.__policy, self.__records)
+        Adj(self.__policy, self.__records)
+        ALD_InvInc_ec_base(self.__policy, self.__records)
+        CapGains(self.__policy, self.__records)
+        SSBenefits(self.__policy, self.__records)
+        UBI(self.__policy, self.__records)
+        AGI(self.__policy, self.__records)
+        ItemDedCap(self.__policy, self.__records)
+        ItemDed(self.__policy, self.__records)
+        AdditionalMedicareTax(self.__policy, self.__records)
+        StdDed(self.__policy, self.__records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
         std = copy.deepcopy(self.array('standard'))
@@ -1233,18 +1263,18 @@ class Calculator(object):
                                       item_phaseout, 0.))
         # Calculate taxes with optimal itemized deduction
         self._taxinc_to_amt()
-        F2441(self.policy, self.__records)
-        EITC(self.policy, self.__records)
-        ChildTaxCredit(self.policy, self.__records)
-        PersonalTaxCredit(self.policy, self.__records)
-        AmOppCreditParts(self.policy, self.__records)
-        SchR(self.policy, self.__records)
-        EducationTaxCredit(self.policy, self.__records)
-        NonrefundableCredits(self.policy, self.__records)
-        AdditionalCTC(self.policy, self.__records)
-        C1040(self.policy, self.__records)
-        CTC_new(self.policy, self.__records)
-        IITAX(self.policy, self.__records)
+        F2441(self.__policy, self.__records)
+        EITC(self.__policy, self.__records)
+        ChildTaxCredit(self.__policy, self.__records)
+        PersonalTaxCredit(self.__policy, self.__records)
+        AmOppCreditParts(self.__policy, self.__records)
+        SchR(self.__policy, self.__records)
+        EducationTaxCredit(self.__policy, self.__records)
+        NonrefundableCredits(self.__policy, self.__records)
+        AdditionalCTC(self.__policy, self.__records)
+        C1040(self.__policy, self.__records)
+        CTC_new(self.__policy, self.__records)
+        IITAX(self.__policy, self.__records)
 
     @staticmethod
     def _read_json_policy_reform_text(text_string,

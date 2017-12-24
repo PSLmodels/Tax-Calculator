@@ -303,7 +303,7 @@ class TaxCalcIO(object):
         """
         Return calendar year for which TaxCalcIO calculations are being done.
         """
-        return self.calc.policy.current_year
+        return self.calc.policy_current_year()
 
     def output_filepath(self):
         """
@@ -357,10 +357,10 @@ class TaxCalcIO(object):
         """
         # pylint: disable=too-many-arguments,too-many-branches
         # in order to use print(), pylint: disable=superfluous-parens
-        if self.calc.policy.reform_warnings:
+        if self.calc.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'
             print(warn.format('(read documentation for each parameter)',
-                              self.calc.policy.reform_warnings,
+                              self.calc.reform_warnings,
                               'CONTINUING WITH CALCULATIONS...'))
         calc_clp_calculated = False
         if output_dump or output_sqldb:

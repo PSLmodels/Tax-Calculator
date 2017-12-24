@@ -151,8 +151,8 @@ class SimpleTaxIO(object):
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
         for calcyr in self._year_set:
-            if calcyr != self.calc.policy.current_year:
-                self.calc.policy.set_year(calcyr)
+            if calcyr != self.calc.policy_current_year:
+                self.calc.policy_current_year(calcyr)
                 self.calc.records_current_year(calcyr)
             self.calc.calc_all()
             (mtr_ptax, mtr_itax,
