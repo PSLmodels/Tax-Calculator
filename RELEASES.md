@@ -4,6 +4,32 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2017-12-24 Release 0.14.3
+-------------------------
+(last merged pull request is
+[#1796](https://github.com/open-source-economics/Tax-Calculator/pull/1796))
+
+**API Changes**
+- None
+
+**New Features**
+- Change minimum required pandas version from 0.20.1 to 0.21.0
+  [[#1781](https://github.com/open-source-economics/Tax-Calculator/pull/1781)
+  by Martin Holmer]
+- Generalize validation of boolean policy parameter values in reforms
+  [[#1782](https://github.com/open-source-economics/Tax-Calculator/pull/1782)
+  by Martin Holmer as requested by Hank Doupe]
+- Handle small numerical differences in test results generated under Python 3.6
+  [[#1795](https://github.com/open-source-economics/Tax-Calculator/pull/1795)
+  by Martin Holmer with need pointed out by Matt Jensen]
+- Make the `_cpi_offset` policy parameter work like other policy parameters 
+  [[#1796](https://github.com/open-source-economics/Tax-Calculator/pull/1796)
+  by Martin Holmer with need pointed out by Matt Jensen and Hank Doupe]
+
+**Bug Fixes**
+- None
+
+
 2017-12-19 Release 0.14.2
 -------------------------
 (last merged pull request is
