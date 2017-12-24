@@ -1,7 +1,7 @@
 {
     "_cpi_offset": {
         "long_name": "Decimal offset ADDED to unchained CPI to get parameter indexing rate",
-        "description": "Current-law values are zero; reforms that introduce indexing with chained CPI would have values around -0.0025.",
+        "description": "Current-law values are zero; reforms that introduce indexing with chained CPI would have values around -0.0025 beginning in the year before the first year policy parameters will have values computed with chained CPI.",
         "section_1": "Parameter Indexing",
         "section_2": "Offsets",
         "irs_ref": "",

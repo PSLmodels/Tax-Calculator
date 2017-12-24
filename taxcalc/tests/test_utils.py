@@ -926,5 +926,5 @@ def test_nonsmall_diffs():
     assert nonsmall_diffs(['AaA'], ['AAA'])
     assert not nonsmall_diffs(['AAA'], ['AAA'])
     assert nonsmall_diffs(['12.3'], ['12.2'])
-    assert not nonsmall_diffs(['12.3'], ['12.2'], small=0.1)
+    assert not nonsmall_diffs(['12.3 AAA'], ['12.2 AAA'], small=0.1)
     assert nonsmall_diffs(['12.3'], ['AAA'])
