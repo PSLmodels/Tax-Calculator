@@ -85,7 +85,7 @@ class ParametersBase(object):
         else:
             return self.inflation_rates()
 
-    def set_default_vals(self):
+    def set_default_vals(self, known_years=999999):
         """
         Called by initialize method and from some subclass methods.
         """
@@ -100,6 +100,8 @@ class ParametersBase(object):
                     cpi_inflated = data.get('cpi_inflated', False)
                     if cpi_inflated:
                         index_rates = self.indexing_rates(name)
+                        if name != '_SS_Earnings_c':
+                            values = values[:known_years]
                     else:
                         index_rates = None
                     setattr(self, name,
