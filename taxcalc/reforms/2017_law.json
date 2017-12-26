@@ -1,0 +1,15 @@
+// Title: 2017-law policy extrapolated into the future as if under pre-TCJA law
+// Reform_File_Author: Martin Holmer
+// Reform_Reference: 
+// Reform_Description:
+// - Switch to unchained CPI-U calculation of 2018+ policy parameter values (0)
+// Reform_Parameter_Map:
+// - 0: _cpi_offset
+// NOTE: this reform projects pre-TCJA 2017 parameter values forward using the
+//       unchained CPI-U price index.
+{
+    "policy": {
+        "_cpi_offset":
+            {"2017": [0.0]}
+    }
+}
