@@ -109,12 +109,12 @@ class Calculator(object):
         if self.__policy.current_year < self.__records.data_year:
             self.__policy.set_year(self.__records.data_year)
         if consumption is None:
-            self.consumption = Consumption(start_year=policy.start_year)
+            self.__consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
-            self.consumption = copy.deepcopy(consumption)
-            while self.consumption.current_year < self.__policy.current_year:
-                next_year = self.consumption.current_year + 1
-                self.consumption.set_year(next_year)
+            self.__consumption = copy.deepcopy(consumption)
+            while self.__consumption.current_year < self.__policy.current_year:
+                next_year = self.__consumption.current_year + 1
+                self.__consumption.set_year(next_year)
         else:
             raise ValueError('consumption must be None or Consumption object')
         if behavior is None:
@@ -153,7 +153,7 @@ class Calculator(object):
         next_year = self.__policy.current_year + 1
         self.__records.increment_year()
         self.__policy.set_year(next_year)
-        self.consumption.set_year(next_year)
+        self.__consumption.set_year(next_year)
         self.behavior.set_year(next_year)
 
     def advance_to_year(self, year):
@@ -601,8 +601,8 @@ class Calculator(object):
             self.array('e00600', divincome_var + finite_diff)
         elif variable_str == 'e26270':
             self.array('e02000', schEincome_var + finite_diff)
-        if self.consumption.has_response():
-            self.consumption.response(self.__records, finite_diff)
+        if self.__consumption.has_response():
+            self.__consumption.response(self.__records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         payrolltax_chng = self.array('payrolltax')
         incometax_chng = self.array('iitax')
@@ -932,7 +932,7 @@ class Calculator(object):
         return Calculator(policy=self.__policy.current_law_version(),
                           records=self.__records,
                           sync_years=False,
-                          consumption=self.consumption,
+                          consumption=self.__consumption,
                           behavior=self.behavior)
 
     @staticmethod
