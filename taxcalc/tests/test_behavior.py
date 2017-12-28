@@ -62,42 +62,44 @@ def test_behavioral_response_calculator(cps_subsample):
     behv0 = Behavior()
     behv0.update_behavior(behavior0)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv0)
-    assert calc2.behavior.has_response() is False
+    assert calc2.behavior_has_response() is False
     calc2_behv0 = Behavior.response(calc1, calc2)
     behavior1 = {year: {'_BE_sub': [0.3], '_BE_inc': [-0.1], '_BE_cg': [0.0],
                         '_BE_subinc_wrt_earnings': [True]}}
     behv1 = Behavior()
     behv1.update_behavior(behavior1)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv1)
-    assert calc2.behavior.has_response() is True
+    assert calc2.behavior_has_response() is True
     epsilon = 1e-9
-    assert abs(calc2.behavior.BE_sub - 0.3) < epsilon
-    assert abs(calc2.behavior.BE_inc - -0.1) < epsilon
-    assert abs(calc2.behavior.BE_cg - 0.0) < epsilon
+    assert abs(calc2.behavior('BE_sub') - 0.3) < epsilon
+    calc2.behavior('BE_sub', 0.3)
+    assert abs(calc2.behavior('BE_sub') - 0.3) < epsilon
+    assert abs(calc2.behavior('BE_inc') - -0.1) < epsilon
+    assert abs(calc2.behavior('BE_cg') - 0.0) < epsilon
     calc2_behv1 = Behavior.response(calc1, calc2)
     behavior2 = {year: {'_BE_sub': [0.5], '_BE_cg': [-0.8]}}
     behv2 = Behavior()
     behv2.update_behavior(behavior2)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv2)
-    assert calc2.behavior.has_response() is True
+    assert calc2.behavior_has_response() is True
     calc2_behv2 = Behavior.response(calc1, calc2, trace=True)
     behavior3 = {year: {'_BE_inc': [-0.2], '_BE_cg': [-0.8]}}
     behv3 = Behavior()
     behv3.update_behavior(behavior3)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv3)
-    assert calc2.behavior.has_response() is True
+    assert calc2.behavior_has_response() is True
     calc2_behv3 = Behavior.response(calc1, calc2)
     behavior4 = {year: {'_BE_cg': [-0.8]}}
     behv4 = Behavior()
     behv4.update_behavior(behavior4)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv4)
-    assert calc2.behavior.has_response() is True
+    assert calc2.behavior_has_response() is True
     calc2_behv4 = Behavior.response(calc1, calc2)
     behavior5 = {year: {'_BE_charity': [[-0.5, -0.5, -0.5]]}}
     behv5 = Behavior()
     behv5.update_behavior(behavior5)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv5)
-    assert calc2.behavior.has_response() is True
+    assert calc2.behavior_has_response() is True
     calc2_behv5 = Behavior.response(calc1, calc2)
     # check that total income tax liability differs across the
     # six sets of behavioral-response elasticities

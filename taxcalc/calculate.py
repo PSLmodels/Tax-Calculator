@@ -118,12 +118,12 @@ class Calculator(object):
         else:
             raise ValueError('consumption must be None or Consumption object')
         if behavior is None:
-            self.behavior = Behavior(start_year=policy.start_year)
+            self.__behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
-            self.behavior = copy.deepcopy(behavior)
-            while self.behavior.current_year < self.__policy.current_year:
-                next_year = self.behavior.current_year + 1
-                self.behavior.set_year(next_year)
+            self.__behavior = copy.deepcopy(behavior)
+            while self.__behavior.current_year < self.__policy.current_year:
+                next_year = self.__behavior.current_year + 1
+                self.__behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
         current_year_is_data_year = (
@@ -154,7 +154,7 @@ class Calculator(object):
         self.__records.increment_year()
         self.__policy.set_year(next_year)
         self.__consumption.set_year(next_year)
-        self.behavior.set_year(next_year)
+        self.__behavior.set_year(next_year)
 
     def advance_to_year(self, year):
         """
@@ -275,6 +275,25 @@ class Calculator(object):
             return getattr(self.__policy, param_name)
         else:
             setattr(self.__policy, param_name, param_value)
+
+    def behavior_has_response(self):
+        """
+        Return True if embedded Behavior object has response;
+        otherwise return False.
+        """
+        return self.__behavior.has_response()
+
+    def behavior(self, param_name, param_value=None):
+        """
+        If param_value is None, return named parameter in
+         embedded Behavior object.
+        If param_value is not None, set named parameter in
+         embedded Behavior object to specified param_value.
+        """
+        if param_value is None:
+            return getattr(self.__behavior, param_name)
+        else:
+            setattr(self.__behavior, param_name, param_value)
 
     @property
     def reform_warnings(self):
@@ -933,7 +952,7 @@ class Calculator(object):
                           records=self.__records,
                           sync_years=False,
                           consumption=self.__consumption,
-                          behavior=self.behavior)
+                          behavior=self.__behavior)
 
     @staticmethod
     def read_json_param_objects(reform, assump):
