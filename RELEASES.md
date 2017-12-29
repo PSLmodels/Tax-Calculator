@@ -15,7 +15,9 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
-- None
+- Add `--outdir` option to command-line `tc` tool
+  [[#1801](https://github.com/open-source-economics/Tax-Calculator/pull/1801)
+  by Martin Holmer as suggested by Reuben Fischer-Baum]
 
 **Bug Fixes**
 - None
