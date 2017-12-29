@@ -4,6 +4,23 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-01-?? Release 0.15.0
+-------------------------
+(last merged pull request is
+[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx))
+
+**API Changes**
+- Make objects embedded in a Calculator object private and provide Calculator class access methods to manipulate the embedded objects
+  [[#1791](https://github.com/open-source-economics/Tax-Calculator/pull/1791)
+  by Martin Holmer]
+
+**New Features**
+- None
+
+**Bug Fixes**
+- None
+
+
 2017-12-24 Release 0.14.3
 -------------------------
 (last merged pull request is
