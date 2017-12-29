@@ -48,13 +48,18 @@ class TaxCalcIO(object):
         None implies economic assumptions are standard assumptions,
         or string is name of optional ASSUMP file.
 
+    outdir: None or string
+        None implies output files written to current directory,
+        or string is name of optional output directory
+
     Returns
     -------
     class instance: TaxCalcIO
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, input_data, tax_year, reform, assump):
+    def __init__(self, input_data, tax_year, reform, assump, outdir=None):
+        # pylint: disable=too-many-arguments
         # pylint: disable=too-many-branches,too-many-statements
         self.errmsg = ''
         # check name and existence of INPUT file
@@ -120,14 +125,38 @@ class TaxCalcIO(object):
         else:
             msg = 'TaxCalcIO.ctor: assump is neither None nor str'
             self.errmsg += 'ERROR: {}\n'.format(msg)
+        # check name and existence of OUTDIR
+        if outdir is None:
+            valid_outdir = True
+        elif isinstance(outdir, six.string_types):
+            # check existence of OUTDIR
+            if os.path.isdir(outdir):
+                valid_outdir = True
+            else:
+                valid_outdir = False
+                msg = 'OUTDIR could not be found'
+                self.errmsg += 'ERROR: {}\n'.format(msg)
+        else:
+            valid_outdir = False
+            msg = 'TaxCalcIO.ctor: outdir is neither None nor str'
+            self.errmsg += 'ERROR: {}\n'.format(msg)
         # create OUTPUT file name and delete any existing output files
-        self._output_filename = '{}{}{}.csv'.format(inp, ref, asm)
-        delete_file(self._output_filename)
-        delete_file(self._output_filename.replace('.csv', '.db'))
-        delete_file(self._output_filename.replace('.csv', '-doc.text'))
-        delete_file(self._output_filename.replace('.csv', '-tab.text'))
-        delete_file(self._output_filename.replace('.csv', '-atr.html'))
-        delete_file(self._output_filename.replace('.csv', '-mtr.html'))
+        output_filename = '{}{}{}.csv'.format(inp, ref, asm)
+        if outdir is None:
+            self._output_filename = output_filename
+            delete_old_files = True
+        elif valid_outdir:
+            self._output_filename = os.path.join(outdir, output_filename)
+            delete_old_files = True
+        else:
+            delete_old_files = False
+        if delete_old_files:
+            delete_file(self._output_filename)
+            delete_file(self._output_filename.replace('.csv', '.db'))
+            delete_file(self._output_filename.replace('.csv', '-doc.text'))
+            delete_file(self._output_filename.replace('.csv', '-tab.text'))
+            delete_file(self._output_filename.replace('.csv', '-atr.html'))
+            delete_file(self._output_filename.replace('.csv', '-mtr.html'))
         # initialize variables whose values are set in init method
         self.behavior_has_any_response = False
         self.calc = None
