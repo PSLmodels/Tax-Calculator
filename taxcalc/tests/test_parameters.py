@@ -68,7 +68,9 @@ def test_json_file_contents(tests_path, fname):
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
     long_params = ['_II_brk1', '_II_brk2', '_II_brk3', '_II_brk4',
-                   '_II_brk5', '_II_brk6', '_II_brk7']
+                   '_II_brk5', '_II_brk6', '_II_brk7',
+                   '_PT_brk1', '_PT_brk2', '_PT_brk3', '_PT_brk4',
+                   '_PT_brk5', '_PT_brk6', '_PT_brk7']
     long_known_years = 2026 - first_year + 1  # for TCJA-revised long_params
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)

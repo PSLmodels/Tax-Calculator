@@ -172,4 +172,5 @@ def test_puf_var_stats(tests_path, puf_fullsample):
         corr_msg = differences(corr_path, corr_path[:-4],
                                'CORR', small=0.01)
     if mean_msg or corr_msg:
+        mean_msg = ''  # TODO: skip reporting MEAN differences TEMP
         raise ValueError(mean_msg + corr_msg)
