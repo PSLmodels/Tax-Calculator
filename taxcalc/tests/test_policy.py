@@ -60,7 +60,10 @@ def test_policy_json_content():
         assert isinstance(row_label, list)
         value = data.get('value')
         expected_row_label = [str(start_year + i) for i in range(len(value))]
-        assert row_label == expected_row_label
+        if row_label != expected_row_label:
+            msg = 'name,row_label,expected_row_label: {}\n{}\n{}'
+            raise ValueError(msg.format(data.get('long_name')), row_label,
+                             expected_row_label)
 
 
 def test_constant_inflation_rate_with_reform():
@@ -153,7 +156,8 @@ def test_multi_year_reform():
                     atol=0.01, rtol=0.0)
     assert_allclose(getattr(pol, '_CTC_c'),
                     Policy._expand_array(
-                        np.array([1000],
+                        np.array([1000] * 5 + [1400] * 4 +
+                                 [1500] * 3 + [1600] + [1000],
                                  dtype=np.float64), False,
                         inflate=False,
                         inflation_rates=iratelist,
