@@ -240,7 +240,7 @@ def test_calculator_mtr_when_PT_rates_differ():
 def test_make_calculator_increment_years_first(cps_subsample):
     # create Policy object with policy reform
     syr = 2013
-    pol = Policy(start_year=syr, num_years=5)
+    pol = Policy(start_year=syr)
     reform = {2015: {}, 2016: {}}
     std5 = 2000
     reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5]]
@@ -262,9 +262,9 @@ def test_make_calculator_increment_years_first(cps_subsample):
                              [std5, std5, std5, std5, std5],
                              [std6, std6, std6, std6, std6],
                              [std7, std7, std7, std7, std7]])
-    assert np.allclose(calc.policy._STD_Aged, exp_STD_Aged)
+    assert np.allclose(calc.policy._STD_Aged[:5], exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    assert np.allclose(calc.policy._II_em, exp_II_em)
+    assert np.allclose(calc.policy._II_em[:5], exp_II_em)
 
 
 def test_ID_HC_vs_BS(cps_subsample):
