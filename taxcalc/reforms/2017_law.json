@@ -28,6 +28,8 @@
         "_PT_exclusion_wage_limit": {"2018": [9e99]},
         "_CTC_c": {"2018": [1000.0]},
         "_CTC_ps": {"2018": [[75000.0, 110000.0, 55000.0, 75000.0, 75000.0]]},
-        "_ACTC_Income_thd": {"2018": [3000.0]}
+        "_ACTC_Income_thd": {"2018": [3000.0]},
+        "_DependentCredit_Child_c": {"2018": [0.0]},
+        "_DependentCredit_Nonchild_c": {"2018": [0.0]}
     }
 }
