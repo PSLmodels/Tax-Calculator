@@ -990,3 +990,16 @@ def test_atr_graph(cps_subsample):
     assert fig
     fig = calc.atr_graph(calc, atr_measure='ptax')
     assert fig
+
+
+def test_privacy_of_embedded_objects(cps_subsample):
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample))
+    with pytest.raises(AttributeError):
+        cyr = calc.__policy.current_year
+    with pytest.raises(AttributeError):
+        wgh = calc.__records.s006
+    with pytest.raises(AttributeError):
+        cyr = calc.__consumption.current_year
+    with pytest.raises(AttributeError):
+        cyr = calc.__behavior.current_year
