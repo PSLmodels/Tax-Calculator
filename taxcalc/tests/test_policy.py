@@ -987,7 +987,7 @@ def test_validate_param_values_warnings_errors():
     pol1.implement_reform(ref1)
     assert len(pol1.reform_warnings) > 0
     pol2 = Policy()
-    ref2 = {2021: {'_ID_Charity_crt_all': [0.60]}}
+    ref2 = {2021: {'_ID_Charity_crt_all': [0.61]}}
     pol2.implement_reform(ref2)
     assert len(pol2.reform_warnings) > 0
     pol3 = Policy()
