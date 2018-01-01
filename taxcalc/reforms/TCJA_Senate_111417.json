@@ -2,6 +2,7 @@
 // Reform_File_Author: Cody Kallen and Sean Wang
 // Reform_Reference: https://www.finance.senate.gov/imo/media/doc/11.9.17%20Chairman's%20Mark.pdf
 // and https://www.finance.senate.gov/imo/media/doc/11.14.17%20Chairman's%20Modified%20Mark.pdf
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
 // -  New pass-through income tax schedule (2)
