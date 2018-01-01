@@ -2,14 +2,27 @@
 // Reform_File_Author: Martin Holmer
 // Reform_Reference: 
 // Reform_Description:
+// (all reform specifications are relative to TCJA baseline policy)
 // - Switch to unchained CPI-U calculation of 2018+ policy parameter values (0)
+// - Set pre-TCJA tax rates (1)
+// - Set pre-TCJA handling of pass-through income (2)
+// - Set pre-TCJA child tax credit (CTC) and additional CTC policy (3)
+// - Set pre-TCJA dependent credit policy parameters (4)
+// - Set pre-TCJA above the line deduction policy (5)
+// - Set pre-TCJA itemized deduction policy (6)
 // Reform_Parameter_Map:
 // - 0: _cpi_offset
+// - 1: _II_rt? and _PT_rt?
+// - 2: _PT_exclusion_rt and _PT_exclusion_wage_limit
+// - 3: _CTC_c and _CTC_ps and _ACTC_Income_thd
+// - 4: four different _DependentCredit_* parameters
+// - 5: _ALD_Alimony_hc and _ALD_DomesticProduction_hc
+// - 6: seven different _ID_* parameters
 // NOTE: this reform projects pre-TCJA 2017 parameter values forward using the
 //       unchained CPI-U price index.
 {
     "policy": {
-        "_cpi_offset": {"2017": [0.0]},
+        "_cpi_offset": {"2017": [0.0025]},
         "_II_rt1": {"2018": [0.10]},
         "_II_rt2": {"2018": [0.15]},
         "_II_rt3": {"2018": [0.25]},
