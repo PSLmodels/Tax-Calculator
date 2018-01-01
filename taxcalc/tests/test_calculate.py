@@ -692,47 +692,6 @@ def test_calc_all(reform_file, rawinputfile):
     calc.calc_all()
 
 
-def test_translate_json_reform_suffixes_mars_indexed():
-    # test read_json_param_objects()
-    # using MARS-indexed parameter suffixes
-    json1 = """{"policy": {
-      "_II_em": {"2020": [20000], "2015": [15000]},
-      "_STD_single": {"2018": [18000], "2016": [16000]},
-      "_STD_widow": {"2017": [17000], "2019": [19000]}
-    }}"""
-    assump_json = """{
-      "consumption": {},
-      "behavior": {},
-      "growdiff_baseline": {
-        "_ACPIU": {"2013": [0.01]},
-        "_AWAGE": {"2013": [0.01]}},
-      "growdiff_response": {}
-    }"""
-    pdict1 = Calculator.read_json_param_objects(reform=json1,
-                                                assump=assump_json)
-    rdict1 = pdict1['policy']
-    json2 = """{"policy": {
-      "_STD": {"2016": [[16000.00, 12600.00, 6300.00,  9300.00, 12600.00]],
-               "2017": [[16363.20, 12886.02, 6443.01,  9511.11, 17000.00]],
-               "2018": [[18000.00, 13304.82, 6652.41,  9820.22, 17552.50]],
-               "2019": [[18583.20, 13735.90, 6867.95,  10138.4, 19000.00]]},
-      "_II_em": {"2020": [20000], "2015": [15000]}
-    }}"""
-    pdict2 = Calculator.read_json_param_objects(reform=json2,
-                                                assump=assump_json)
-    rdict2 = pdict2['policy']
-    assert len(rdict2) == len(rdict1)
-    for year in rdict2.keys():
-        if '_II_em' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_II_em'],
-                               rdict2[year]['_II_em'],
-                               atol=0.01, rtol=0.0)
-        if '_STD' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_STD'],
-                               rdict2[year]['_STD'],
-                               atol=0.01, rtol=0.0)
-
-
 def test_translate_json_reform_suffixes_mars_non_indexed():
     # test read_json_param_objects()
     # using MARS-indexed parameter suffixes

@@ -14,6 +14,7 @@ def fixture_policyfile():
     # specify JSON text for policy reform
     txt = """{"_almdep": {"value": [7150, 7250, 7400],
                           "cpi_inflated": true},
+              "_cpi_offset": {"value": [0]},
               "_almsep": {"value": [40400, 41050],
                           "cpi_inflated": true},
               "_rt5": {"value": [0.33 ],
