@@ -18,6 +18,9 @@ for a complete commit history.
 - Add `--outdir` option to command-line `tc` tool
   [[#1801](https://github.com/open-source-economics/Tax-Calculator/pull/1801)
   by Martin Holmer as suggested by Reuben Fischer-Baum]
+- Make TCJA policy current-law policy
+  [[#1803](https://github.com/open-source-economics/Tax-Calculator/pull/1803)
+  by Martin Holmer with assistance from Cody Kallen]
 
 **Bug Fixes**
 - None
