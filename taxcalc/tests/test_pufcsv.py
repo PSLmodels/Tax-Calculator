@@ -33,12 +33,15 @@ def test_agg(tests_path, puf_fullsample):
     """
     # pylint: disable=too-many-locals,too-many-statements
     nyrs = 10
-    # create a Policy object (clp) containing current-law policy parameters
-    clp = Policy()
+    # create a baseline Policy object containing 2017_law.json parameters
+    pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
+    baseline_policy = Policy()
+    baseline_policy.implement_reform(pre_tcja['policy'])
     # create a Records object (rec) containing all puf.csv input records
     rec = Records(data=puf_fullsample)
-    # create a Calculator object using clp policy and puf records
-    calc = Calculator(policy=clp, records=rec)
+    # create a Calculator object using baseline policy and puf records
+    calc = Calculator(policy=baseline_policy, records=rec)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = calc.diagnostic_table(nyrs)
@@ -58,7 +61,6 @@ def test_agg(tests_path, puf_fullsample):
     else:
         small = 0.1  # looser test for Python 3.6
     diffs = nonsmall_diffs(actual, expect, small)
-    diffs = list()  # TODO: disable pufcsv_agg_actual/expect comparison TEMP
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
@@ -77,12 +79,11 @@ def test_agg(tests_path, puf_fullsample):
     subfrac = 0.05  # sub-sample fraction
     subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
     rec_subsample = Records(data=subsample)
-    calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
+    calc_subsample = Calculator(policy=baseline_policy, records=rec_subsample)
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
-    # TODO: try to get reltol from 0.0102 back to 0.0100
-    reltol = 0.0102  # maximum allowed relative difference in tax liability
+    reltol = 0.01  # maximum allowed relative difference in tax liability
     if not np.allclose(taxes_subsample, taxes_fullsample,
                        atol=0.0, rtol=reltol):
         msg = 'PUFCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'

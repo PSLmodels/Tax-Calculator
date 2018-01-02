@@ -587,66 +587,6 @@ def test_order_of_cpi_and_level_reforms():
         assert mte[2017 - syr] == 500000
 
 
-@pytest.mark.parametrize("offset", [0.0, -0.0025])
-def test_chained_cpi_reform(offset):
-    """
-    Test that _cpi_offset policy parameter works as expected.
-    """
-    return  # TODO: re-write test_chained_cpi_reform
-    # specify reform without using cpi_offset parameter
-    pem = 10000
-    bare_reform = {
-        2022: {'_II_em': [pem]}
-    }
-    with_reform = {
-        2022: {'_II_em': [pem]},
-        2020: {'_cpi_offset': [offset]}
-    }
-    syr = Policy.JSON_START_YEAR
-    pol_bare = Policy(start_year=syr)
-    pol_bare.implement_reform(bare_reform)
-    pol_with = Policy(start_year=syr)
-    pol_with.implement_reform(with_reform)
-    # check relative _II_em values in the two reforms for several years
-    pem_bare = pol_bare._II_em
-    pem_with = pol_with._II_em
-    if offset == 0:
-        assert pem_with[2019 - syr] == pem_bare[2019 - syr]
-        assert pem_with[2020 - syr] == pem_bare[2020 - syr]
-        assert pem_with[2021 - syr] == pem_bare[2021 - syr]
-        assert pem_with[2022 - syr] == pem
-        assert pem_bare[2022 - syr] == pem
-        assert pem_with[2023 - syr] == pem_bare[2023 - syr]
-    elif offset < 0:
-        assert pem_with[2019 - syr] == pem_bare[2019 - syr]
-        assert pem_with[2020 - syr] == pem_bare[2020 - syr]
-        assert pem_with[2021 - syr] < pem_bare[2021 - syr]
-        assert pem_with[2022 - syr] == pem
-        assert pem_bare[2022 - syr] == pem
-        assert pem_with[2023 - syr] < pem_bare[2023 - syr]
-    # check exact _II_em values for 2023, which are
-    # equal to 2022 values indexed by 2022 inflation rates
-    unchained_cpi = pol_bare.inflation_rates()[2022 - syr]
-    assert pem_bare[2023 - syr] == round(pem * (1 + unchained_cpi), 2)
-    chained_cpi = unchained_cpi + offset
-    assert pem_with[2023 - syr] == round(pem * (1 + chained_cpi), 2)
-    # check that _STD value for 2023 with chained CPI indexing is
-    # equal to _STD value for 2023 when specifying chained CPI indexing
-    # as a difference in assumed inflation rates
-    if offset != 0:
-        # ... compute _STD value using difference-in-growth-factors approach
-        growfactors = Growfactors()
-        growdiff = Growdiff()
-        growdiff.update_growdiff({2020: {'_ACPIU': [offset]}})
-        growdiff.apply_to(growfactors)
-        pol = Policy(gfactors=growfactors, start_year=syr)
-        pol.implement_reform(bare_reform)
-        # ... compare the _STD values derived from the two approaches
-        assert_allclose(pol_with._STD[2023 - syr],
-                        pol._STD[2023 - syr],
-                        atol=0.01, rtol=0.0)
-
-
 def test_misspecified_reforms():
     """
     Demonstrate pitfalls of careless specification of policy reforms.

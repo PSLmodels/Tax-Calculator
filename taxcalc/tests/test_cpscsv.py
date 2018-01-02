@@ -27,12 +27,15 @@ def test_agg(tests_path):
     """
     # pylint: disable=too-many-statements,too-many-locals
     nyrs = 10
-    # create a Policy object (clp) containing current-law policy parameters
-    clp = Policy()
+    # create a baseline Policy object containing 2017_law.json parameters
+    pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
+    baseline_policy = Policy()
+    baseline_policy.implement_reform(pre_tcja['policy'])
     # create a Records object (rec) containing all cps.csv input records
     rec = Records.cps_constructor()
-    # create a Calculator object using clp policy and cps records
-    calc = Calculator(policy=clp, records=rec)
+    # create a Calculator object using baseline policy and cps records
+    calc = Calculator(policy=baseline_policy, records=rec)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = calc.diagnostic_table(nyrs)
@@ -51,7 +54,6 @@ def test_agg(tests_path):
         small = 0.1  # looser test for Python 3.6
     diffs = nonsmall_diffs(actual_results.splitlines(True),
                            expected_results.splitlines(True), small)
-    diffs = list()  # TODO: disable cpscsv_agg_actual/expect comparison TEMP
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
@@ -75,7 +77,7 @@ def test_agg(tests_path):
                             weights=Records.CPS_WEIGHTS_FILENAME,
                             adjust_ratios=Records.CPS_RATIOS_FILENAME,
                             start_year=Records.CPSCSV_YEAR)
-    calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
+    calc_subsample = Calculator(policy=baseline_policy, records=rec_subsample)
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
