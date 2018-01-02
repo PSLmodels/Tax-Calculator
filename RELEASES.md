@@ -21,6 +21,9 @@ for a complete commit history.
 - Make TCJA policy current-law policy
   [[#1803](https://github.com/open-source-economics/Tax-Calculator/pull/1803)
   by Martin Holmer with assistance from Cody Kallen]
+- Change minimum required pandas version from 0.21.0 to 0.22.0 and remove zsum() pandas work-around
+  [[#1805](https://github.com/open-source-economics/Tax-Calculator/pull/1805)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None
