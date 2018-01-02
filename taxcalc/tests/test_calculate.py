@@ -155,18 +155,6 @@ def test_calculator_attr_access_to_policy(cps_subsample):
     assert hasattr(calc, 'policy')
 
 
-def test_calculator_current_law_version(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    pol = Policy()
-    reform = {2013: {'_II_rt7': [0.45]}}
-    pol.implement_reform(reform)
-    calc = Calculator(policy=pol, records=rec)
-    calc_clp = calc.current_law_version()
-    assert isinstance(calc_clp, Calculator)
-    assert calc.policy.II_rt6 == calc_clp.policy.II_rt6
-    assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
-
-
 def test_calculator_mtr(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calcx = Calculator(policy=Policy(), records=rec)
