@@ -131,12 +131,17 @@ def reform_results(reform_dict, puf_data, reform_2017_law):
     """
     # pylint: disable=too-many-locals
     rec = Records(data=puf_data)
-    # create baseline Calculator object
-    pbase = Policy()
-    # TODO: if reform_dict['baseline'] == '2017_law.json':
-    pbase.implement_reform(reform_2017_law)  # TODO: make conditional
-    calc1 = Calculator(policy=pbase, records=rec, verbose=False, behavior=None)
-    # create reform Calculator object with possible behavioral responses
+    # create baseline Calculator object, calc1
+    pol = Policy()
+    if reform_dict['baseline'] == '2017_law.json':
+        pol.implement_reform(reform_2017_law)
+    elif reform_dict['baseline'] == 'current_law_policy.json':
+        pass
+    else:
+        msg = 'illegal baseline value {}'
+        raise ValueError(msg.format(reform_dict['baseline']))
+    calc1 = Calculator(policy=pol, records=rec, verbose=False, behavior=None)
+    # create reform Calculator object, calc2, with possible behavioral response
     start_year = reform_dict['start_year']
     beh = Behavior()
     if '_BE_cg' in reform_dict['value']:
@@ -145,12 +150,9 @@ def reform_results(reform_dict, puf_data, reform_2017_law):
         beh_assump = {start_year: {'_BE_cg': elasticity}}
         beh.update_behavior(beh_assump)
     reform = {start_year: reform_dict['value']}
-    pref = Policy()
-    # TODO: if reform_dict['baseline'] == '2017_law.json':
-    pref.implement_reform(reform_2017_law)  # TODO: make conditional
-    pref.implement_reform(reform)
-    calc2 = Calculator(policy=pref, records=rec, verbose=False, behavior=beh)
-    # increment both calculators to reform's start_year
+    pol.implement_reform(reform)
+    calc2 = Calculator(policy=pol, records=rec, verbose=False, behavior=beh)
+    # increment both Calculator objects to reform's start_year
     calc1.advance_to_year(start_year)
     calc2.advance_to_year(start_year)
     # calculate prereform and postreform output for several years
