@@ -72,7 +72,7 @@ def test_consumption_response(cps_subsample):
     consump.response(rec, 1.0)
     post = rec.e20400
     actual_diff = post - pre
-    expected_diff = np.ones(rec.dim) * mpc
+    expected_diff = np.ones(rec.array_length) * mpc
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
     rec = Records.cps_constructor(data=cps_subsample)
@@ -80,12 +80,12 @@ def test_consumption_response(cps_subsample):
     calc0 = Calculator(policy=Policy(), records=rec, consumption=None)
     (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
                                           wrt_full_compensation=False)
-    assert np.allclose(calc0.records.e20400, ided0)
+    assert np.allclose(calc0.array('e20400'), ided0)
     # compute earnings mtr with consumption response
     calc1 = Calculator(policy=Policy(), records=rec, consumption=consump)
     mtr1_ptax, mtr1_itax, _ = calc1.mtr(variable_str='e00200p',
                                         wrt_full_compensation=False)
-    assert np.allclose(calc1.records.e20400, ided0)
+    assert np.allclose(calc1.array('e20400'), ided0)
     # confirm that payroll mtr values are no different
     assert np.allclose(mtr1_ptax, mtr0_ptax)
     # confirm that all mtr with cons-resp are no greater than without cons-resp

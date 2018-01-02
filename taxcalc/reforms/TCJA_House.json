@@ -16,7 +16,7 @@
 // Reform_Parameter_Map:
 // - 1: _II_rt*
 // - 2: _PT_rt*
-// - 3: _STD, _STD_Dep, _STD_Aged
+// - 3: _STD, _STD_Dep, _STD_Aged (can safely ignore WARNINGs about _STD_Dep values)
 // - 4: _II_em
 // - 5: _DependentCredit_*, _FilerCredit_c, _CTC_ps
 // - 6: _AMT_rt*

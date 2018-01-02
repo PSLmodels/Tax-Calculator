@@ -21,7 +21,7 @@
     "MARS": {
       "required": true,
       "type": "int",
-      "desc": "Filing (marital) status: line number of the checked box",
+      "desc": "Filing (marital) status: line number of the checked box [1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er)]",
       "form": {"2013-2016": "1040 lines 1-5"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -458,7 +458,7 @@
     "ffpos": {
       "type": "int",
       "desc": "CPS family identifier within household (not used in tax-calculation logic)",
-      "form": {},
+      "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_cps"
     },
     "filer": {
@@ -470,13 +470,13 @@
     "fips": {
       "type": "int",
       "desc": "FIPS state code (not used in tax-calculation logic)",
-      "form": {},
+      "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_cps"
     },
     "h_seq": {
       "type": "int",
       "desc": "CPS household sequence number (not used in tax-calculation logic)",
-      "form": {},
+      "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_cps"
     },
     "k1bx14p": {
@@ -617,22 +617,22 @@
     "combined": {
       "type": "float",
       "desc": "Sum of iitax and payrolltax and lumpsum_tax",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "earned": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "earned_p": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "earned_s": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "eitc": {
       "type": "float",
@@ -642,13 +642,13 @@
     },
     "exact": {
       "type": "int",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "expanded_income": {
       "type": "float",
       "desc": "Broad income measure",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "iitax": {
       "type": "float",
@@ -676,7 +676,7 @@
     "refund": {
       "type": "float",
       "desc": "Total refundable income tax credits",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "sep": {
       "type": "int",
@@ -685,8 +685,8 @@
     },
     "sey": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "standard": {
       "type": "float",
@@ -695,8 +695,8 @@
     },
     "surtax": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "taxbc": {
       "type": "float",
@@ -710,8 +710,8 @@
     },
     "c01000": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c02500": {
       "type": "float",
@@ -725,13 +725,13 @@
     },
     "c02900_in_ei": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c03260": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c04470": {
       "type": "float",
@@ -751,12 +751,12 @@
     "c05200": {
       "type": "float",
       "desc": "Tax amount from Sch X,Y,X tables",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c05700": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c05800": {
       "type": "float",
@@ -779,7 +779,7 @@
     "c07200": {
       "type": "float",
       "desc": "Schedule R credit for the elderly and the disabled",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c07220": {
       "type": "float",
@@ -796,33 +796,33 @@
     },
     "c07240": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c07260": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c07300": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c07400": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c07600": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c08000": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c09200": {
       "type": "float",
@@ -850,92 +850,92 @@
     "c17000": {
       "type": "float",
       "desc": "Sch A: Medical expenses deducted",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "e17500_capped": {
       "type": "float",
       "desc": "Sch A: Medical expenses, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c18300": {
       "type": "float",
       "desc": "Sch A: State and local taxes deducted",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "e18400_capped": {
       "type": "float",
       "desc": "Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "e18500_capped": {
       "type": "float",
       "desc": "Sch A: State and local real estate taxes deductible, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c19200": {
       "type": "float",
       "desc": "Sch A: Interest deducted",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "e19200_capped": {
       "type": "float",
       "desc": "Sch A: Interest deduction deductible, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c19700": {
       "type": "float",
       "desc": "Sch A: Charity contributions deducted",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "e19800_capped": {
       "type": "float",
       "desc": "Sch A: Charity cash contributions deductible, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "e20100_capped": {
       "type": "float",
       "desc": "Sch A: Charity noncash contributions deductible, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c20500": {
       "type": "float",
       "desc": "Sch A: Net casualty or theft loss deducted",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "g20500_capped": {
       "type": "float",
       "desc": "Sch A: Gross casualty or theft loss deductible, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c20800": {
       "type": "float",
       "desc": "Sch A: Net limited miscellaneous deductions deducted",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "e20400_capped": {
       "type": "float",
       "desc": "Sch A: Gross miscellaneous deductions deductible, capped as a decimal fraction of AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c21040": {
       "type": "float",
       "desc": "Itemized deductions that are phased out",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c21060": {
       "type": "float",
       "desc": "Itemized deductions before phase-out (zero for non-itemizers)",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "c23650": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c59660": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "c62100": {
       "type": "float",
@@ -945,82 +945,82 @@
     "c87668": {
       "type": "float",
       "desc": "American Opportunity Credit non-refundable amount from Form 8863 (included in c07230)",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "care_deduction": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "ctc_new": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "dep_credit": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "personal_refundable_credit": {
       "type": "float",
       "desc": "Personal refundable credit",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "personal_nonrefundable_credit": {
       "type": "float",
       "desc": "Personal nonrefundable credit",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "dwks10": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "dwks13": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "dwks14": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "dwks19": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "fstax": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "invinc_agi_ec": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "invinc_ec_base": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "lumpsum_tax": {
       "type": "float",
       "desc": "Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "pre_c04600": {
       "type": "float",
       "desc": "Personal exemption before phase-out",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "prectc": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "ptax_amc": {
       "type": "float",
@@ -1048,38 +1048,38 @@
     },
     "ymod": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "ymod1": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "search taxcalc/functions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
     },
     "ubi": {
       "type": "float",
-      "desc": "",
-      "form": {}
+      "desc": "Universal Basic Income benefit for filing unit",
+      "form": {"2013-20??": "calculated variable"}
     },
     "taxable_ubi": {
       "type": "float",
       "desc": "Amount of UBI benefit included in AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "nontaxable_ubi": {
       "type": "float",
       "desc": "Amount of UBI benefit excluded from AGI",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "mtr_paytax": {
       "type": "float",
       "desc": "Marginal payroll tax rate (in percentage terms) on extra taxpayer earnings (e00200p)",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "mtr_inctax": {
       "type": "float",
       "desc": "Marginal income tax rate (in percentage terms) on extra taxpayer earnings (e00200p)",
-      "form": {}
+      "form": {"2013-20??": "calculated variable"}
     },
     "aftertax_income": {
       "type": "float",

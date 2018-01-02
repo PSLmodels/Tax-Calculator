@@ -137,15 +137,23 @@ def test_records_variables_content(tests_path):
             forminfo = variable['form']
             assert isinstance(forminfo, dict)
             yranges = sorted(forminfo.keys())
+            num_yranges = len(yranges)
             prior_eyr = first_year - 1
+            yrange_num = 0
             for yrange in yranges:
+                yrange_num += 1
                 yrlist = yrange.split('-')
                 fyr = int(yrlist[0])
-                eyr = int(yrlist[1])
-                assert fyr == prior_eyr + 1
-                assert eyr <= last_form_year
-                prior_eyr = eyr
-            if len(yranges) > 0:
+                if yrlist[1] == '20??':
+                    indefinite_yrange = True
+                    assert yrange_num == num_yranges
+                else:
+                    indefinite_yrange = False
+                    eyr = int(yrlist[1])
+                    assert fyr == prior_eyr + 1
+                    assert eyr <= last_form_year
+                    prior_eyr = eyr
+            if not indefinite_yrange and len(yranges) > 0:
                 assert prior_eyr == last_form_year
 
 

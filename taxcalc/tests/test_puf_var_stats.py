@@ -6,13 +6,14 @@ Test generates statistics for puf.csv variables.
 # pylint --disable=locally-disabled test_puf_var_stats.py
 
 import os
+import sys
 import json
 import copy
-import difflib
 import numpy as np
 import pandas as pd
 import pytest
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 
 
 def create_base_table(test_path):
@@ -36,7 +37,7 @@ def create_base_table(test_path):
                  'c09600': 'Federal AMT liability'}
     # specify read variable names and descriptions
     unused_var_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
-                          'h_seq', 'ffpos', 'fips',
+                          'h_seq', 'ffpos', 'fips', 'agi_bin',
                           'FLPDYR', 'FLPDMO', 'f2441', 'f3800', 'f6251',
                           'f8582', 'f8606', 'f8829', 'f8910', 'f8936', 'n20',
                           'n24', 'n25', 'n30', 'PREP', 'SCHB', 'SCHCF', 'SCHE',
@@ -72,10 +73,10 @@ def calculate_corr_stats(calc, table):
     Calculate correlation coefficient matrix.
     """
     for varname1 in table.index:
-        var1 = getattr(calc.records, varname1)
+        var1 = calc.array(varname1)
         var1_cc = list()
         for varname2 in table.index:
-            var2 = getattr(calc.records, varname2)
+            var2 = calc.array(varname2)
             cor = np.corrcoef(var1, var2)[0][1]
             var1_cc.append(cor)
         table[varname1] = var1_cc
@@ -85,36 +86,25 @@ def calculate_mean_stats(calc, table, year):
     """
     Calculate weighted means for year.
     """
-    total_weight = calc.records.s006.sum()
+    total_weight = calc.total_weight()
     means = list()
     for varname in table.index:
-        weighted = getattr(calc.records, varname) * calc.records.s006
-        wmean = weighted.sum() / total_weight
+        wmean = calc.weighted_total(varname) / total_weight
         means.append(wmean)
     table[str(year)] = means
 
 
-def differences(new_filename, old_filename, stat_kind):
+def differences(new_filename, old_filename, stat_kind, small):
     """
-    Return boolean-string pair with
-    boolean indicating if differences between new and old file contents and
-    string describing differences (if any).
+    Return message string if there are differences at least as large as small;
+    otherwise (i.e., if there are only small differences) return empty string.
     """
     with open(new_filename, 'r') as vfile:
         new_text = vfile.read()
     with open(old_filename, 'r') as vfile:
         old_text = vfile.read()
-    # expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    new = new_text.splitlines(True)
-    old = old_text.splitlines(True)
-    diff = difflib.unified_diff(new, old, fromfile='new', tofile='old', n=0)
-    # convert diff generator into a list of lines:
-    diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
-    # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
-        fail = True
+    if nonsmall_diffs(new_text.splitlines(True),
+                      old_text.splitlines(True), small):
         new_name = os.path.basename(new_filename)
         old_name = os.path.basename(old_filename)
         msg = '{} RESULTS DIFFER:\n'.format(stat_kind)
@@ -128,10 +118,9 @@ def differences(new_filename, old_filename, stat_kind):
         msg += '-------------------------------------------------'
         msg += '-------------\n'
     else:
-        fail = False
         msg = ''
         os.remove(new_filename)
-    return fail, msg
+    return msg
 
 
 MEAN_FILENAME = 'puf_var_wght_means_by_year.csv'
@@ -164,13 +153,23 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     # write tables to new CSV files
     mean_path = os.path.join(tests_path, MEAN_FILENAME + '-new')
     table_mean.sort_index(inplace=True)
-    table_mean.to_csv(mean_path, header=year_headers, float_format='%8.3f')
+    table_mean.to_csv(mean_path, header=year_headers, float_format='%8.0f')
     corr_path = os.path.join(tests_path, CORR_FILENAME + '-new')
     table_corr.sort_index(inplace=True)
-    table_corr.to_csv(corr_path, float_format='%8.3f',
+    table_corr.to_csv(corr_path, float_format='%8.2f',
                       columns=table_corr.index)
-    # compare new and old CSV files
-    diffs_in_mean, mean_msg = differences(mean_path, mean_path[:-4], 'MEAN')
-    diffs_in_corr, corr_msg = differences(corr_path, corr_path[:-4], 'CORR')
-    if diffs_in_mean or diffs_in_corr:
+    # compare new and old CSV files for nonsmall differences
+    if sys.version_info.major == 2:
+        # tighter tests for Python 2.7
+        mean_msg = differences(mean_path, mean_path[:-4],
+                               'MEAN', small=0.0)
+        corr_msg = differences(corr_path, corr_path[:-4],
+                               'CORR', small=0.0)
+    else:
+        # looser tests for Python 3.6
+        mean_msg = differences(mean_path, mean_path[:-4],
+                               'MEAN', small=1.0)
+        corr_msg = differences(corr_path, corr_path[:-4],
+                               'CORR', small=0.01)
+    if mean_msg or corr_msg:
         raise ValueError(mean_msg + corr_msg)

@@ -16,13 +16,13 @@ Read tax-calculator/TESTING.md for details.
 # pylint --disable=locally-disabled test_pufcsv.py
 
 import os
+import sys
 import json
-import difflib
 import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
+from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 
 
 @pytest.mark.requires_pufcsv
@@ -41,25 +41,24 @@ def test_agg(tests_path, puf_fullsample):
     calc = Calculator(policy=clp, records=rec)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = multiyear_diagnostic_table(calc, nyrs)
+    adt = calc.diagnostic_table(nyrs)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
-    # generate differences between actual and expected results
+    # create actual and expected lists of diagnostic table lines
     actual = adtstr.splitlines(True)
     aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.txt')
     with open(aggres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expected = expected_results.splitlines(True)
-    diff = difflib.unified_diff(expected, actual,
-                                fromfile='expected', tofile='actual', n=0)
-    # convert diff generator into a list of lines:
-    diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
-    # test failure if there are any diff_lines
-    if diff_lines:
+    expect = expected_results.splitlines(True)
+    # ensure actual and expect lines have differences no more than small value
+    if sys.version_info.major == 2:
+        small = 0.0  # tighter test for Python 2.7
+    else:
+        small = 0.1  # looser test for Python 3.6
+    diffs = nonsmall_diffs(actual, expect, small)
+    if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
@@ -78,7 +77,7 @@ def test_agg(tests_path, puf_fullsample):
     subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
     rec_subsample = Records(data=subsample)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
-    adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
+    adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
     reltol = 0.01  # maximum allowed relative difference in tax liability
@@ -174,7 +173,7 @@ def test_mtr(tests_path, puf_path):
     recid = puf.RECID  # pylint: disable=no-member
     # create a Calculator object using clp policy and puf records
     calc = Calculator(policy=clp, records=puf)
-    res += '{} = {}\n'.format('Total number of data records', puf.dim)
+    res += '{} = {}\n'.format('Total number of data records', puf.array_length)
     res += 'PTAX mtr histogram bin edges:\n'
     res += '     {}\n'.format(PTAX_MTR_BIN_EDGES)
     res += 'ITAX mtr histogram bin edges:\n'
@@ -189,37 +188,36 @@ def test_mtr(tests_path, puf_path):
                                            wrt_full_compensation=False)
         if zero_out:
             # check that calculated variables are consistent
-            crs = calc.records
-            assert np.allclose(crs.iitax + crs.payrolltax, crs.combined)
-            assert np.allclose(crs.ptax_was + crs.setax + crs.ptax_amc,
-                               crs.payrolltax)
-            assert np.allclose(crs.c21060 - crs.c21040, crs.c04470)
-            assert np.allclose(crs.taxbc + crs.c09600, crs.c05800)
-            assert np.allclose(crs.c05800 + crs.othertaxes - crs.c07100,
-                               crs.c09200)
-            assert np.allclose(crs.c09200 - crs.refund, crs.iitax)
+            assert np.allclose((calc.array('iitax') +
+                                calc.array('payrolltax')),
+                               calc.array('combined'))
+            assert np.allclose((calc.array('ptax_was') +
+                                calc.array('setax') +
+                                calc.array('ptax_amc')),
+                               calc.array('payrolltax'))
+            assert np.allclose(calc.array('c21060') - calc.array('c21040'),
+                               calc.array('c04470'))
+            assert np.allclose(calc.array('taxbc') + calc.array('c09600'),
+                               calc.array('c05800'))
+            assert np.allclose((calc.array('c05800') +
+                                calc.array('othertaxes') -
+                                calc.array('c07100')),
+                               calc.array('c09200'))
+            assert np.allclose(calc.array('c09200') - calc.array('refund'),
+                               calc.array('iitax'))
         if var_str == 'e00200s':
             # only MARS==2 filing units have valid MTR values
-            mtr_ptax = mtr_ptax[calc.records.MARS == 2]
-            mtr_itax = mtr_itax[calc.records.MARS == 2]
+            mtr_ptax = mtr_ptax[calc.array('MARS') == 2]
+            mtr_itax = mtr_itax[calc.array('MARS') == 2]
         res += '{} {}:\n'.format(variable_header, var_str)
         res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
-    # generate differences between actual and expected results
-    actual = res.splitlines(True)
+    # check for differences between actual and expected results
     mtrres_path = os.path.join(tests_path, 'pufcsv_mtr_expect.txt')
     with open(mtrres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expected = expected_results.splitlines(True)
-    diff = difflib.unified_diff(expected, actual,
-                                fromfile='expected', tofile='actual', n=0)
-    # convert diff generator into a list of lines:
-    diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
-    # test failure if there are any diff_lines
-    if diff_lines:
+    if nonsmall_diffs(res.splitlines(True), expected_results.splitlines(True)):
         new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)
@@ -299,14 +297,14 @@ def test_credit_reforms(puf_subsample):
     calc1 = Calculator(policy=pol, records=rec)
     calc1.advance_to_year(reform_year)
     calc1.calc_all()
-    itax1 = (calc1.records.iitax * calc1.records.s006).sum()
+    itax1 = calc1.weighted_total('iitax')
     # create personal-refundable-credit-reform Calculator object, calc2
     reform = {reform_year: {'_II_credit': [[1000, 1000, 1000, 1000, 1000]]}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(reform_year)
     calc2.calc_all()
-    itax2 = (calc2.records.iitax * calc2.records.s006).sum()
+    itax2 = calc2.weighted_total('iitax')
     # create personal-nonrefundable-credit-reform Calculator object, calc3
     reform = {reform_year: {'_II_credit_nr': [[1000, 1000, 1000, 1000, 1000]]}}
     pol = Policy()
@@ -314,7 +312,7 @@ def test_credit_reforms(puf_subsample):
     calc3 = Calculator(policy=pol, records=rec)
     calc3.advance_to_year(reform_year)
     calc3.calc_all()
-    itax3 = (calc3.records.iitax * calc3.records.s006).sum()
+    itax3 = calc3.weighted_total('iitax')
     # check income tax revenues generated by the three Calculator objects
     assert itax2 < itax1  # because refundable credits lower revenues
     assert itax3 > itax2  # because nonrefundable credits lower revenues less

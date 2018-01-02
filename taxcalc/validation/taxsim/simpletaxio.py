@@ -158,7 +158,7 @@ class SimpleTaxIO(object):
             (mtr_ptax, mtr_itax,
              _) = self.calc.mtr(wrt_full_compensation=False)
             cr_taxyr = self.calc.records.FLPDYR
-            for idx in range(0, self.calc.records.dim):
+            for idx in range(0, self.calc.array_len):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:
                     ovar = SimpleTaxIO.extract_output(self.calc.records, idx,
@@ -608,10 +608,10 @@ class SimpleTaxIO(object):
         recs = Records(data=recsdf, exact_calculations=exact_calcs,
                        gfactors=None, weights=None,
                        start_year=self.policy.start_year)
-        assert recs.dim == len(self._input)
+        assert recs.array_length == len(self._input)
         # specify input for each tax filing unit in Records object
         lnum = 0
-        for idx in range(0, recs.dim):
+        for idx in range(0, recs.array_length):
             lnum += 1
             SimpleTaxIO._specify_input(recs, idx, self._input[lnum],
                                        emulate_taxsim_2441_logic)

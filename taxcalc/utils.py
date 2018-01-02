@@ -1,5 +1,5 @@
 """
-PUBLIC utility functions for Tax-Calculator.
+PUBLIC low-level utility functions for Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 utils.py
@@ -28,14 +28,15 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                EPSILON)
 
 
-STATS_COLUMNS = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
-                 'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
-                 'c05800', 'othertaxes', 'refund', 'c07100', 'iitax',
-                 'payrolltax', 'combined', 's006']
-
 # Items in the DIST_TABLE_COLUMNS list below correspond to the items in the
 # DIST_TABLE_LABELS list below; this correspondence allows us to use this
 # labels list to map a label to the correct column in a distribution table.
+
+DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
+                  'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
+                  'c05800', 'othertaxes', 'refund', 'c07100', 'surtax',
+                  'iitax', 'payrolltax', 'combined', 's006']
+
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
                       'num_returns_StandardDed',
@@ -83,6 +84,10 @@ DIST_TABLE_LABELS = ['Returns',
 # Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
 # DIFF_TABLE_LABELS list below; this correspondence allows us to use this
 # labels list to map a label to the correct column in a difference table.
+
+DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
+                  'iitax', 'payrolltax', 'combined', 's006']
+
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
                       'perc_cut',
@@ -241,16 +246,16 @@ def get_sums(pdf):
     return pd.Series(sums, name='sums')
 
 
-def create_distribution_table(obj, groupby, income_measure, result_type):
+def create_distribution_table(vdf, groupby, income_measure, result_type):
     """
-    Get results from object, sort them based on groupby using income_measure,
+    Get results from vdf, sort them based on groupby using income_measure,
     manipulate them based on result_type, and return them as a table.
 
     Parameters
     ----------
-    obj : any object with array-like attributes named as in STATS_COLUMNS list
-        Examples include a Tax-Calculator Calculator object and a
-        Pandas DataFrame object.
+    vdf : Pandas DataFrame including columns named as in STATS_VARIABLES list
+        for example, object returned from Calculator dataframe method in a
+        call like this: vdf = calc.dataframe(STATS_VARIABLES)
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
@@ -326,21 +331,19 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         return sdf
 
     # main logic of create_distribution_table
-    if result_type != 'weighted_sum' and result_type != 'weighted_avg':
-        msg = "result_type must be either 'weighted_sum' or 'weighted_avg'"
-        raise ValueError(msg)
+    assert isinstance(vdf, pd.DataFrame)
+    assert (groupby == 'weighted_deciles' or
+            groupby == 'webapp_income_bins' or
+            groupby == 'large_income_bins' or
+            groupby == 'small_income_bins')
+    assert result_type == 'weighted_sum' or result_type == 'weighted_avg'
     assert (income_measure == 'expanded_income' or
-            income_measure == 'c00100' or
             income_measure == 'expanded_income_baseline' or
+            income_measure == 'c00100' or
             income_measure == 'c00100_baseline')
-    if income_measure in STATS_COLUMNS:
-        columns = STATS_COLUMNS
-    else:
-        columns = STATS_COLUMNS + [income_measure]
-    if isinstance(obj, pd.DataFrame):
-        res = copy.deepcopy(obj)
-    else:
-        res = obj.dataframe(columns)
+    assert income_measure in vdf
+    # copy vdf and add variable columns
+    res = copy.deepcopy(vdf)
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
@@ -351,11 +354,6 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
         pdf = add_income_bins(res, income_measure, bin_type='tpc')
     elif groupby == 'small_income_bins':
         pdf = add_income_bins(res, income_measure, bin_type='soi')
-    else:
-        msg = ("groupby must be either 'weighted_deciles' or "
-               "'webapp_income_bins' or 'large_income_bins' or "
-               "'small_income_bins'")
-        raise ValueError(msg)
     # construct weighted_sum table
     gpdf = pdf.groupby('bins', as_index=False)
     dist_table = stat_dataframe(gpdf)
@@ -384,18 +382,20 @@ def create_distribution_table(obj, groupby, income_measure, result_type):
     return dist_table
 
 
-def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
+def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     """
-    Get results from two different obj, construct tax difference results,
+    Get results from two different vdf, construct tax difference results,
     and return the difference statistics as a table.
 
     Parameters
     ----------
-    obj1 : baseline object is either a Tax-Calculator Calculator object or
-           a Pandas DataFrame including columns in STATS_COLUMNS list
+    vdf1 : Pandas DataFrame object including columns in the DIFF_VARIABLES
+           list drawn from a baseline Calculator object using the
+           Calculator.dataframe method
 
-    obj2 : reform object is either a Tax-Calculator Calculator object or
-           a Pandas DataFrame including columns in STATS_COLUMNS list
+    vdf2 : Pandas DataFrame object including columns in the DIFF_VARIABLES
+           list drawn from a baseline Calculator object using the
+           Calculator.dataframe method
 
     groupby : String object
         options for input: 'weighted_deciles', 'webapp_income_bins',
@@ -462,7 +462,11 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
             sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
             sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
             return sdf
+
         # main logic of diff_table_stats function
+        # calculate whole-sample perc_cut and perc_inc statistics
+        sums_perc_cut = weighted_perc_cut(res2, 'tax_diff')
+        sums_perc_inc = weighted_perc_inc(res2, 'tax_diff')
         # add bin column to res2 given specified groupby and income_measure
         if groupby == 'weighted_deciles':
             pdf = add_quantile_bins(res2, income_measure, 10)
@@ -472,28 +476,32 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
             pdf = add_income_bins(res2, income_measure, bin_type='tpc')
         elif groupby == 'small_income_bins':
             pdf = add_income_bins(res2, income_measure, bin_type='soi')
-        else:
-            msg = ("groupby must be either "
-                   "'weighted_deciles' or 'webapp_income_bins' "
-                   "or 'large_income_bins' or 'small_income_bins'")
-            raise ValueError(msg)
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
         diffs_without_sums = stat_dataframe(gpdf)
-        # calculate sum row (with explicit calculation of mean statistic)
+        # calculate sums row
         row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
-        row['mean'] = row['tot_change'] / row['count']
+        row['mean'] = 0
+        if row['count'] > 0:
+            row['mean'] = row['tot_change'] / row['count']
+        row['perc_cut'] = sums_perc_cut
+        row['perc_inc'] = sums_perc_inc
+        row['share_of_change'] = 1.0  # avoid rounding error
         diffs = diffs_without_sums.append(row)
-        # specify some column sum elements to be np.nan and another to be 100
-        non_sum_cols = [c for c in diffs.columns if 'perc_' in c]
-        for col in non_sum_cols:
-            diffs.loc['sums', col] = np.nan
-        diffs.loc['sums', 'share_of_change'] = 1.0  # to avoid rounding error
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
             pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
+            # TODO: following statement generates this IGNORED error:
+            # ValueError: Buffer dtype mismatch,
+            #             expected 'Python object' but got 'long'
+            # Exception ValueError: "Buffer dtype mismatch,
+            #              expected 'Python object' but got 'long'"
+            #              in 'pandas._libs.lib.is_bool_array' ignored
+            #                                                  ^^^^^^^
+            # It is hoped that Pandas PR#17841, which is scheduled for
+            # inclusion in Pandas version 0.22.0 (Jan 2018), will fix this.
             pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
                                 value=[0, 0, 0, 0, 0], inplace=True)
             pdf['bins'].replace(to_replace=[6, 7, 8, 9],
@@ -504,17 +512,20 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
             diffs = diffs.append(sdf, ignore_index=True)
         return diffs
     # main logic of create_difference_table
-    is_dframe1 = isinstance(obj1, pd.DataFrame)
-    is_dframe2 = isinstance(obj2, pd.DataFrame)
-    assert is_dframe1 == is_dframe2
-    if is_dframe1:
-        res1 = copy.deepcopy(obj1)
-        res2 = copy.deepcopy(obj2)
-    else:
-        assert obj1.current_year == obj2.current_year
-        res1 = obj1.dataframe(STATS_COLUMNS)
-        res2 = obj2.dataframe(STATS_COLUMNS)
-    assert income_measure == 'expanded_income' or income_measure == 'c00100'
+    assert isinstance(vdf1, pd.DataFrame)
+    assert isinstance(vdf2, pd.DataFrame)
+    assert (groupby == 'weighted_deciles' or
+            groupby == 'webapp_income_bins' or
+            groupby == 'large_income_bins' or
+            groupby == 'small_income_bins')
+    assert (income_measure == 'expanded_income' or
+            income_measure == 'c00100')
+    assert income_measure in vdf1
+    assert (tax_to_diff == 'iitax' or
+            tax_to_diff == 'payrolltax' or
+            tax_to_diff == 'combined')
+    res1 = copy.deepcopy(vdf1)
+    res2 = copy.deepcopy(vdf2)
     baseline_income_measure = income_measure + '_baseline'
     res2[baseline_income_measure] = res1[income_measure]
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
@@ -536,27 +547,31 @@ def create_difference_table(obj1, obj2, groupby, income_measure, tax_to_diff):
     return diffs
 
 
-def create_diagnostic_table(calc):
+def create_diagnostic_table(vdf, year):
     """
-    Extract diagnostic table from specified Calculator object.
-    This function leaves the specified calc object unchanged.
+    Extract single-year diagnostic table from Pandas DataFrame object
+    derived from a Calculator object using the dataframe(DIST_VARIABLES)
+    method.
 
     Parameters
     ----------
-    calc : Calculator class object
+    vdf : Pandas DataFrame object containing the variables
+
+    year : calendar year for which variables were drawn from Calculator object
 
     Returns
     -------
-    Pandas DataFrame object containing the table for calc.current_year
+    Pandas DataFrame object containing the diagnostic table
     """
+    # pylint: disable=too-many-statements
     def diagnostic_table_odict(recs):
         """
         Nested function that extracts diagnostic table dictionary from
-        the specified Records object, recs.
+        the specified Pandas DataFrame object, vdf.
 
         Parameters
         ----------
-        recs : Records class object
+        vdf : Pandas DataFrame object containing the variables
 
         Returns
         -------
@@ -567,116 +582,83 @@ def create_diagnostic_table(calc):
         in_billions = 1.0e-9
         odict = collections.OrderedDict()
         # total number of filing units
-        odict['Returns (#m)'] = recs.s006.sum() * in_millions
+        wghts = vdf['s006']
+        odict['Returns (#m)'] = wghts.sum() * in_millions
         # adjusted gross income
-        odict['AGI ($b)'] = (recs.c00100 * recs.s006).sum() * in_billions
+        agi = vdf['c00100']
+        odict['AGI ($b)'] = (agi * wghts).sum() * in_billions
         # number of itemizers
-        num = (recs.s006[(recs.c04470 > 0.) * (recs.c00100 > 0.)].sum())
+        num = (wghts[(vdf['c04470'] > 0.) & (agi > 0.)].sum())
         odict['Itemizers (#m)'] = num * in_millions
         # itemized deduction
-        ided1 = recs.c04470 * recs.s006
-        val = ided1[recs.c04470 > 0.].sum()
+        ided1 = vdf['c04470'] * wghts
+        val = ided1[vdf['c04470'] > 0.].sum()
         odict['Itemized Deduction ($b)'] = val * in_billions
         # number of standard deductions
-        num = recs.s006[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        num = wghts[(vdf['standard'] > 0.) & (agi > 0.)].sum()
         odict['Standard Deduction Filers (#m)'] = num * in_millions
         # standard deduction
-        sded1 = recs.standard * recs.s006
-        val = sded1[(recs.standard > 0.) * (recs.c00100 > 0.)].sum()
+        sded1 = recs.standard * wghts
+        val = sded1[(vdf['standard'] > 0.) & (agi > 0.)].sum()
         odict['Standard Deduction ($b)'] = val * in_billions
         # personal exemption
-        val = (recs.c04600 * recs.s006)[recs.c00100 > 0.].sum()
+        val = (vdf['c04600'] * wghts)[agi > 0.].sum()
         odict['Personal Exemption ($b)'] = val * in_billions
         # taxable income
-        val = (recs.c04800 * recs.s006).sum()
+        val = (vdf['c04800'] * wghts).sum()
         odict['Taxable Income ($b)'] = val * in_billions
         # regular tax liability
-        val = (recs.taxbc * recs.s006).sum()
+        val = (vdf['taxbc'] * wghts).sum()
         odict['Regular Tax ($b)'] = val * in_billions
         # AMT taxable income
-        odict['AMT Income ($b)'] = ((recs.c62100 * recs.s006).sum() *
+        odict['AMT Income ($b)'] = ((vdf['c62100'] * wghts).sum() *
                                     in_billions)
         # total AMT liability
-        odict['AMT Liability ($b)'] = ((recs.c09600 * recs.s006).sum() *
+        odict['AMT Liability ($b)'] = ((vdf['c09600'] * wghts).sum() *
                                        in_billions)
         # number of people paying AMT
-        odict['AMT Filers (#m)'] = (recs.s006[recs.c09600 > 0.].sum() *
+        odict['AMT Filers (#m)'] = (wghts[vdf['c09600'] > 0.].sum() *
                                     in_millions)
         # tax before credits
-        val = (recs.c05800 * recs.s006).sum()
+        val = (vdf['c05800'] * wghts).sum()
         odict['Tax before Credits ($b)'] = val * in_billions
         # refundable credits
-        val = (recs.refund * recs.s006).sum()
+        val = (vdf['refund'] * wghts).sum()
         odict['Refundable Credits ($b)'] = val * in_billions
         # nonrefundable credits
-        val = (recs.c07100 * recs.s006).sum()
+        val = (vdf['c07100'] * wghts).sum()
         odict['Nonrefundable Credits ($b)'] = val * in_billions
         # reform surtaxes (part of federal individual income tax liability)
-        val = (recs.surtax * recs.s006).sum()
+        val = (vdf['surtax'] * wghts).sum()
         odict['Reform Surtaxes ($b)'] = val * in_billions
         # other taxes on Form 1040
-        val = (recs.othertaxes * recs.s006).sum()
+        val = (vdf['othertaxes'] * wghts).sum()
         odict['Other Taxes ($b)'] = val * in_billions
         # federal individual income tax liability
-        val = (recs.iitax * recs.s006).sum()
+        val = (vdf['iitax'] * wghts).sum()
         odict['Ind Income Tax ($b)'] = val * in_billions
         # OASDI+HI payroll tax liability (including employer share)
-        val = (recs.payrolltax * recs.s006).sum()
+        val = (vdf['payrolltax'] * wghts).sum()
         odict['Payroll Taxes ($b)'] = val * in_billions
         # combined income and payroll tax liability
-        val = (recs.combined * recs.s006).sum()
+        val = (vdf['combined'] * wghts).sum()
         odict['Combined Liability ($b)'] = val * in_billions
         # number of tax units with non-positive income tax liability
-        num = (recs.s006[recs.iitax <= 0]).sum()
+        num = (wghts[vdf['iitax'] <= 0]).sum()
         odict['With Income Tax <= 0 (#m)'] = num * in_millions
         # number of tax units with non-positive combined tax liability
-        num = (recs.s006[recs.combined <= 0]).sum()
+        num = (wghts[vdf['combined'] <= 0]).sum()
         odict['With Combined Tax <= 0 (#m)'] = num * in_millions
         return odict
     # tabulate diagnostic table
-    odict = diagnostic_table_odict(calc.records)
-    pdf = pd.DataFrame(data=odict,
-                       index=[calc.current_year],
-                       columns=odict.keys())
+    odict = diagnostic_table_odict(vdf)
+    pdf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
     pdf = pdf.transpose()
     pd.options.display.float_format = '{:8,.1f}'.format
     return pdf
 
 
-def multiyear_diagnostic_table(calc, num_years=0):
-    """
-    Generate multi-year diagnostic table from specified Calculator object.
-    This function leaves the specified calc object unchanged.
-
-    Parameters
-    ----------
-    calc : Calculator class object
-
-    num_years : integer (must be between 1 and number of available calc years)
-
-    Returns
-    -------
-    Pandas DataFrame object containing the multi-year diagnostic table
-    """
-    if num_years < 1:
-        msg = 'num_year={} is less than one'.format(num_years)
-        raise ValueError(msg)
-    max_num_years = calc.policy.end_year - calc.policy.current_year + 1
-    if num_years > max_num_years:
-        msg = ('num_year={} is greater '
-               'than max_num_years={}').format(num_years, max_num_years)
-        raise ValueError(msg)
-    cal = copy.deepcopy(calc)
-    dtlist = list()
-    for iyr in range(1, num_years + 1):
-        cal.calc_all()
-        dtlist.append(create_diagnostic_table(cal))
-        if iyr < num_years:
-            cal.increment_year()
-    return pd.concat(dtlist, axis=1)
-
-
-def mtr_graph_data(calc1, calc2,
+def mtr_graph_data(vdf, year,
                    mars='ALL',
                    mtr_measure='combined',
                    mtr_variable='e00200p',
@@ -689,9 +671,11 @@ def mtr_graph_data(calc1, calc2,
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    vdf : a Pandas DataFrame object containing variables and marginal tax rates
+        (See Calculator.mtr_graph method for required elements of vdf.)
 
-    calc2 : a Calculator object that refers to reform policy
+    year : integer
+        specifies calendar year of the data in vdf
 
     mars : integer or string
         specifies which filing status subgroup to show in the graph
@@ -752,11 +736,8 @@ def mtr_graph_data(calc1, calc2,
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-arguments,too-many-statements,
+    # pylint: disable=too-many-arguments,too-many-statements
     # pylint: disable=too-many-locals,too-many-branches
-    # check that two calculator objects have the same current_year
-    assert calc1.current_year == calc2.current_year
-    year = calc1.current_year
     # check validity of function arguments
     # . . check income_measure value
     weighting_function = weighted_mean
@@ -806,35 +787,10 @@ def mtr_graph_data(calc1, calc2,
         msg = ('mtr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(mtr_measure))
-    # calculate marginal tax rates
-    (mtr1_ptax, mtr1_itax,
-     mtr1_combined) = calc1.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    (mtr2_ptax, mtr2_itax,
-     mtr2_combined) = calc2.mtr(variable_str=mtr_variable,
-                                wrt_full_compensation=mtr_wrt_full_compen)
-    # extract needed output that is assumed unchanged by reform from calc1
-    record_columns = ['s006']
-    if mars != 'ALL':
-        record_columns.append('MARS')
-    record_columns.append(income_var)
-    output = [getattr(calc1.records, col) for col in record_columns]
-    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    # set mtr given specified mtr_measure
-    if mtr_measure == 'itax':
-        dfx['mtr1'] = mtr1_itax
-        dfx['mtr2'] = mtr2_itax
-    elif mtr_measure == 'ptax':
-        dfx['mtr1'] = mtr1_ptax
-        dfx['mtr2'] = mtr2_ptax
-    elif mtr_measure == 'combined':
-        dfx['mtr1'] = mtr1_combined
-        dfx['mtr2'] = mtr2_combined
-    # select filing-status subgroup, if any
-    if mars != 'ALL':
-        dfx = dfx[dfx['MARS'] == mars]
+    # . . check vdf
+    assert isinstance(vdf, pd.DataFrame)
     # create 'bins' column given specified income_var and dollar_weighting
-    dfx = add_quantile_bins(dfx, income_var, 100,
+    dfx = add_quantile_bins(vdf, income_var, 100,
                             weight_by_income_measure=dollar_weighting)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
@@ -870,7 +826,7 @@ def mtr_graph_data(calc1, calc2,
     return data
 
 
-def atr_graph_data(calc1, calc2,
+def atr_graph_data(vdf, year,
                    mars='ALL',
                    atr_measure='combined',
                    min_avginc=1000):
@@ -879,9 +835,11 @@ def atr_graph_data(calc1, calc2,
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    vdf : a Pandas DataFrame object containing variables and tax liabilities
+        (See Calculator.atr_graph method for required elements of vdf.)
 
-    calc2 : a Calculator object that refers to reform policy
+    year : integer
+        specifies calendar year of the data in vdf
 
     mars : integer or string
         specifies which filing status subgroup to show in the graph
@@ -913,13 +871,7 @@ def atr_graph_data(calc1, calc2,
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
-    # check that two calculator objects have the same current_year
-    if calc1.current_year == calc2.current_year:
-        year = calc1.current_year
-    else:
-        msg = 'calc1.current_year={} != calc2.current_year={}'
-        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
+    # pylint: disable=too-many-locals
     # check validity of function arguments
     # . . check mars value
     if isinstance(mars, six.string_types):
@@ -934,43 +886,22 @@ def atr_graph_data(calc1, calc2,
         msg = 'mars="{}" is neither a string nor an integer'
         raise ValueError(msg.format(mars))
     # . . check atr_measure value
-    if atr_measure == 'itax':
+    if atr_measure == 'combined':
+        atr_str = 'Income+Payroll-Tax'
+    elif atr_measure == 'itax':
         atr_str = 'Income-Tax'
     elif atr_measure == 'ptax':
         atr_str = 'Payroll-Tax'
-    elif atr_measure == 'combined':
-        atr_str = 'Income+Payroll-Tax'
     else:
         msg = ('atr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(atr_measure))
     # . . check min_avginc value
-    assert min_avginc > 0.
-    # calculate taxes and expanded income
-    calc1.calc_all()
-    calc2.calc_all()
-    # extract needed output that is assumed unchanged by reform from calc1
-    record_columns = ['s006']
-    if mars != 'ALL':
-        record_columns.append('MARS')
-    record_columns.append('expanded_income')
-    output = [getattr(calc1.records, col) for col in record_columns]
-    dfx = pd.DataFrame(data=np.column_stack(output), columns=record_columns)
-    # create 'tax1' and 'tax2' columns given specified atr_measure
-    if atr_measure == 'itax':
-        dfx['tax1'] = calc1.records.iitax
-        dfx['tax2'] = calc2.records.iitax
-    elif atr_measure == 'ptax':
-        dfx['tax1'] = calc1.records.payrolltax
-        dfx['tax2'] = calc2.records.payrolltax
-    elif atr_measure == 'combined':
-        dfx['tax1'] = calc1.records.combined
-        dfx['tax2'] = calc2.records.combined
-    # select filing-status subgroup, if any
-    if mars != 'ALL':
-        dfx = dfx[dfx['MARS'] == mars]
+    assert min_avginc > 0
+    # . . check vdf object
+    assert isinstance(vdf, pd.DataFrame)
     # create 'bins' column
-    dfx = add_quantile_bins(dfx, 'expanded_income', 100)
+    dfx = add_quantile_bins(vdf, 'expanded_income', 100)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
     # apply weighted_mean function to percentile-grouped income/tax values
@@ -1047,7 +978,7 @@ def xtr_graph_plot(data,
     -----
     USAGE EXAMPLE::
 
-      gdata = mtr_graph_data(calc1, calc2)
+      gdata = mtr_graph_data(...)
       gplot = xtr_graph_plot(gdata)
 
     THEN when working interactively in a Python notebook::
@@ -1219,16 +1150,17 @@ def certainty_equivalent(exputil, crra, cmin):
     return ((exputil - tu_at_cmin) / mu_at_cmin) + cmin
 
 
-def ce_aftertax_income(calc1, calc2,
-                       custom_params=None,
-                       require_no_agg_tax_change=True):
+def ce_aftertax_expanded_income(df1, df2,
+                                custom_params=None,
+                                require_no_agg_tax_change=True):
     """
-    Return dictionary that contains certainty-equivalent of the expected
-    utility of after-tax income computed for constant-relative-risk-aversion
-    parameter values for each of two Calculator objects: calc1, which
-    represents the pre-reform situation, and calc2, which represents the
-    post-reform situation, both of which MUST have had calc_call() called
-    before being passed to this function.
+    Return dictionary that contains certainty-equivalent of the
+    expected utility of after-tax expanded income computed for
+    several constant-relative-risk-aversion parameter values
+    for each of two Pandas DataFrame objects: df1, which represents
+    the pre-reform situation, and df2, which represents the
+    post-reform situation.  Both DataFrame objects must contain
+    's006', 'combined', and 'expanded_income' columns.
 
     IMPORTANT NOTES: These normative welfare calculations are very simple.
     It is assumed that utility is a function of only consumption, and that
@@ -1236,12 +1168,18 @@ def ce_aftertax_income(calc1, calc2,
     behavioral responses that change work effort will not affect utility via
     the correpsonding change in leisure.  And any saving response to changes
     in after-tax income do not affect consumption.
+
+    The cmin value is the consumption level below which marginal utility
+    is considered to be constant.  This allows the handling of filing units
+    with very low or even negative after-tax expanded income in the
+    expected-utility and certainty-equivalent calculations.
     """
     # pylint: disable=too-many-locals
-    # ... check that calc1 and calc2 are consistent
-    assert calc1.records.dim == calc2.records.dim
-    assert calc1.current_year == calc2.current_year
-    # ... specify utility function parameters
+    # check consistency of the two DataFrame objects
+    assert isinstance(df1, pd.DataFrame)
+    assert isinstance(df2, pd.DataFrame)
+    assert df1.shape == df2.shape
+    # specify utility function parameters
     if custom_params:
         crras = custom_params['crra_list']
         for crra in crras:
@@ -1251,21 +1189,9 @@ def ce_aftertax_income(calc1, calc2,
     else:
         crras = [0, 1, 2, 3, 4]
         cmin = 1000
-    # The cmin value is the consumption level below which marginal utility
-    # is considered to be constant.  This allows the handling of filing units
-    # with very low or even negative after-tax income in the expected-utility
-    # and certainty-equivalent calculations.
-    # ... extract calc_all() data from calc1 and calc2
-    record_columns = ['s006', 'payrolltax', 'iitax',
-                      'combined', 'expanded_income']
-    out = [getattr(calc1.records, col) for col in record_columns]
-    df1 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)
-    out = [getattr(calc2.records, col) for col in record_columns]
-    df2 = pd.DataFrame(data=np.column_stack(out), columns=record_columns)
-    # ... compute aggregate combined tax revenue and aggregate after-tax income
+    # compute aggregate combined tax revenue and aggregate after-tax income
     billion = 1.0e-9
     cedict = dict()
-    cedict['year'] = calc1.current_year
     cedict['tax1'] = weighted_sum(df1, 'combined') * billion
     cedict['tax2'] = weighted_sum(df2, 'combined') * billion
     if require_no_agg_tax_change:
@@ -1280,15 +1206,15 @@ def ce_aftertax_income(calc1, calc2,
             raise ValueError(msg.format(cedict['tax1'], cedict['tax2'], diff))
     cedict['inc1'] = weighted_sum(df1, 'expanded_income') * billion
     cedict['inc2'] = weighted_sum(df2, 'expanded_income') * billion
-    # ... calculate sample-weighted probability of each filing unit
-    # pylint: disable=no-member
-    # (above pylint comment eliminates bogus np.divide warnings)
-    prob_raw = np.divide(df1['s006'], df1['s006'].sum())
-    prob = np.divide(prob_raw, prob_raw.sum())  # handle any rounding error
-    # ... calculate after-tax income of each filing unit in calc1 and calc2
+    # calculate sample-weighted probability of each filing unit
+    prob_raw = np.divide(df1['s006'],  # pylint: disable=no-member
+                         df1['s006'].sum())
+    prob = np.divide(prob_raw,  # pylint: disable=no-member
+                     prob_raw.sum())  # handle any rounding error
+    # calculate after-tax income of each filing unit in df1 and df2
     ati1 = df1['expanded_income'] - df1['combined']
     ati2 = df2['expanded_income'] - df2['combined']
-    # ... calculate certainty-equivaluent after-tax income in calc1 and calc2
+    # calculate certainty-equivaluent after-tax income in df1 and df2
     cedict['crra'] = crras
     ce1 = list()
     ce2 = list()
@@ -1377,33 +1303,22 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(calc1, calc2):
+def dec_graph_data(diff_table, year):
     """
     Prepare data needed by dec_graph_plot utility function.
 
     Parameters
     ----------
-    calc1 : a Calculator object that refers to baseline policy
+    diff_table : a Pandas DataFrame object returned from the
+        Calculator class difference_table method
 
-    calc2 : a Calculator object that refers to reform policy
+    year : integer
+        specifies calendar year of the data in the diff_table
 
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
     """
-    # check that two calculator objects have the same current_year
-    if calc1.current_year == calc2.current_year:
-        year = calc1.current_year
-    else:
-        msg = 'calc1.current_year={} != calc2.current_year={}'
-        raise ValueError(msg.format(calc1.current_year, calc2.current_year))
-    # create difference table from the two Calculator objects
-    calc1.calc_all()
-    calc2.calc_all()
-    diff_table = create_difference_table(calc1, calc2,
-                                         groupby='weighted_deciles',
-                                         income_measure='expanded_income',
-                                         tax_to_diff='combined')
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
     for idx in range(0, 14):  # the ten income deciles, all, plus top details
@@ -1462,7 +1377,7 @@ def dec_graph_plot(data,
     -----
     USAGE EXAMPLE::
 
-      gdata = dec_graph_data(calc1, calc2)
+      gdata = dec_graph_data(...)
       gplot = dec_graph_plot(gdata)
 
     THEN when working interactively in a Python notebook::
@@ -1532,3 +1447,54 @@ def dec_graph_plot(data,
                  color=bcolor)
         yidx += 1
     return fig
+
+
+def nonsmall_diffs(linelist1, linelist2, small=0.0):
+    """
+    Return True if line lists differ significantly; otherwise return False.
+    Significant difference means one or more numbers differ (between
+    linelist1 and linelist2) by more than the small amount.
+    NOTE: this function is meant to be used only in the unit tests to handle
+    small differences in floating point values generated by Python 2.7 and 3.6,
+    where a nonzero small amount is used only under Python 3.6.
+    """
+    # embedded function used only in nonsmall_diffs function
+    def isfloat(value):
+        """
+        Return True if value can be cast to float; otherwise return False.
+        """
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+    # begin nonsmall_diffs logic
+    assert isinstance(linelist1, list)
+    assert isinstance(linelist2, list)
+    if len(linelist1) != len(linelist2):
+        return True
+    assert small >= 0.0 and small <= 1.0
+    epsilon = 1e-6
+    smallamt = small + epsilon
+    for line1, line2 in zip(linelist1, linelist2):
+        if line1 == line2:
+            continue
+        else:
+            tokens1 = line1.replace(',', '').split()
+            tokens2 = line2.replace(',', '').split()
+            for tok1, tok2 in zip(tokens1, tokens2):
+                tok1_isfloat = isfloat(tok1)
+                tok2_isfloat = isfloat(tok2)
+                if tok1_isfloat and tok2_isfloat:
+                    if abs(float(tok1) - float(tok2)) <= smallamt:
+                        continue
+                    else:
+                        return True
+                elif not tok1_isfloat and not tok2_isfloat:
+                    if tok1 == tok2:
+                        continue
+                    else:
+                        return True
+                else:
+                    return True
+        return False

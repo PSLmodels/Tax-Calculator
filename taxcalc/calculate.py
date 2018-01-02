@@ -5,7 +5,7 @@ Tax-Calculator federal tax Calculator class.
 # pep8 --ignore=E402 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
-# pylint: disable=invalid-name,no-value-for-parameter
+# pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
 import os
 import json
@@ -32,6 +32,12 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
+from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
+                           DIFF_VARIABLES, create_difference_table,
+                           create_diagnostic_table,
+                           ce_aftertax_expanded_income,
+                           mtr_graph_data, atr_graph_data, xtr_graph_plot,
+                           dec_graph_data, dec_graph_plot)
 # import pdb
 
 
@@ -87,6 +93,7 @@ class Calculator(object):
     All calculations are done on the internal copies of the Policy and
     Records objects passed to each of the two Calculator constructors.
     """
+    # pylint: disable=too-many-public-methods
 
     def __init__(self, policy=None, records=None, verbose=True,
                  sync_years=True, consumption=None, behavior=None):
@@ -153,13 +160,13 @@ class Calculator(object):
         increment year functionality by immediately specifying the year
         as input.  New year must be at least the current year.
         """
-        iteration = year - self.records.current_year
+        iteration = year - self.current_year
         if iteration < 0:
             raise ValueError('New current year must be ' +
                              'greater than current year!')
         for _ in range(iteration):
             self.increment_year()
-        assert self.records.current_year == year
+        assert self.current_year == year
 
     def calc_all(self, zero_out_calc_vars=False):
         """
@@ -179,36 +186,206 @@ class Calculator(object):
         """
         Return all-filing-unit weighted total of named Records variable.
         """
-        variable = getattr(self.records, variable_name)
-        weight = getattr(self.records, 's006')
-        return (variable * weight).sum()
+        return (self.array(variable_name) * self.array('s006')).sum()
 
     def total_weight(self):
         """
         Return all-filing-unit total of sampling weights.
         NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()
         """
-        weight = getattr(self.records, 's006')
-        return weight.sum()
+        return self.array('s006').sum()
 
     def dataframe(self, variable_list):
         """
         Return pandas DataFrame containing the listed Records variables.
         """
-        arrays = [getattr(self.records, vname) for vname in variable_list]
-        pdf = pd.DataFrame(data=np.column_stack(arrays), columns=variable_list)
-        return pdf
+        arys = [self.array(vname) for vname in variable_list]
+        return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
 
-    def add_records_variable(self, dst_name, src_calc, src_name):
+    def array(self, variable_name):
         """
-        Add new variable with name dst_name to this Calculator object's
-        embedded Records object with the new variable being the variable with
-        the src_name in the embedded Records object of the src_calc object.
+        Return numpy ndarray containing the named Records variable.
         """
-        assert getattr(self.records, dst_name, None) is None
-        assert isinstance(src_calc, Calculator)
-        assert getattr(src_calc.records, src_name, None) is not None
-        setattr(self.records, dst_name, getattr(src_calc.records, src_name))
+        return getattr(self.records, variable_name)
+
+    def setarray(self, variable_name, variable_value):
+        """
+        Set named Records variable to specified variable_value.
+        """
+        setattr(self.records, variable_name, variable_value)
+
+    def incarray(self, variable_name, variable_add):
+        """
+        Add variable_add to named Records variable.
+        """
+        setattr(self.records, variable_name,
+                self.array(variable_name) + variable_add)
+
+    def zeroarray(self, variable_name):
+        """
+        Set named Records variable to zeros.
+        """
+        setattr(self.records, variable_name, np.zeros(self.array_len))
+
+    def diagnostic_table(self, num_years):
+        """
+        Generate multi-year diagnostic table;
+        this method leaves the Calculator object unchanged.
+
+        Parameters
+        ----------
+        num_years : Integer
+            number of years to include in diagnostic table starting
+            with the Calculator object's current_year (must be at least
+            one and no more than what would exceed Policy end_year
+
+        Returns
+        -------
+        Pandas DataFrame object containing the multi-year diagnostic table
+        """
+        assert num_years >= 1
+        max_num_years = self.policy.end_year - self.policy.current_year + 1
+        assert num_years <= max_num_years
+        calc = copy.deepcopy(self)
+        tlist = list()
+        for iyr in range(1, num_years + 1):
+            calc.calc_all()
+            diag = create_diagnostic_table(calc.dataframe(DIST_VARIABLES),
+                                           calc.current_year)
+            tlist.append(diag)
+            if iyr < num_years:
+                calc.increment_year()
+        return pd.concat(tlist, axis=1)
+
+    def distribution_tables(self, calc,
+                            groupby='weighted_deciles',
+                            income_measure='expanded_income',
+                            result_type='weighted_sum'):
+        """
+        Get results from self and calc, sort them based on groupby using
+        income_measure, manipulate grouped statistics based on result_type,
+        and return tables as a pair of Pandas dataframes.
+        Note that the returned tables have consistent income groups (based
+        on the self income_measure) even though the income_measure in self
+        and the income_measure in calc are different.
+
+        Parameters
+        ----------
+        calc : Calculator object or None
+            typically represents the reform while self represents the baseline;
+            if calc is None, the second returned table is None
+
+        groupby : String object
+            options for input: 'weighted_deciles', 'webapp_income_bins',
+                               'large_income_bins', 'small_income_bins';
+            determines how the columns in returned tables are sorted
+        NOTE: when groupby is 'weighted_deciles', the returned table has three
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent).
+
+        income_measure : String object
+            options for input: 'expanded_income' or 'c00100'(AGI)
+
+        result_type : String object
+            options for input: 'weighted_sum' or 'weighted_avg';
+            determines how whether or not table entries are averages or totals
+
+        Typical usage
+        -------------
+        dist1, dist2 = calc1.distribution_tables(calc2)
+        OR
+        dist1, _ = calc1.distribution_tables(None)
+        (where calc1 is a baseline Calculator object
+        and calc2 is a reform Calculator object)
+        """
+        # nested function used only by this method
+        def have_same_income_measure(calc1, calc2, income_measure):
+            """
+            Return true if calc1 and calc2 contain the same income_measure;
+            otherwise, return false.  (Note that "same" means nobody's
+            income_measure differs by more than one cent.)
+            """
+            im1 = calc1.array(income_measure)
+            im2 = calc2.array(income_measure)
+            return np.allclose(im1, im2, rtol=0.0, atol=0.01)
+        # main logic of method
+        assert calc is None or isinstance(calc, Calculator)
+        assert (groupby == 'weighted_deciles' or
+                groupby == 'webapp_income_bins' or
+                groupby == 'large_income_bins' or
+                groupby == 'small_income_bins')
+        assert (income_measure == 'expanded_income' or
+                income_measure == 'c00100')
+        assert (result_type == 'weighted_sum' or
+                result_type == 'weighted_avg')
+        dt1 = create_distribution_table(self.dataframe(DIST_VARIABLES),
+                                        groupby=groupby,
+                                        income_measure=income_measure,
+                                        result_type=result_type)
+        if calc is None:
+            dt2 = None
+        else:
+            assert calc.current_year == self.current_year
+            assert calc.array_len == self.array_len
+            var_dataframe = calc.dataframe(DIST_VARIABLES)
+            if have_same_income_measure(self, calc, income_measure):
+                imeasure = income_measure
+            else:
+                imeasure = income_measure + '_baseline'
+                var_dataframe[imeasure] = self.array(income_measure)
+            dt2 = create_distribution_table(var_dataframe,
+                                            groupby=groupby,
+                                            income_measure=imeasure,
+                                            result_type=result_type)
+        return dt1, dt2
+
+    def difference_table(self, calc,
+                         groupby='weighted_deciles',
+                         income_measure='expanded_income',
+                         tax_to_diff='combined'):
+        """
+        Get results from self and calc, sort them based on groupby using
+        income_measure, and return tax-difference table as a Pandas dataframe.
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline
+
+        groupby : String object
+            options for input: 'weighted_deciles', 'webapp_income_bins',
+                               'large_income_bins', 'small_income_bins';
+            determines how the columns in returned tables are sorted
+        NOTE: when groupby is 'weighted_deciles', the returned table has three
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent).
+
+        income_measure : String object
+            options for input: 'expanded_income' or 'c00100'(AGI)
+
+        tax_to_diff : String object
+            options for input: 'iitax', 'payrolltax', 'combined'
+            specifies which tax to difference
+
+        Typical usage
+        -------------
+        diff = calc1.difference_table(calc2)
+        (where calc1 is a baseline Calculator object
+        and calc2 is a reform Calculator object)
+        """
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.array_len == self.array_len
+        diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
+                                       calc.dataframe(DIFF_VARIABLES),
+                                       groupby=groupby,
+                                       income_measure=income_measure,
+                                       tax_to_diff=tax_to_diff)
+        return diff
 
     @property
     def current_year(self):
@@ -224,6 +401,13 @@ class Calculator(object):
         """
         return self.records.data_year
 
+    @property
+    def array_len(self):
+        """
+        Length of arrays in embedded Records object.
+        """
+        return self.records.array_length
+
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
                            'e00900p', 'e00300',
                            'e00400', 'e00600',
@@ -237,10 +421,12 @@ class Calculator(object):
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
             zero_out_calculated_vars=False,
+            calc_all_already_called=False,
             wrt_full_compensation=True):
         """
         Calculates the marginal payroll, individual income, and combined
-        tax rates for every tax filing unit.
+        tax rates for every tax filing unit, leaving the Calculator object
+        in exactly the same state as it would be in after a calc_all() call.
 
         The marginal tax rates are approximated as the change in tax
         liability caused by a small increase (the finite_diff) in the variable
@@ -274,6 +460,12 @@ class Calculator(object):
             specifies value of zero_out_calc_vars parameter used in calls
             of Calculator.calc_all() method.
 
+        calc_all_already_called: boolean
+            specifies whether self has already had its Calculor.calc_all()
+            method called, in which case this method will not do a final
+            calc_all() call but use the incoming embedded Records object
+            as the outgoing Records object embedding in self.
+
         wrt_full_compensation: boolean
             specifies whether or not marginal tax rates on earned income
             are computed with respect to (wrt) changes in total compensation
@@ -281,13 +473,17 @@ class Calculator(object):
 
         Returns
         -------
-        mtr_payrolltax: a numpy array of marginal payroll tax rates.
-        mtr_incometax: a numpy array of marginal individual income tax rates.
-        mtr_combined: a numpy array of marginal combined tax rates, which is
+        A tuple of numpy arrays in the following order:
+        mtr_payrolltax: an array of marginal payroll tax rates.
+        mtr_incometax: an array of marginal individual income tax rates.
+        mtr_combined: an array of marginal combined tax rates, which is
                       the sum of mtr_payrolltax and mtr_incometax.
 
         Notes
         -----
+        The arguments zero_out_calculated_vars and calc_all_already_called
+        cannot both be true.
+
         Valid variable_str values are:
         'e00200p', taxpayer wage/salary earnings (also included in e00200);
         'e00200s', spouse wage/salary earnings (also included in e00200);
@@ -308,7 +504,9 @@ class Calculator(object):
         'e19800',  Charity cash contributions;
         'e20100',  Charity non-cash contributions.
         """
-        # pylint: disable=too-many-locals,too-many-statements,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-statements
+        # pylint: disable=too-many-locals,too-many-branches
+        assert not zero_out_calculated_vars or not calc_all_already_called
         # check validity of variable_str parameter
         if variable_str not in Calculator.MTR_VALID_VARIABLES:
             msg = 'mtr variable_str="{}" is not valid'
@@ -320,40 +518,41 @@ class Calculator(object):
         # save records object in order to restore it after mtr computations
         recs0 = copy.deepcopy(self.records)
         # extract variable array(s) from embedded records object
-        variable = getattr(self.records, variable_str)
+        variable = self.array(variable_str)
         if variable_str == 'e00200p':
-            earnings_var = self.records.e00200
+            earnings_var = self.array('e00200')
         elif variable_str == 'e00200s':
-            earnings_var = self.records.e00200
+            earnings_var = self.array('e00200')
         elif variable_str == 'e00900p':
-            seincome_var = self.records.e00900
+            seincome_var = self.array('e00900')
         elif variable_str == 'e00650':
-            divincome_var = self.records.e00600
+            divincome_var = self.array('e00600')
         elif variable_str == 'e26270':
-            schEincome_var = self.records.e02000
+            schEincome_var = self.array('e02000')
         # calculate level of taxes after a marginal increase in income
-        setattr(self.records, variable_str, variable + finite_diff)
+        self.setarray(variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
-            self.records.e00200 = earnings_var + finite_diff
+            self.setarray('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00200s':
-            self.records.e00200 = earnings_var + finite_diff
+            self.setarray('e00200', earnings_var + finite_diff)
         elif variable_str == 'e00900p':
-            self.records.e00900 = seincome_var + finite_diff
+            self.setarray('e00900', seincome_var + finite_diff)
         elif variable_str == 'e00650':
-            self.records.e00600 = divincome_var + finite_diff
+            self.setarray('e00600', divincome_var + finite_diff)
         elif variable_str == 'e26270':
-            self.records.e02000 = schEincome_var + finite_diff
+            self.setarray('e02000', schEincome_var + finite_diff)
         if self.consumption.has_response():
             self.consumption.response(self.records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_chng = copy.deepcopy(self.records.payrolltax)
-        incometax_chng = copy.deepcopy(self.records.iitax)
+        payrolltax_chng = self.array('payrolltax')
+        incometax_chng = self.array('iitax')
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
         setattr(self, 'records', recs0)
-        self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
-        payrolltax_base = copy.deepcopy(self.records.payrolltax)
-        incometax_base = copy.deepcopy(self.records.iitax)
+        if not calc_all_already_called or zero_out_calculated_vars:
+            self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
+        payrolltax_base = self.array('payrolltax')
+        incometax_base = self.array('iitax')
         combined_taxes_base = incometax_base + payrolltax_base
         # compute marginal changes in combined tax liability
         payrolltax_diff = payrolltax_chng - payrolltax_base
@@ -375,24 +574,306 @@ class Calculator(object):
         mtr_combined = combined_diff / (finite_diff * (1.0 + adj))
         # if variable_str is e00200s, set MTR to NaN for units without a spouse
         if variable_str == 'e00200s':
-            mtr_payrolltax = np.where(self.records.MARS == 2,
-                                      mtr_payrolltax, np.nan)
-            mtr_incometax = np.where(self.records.MARS == 2,
-                                     mtr_incometax, np.nan)
-            mtr_combined = np.where(self.records.MARS == 2,
-                                    mtr_combined, np.nan)
+            mars = self.array('MARS')
+            mtr_payrolltax = np.where(mars == 2, mtr_payrolltax, np.nan)
+            mtr_incometax = np.where(mars == 2, mtr_incometax, np.nan)
+            mtr_combined = np.where(mars == 2, mtr_combined, np.nan)
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
+
+    def mtr_graph(self, calc,
+                  mars='ALL',
+                  mtr_measure='combined',
+                  mtr_variable='e00200p',
+                  alt_e00200p_text='',
+                  mtr_wrt_full_compen=False,
+                  income_measure='expanded_income',
+                  dollar_weighting=False):
+        """
+        Create marginal tax rate graph that can be written to an HTML
+        file (using the write_graph_file utility function) or shown on
+        the screen immediately in an interactive or notebook session
+        (following the instructions in the documentation of the
+        xtr_graph_plot utility function).
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline
+
+        mars : integer or string
+            specifies which filing status subgroup to show in the graph
+
+            - 'ALL': include all filing units in sample
+
+            - 1: include only single filing units
+
+            - 2: include only married-filing-jointly filing units
+
+            - 3: include only married-filing-separately filing units
+
+            - 4: include only head-of-household filing units
+
+        mtr_measure : string
+            specifies which marginal tax rate to show on graph's y axis
+
+            - 'itax': marginal individual income tax rate
+
+            - 'ptax': marginal payroll tax rate
+
+            - 'combined': sum of marginal income and payroll tax rates
+
+        mtr_variable : string
+            any string in the Calculator.VALID_MTR_VARS set
+            specifies variable to change in order to compute marginal tax rates
+
+        alt_e00200p_text : string
+            text to use in place of mtr_variable
+            when mtr_variable is 'e00200p';
+            if empty string then use 'e00200p'
+
+        mtr_wrt_full_compen : boolean
+            see documentation of Calculator.mtr()
+            argument wrt_full_compensation
+            (value has an effect only if mtr_variable is 'e00200p')
+
+        income_measure : string
+            specifies which income variable to show on the graph's x axis
+
+            - 'wages': wage and salary income (e00200)
+
+            - 'agi': adjusted gross income, AGI (c00100)
+
+            - 'expanded_income': sum of AGI, non-taxable interest income,
+              non-taxable social security benefits, and employer share of
+              FICA taxes.
+
+        dollar_weighting : boolean
+            False implies both income_measure percentiles on x axis
+            and mtr values for each percentile on the y axis are
+            computed without using dollar income_measure weights (just
+            sampling weights); True implies both income_measure
+            percentiles on x axis and mtr values for each percentile
+            on the y axis are computed using dollar income_measure
+            weights (in addition to sampling weights).  Specifying
+            True produces a graph x axis that shows income_measure
+            (not filing unit) percentiles.
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object
+        """
+        # pylint: disable=too-many-arguments,too-many-locals
+        # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.array_len == self.array_len
+        # check validity of mars parameter
+        assert mars == 'ALL' or (mars >= 1 and mars <= 4)
+        # check validity of income_measure
+        assert (income_measure == 'expanded_income' or
+                income_measure == 'agi' or
+                income_measure == 'wages')
+        if income_measure == 'expanded_income':
+            income_variable = 'expanded_income'
+        elif income_measure == 'agi':
+            income_variable = 'c00100'
+        elif income_measure == 'wages':
+            income_variable = 'e00200'
+        # check validity of mtr_measure parameter
+        assert (mtr_measure == 'combined' or
+                mtr_measure == 'itax' or
+                mtr_measure == 'ptax')
+        # calculate marginal tax rates
+        (mtr1_ptax, mtr1_itax,
+         mtr1_combined) = self.mtr(variable_str=mtr_variable,
+                                   wrt_full_compensation=mtr_wrt_full_compen)
+        (mtr2_ptax, mtr2_itax,
+         mtr2_combined) = calc.mtr(variable_str=mtr_variable,
+                                   wrt_full_compensation=mtr_wrt_full_compen)
+        if mtr_measure == 'combined':
+            mtr1 = mtr1_combined
+            mtr2 = mtr2_combined
+        elif mtr_measure == 'itax':
+            mtr1 = mtr1_itax
+            mtr2 = mtr2_itax
+        elif mtr_measure == 'ptax':
+            mtr1 = mtr1_ptax
+            mtr2 = mtr2_ptax
+        # extract datafames needed by mtr_graph_data utility function
+        record_variables = ['s006']
+        if mars != 'ALL':
+            record_variables.append('MARS')
+        record_variables.append(income_variable)
+        vdf = self.dataframe(record_variables)
+        vdf['mtr1'] = mtr1
+        vdf['mtr2'] = mtr2
+        # select filing-status subgroup, if any
+        if mars != 'ALL':
+            vdf = vdf[vdf['MARS'] == mars]
+        # construct data for graph
+        data = mtr_graph_data(vdf,
+                              year=self.current_year,
+                              mars=mars,
+                              mtr_measure=mtr_measure,
+                              alt_e00200p_text=alt_e00200p_text,
+                              mtr_wrt_full_compen=mtr_wrt_full_compen,
+                              income_measure=income_measure,
+                              dollar_weighting=dollar_weighting)
+        # construct figure from data
+        fig = xtr_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='',
+                             legendloc='bottom_right')
+        return fig
+
+    def atr_graph(self, calc,
+                  mars='ALL',
+                  atr_measure='combined',
+                  min_avginc=1000):
+        """
+        Create average tax rate graph that can be written to an HTML
+        file (using the write_graph_file utility function) or shown on
+        the screen immediately in an interactive or notebook session
+        (following the instructions in the documentation of the
+        xtr_graph_plot utility function).  The graph shows the mean
+        average tax rate for each expanded-income percentile.
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline,
+            where both self and calc have calculated taxes for this year
+            before being used by this method
+
+        mars : integer or string
+            specifies which filing status subgroup to show in the graph
+
+            - 'ALL': include all filing units in sample
+
+            - 1: include only single filing units
+
+            - 2: include only married-filing-jointly filing units
+
+            - 3: include only married-filing-separately filing units
+
+            - 4: include only head-of-household filing units
+
+        atr_measure : string
+            specifies which average tax rate to show on graph's y axis
+
+            - 'itax': average individual income tax rate
+
+            - 'ptax': average payroll tax rate
+
+            - 'combined': sum of average income and payroll tax rates
+
+        min_avginc : float
+            specifies the minimum average expanded income for a percentile to
+            be included in the graph data; value must be positive
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object
+        """
+        # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.array_len == self.array_len
+        # check validity of function arguments
+        assert mars == 'ALL' or (mars >= 1 and mars <= 4)
+        assert (atr_measure == 'combined' or
+                atr_measure == 'itax' or
+                atr_measure == 'ptax')
+        assert min_avginc > 0
+        # extract needed output that is assumed unchanged by reform from self
+        record_variables = ['s006']
+        if mars != 'ALL':
+            record_variables.append('MARS')
+        record_variables.append('expanded_income')
+        vdf = self.dataframe(record_variables)
+        # create 'tax1' and 'tax2' columns given specified atr_measure
+        if atr_measure == 'combined':
+            vdf['tax1'] = self.array('combined')
+            vdf['tax2'] = calc.array('combined')
+        elif atr_measure == 'itax':
+            vdf['tax1'] = self.array('iitax')
+            vdf['tax2'] = calc.array('iitax')
+        elif atr_measure == 'ptax':
+            vdf['tax1'] = self.array('payrolltax')
+            vdf['tax2'] = calc.array('payrolltax')
+        # select filing-status subgroup, if any
+        if mars != 'ALL':
+            vdf = vdf[vdf['MARS'] == mars]
+        # construct data for graph
+        data = atr_graph_data(vdf,
+                              year=self.current_year,
+                              mars=mars,
+                              atr_measure=atr_measure,
+                              min_avginc=min_avginc)
+        # construct figure from data
+        fig = xtr_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='',
+                             legendloc='bottom_right')
+        return fig
+
+    def decile_graph(self, calc):
+        """
+        Create graph that shows percentage change in aftertax expanded
+        income (from going from policy in self to policy in calc) for
+        each expanded-income decile and subgroups of the top decile.
+        The graph can be written to an HTML file (using the
+        write_graph_file utility function) or shown on the screen
+        immediately in an interactive or notebook session (following
+        the instructions in the documentation of the xtr_graph_plot
+        utility function).
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline,
+            where both self and calc have calculated taxes for this year
+            before being used by this method
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object
+        """
+        # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.array_len == self.array_len
+        diff_table = self.difference_table(calc,
+                                           groupby='weighted_deciles',
+                                           income_measure='expanded_income',
+                                           tax_to_diff='combined')
+        # construct data for graph
+        data = dec_graph_data(diff_table, year=self.current_year)
+        # construct figure from data
+        fig = dec_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='')
+        return fig
 
     def current_law_version(self):
         """
         Return Calculator object same as self except with current-law policy.
         """
         return Calculator(policy=self.policy.current_law_version(),
-                          records=copy.deepcopy(self.records),
+                          records=self.records,
                           sync_years=False,
-                          consumption=copy.deepcopy(self.consumption),
-                          behavior=copy.deepcopy(self.behavior))
+                          consumption=self.consumption,
+                          behavior=self.behavior)
 
     @staticmethod
     def read_json_param_objects(reform, assump):
@@ -581,7 +1062,6 @@ class Calculator(object):
                         else:
                             bval = getattr(base, param[1:], None)
                             if isinstance(bval, np.ndarray):
-                                # pylint: disable=no-member
                                 bval = bval.tolist()
                                 if basevals[param]['boolean_value']:
                                     bval = [True if item else
@@ -620,6 +1100,46 @@ class Calculator(object):
             doc += 'none: using current-law policy parameters\n'
         return doc
 
+    def ce_aftertax_income(self, calc,
+                           custom_params=None,
+                           require_no_agg_tax_change=True):
+        """
+        Return dictionary that contains certainty-equivalent of the
+        expected utility of after-tax expanded income computed for
+        several constant-relative-risk-aversion parameter values
+        for each of two Calculator objects: self, which represents
+        the pre-reform situation, and calc, which represents the
+        post-reform situation, both of which MUST have had calc_call()
+        called before being passed to this function.
+
+        IMPORTANT NOTES: These normative welfare calculations are very
+        simple.  It is assumed that utility is a function of only
+        consumption, and that consumption is equal to after-tax
+        income.  This means that any assumed behavioral responses that
+        change work effort will not affect utility via the
+        correpsonding change in leisure.  And any saving response to
+        changes in after-tax income do not affect consumption.
+
+        The cmin value is the consumption level below which marginal
+        utility is considered to be constant.  This allows the handling
+        of filing units with very low or even negative after-tax expanded
+        income in the expected-utility and certainty-equivalent calculations.
+        """
+        # check that calc and self are consistent
+        assert isinstance(calc, Calculator)
+        assert calc.array_len == self.array_len
+        assert calc.current_year == self.current_year
+        # extract data from self and calc
+        records_variables = ['s006', 'combined', 'expanded_income']
+        df1 = self.dataframe(records_variables)
+        df2 = calc.dataframe(records_variables)
+        cedict = ce_aftertax_expanded_income(
+            df1, df2,
+            custom_params=custom_params,
+            require_no_agg_tax_change=require_no_agg_tax_change)
+        cedict['year'] = self.current_year
+        return cedict
+
     # ----- begin private methods of Calculator class -----
 
     def _taxinc_to_amt(self):
@@ -654,33 +1174,33 @@ class Calculator(object):
         StdDed(self.policy, self.records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.records.standard)
-        item = copy.deepcopy(self.records.c04470)
-        item_no_limit = copy.deepcopy(self.records.c21060)
-        item_phaseout = copy.deepcopy(self.records.c21040)
-        self.records.c04470 = np.zeros(self.records.dim)
-        self.records.c21060 = np.zeros(self.records.dim)
-        self.records.c21040 = np.zeros(self.records.dim)
+        std = copy.deepcopy(self.array('standard'))
+        item = copy.deepcopy(self.array('c04470'))
+        item_no_limit = copy.deepcopy(self.array('c21060'))
+        item_phaseout = copy.deepcopy(self.array('c21040'))
+        self.zeroarray('c04470')
+        self.zeroarray('c21060')
+        self.zeroarray('c21040')
         self._taxinc_to_amt()
-        std_taxes = copy.deepcopy(self.records.c05800)
+        std_taxes = copy.deepcopy(self.array('c05800'))
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
-        self.records.standard = np.zeros(self.records.dim)
-        self.records.c21060 = item_no_limit
-        self.records.c21040 = item_phaseout
-        self.records.c04470 = item
+        self.zeroarray('standard')
+        self.setarray('c21060', item_no_limit)
+        self.setarray('c21040', item_phaseout)
+        self.setarray('c04470', item)
         self._taxinc_to_amt()
-        item_taxes = copy.deepcopy(self.records.c05800)
+        item_taxes = copy.deepcopy(self.array('c05800'))
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
-        self.records.standard[:] = np.where(item_taxes < std_taxes,
-                                            0., std)
-        self.records.c04470[:] = np.where(item_taxes < std_taxes,
-                                          item, 0.)
-        self.records.c21060[:] = np.where(item_taxes < std_taxes,
-                                          item_no_limit, 0.)
-        self.records.c21040[:] = np.where(item_taxes < std_taxes,
-                                          item_phaseout, 0.)
+        self.setarray('standard', np.where(item_taxes < std_taxes,
+                                           0., std))
+        self.setarray('c04470', np.where(item_taxes < std_taxes,
+                                         item, 0.))
+        self.setarray('c21060', np.where(item_taxes < std_taxes,
+                                         item_no_limit, 0.))
+        self.setarray('c21040', np.where(item_taxes < std_taxes,
+                                         item_phaseout, 0.))
         # Calculate taxes with optimal itemized deduction
         self._taxinc_to_amt()
         F2441(self.policy, self.records)

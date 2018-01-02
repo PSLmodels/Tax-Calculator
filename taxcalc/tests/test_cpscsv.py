@@ -18,49 +18,7 @@ import json
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, multiyear_diagnostic_table
-from taxcalc import Growfactors
-
-
-def line_diff_list(actline, expline, small):
-    """
-    Return a list containing the pair of lines when they differ significantly;
-    otherwise return an empty list.  Significant difference means one or more
-    numbers differ (between actline and expline) by the "small" amount or more.
-    """
-    # embedded function used only in line_diff_list function
-    def isfloat(value):
-        """
-        Return True if value can be cast to float; otherwise return False.
-        """
-        try:
-            float(value)
-            return True
-        except ValueError:
-            return False
-
-    # begin line_diff_list logic
-    act_line = '<A>' + actline
-    exp_line = '<E>' + expline
-    diffs = list()
-    act_tokens = actline.replace(',', '').split()
-    exp_tokens = expline.replace(',', '').split()
-    for atok, etok in zip(act_tokens, exp_tokens):
-        atok_isfloat = isfloat(atok)
-        etok_isfloat = isfloat(etok)
-        if not atok_isfloat and not etok_isfloat:
-            if atok == etok:
-                continue
-            else:
-                diffs.extend([act_line, exp_line])
-        elif atok_isfloat and etok_isfloat:
-            if abs(float(atok) - float(etok)) < small:
-                continue
-            else:
-                diffs.extend([act_line, exp_line])
-        else:
-            diffs.extend([act_line, exp_line])
-    return diffs
+from taxcalc import Policy, Records, Calculator, Growfactors, nonsmall_diffs
 
 
 def test_agg(tests_path):
@@ -77,33 +35,23 @@ def test_agg(tests_path):
     calc = Calculator(policy=clp, records=rec)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = multiyear_diagnostic_table(calc, nyrs)
+    adt = calc.diagnostic_table(nyrs)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt to a string with a trailing EOL character
     actual_results = adt.to_string() + '\n'
-    act = actual_results.splitlines(True)
     # read expected results from file
     aggres_path = os.path.join(tests_path, 'cpscsv_agg_expect.txt')
     with open(aggres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    exp = expected_results.splitlines(True)
-    # ensure act and exp line lists have differences less than "small" value
-    epsilon = 1e-6
+    # ensure actual and expected results have no nonsmall differences
     if sys.version_info.major == 2:
-        small = epsilon  # tighter test for Python 2.7
+        small = 0.0  # tighter test for Python 2.7
     else:
-        small = 0.1 + epsilon  # looser test for Python 3.6
-    diff_lines = list()
-    assert len(act) == len(exp)
-    for actline, expline in zip(act, exp):
-        if actline == expline:
-            continue
-        diffs = line_diff_list(actline, expline, small)
-        if diffs:
-            diff_lines.extend(diffs)
-    # test failure if there are any diff_lines
-    if diff_lines:
+        small = 0.1  # looser test for Python 3.6
+    diffs = nonsmall_diffs(actual_results.splitlines(True),
+                           expected_results.splitlines(True), small)
+    if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(actual_results)
@@ -113,9 +61,6 @@ def test_agg(tests_path):
         msg += '--- if new OK, copy cpscsv_agg_actual.txt to  ---\n'
         msg += '---                 cpscsv_agg_expect.txt     ---\n'
         msg += '---            and rerun test.                ---\n'
-        msg += '-------------------------------------------------\n'
-        for line in diff_lines:
-            msg += line
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
@@ -130,7 +75,7 @@ def test_agg(tests_path):
                             adjust_ratios=Records.CPS_RATIOS_FILENAME,
                             start_year=Records.CPSCSV_YEAR)
     calc_subsample = Calculator(policy=Policy(), records=rec_subsample)
-    adt_subsample = multiyear_diagnostic_table(calc_subsample, num_years=nyrs)
+    adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
     reltol = 0.01  # maximum allowed relative difference in tax liability

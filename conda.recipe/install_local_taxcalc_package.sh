@@ -15,7 +15,7 @@ echo "BUILD-PREP..."
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
     echo "==> Uninstalling existing taxcalc package"
-    conda uninstall --yes taxcalc 2>&1 > /dev/null
+    conda uninstall taxcalc --yes 2>&1 > /dev/null
     echo "==> Continuing to build new taxcalc package"
 fi
 
@@ -36,7 +36,10 @@ conda build $NOHASH --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
 
 # install taxcalc conda package
 echo "INSTALLATION..."
-conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
+#OLD#conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
+#OLD# doesn't work in conda 4.4.0 or 4.4.1
+#OLD# see https://github.com/conda/conda/issues/6520
+conda install -c local taxcalc=0.0.0 --yes 2>&1 > /dev/null
 
 # clean-up after package build
 echo "CLEAN-UP..."

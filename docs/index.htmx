@@ -10,22 +10,50 @@ div { max-width: 19cm }
 <body>
 <div>
 
-<h1 id="doc">Using Tax-Calculator</h1>
+<h1 id="top">Using Tax-Calculator</h1>
 
 <p>This document tells you how to use Tax-Calculator, an open-source
 federal income and payroll tax simulation model.  The two ways of
 using Tax-Calculator described here require no computer programming.
-If you want to participate in the development of Tax-Calculator
-&mdash; by asking a question, reporting a bug, improving the documentation
-or making an enhancement to the Python source code &mdash; you should go to
+If you are interested in Python programming with Tax-Calculator, you
+should read the tested recipes in our
+<a href="http://open-source-economics.github.io/Tax-Calculator/cookbook.html">
+Tax-Calculator Cookbook</a>. If you want to participate in the
+development of Tax-Calculator &mdash; by asking a question, reporting
+a bug, improving the documentation or making an enhancement to the
+Python source code &mdash; you should go to
 the <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
 
-<p>Please cite the source of your analysis as "Tax-Calculator (Version
-#.#.#)" and link to this site.</p>
+<p>Please cite the source of your analysis as <q>Tax-Calculator v.
+#.#.#, author's calculations.</q> If you wish to link to Tax-Calculator,
+this page is preferred. Additionally, we strongly recommend that you 
+provide a link to the materials required to replicate your
+analysis or, at least, note that those materials are available 
+upon request.</p>
 
 
-<h2>Document Contents</h2>
+<h2 id="whatsnew">What's New</h2>
+
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/TCJA_Reconciliation.json">TCJA conference committee bill</a>
+reform file and ability to simulate it is available in Tax-Calculator
+release 0.14.1
+
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1762">FAQ on how to analyze TCJA conference committee bill</a> is now available
+
+<p><a href="#partdump">Partial Dump</a> capability allows you to
+specify exactly which variables are included in the output file when
+using the <kbd>tc --dump</kbd> option (available in release 0.14.0 and
+higher)
+
+<p><a href="#fastexec">Faster Execution</a> tip when executing many
+<kbd>tc</kbd> runs that differ by year and/or reform</p>
+
+<p>To upgrade to the newest version of the Tax-Calculator package,
+execute this command:<br><kbd>conda update -c ospc taxcalc</kbd></p>
+
+
+<h2 id="doc">Document Contents</h2>
 
 <p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
 interactive web application</p>
@@ -249,6 +277,13 @@ the range of tc capabilities, enter the following:
 <pre>$ tc --help</pre>
 </p>
 
+<p>After you have installed the taxcalc package, keep it up to date by
+checking for new releases at
+<a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history">this page</a> and, when there
+is a new release, executing this command:
+<pre>$ conda update -c ospc taxcalc</pre>
+The packages are usually available about an hour after the release.</p>
+
 <p>The basic idea of tc tax analysis is that each tax reform is
 specified in a text file using a simple method to describe the details
 of the reform.  Read the next part of this section to see how policy
@@ -413,6 +448,21 @@ dividends (<kbd>e00650</kbd>) for each filing unit.  Again, it is your
 responsibility to prepare input data in a way that ensures this
 relationship is true for each filing unit.</p>
 
+<p id="marskids">Here's an example of how to specify a few stylized
+filing units with and without young children.
+<pre>
+RECID,MARS,XTOT,EIC,n24,...
+   11,   1,   1,  0,  0, ... <== single person with no kids
+   12,   4,   2,  1,  1, ... <== single person with a young kid
+   13,   2,   4,  2,  2, ... <== married couple with two young kids
+</pre>
+Be sure to read the documentation of the <kbd>MARS</kbd>, <kbd>XTOT</kbd>,
+<kbd>EIC</kbd>, and <kbd>n24</kbd> input variables.  Also, there may
+be a need to add of child-age input variables if you want to simulate
+reforms like a child credit bonus for children under five years of
+age.  Also, the universal basic income (UBI) reform is implemented
+using its own set of three age-count input variables.
+
 <p><a href="#cli">Back to Section Contents</a></p>
 
 
@@ -465,9 +515,9 @@ named <kbd>test-20-#-#-doc.text</kbd>.</p>
 name <kbd>test-20-#-#.csv</kbd> as the minimal output file produced in
 example (1).  No other output is generated other than the
 <kbd>test-20-#-#-doc.text</kbd> file.   The
-<kbd>--dump</kbd> option causes all the input variables (including the
-one's understood by Tax-Calculator but not included
-in <kbd>test.csv</kbd>, which are all zero) and all the output
+<kbd>--dump</kbd> option causes <b>all</b> the input variables (including
+the ones understood by Tax-Calculator but not included
+in <kbd>test.csv</kbd>, which are all zero) and <b>all</b> the output
 variables calculated by Tax-Calculator to be included in the output
 file.  For a complete list of input variables, see
 the <a href="#input">Input Variables</a> section.  For a complete list
@@ -478,6 +528,20 @@ example (2) can be used as an input file and it will produce exactly
 the same tax liabilities (apart from rounding errors of one or two
 cents) as in the original dump output.</p>
 
+<p id="partdump">This full dump output can be useful for debugging and
+is small when using a several stylized filing units as input.  But when
+using large samples as input (for example, the <kbd>cps.csv</kbd> input
+file), the size of the dump output becomes quite large. For Tax-Calculator
+versions 0.14.0 and higher, there is a way to specify a <b>partial dump</b>
+that includes only variables of interest.  To have <kbd>tc</kbd> do a
+partial dump, create a file named <kbd>tcdumpvars</kbd> in the
+directory where <kbd>tc</kbd> writes output files and in that
+<kbd>tcdumpvars</kbd> file list the names of the variables to be
+included in the partial dump.  You can put the varible names on
+separate lines and/or put several names on one line separated by
+spaces.  If there is no <kbd>tcdumpvars</kbd> file, the
+<kbd>--dump</kbd> option produces a full dump.</p>
+
 <p><pre>
 (3)$ tc test.csv 2020 --sqldb
 </pre></p>
@@ -487,7 +551,9 @@ that the dump output is written not to a CSV-formatted file, but to
 the dump table in an SQLite3 database file, which is
 called <kbd>test-20-#-#.db</kbd> in this example.  Because
 the <kbd>--dump</kbd> option is not used in example (3), minimal
-output will be written to the <kbd>test-20-#-#.csv</kbd> file.</p>
+output will be written to the <kbd>test-20-#-#.csv</kbd> file.
+Note that the presence of the <kbd>tcdumpvars</kbd> file causes
+the contents of the database file to be a partial dump.</p>
 
 <p> Pros and cons of putting dump output in a CSV file or an SQLite3
 database table:  The CSV file is almost twice as large as the
@@ -551,10 +617,17 @@ the <kbd>ref3.json</kbd> file, the content of which is:
     }
 }
 </pre>
-The output options illustrated in the following examples generate
+
+<p>The output options illustrated in the following examples generate
 tables of the post-reform level and the reform-induced change in tax
 liability by income deciles as well as graphs of marginal and average
-tax rates by income percentile.
+tax rates by income percentile and percentage change in aftertax
+income by income decile.  These tables and graphs are meant to provide
+a quick glance at the impact of a reform.  Any serious analysis of a
+reform will involve generating custom tables and graphs using
+<a href="#partdump">partial dump</a> output.  One of many examples
+of this sort of custom analysis is
+<a href="https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/?">here</a>.</p>
 
 <p><pre>
 (7)$ tc cps.csv 2022 --reform ref3.json --tables
@@ -568,32 +641,32 @@ cps-22-ref3-#-doc.text	cps-22-ref3-#-tab.text	cps-22-ref3-#.csv
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.6      -2.1       3.6       0.0       1.5
- 1    17.93     202.8     -15.4      13.7       0.0      -1.7
- 2    17.93     353.5     -19.2      25.3       0.0       6.0
- 3    17.93     513.8     -16.9      47.0       0.0      30.1
- 4    17.93     696.3      -1.2      72.3       0.0      71.2
- 5    17.93     928.0      24.0     104.3       0.0     128.2
- 6    17.93    1246.3      59.9     147.5       0.0     207.4
- 7    17.93    1723.5     121.0     215.3       0.0     336.3
- 8    17.93    2497.1     224.8     317.9       0.0     542.6
- 9    17.93    5949.7    1099.9     517.8       0.0    1617.8
- A   179.26   14107.4    1474.8    1464.8       0.0    2939.6
+ 0    17.93      -3.5      -2.1       3.6       0.0       1.6
+ 1    17.93     201.9     -15.3      13.6       0.0      -1.8
+ 2    17.93     351.9     -19.1      25.0       0.0       5.9
+ 3    17.93     512.8     -17.0      47.2       0.0      30.2
+ 4    17.93     696.2      -1.2      72.5       0.0      71.3
+ 5    17.93     929.0      23.9     104.4       0.0     128.4
+ 6    17.93    1248.8      60.3     148.4       0.0     208.7
+ 7    17.93    1728.2     121.4     215.6       0.0     337.0
+ 8    17.93    2504.8     225.6     318.8       0.0     544.3
+ 9    17.93    5945.2    1089.6     516.7       0.0    1606.3
+ A   179.26   14115.3    1466.0    1465.8       0.0    2931.8
 
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.6       0.0       0.0       0.0       0.0
- 1    17.93     202.8      -0.2       0.0       0.0      -0.2
- 2    17.93     353.5      -1.8       0.0       0.0      -1.8
- 3    17.93     513.8      -4.2       0.0       0.0      -4.2
- 4    17.93     696.3      -7.3       0.0       0.0      -7.3
- 5    17.93     928.0     -11.1       0.0       0.0     -11.1
- 6    17.93    1246.3     -17.5       0.0       0.0     -17.5
- 7    17.93    1723.5     -22.7       0.0       0.0     -22.7
- 8    17.93    2497.1     -31.2       0.0       0.0     -31.2
- 9    17.93    5949.7     -26.3       0.0       0.0     -26.3
- A   179.26   14107.4    -122.3       0.0       0.0    -122.3
+ 0    17.93      -3.5       0.0       0.0       0.0       0.0
+ 1    17.93     201.9      -0.2       0.0       0.0      -0.2
+ 2    17.93     351.9      -1.7       0.0       0.0      -1.7
+ 3    17.93     512.8      -4.2       0.0       0.0      -4.2
+ 4    17.93     696.2      -7.3       0.0       0.0      -7.3
+ 5    17.93     929.0     -11.1       0.0       0.0     -11.1
+ 6    17.93    1248.8     -17.5       0.0       0.0     -17.5
+ 7    17.93    1728.2     -22.7       0.0       0.0     -22.7
+ 8    17.93    2504.8     -31.2       0.0       0.0     -31.2
+ 9    17.93    5945.2     -26.2       0.0       0.0     -26.2
+ A   179.26   14115.3    -122.1       0.0       0.0    -122.1
 </pre></p>
 
 <p>Example (7) produces 2022 static output for the filing units in the
@@ -613,7 +686,7 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24*
-cps-24-ref3-#-atr.html	cps-24-ref3-#-mtr.html
+cps-24-ref3-#-atr.html	cps-24-ref3-#-dec.html  cps-24-ref3-#-mtr.html
 cps-24-ref3-#-doc.text	cps-24-ref3-#.csv
 </pre></p>
 
@@ -632,6 +705,11 @@ in <kbd>cps-24-ref3-#-mtr.html</kbd> looks like:</p>
 
 <p><img src="mtr.png" alt="mtr graph"></p>
 
+<p>Here is what the percentage after-tax income change by income
+decile graph in <kbd>cps-24-ref3-#-dec.html</kbd> looks like:</p>
+
+<p><img src="dec.png" alt="dec graph"></p>
+
 <p>There is yet another tc CLI output option that writes to the screen
 results from a normative welfare analysis of the specified policy
 reform.  This <kbd>--ceeu</kbd> option produces experimental results
@@ -639,10 +717,26 @@ that make sense only with input files that contain representative
 samples of the population such as the <kbd>cps.csv</kbd> file.  The
 name of this option stands for certainty-equivalent expected utility.
 If you want to use this output option, you should read the commented
-Python source code for the <kbd>ce_aftertax_income</kbd> function in
-the <kbd>taxcalc/utils.py</kbd> file at the
+Python source code for the <kbd>ce_aftertax_expanded_income</kbd>
+function in the <kbd>taxcalc/utils.py</kbd> file at the
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
+
+<p id="fastexec">In all the examples in this section, we have executed
+one tc run at at time.  But <b>what if you want to execute many tc
+runs</b> because you want results for many years and/or for several
+different reforms.  Unless you are asking for full-dump output, a
+single tc run should take no more than one minute on your computer
+(even if you are using the large <kbd>cps.csv</kbd> input file).  The
+easiest way to speed up the execution of many tc runs is to split them
+into groups of runs and execute each group of runs in a different
+command-prompt window.  On most modern computers that have four CPU
+cores and a fast disk drive, executing four runs in different windows
+will take not much more time than executing a single tc run.  If you
+have more than one run in each group, put them in a Unix/Mac bash
+script or a Windows batch file, and execute one script in each
+command-prompt window.  If it still takes too long, consider splitting
+the tc runs across more than one computer.</p>
 
 <p><a href="#cli">Back to Section Contents</a></p>
 
