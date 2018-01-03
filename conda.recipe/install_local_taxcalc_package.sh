@@ -19,6 +19,14 @@ if [ $? -eq 1 ]; then
     echo "==> Continuing to build new taxcalc package"
 fi
 
+# check version of conda package
+conda list conda | awk '$1=="conda"{v=$2;gsub(/\./,"",v);if(v<444)rc=1}END{exit(rc)}'
+if [ $? -eq 1 ]; then
+    echo "==> Installing conda 4.4.4+"
+    conda install conda>=4.4.4 --yes 2>&1 > /dev/null
+    echo "==> Continuing to build new taxcalc package"
+fi
+
 # install conda-build package if not present
 conda list build | awk '$1~/conda-build/{rc=1}END{exit(rc)}'
 if [ $? -eq 0 ]; then
