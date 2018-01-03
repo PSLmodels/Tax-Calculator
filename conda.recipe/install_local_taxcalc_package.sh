@@ -36,10 +36,11 @@ conda build $NOHASH --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
 
 # install taxcalc conda package
 echo "INSTALLATION..."
-#OLD#conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
-#OLD# doesn't work in conda 4.4.0 or 4.4.1
-#OLD# see https://github.com/conda/conda/issues/6520
-conda install -c local taxcalc=0.0.0 --yes 2>&1 > /dev/null
+conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
+#NOTE# the --use-local option was broken by conda 4.4.0 and fixed by 4.4.4
+#NOTE# see https://github.com/conda/conda/issues/6520
+#NOTE# interim usage was as follows:
+#NOTE# conda install -c local taxcalc=0.0.0 --yes 2>&1 > /dev/null
 
 # clean-up after package build
 echo "CLEAN-UP..."

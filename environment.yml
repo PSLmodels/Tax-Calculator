@@ -1,5 +1,6 @@
 name: taxcalc-dev
 dependencies:
+- conda >=4.4.4
 - numpy >=1.12.1
 - pandas >=0.21.0
 - numba
