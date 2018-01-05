@@ -77,9 +77,9 @@ def allparams_batch(request, allparams, sorted_param_names):
     """
     Fixture for grouping Tax-Calculator parameters
     """
-    IX = request.param
-    ix_start = IX * BATCHSIZE
-    ix_end = min((IX + 1) * BATCHSIZE, NPARAMS)
+    ix = request.param
+    ix_start = ix * BATCHSIZE
+    ix_end = min((ix + 1) * BATCHSIZE, NPARAMS)
     pnames = sorted_param_names[ix_start: ix_end]
     return {pname: allparams[pname] for pname in pnames}
 
