@@ -145,6 +145,7 @@ class Calculator(object):
                       'extrapolated your data to ' +
                       str(self.__records.current_year) + '.')
         assert self.__policy.current_year == self.__records.current_year
+        self.__stored_records = None
 
     def increment_year(self):
         """
@@ -233,18 +234,23 @@ class Calculator(object):
         """
         setattr(self.__records, variable_name, np.zeros(self.array_len))
 
-    def records(self, records_object=None):
+    def store_records(self):
         """
-        If records_object is None,
-         return complete embedded Records object.
-        If records_object is not None,
-         set embedded Records object to records_object.
+        Make internal copy of embedded Records object that can then be
+        restored after interim calculations that make temporary changes
+        to the embedded Records object.
         """
-        if records_object is None:
-            return self.__records
-        else:
-            assert isinstance(records_object, Records)
-            self.__records = records_object
+        assert self.__stored_records is None
+        self.__stored_records = copy.deepcopy(self.__records)
+
+    def restore_records(self):
+        """
+        Set the embedded Records object to the stored Records object
+        saved in the last call to the store_records() method.
+        """
+        assert isinstance(self.__stored_records, Records)
+        self.__records = copy.deepcopy(self.__stored_records)
+        self.__stored_records = None
 
     def records_current_year(self, year=None):
         """
@@ -594,8 +600,8 @@ class Calculator(object):
         finite_diff = 0.01  # a one-cent difference
         if negative_finite_diff:
             finite_diff *= -1.0
-        # save records object in order to restore it after mtr computations
-        recs0 = copy.deepcopy(self.records())
+        # remember records object in order to restore it after mtr computations
+        self.store_records()
         # extract variable array(s) from embedded records object
         variable = self.array(variable_str)
         if variable_str == 'e00200p':
@@ -627,7 +633,7 @@ class Calculator(object):
         incometax_chng = self.array('iitax')
         combined_taxes_chng = incometax_chng + payrolltax_chng
         # calculate base level of taxes after restoring records object
-        self.records(recs0)
+        self.restore_records()
         if not calc_all_already_called or zero_out_calculated_vars:
             self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
         payrolltax_base = self.array('payrolltax')
