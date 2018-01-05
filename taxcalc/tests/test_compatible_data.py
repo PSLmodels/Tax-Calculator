@@ -3,15 +3,10 @@ Tests of the compatible_data field in current_law_policy.json.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_pufcsv.py
-# pylint --disable=locally-disabled test_pufcsv.py
 
-import os
-import json
-import difflib
+import copy
 import pytest
 import numpy as np
-import pandas as pd
-import copy
 import six
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator
@@ -29,7 +24,6 @@ def reform_xx():
     # Set baseline to activate parameters that are inactive under current law.
     _reform_xx = {
         2017: {
-            '_CTC_new_refund_limited': [True],
             '_FST_AGI_trt': [0.5],
             '_CTC_new_rt': [0.5],
             '_CTC_new_c': [5000],
@@ -83,9 +77,9 @@ def allparams_batch(request, allparams, sorted_param_names):
     """
     Fixture for grouping Tax-Calculator parameters
     """
-    ix = request.param
-    ix_start = ix * BATCHSIZE
-    ix_end = min((ix + 1) * BATCHSIZE, NPARAMS)
+    IX = request.param
+    ix_start = IX * BATCHSIZE
+    ix_end = min((IX + 1) * BATCHSIZE, NPARAMS)
     pnames = sorted_param_names[ix_start: ix_end]
     return {pname: allparams[pname] for pname in pnames}
 
@@ -117,7 +111,11 @@ def tc_objs(request, reform_xx, puf_subsample, cps_subsample):
 def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
                          tc_objs, allparams_batch):
     """
-
+    Test that the compatible_data attribute in current_law_policy.json
+    is accurate by implementing the min and max values of each parameter
+    as reforms and ensuring that revenue differs from baseline when for
+    at least one of these reforms when using datasets marked compatible
+    and does not differ when using datasets marked as incompatible.
     """
     # Get taxcalc objects from tc_objs fixture
     p_xx, rec_xx, c_xx, puftest = tc_objs
@@ -177,7 +175,7 @@ def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
             c_yy.advance_to_year(2018)
             c_yy.calc_all()
             min_reform_change = ((c_yy.records.combined -
-                                 c_xx.records.combined) *
+                                  c_xx.records.combined) *
                                  c_xx.records.s006).sum()
             if min_reform_change == 0 and pname not in exempt:
                 print(pname)
