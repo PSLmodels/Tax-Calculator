@@ -6,13 +6,14 @@ Test generates statistics for puf.csv variables.
 # pylint --disable=locally-disabled test_puf_var_stats.py
 
 import os
+import sys
 import json
 import copy
-import difflib
 import numpy as np
 import pandas as pd
 import pytest
-from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+# pylint: disable=import-error
+from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 
 
 def create_base_table(test_path):
@@ -93,27 +94,17 @@ def calculate_mean_stats(calc, table, year):
     table[str(year)] = means
 
 
-def differences(new_filename, old_filename, stat_kind):
+def differences(new_filename, old_filename, stat_kind, small):
     """
-    Return boolean-string pair with
-    boolean indicating if differences between new and old file contents and
-    string describing differences (if any).
+    Return message string if there are differences at least as large as small;
+    otherwise (i.e., if there are only small differences) return empty string.
     """
     with open(new_filename, 'r') as vfile:
         new_text = vfile.read()
     with open(old_filename, 'r') as vfile:
         old_text = vfile.read()
-    # expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    new = new_text.splitlines(True)
-    old = old_text.splitlines(True)
-    diff = difflib.unified_diff(new, old, fromfile='new', tofile='old', n=0)
-    # convert diff generator into a list of lines:
-    diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
-    # test failure if there are any diff_lines
-    if len(diff_lines) > 0:
-        fail = True
+    if nonsmall_diffs(new_text.splitlines(True),
+                      old_text.splitlines(True), small):
         new_name = os.path.basename(new_filename)
         old_name = os.path.basename(old_filename)
         msg = '{} RESULTS DIFFER:\n'.format(stat_kind)
@@ -127,10 +118,9 @@ def differences(new_filename, old_filename, stat_kind):
         msg += '-------------------------------------------------'
         msg += '-------------\n'
     else:
-        fail = False
         msg = ''
         os.remove(new_filename)
-    return fail, msg
+    return msg
 
 
 MEAN_FILENAME = 'puf_var_wght_means_by_year.csv'
@@ -168,8 +158,18 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     table_corr.sort_index(inplace=True)
     table_corr.to_csv(corr_path, float_format='%8.2f',
                       columns=table_corr.index)
-    # compare new and old CSV files
-    diffs_in_mean, mean_msg = differences(mean_path, mean_path[:-4], 'MEAN')
-    diffs_in_corr, corr_msg = differences(corr_path, corr_path[:-4], 'CORR')
-    if diffs_in_mean or diffs_in_corr:
+    # compare new and old CSV files for nonsmall differences
+    if sys.version_info.major == 2:
+        # tighter tests for Python 2.7
+        mean_msg = differences(mean_path, mean_path[:-4],
+                               'MEAN', small=0.0)
+        corr_msg = differences(corr_path, corr_path[:-4],
+                               'CORR', small=0.0)
+    else:
+        # looser tests for Python 3.6
+        mean_msg = differences(mean_path, mean_path[:-4],
+                               'MEAN', small=1.0)
+        corr_msg = differences(corr_path, corr_path[:-4],
+                               'CORR', small=0.01)
+    if mean_msg or corr_msg:
         raise ValueError(mean_msg + corr_msg)

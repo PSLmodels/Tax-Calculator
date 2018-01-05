@@ -16,13 +16,13 @@ Read tax-calculator/TESTING.md for details.
 # pylint --disable=locally-disabled test_pufcsv.py
 
 import os
+import sys
 import json
-import difflib
 import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 
 
 @pytest.mark.requires_pufcsv
@@ -45,21 +45,20 @@ def test_agg(tests_path, puf_fullsample):
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt results to a string with a trailing EOL character
     adtstr = adt.to_string() + '\n'
-    # generate differences between actual and expected results
+    # create actual and expected lists of diagnostic table lines
     actual = adtstr.splitlines(True)
     aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.txt')
     with open(aggres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expected = expected_results.splitlines(True)
-    diff = difflib.unified_diff(expected, actual,
-                                fromfile='expected', tofile='actual', n=0)
-    # convert diff generator into a list of lines:
-    diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
-    # test failure if there are any diff_lines
-    if diff_lines:
+    expect = expected_results.splitlines(True)
+    # ensure actual and expect lines have differences no more than small value
+    if sys.version_info.major == 2:
+        small = 0.0  # tighter test for Python 2.7
+    else:
+        small = 0.1  # looser test for Python 3.6
+    diffs = nonsmall_diffs(actual, expect, small)
+    if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(adtstr)
@@ -213,21 +212,12 @@ def test_mtr(tests_path, puf_path):
         res += '{} {}:\n'.format(variable_header, var_str)
         res += mtr_bin_counts(mtr_ptax, PTAX_MTR_BIN_EDGES, recid)
         res += mtr_bin_counts(mtr_itax, ITAX_MTR_BIN_EDGES, recid)
-    # generate differences between actual and expected results
-    actual = res.splitlines(True)
+    # check for differences between actual and expected results
     mtrres_path = os.path.join(tests_path, 'pufcsv_mtr_expect.txt')
     with open(mtrres_path, 'r') as expected_file:
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expected = expected_results.splitlines(True)
-    diff = difflib.unified_diff(expected, actual,
-                                fromfile='expected', tofile='actual', n=0)
-    # convert diff generator into a list of lines:
-    diff_lines = list()
-    for line in diff:
-        diff_lines.append(line)
-    # test failure if there are any diff_lines
-    if diff_lines:
+    if nonsmall_diffs(res.splitlines(True), expected_results.splitlines(True)):
         new_filename = '{}{}'.format(mtrres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
             new_file.write(res)

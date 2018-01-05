@@ -199,8 +199,8 @@ class Policy(ParametersBase):
             raise ValueError(self.reform_errors)
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
-            self._apply_cpi_offset(reform)
-            self.set_default_vals()
+            known_years = self._apply_cpi_offset(reform)
+            self.set_default_vals(known_years=known_years)
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()
@@ -359,17 +359,24 @@ class Policy(ParametersBase):
 
     def _apply_cpi_offset(self, reform):
         """
+        Call this method ONLY if _cpi_offset_in_reform returns True.
         Apply CPI offset to inflation rates and
         revert indexed parameter values in preparation for re-indexing.
+        Also, return known_years which is
+        (first cpi_offset year - start year + 1).
         """
         # extrapolate cpi_offset reform
         self.set_year(self.start_year)
+        first_cpi_offset_year = 0
         for year in sorted(reform.keys()):
             self.set_year(year)
             if '_cpi_offset' in reform[year]:
+                if first_cpi_offset_year == 0:
+                    first_cpi_offset_year = year
                 oreform = {'_cpi_offset': reform[year]['_cpi_offset']}
                 self._update({year: oreform})
         self.set_year(self.start_year)
+        assert first_cpi_offset_year > 0
         # adjust inflation rates
         cpi_offset = getattr(self, '_cpi_offset')
         for idx in range(0, self.num_years):
@@ -379,6 +386,8 @@ class Policy(ParametersBase):
         for name in self._vals.keys():
             if self._vals[name]['cpi_inflated']:
                 setattr(self, name, self._vals[name]['value'])
+        # return known_years
+        return first_cpi_offset_year - self.start_year + 1
 
     def _validate_parameter_names_types(self, reform):
         """
@@ -424,10 +433,13 @@ class Policy(ParametersBase):
                                 pname = name
                             else:
                                 pname = '{}_{}'.format(name, idx)
-                            pvalue_boolean = (isinstance(pvalue[idx], bool) or
-                                              (isinstance(pvalue[idx], int) and
-                                               (pvalue[idx] == 0 or
-                                                pvalue[idx] == 1)))
+                            pvalue_boolean = (
+                                isinstance(pvalue[idx], bool) or
+                                (isinstance(pvalue[idx], int) and
+                                 (pvalue[idx] == 0 or pvalue[idx] == 1)) or
+                                (isinstance(pvalue[idx], float) and
+                                 (pvalue[idx] == 0.0 or pvalue[idx] == 1.0))
+                            )
                             if bool_type:
                                 if not pvalue_boolean:
                                     msg = '{} {} value {} is not boolean'
