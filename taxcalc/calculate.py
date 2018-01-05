@@ -246,7 +246,7 @@ class Calculator(object):
     def restore_records(self):
         """
         Set the embedded Records object to the stored Records object
-        saved in the last call to the store_records() method.
+        that was saved in the last call to the store_records() method.
         """
         assert isinstance(self.__stored_records, Records)
         self.__records = copy.deepcopy(self.__stored_records)
