@@ -285,7 +285,7 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
+def UBI(nu18, n1821, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
         ubi, taxable_ubi, nontaxable_ubi):
     """
 
@@ -294,9 +294,9 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
     nu18: Number of people in the tax unit under 18
     n1821: Number of people in the tax unit age 18-20
     n21: Number of people in the tax unit age 21+
-    UBI1: UBI for those under 18
-    UBI2: UBI for those between 18 to 20
-    UBI3: UBI for those 21 or more
+    UBI_u18: UBI benefit for those under 18
+    UBI_1820: UBI benefit for those between 18 to 20
+    UBI_21: UBI benefit for those 21 or more
     UBI_ecrt: Fraction of UBI benefits that are not included in AGI
 
     Returns
@@ -307,7 +307,7 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
                     This is added to expanded income
 
     """
-    ubi = nu18 * UBI1 + n1821 * UBI2 + n21 * UBI3
+    ubi = nu18 * UBI_u18 + n1821 * UBI_1820 + n21 * UBI_21
     taxable_ubi = ubi * (1. - UBI_ecrt)
     nontaxable_ubi = ubi - taxable_ubi
     return ubi, taxable_ubi, nontaxable_ubi

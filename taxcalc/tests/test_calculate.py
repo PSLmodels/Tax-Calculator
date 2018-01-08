@@ -944,7 +944,9 @@ def test_distribution_tables(cps_subsample):
     dt1, dt2 = calc1.distribution_tables(calc1)
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
-    reform = {2014: {'_UBI1': [1000], '_UBI2': [1000], '_UBI3': [1000]}}
+    reform = {2014: {'_UBI_u18': [1000],
+                     '_UBI_1820': [1000],
+                     '_UBI_21': [1000]}}
     pol.implement_reform(reform)
     assert not pol.reform_errors
     calc2 = Calculator(policy=pol, records=recs)
