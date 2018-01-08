@@ -13,6 +13,9 @@ for a complete commit history.
 - Make objects embedded in a Calculator object private and provide Calculator class access methods to manipulate the embedded objects
   [[#1791](https://github.com/open-source-economics/Tax-Calculator/pull/1791)
   by Martin Holmer]
+- Rename three UBI policy parameters to be more descriptive
+  [[#1813](https://github.com/open-source-economics/Tax-Calculator/pull/1813)
+  by Martin Holmer as suggested by Max Ghenis]
 
 **New Features**
 - Add `--outdir` option to command-line `tc` tool
