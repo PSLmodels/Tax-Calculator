@@ -21,6 +21,7 @@ def cli_tc_main():
     """
     Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
+    # pylint: disable=too-many-statements
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
