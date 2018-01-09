@@ -1753,12 +1753,7 @@ def LumpSumTax(DSI, num, XTOT,
 
 @iterate_jit(nopython=True)
 def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben, ss_ben,
-                    other_ben, BEN_Benefit_switch, BEN_Medicare_mult,
-                    BEN_Medicaid_mult, BEN_SSI_mult, BEN_SNAP_mult,
-                    BEN_Vet_mult, BEN_SS_mult, mcare_ben_welfare,
-                    mcaid_ben_welfare, ssi_ben_welfare, snap_ben_welfare,
-                    vet_ben_welfare, ss_ben_welfare,
-                    ben_total, ben_welfare):
+                    other_ben, BEN_Benefit_switch, ben_total):
     """
     Calculate total benefit value and benefit welfare value
     """
@@ -1780,20 +1775,7 @@ def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben, ss_ben,
     ben_total = (ssi_ben + snap_ben + vet_ben + mcare_ben + mcaid_ben +
                  ss_ben + other_ben)
 
-    # use welfare multiples to determine percieved benefit amounts
-    ssi_ben_welfare = ssi_ben * BEN_SSI_mult
-    snap_ben_welfare = snap_ben * BEN_SNAP_mult
-    vet_ben_welfare = vet_ben * BEN_Vet_mult
-    mcare_ben_welfare = mcare_ben * BEN_Medicare_mult
-    mcaid_ben_welfare = mcaid_ben * BEN_Medicaid_mult
-    ss_ben_welfare = ss_ben * BEN_SS_mult
-
-    ben_welfare = (ssi_ben_welfare + snap_ben_welfare + vet_ben_welfare +
-                   mcare_ben_welfare + mcaid_ben_welfare + ss_ben_welfare +
-                   other_ben)
-    return (ben_total, ben_welfare, ssi_ben_welfare, snap_ben_welfare,
-            vet_ben_welfare, mcare_ben_welfare, mcaid_ben_welfare,
-            ss_ben_welfare)
+    return ben_total
 
 
 @iterate_jit(nopython=True)

@@ -1090,41 +1090,6 @@
       "type": "float",
       "desc": "Total benefits recieved by that tax unit",
       "form": {}
-    },
-    "ben_welfare": {
-      "type": "float",
-      "desc": "Perceived benefits received after accounting for deadweight loss",
-      "form": {}
-    },
-    "ssi_ben_welfare": {
-      "type": "float",
-      "desc": "Perceived SSI benefits after accounting for deadweight loss",
-      "form": {}
-    },
-    "snap_ben_welfare": {
-      "type": "float",
-      "desc": "Perceived SNAP benefits after accounting for deadweight loss",
-      "form": {}
-    },
-    "vet_ben_welfare": {
-      "type": "float",
-      "desc": "Perceived veterans benefits after accounting for deadweight loss",
-      "form": {}
-    },
-    "mcare_ben_welfare": {
-      "type": "float",
-      "desc": "Perceived Medicare benefits after accounting for deadweight loss",
-      "form": {}
-    },
-    "mcaid_ben_welfare": {
-      "type": "float",
-      "desc": "Perceived Medicaid benefits after accounting for deadweight loss",
-      "form": {}
-    },
-    "ss_ben_welfare": {
-      "type": "float",
-      "desc": "Perceived Social Security benefits after accounting for deadweight loss",
-      "form": {}
     }
   }
 }
