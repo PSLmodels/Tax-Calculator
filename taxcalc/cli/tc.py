@@ -22,10 +22,12 @@ def cli_tc_main():
     Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
+    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
-        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb] [--test]')
+        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb]\n',
+        '          ',
+        '[--outdir] [--test]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -102,6 +104,12 @@ def cli_tc_main():
                               'produced by --dump option.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--outdir',
+                        help=('OUTDIR is name of optional output directory '
+                              'in which all output files are written. '
+                              'No --outdir implies output files are written '
+                              'in the current directory.'),
+                        default=None)
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
                               'test.'),
@@ -118,7 +126,8 @@ def cli_tc_main():
         taxyear = args.TAXYEAR
     # instantiate taxcalcio object and do tax analysis
     tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                     reform=args.reform, assump=args.assump)
+                     reform=args.reform, assump=args.assump,
+                     outdir=args.outdir)
     if tcio.errmsg:
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
