@@ -341,7 +341,7 @@
 
     "_ALD_AlimonyPaid_hc": {
         "long_name": "Adjustment for alimony-paid haircut",
-        "description": "Under pre-TCJA law, the full amount of alimony paid is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to limit the deduction allowed.",
+        "description": "Under pre-TCJA law, the full amount of alimony paid is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.",
         "section_1": "Above The Line Deductions",
         "section_2": "Misc. Adjustment Haircuts",
         "irs_ref": "Form 1040, line 31",
@@ -355,6 +355,28 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0],
+        "range": {"min": 0, "max": 1},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
+    "_ALD_AlimonyReceived_hc": {
+        "long_name": "Adjustment for alimony-received haircut",
+        "description": "Under pre-TCJA law, none of alimony received is taken as an adjustment from gross income in arriving at AGI. This haircut can be used to change the deduction allowed.",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Adjustment Haircuts",
+        "irs_ref": "Form 1040, line ?? (new with TCJA)",
+        "notes": "The final adjustment amount would be (1-Haircut)*AlimonyReceived.",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0],
         "range": {"min": 0, "max": 1},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
