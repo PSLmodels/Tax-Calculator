@@ -144,7 +144,7 @@
         "_ALD_DomesticProduction_hc":
             {"2018": [1],
              "2026": [0]},
-        "_ALD_Alimony_hc":
+        "_ALD_AlimonyPaid_hc":
             {"2019": [1],
              "2026": [0]},
         "_ID_prt":

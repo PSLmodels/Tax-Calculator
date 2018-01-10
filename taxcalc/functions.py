@@ -117,7 +117,7 @@ def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500,
         e03220, e03230, e03240, e03290, care_deduction,
         ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
-        ALD_EarlyWithdraw_hc, ALD_Alimony_hc, ALD_EducatorExpenses_hc,
+        ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_EducatorExpenses_hc,
         ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
         c02900, c02900_in_ei):
@@ -162,7 +162,7 @@ def Adj(e03150, e03210, c03260,
 
         ALD_EarlyWithdraw_hc : Penalty on early withdrawal deduction haricut
 
-        ALD_Alimony_hc : Alimony paid deduction haircut
+        ALD_AlimonyPaid_hc : Alimony paid deduction haircut
 
         ALD_EducatorExpenses_hc: Eductor expenses haircut
 
@@ -185,7 +185,7 @@ def Adj(e03150, e03210, c03260,
     c02900_in_ei = ((1. - ALD_StudentLoan_hc) * e03210 +
                     c03260 +
                     (1. - ALD_EarlyWithdraw_hc) * e03400 +
-                    (1. - ALD_Alimony_hc) * e03500 +
+                    (1. - ALD_AlimonyPaid_hc) * e03500 +
                     (1. - ALD_EducatorExpenses_hc) * e03220 +
                     (1. - ALD_Tuition_hc) * e03230 +
                     (1. - ALD_DomesticProduction_hc) * e03240 +
