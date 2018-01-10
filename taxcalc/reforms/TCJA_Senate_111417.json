@@ -13,7 +13,7 @@
 // -  Changes to itemized deductions (8)
 // Reform_Parameter_Map:
 // - 1: _II_rt*
-// - 2: _PT_rt*
+// - 2: _PT_*
 // - 3: _STD (can safely ignore WARNINGs about 2026+ values)
 // - 4: _II_em
 // - 5: _DependentCredit_*, _CTC_c, _CTC_ps, _ACTC_Income_thd
@@ -103,10 +103,10 @@
         "_PT_brk6":
             {"2018": [[500000, 1000000, 500000, 500000, 1000000]],
              "2026": [[504406, 567457, 283728, 535931, 567457]]},
-        "_PT_exclusion_rt":
+        "_PT_excl_rt":
             {"2018": [0.174],
              "2026": [0.0]},
-        "_PT_exclusion_wage_limit":
+        "_PT_excl_wagelim_rt":
             {"2018": [0.5],
              "2026": [9e+99]},
         "_STD":

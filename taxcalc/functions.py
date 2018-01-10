@@ -709,17 +709,21 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, c04800,
-           PT_exclusion_rt, PT_exclusion_wage_limit, e00900,
-           e26270, e00200):
+def TaxInc(c00100, standard, c04470, c04600, c04800, MARS,
+           PT_excl_rt, PT_excl_wagelim_rt, PT_excl_wagelim_thd,
+           PT_excl_wagelim_prt, e00900, e26270, e00200):
     """
     TaxInc function: ...
     """
-    pt_exclusion = max(0., PT_exclusion_rt * (e00900 + e26270))
-    if e26270 > 0.:
-        pt_exclusion = min(pt_exclusion, e00200 * PT_exclusion_wage_limit)
-    c04800 = max(0., c00100 - max(c04470, standard) - c04600 -
-                 pt_exclusion)
+    pt_excl_pre = max(0., PT_excl_rt * (e00900 + e26270))
+    wagelim_pre = e00200 * PT_excl_wagelim_rt
+    taxinc_pre = max(0., c00100 - max(c04470, standard) - c04600)
+    # calculate business income exclusion
+    excess = max(taxinc_pre - PT_excl_wagelim_thd[MARS - 1], 0.)
+    wagelim_rt = min(excess * PT_excl_wagelim_prt[MARS - 1], 1.)
+    limit = wagelim_rt * max(pt_excl_pre - wagelim_pre, 0.)
+    pt_excl = pt_excl_pre - limit
+    c04800 = max(0., taxinc_pre - pt_excl)
     return c04800
 
 
