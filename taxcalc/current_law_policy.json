@@ -619,6 +619,36 @@
         "out_of_range_action": "stop"
     },
 
+    "_ALD_BusinessLosses_c": {
+        "long_name": "Maximum amount of business losses deductible",
+        "description": "Business losses in excess of this amount may not be deducted from AGI.",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_II_em": {
         "long_name": "Personal and dependent exemption amount",
         "description": "Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.",
