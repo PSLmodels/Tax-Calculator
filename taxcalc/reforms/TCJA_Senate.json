@@ -14,7 +14,7 @@
 // -  Adopt Chained CPI for parameter indexing (9)
 // Reform_Parameter_Map:
 // - 1: _II_rt*
-// - 2: _PT_rt*
+// - 2: _PT_*
 // - 3: _STD, _STD_Dep, _STD_Aged
 // - 4: _II_em
 // - 5: _DependentCredit_*, _CTC_c, _CTC_ps, _ACTC_Income_thd
@@ -76,9 +76,9 @@
             {"2018": [[200000, 390000, 195000, 200000, 390000]]},
         "_PT_brk6":
             {"2018": [[500000, 1000000, 500000, 500000, 1000000]]},
-        "_PT_exclusion_rt":
+        "_PT_excl_rt":
             {"2018": [0.174]},
-        "_PT_exclusion_wage_limit":
+        "_PT_excl_wagelim_rt":
             {"2018": [0.5]},
         "_STD":
             {"2018": [[12000, 24000, 12000, 18000, 24000]]},
