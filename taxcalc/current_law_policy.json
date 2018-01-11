@@ -3328,7 +3328,7 @@
 
     "_PT_rt1": {
         "long_name": "Pass-through income tax rate 1",
-        "description": "The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 1.",
+        "description": "The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 1.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -3376,7 +3376,7 @@
 
     "_PT_brk1": {
         "long_name": "Pass-through income tax bracket (upper threshold) 1",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold is taxed at tax rate 1.",
+        "description": "Income from sole proprietorships, partnerships and S-corporations below this threshold is taxed at tax rate 1.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -3424,7 +3424,7 @@
 
     "_PT_rt2": {
         "long_name": "Pass-through income tax rate 2",
-        "description": "The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 2 and above tax bracket 1.",
+        "description": "The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 2 and above tax bracket 1.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -3473,7 +3473,7 @@
 
     "_PT_brk2": {
         "long_name": "Pass-through income tax bracket (upper threshold) 2",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 1 is taxed at tax rate 2.",
+        "description": "Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 1 is taxed at tax rate 2.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -3521,7 +3521,7 @@
 
     "_PT_rt3": {
         "long_name": "Pass-through income tax rate 3",
-        "description": "The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 3 and above tax bracket 2.",
+        "description": "The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 3 and above tax bracket 2.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -3569,7 +3569,7 @@
 
     "_PT_brk3": {
         "long_name": "Pass-through income tax bracket (upper threshold) 3",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 2 is taxed at tax rate 3.",
+        "description": "Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 2 is taxed at tax rate 3.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -3617,7 +3617,7 @@
 
     "_PT_rt4": {
         "long_name": "Pass-through income tax rate 4",
-        "description": "The tax rate applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 4 and above tax bracket 3.",
+        "description": "The tax rate applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 4 and above tax bracket 3.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -3665,7 +3665,7 @@
 
     "_PT_brk4": {
         "long_name": "Pass-through income tax bracket (upper threshold) 4",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 3 is taxed at tax rate 4.",
+        "description": "Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 3 is taxed at tax rate 4.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -3713,7 +3713,7 @@
 
     "_PT_rt5": {
         "long_name": "Pass-through income tax rate 5",
-        "description": "The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 5 and above tax bracket 4.",
+        "description": "The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 5 and above tax bracket 4.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -3761,7 +3761,7 @@
 
     "_PT_brk5": {
         "long_name": "Pass-through income tax bracket (upper threshold) 5",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 4 is taxed at tax rate 5.",
+        "description": "Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 4 is taxed at tax rate 5.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -3809,7 +3809,7 @@
 
     "_PT_rt6": {
         "long_name": "Pass-through income tax rate 6",
-        "description": "The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 6 and above tax bracket 5.",
+        "description": "The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 6 and above tax bracket 5.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -3857,7 +3857,7 @@
 
     "_PT_brk6": {
         "long_name": "Pass-through income tax bracket (upper threshold) 6",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 5 is taxed at tax rate 6.",
+        "description": "Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 5 is taxed at tax rate 6.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ).",
@@ -3905,7 +3905,7 @@
 
     "_PT_rt7": {
         "long_name": "Pass-through income tax rate 7",
-        "description": "The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations below tax bracket 7 and above tax bracket 6.",
+        "description": "The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 7 and above tax bracket 6.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "Form 1040, line 44, instruction (Schedule XYZ)",
@@ -3953,7 +3953,7 @@
 
     "_PT_brk7": {
         "long_name": "Extra pass-through income tax bracket",
-        "description": "Income from sole proprietorships, partnerships and S corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity.",
+        "description": "Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "",
@@ -4001,7 +4001,7 @@
 
     "_PT_rt8": {
         "long_name": "Extra pass-through income tax rate",
-        "description": "The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S corporations above the tax bracket 7.",
+        "description": "The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations above the tax bracket 7.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "",
@@ -4159,7 +4159,7 @@
 
     "_PT_excl_wagelim_rt": {
         "long_name": "Wage limit rate on pass-through income exclusion",
-        "description": "If taxpayer has partnership/ S corporation income, the amount of business income excluded from taxable income may not exceed this fraction of wages.",
+        "description": "If taxpayer has partnership/S-corporation income, the amount of business income excluded from taxable income may not exceed this fraction of wages.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "",
@@ -4207,7 +4207,7 @@
 
     "_PT_excl_wagelim_thd": {
         "long_name": "Phase-in threshold of wage limit on pass-through income exclusion",
-        "description": "If taxpayer has partnership/ S corporation income, the amount of business income excluded from taxable income is limited by wages if taxable income exceeds this threshold.",
+        "description": "If taxpayer has partnership/S-corporation income, the amount of business income excluded from taxable income is limited by wages if taxable income exceeds this threshold.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "",
@@ -4237,7 +4237,7 @@
 
     "_PT_excl_wagelim_prt": {
         "long_name": "Phase-in rate of wage limit on pass-through income exclusion",
-        "description": "If taxpayer has partnership/ S corporation income, the wage limitation on the amount of business income excluded from taxable income is phased in at this rate.",
+        "description": "If taxpayer has partnership/S-corporation income, the wage limitation on the amount of business income excluded from taxable income is phased in at this rate.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "irs_ref": "",

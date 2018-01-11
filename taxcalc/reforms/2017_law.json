@@ -13,10 +13,10 @@
 // Reform_Parameter_Map:
 // - 0: _cpi_offset
 // - 1: _II_rt? and _PT_rt?
-// - 2: _PT_exclusion_rt and _PT_exclusion_wage_limit
+// - 2: four _PT_excl_* parameters
 // - 3: _CTC_c and _CTC_ps and _ACTC_Income_thd
 // - 4: four different _DependentCredit_* parameters
-// - 5: _ALD_Alimony_hc and _ALD_DomesticProduction_hc
+// - 5: three _ALD_* parameters
 // - 6: seven different _ID_* parameters
 // NOTE: this reform projects pre-TCJA 2017 parameter values forward using the
 //       unchained CPI-U price index.
@@ -37,16 +37,19 @@
         "_PT_rt5": {"2018": [0.33]},
         "_PT_rt6": {"2018": [0.35]},
         "_PT_rt7": {"2018": [0.396]},
-        "_PT_exclusion_rt": {"2018": [0.0]},
-        "_PT_exclusion_wage_limit": {"2018": [9e99]},
+        "_PT_excl_rt": {"2018": [0.0]},
+        "_PT_excl_wagelim_rt": {"2018": [9e99]},
+        "_PT_excl_wagelim_thd": {"2018": [[0.0, 0.0, 0.0, 0.0, 0.0]]},
+        "_PT_excl_wagelim_prt": {"2018": [[0.0, 0.0, 0.0, 0.0, 0.0]]},
         "_CTC_c": {"2018": [1000.0]},
         "_CTC_ps": {"2018": [[75000.0, 110000.0, 55000.0, 75000.0, 75000.0]]},
         "_ACTC_Income_thd": {"2018": [3000.0]},
         "_DependentCredit_Child_c": {"2018": [0.0]},
         "_DependentCredit_Nonchild_c": {"2018": [0.0]},
         "_DependentCredit_Nonchild_c": {"2018": [0.0]},
-        "_DependentCredit_before_CTC": {"2018": [0]},
-        "_ALD_Alimony_hc": {"2019": [0.0]},
+        "_DependentCredit_before_CTC": {"2018": [0.0]},
+        "_ALD_AlimonyPaid_hc": {"2019": [0.0]},
+        "_ALD_AlimonyReceived_hc": {"2019": [1.0]},
         "_ALD_DomesticProduction_hc": {"2018": [0.0]},
         "_ID_prt": {"2018": [0.03]},
         "_ID_crt": {"2018": [0.8]},
