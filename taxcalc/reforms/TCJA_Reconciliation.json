@@ -8,7 +8,7 @@
 // -  Repeal personal exemption (4)
 // -  Modification to child tax credit, nonrefundable dependent credits (5)
 // -  Modification of Alternative Minimum Tax exemption (6)
-// -  Repeal of certain above the line deductions (7)
+// -  Changes to certain above the line deductions (7)
 // -  Changes to itemized deductions (8)
 // -  Switch to chained CPI from CPI-U for tax parameter adjustment (9)
 // Reform_Parameter_Map:
@@ -150,9 +150,12 @@
         "_ALD_DomesticProduction_hc":
             {"2018": [1],
              "2026": [0]},
-        "_ALD_Alimony_hc":
+        "_ALD_AlimonyPaid_hc":
             {"2019": [1],
              "2026": [0]},
+        "_ALD_AlimonyReceived_hc":
+            {"2019": [0],
+             "2026": [1]},
         "_ALD_BusinessLosses_c":
             {"2018": [[250000, 500000, 250000, 250000, 500000]],
              "2026": [[9e99, 9e99, 9e99, 9e99, 9e99]]},

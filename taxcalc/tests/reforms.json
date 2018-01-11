@@ -96,8 +96,8 @@
 
   "11": {
       "start_year": 2015,
-      "value": {"_ALD_Alimony_hc": [1]},
-      "name": "Eliminate adjustment for alimony payments",
+      "value": {"_ALD_AlimonyPaid_hc": [1]},
+      "name": "Eliminate AGI adjustment for alimony paid",
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,3.2,3.3,3.5,3.4"
