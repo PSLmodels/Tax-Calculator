@@ -221,7 +221,8 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
 def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
-             CG_nodiff, CG_ec, CG_reinvest_ec_rt, ALD_BusinessLosses_c, MARS,
+             CG_nodiff, CG_ec, CG_reinvest_ec_rt,
+             ALD_BusinessLosses_c, MARS, c02900_in_ei,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
@@ -252,6 +253,9 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
+    # compute loss limitation to be added onto ymod1
+    loss_limit = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
+    c02900_in_ei = c02900_in_ei + loss_limit
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
