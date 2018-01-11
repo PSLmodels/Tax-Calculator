@@ -26,7 +26,7 @@ for a complete commit history.
   by Martin Holmer]
 - Add policy parameter and logic needed to represent TCJA treatment of alimony received
   [[#1818](https://github.com/open-source-economics/Tax-Calculator/pull/1818)
-  by Martin Holmer as suggested by Cody Kallen]
+  by Martin Holmer and Cody Kallen]
 - Add policy parameters and logic needed to represent TCJA limits on pass-through income and business losses
   [[#1819](https://github.com/open-source-economics/Tax-Calculator/pull/1819)
   by Cody Kallen]
