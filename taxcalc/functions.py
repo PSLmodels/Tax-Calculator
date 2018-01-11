@@ -227,6 +227,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
+             ALD_BusinessLosses_c, MARS, c02900_in_ei,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
@@ -254,9 +255,12 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
                                         p22250 + ALD_InvInc_ec_rt * p23250))
         invinc_agi_ec = ALD_InvInc_ec_rt * (e00300 + e00650) + CG_ec_RyanBrady
     # compute ymod1 variable that is included in AGI
-    ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             invinc - invinc_agi_ec +
-             e02000 + e02100 + e02300)
+    ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
+             invinc - invinc_agi_ec + e02100 + e02300 +
+             max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
+    # compute loss limitation to be added onto ymod1
+    loss_limit = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
+    c02900_in_ei = c02900_in_ei + loss_limit
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
@@ -268,7 +272,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1, invinc_agi_ec)
+    return (c01000, c23650, ymod, ymod1, invinc_agi_ec, c02900_in_ei)
 
 
 @iterate_jit(nopython=True)
@@ -714,17 +718,21 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, c04800,
-           PT_exclusion_rt, PT_exclusion_wage_limit, e00900,
-           e26270, e00200):
+def TaxInc(c00100, standard, c04470, c04600, c04800, MARS,
+           PT_excl_rt, PT_excl_wagelim_rt, PT_excl_wagelim_thd,
+           PT_excl_wagelim_prt, e00900, e26270, e00200):
     """
     TaxInc function: ...
     """
-    pt_exclusion = max(0., PT_exclusion_rt * (e00900 + e26270))
-    if e26270 > 0.:
-        pt_exclusion = min(pt_exclusion, e00200 * PT_exclusion_wage_limit)
-    c04800 = max(0., c00100 - max(c04470, standard) - c04600 -
-                 pt_exclusion)
+    pt_excl_pre = max(0., PT_excl_rt * (e00900 + e26270))
+    wagelim_pre = e00200 * PT_excl_wagelim_rt
+    taxinc_pre = max(0., c00100 - max(c04470, standard) - c04600)
+    # calculate business income exclusion
+    excess = max(taxinc_pre - PT_excl_wagelim_thd[MARS - 1], 0.)
+    wagelim_rt = min(excess * PT_excl_wagelim_prt[MARS - 1], 1.)
+    limit = wagelim_rt * max(pt_excl_pre - wagelim_pre, 0.)
+    pt_excl = pt_excl_pre - limit
+    c04800 = max(0., taxinc_pre - pt_excl)
     return c04800
 
 

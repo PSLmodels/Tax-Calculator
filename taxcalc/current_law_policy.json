@@ -641,6 +641,36 @@
         "out_of_range_action": "stop"
     },
 
+    "_ALD_BusinessLosses_c": {
+        "long_name": "Maximum amount of business losses deductible",
+        "description": "Business losses in excess of this amount may not be deducted from AGI.",
+        "section_1": "Above The Line Deductions",
+        "section_2": "Misc. Exclusions",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
     "_II_em": {
         "long_name": "Personal and dependent exemption amount",
         "description": "Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.",
@@ -3211,7 +3241,7 @@
         "out_of_range_action": "stop"
     },
 
-    "_PT_exclusion_rt": {
+    "_PT_excl_rt": {
         "long_name": "Pass-through income exclusion rate",
         "description": "Fraction of qualified business income excluded from taxable income.",
         "section_1": "Personal Income",
@@ -3233,8 +3263,8 @@
         "out_of_range_action": "stop"
     },
 
-    "_PT_exclusion_wage_limit": {
-        "long_name": "Limit on pass-through income exclusion",
+    "_PT_excl_wagelim_rt": {
+        "long_name": "Wage limit rate on pass-through income exclusion",
         "description": "If taxpayer has partnership/ S corporation income, the amount of business income excluded from taxable income may not exceed this fraction of wages.",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
@@ -3250,6 +3280,58 @@
         "integer_value": false,
         "value": [9e99],
         "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
+    "_PT_excl_wagelim_thd": {
+        "long_name": "Phase-in threshold of wage limit on pass-through income exclusion",
+        "description": "If taxpayer has partnership/ S corporation income, the amount of business income excluded from taxable income is limited by wages if taxable income exceeds this threshold.",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflated": true,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [[0.0, 0.0, 0.0, 0.0, 0.0],
+                  [0.0, 0.0, 0.0, 0.0, 0.0],
+                  [0.0, 0.0, 0.0, 0.0, 0.0],
+                  [0.0, 0.0, 0.0, 0.0, 0.0],
+                  [0.0, 0.0, 0.0, 0.0, 0.0]],
+        "range": {"min": 0.0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
+    },
+
+    "_PT_excl_wagelim_prt": {
+        "long_name": "Phase-in rate of wage limit on pass-through income exclusion",
+        "description": "If taxpayer has partnership/ S corporation income, the wage limitation on the amount of business income excluded from taxable income is phased in at this rate.",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflated": false,
+        "col_var": "MARS",
+        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [[1.0, 1.0, 1.0, 1.0, 1.0]],
+        "range": {"min": 0.0, "max": 1.0},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop"
