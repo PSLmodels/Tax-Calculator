@@ -5784,7 +5784,7 @@
         "out_of_range_action": "stop"
     },
 
-    "_UBI1": {
+    "_UBI_u18": {
         "long_name": "UBI benefit for those under 18",
         "description": "UBI benefit provided to people under 18.",
         "section_1": "Universal Basic Income",
@@ -5814,7 +5814,7 @@
         "out_of_range_action": "stop"
     },
 
-    "_UBI2": {
+    "_UBI_1820": {
         "long_name": "UBI benefit for those 18 through 20",
         "description": "UBI benefit provided to people 18-20 years of age.",
         "section_1": "Universal Basic Income",
@@ -5844,7 +5844,7 @@
         "out_of_range_action": "stop"
     },
 
-    "_UBI3": {
+    "_UBI_21": {
         "long_name": "UBI benefit for those 21 and over",
         "description": "UBI benefit provided to people 21 and over.",
         "section_1": "Universal Basic Income",
