@@ -639,7 +639,7 @@
       "name": "Repeal TCJA chained CPI indexing",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.0,-25.9,-29.1,-32.8"
+      "expected": "Tax-Calculator,0.0,-23.0,-26.2,-29.7"
   }, 
 
   "59": {
