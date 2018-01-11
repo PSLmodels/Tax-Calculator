@@ -19,7 +19,7 @@ from taxcalc import nonsmall_diffs
 def test_reform_json_and_output(tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
-    that can then be passed to the Policy class implement_reform() method that
+    that can then be passed to the Policy class implement_reform method that
     generates no reform_errors.
     Then use each reform to generate static tax results for small set of
     filing units in a single tax_year and compare those results with
@@ -91,37 +91,33 @@ def test_reform_json_and_output(tests_path):
         os.remove(res_path)
     else:
         failures.append(res_path)
+    # read 2017_law.json reform file and specify its parameters dictionary
+    pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
     # check reform file contents and reform results for each reform
     reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
     json_reform_files = glob.glob(reforms_path)
     for jrf in json_reform_files:
-        # read contents of jrf (JSON reform file)
-        with open(jrf, 'r') as jfile:
-            jrf_text = jfile.read()
-        # check that jrf_text has "policy" that can be implemented as a reform
-        if '"policy"' in jrf_text:
-            gdiffbase = {}
-            gdiffresp = {}
-            # pylint: disable=protected-access
-            policy_dict = (
-                Calculator._read_json_policy_reform_text(jrf_text,
-                                                         gdiffbase, gdiffresp)
-            )
-            pol = Policy()
-            pol.implement_reform(policy_dict)
-            assert not pol.reform_errors
-            calc2 = Calculator(policy=pol, records=cases, verbose=False)
-            calc2.advance_to_year(tax_year)
-            calc2.calc_all()
-            res_path = jrf.replace('.json', '.res')
-            write_distribution_table(calc2, res_path)
-            if res_and_out_are_same(res_path.replace('.res', '')):
-                os.remove(res_path)
-            else:
-                failures.append(res_path)
-        else:  # jrf_text has no "policy" key
-            msg = 'ERROR: missing policy key in file: {}'
-            raise ValueError(msg.format(os.path.basename(jrf)))
+        # determine reform's baseline by reading contents of jrf
+        with open(jrf, 'r') as rfile:
+            jrf_text = rfile.read()
+            pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
+        # implement the reform relative to its baseline
+        reform = Calculator.read_json_param_objects(jrf_text, None)
+        pol = Policy()  # current-law policy
+        if pre_tcja_baseline:
+            pol.implement_reform(pre_tcja['policy'])
+        pol.implement_reform(reform['policy'])
+        assert not pol.reform_errors
+        calc2 = Calculator(policy=pol, records=cases, verbose=False)
+        calc2.advance_to_year(tax_year)
+        calc2.calc_all()
+        res_path = jrf.replace('.json', '.res')
+        write_distribution_table(calc2, res_path)
+        if res_and_out_are_same(res_path.replace('.res', '')):
+            os.remove(res_path)
+        else:
+            failures.append(res_path)
     if failures:
         msg = 'Following reforms have res-vs-out differences:\n'
         for ref in failures:
@@ -129,16 +125,23 @@ def test_reform_json_and_output(tests_path):
         raise ValueError(msg)
 
 
-def reform_results(reform_dict, puf_data):
+def reform_results(reform_dict, puf_data, reform_2017_law):
     """
     Return actual results of the reform specified in reform_dict.
     """
     # pylint: disable=too-many-locals
-    # create current-law-policy Calculator object
-    pol = Policy()
     rec = Records(data=puf_data)
+    # create baseline Calculator object, calc1
+    pol = Policy()
+    if reform_dict['baseline'] == '2017_law.json':
+        pol.implement_reform(reform_2017_law)
+    elif reform_dict['baseline'] == 'current_law_policy.json':
+        pass
+    else:
+        msg = 'illegal baseline value {}'
+        raise ValueError(msg.format(reform_dict['baseline']))
     calc1 = Calculator(policy=pol, records=rec, verbose=False, behavior=None)
-    # create reform Calculator object with possible behavioral responses
+    # create reform Calculator object, calc2, with possible behavioral response
     start_year = reform_dict['start_year']
     beh = Behavior()
     if '_BE_cg' in reform_dict['value']:
@@ -149,7 +152,7 @@ def reform_results(reform_dict, puf_data):
     reform = {start_year: reform_dict['value']}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec, verbose=False, behavior=beh)
-    # increment both calculators to reform's start_year
+    # increment both Calculator objects to reform's start_year
     calc1.advance_to_year(start_year)
     calc2.advance_to_year(start_year)
     # calculate prereform and postreform output for several years
@@ -160,8 +163,7 @@ def reform_results(reform_dict, puf_data):
         calc1.calc_all()
         prereform = calc1.array(output_type)
         if calc2.behavior.has_response():
-            calc_clp = calc2.current_law_version()
-            calc2_br = Behavior.response(calc_clp, calc2)
+            calc2_br = Behavior.response(calc1, calc2)
             postreform = calc2_br.array(output_type)
         else:
             calc2.calc_all()
@@ -176,6 +178,16 @@ def reform_results(reform_dict, puf_data):
     for iyr in range(0, num_years):
         actual_str += ',{:.1f}'.format(results[iyr])
     return actual_str
+
+
+@pytest.fixture(scope='module', name='baseline_2017_law')
+def fixture_baseline_2017_law(tests_path):
+    """
+    Read ../reforms/2017_law.json and return its policy dictionary.
+    """
+    pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
+    return pre_tcja['policy']
 
 
 @pytest.fixture(scope='module', name='reforms_dict')
@@ -194,10 +206,12 @@ NUM_REFORMS = 62
 
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
-def test_reform(rid, reforms_dict, puf_subsample):
+def test_reform(rid, baseline_2017_law, reforms_dict, puf_subsample):
     """
     Compare actual and expected results for specified reform in reforms_dict.
     """
     reform_id = str(rid)
-    actual = reform_results(reforms_dict[reform_id], puf_subsample)
+    actual = reform_results(reforms_dict[reform_id],
+                            puf_subsample,
+                            baseline_2017_law)
     assert actual == reforms_dict[reform_id]['expected']

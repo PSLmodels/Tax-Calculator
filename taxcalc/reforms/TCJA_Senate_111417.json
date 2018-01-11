@@ -2,6 +2,7 @@
 // Reform_File_Author: Cody Kallen and Sean Wang
 // Reform_Reference: https://www.finance.senate.gov/imo/media/doc/11.9.17%20Chairman's%20Mark.pdf
 // and https://www.finance.senate.gov/imo/media/doc/11.14.17%20Chairman's%20Modified%20Mark.pdf
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
 // -  New pass-through income tax schedule (2)
@@ -108,7 +109,7 @@
              "2026": [0.0]},
         "_PT_excl_wagelim_rt":
             {"2018": [0.5],
-             "2026": [9e+99]},
+             "2026": [9e99]},
         "_STD":
             {"2018": [[12000, 24000, 12000, 18000, 24000]],
              "2026": [[7655, 15311, 7655, 11272, 15311]]},

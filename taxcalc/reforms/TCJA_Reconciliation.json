@@ -1,6 +1,7 @@
 // Title: Tax Cuts and Jobs Act, Reconciliation version
 // Reform_File_Author: Cody Kallen
 // Reform_Reference: http://docs.house.gov/billsthisweek/20171218/CRPT-115HRPT-466.pdf
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
 // -  New pass-through income tax schedule (2)
@@ -107,7 +108,7 @@
              "2026": [0.0]},
         "_PT_excl_wagelim_rt":
             {"2018": [0.5],
-             "2026": [9e+99]},
+             "2026": [9e99]},
         "_PT_excl_wagelim_thd":
             {"2018": [[157500, 315000, 157500, 157500, 315000]],
              "2026": [[0, 0, 0, 0, 0]]},
@@ -178,7 +179,7 @@
             {"2018": [1],
              "2026": [0]},
         "_ID_Medical_frt":
-            {"2018": [0.075],
+            {"2017": [0.075],
              "2019": [0.1]},
         "_cpi_offset":
             {"2017": [-0.0025]}  
