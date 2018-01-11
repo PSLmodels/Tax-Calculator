@@ -258,9 +258,9 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
-    # compute loss limitation to be added onto ymod1
-    loss_limit = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
-    c02900_in_ei = c02900_in_ei + loss_limit
+    # compute business loss excluded from ymod1 but included in expanded_income
+    excluded_loss = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
+    c02900_in_ei += excluded_loss
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
