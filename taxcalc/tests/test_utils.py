@@ -833,7 +833,7 @@ def test_ce_aftertax_income(cps_subsample):
     calc1.advance_to_year(cyr)
     calc1.calc_all()
     # specify calc2 and calc_all() for cyr
-    reform = {2018: {'_II_em': [0.0]}}
+    reform = {2019: {'_II_em': [1000]}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(cyr)

@@ -1,6 +1,7 @@
 // Title: Tax Cuts and Jobs Act, House version, Amended (as of 11-9-17)
 // Reform_File_Author: Cody Kallen and Matt Jensen
 // Reform_Reference: https://waysandmeans.house.gov/chairman-brady-offers-second-amendment-tax-cuts-jobs-act/
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
 // -  New pass-through income tax schedule, with approximated qualifying rules (2)

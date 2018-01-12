@@ -1,5 +1,6 @@
 // Title: Tax Cuts and Jobs Act, Final Senate version
 // Reform_File_Author: Cody Kallen, Sean Wang, & Ernie Tedeschi
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
 // -  New pass-through income tax schedule (2)
@@ -101,12 +102,12 @@
         "_PT_brk6":
             {"2018": [[500000, 1000000, 500000, 500000, 1000000]],
              "2026": [[504406, 567457, 283728, 535931, 567457]]},
-        "_PT_exclusion_rt":
+        "_PT_excl_rt":
             {"2018": [0.23],
              "2026": [0.0]},
-        "_PT_exclusion_wage_limit":
+        "_PT_excl_wagelim_rt":
             {"2018": [0.5],
-             "2026": [9e+99]},
+             "2026": [9e99]},
         "_STD":
             {"2018": [[12000, 24000, 12000, 18000, 24000]],
              "2026": [[7655, 15311, 7655, 11272, 15311]]},

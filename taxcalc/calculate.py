@@ -950,16 +950,6 @@ class Calculator(object):
                              title='')
         return fig
 
-    def current_law_version(self):
-        """
-        Return Calculator object same as self except with current-law policy.
-        """
-        return Calculator(policy=self.__policy.current_law_version(),
-                          records=self.__records,
-                          sync_years=False,
-                          consumption=self.__consumption,
-                          behavior=self.__behavior)
-
     @staticmethod
     def read_json_param_objects(reform, assump):
         """

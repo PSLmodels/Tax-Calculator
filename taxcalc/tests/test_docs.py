@@ -10,7 +10,7 @@ import glob
 import pytest
 
 
-@pytest.mark.local_test
+@pytest.mark.pre_release
 def test_docs_index_up_to_date(tests_path):
     """
     Check that index.html timestamp is greater than the timestamp
@@ -41,7 +41,7 @@ def test_docs_index_up_to_date(tests_path):
         raise ValueError(msg)
 
 
-@pytest.mark.local_test
+@pytest.mark.pre_release
 def test_docs_cookbook_up_to_date(tests_path):
     """
     Check that cookbook.html timestamp is greater than the timestamp
