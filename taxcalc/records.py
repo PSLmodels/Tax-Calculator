@@ -406,26 +406,12 @@ class Records(object):
         """
         Extrapolate benefit variables
         """
-        ben_nan = self.BEN['ssi_benefits_{}'.format(year)][self.RECID].values
-        ben = np.nan_to_num(ben_nan)
-        setattr(self, 'ssi_ben', ben)
-        ben_nan = self.BEN['snap_benefits_{}'.format(year)][self.RECID].values
-        ben = np.nan_to_num(ben_nan)
-        setattr(self, 'snap_ben', ben)
-        ben_nan = self.BEN['vb_benefits_{}'.format(year)][self.RECID].values
-        ben = np.nan_to_num(ben_nan)
-        setattr(self, 'vet_ben', ben)
-        ben_nan = self.BEN['ss_benefits_{}'.format(year)][self.RECID].values
-        ben = np.nan_to_num(ben_nan)
-        setattr(self, 'ss_ben', ben)
-        ben_nan = self.BEN[('medicare_' +
-                            'benefits_{}'.format(year))][self.RECID].values
-        ben = np.nan_to_num(ben_nan)
-        setattr(self, 'mcare_ben', ben)
-        ben_nan = self.BEN[('medicaid_' +
-                            'benefits_{}'.format(year))][self.RECID].values
-        ben = np.nan_to_num(ben_nan)
-        setattr(self, 'mcaid_ben', ben)
+        setattr(self, 'ssi_ben', self.BEN['ssi_{}'.format(year)])
+        setattr(self, 'snap_ben', self.BEN['snap_{}'.format(year)])
+        setattr(self, 'vet_ben', self.BEN['vet_{}'.format(year)])
+        setattr(self, 'oasdi_ben', self.BEN['oasdi_{}'.format(year)])
+        setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
+        setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
 
     def _read_data(self, data, exact_calcs):
         """
@@ -562,17 +548,24 @@ class Records(object):
             setattr(self, 'BEN', BEN)
             return
         if isinstance(benefits, pd.DataFrame):
-            BEN = benefits
+            BEN_partial = benefits
         elif isinstance(benefits, six.string_types):
             benefits_path = os.path.join(Records.CUR_PATH, benefits)
             if os.path.isfile(benefits_path):
-                BEN = pd.read_csv(benefits_path)
+                BEN_partial = pd.read_csv(benefits_path)
             else:
                 # cannot call read_egg_ function in unit tests
                 b_path = os.path.basename(benefits_path)  # pragma: no cover
-                BEN = read_egg_csv(b_path)  # pragma: no cover
+                BEN_partial = read_egg_csv(b_path)  # pragma: no cover
         else:
             msg = 'benefits is not Nont or a string or a Pandas DataFrame'
             raise ValueError(msg)
-        assert isinstance(BEN, pd.DataFrame)
+        assert isinstance(BEN_partial, pd.DataFrame)
+        # expand benefits DataFrame to include those who don't receive benefits
+        recid_df = pd.DataFrame({'RECID': self.RECID})
+        # merge benefits with DataFrame of RECID
+        full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
+        # fill missing values
+        BEN = full_df.fillna(0.0)
+        assert len(recid_df) == len(BEN)
         self.BEN = BEN

@@ -594,9 +594,9 @@
       "form": {"2013-2016": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
-    "ss_ben": {
+    "oasdi_ben": {
       "type": "float",
-      "desc": "Imputed Social Security benefits",
+      "desc": "Imputed OASDI benefits",
       "form": {"2013-2016": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
