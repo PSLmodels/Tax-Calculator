@@ -72,6 +72,7 @@ def test_json_file_contents(tests_path, fname):
                    '_PT_brk1', '_PT_brk2', '_PT_brk3', '_PT_brk4',
                    '_PT_brk5', '_PT_brk6', '_PT_brk7',
                    '_PT_excl_wagelim_thd',
+                   '_ALD_BusinessLosses_c',
                    '_STD', '_II_em',
                    '_AMT_em', '_AMT_em_ps',
                    '_ID_AllTaxes_c']

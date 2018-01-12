@@ -24,7 +24,7 @@ install:
 
 # command to run tests
 script:
-  - python -c "import taxcalc"; coverage run -m py.test -v -m "not requires_pufcsv and not local_test" --pep8
+  - python -c "import taxcalc"; coverage run -m py.test -v -m "not requires_pufcsv and not pre_release" --pep8
 
 after_success:
   - codecov
