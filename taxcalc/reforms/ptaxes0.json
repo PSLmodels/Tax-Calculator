@@ -1,6 +1,7 @@
 // Raise OASDI ("social security") and HI ("Medicare") payroll tax rates
 // : current law OASDI (employee+employer) rate is 0.124
 // : current law    HI (employee+employer) rate is 0.029
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  raise OASDI payroll tax rate in 2018 and 2020 (1)
 // -  raise HI payroll tax rate in 2019 and 2021 (2)

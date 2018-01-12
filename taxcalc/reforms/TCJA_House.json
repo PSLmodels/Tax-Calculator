@@ -1,6 +1,7 @@
 // Title: Tax Cuts and Jobs Act, House version, Chairman's mark (as of 11-3-17)
 // Reform_File_Author: Cody Kallen
 // Reform_Reference: https://waysandmeans.house.gov/wp-content/uploads/2017/11/20171106-Amendment-in-the-Nature-of-a-Substitute-to-H.R.-1.pdf
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
 // -  New pass-through income tax schedule, with qualifying rules (2)

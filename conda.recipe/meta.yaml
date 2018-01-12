@@ -10,7 +10,7 @@ requirements:
   build:
     - python
     - numpy >=1.12.1
-    - pandas >=0.21.0
+    - pandas >=0.22.0
     - numba
     - toolz
     - six
@@ -18,7 +18,7 @@ requirements:
   run:
     - python
     - numpy >=1.12.1
-    - pandas >=0.21.0
+    - pandas >=0.22.0
     - numba
     - toolz
     - six

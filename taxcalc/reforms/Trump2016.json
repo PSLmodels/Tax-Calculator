@@ -1,6 +1,7 @@
 // Title: 2016 Trump Campaign Tax Plan
 // Reform_File_Author: Matt Jensen
 // Reform_Reference: https://www.donaldjtrump.com/policies/tax-plan   
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
 // -  New pass-through income tax schedule (2) 
