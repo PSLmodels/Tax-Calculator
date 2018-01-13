@@ -23,7 +23,7 @@ The following reform proposals have been specified in reforms files:
 
 - [2016 Ryan-Brady "Better Way" Tax Plan](RyanBrady.json)
 
-- [2017 Trump Administration Tax Plan](Trump2017.json) and [analysis of earnings shifting under the reform](https://github.com/open-source-economics/Tax-Calculator/pull/1464#issuecomment-315616386)
+- [2017 Trump Administration Tax Plan](Trump2017.json)
 
 - [2017 Brown-Khanna GAIN Act](BrownKhanna.json)
 

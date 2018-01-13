@@ -162,7 +162,7 @@ def reform_results(reform_dict, puf_data, reform_2017_law):
     for _ in range(0, num_years):
         calc1.calc_all()
         prereform = calc1.array(output_type)
-        if calc2.behavior.has_response():
+        if calc2.behavior_has_response():
             calc2_br = Behavior.response(calc1, calc2)
             postreform = calc2_br.array(output_type)
         else:

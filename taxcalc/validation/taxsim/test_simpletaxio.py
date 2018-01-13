@@ -141,14 +141,13 @@ def test_1(input_file):
                          output_records=False)
     assert simtax.number_input_lines() == NUM_INPUT_LINES
     # test extracting of weight and debugging variables
-    crecs = simtax.calc.records
     SimpleTaxIO.DVAR_NAMES = ['f2441']
-    ovar = SimpleTaxIO.extract_output(crecs, 0,
+    ovar = SimpleTaxIO.extract_output(simtax.calc, 0,
                                       exact=True, extract_weight=True)
     assert ovar
     SimpleTaxIO.DVAR_NAMES = ['badvar']
-    with pytest.raises(ValueError):
-        ovar = SimpleTaxIO.extract_output(crecs, 0)
+    with pytest.raises(AttributeError):
+        ovar = SimpleTaxIO.extract_output(simtax.calc, 0)
     SimpleTaxIO.DVAR_NAMES = []
 
 

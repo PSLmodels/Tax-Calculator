@@ -215,7 +215,7 @@ def calculate(year_n, start_year,
         calc1.increment_year()
         calc2.increment_year()
     calc1.calc_all()
-    if calc2.behavior.has_response():
+    if calc2.behavior_has_response():
         calc2 = Behavior.response(calc1, calc2)
     else:
         calc2.calc_all()

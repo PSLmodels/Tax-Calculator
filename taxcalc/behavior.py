@@ -114,8 +114,8 @@ class Behavior(ParametersBase):
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
         Modify calc2 records to account for behavioral responses that arise
-          from the policy reform that involves moving from calc1.policy to
-          calc2.policy.  Neither calc1 nor calc2 need to have had calc_all()
+          from the policy reform that involves moving from calc1 policy to
+          calc2 policy.  Neither calc1 nor calc2 need to have had calc_all()
           executed before calling the Behavior.response(calc1, calc2) method.
         Returns new Calculator object --- a deepcopy of calc2 --- that
           incorporates behavioral responses to the reform.
@@ -170,7 +170,7 @@ class Behavior(ParametersBase):
         assert calc1.array_len == calc2.array_len
         assert calc1.current_year == calc2.current_year
         # calculate sum of substitution and income effects
-        if calc2.behavior.BE_sub == 0.0 and calc2.behavior.BE_inc == 0.0:
+        if calc2.behavior('BE_sub') == 0.0 and calc2.behavior('BE_inc') == 0.0:
             zero_sub_and_inc = True
         else:
             zero_sub_and_inc = False
@@ -180,7 +180,7 @@ class Behavior(ParametersBase):
                                                    mtr_of='e00200p',
                                                    tax_type='combined')
             # calculate magnitude of substitution effect
-            if calc2.behavior.BE_sub == 0.0:
+            if calc2.behavior('BE_sub') == 0.0:
                 sub = np.zeros(calc1.array_len)
             else:
                 # proportional change in marginal net-of-tax rates on earnings
@@ -188,12 +188,14 @@ class Behavior(ParametersBase):
                 mtr1 = np.where(wage_mtr1 > nearone, nearone, wage_mtr1)
                 mtr2 = np.where(wage_mtr2 > nearone, nearone, wage_mtr2)
                 pch = ((1. - mtr2) / (1. - mtr1)) - 1.
-                if calc2.behavior.BE_subinc_wrt_earnings:
+                if calc2.behavior('BE_subinc_wrt_earnings'):
                     # Note: e00200 is filing unit's wages+salaries
-                    sub = calc2.behavior.BE_sub * pch * calc1.array('e00200')
+                    sub = (calc2.behavior('BE_sub') *
+                           pch * calc1.array('e00200'))
                 else:
                     # Note: c04800 is filing unit's taxable income
-                    sub = calc2.behavior.BE_sub * pch * calc1.array('c04800')
+                    sub = (calc2.behavior('BE_sub') *
+                           pch * calc1.array('c04800'))
                     if trace:
                         trace_output('pch', pch,
                                      [-9e99, -1.00, -0.50, -0.20, -0.10,
@@ -208,26 +210,27 @@ class Behavior(ParametersBase):
                                      calc1.array('s006'),
                                      np.zeros(calc1.array_len))
             # calculate magnitude of income effect
-            if calc2.behavior.BE_inc == 0.0:
+            if calc2.behavior('BE_inc') == 0.0:
                 inc = np.zeros(calc1.array_len)
             else:
-                if calc2.behavior.BE_subinc_wrt_earnings:
+                if calc2.behavior('BE_subinc_wrt_earnings'):
                     # proportional change in after-tax income
                     with np.errstate(invalid='ignore'):
                         pch = np.where(calc1.array('aftertax_income') > 0.,
                                        (calc2.array('aftertax_income') /
                                         calc1.array('aftertax_income')) - 1.,
                                        0.)
-                    inc = calc2.behavior.BE_inc * pch * calc1.array('e00200')
+                    inc = (calc2.behavior('BE_inc') *
+                           pch * calc1.array('e00200'))
                 else:
                     # dollar change in after-tax income
                     # Note: combined is f.unit's income+payroll tax liability
                     dch = calc1.array('combined') - calc2.array('combined')
-                    inc = calc2.behavior.BE_inc * dch
+                    inc = calc2.behavior('BE_inc') * dch
             # calculate sum of substitution and income effects
             si_chg = sub + inc
         # calculate long-term capital-gains effect
-        if calc2.behavior.BE_cg == 0.0:
+        if calc2.behavior('BE_cg') == 0.0:
             ltcg_chg = np.zeros(calc1.array_len)
         else:
             # calculate marginal tax rates on long-term capital gains
@@ -236,11 +239,11 @@ class Behavior(ParametersBase):
                                                    mtr_of='p23250',
                                                    tax_type='iitax')
             rch = ltcg_mtr2 - ltcg_mtr1
-            exp_term = np.exp(calc2.behavior.BE_cg * rch)
+            exp_term = np.exp(calc2.behavior('BE_cg') * rch)
             new_ltcg = calc1.array('p23250') * exp_term
             ltcg_chg = new_ltcg - calc1.array('p23250')
         # calculate charitable giving effect
-        no_charity_response = (calc2.behavior.BE_charity.tolist() ==
+        no_charity_response = (calc2.behavior('BE_charity').tolist() ==
                                [0.0, 0.0, 0.0])
         if no_charity_response:
             c_charity_chg = np.zeros(calc1.array_len)
@@ -268,19 +271,19 @@ class Behavior(ParametersBase):
             c_charity_chg = np.zeros(calc1.array_len)
             # AGI < 50000
             c_charity_chg = np.where(low_income,
-                                     (calc2.behavior.BE_charity[0] *
+                                     (calc2.behavior('BE_charity')[0] *
                                       c_charity_price_pch *
                                       calc1.array('e19800')),
                                      c_charity_chg)
             # 50000 <= AGI < 1000000
             c_charity_chg = np.where(mid_income,
-                                     (calc2.behavior.BE_charity[1] *
+                                     (calc2.behavior('BE_charity')[1] *
                                       c_charity_price_pch *
                                       calc1.array('e19800')),
                                      c_charity_chg)
             # 1000000 < AGI
             c_charity_chg = np.where(high_income,
-                                     (calc2.behavior.BE_charity[2] *
+                                     (calc2.behavior('BE_charity')[2] *
                                       c_charity_price_pch *
                                       calc1.array('e19800')),
                                      c_charity_chg)
@@ -288,26 +291,26 @@ class Behavior(ParametersBase):
             nc_charity_chg = np.zeros(calc1.array_len)
             # AGI < 50000
             nc_charity_chg = np.where(low_income,
-                                      (calc2.behavior.BE_charity[0] *
+                                      (calc2.behavior('BE_charity')[0] *
                                        nc_charity_price_pch *
                                        calc1.array('e20100')),
                                       nc_charity_chg)
             # 50000 <= AGI < 1000000
             nc_charity_chg = np.where(mid_income,
-                                      (calc2.behavior.BE_charity[1] *
+                                      (calc2.behavior('BE_charity')[1] *
                                        nc_charity_price_pch *
                                        calc1.array('e20100')),
                                       nc_charity_chg)
             # 1000000 < AGI
             nc_charity_chg = np.where(high_income,
-                                      (calc2.behavior.BE_charity[2] *
+                                      (calc2.behavior('BE_charity')[2] *
                                        nc_charity_price_pch *
                                        calc1.array('e20100')),
                                       nc_charity_chg)
         # Add behavioral-response changes to income sources
         calc2_behv = copy.deepcopy(calc2)
         if not zero_sub_and_inc:
-            if calc2_behv.behavior.BE_subinc_wrt_earnings:
+            if calc2_behv.behavior('BE_subinc_wrt_earnings'):
                 calc2_behv = Behavior._update_earnings(si_chg,
                                                        calc2_behv)
             else:
@@ -416,7 +419,7 @@ class Behavior(ParametersBase):
         delta_ided[pos] = delta_income[pos] * ided[pos] / agi_m_ided[pos]
         # confirm that the three parts are consistent with delta_income
         assert np.allclose(delta_income, delta_winc + delta_oinc - delta_ided)
-        # add the three parts to different calc.records variables
+        # add the three parts to different records variables embedded in calc
         calc.incarray('e00200', delta_winc)
         calc.incarray('e00200p', delta_winc)
         calc.incarray('e00300', delta_oinc)

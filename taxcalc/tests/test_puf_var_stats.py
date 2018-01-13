@@ -147,7 +147,7 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     # add statistics to tables
     year_headers = ['description']
     for year in range(Policy.JSON_START_YEAR, Policy.LAST_BUDGET_YEAR + 1):
-        assert year == calc.policy.current_year
+        assert year == calc.policy_current_year()
         year_headers.append(str(year))
         calc.calc_all()
         calculate_mean_stats(calc, table_mean, year)
