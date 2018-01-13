@@ -151,17 +151,17 @@ class SimpleTaxIO(object):
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
         for calcyr in self._year_set:
-            if calcyr != self.calc.policy.current_year:
-                self.calc.policy.set_year(calcyr)
-                self.calc.records.set_current_year(calcyr)
+            if calcyr != self.calc.policy_current_year:
+                self.calc.policy_current_year(calcyr)
+                self.calc.records_current_year(calcyr)
             self.calc.calc_all()
             (mtr_ptax, mtr_itax,
              _) = self.calc.mtr(wrt_full_compensation=False)
-            cr_taxyr = self.calc.records.FLPDYR
+            cr_taxyr = self.calc.array('FLPDYR')
             for idx in range(0, self.calc.array_len):
                 indyr = cr_taxyr[idx]
                 if indyr == calcyr:
-                    ovar = SimpleTaxIO.extract_output(self.calc.records, idx,
+                    ovar = SimpleTaxIO.extract_output(self.calc, idx,
                                                       exact=exact_output)
                     ovar[7] = 100 * mtr_itax[idx]
                     ovar[9] = 100 * mtr_ptax[idx]
@@ -260,17 +260,17 @@ class SimpleTaxIO(object):
         sys.stdout.write(ovd)
 
     @staticmethod
-    def extract_output(crecs, idx, exact=False, extract_weight=False):
+    def extract_output(calc, idx, exact=False, extract_weight=False):
         """
-        Extracts tax output from crecs object for one tax filing unit.
+        Extracts tax output from Calculator object for one tax filing unit.
 
         Parameters
         ----------
-        crecs: Records
-            Records object embedded in Calculator object.
+        calc: Calculator
+            Calculator object containing embedded Records object.
 
         idx: integer
-            crecs object index of the one tax filing unit.
+            Records array index of the one tax filing unit.
 
         exact: boolean
             whether or not ovar[19] is exact regular tax on regular income.
@@ -291,58 +291,59 @@ class SimpleTaxIO(object):
         index begins with one).
         """
         ovar = {}
-        ovar[1] = crecs.RECID[idx]  # id for tax filing unit
-        ovar[2] = crecs.FLPDYR[idx]  # year for which taxes are calculated
+        ovar[1] = calc.array('RECID')[idx]  # id for tax filing unit
+        ovar[2] = calc.array('FLPDYR')[idx]  # year taxes are calculated
         ovar[3] = 0  # state code is always zero
-        ovar[4] = crecs.iitax[idx]  # federal income tax liability
+        ovar[4] = calc.array('iitax')[idx]  # federal income tax liability
         ovar[5] = 0.0  # no state income tax calculation
-        ovar[6] = crecs.payrolltax[idx]  # payroll taxes (ee+er) for OASDI+HI
+        ovar[6] = calc.array('payrolltax')[idx]  # ee+er for OASDI+HI
         ovar[7] = 0.0  # marginal federal income tax rate as percent
         ovar[8] = 0.0  # no state income tax calculation
         ovar[9] = 0.0  # marginal payroll tax rate as percent
-        ovar[10] = crecs.c00100[idx]  # federal AGI
-        ovar[11] = crecs.e02300[idx]  # UI benefits in AGI
-        ovar[12] = crecs.c02500[idx]  # OASDI benefits in AGI
+        ovar[10] = calc.array('c00100')[idx]  # federal AGI
+        ovar[11] = calc.array('e02300')[idx]  # UI benefits in AGI
+        ovar[12] = calc.array('c02500')[idx]  # OASDI benefits in AGI
         ovar[13] = 0.0  # always set zero-bracket amount to zero
-        pre_phase_out_pe = crecs.pre_c04600[idx]
-        post_phase_out_pe = crecs.c04600[idx]
+        pre_phase_out_pe = calc.array('pre_c04600')[idx]
+        post_phase_out_pe = calc.array('c04600')[idx]
         phased_out_pe = pre_phase_out_pe - post_phase_out_pe
         ovar[14] = post_phase_out_pe  # post-phase-out personal exemption
         ovar[15] = phased_out_pe  # personal exemption that is phased out
         # ovar[16] can be positive for non-itemizer:
-        ovar[16] = crecs.c21040[idx]  # itemized deduction that is phased out
+        ovar[16] = calc.array('c21040')[idx]  # phased out itemized deduction
         # ovar[17] is zero for non-itemizer:
-        ovar[17] = crecs.c04470[idx]  # post-phase-out itemized deduction
-        ovar[18] = crecs.c04800[idx]  # federal regular taxable income
+        ovar[17] = calc.array('c04470')[idx]  # post-phase-out item deduction
+        ovar[18] = calc.array('c04800')[idx]  # federal regular taxable income
+        # ovar[19] is regular tax on taxable income
         if exact:
-            ovar[19] = crecs.taxbc[idx]  # regular tax on taxable income
+            ovar[19] = calc.array('taxbc')[idx]
         else:  # Internet-TAXSIM ovar[19] that ignores special qdiv+ltcg rates
-            ovar[19] = crecs.c05200[idx]  # tax from Sch X,Y,Z tables
+            ovar[19] = calc.array('c05200')[idx]  # tax from Sch X,Y,Z tables
         ovar[20] = 0.0  # always set exemption surtax to zero
         ovar[21] = 0.0  # always set general tax credit to zero
-        ovar[22] = crecs.c07220[idx]  # child tax credit (adjusted)
-        ovar[23] = crecs.c11070[idx]  # extra child tax credit (refunded)
-        ovar[24] = crecs.c07180[idx]  # child care credit
-        ovar[25] = crecs.eitc[idx]  # federal EITC
-        ovar[26] = crecs.c62100[idx]  # federal AMT taxable income
-        amt_liability = crecs.c09600[idx]  # federal AMT liability
+        ovar[22] = calc.array('c07220')[idx]  # child tax credit (adjusted)
+        ovar[23] = calc.array('c11070')[idx]  # extra refunded child tax credit
+        ovar[24] = calc.array('c07180')[idx]  # child care credit
+        ovar[25] = calc.array('eitc')[idx]  # federal EITC
+        ovar[26] = calc.array('c62100')[idx]  # federal AMT taxable income
+        amt_liability = calc.array('c09600')[idx]  # federal AMT liability
         ovar[27] = amt_liability
         # ovar[28] is federal income tax before credits; the Tax-Calculator
-        # crecs.c05800[idx] is this concept but includes AMT liability
+        # calc.array('c05800')[idx] is this concept but includes AMT liability
         # while Internet-TAXSIM ovar[28] explicitly excludes AMT liability, so
         # we have the following:
-        ovar[28] = crecs.c05800[idx] - amt_liability
+        ovar[28] = calc.array('c05800')[idx] - amt_liability
         # add optional weight and debugging output to ovar dictionary
         if extract_weight:
-            ovar[29] = crecs.s006[idx]  # sample weight
+            ovar[29] = calc.array('s006')[idx]  # sample weight
             num = SimpleTaxIO.OVAR_NUM + 1
         else:
             num = SimpleTaxIO.OVAR_NUM
         for dvar_name in SimpleTaxIO.DVAR_NAMES:
             num += 1
-            dvar = getattr(crecs, dvar_name, None)
+            dvar = calc.array(dvar_name)
             if dvar is None:
-                msg = 'debugging variable name "{}" not in calc.records object'
+                msg = 'debugging variable name "{}" not in Records object'
                 raise ValueError(msg.format(dvar_name))
             else:
                 ovar[num] = dvar[idx]
