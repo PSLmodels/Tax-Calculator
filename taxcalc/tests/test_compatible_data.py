@@ -1,3 +1,4 @@
+
 """
 Tests of the compatible_data fields in the current_law_policy.json file.
 """
@@ -26,16 +27,26 @@ def test_compatible_data_presence(allparams):
     Test that every parameter in the current_law_policy.json file
     has a compatible_data field that is a dictionary.
     """
+    compatible_data_keys = ['puf', 'cps']
     problem_pnames = list()
     for pname in allparams:
         if 'compatible_data' in allparams[pname]:
-            compatible_data_field = allparams[pname]['compatible_data']
+            compatible_data = allparams[pname]['compatible_data']
         else:
-            compatible_data_field = None
-        if not isinstance(compatible_data_field, dict):
+            compatible_data = None
+        if isinstance(compatible_data, dict):
+            for key in compatible_data:
+                if key in compatible_data_keys:
+                    boolean = (compatible_data[key] is True or
+                               compatible_data[key] is False)
+                    if not boolean:
+                        problem_pnames.append(pname)
+                else:
+                    problem_pnames.append(pname)
+        else:
             problem_pnames.append(pname)
     if problem_pnames:
-        msg = '{} has no or non-dictionary compatible_data field'
+        msg = '{} has no or invalid compatible_data field'
         for pname in problem_pnames:
             print(msg.format(pname))
         assert 'list of problem_pnames' == 'empty list'
@@ -114,8 +125,8 @@ def fixture_allparams_batch(request, allparams, sorted_param_names):
                 params=[True, False])
 def fixture_tc_objs(request, reform_xx, puf_subsample, cps_subsample):
     """
-    Fixture for creating Calculator objects that use the PUF and
-    use the CPS (only called twice: once for PUF and once for CPS)
+    Fixture for creating Tax-Calculator objects that use the PUF and
+    use the CPS (called only twice: once for PUF and once for CPS)
     """
     puftest = request.param
     p_xx = Policy()
@@ -145,6 +156,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
     """
     # pylint: disable=too-many-arguments,too-many-locals
     # pylint: disable=too-many-statements,too-many-branches
+
     # Get taxcalc objects from tc_objs fixture
     rec_xx, c_xx, puftest = tc_objs
 
@@ -152,10 +164,13 @@ def test_compatible_data(cps_subsample, puf_subsample,
     # current law and activating them would deactivate other parameters.
     exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
 
+    # Loop through the parameters in allparams_batch
+    errmsg = 'ERROR: {} not {} for {}\n'
+    errors = ''
     for pname in allparams_batch:
         param = allparams_batch[pname]
         max_listed = param['range']['max']
-        # Handle links to other params or self
+        # handle links to other params or self
         if isinstance(max_listed, six.string_types):
             if max_listed == 'default':
                 max_val = param['value'][-1]
@@ -177,12 +192,12 @@ def test_compatible_data(cps_subsample, puf_subsample,
                 min_val = [min_listed] * len(param['value'][0])
             else:
                 min_val = min_listed
-        # Create reform dictionaries
+        # create reform dictionaries
         max_reform = copy.deepcopy(reform_xx)
         min_reform = copy.deepcopy(reform_xx)
         max_reform[XX_YEAR][str(pname)] = [max_val]
         min_reform[XX_YEAR][str(pname)] = [min_val]
-        # Assess whether max reform changes results
+        # assess whether max reform changes results
         if puftest:
             rec_yy = Records(data=puf_subsample)
         else:
@@ -195,8 +210,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
         max_reform_change = (c_yy.weighted_total('combined') -
                              c_xx.weighted_total('combined'))
         min_reform_change = 0
-        # Assess whether min reform changes results, if max reform did not
-        errmsg = 'ERROR: {} not {} for {}'
+        # assess whether min reform changes results, if max reform did not
         if max_reform_change == 0:
             p_yy = Policy()
             p_yy.implement_reform(min_reform)
@@ -208,18 +222,18 @@ def test_compatible_data(cps_subsample, puf_subsample,
             if min_reform_change == 0 and pname not in exempt:
                 if puftest:
                     if param['compatible_data']['puf'] is not False:
-                        print(errmsg.format(pname, 'False', 'puf'))
-                        assert 'compatible_data' == 'invalid'
+                        errors += errmsg.format(pname, 'False', 'puf')
                 else:
                     if param['compatible_data']['cps'] is not False:
-                        print(errmsg.format(pname, 'False', 'cps'))
-                        assert 'compatible_data' == 'invalid'
+                        errors += errmsg.format(pname, 'False', 'cps')
         if max_reform_change != 0 or min_reform_change != 0:
             if puftest:
                 if param['compatible_data']['puf'] is not True:
-                    print(errmsg.format(pname, 'True', 'puf'))
-                    assert 'compatible_data' == 'invalid'
+                    errors += errmsg.format(pname, 'True', 'puf')
             else:
                 if param['compatible_data']['cps'] is not True:
-                    print(errmsg.format(pname, 'True', 'cps'))
-                    assert 'compatible_data' == 'invalid'
+                    errors += errmsg.format(pname, 'True', 'cps')
+    # test failure if any errors
+    if errors:
+        print(errors)
+        assert 'compatible_data' == 'invalid'
