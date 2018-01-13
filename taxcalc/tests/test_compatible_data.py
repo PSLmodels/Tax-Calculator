@@ -1,29 +1,63 @@
 """
-Tests of the compatible_data field in current_law_policy.json.
+Tests of the compatible_data fields in the current_law_policy.json file.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_pufcsv.py
+# pep8 --ignore=E402 test_compatible_data.py
+# pylint --disable=locally-disabled test_compatible_data.py
 
+from __future__ import print_function
 import copy
 import pytest
 import numpy as np
 import six
-# pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
+
+
+@pytest.fixture(scope='module', name='allparams')
+def fixture_allparams():
+    """
+    Return metadata for current law parameters
+    """
+    return Policy.default_data(metadata=True)
+
+
+def test_compatible_data_presence(allparams):
+    """
+    Test that every parameter in the current_law_policy.json file
+    has a compatible_data field that is a dictionary.
+    """
+    problem_pnames = list()
+    for pname in allparams:
+        if 'compatible_data' in allparams[pname]:
+            compatible_data_field = allparams[pname]['compatible_data']
+        else:
+            compatible_data_field = None
+        if not isinstance(compatible_data_field, dict):
+            problem_pnames.append(pname)
+    if problem_pnames:
+        msg = '{} has no or non-dictionary compatible_data field'
+        for pname in problem_pnames:
+            print(msg.format(pname))
+        assert 'list of problem_pnames' == 'empty list'
 
 
 NPARAMS = len(Policy.default_data())
 BATCHSIZE = 10
+BATCHES = int(np.floor(NPARAMS / BATCHSIZE) + 1)
+XX_YEAR = 2019
+TEST_YEAR = 2020
 
 
-@pytest.fixture(scope="module")
-def reform_xx():
+@pytest.fixture(scope='module', name='reform_xx')
+def fixture_reform_xx():
     """
-    Fixture for reform dictionary
+    Fixture for reform dictionary where reform starts before TEST_YEAR
     """
+    assert XX_YEAR < TEST_YEAR
+
     # Set baseline to activate parameters that are inactive under current law.
     _reform_xx = {
-        2017: {
+        XX_YEAR: {
             '_FST_AGI_trt': [0.5],
             '_CTC_new_rt': [0.5],
             '_CTC_new_c': [5000],
@@ -31,9 +65,11 @@ def reform_xx():
             '_CTC_new_refund_limited': [True],
             '_CTC_new_refund_limit_payroll_rt': [1],
             '_ID_BenefitSurtax_trt': [0.1],
-            '_UBI3': [1000],
-            '_PT_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
             '_ID_BenefitSurtax_crt': [0.1],
+            '_UBI_u18': [1000],
+            '_UBI_1820': [1000],
+            '_UBI_21': [1000],
+            '_PT_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
             '_II_credit_prt': [0.1],
             '_II_credit': [[100, 100, 100, 100, 100]],
             '_CG_brk3': [[1000000, 1000000, 1000000, 1000000, 1000000]],
@@ -46,69 +82,59 @@ def reform_xx():
             '_ID_AmountCap_rt': [0.5],
             '_II_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
             '_ID_BenefitCap_rt': [0.5],
-            '_DependentCredit_Child_c': [500],
-            '_PT_exclusion_rt': [.2],
-            '_PT_rt7': [.35]
+            '_PT_rt7': [.35],
+            '_II_em': [1000]
         }
     }
     return _reform_xx
 
 
-@pytest.fixture(scope="module")
-def allparams():
-    """
-    Get current law parameters
-    """
-    return Policy.default_data(metadata=True)
-
-
-@pytest.fixture(scope="module")
-def sorted_param_names(allparams):
+@pytest.fixture(scope='module', name='sorted_param_names')
+def fixture_sorted_param_names(allparams):
     """
     Fixture for storing a sorted parameter list
     """
     return sorted(list(allparams.keys()))
 
 
-@pytest.fixture(
-    params=[i for i in range(0, int(np.floor(NPARAMS / BATCHSIZE)) + 1)]
-)
-def allparams_batch(request, allparams, sorted_param_names):
+@pytest.fixture(scope='module', name='allparams_batch',
+                params=[i for i in range(0, BATCHES)])
+def fixture_allparams_batch(request, allparams, sorted_param_names):
     """
     Fixture for grouping Tax-Calculator parameters
     """
-    ix = request.param
-    ix_start = ix * BATCHSIZE
-    ix_end = min((ix + 1) * BATCHSIZE, NPARAMS)
-    pnames = sorted_param_names[ix_start: ix_end]
+    idx = request.param
+    idx_start = idx * BATCHSIZE
+    idx_end = min((idx + 1) * BATCHSIZE, NPARAMS)
+    pnames = sorted_param_names[idx_start: idx_end]
     return {pname: allparams[pname] for pname in pnames}
 
 
-@pytest.fixture(params=[True, False], scope="module")
-def tc_objs(request, reform_xx, puf_subsample, cps_subsample):
+@pytest.fixture(scope='module', name='tc_objs',
+                params=[True, False])
+def fixture_tc_objs(request, reform_xx, puf_subsample, cps_subsample):
     """
-    Fixture for creating TC objects corresponding to using the PUF and using
-    the CPS (only called twice--once for PUF and once for CPS)
+    Fixture for creating Calculator objects that use the PUF and
+    use the CPS (only called twice: once for PUF and once for CPS)
     """
     puftest = request.param
     p_xx = Policy()
     p_xx.implement_reform(reform_xx)
     if puftest:
-        print('puftest')
         rec_xx = Records(data=puf_subsample)
     else:
-        print('cpstest')
         rec_xx = Records.cps_constructor(data=cps_subsample)
-    c_xx = Calculator(policy=p_xx, records=rec_xx)
-    c_xx.advance_to_year(2018)
+    c_xx = Calculator(policy=p_xx, records=rec_xx, verbose=False)
+    c_xx.advance_to_year(TEST_YEAR)
     c_xx.calc_all()
+    return rec_xx, c_xx, puftest
 
-    return p_xx, rec_xx, c_xx, puftest
 
-
-@pytest.mark.requires_pufcsv
 @pytest.mark.pre_release
-def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
+@pytest.mark.compatible_data
+@pytest.mark.requires_pufcsv
+def test_compatible_data(cps_subsample, puf_subsample,
+                         allparams, reform_xx,
                          tc_objs, allparams_batch):
     """
     Test that the compatible_data attribute in current_law_policy.json
@@ -117,11 +143,13 @@ def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
     at least one of these reforms when using datasets marked compatible
     and does not differ when using datasets marked as incompatible.
     """
+    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-statements,too-many-branches
     # Get taxcalc objects from tc_objs fixture
-    p_xx, rec_xx, c_xx, puftest = tc_objs
+    rec_xx, c_xx, puftest = tc_objs
 
     # These parameters are exempt because they are not active under
-    # current law and activating them would deactive other parameters.
+    # current law and activating them would deactivate other parameters.
     exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
 
     for pname in allparams_batch:
@@ -152,8 +180,8 @@ def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
         # Create reform dictionaries
         max_reform = copy.deepcopy(reform_xx)
         min_reform = copy.deepcopy(reform_xx)
-        max_reform[2017][str(pname)] = [max_val]
-        min_reform[2017][str(pname)] = [min_val]
+        max_reform[XX_YEAR][str(pname)] = [max_val]
+        min_reform[XX_YEAR][str(pname)] = [min_val]
         # Assess whether max reform changes results
         if puftest:
             rec_yy = Records(data=puf_subsample)
@@ -161,31 +189,37 @@ def test_compatible_data(cps_subsample, puf_subsample, allparams, reform_xx,
             rec_yy = Records.cps_constructor(data=cps_subsample)
         p_yy = Policy()
         p_yy.implement_reform(max_reform)
-        c_yy = Calculator(policy=p_yy, records=rec_yy)
-        c_yy.advance_to_year(2018)
+        c_yy = Calculator(policy=p_yy, records=rec_yy, verbose=False)
+        c_yy.advance_to_year(TEST_YEAR)
         c_yy.calc_all()
-        max_reform_change = ((c_yy.records.combined - c_xx.records.combined) *
-                             c_xx.records.s006).sum()
+        max_reform_change = (c_yy.weighted_total('combined') -
+                             c_xx.weighted_total('combined'))
         min_reform_change = 0
         # Assess whether min reform changes results, if max reform did not
+        errmsg = 'ERROR: {} not {} for {}'
         if max_reform_change == 0:
             p_yy = Policy()
             p_yy.implement_reform(min_reform)
             c_yy = Calculator(policy=p_yy, records=rec_xx)
-            c_yy.advance_to_year(2018)
+            c_yy.advance_to_year(TEST_YEAR)
             c_yy.calc_all()
-            min_reform_change = ((c_yy.records.combined -
-                                  c_xx.records.combined) *
-                                 c_xx.records.s006).sum()
+            min_reform_change = (c_yy.weighted_total('combined') -
+                                 c_xx.weighted_total('combined'))
             if min_reform_change == 0 and pname not in exempt:
-                print(pname)
                 if puftest:
-                    assert param['compatible_data']['puf'] is False
+                    if param['compatible_data']['puf'] is not False:
+                        print(errmsg.format(pname, 'False', 'puf'))
+                        assert 'compatible_data' == 'invalid'
                 else:
-                    assert param['compatible_data']['cps'] is False
+                    if param['compatible_data']['cps'] is not False:
+                        print(errmsg.format(pname, 'False', 'cps'))
+                        assert 'compatible_data' == 'invalid'
         if max_reform_change != 0 or min_reform_change != 0:
-            print(pname)
             if puftest:
-                assert param['compatible_data']['puf'] is True
+                if param['compatible_data']['puf'] is not True:
+                    print(errmsg.format(pname, 'True', 'puf'))
+                    assert 'compatible_data' == 'invalid'
             else:
-                assert param['compatible_data']['cps'] is True
+                if param['compatible_data']['cps'] is not True:
+                    print(errmsg.format(pname, 'True', 'cps'))
+                    assert 'compatible_data' == 'invalid'
