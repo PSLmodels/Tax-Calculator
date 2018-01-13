@@ -1782,11 +1782,11 @@ def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben,
     if not BEN_Benefit_switch[4]:  # Medicaid
         mcaid_ben = 0.
     if not BEN_Benefit_switch[5]:  # Social Security
-        ss_ben = 0.
+        oasdi_ben = 0.
     if not BEN_Benefit_switch[6]:  # Other benefits
         other_ben = 0.
     ben_total = (ssi_ben + snap_ben + vet_ben + mcare_ben + mcaid_ben +
-                 ss_ben + other_ben)
+                 oasdi_ben + other_ben)
 
     return ben_total
 

@@ -740,7 +740,6 @@ def test_section_titles(tests_path):
         },
         'Benefits': {
             'Benefit Repeal': 0,
-            'Benefit Multiple': 0
         }
     }
     # check validity of parameter section titles in current_law_policy.json
