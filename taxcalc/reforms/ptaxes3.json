@@ -2,6 +2,7 @@
 // : current law AddMedTax earnings exclusion varies by filing status (MARS)
 //                                            and is not price indexed
 // : current law AddMedTax is 0.009 on earnings in excess of the exclusion
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  raise AddMedTax rate in 2019 (1)
 // -  raise AddMedTax earnings exclusion in 2019 (2)

@@ -53,15 +53,17 @@ def fixture_policyfile():
 
 
 def test_make_calculator(cps_subsample):
-    pol = Policy(start_year=2014, num_years=9)
-    assert pol.current_year == 2014
+    syr = 2014
+    pol = Policy(start_year=syr, num_years=9)
+    assert pol.current_year == syr
     rec = Records.cps_constructor(data=cps_subsample)
     consump = Consumption()
-    consump.update_consumption({2014: {'_MPC_e20400': [0.05]}})
-    assert consump.current_year == 2013
+    consump.update_consumption({syr: {'_MPC_e20400': [0.05]}})
+    assert consump.current_year == Consumption.JSON_START_YEAR
     calc = Calculator(policy=pol, records=rec,
                       consumption=consump, behavior=Behavior())
-    assert calc.current_year == 2014
+    assert calc.current_year == syr
+    assert calc.records_current_year() == syr
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
         Calculator(policy=None, records=rec)
@@ -94,14 +96,14 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
-    assert calc.policy.II_em == 4000
-    assert np.allclose(calc.policy._II_em,
+    assert calc.param('II_em') == 4000
+    assert np.allclose(calc.param('_II_em'),
                        np.array([4000] * Policy.DEFAULT_NUM_YEARS))
     exp_STD_Aged = [[1600, 1300, 1300,
                      1600, 1600]] * Policy.DEFAULT_NUM_YEARS
-    assert np.allclose(calc.policy._STD_Aged,
+    assert np.allclose(calc.param('_STD_Aged'),
                        np.array(exp_STD_Aged))
-    assert np.allclose(calc.policy.STD_Aged,
+    assert np.allclose(calc.param('STD_Aged'),
                        np.array([1600, 1300, 1300, 1600, 1600]))
 
 
@@ -118,16 +120,16 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     # create a Calculator object using this policy-reform
     calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
+    assert pol.num_years == Policy.DEFAULT_NUM_YEARS
     assert calc.current_year == year
-    assert calc.policy.II_em == 3950
-    assert calc.policy.num_years == Policy.DEFAULT_NUM_YEARS
+    assert calc.param('II_em') == 3950
     exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
-    assert np.allclose(calc.policy._II_em,
+    assert np.allclose(calc.param('_II_em'),
                        np.array(exp_II_em))
     calc.increment_year()
     calc.increment_year()
     assert calc.current_year == 2016
-    assert np.allclose(calc.policy.STD_Aged,
+    assert np.allclose(calc.param('STD_Aged'),
                        np.array([1600, 1300, 1600, 1300, 1600]))
 
 
@@ -145,26 +147,6 @@ def test_make_calculator_raises_on_no_policy(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     with pytest.raises(ValueError):
         Calculator(records=rec)
-
-
-def test_calculator_attr_access_to_policy(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=rec)
-    assert hasattr(calc.records, 'c01000')
-    assert hasattr(calc.policy, '_AMT_Child_em')
-    assert hasattr(calc, 'policy')
-
-
-def test_calculator_current_law_version(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
-    pol = Policy()
-    reform = {2013: {'_II_rt7': [0.45]}}
-    pol.implement_reform(reform)
-    calc = Calculator(policy=pol, records=rec)
-    calc_clp = calc.current_law_version()
-    assert isinstance(calc_clp, Calculator)
-    assert calc.policy.II_rt6 == calc_clp.policy.II_rt6
-    assert calc.policy.II_rt7 != calc_clp.policy.II_rt7
 
 
 def test_calculator_mtr(cps_subsample):
@@ -240,7 +222,7 @@ def test_calculator_mtr_when_PT_rates_differ():
 def test_make_calculator_increment_years_first(cps_subsample):
     # create Policy object with policy reform
     syr = 2013
-    pol = Policy(start_year=syr, num_years=5)
+    pol = Policy(start_year=syr)
     reform = {2015: {}, 2016: {}}
     std5 = 2000
     reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5]]
@@ -262,9 +244,11 @@ def test_make_calculator_increment_years_first(cps_subsample):
                              [std5, std5, std5, std5, std5],
                              [std6, std6, std6, std6, std6],
                              [std7, std7, std7, std7, std7]])
-    assert np.allclose(calc.policy._STD_Aged, exp_STD_Aged)
+    act_STD_Aged = calc.param('_STD_Aged')
+    assert np.allclose(act_STD_Aged[:5], exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    assert np.allclose(calc.policy._II_em, exp_II_em)
+    act_II_em = calc.param('_II_em')
+    assert np.allclose(act_II_em[:5], exp_II_em)
 
 
 def test_ID_HC_vs_BS(cps_subsample):
@@ -319,10 +303,10 @@ def test_ID_StateLocal_HC_vs_CRT(cps_subsample):
     crt_calc = Calculator(policy=crt_policy, records=rec)
     crt_calc.calc_all()
     # compare calculated tax results generated by the two reforms
-    assert np.allclose(hc_calc.records.payrolltax,
-                       crt_calc.records.payrolltax)
-    assert np.allclose(hc_calc.records.iitax,
-                       crt_calc.records.iitax)
+    assert np.allclose(hc_calc.array('payrolltax'),
+                       crt_calc.array('payrolltax'))
+    assert np.allclose(hc_calc.array('iitax'),
+                       crt_calc.array('iitax'))
 
 
 def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
@@ -345,10 +329,10 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
     crt_calc = Calculator(policy=crt_policy, records=rec)
     crt_calc.calc_all()
     # compare calculated tax results generated by the two reforms
-    assert np.allclose(hc_calc.records.payrolltax,
-                       crt_calc.records.payrolltax)
-    assert np.allclose(hc_calc.records.iitax,
-                       crt_calc.records.iitax)
+    assert np.allclose(hc_calc.array('payrolltax'),
+                       crt_calc.array('payrolltax'))
+    assert np.allclose(hc_calc.array('iitax'),
+                       crt_calc.array('iitax'))
 
 
 def test_calculator_using_nonstd_input(rawinputfile):
@@ -692,47 +676,6 @@ def test_calc_all(reform_file, rawinputfile):
     calc.calc_all()
 
 
-def test_translate_json_reform_suffixes_mars_indexed():
-    # test read_json_param_objects()
-    # using MARS-indexed parameter suffixes
-    json1 = """{"policy": {
-      "_II_em": {"2020": [20000], "2015": [15000]},
-      "_STD_single": {"2018": [18000], "2016": [16000]},
-      "_STD_widow": {"2017": [17000], "2019": [19000]}
-    }}"""
-    assump_json = """{
-      "consumption": {},
-      "behavior": {},
-      "growdiff_baseline": {
-        "_ACPIU": {"2013": [0.01]},
-        "_AWAGE": {"2013": [0.01]}},
-      "growdiff_response": {}
-    }"""
-    pdict1 = Calculator.read_json_param_objects(reform=json1,
-                                                assump=assump_json)
-    rdict1 = pdict1['policy']
-    json2 = """{"policy": {
-      "_STD": {"2016": [[16000.00, 12600.00, 6300.00,  9300.00, 12600.00]],
-               "2017": [[16363.20, 12886.02, 6443.01,  9511.11, 17000.00]],
-               "2018": [[18000.00, 13304.82, 6652.41,  9820.22, 17552.50]],
-               "2019": [[18583.20, 13735.90, 6867.95,  10138.4, 19000.00]]},
-      "_II_em": {"2020": [20000], "2015": [15000]}
-    }}"""
-    pdict2 = Calculator.read_json_param_objects(reform=json2,
-                                                assump=assump_json)
-    rdict2 = pdict2['policy']
-    assert len(rdict2) == len(rdict1)
-    for year in rdict2.keys():
-        if '_II_em' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_II_em'],
-                               rdict2[year]['_II_em'],
-                               atol=0.01, rtol=0.0)
-        if '_STD' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_STD'],
-                               rdict2[year]['_STD'],
-                               atol=0.01, rtol=0.0)
-
-
 def test_translate_json_reform_suffixes_mars_non_indexed():
     # test read_json_param_objects()
     # using MARS-indexed parameter suffixes
@@ -944,7 +887,9 @@ def test_distribution_tables(cps_subsample):
     dt1, dt2 = calc1.distribution_tables(calc1)
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
-    reform = {2014: {'_UBI1': [1000], '_UBI2': [1000], '_UBI3': [1000]}}
+    reform = {2014: {'_UBI_u18': [1000],
+                     '_UBI_1820': [1000],
+                     '_UBI_21': [1000]}}
     pol.implement_reform(reform)
     assert not pol.reform_errors
     calc2 = Calculator(policy=pol, records=recs)
@@ -996,3 +941,16 @@ def test_atr_graph(cps_subsample):
     assert fig
     fig = calc.atr_graph(calc, atr_measure='ptax')
     assert fig
+
+
+def test_privacy_of_embedded_objects(cps_subsample):
+    calc = Calculator(policy=Policy(),
+                      records=Records.cps_constructor(data=cps_subsample))
+    with pytest.raises(AttributeError):
+        cyr = calc.__policy.current_year
+    with pytest.raises(AttributeError):
+        wgh = calc.__records.s006
+    with pytest.raises(AttributeError):
+        cyr = calc.__consumption.current_year
+    with pytest.raises(AttributeError):
+        cyr = calc.__behavior.current_year

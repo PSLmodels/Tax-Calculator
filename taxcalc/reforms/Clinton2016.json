@@ -1,6 +1,7 @@
 // Title: Select Provisions from the Clinton Tax Plan
 // Reform_File_Author: Cody Kallen
 // Reform Reference: https://www.hillaryclinton.com/briefing/factsheets/2016/01/12/investing-in-america-by-restoring-basic-fairness-to-our-tax-code/
+// Reform_Baseline: 2017_law.json
 // Reform Description:
 // -  4% surcharge on AGI above $5 million ($2.5 million for married filing separately) (1)
 // -  Establishment of the "Fair Share Tax" at a 30% rate (aka the Buffett rule) (2)

@@ -1,6 +1,7 @@
 // Title: Tax Cuts and Jobs Act, Reconciliation version
 // Reform_File_Author: Cody Kallen
 // Reform_Reference: http://docs.house.gov/billsthisweek/20171218/CRPT-115HRPT-466.pdf
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
 // -  New pass-through income tax schedule (2)
@@ -8,7 +9,7 @@
 // -  Repeal personal exemption (4)
 // -  Modification to child tax credit, nonrefundable dependent credits (5)
 // -  Modification of Alternative Minimum Tax exemption (6)
-// -  Repeal of certain above the line deductions (7)
+// -  Changes to certain above the line deductions (7)
 // -  Changes to itemized deductions (8)
 // -  Switch to chained CPI from CPI-U for tax parameter adjustment (9)
 // Reform_Parameter_Map:
@@ -102,12 +103,18 @@
         "_PT_brk6":
             {"2018": [[500000, 600000, 300000, 500000, 500000]],
              "2026": [[504406, 567457, 283728, 535931, 567457]]},
-        "_PT_exclusion_rt":
+        "_PT_excl_rt":
             {"2018": [0.2],
              "2026": [0.0]},
-        "_PT_exclusion_wage_limit":
+        "_PT_excl_wagelim_rt":
             {"2018": [0.5],
-             "2026": [9e+99]},
+             "2026": [9e99]},
+        "_PT_excl_wagelim_thd":
+            {"2018": [[157500, 315000, 157500, 157500, 315000]],
+             "2026": [[0, 0, 0, 0, 0]]},
+        "_PT_excl_wagelim_prt":
+            {"2018": [[0.00002, 0.00001, 0.00002, 0.00002, 0.00001]],
+             "2026": [[0, 0, 0, 0, 0]]},
         "_STD":
             {"2018": [[12000, 24000, 12000, 18000, 24000]],
              "2026": [[7655, 15311, 7655, 11272, 15311]]},
@@ -144,9 +151,15 @@
         "_ALD_DomesticProduction_hc":
             {"2018": [1],
              "2026": [0]},
-        "_ALD_Alimony_hc":
+        "_ALD_AlimonyPaid_hc":
             {"2019": [1],
              "2026": [0]},
+        "_ALD_AlimonyReceived_hc":
+            {"2019": [0],
+             "2026": [1]},
+        "_ALD_BusinessLosses_c":
+            {"2018": [[250000, 500000, 250000, 250000, 500000]],
+             "2026": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
         "_ID_prt":
             {"2018": [0],
              "2026": [0.03]},
@@ -166,7 +179,7 @@
             {"2018": [1],
              "2026": [0]},
         "_ID_Medical_frt":
-            {"2018": [0.075],
+            {"2017": [0.075],
              "2019": [0.1]},
         "_cpi_offset":
             {"2017": [-0.0025]}  

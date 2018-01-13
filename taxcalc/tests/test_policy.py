@@ -14,6 +14,7 @@ def fixture_policyfile():
     # specify JSON text for policy reform
     txt = """{"_almdep": {"value": [7150, 7250, 7400],
                           "cpi_inflated": true},
+              "_cpi_offset": {"value": [0]},
               "_almsep": {"value": [40400, 41050],
                           "cpi_inflated": true},
               "_rt5": {"value": [0.33 ],
@@ -60,50 +61,44 @@ def test_policy_json_content():
         assert isinstance(row_label, list)
         value = data.get('value')
         expected_row_label = [str(start_year + i) for i in range(len(value))]
-        assert row_label == expected_row_label
+        if row_label != expected_row_label:
+            msg = 'name,row_label,expected_row_label: {}\n{}\n{}'
+            raise ValueError(msg.format(data.get('long_name')), row_label,
+                             expected_row_label)
 
 
 def test_constant_inflation_rate_with_reform():
     syr = 2013
-    pol = Policy(start_year=syr, num_years=10)
-    # implement reform in 2021 which is the year before the last year = 2022
-    reform = {2021: {'_II_em': [20000]}}
+    pol = Policy(start_year=syr)
+    # implement reform in year before final year
+    fyr = Policy.LAST_BUDGET_YEAR
+    ryr = fyr - 1
+    reform = {
+        (ryr - 3): {'_II_em': [1000]},  # to avoid divide-by-zero under TCJA
+        ryr: {'_II_em': [20000]}
+    }
     pol.implement_reform(reform)
     # extract price inflation rates
     pirates = pol.inflation_rates()
-    irate2019 = pirates[2019 - syr]
-    irate2021 = pirates[2021 - syr]
+    irate_b = pirates[ryr - 2 - syr]
+    irate_a = pirates[ryr - syr]
     # check implied inflation rate just before reform
-    grate = float(pol._II_em[2020 - syr]) / float(pol._II_em[2019 - syr])
-    assert round(grate - 1.0, 4) == round(irate2019, 4)
+    grate = float(pol._II_em[ryr - 1 - syr]) / float(pol._II_em[ryr - 2 - syr])
+    assert round(grate - 1.0, 4) == round(irate_b, 4)
     # check implied inflation rate just after reform
-    grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
-    assert round(grate - 1.0, 6) == round(irate2021, 6)
-
-
-def test_variable_inflation_rate_without_reform():
-    syr = 2013
-    pol = Policy(start_year=syr, num_years=10)
-    assert pol._II_em[2013 - syr] == 3900
-    # no reform
-    # extract price inflation rates
-    pirates = pol.inflation_rates()
-    irate2020 = pirates[2020 - syr]
-    irate2021 = pirates[2021 - syr]
-    # check implied inflation rate between 2020 and 2021
-    grate = float(pol._II_em[2021 - syr]) / float(pol._II_em[2020 - syr])
-    assert round(grate - 1.0, 5) == round(irate2020, 5)
-    # check implied inflation rate between 2021 and 2022
-    grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
-    assert round(grate - 1.0, 5) == round(irate2021, 5)
+    grate = float(pol._II_em[ryr + 1 - syr]) / float(pol._II_em[ryr - syr])
+    assert round(grate - 1.0, 6) == round(irate_a, 6)
 
 
 def test_variable_inflation_rate_with_reform():
     syr = 2013
-    pol = Policy(start_year=syr, num_years=10)
+    pol = Policy(start_year=syr)
     assert pol._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
-    reform = {2020: {'_II_em': [20000]}}
+    reform = {
+        2018: {'_II_em': [1000]},  # to avoid divide-by-zero under TCJA
+        2020: {'_II_em': [20000]}
+    }
     pol.implement_reform(reform)
     pol.set_year(2020)
     assert pol.current_year == 2020
@@ -129,8 +124,8 @@ def test_multi_year_reform():
     """
     # specify dimensions of policy Policy object
     syr = 2013
-    nyrs = 10
-    pol = Policy(start_year=syr, num_years=nyrs)
+    nyrs = Policy.DEFAULT_NUM_YEARS
+    pol = Policy(start_year=syr)
     iratelist = pol.inflation_rates()
     ifactor = {}
     for i in range(0, nyrs):
@@ -152,9 +147,9 @@ def test_multi_year_reform():
                         inflation_rates=iratelist,
                         num_years=nyrs),
                     atol=0.01, rtol=0.0)
-    assert_allclose(getattr(pol, '_II_em'),
+    assert_allclose(getattr(pol, '_STD_Dep'),
                     Policy._expand_array(
-                        np.array([3900, 3950, 4000, 4050, 4050],
+                        np.array([1000, 1000, 1050, 1050, 1050],
                                  dtype=np.float64), False,
                         inflate=True,
                         inflation_rates=iratelist,
@@ -162,7 +157,8 @@ def test_multi_year_reform():
                     atol=0.01, rtol=0.0)
     assert_allclose(getattr(pol, '_CTC_c'),
                     Policy._expand_array(
-                        np.array([1000],
+                        np.array([1000] * 5 + [1400] * 4 +
+                                 [1500] * 3 + [1600] + [1000],
                                  dtype=np.float64), False,
                         inflate=False,
                         inflation_rates=iratelist,
@@ -425,8 +421,8 @@ def test_parameters_get_default_start_year():
     # 1D data, has 2015 values
     meta_II_em = paramdata['_II_em']
     assert meta_II_em['start_year'] == 2015
-    assert meta_II_em['row_label'] == ['2015', '2016', '2017']
-    assert meta_II_em['value'] == [4000, 4050, 4050]
+    assert meta_II_em['row_label'] == [str(cyr) for cyr in range(2015, 2027)]
+    assert meta_II_em['value'] == [4000, 4050, 4050] + [0] * 8 + [4883]
     # 2D data, has 2015 values
     meta_std_aged = paramdata['_STD_Aged']
     assert meta_std_aged['start_year'] == 2015
@@ -589,65 +585,6 @@ def test_order_of_cpi_and_level_reforms():
         assert mte[2015 - syr] == 500000
         assert mte[2016 - syr] == 500000
         assert mte[2017 - syr] == 500000
-
-
-@pytest.mark.parametrize("offset", [0.0, -0.0025])
-def test_chained_cpi_reform(offset):
-    """
-    Test that _cpi_offset policy parameter works as expected.
-    """
-    # specify reform without using cpi_offset parameter
-    pem = 10000
-    bare_reform = {
-        2022: {'_II_em': [pem]}
-    }
-    with_reform = {
-        2022: {'_II_em': [pem]},
-        2020: {'_cpi_offset': [offset]}
-    }
-    syr = Policy.JSON_START_YEAR
-    pol_bare = Policy(start_year=syr)
-    pol_bare.implement_reform(bare_reform)
-    pol_with = Policy(start_year=syr)
-    pol_with.implement_reform(with_reform)
-    # check relative _II_em values in the two reforms for several years
-    pem_bare = pol_bare._II_em
-    pem_with = pol_with._II_em
-    if offset == 0:
-        assert pem_with[2019 - syr] == pem_bare[2019 - syr]
-        assert pem_with[2020 - syr] == pem_bare[2020 - syr]
-        assert pem_with[2021 - syr] == pem_bare[2021 - syr]
-        assert pem_with[2022 - syr] == pem
-        assert pem_bare[2022 - syr] == pem
-        assert pem_with[2023 - syr] == pem_bare[2023 - syr]
-    elif offset < 0:
-        assert pem_with[2019 - syr] == pem_bare[2019 - syr]
-        assert pem_with[2020 - syr] == pem_bare[2020 - syr]
-        assert pem_with[2021 - syr] < pem_bare[2021 - syr]
-        assert pem_with[2022 - syr] == pem
-        assert pem_bare[2022 - syr] == pem
-        assert pem_with[2023 - syr] < pem_bare[2023 - syr]
-    # check exact _II_em values for 2023, which are
-    # equal to 2022 values indexed by 2022 inflation rates
-    unchained_cpi = pol_bare.inflation_rates()[2022 - syr]
-    assert pem_bare[2023 - syr] == round(pem * (1 + unchained_cpi), 2)
-    chained_cpi = unchained_cpi + offset
-    assert pem_with[2023 - syr] == round(pem * (1 + chained_cpi), 2)
-    # check that _STD value for 2023 with chained CPI indexing is
-    # equal to _STD value for 2023 when specifying chained CPI indexing
-    # as a difference in assumed inflation rates
-    if offset != 0:
-        # ... compute _STD value using difference-in-growth-factors approach
-        growfactors = Growfactors()
-        growdiff = Growdiff()
-        growdiff.update_growdiff({2020: {'_ACPIU': [offset]}})
-        growdiff.apply_to(growfactors)
-        pol = Policy(gfactors=growfactors, start_year=syr)
-        pol.implement_reform(bare_reform)
-        # ... compare the _STD values derived from the two approaches
-        assert_allclose(pol_with._STD[2023 - syr],
-                        pol._STD[2023 - syr],
-                        atol=0.01, rtol=0.0)
 
 
 def test_misspecified_reforms():
@@ -991,7 +928,7 @@ def test_validate_param_values_warnings_errors():
     pol1.implement_reform(ref1)
     assert len(pol1.reform_warnings) > 0
     pol2 = Policy()
-    ref2 = {2021: {'_ID_Charity_crt_all': [0.60]}}
+    ref2 = {2021: {'_ID_Charity_crt_all': [0.61]}}
     pol2.implement_reform(ref2)
     assert len(pol2.reform_warnings) > 0
     pol3 = Policy()
@@ -1006,14 +943,11 @@ def test_validate_param_values_warnings_errors():
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5)
     assert len(pol5.reform_errors) == 0
-    # raise stdded for everybody but widows, leaving widow value unchanged,
-    # which is the logic TaxBrain has been using at least until 2017-10-05
-    # when this "7" test was added
-    pol7 = Policy()
-    ref7 = {2013: {'_STD': [[20000, 20000, 20000, 20000, 12200]]}}
-    pol7.implement_reform(ref7)
-    assert pol7.reform_errors == ''
-    assert pol7.reform_warnings == ''
+    pol6 = Policy()
+    ref6 = {2013: {'_STD': [[20000, 25000, 20000, 20000, 25000]]}}
+    pol6.implement_reform(ref6)
+    assert pol6.reform_errors == ''
+    assert pol6.reform_warnings == ''
 
 
 def test_indexing_rates_for_update():

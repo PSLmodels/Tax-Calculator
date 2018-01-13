@@ -1,6 +1,7 @@
 // Title: Simplifying America's Tax System (Renacci)
 // Reform_File_Author: Hank Doupe
 // Reform_Reference: http://renacci.house.gov/_cache/files/7eeb81fe-f245-42c0-8de4-055ebf4c12e9/sats-white-paper.pdf
+// Reform_Baseline: 2017_law.json
 // Reform_Description:
 //	- Number of brackets reduced to 3 (1)
 // 	- Standard deduction increased (2)

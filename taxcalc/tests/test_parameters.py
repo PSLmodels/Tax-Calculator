@@ -67,6 +67,16 @@ def test_json_file_contents(tests_path, fname):
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
+    long_params = ['_II_brk1', '_II_brk2', '_II_brk3', '_II_brk4',
+                   '_II_brk5', '_II_brk6', '_II_brk7',
+                   '_PT_brk1', '_PT_brk2', '_PT_brk3', '_PT_brk4',
+                   '_PT_brk5', '_PT_brk6', '_PT_brk7',
+                   '_PT_excl_wagelim_thd',
+                   '_ALD_BusinessLosses_c',
+                   '_STD', '_II_em',
+                   '_AMT_em', '_AMT_em_ps',
+                   '_ID_AllTaxes_c']
+    long_known_years = 2026 - first_year + 1  # for TCJA-revised long_params
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
     pfile = open(path, 'r')
@@ -74,6 +84,7 @@ def test_json_file_contents(tests_path, fname):
     pfile.close()
     assert isinstance(allparams, dict)
     # check elements in each parameter sub-dictionary
+    failures = ''
     for pname in allparams:
         param = allparams[pname]
         assert isinstance(param, dict)
@@ -135,10 +146,22 @@ def test_json_file_contents(tests_path, fname):
                            '_ETC_pe_Single',
                            '_ETC_pe_Married']
         if param['cpi_inflated']:
+            error = False
+            known_years = num_known_years
+            if pname in long_params:
+                known_years = long_known_years
             if pname in form_parameters:
-                assert len(rowlabel) == num_known_years - 1
+                if len(rowlabel) != (known_years - 1):
+                    error = True
             else:
-                assert len(rowlabel) == num_known_years
+                if len(rowlabel) != known_years:
+                    error = True
+            if error:
+                msg = 'param:<{}>; len(rowlabel)={}; known_years={}'
+                fail = msg.format(pname, len(rowlabel), known_years)
+                failures += fail + '\n'
+    if failures:
+        raise ValueError(failures)
 
 
 @pytest.mark.parametrize("jfname, pfname",

@@ -12,12 +12,12 @@ import yaml
 import pytest
 
 
-@pytest.mark.requires_pufcsv
+@pytest.mark.pre_release
 def test_for_package_existence():
     """
     Ensure that no conda taxcalc package is installed when running pytest.
     Primarily to help developers catch mistaken installations of taxcalc;
-    the requires_pufcsv mark prevents test from running on GitHub.
+    the pre_release mark prevents test from running on GitHub.
     """
     out = subprocess.check_output(['conda', 'list', 'taxcalc']).decode('ascii')
     envless_out = out.replace('taxcalc-dev', 'environment')

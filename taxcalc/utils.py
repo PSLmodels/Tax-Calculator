@@ -131,28 +131,18 @@ SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      1999999, 4999999, 9999999, 9e99]
 
 
-def zsum(self):
-    """
-    pandas 0.21.0 changes sum() behavior so that the result of applying sum
-    over an empty Series is NaN.  Since we apply the sum() function over
-    grouped DataFrames that may contain an empty Series, it makes more sense
-    for us to have a sum() function that returns zero instead of NaN.
-    """
-    return self.sum() if self.size > 0 else 0
-
-
 def unweighted_sum(pdf, col_name):
     """
     Return unweighted sum of Pandas DataFrame col_name items.
     """
-    return pdf[col_name].zsum()
+    return pdf[col_name].sum()
 
 
 def weighted_sum(pdf, col_name):
     """
     Return weighted sum of Pandas DataFrame col_name items.
     """
-    return (pdf[col_name] * pdf['s006']).zsum()
+    return (pdf[col_name] * pdf['s006']).sum()
 
 
 def add_quantile_bins(pdf, income_measure, num_bins,
@@ -242,7 +232,7 @@ def get_sums(pdf):
     sums = dict()
     for col in pdf.columns.values.tolist():
         if col != 'bins':
-            sums[col] = pdf[col].zsum()
+            sums[col] = pdf[col].sum()
     return pd.Series(sums, name='sums')
 
 
@@ -454,7 +444,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             sdf['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
             sdf['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
             sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-            wtotal = (res2['tax_diff'] * res2['s006']).zsum()
+            wtotal = (res2['tax_diff'] * res2['s006']).sum()
             sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                                 'tax_diff', wtotal)
             res2['afinc1'] = res1['aftertax_income']
@@ -500,8 +490,10 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             #              expected 'Python object' but got 'long'"
             #              in 'pandas._libs.lib.is_bool_array' ignored
             #                                                  ^^^^^^^
-            # It is hoped that Pandas PR#17841, which is scheduled for
-            # inclusion in Pandas version 0.22.0 (Jan 2018), will fix this.
+            # It is hoped that Pandas PR#18252, which is scheduled for
+            # inclusion in Pandas version 0.23.0 (Feb 2018), will fix this.
+            # See discussion at the following URL:
+            # https://github.com/pandas-dev/pandas/issues/19037
             pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
                                 value=[0, 0, 0, 0, 0], inplace=True)
             pdf['bins'].replace(to_replace=[6, 7, 8, 9],

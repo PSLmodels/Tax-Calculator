@@ -81,6 +81,7 @@ class Policy(ParametersBase):
         syr = start_year
         lyr = start_year + num_years - 1
         self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
+        self._apply_clp_cpi_offset(self._vals['_cpi_offset'], num_years)
         self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
 
         self.initialize(start_year, num_years)
@@ -199,7 +200,7 @@ class Policy(ParametersBase):
             raise ValueError(self.reform_errors)
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
-            known_years = self._apply_cpi_offset(reform)
+            known_years = self._apply_reform_cpi_offset(reform)
             self.set_default_vals(known_years=known_years)
         # implement the reform year by year
         precall_current_year = self.current_year
@@ -346,6 +347,20 @@ class Policy(ParametersBase):
 
     # ----- begin private methods of Policy class -----
 
+    def _apply_clp_cpi_offset(self, cpi_offset_clp_data, num_years):
+        """
+        Call this method from Policy constructor
+        after self._inflation_rates has been set and
+        before base class initialize method is called.
+        (num_years is number of years for which inflation rates are specified)
+        """
+        ovalues = cpi_offset_clp_data['value']
+        if len(ovalues) < num_years:  # extrapolate last known value
+            ovalues = ovalues + ovalues[-1:] * (num_years - len(ovalues))
+        for idx in range(0, num_years):
+            infrate = round(self._inflation_rates[idx] + ovalues[idx], 6)
+            self._inflation_rates[idx] = infrate
+
     @staticmethod
     def _cpi_offset_in_reform(reform):
         """
@@ -357,7 +372,7 @@ class Policy(ParametersBase):
                     return True
         return False
 
-    def _apply_cpi_offset(self, reform):
+    def _apply_reform_cpi_offset(self, reform):
         """
         Call this method ONLY if _cpi_offset_in_reform returns True.
         Apply CPI offset to inflation rates and

@@ -132,9 +132,14 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     """
     Main logic of test.
     """
-    # create a Calculator object
+    # create a baseline Policy object containing 2017_law.json parameters
+    pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
+    baseline_policy = Policy()
+    baseline_policy.implement_reform(pre_tcja['policy'])
+    # create a Calculator object using baseline_policy and full puf.csv sample
     rec = Records(data=puf_fullsample)
-    calc = Calculator(policy=Policy(), records=rec, verbose=False)
+    calc = Calculator(policy=baseline_policy, records=rec, verbose=False)
     # create base tables
     table_mean = create_base_table(tests_path)
     table_corr = copy.deepcopy(table_mean)
@@ -142,7 +147,7 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     # add statistics to tables
     year_headers = ['description']
     for year in range(Policy.JSON_START_YEAR, Policy.LAST_BUDGET_YEAR + 1):
-        assert year == calc.policy.current_year
+        assert year == calc.policy_current_year()
         year_headers.append(str(year))
         calc.calc_all()
         calculate_mean_stats(calc, table_mean, year)

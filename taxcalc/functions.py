@@ -114,11 +114,11 @@ def DependentCare(nu13, elderly_dependent, earned,
 
 @iterate_jit(nopython=True)
 def Adj(e03150, e03210, c03260,
-        e03270, e03300, e03400, e03500,
+        e03270, e03300, e03400, e03500, e00800,
         e03220, e03230, e03240, e03290, care_deduction,
         ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
-        ALD_EarlyWithdraw_hc, ALD_Alimony_hc, ALD_EducatorExpenses_hc,
-        ALD_HSADeduction_hc, ALD_IRAContributions_hc,
+        ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
+        ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
         c02900, c02900_in_ei):
     """
@@ -148,7 +148,9 @@ def Adj(e03150, e03210, c03260,
 
         e03400 : Penalty on early withdrawal of savings deduction
 
-        e03500 : Alimony paid deduction
+        e03500 : Alimony paid
+
+        e00800 : Alimony received
 
         care_deduction : Dependent care expense deduction
 
@@ -162,7 +164,9 @@ def Adj(e03150, e03210, c03260,
 
         ALD_EarlyWithdraw_hc : Penalty on early withdrawal deduction haricut
 
-        ALD_Alimony_hc : Alimony paid deduction haircut
+        ALD_AlimonyPaid_hc : Alimony paid deduction haircut
+
+        ALD_AlimonyReceived_hc : Alimony received deduction haircut
 
         ALD_EducatorExpenses_hc: Eductor expenses haircut
 
@@ -185,7 +189,8 @@ def Adj(e03150, e03210, c03260,
     c02900_in_ei = ((1. - ALD_StudentLoan_hc) * e03210 +
                     c03260 +
                     (1. - ALD_EarlyWithdraw_hc) * e03400 +
-                    (1. - ALD_Alimony_hc) * e03500 +
+                    (1. - ALD_AlimonyPaid_hc) * e03500 +
+                    (1. - ALD_AlimonyReceived_hc) * e00800 +
                     (1. - ALD_EducatorExpenses_hc) * e03220 +
                     (1. - ALD_Tuition_hc) * e03230 +
                     (1. - ALD_DomesticProduction_hc) * e03240 +
@@ -222,6 +227,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
+             ALD_BusinessLosses_c, MARS, c02900_in_ei,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
@@ -249,9 +255,12 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
                                         p22250 + ALD_InvInc_ec_rt * p23250))
         invinc_agi_ec = ALD_InvInc_ec_rt * (e00300 + e00650) + CG_ec_RyanBrady
     # compute ymod1 variable that is included in AGI
-    ymod1 = (e00200 + e00700 + e00800 + e00900 + e01400 + e01700 +
-             invinc - invinc_agi_ec +
-             e02000 + e02100 + e02300)
+    ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
+             invinc - invinc_agi_ec + e02100 + e02300 +
+             max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
+    # compute business loss excluded from ymod1 but included in expanded_income
+    excluded_loss = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
+    c02900_in_ei += excluded_loss
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
@@ -263,7 +272,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1, invinc_agi_ec)
+    return (c01000, c23650, ymod, ymod1, invinc_agi_ec, c02900_in_ei)
 
 
 @iterate_jit(nopython=True)
@@ -285,7 +294,7 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
+def UBI(nu18, n1821, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
         ubi, taxable_ubi, nontaxable_ubi):
     """
 
@@ -294,9 +303,9 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
     nu18: Number of people in the tax unit under 18
     n1821: Number of people in the tax unit age 18-20
     n21: Number of people in the tax unit age 21+
-    UBI1: UBI for those under 18
-    UBI2: UBI for those between 18 to 20
-    UBI3: UBI for those 21 or more
+    UBI_u18: UBI benefit for those under 18
+    UBI_1820: UBI benefit for those between 18 to 20
+    UBI_21: UBI benefit for those 21 or more
     UBI_ecrt: Fraction of UBI benefits that are not included in AGI
 
     Returns
@@ -307,7 +316,7 @@ def UBI(nu18, n1821, n21, UBI1, UBI2, UBI3, UBI_ecrt,
                     This is added to expanded income
 
     """
-    ubi = nu18 * UBI1 + n1821 * UBI2 + n21 * UBI3
+    ubi = nu18 * UBI_u18 + n1821 * UBI_1820 + n21 * UBI_21
     taxable_ubi = ubi * (1. - UBI_ecrt)
     nontaxable_ubi = ubi - taxable_ubi
     return ubi, taxable_ubi, nontaxable_ubi
@@ -709,17 +718,21 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, c04800,
-           PT_exclusion_rt, PT_exclusion_wage_limit, e00900,
-           e26270, e00200):
+def TaxInc(c00100, standard, c04470, c04600, c04800, MARS,
+           PT_excl_rt, PT_excl_wagelim_rt, PT_excl_wagelim_thd,
+           PT_excl_wagelim_prt, e00900, e26270, e00200):
     """
     TaxInc function: ...
     """
-    pt_exclusion = max(0., PT_exclusion_rt * (e00900 + e26270))
-    if e26270 > 0.:
-        pt_exclusion = min(pt_exclusion, e00200 * PT_exclusion_wage_limit)
-    c04800 = max(0., c00100 - max(c04470, standard) - c04600 -
-                 pt_exclusion)
+    pt_excl_pre = max(0., PT_excl_rt * (e00900 + e26270))
+    wagelim_pre = e00200 * PT_excl_wagelim_rt
+    taxinc_pre = max(0., c00100 - max(c04470, standard) - c04600)
+    # calculate business income exclusion
+    excess = max(taxinc_pre - PT_excl_wagelim_thd[MARS - 1], 0.)
+    wagelim_rt = min(excess * PT_excl_wagelim_prt[MARS - 1], 1.)
+    limit = wagelim_rt * max(pt_excl_pre - wagelim_pre, 0.)
+    pt_excl = pt_excl_pre - limit
+    c04800 = max(0., taxinc_pre - pt_excl)
     return c04800
 
 
@@ -1616,19 +1629,19 @@ def ComputeBenefit(calc, ID_switch):
     # the types of itemized deductions covered under the BenefitSurtax
     no_ID_calc = copy.deepcopy(calc)
     if ID_switch[0]:
-        no_ID_calc.policy.ID_Medical_hc = 1.
+        no_ID_calc.param('ID_Medical_hc', 1.)
     if ID_switch[1]:
-        no_ID_calc.policy.ID_StateLocalTax_hc = 1.
+        no_ID_calc.param('ID_StateLocalTax_hc', 1.)
     if ID_switch[2]:
-        no_ID_calc.policy.ID_RealEstate_hc = 1.
+        no_ID_calc.param('ID_RealEstate_hc', 1.)
     if ID_switch[3]:
-        no_ID_calc.policy.ID_Casualty_hc = 1.
+        no_ID_calc.param('ID_Casualty_hc', 1.)
     if ID_switch[4]:
-        no_ID_calc.policy.ID_Miscellaneous_hc = 1.
+        no_ID_calc.param('ID_Miscellaneous_hc', 1.)
     if ID_switch[5]:
-        no_ID_calc.policy.ID_InterestPaid_hc = 1.
+        no_ID_calc.param('ID_InterestPaid_hc', 1.)
     if ID_switch[6]:
-        no_ID_calc.policy.ID_Charity_hc = 1.
+        no_ID_calc.param('ID_Charity_hc', 1.)
     no_ID_calc._calc_one_year()  # pylint: disable=protected-access
     diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
     benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
@@ -1640,17 +1653,17 @@ def BenefitSurtax(calc):
     BenefitSurtax function: computes itemized-deduction-benefit surtax and
     adds the surtax amount to income tax, combined tax, and surtax liabilities.
     """
-    if calc.policy.ID_BenefitSurtax_crt != 1.:
-        ben = ComputeBenefit(calc, calc.policy.ID_BenefitSurtax_Switch)
-        ben_deduct = calc.policy.ID_BenefitSurtax_crt * calc.array('c00100')
-        ben_exempt = calc.policy.ID_BenefitSurtax_em[calc.array('MARS') - 1]
+    if calc.param('ID_BenefitSurtax_crt') != 1.:
+        ben = ComputeBenefit(calc, calc.param('ID_BenefitSurtax_Switch'))
+        ben_deduct = calc.param('ID_BenefitSurtax_crt') * calc.array('c00100')
+        ben_exempt = calc.param('ID_BenefitSurtax_em')[calc.array('MARS') - 1]
         ben_dedem = ben_deduct + ben_exempt
-        ben_surtax = (calc.policy.ID_BenefitSurtax_trt *
+        ben_surtax = (calc.param('ID_BenefitSurtax_trt') *
                       np.where(ben > ben_dedem, ben - ben_dedem, 0.))
         # add ben_surtax to income & combined taxes and to surtax subtotal
-        calc.records.iitax += ben_surtax
-        calc.records.combined += ben_surtax
-        calc.records.surtax += ben_surtax
+        calc.incarray('iitax', ben_surtax)
+        calc.incarray('combined', ben_surtax)
+        calc.incarray('surtax', ben_surtax)
 
 
 def BenefitLimitation(calc):
@@ -1658,37 +1671,37 @@ def BenefitLimitation(calc):
     BenefitLimitation function: limits the benefits of select itemized
     deductions to a fraction of deductible expenses.
     """
-    if calc.policy.ID_BenefitCap_rt != 1.:
+    if calc.param('ID_BenefitCap_rt') != 1.:
         # pylint: disable=no-member
         # (above pylint comment eliminates bogus np.maximum warnings)
-        benefit = ComputeBenefit(calc, calc.policy.ID_BenefitCap_Switch)
+        benefit = ComputeBenefit(calc, calc.param('ID_BenefitCap_Switch'))
         # Calculate total deductible expenses under the cap.
         deductible_expenses = 0.
-        if calc.policy.ID_BenefitCap_Switch[0]:  # Medical
+        if calc.param('ID_BenefitCap_Switch')[0]:  # Medical
             deductible_expenses += calc.array('c17000')
-        if calc.policy.ID_BenefitCap_Switch[1]:  # StateLocal
-            deductible_expenses += ((1. - calc.policy.ID_StateLocalTax_hc) *
+        if calc.param('ID_BenefitCap_Switch')[1]:  # StateLocal
+            deductible_expenses += ((1. - calc.param('ID_StateLocalTax_hc')) *
                                     np.maximum(calc.array('e18400_capped'),
                                                0.))
-        if calc.policy.ID_BenefitCap_Switch[2]:
-            deductible_expenses += ((1. - calc.policy.ID_RealEstate_hc) *
+        if calc.param('ID_BenefitCap_Switch')[2]:
+            deductible_expenses += ((1. - calc.param('ID_RealEstate_hc')) *
                                     calc.array('e18500_capped'))
-        if calc.policy.ID_BenefitCap_Switch[3]:  # Casualty
+        if calc.param('ID_BenefitCap_Switch')[3]:  # Casualty
             deductible_expenses += calc.array('c20500')
-        if calc.policy.ID_BenefitCap_Switch[4]:  # Miscellaneous
+        if calc.param('ID_BenefitCap_Switch')[4]:  # Miscellaneous
             deductible_expenses += calc.array('c20800')
-        if calc.policy.ID_BenefitCap_Switch[5]:  # Mortgage and interest paid
+        if calc.param('ID_BenefitCap_Switch')[5]:  # Mortgage and interest paid
             deductible_expenses += calc.array('c19200')
-        if calc.policy.ID_BenefitCap_Switch[6]:  # Charity
+        if calc.param('ID_BenefitCap_Switch')[6]:  # Charity
             deductible_expenses += calc.array('c19700')
         # Calculate cap value for itemized deductions
-        benefit_limit = deductible_expenses * calc.policy.ID_BenefitCap_rt
+        benefit_limit = deductible_expenses * calc.param('ID_BenefitCap_rt')
         # Add the difference between the actual benefit and capped benefit
         # to income tax and combined tax liabilities.
         excess_benefit = np.maximum(benefit - benefit_limit, 0)
-        calc.records.iitax += excess_benefit
-        calc.records.surtax += excess_benefit
-        calc.records.combined += excess_benefit
+        calc.incarray('iitax', excess_benefit)
+        calc.incarray('surtax', excess_benefit)
+        calc.incarray('combined', excess_benefit)
 
 
 @iterate_jit(nopython=True)

@@ -93,7 +93,7 @@ def fixture_reformfile1():
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
-    { "policy": {
+    {"policy": {
         "_AMT_brk1": { // top of first AMT tax bracket
           "2015": [200000],
           "2017": [300000]},
@@ -136,7 +136,7 @@ def fixture_reformfilex1():
     Temporary reform file with .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{ "policy": {"_AMT_brk1": {"2015": [-1]}}}'
+    contents = '{"policy": {"_AMT_brk1": {"2015": [-1]}}}'
     rfile.write(contents)
     rfile.close()
     # must close and then yield for Windows platform
@@ -173,10 +173,11 @@ def fixture_assumpfile1():
     """
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
-    { "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-      "behavior": {},
-      "growdiff_baseline": {},
-      "growdiff_response": {}
+    {
+    "consumption": { "_MPC_e18400": {"2018": [0.05]} },
+    "behavior": {},
+    "growdiff_baseline": {},
+    "growdiff_response": {}
     }
     """
     afile.write(contents)
@@ -816,11 +817,12 @@ def fixture_assumpfile9():
     """
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
-    { "consumption": {},
-      "behavior": {},
-      "growdiff_baseline": {},
-      "growdiff_response": {},
-      "growmodel": {}
+    {
+    "consumption": {},
+    "behavior": {},
+    "growdiff_baseline": {},
+    "growdiff_response": {},
+    "growmodel": {}
     }
     """
     afile.write(contents)
@@ -855,7 +857,7 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           assump=assumpfile9.name,
                                           aging_input_data=True,
                                           exact_calculations=False)
-    assert len(errmsg) > 0
+    assert errmsg
     # bad aging_input_data value
     errmsg = TaxCalcIO.growmodel_analysis(input_data='puf.csv',
                                           tax_year=2020,
@@ -863,7 +865,7 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           assump=assumpfile9.name,
                                           aging_input_data=False,
                                           exact_calculations=False)
-    assert len(errmsg) > 0
+    assert errmsg
     # bad input_data value
     errmsg = TaxCalcIO.growmodel_analysis(input_data='bad.csv',
                                           tax_year=2020,
@@ -871,7 +873,7 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           assump=assumpfile9.name,
                                           aging_input_data=True,
                                           exact_calculations=False)
-    assert len(errmsg) > 0
+    assert errmsg
     # bad tax_year (because is before first data year)
     errmsg = TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                           tax_year=2013,
@@ -879,7 +881,7 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           assump=assumpfile9.name,
                                           aging_input_data=True,
                                           exact_calculations=False)
-    assert len(errmsg) > 0
+    assert errmsg
     # bad reform file name
     errmsg = TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                           tax_year=2020,
@@ -887,7 +889,7 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           assump=assumpfile9.name,
                                           aging_input_data=True,
                                           exact_calculations=False)
-    assert len(errmsg) > 0
+    assert errmsg
     # bad assump value
     errmsg = TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                           tax_year=2020,
@@ -895,7 +897,7 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           assump=assumpfile3.name,
                                           aging_input_data=True,
                                           exact_calculations=False)
-    assert len(errmsg) > 0
+    assert errmsg
 
 
 def test_growmodel_analysis(reformfile9, assumpfile9):

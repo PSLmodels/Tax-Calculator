@@ -4,6 +4,40 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-01-?? Release 0.15.0
+-------------------------
+(last merged pull request is
+[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx))
+
+**API Changes**
+- Make objects embedded in a Calculator object private and provide Calculator class access methods to manipulate the embedded objects
+  [[#1791](https://github.com/open-source-economics/Tax-Calculator/pull/1791)
+  by Martin Holmer]
+- Rename three UBI policy parameters to be more descriptive
+  [[#1813](https://github.com/open-source-economics/Tax-Calculator/pull/1813)
+  by Martin Holmer as suggested by Max Ghenis]
+
+**New Features**
+- Add `--outdir` option to command-line `tc` tool
+  [[#1801](https://github.com/open-source-economics/Tax-Calculator/pull/1801)
+  by Martin Holmer as suggested by Reuben Fischer-Baum]
+- Make TCJA policy current-law policy
+  [[#1803](https://github.com/open-source-economics/Tax-Calculator/pull/1803)
+  by Martin Holmer with assistance from Cody Kallen]
+- Change minimum required pandas version from 0.21.0 to 0.22.0 and remove zsum() pandas work-around
+  [[#1805](https://github.com/open-source-economics/Tax-Calculator/pull/1805)
+  by Martin Holmer]
+- Add policy parameter and logic needed to represent TCJA treatment of alimony received
+  [[#1818](https://github.com/open-source-economics/Tax-Calculator/pull/1818)
+  by Martin Holmer and Cody Kallen]
+- Add policy parameters and logic needed to represent TCJA limits on pass-through income and business losses
+  [[#1819](https://github.com/open-source-economics/Tax-Calculator/pull/1819)
+  by Cody Kallen]
+
+**Bug Fixes**
+- None
+
+
 2017-12-24 Release 0.14.3
 -------------------------
 (last merged pull request is

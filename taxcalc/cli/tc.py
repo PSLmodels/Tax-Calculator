@@ -21,11 +21,14 @@ def cli_tc_main():
     """
     Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
+    # pylint: disable=too-many-statements
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}'.format(
+    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
         '[--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
-        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb] [--test]')
+        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb]\n',
+        '          ',
+        '[--outdir] [--test]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -89,19 +92,30 @@ def cli_tc_main():
                               'reform, where all the variables are named '
                               'using their internal Tax-Calculator names. '
                               'No --dump option implies OUTPUT contains '
-                              'minimal tax output for the reform. '
-                              'NOTE: create a space-delimited file named '
-                              'tcdumpvars in directory where output is being '
-                              'written in order to specify a custom set of '
-                              'dump variables.'),
+                              'minimal tax output for the reform.  NOTE: '
+                              'use the --dvars option to point to a file '
+                              'containing a custom set of dump variables.'
+                              ''),
                         default=False,
                         action="store_true")
+    parser.add_argument('--dvars',
+                        help=('DVARS is name of optional file containing a '
+                              'space-delimited list of variables to include '
+                              'in a partial dump OUTPUT file.  No --dvars '
+                              'implies a full dump containing all variables.'),
+                        default=None)
     parser.add_argument('--sqldb',
                         help=('optional flag that writes SQLite database '
                               'with dump table containing same output as '
                               'produced by --dump option.'),
                         default=False,
                         action="store_true")
+    parser.add_argument('--outdir',
+                        help=('OUTDIR is name of optional output directory '
+                              'in which all output files are written. '
+                              'No --outdir implies output files are written '
+                              'in the current directory.'),
+                        default=None)
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
                               'test.'),
@@ -118,7 +132,8 @@ def cli_tc_main():
         taxyear = args.TAXYEAR
     # instantiate taxcalcio object and do tax analysis
     tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                     reform=args.reform, assump=args.assump)
+                     reform=args.reform, assump=args.assump,
+                     outdir=args.outdir)
     if tcio.errmsg:
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
@@ -134,15 +149,20 @@ def cli_tc_main():
         sys.stderr.write('USAGE: tc --help\n')
         return 1
     dumpvar_set = None
-    if args.dump or args.sqldb:
-        if os.path.exists('tcdumpvars'):
-            with open('tcdumpvars') as vfile:
-                dump_vars_str = vfile.read()
+    if args.dvars and (args.dump or args.sqldb):
+        if os.path.exists(args.dvars):
+            with open(args.dvars) as dfile:
+                dump_vars_str = dfile.read()
             dumpvar_set = tcio.custom_dump_variables(dump_vars_str)
             if tcio.errmsg:
                 sys.stderr.write(tcio.errmsg)
                 sys.stderr.write('USAGE: tc --help\n')
                 return 1
+        else:
+            msg = 'ERROR: DVARS file {} does not exist\n'
+            sys.stderr.write(msg.format(args.dvars))
+            sys.stderr.write('USAGE: tc --help\n')
+            return 1
     tcio.analyze(writing_output_file=True,
                  output_tables=args.tables,
                  output_graphs=args.graphs,
