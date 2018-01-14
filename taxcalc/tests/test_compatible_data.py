@@ -27,19 +27,19 @@ def test_compatible_data_presence(allparams):
     Test that every parameter in the current_law_policy.json file
     has a compatible_data field that is a dictionary.
     """
-    compatible_data_keys = ['puf', 'cps']
-    compatible_data_keys_set = set(compatible_data_keys)
+    compatible_data_keys_set = set(['puf', 'cps'])
 
     # Nested function used only in test_compatible_data_presence
     def valid_compatible_data(compatible_data):
         """
-        Return True if compdata dictionary is valid; otherwise return False
+        Return True if compatible_data is a valid dictionary;
+        otherwise return False
         """
+        if not isinstance(compatible_data, dict):
+            return False
         if set(compatible_data.keys()) != compatible_data_keys_set:
             return False
         for key in compatible_data:
-            if key not in compatible_data_keys:
-                return False
             boolean = (compatible_data[key] is True or
                        compatible_data[key] is False)
             if not boolean:
@@ -53,10 +53,7 @@ def test_compatible_data_presence(allparams):
             compatible_data = allparams[pname]['compatible_data']
         else:
             compatible_data = None
-        if isinstance(compatible_data, dict):
-            if not valid_compatible_data(compatible_data):
-                problem_pnames.append(pname)
-        else:
+        if not valid_compatible_data(compatible_data):
             problem_pnames.append(pname)
     if problem_pnames:
         msg = '{} has no or invalid compatible_data field'

@@ -20,7 +20,7 @@ for a complete commit history.
 **New Features**
 - Add validity testing of compatible_data information in `current_law_policy.json`
   [[#1614](https://github.com/open-source-economics/Tax-Calculator/pull/1614)
-  by Matt Jensen with assistance from Hank Doupe]]
+  by Matt Jensen with assistance from Hank Doupe]
 - Add `--outdir` option to command-line `tc` tool
   [[#1801](https://github.com/open-source-economics/Tax-Calculator/pull/1801)
   by Martin Holmer as suggested by Reuben Fischer-Baum]
