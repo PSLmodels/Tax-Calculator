@@ -28,6 +28,25 @@ def test_compatible_data_presence(allparams):
     has a compatible_data field that is a dictionary.
     """
     compatible_data_keys = ['puf', 'cps']
+    compatible_data_keys_set = set(compatible_data_keys)
+
+    # Nested function used only in test_compatible_data_presence
+    def valid_compatible_data(compatible_data):
+        """
+        Return True if compdata dictionary is valid; otherwise return False
+        """
+        if set(compatible_data.keys()) != compatible_data_keys_set:
+            return False
+        for key in compatible_data:
+            if key not in compatible_data_keys:
+                return False
+            boolean = (compatible_data[key] is True or
+                       compatible_data[key] is False)
+            if not boolean:
+                return False
+        return True
+
+    # Main logic of test_compatible_data_presence function
     problem_pnames = list()
     for pname in allparams:
         if 'compatible_data' in allparams[pname]:
@@ -35,14 +54,8 @@ def test_compatible_data_presence(allparams):
         else:
             compatible_data = None
         if isinstance(compatible_data, dict):
-            for key in compatible_data:
-                if key in compatible_data_keys:
-                    boolean = (compatible_data[key] is True or
-                               compatible_data[key] is False)
-                    if not boolean:
-                        problem_pnames.append(pname)
-                else:
-                    problem_pnames.append(pname)
+            if not valid_compatible_data(compatible_data):
+                problem_pnames.append(pname)
         else:
             problem_pnames.append(pname)
     if problem_pnames:
