@@ -85,13 +85,13 @@ Setup Git
     validation tests if you are working on Windows::
 
       tax-calculator$ cd taxcalc
-      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n4
+      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
       tax-calculator/taxcalc$ cd validation
       tax-calculator/taxcalc/validation$ bash tests.sh
 
     If you do have a copy of the OSPC-supplied puf.csv file, then on
-    the second line above omit the '-m "not requires_pufcsv"'
-    expression so as to execute 'py.test -n4'.
+    the second line above omit the 'not requires_pufcsv and'
+    expression so as to execute 'py.test -m "not pre_release" -n4'.
 
     If all the tests pass, you're good to go. If they don't pass, enter
     the following updates at the command line and then try running the
@@ -169,7 +169,7 @@ situations, in which case other contributors are here to help.
    the tax-calculator/taxcalc directory (but skip the validation tests
    if you are working on Windows)::
 
-     tax-calculator/taxcalc$ py.test -m "not requires_pufcsv" -n4
+     tax-calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
      tax-calculator/taxcalc$ cd validation
      tax-calculator/taxcalc/validation$ ./tests
 
