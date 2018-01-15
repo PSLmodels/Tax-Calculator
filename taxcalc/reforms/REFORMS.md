@@ -13,21 +13,17 @@ Here we provide links to several reform files that specify historical
 reform proposals, and then provide a more general explanation of the
 structure and syntax of reform files.
 
-Note that the current-law values of each tax policy parameter are
-shown in the Policy Parameters section of the [user
-documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#pol).
-
 ## Tax Reforms Defined Relative to TCJA Policy
 
 Note that the current-law (that is, TCJA) values of each tax policy
-parameter are shown in the Policy Parameters section of the [user
+parameter are shown in the [Policy Parameters section of the user
 documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#pol).
 
 - [Pre-TCJA Policy](2017_law.json)
 
 ## Tax Reforms Defined Relative to pre-TCJA Policy
 
-Read the answer to Question 1 in [this
+Read the answer to [Question 1 in this
 FAQ](https://github.com/open-source-economics/Tax-Calculator/issues/1830)
 to see how to use the compound-reform techique to analyze the reforms
 in this section.
