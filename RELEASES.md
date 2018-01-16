@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-01-?? Release 0.15.0
+2018-01-16 Release 0.15.0
 -------------------------
 (last merged pull request is
-[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx))
+[#1832](https://github.com/open-source-economics/Tax-Calculator/pull/1832))
 
 **API Changes**
 - Make objects embedded in a Calculator object private and provide Calculator class access methods to manipulate the embedded objects
@@ -36,6 +36,9 @@ for a complete commit history.
 - Add policy parameters and logic needed to represent TCJA limits on pass-through income and business losses
   [[#1819](https://github.com/open-source-economics/Tax-Calculator/pull/1819)
   by Cody Kallen]
+- Revise user documentation and Tax-Calculator Cookbook recipes to reflect TCJA as current-law policy
+  [[#1832](https://github.com/open-source-economics/Tax-Calculator/pull/1832)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None
