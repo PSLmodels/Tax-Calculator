@@ -4,6 +4,23 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-01-?? Release 0.15.1
+-------------------------
+(last merged pull request is
+[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx))
+
+**API Changes**
+- None
+
+**New Features**
+- Add imputed CPS benefits data to Tax-Calculator
+  [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
+  by Anderson Frailey]
+
+**Bug Fixes**
+- None
+
+
 2018-01-16 Release 0.15.0
 -------------------------
 (last merged pull request is
