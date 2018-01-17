@@ -310,14 +310,16 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         Nested function that returns statistics DataFrame derived from the
         specified grouped Dataframe object, gpdf.
         """
-        sdf = pd.DataFrame()
-        unweighted_columns = set(['s006', 'num_returns_StandardDed',
-                                  'num_returns_ItemDed', 'num_returns_AMT'])
-        for col in unweighted_columns:
-            sdf[col] = gpdf.apply(unweighted_sum, col)
-        weighted_columns = set(DIST_TABLE_COLUMNS) - unweighted_columns
-        for col in weighted_columns:
-            sdf[col] = gpdf.apply(weighted_sum, col)
+        unweighted_columns = ['s006', 'num_returns_StandardDed',
+                              'num_returns_ItemDed', 'num_returns_AMT']
+        stats = list()
+        for col in DIST_TABLE_COLUMNS:
+            if col in unweighted_columns:
+                stats.append(gpdf.apply(unweighted_sum, col))
+            else:
+                stats.append(gpdf.apply(weighted_sum, col))
+        sdf = pd.DataFrame(data=np.column_stack(stats),
+                           columns=DIST_TABLE_COLUMNS)
         return sdf
 
     # main logic of create_distribution_table
