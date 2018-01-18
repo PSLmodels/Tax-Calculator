@@ -21,10 +21,10 @@ for a complete commit history.
 - None
 
 
-2018-01-16 Release 0.15.0
+2018-01-18 Release 0.15.0
 -------------------------
 (last merged pull request is
-[#1832](https://github.com/open-source-economics/Tax-Calculator/pull/1832))
+[#1834](https://github.com/open-source-economics/Tax-Calculator/pull/1834))
 
 **API Changes**
 - Make objects embedded in a Calculator object private and provide Calculator class access methods to manipulate the embedded objects
@@ -58,7 +58,9 @@ for a complete commit history.
   by Martin Holmer]
 
 **Bug Fixes**
-- None
+- Fix column order in distribution table
+  [[#1834](https://github.com/open-source-economics/Tax-Calculator/pull/1834)
+  by Martin Holmer and Hank Doupe]
 
 
 2017-12-24 Release 0.14.3
