@@ -35,19 +35,18 @@ upon request.</p>
 
 <h2 id="whatsnew">What's New</h2>
 
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/TCJA_Reconciliation.json">TCJA conference committee bill</a>
-reform file and ability to simulate it is available in Tax-Calculator
-release 0.14.1
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">Pre-TCJA policy reform file</a> is available
+given that TCJA is current-law policy in Tax-Calculator release 0.15.0
+and higher
 
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1762">FAQ on how to analyze TCJA conference committee bill</a> is now available
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1830#issue-288673028">FAQ on using Tax-Calculator when TCJA is current law</a> is
+now available
 
-<p><a href="#partdump">Partial Dump</a> capability allows you to
-specify exactly which variables are included in the output file when
-using the <kbd>tc --dump</kbd> option (available in release 0.14.0 and
-higher)
+<p><a href="#partdump">Partial dump</a> capability requires use of
+tc <kbd>--dvars</kbd> option in Tax-Calculator release 0.15.0 and higher
 
-<p><a href="#fastexec">Faster Execution</a> tip when executing many
-<kbd>tc</kbd> runs that differ by year and/or reform</p>
+<p><a href="#outdir">Output directory</a> capability requires use of
+tc <kbd>--outdir</kbd> option in Tax-Calculator release 0.15.0 and higher
 
 <p>To upgrade to the newest version of the Tax-Calculator package,
 execute this command:<br><kbd>conda update -c ospc taxcalc</kbd></p>
@@ -244,7 +243,7 @@ following two commands at the operating system command prompt (which
 is shown as <kbd>$</kbd> here, but would be <kbd>></kbd> on Windows)
 in any directory:
 <pre>$ conda --version</pre>
-Expected output is something like <kbd>conda 4.3.17</kbd>
+Expected output is something like <kbd>conda 4.4.7</kbd>
 <pre>$ python --version</pre>
 Expected output should contain either the <kbd>Python 2.7</kbd> or
 the <kbd>Python 3.6</kbd> phrase as well as the
@@ -529,18 +528,25 @@ the same tax liabilities (apart from rounding errors of one or two
 cents) as in the original dump output.</p>
 
 <p id="partdump">This full dump output can be useful for debugging and
-is small when using a several stylized filing units as input.  But when
-using large samples as input (for example, the <kbd>cps.csv</kbd> input
-file), the size of the dump output becomes quite large. For Tax-Calculator
-versions 0.14.0 and higher, there is a way to specify a <b>partial dump</b>
-that includes only variables of interest.  To have <kbd>tc</kbd> do a
-partial dump, create a file named <kbd>tcdumpvars</kbd> in the
-directory where <kbd>tc</kbd> writes output files and in that
-<kbd>tcdumpvars</kbd> file list the names of the variables to be
-included in the partial dump.  You can put the varible names on
-separate lines and/or put several names on one line separated by
-spaces.  If there is no <kbd>tcdumpvars</kbd> file, the
-<kbd>--dump</kbd> option produces a full dump.</p>
+is small when using a several stylized filing units as input.  But
+when using large samples as input (for example, the <kbd>cps.csv</kbd>
+input file), the size of the dump output becomes quite large. For
+Tax-Calculator versions 0.15.0 and higher, there is a way to specify
+a <b>partial dump</b> that includes only variables of interest.  To
+have <kbd>tc</kbd> do a partial dump, create a text file that lists
+the names of the variables to be included in the partial dump.  You
+can put the varible names on separate lines and/or put several names
+on one line separated by spaces.  Then point that that file using the
+<kbd>--dvars</kbd> option.  So, for example, if your list of dump
+variables is in a file named <kbd>mydumpvars</kbd>, a partial dump
+file is created this way:
+
+<p><pre>
+$ tc cps.csv 2020 --dump --dvars mydumpvars
+</pre></p>
+
+If there is no <kbd>--dvars</kbd> option, the <kbd>--dump</kbd> option
+produces a full dump.</p>
 
 <p><pre>
 (3)$ tc test.csv 2020 --sqldb
@@ -552,7 +558,7 @@ the dump table in an SQLite3 database file, which is
 called <kbd>test-20-#-#.db</kbd> in this example.  Because
 the <kbd>--dump</kbd> option is not used in example (3), minimal
 output will be written to the <kbd>test-20-#-#.csv</kbd> file.
-Note that the presence of the <kbd>tcdumpvars</kbd> file causes
+Note that use of the <kbd>--dvars</kbd> option causes
 the contents of the database file to be a partial dump.</p>
 
 <p> Pros and cons of putting dump output in a CSV file or an SQLite3
@@ -603,6 +609,14 @@ specified in the <kbd>res1.json</kbd> file.  The output results
 produced by this non-static analysis are written to the 
 <kbd>test-21-ref3-res1.csv</kbd> file.</p>
 
+<p id="outdir">In the preceding examples, all the output files are
+written in the directory where the tc command was executed.  If you
+want the output files to be written in a different directory, use
+the <kbd>--outdir</kbd> option.  So, for example, you have created
+the <kbd>myoutput</kbd> directory as directory at the same level as
+the directory from where you are running tc, output files will be
+written there if you use the <kbd>--outdir myoutput</kbd> option.
+
 <p>The following examples illustrate output options that work only if
 each filing unit in the input file has a positive sampling weight
 (<kbd>s006</kbd>).  So, we are going to use the <kbd>cps.csv</kbd>
@@ -641,32 +655,32 @@ cps-22-ref3-#-doc.text	cps-22-ref3-#-tab.text	cps-22-ref3-#.csv
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.5      -2.1       3.6       0.0       1.6
- 1    17.93     201.9     -15.3      13.6       0.0      -1.8
- 2    17.93     351.9     -19.1      25.0       0.0       5.9
- 3    17.93     512.8     -17.0      47.2       0.0      30.2
- 4    17.93     696.2      -1.2      72.5       0.0      71.3
- 5    17.93     929.0      23.9     104.4       0.0     128.4
- 6    17.93    1248.8      60.3     148.4       0.0     208.7
- 7    17.93    1728.2     121.4     215.6       0.0     337.0
- 8    17.93    2504.8     225.6     318.8       0.0     544.3
- 9    17.93    5945.2    1089.6     516.7       0.0    1606.3
- A   179.26   14115.3    1466.0    1465.8       0.0    2931.8
+ 0    17.93      -3.5      -2.2       3.6       0.0       1.4
+ 1    17.93     201.9     -15.8      13.6       0.0      -2.3
+ 2    17.93     351.9     -21.5      25.0       0.0       3.5
+ 3    17.93     512.8     -23.3      47.2       0.0      23.9
+ 4    17.93     696.2     -12.4      72.5       0.0      60.1
+ 5    17.93     929.0       7.1     104.4       0.0     111.5
+ 6    17.93    1248.8      34.0     148.4       0.0     182.4
+ 7    17.93    1728.2      83.9     215.6       0.0     299.5
+ 8    17.93    2504.8     167.3     318.8       0.0     486.1
+ 9    17.93    5945.2     956.8     516.7       0.0    1473.5
+ A   179.26   14115.3    1173.8    1465.8       0.0    2639.7
 
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.5       0.0       0.0       0.0       0.0
- 1    17.93     201.9      -0.2       0.0       0.0      -0.2
- 2    17.93     351.9      -1.7       0.0       0.0      -1.7
- 3    17.93     512.8      -4.2       0.0       0.0      -4.2
- 4    17.93     696.2      -7.3       0.0       0.0      -7.3
- 5    17.93     929.0     -11.1       0.0       0.0     -11.1
- 6    17.93    1248.8     -17.5       0.0       0.0     -17.5
- 7    17.93    1728.2     -22.7       0.0       0.0     -22.7
- 8    17.93    2504.8     -31.2       0.0       0.0     -31.2
- 9    17.93    5945.2     -26.2       0.0       0.0     -26.2
- A   179.26   14115.3    -122.1       0.0       0.0    -122.1
+ 0    17.93      -3.5      -0.0       0.0       0.0      -0.0
+ 1    17.93     201.9      -0.0       0.0       0.0      -0.0
+ 2    17.93     351.9      -2.3       0.0       0.0      -2.3
+ 3    17.93     512.8      -6.1       0.0       0.0      -6.1
+ 4    17.93     696.2     -11.2       0.0       0.0     -11.2
+ 5    17.93     929.0     -18.2       0.0       0.0     -18.2
+ 6    17.93    1248.8     -32.5       0.0       0.0     -32.5
+ 7    17.93    1728.2     -43.6       0.0       0.0     -43.6
+ 8    17.93    2504.8     -66.2       0.0       0.0     -66.2
+ 9    17.93    5945.2     -78.3       0.0       0.0     -78.3
+ A   179.26   14115.3    -258.4       0.0       0.0    -258.4
 </pre></p>
 
 <p>Example (7) produces 2022 static output for the filing units in the
@@ -686,8 +700,8 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24*
-cps-24-ref3-#-atr.html	cps-24-ref3-#-dec.html  cps-24-ref3-#-mtr.html
-cps-24-ref3-#-doc.text	cps-24-ref3-#.csv
+cps-24-ref3-#-atr.html	cps-24-ref3-#-doc.text	cps-24-ref3-#.csv
+cps-24-ref3-#-dec.html	cps-24-ref3-#-mtr.html
 </pre></p>
 
 <p>Example (8) is like example (7) except we ask for 2024 static
@@ -779,7 +793,7 @@ $ tc cps.csv 2016 --sqldb
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2016.
 $ sqlite3 cps-16-#-#.db
-SQLite version 3.13.0 2016-05-18 10:57:30
+SQLite version 3.20.1 2017-08-24 16:21:36
 Enter ".help" for usage hints.
 sqlite> select count(*) from dump;
 456465
@@ -830,16 +844,16 @@ select "weighted count of all filing units",
 from dump;
 
 $ cat tab.sql | sqlite3 cps-16-#-#.db
-weighted count of those with negative MTR|22.434
+weighted count of those with negative MTR|22.504
 bin number|weighted count|average MTR in bin
--1.0|35.34|0.0
-0.0|2.308|7.27
-1.0|56.887|14.11
-2.0|32.926|25.39
-3.0|14.636|32.18
-4.0|0.786|43.0
-5.0|0.069|54.52
-6.0|0.012|66.75
+-1.0|35.373|0.0
+0.0|2.31|7.28
+1.0|56.978|14.11
+2.0|32.867|25.38
+3.0|14.568|32.18
+4.0|0.719|43.05
+5.0|0.069|54.61
+6.0|0.011|66.75
 weighted count of all filing units|165.399
 </pre>
 The <kbd>cat</kbd> command writes the contents of
