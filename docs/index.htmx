@@ -39,13 +39,14 @@ upon request.</p>
 given that TCJA is current-law policy in Tax-Calculator release 0.15.0
 and higher
 
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1830">FAQ on using Tax-Calculator when TCJA is current law</a> is now available
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1830#issue-288673028">FAQ on using Tax-Calculator when TCJA is current law</a> is
+now available
 
 <p><a href="#partdump">Partial dump</a> capability requires use of
-`tc --dvars` option in Tax-Calculator release 0.15.0 and higher
+tc <kbd>--dvars</kbd> option in Tax-Calculator release 0.15.0 and higher
 
 <p><a href="#outdir">Output directory</a> capability requires use of
-`tc --outdir` option in Tax-Calculator release 0.15.0 and higher
+tc <kbd>--outdir</kbd> option in Tax-Calculator release 0.15.0 and higher
 
 <p>To upgrade to the newest version of the Tax-Calculator package,
 execute this command:<br><kbd>conda update -c ospc taxcalc</kbd></p>
