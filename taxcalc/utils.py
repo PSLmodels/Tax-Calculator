@@ -371,6 +371,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
                 dist_table[col] /= dist_table['s006']
     # set print display format for float table elements
     pd.options.display.float_format = '{:8,.0f}'.format
+    # ensure dist_table columns are in correct order
+    assert dist_table.columns.values.tolist() == DIST_TABLE_COLUMNS
     return dist_table
 
 
@@ -538,6 +540,8 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         diffs[col] *= 100.0
     # set print display format for float table elements
     pd.options.display.float_format = '{:10,.2f}'.format
+    # ensure diffs columns are in correct order
+    assert diffs.columns.values.tolist() == DIFF_TABLE_COLUMNS
     return diffs
 
 
