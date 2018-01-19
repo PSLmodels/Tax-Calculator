@@ -1,19 +1,17 @@
-// Raise standard deduction and raise regular tax rates in top three brackets
-// from (0.33, 0.35, 0.396) to (0.35, 0.37, 0.42) beginning in 2018.
+// Raise personal exemption and raise regular tax rates in top three brackets
+// from (0.32, 0.35, 0.37) to (0.36, 0.39, 0.41) beginning in 2020.
 {
     "policy": {
-	// raise standard deduction and eliminate Dep and Aged differentials
-	"_STD": {"2018": [[12000, 24000, 12000, 18000, 24000]]},
-	"_STD_Dep": {"2018": [0]},
-	"_STD_Aged": {"2018": [[0, 0, 0, 0, 0]]},
+	// raise personal exemption amount and index in subsequent years
+	"_II_em": {"2020": [1000]},
 	// raise tax rates in the top three brackets
 	// ... raise non-AMT rates on non-pass-through income
-	"_II_rt5": {"2018": [0.350]},
-	"_II_rt6": {"2018": [0.370]},
-	"_II_rt7": {"2018": [0.420]},
+	"_II_rt5": {"2020": [0.36]},
+	"_II_rt6": {"2020": [0.39]},
+	"_II_rt7": {"2020": [0.41]},
 	// ... raise non-AMT rates on pass-through income
-	"_PT_rt5": {"2018": [0.350]},
-	"_PT_rt6": {"2018": [0.370]},
-	"_PT_rt7": {"2018": [0.420]}
+	"_PT_rt5": {"2020": [0.36]},
+	"_PT_rt6": {"2020": [0.39]},
+	"_PT_rt7": {"2020": [0.41]}
     }
 }
