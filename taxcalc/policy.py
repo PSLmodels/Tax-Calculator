@@ -250,9 +250,9 @@ class Policy(ParametersBase):
         'ssi': 0,
         'snap': 1,
         'vet': 2,
-        'medicare': 3,
-        'medicaid': 4,
-        'social security': 5,
+        'mcare': 3,
+        'mcaid': 4,
+        'oasdi': 5,
         'other': 6
     }
 

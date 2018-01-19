@@ -6401,7 +6401,7 @@
         "start_year": 2013,
         "cpi_inflated": false,
         "col_var": "benefittype",
-        "col_label": ["ssi", "snap", "vet", "medicare", "medicaid", "social security", "other"],
+        "col_label": ["ssi", "snap", "vet", "mecare", "mcaid", "oasdi", "other"],
         "boolean_value": true,
         "integer_value": true,
         "value": [[true, true, true, true, true, true, true]],

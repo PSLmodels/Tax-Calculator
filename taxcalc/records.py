@@ -105,7 +105,7 @@ class Records(object):
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
     VAR_INFO_FILENAME = 'records_variables.json'
-    BENEFIT_FILENAME = 'cps_benefits.csv.gz'
+    CPS_BENEFIT_FILENAME = 'cps_benefits.csv.gz'
 
     def __init__(self,
                  data='puf.csv',
@@ -195,7 +195,7 @@ class Records(object):
                        gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       benefits=Records.BENEFIT_FILENAME,
+                       benefits=Records.CPS_BENEFIT_FILENAME,
                        start_year=Records.CPSCSV_YEAR)
 
     @property
