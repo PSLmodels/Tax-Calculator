@@ -12,7 +12,7 @@ import yaml
 import pytest
 
 
-@pytest.mark.pre_release
+@pytest.mark.local
 def test_for_package_existence():
     """
     Ensure that no conda taxcalc package is installed when running pytest.

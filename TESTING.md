@@ -52,14 +52,15 @@ top of the repository directory tree:
 
 ```
 cd taxcalc
-py.test -m "not requires_pufcsv" -n4
+py.test -m "not requires_pufcsv and not pre_release" -n4
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
-but will skip the tests that require the `puf.csv` file as input.
-Depending on your computer, the execution time for this incomplete
-suite of tests is a little over one minute.  The `-n4` option calls
-for using as many as four CPU cores for parallel execution of the
+but will skip the tests that require the `puf.csv` file as input and
+the tests that are executed only just before a new release is being
+prepared.  Depending on your computer, the execution time for this
+incomplete suite of tests is roughly two minutes.  The `-n4` option
+calls for using as many as four CPU cores for parallel execution of the
 tests.  If you want sequential execution of the tests (which will
 take at least twice as long to execute), simply omit the `-n4` option.
 
@@ -71,16 +72,39 @@ tax-calculator directory at the top of the repository directory tree:
 
 ```
 cd taxcalc
-py.test -n4
+py.test -m "not pre_release" -n4
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
-including the tests that require the `puf.csv` file as input.
-Depending on your computer, the execution time for this complete suite
-of unit tests is roughly three minutes.  The `-n4` option calls for
+including the tests that require the `puf.csv` file as input but excluding
+the tests that are executed only just before a new release is being
+prepared. Depending on your computer, the execution time for this suite
+of unit tests is roughly four minutes.  The `-n4` option calls for
 using as many as four CPU cores for parallel execution of the tests.
 If you want sequential execution of the tests (which will take at
 least twice as long to execute), simply omit the `-n4` option.
+
+Just before releasing a new version of Tax-Calculator or just after
+adding a new parameter to `current_law_policy.json`, you should also
+execute the pre-release tests using this command:
+
+```
+py.test -m pre_release -n4
+``` 
+
+But if you execute the pre_release tests well before releasing a new
+version of Tax-Calculator, be sure **not** to include the updated
+`docs/index.html` file in your commit.  After checking that you can
+make a `docs/index.html` file that is correct, revert to the old
+version of `docs/index.html` by executing this command:
+
+```
+git checkout -- docs/index.html
+```
+
+Following this procedure will ensure that the documentation is not
+updated before the Tax-Calculator release is available.
+
 
 Testing with validation/tests.sh
 --------------------------------

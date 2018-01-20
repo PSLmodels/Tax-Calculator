@@ -66,7 +66,7 @@ def policy_param_text(pname, param):
     """
     Extract info from param for pname and return as HTML string.
     """
-    # pylint: disable=too-many-branches,len-as-condition
+    # pylint: disable=too-many-statements,too-many-branches,len-as-condition
     sec1 = param['section_1']
     if len(sec1) > 0:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
@@ -81,14 +81,18 @@ def policy_param_text(pname, param):
     txt += '<br><i>Description:</i> {}'.format(param['description'])
     if len(param['notes']) > 0:
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
+    if param['cpi_inflatable']:
+        txt += '<br><i>Can Be Inflation Indexed:</i> True'
+    else:
+        txt += '<br><i>Can Be Inflation Indexed:</i> False'
     if param['cpi_inflated']:
-        txt += '<br><i>Inflation Indexed:</i> True'
+        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True'
     else:
-        txt += '<br><i>Inflation Indexed:</i> False'
+        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False'
     if param['integer_value']:
-        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Integer Value:</i> True'
+        txt += '<br><i>Integer Value:</i> True'
     else:
-        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Integer Value:</i> False'
+        txt += '<br><i>Integer Value:</i> False'
     if param['boolean_value']:
         txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Boolean Value:</i> True'
     else:
