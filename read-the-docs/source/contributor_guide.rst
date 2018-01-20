@@ -73,13 +73,13 @@ Setup Git
       tax-calculator$ source activate taxcalc-dev
 
     If you are working on Windows, use the following from the command line::
-   
+
       tax-calculator$ activate taxcalc-dev
 
     Note: never conda install the taxcalc package in the taxcalc-dev
     environment because the taxcalc source code and the installed package
-    will conflict. 
-   
+    will conflict.
+
 11. To check that everything is working properly, run the following at
     the command line from the tax-calculator directory, but skip the
     validation tests if you are working on Windows::
@@ -96,7 +96,7 @@ Setup Git
     If all the tests pass, you're good to go. If they don't pass, enter
     the following updates at the command line and then try running the
     tests again::
- 
+
       tax-calculator$ conda update conda
       tax-calculator$ conda env update
 
@@ -137,7 +137,7 @@ situations, in which case other contributors are here to help.
 
         tax-calculator$ git checkout master
 
-   b. Download all of the content from the central Tax-Calculator repo.
+   b. Download all of the content from the central Tax-Calculator repo::
 
         tax-calculator$ git fetch upstream
 
@@ -195,7 +195,7 @@ situations, in which case other contributors are here to help.
      tax-calculator$ git commit -m "[description-of-your-commit]"
 
 6. Periodically, make sure that the branch you created in step 2
-   is in sync with the changes other contributors are making to 
+   is in sync with the changes other contributors are making to
    the central master branch by fetching upstream and merging
    upstream/master into your branch::
 
@@ -203,8 +203,8 @@ situations, in which case other contributors are here to help.
       tax-calculator$ git merge upstream/master
 
    You may need to resolve conflicts that arise when another
-   contributor changed the same section of code that you are 
-   changing. Feel free to ask other contributors for guidance 
+   contributor changed the same section of code that you are
+   changing. Feel free to ask other contributors for guidance
    if this happens to you. If you do need to fix a merge
    conflict, re-run the test suite afterwards (step 4.)
 
@@ -258,7 +258,7 @@ sample notebook: `10 Minutes To Tax-Calculator`_.
 .. _`password setup`:
    https://help.github.com/articles/caching-your-github-password-in-git/
 
-.. _`Tax-Calculator's GitHub page`: 
+.. _`Tax-Calculator's GitHub page`:
    https://github.com/open-source-economics/Tax-Calculator
 
 .. _`repository`:
