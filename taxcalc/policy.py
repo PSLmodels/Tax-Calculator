@@ -421,6 +421,13 @@ class Policy(ParametersBase):
                             self.reform_errors += (
                                 'ERROR: ' + msg.format(year, name) + '\n'
                             )
+                        else:
+                            # check if root parameter is cpi inflatable
+                            if not self._vals[pname]['cpi_inflatable']:
+                                msg = '{} {} parameter is not cpi inflatable'
+                                self.reform_errors += (
+                                    'ERROR: ' + msg.format(year, pname) + '\n'
+                                )
                     else:
                         msg = '{} {} parameter is not true or false'
                         self.reform_errors += (
