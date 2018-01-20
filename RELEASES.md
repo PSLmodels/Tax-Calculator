@@ -4,7 +4,7 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-01-?? Release 0.15.1
+2018-01-?? Release 0.15.2
 -------------------------
 (last merged pull request is
 [#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx))
@@ -16,6 +16,23 @@ for a complete commit history.
 - Add imputed CPS benefits data to Tax-Calculator
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
+
+**Bug Fixes**
+- None
+
+
+2018-01-20 Release 0.15.1
+-------------------------
+(last merged pull request is
+[#1838](https://github.com/open-source-economics/Tax-Calculator/pull/1838))
+
+**API Changes**
+- None
+
+**New Features**
+- Add `cpi_inflatable` field for each parameter in the four JSON parameter files
+  [[#1838](https://github.com/open-source-economics/Tax-Calculator/pull/1838)
+  by Martin Holmer as requested by Hank Doupe]
 
 **Bug Fixes**
 - None
