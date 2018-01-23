@@ -358,3 +358,31 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['boolean_value'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
+
+
+@pytest.mark.parametrize('json_filename',
+                         ['current_law_policy.json',
+                          'behavior.json',
+                          'consumption.json',
+                          'growdiff.json'])
+def test_cpi_inflatable_info(tests_path, json_filename):
+    """
+    Check presence and consistency of cpi_inflatable info in
+    JSON parameter files.
+    """
+    path = os.path.join(tests_path, '..', json_filename)
+    with open(path, 'r') as pfile:
+        pdict = json.load(pfile)
+    for param in sorted(pdict.keys()):
+        # check for presence of cpi_inflatable field
+        if 'cpi_inflatable' not in pdict[param]:
+            msg = 'param= {}'.format(str(param))
+            assert msg == 'ERROR: missing cpi_inflatable field'
+        # ensure that cpi_inflatable is True when cpi_inflated is True
+        if pdict[param]['cpi_inflated'] and not pdict[param]['cpi_inflatable']:
+            msg = 'param= {}'.format(str(param))
+            assert msg == 'ERROR: cpi_inflatable=False when cpi_inflated=True'
+        # ensure that cpi_inflatable is False when integer_value is True
+        if pdict[param]['integer_value'] and pdict[param]['cpi_inflatable']:
+            msg = 'param= {}'.format(str(param))
+            assert msg == 'ERROR: cpi_inflatable=True when integer_value=True'

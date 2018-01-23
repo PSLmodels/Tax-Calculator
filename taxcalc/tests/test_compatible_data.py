@@ -100,11 +100,15 @@ def fixture_reform_xx():
             '_AMT_CG_brk3': [[500000, 500000, 500000, 500000, 500000]],
             '_AGI_surtax_thd': [[1000000, 1000000, 1000000, 1000000, 1000000]],
             '_AGI_surtax_trt': [0.5],
-            '_ID_AmountCap_rt': [0.5],
+            '_ID_AmountCap_rt': [0.9],
             '_II_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
-            '_ID_BenefitCap_rt': [0.5],
+            '_ID_BenefitCap_rt': [0.4],
             '_PT_rt7': [.35],
-            '_II_em': [1000]
+            '_II_em': [1000],
+            '_ID_Casualty_hc': [.1],
+            '_ID_Miscellaneous_hc': [.1],
+            '_ID_prt': [0.03],
+            '_ID_crt': [0.8]
         }
     }
     return _reform_xx

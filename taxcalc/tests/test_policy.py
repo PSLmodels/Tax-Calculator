@@ -920,6 +920,10 @@ def test_validate_param_names_types_errors():
     ref6 = {2021: {'_II_em': ['not-a-number']}}
     with pytest.raises(ValueError):
         pol6.implement_reform(ref6)
+    pol7 = Policy()
+    ref7 = {2019: {'_FICA_ss_trt_cpi': True}}
+    with pytest.raises(ValueError):
+        pol7.implement_reform(ref7)
 
 
 def test_validate_param_values_warnings_errors():
