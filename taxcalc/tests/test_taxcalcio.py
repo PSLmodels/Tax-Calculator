@@ -272,8 +272,8 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2,
         reform = reformfile0.name
     elif ref == 'reformfilex1':
         reform = reformfilex1.name
-    elif ref == 'reformfilex2':
-        reform = reformfilex2.name
+    elif ref == 'reformfilex2':  # specify compound reform
+        reform = '{}+{}'.format(reformfilex1.name, reformfilex2.name)
     else:
         reform = ref
     if asm == 'assumpfile0':

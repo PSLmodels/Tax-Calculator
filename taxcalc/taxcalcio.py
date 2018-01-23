@@ -42,7 +42,7 @@ class TaxCalcIO(object):
 
     reform: None or string
         None implies no policy reform (current-law policy), or
-        string is name of optional REFORM file.
+        string is name of optional REFORM file(s).
 
     assump: None or string
         None implies economic assumptions are standard assumptions,
@@ -59,7 +59,7 @@ class TaxCalcIO(object):
     # pylint: disable=too-many-instance-attributes
 
     def __init__(self, input_data, tax_year, reform, assump, outdir=None):
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-branches,too-many-statements
         self.errmsg = ''
         # check name and existence of INPUT file
@@ -83,25 +83,37 @@ class TaxCalcIO(object):
         else:
             msg = 'INPUT is neither string nor Pandas DataFrame'
             self.errmsg += 'ERROR: {}\n'.format(msg)
-        # check name and existence of REFORM file
+        # check name(s) and existence of REFORM file(s)
         ref = '-x'
         if reform is None:
             self.specified_reform = False
             ref = '-#'
         elif isinstance(reform, six.string_types):
             self.specified_reform = True
-            # remove any leading directory path from REFORM filename
-            fname = os.path.basename(reform)
-            # check if fname ends with ".json"
-            if fname.endswith('.json'):
-                ref = '-{}'.format(fname[:-5])
-            else:
-                msg = 'REFORM file name does not end in .json'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
-            # check existence of REFORM file
-            if not os.path.isfile(reform):
-                msg = 'REFORM file could not be found'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
+            # split any compound reform into list of simple reforms
+            refnames = list()
+            reforms = reform.split('+')
+            for rfm in reforms:
+                # remove any leading directory path from rfm filename
+                fname = os.path.basename(rfm)
+                # check if fname ends with ".json"
+                if not fname.endswith('.json'):
+                    msg = '{} does not end in .json'.format(fname)
+                    self.errmsg += 'ERROR: REFORM file name {}\n'.format(msg)
+                # check existence of REFORM file
+                if not os.path.isfile(rfm):
+                    msg = '{} could not be found'.format(rfm)
+                    self.errmsg += 'ERROR: REFORM file {}\n'.format(msg)
+                # add fname to list of refnames used in output file names
+                refnames.append(fname)
+            # create (possibly compound) reform name for output file names
+            ref = '-'
+            num_refnames = 0
+            for refname in refnames:
+                num_refnames += 1
+                if num_refnames > 1:
+                    ref += '+'
+                ref += '{}'.format(refname[:-5])
         else:
             msg = 'TaxCalcIO.ctor: reform is neither None nor str'
             self.errmsg += 'ERROR: {}\n'.format(msg)
@@ -190,8 +202,18 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
-        # get parameter dictionaries from --reform and --assump files
-        paramdict = Calculator.read_json_param_objects(reform, assump)
+        # get parameter dictionaries from --reform file(s) and --assump file
+        if self.specified_reform:
+            reforms = reform.split('+')
+            paramdict = Calculator.read_json_param_objects(reforms[0], assump)
+            policydicts = [paramdict['policy']]
+            if len(reforms) > 1:  # simulating a compound reform
+                for ref in reforms[1:]:
+                    pdict = Calculator.read_json_param_objects(ref, None)
+                    policydicts.append(pdict['policy'])
+        else:
+            paramdict = Calculator.read_json_param_objects(reform, assump)
+            policydicts = [paramdict['policy']]
         # create Behavior object
         beh = Behavior()
         beh.update_behavior(paramdict['behavior'])
@@ -227,11 +249,12 @@ class TaxCalcIO(object):
         # create Policy objects
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
-            try:
-                pol.implement_reform(paramdict['policy'])
-                self.errmsg += pol.reform_errors
-            except ValueError as valerr_msg:
-                self.errmsg += valerr_msg.__str__()
+            for poldict in policydicts:
+                try:
+                    pol.implement_reform(poldict)
+                    self.errmsg += pol.reform_errors
+                except ValueError as valerr_msg:
+                    self.errmsg += valerr_msg.__str__()
         else:
             pol = Policy(gfactors=gfactors_base)
         base = Policy(gfactors=gfactors_base)
