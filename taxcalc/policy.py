@@ -245,15 +245,7 @@ class Policy(ParametersBase):
         'casualty': 3,
         'misc': 4,
         'interest': 5,
-        'charity': 6,
-        # benefittype-indexed suffixes and list index numbers
-        'ssi': 0,
-        'snap': 1,
-        'vet': 2,
-        'mcare': 3,
-        'mcaid': 4,
-        'oasdi': 5,
-        'other': 6
+        'charity': 6
     }
 
     @staticmethod
