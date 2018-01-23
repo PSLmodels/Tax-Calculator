@@ -40,7 +40,8 @@ def test_correct_Records_instantiation(cps_subsample):
     ratio_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
     ratio_df = pd.read_csv(ratio_path)
     ratio_df = ratio_df.transpose()
-    benefit_path = os.path.join(Records.CUR_PATH, Records.BENEFIT_FILENAME)
+    benefit_path = os.path.join(Records.CUR_PATH,
+                                Records.CPS_BENEFITS_FILENAME)
     benefit_df = pd.read_csv(benefit_path)
     rec2 = Records(data=cps_subsample,
                    exact_calculations=False,

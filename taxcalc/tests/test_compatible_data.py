@@ -227,7 +227,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
             c_yy = Calculator(policy=p_yy, records=rec_xx)
             c_yy.advance_to_year(TEST_YEAR)
             c_yy.calc_all()
-            if pname == '_BEN_Benefit_switch':
+            if pname.startswith('_BEN_'):
                 min_reform_change = (c_yy.weighted_total('ben_total') -
                                      c_xx.weighted_total('ben_total'))
             else:

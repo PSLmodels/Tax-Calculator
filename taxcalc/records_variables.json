@@ -542,7 +542,7 @@
     "other_ben": {
       "type": "float",
       "desc": "Non-imputed benefits",
-      "form": {"2014": "determined using government benefit program data"},
+      "form": {"2014-2027": "determined using government benefit program data"},
       "availability": "taxdata_cps"
     },
     "p08000": {

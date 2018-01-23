@@ -1766,24 +1766,27 @@ def LumpSumTax(DSI, num, XTOT,
 
 @iterate_jit(nopython=True)
 def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben,
-                    oasdi_ben, other_ben, BEN_Benefit_switch, ben_total):
+                    oasdi_ben, other_ben, BEN_SSI_repeal, BEN_SNAP_repeal,
+                    BEN_Vet_repeal, BEN_MCARE_repeal, BEN_MCAID_repeal,
+                    BEN_OASDI_repeal, BEN_Other_repeal,
+                    ben_total):
     """
     Calculate total benefit value and benefit welfare value
     """
     # zero out any repealed benefits
-    if not BEN_Benefit_switch[0]:  # SSI
+    if BEN_SSI_repeal:  # SSI
         ssi_ben = 0.
-    if not BEN_Benefit_switch[1]:  # SNAP
+    if BEN_SNAP_repeal:  # SNAP
         snap_ben = 0.
-    if not BEN_Benefit_switch[2]:  # Veterans Benefits
+    if BEN_Vet_repeal:  # Veterans Benefits
         vet_ben = 0.
-    if not BEN_Benefit_switch[3]:  # Medicare
+    if BEN_MCARE_repeal:  # Medicare
         mcare_ben = 0.
-    if not BEN_Benefit_switch[4]:  # Medicaid
+    if BEN_MCAID_repeal:  # Medicaid
         mcaid_ben = 0.
-    if not BEN_Benefit_switch[5]:  # Social Security
+    if BEN_OASDI_repeal:  # Social Security
         oasdi_ben = 0.
-    if not BEN_Benefit_switch[6]:  # Other benefits
+    if BEN_Other_repeal:  # Other benefits
         other_ben = 0.
     ben_total = (ssi_ben + snap_ben + vet_ben + mcare_ben + mcaid_ben +
                  oasdi_ben + other_ben)
