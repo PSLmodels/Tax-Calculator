@@ -16,6 +16,9 @@ for a complete commit history.
 - Add imputed CPS benefits data to Tax-Calculator
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
+- Add ability to specify a compound reform in the tc `--reform` option
+  [[#1842](https://github.com/open-source-economics/Tax-Calculator/pull/1842)
+  by Martin Holmer as requested by Ernie Tedeschi]
 
 **Bug Fixes**
 - None
