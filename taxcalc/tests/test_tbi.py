@@ -276,18 +276,49 @@ def test_behavioral_response(puf_subsample):
     """
     # specify reform and assumptions
     reform_json = """
-    {"policy": {
-        "_II_rt5": {"2020": [0.25]},
-        "_II_rt6": {"2020": [0.25]},
-        "_II_rt7": {"2020": [0.25]},
-        "_PT_rt5": {"2020": [0.25]},
-        "_PT_rt6": {"2020": [0.25]},
-        "_PT_rt7": {"2020": [0.25]},
-        "_II_em": {"2020": [1000]}
-    }}
+    {
+        "policy": {
+            "_cpi_offset": {"2017": [0.0025]},
+            "_II_rt1": {"2018": [0.10]},
+            "_II_rt2": {"2018": [0.15]},
+            "_II_rt3": {"2018": [0.25]},
+            "_II_rt4": {"2018": [0.28]},
+            "_II_rt5": {"2018": [0.33]},
+            "_II_rt6": {"2018": [0.35]},
+            "_II_rt7": {"2018": [0.396]},
+            "_PT_rt1": {"2018": [0.10]},
+            "_PT_rt2": {"2018": [0.15]},
+            "_PT_rt3": {"2018": [0.25]},
+            "_PT_rt4": {"2018": [0.28]},
+            "_PT_rt5": {"2018": [0.33]},
+            "_PT_rt6": {"2018": [0.35]},
+            "_PT_rt7": {"2018": [0.396]},
+            "_PT_excl_rt": {"2018": [0.0]},
+            "_PT_excl_wagelim_rt": {"2018": [9e99]},
+            "_PT_excl_wagelim_thd": {"2018": [[0.0, 0.0, 0.0, 0.0, 0.0]]},
+            "_PT_excl_wagelim_prt": {"2018": [[0.0, 0.0, 0.0, 0.0, 0.0]]},
+            "_CTC_c": {"2018": [1000.0]},
+            "_CTC_ps": {"2018": [[75000.0, 110000.0, 55000.0, 75000.0, 75000.0]]},
+            "_ACTC_Income_thd": {"2018": [3000.0]},
+            "_DependentCredit_Child_c": {"2018": [0.0]},
+            "_DependentCredit_Nonchild_c": {"2018": [0.0]},
+            "_DependentCredit_Nonchild_c": {"2018": [0.0]},
+            "_DependentCredit_before_CTC": {"2018": [0.0]},
+            "_ALD_AlimonyPaid_hc": {"2019": [0.0]},
+            "_ALD_AlimonyReceived_hc": {"2019": [1.0]},
+            "_ALD_DomesticProduction_hc": {"2018": [0.0]},
+            "_ID_prt": {"2018": [0.03]},
+            "_ID_crt": {"2018": [0.8]},
+            "_ID_Charity_crt_all": {"2018": [0.5]},
+            "_ID_Casualty_hc": {"2018": [0.0]},
+            "_ID_AllTaxes_c": {"2018": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
+            "_ID_Miscellaneous_hc": {"2018": [0.0]},
+            "_ID_Medical_frt": {"2017": [0.1]}
+        }
+    }
     """
     assump_json = """
-    {"behavior": {"_BE_sub": {"2013": [0.25]}},
+    {"behavior": {"_BE_sub": {"2018": [0.25]}},
      "growdiff_baseline": {},
      "growdiff_response": {},
      "consumption": {}
@@ -296,7 +327,7 @@ def test_behavioral_response(puf_subsample):
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     # specify keyword arguments used in tbi function call
     kwargs = {
-        'start_year': 2019,
+        'start_year': 2018,
         'year_n': 0,
         'use_puf_not_cps': True,
         'use_full_sample': False,
