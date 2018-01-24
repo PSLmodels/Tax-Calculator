@@ -174,6 +174,7 @@ class TaxCalcIO(object):
         self.calc = None
         self.calc_base = None
         self.param_dict = None
+        self.policy_dicts = list()
 
     def init(self, input_data, tax_year, reform, assump,
              growdiff_response,
@@ -214,6 +215,9 @@ class TaxCalcIO(object):
         else:
             paramdict = Calculator.read_json_param_objects(reform, assump)
             policydicts = [paramdict['policy']]
+        # remember parameters for reform documentation
+        self.param_dict = paramdict
+        self.policy_dicts = policydicts
         # create Behavior object
         beh = Behavior()
         beh.update_behavior(paramdict['behavior'])
@@ -319,8 +323,6 @@ class TaxCalcIO(object):
                                     verbose=False,
                                     consumption=con,
                                     sync_years=aging_input_data)
-        # remember parameter dictionary for reform documentation
-        self.param_dict = paramdict
 
     def custom_dump_variables(self, tcdumpvars_str):
         """
@@ -492,7 +494,11 @@ class TaxCalcIO(object):
         """
         Write reform documentation to text file.
         """
-        doc = Calculator.reform_documentation(self.param_dict)
+        if len(self.policy_dicts) <= 1:
+            doc = Calculator.reform_documentation(self.param_dict)
+        else:
+            doc = Calculator.reform_documentation(self.param_dict,
+                                                  self.policy_dicts[1:])
         doc_fname = self._output_filename.replace('.csv', '-doc.text')
         with open(doc_fname, 'w') as dfile:
             dfile.write(doc)
