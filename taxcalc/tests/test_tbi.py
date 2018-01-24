@@ -1,6 +1,7 @@
 """
 Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
 """
+from __future__ import print_function
 import numpy as np
 import pandas as pd
 import pytest
@@ -262,3 +263,148 @@ def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(bad2_mods)
     assert len(msg_dict['warnings']) == 0
     assert len(msg_dict['errors']) > 0
+
+
+@pytest.mark.pre_release
+@pytest.mark.tbi_vs_std_behavior
+@pytest.mark.requires_pufcsv
+def test_behavioral_response(puf_subsample):
+    """
+    Test that behavioral-response results are the same
+    when generated from standard Tax-Calculator calls and
+    when generated from tbi.run_nth_year_tax_calc_model() calls
+    """
+    # specify reform and assumptions
+    reform_json = """
+    {
+        "policy": {
+            "_cpi_offset": {"2017": [0.0025]},
+            "_II_rt1": {"2018": [0.10]},
+            "_II_rt2": {"2018": [0.15]},
+            "_II_rt3": {"2018": [0.25]},
+            "_II_rt4": {"2018": [0.28]},
+            "_II_rt5": {"2018": [0.33]},
+            "_II_rt6": {"2018": [0.35]},
+            "_II_rt7": {"2018": [0.396]},
+            "_PT_rt1": {"2018": [0.10]},
+            "_PT_rt2": {"2018": [0.15]},
+            "_PT_rt3": {"2018": [0.25]},
+            "_PT_rt4": {"2018": [0.28]},
+            "_PT_rt5": {"2018": [0.33]},
+            "_PT_rt6": {"2018": [0.35]},
+            "_PT_rt7": {"2018": [0.396]},
+            "_PT_excl_rt": {"2018": [0.0]},
+            "_PT_excl_wagelim_rt": {"2018": [9e99]},
+            "_PT_excl_wagelim_thd": {"2018": [[0.0, 0.0, 0.0, 0.0, 0.0]]},
+            "_PT_excl_wagelim_prt": {"2018": [[0.0, 0.0, 0.0, 0.0, 0.0]]},
+            "_CTC_c": {"2018": [1000.0]},
+            "_CTC_ps": {"2018": [[75000.0, 110000.0, 55000.0, 75000.0, 75000.0]]},
+            "_ACTC_Income_thd": {"2018": [3000.0]},
+            "_DependentCredit_Child_c": {"2018": [0.0]},
+            "_DependentCredit_Nonchild_c": {"2018": [0.0]},
+            "_DependentCredit_Nonchild_c": {"2018": [0.0]},
+            "_DependentCredit_before_CTC": {"2018": [0.0]},
+            "_ALD_AlimonyPaid_hc": {"2019": [0.0]},
+            "_ALD_AlimonyReceived_hc": {"2019": [1.0]},
+            "_ALD_DomesticProduction_hc": {"2018": [0.0]},
+            "_ID_prt": {"2018": [0.03]},
+            "_ID_crt": {"2018": [0.8]},
+            "_ID_Charity_crt_all": {"2018": [0.5]},
+            "_ID_Casualty_hc": {"2018": [0.0]},
+            "_ID_AllTaxes_c": {"2018": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
+            "_ID_Miscellaneous_hc": {"2018": [0.0]},
+            "_ID_Medical_frt": {"2017": [0.1]}
+        }
+    }
+    """
+    assump_json = """
+    {"behavior": {"_BE_sub": {"2018": [0.25]}},
+     "growdiff_baseline": {},
+     "growdiff_response": {},
+     "consumption": {}
+    }
+    """
+    params = Calculator.read_json_param_objects(reform_json, assump_json)
+    # specify keyword arguments used in tbi function call
+    kwargs = {
+        'start_year': 2018,
+        'year_n': 0,
+        'use_puf_not_cps': True,
+        'use_full_sample': False,
+        'user_mods': {
+            'policy': params['policy'],
+            'behavior': params['behavior'],
+            'growdiff_baseline': params['growdiff_baseline'],
+            'growdiff_response': params['growdiff_response'],
+            'consumption': params['consumption']
+        },
+        'return_dict': False
+    }
+    # generate aggregate results two ways: using tbi and standard calls
+    num_years = 9
+    std_res = dict()
+    tbi_res = dict()
+    for using_tbi in [True, False]:
+        for year in range(0, num_years):
+            cyr = year + kwargs['start_year']
+            if using_tbi:
+                kwargs['year_n'] = year
+                tables = run_nth_year_tax_calc_model(**kwargs)
+                tbi_res[cyr] = dict()
+                for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
+                    tbi_res[cyr][tbl] = tables[tbl]
+            else:
+                rec = Records(data=puf_subsample)
+                pol = Policy()
+                calc1 = Calculator(policy=pol, records=rec)
+                pol.implement_reform(params['policy'])
+                assert not pol.reform_errors
+                beh = Behavior()
+                beh.update_behavior(params['behavior'])
+                calc2 = Calculator(policy=pol, records=rec, behavior=beh)
+                assert calc2.behavior_has_response()
+                calc1.advance_to_year(cyr)
+                calc2.advance_to_year(cyr)
+                calc2 = Behavior.response(calc1, calc2)
+                std_res[cyr] = dict()
+                for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
+                    if tbl.endswith('_1'):
+                        itax = calc1.weighted_total('iitax')
+                        ptax = calc1.weighted_total('payrolltax')
+                        ctax = calc1.weighted_total('combined')
+                    elif tbl.endswith('_2'):
+                        itax = calc2.weighted_total('iitax')
+                        ptax = calc2.weighted_total('payrolltax')
+                        ctax = calc2.weighted_total('combined')
+                    elif tbl.endswith('_d'):
+                        itax = (calc2.weighted_total('iitax') -
+                                calc1.weighted_total('iitax'))
+                        ptax = (calc2.weighted_total('payrolltax') -
+                                calc1.weighted_total('payrolltax'))
+                        ctax = (calc2.weighted_total('combined') -
+                                calc1.weighted_total('combined'))
+                    cols = ['0_{}'.format(year)]
+                    rows = ['ind_tax', 'payroll_tax', 'combined_tax']
+                    datalist = [itax, ptax, ctax]
+                    std_res[cyr][tbl] = pd.DataFrame(data=datalist,
+                                                     index=rows,
+                                                     columns=cols)
+    # compare the two sets of results
+    # NOTE that the tbi results have been "fuzzed" for PUF privacy reasons,
+    #      so there is no expectation that the results should be identical.
+    no_diffs = True
+    reltol = 2e-3  # std and tbi differ if more than 0.2 percent different
+    for year in range(0, num_years):
+        cyr = year + kwargs['start_year']
+        col = '0_{}'.format(year)
+        for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
+            tbi = tbi_res[cyr][tbl][col]
+            std = std_res[cyr][tbl][col]
+            if not np.allclose(tbi, std, atol=0.0, rtol=reltol):
+                no_diffs = False
+                print('**** DIFF for year {} (year_n={}):'.format(cyr, year))
+                print('TBI RESULTS:')
+                print(tbi)
+                print('STD RESULTS:')
+                print(std)
+    assert no_diffs
