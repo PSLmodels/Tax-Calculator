@@ -4,24 +4,46 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-01-?? Release 0.15.2
+2018-02-?? Release 0.1?.?
 -------------------------
 (last merged pull request is
-[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx))
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
 - None
 
 **New Features**
-- Add imputed CPS benefits data to Tax-Calculator
+- Add CPS benefits data to Tax-Calculator; improve data quality of existing CPS variables, which causes some CPS results changes
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
-- Add ability to specify a compound reform in the tc `--reform` option
-  [[#1842](https://github.com/open-source-economics/Tax-Calculator/pull/1842)
-  by Martin Holmer as requested by Ernie Tedeschi]
 
 **Bug Fixes**
 - None
+
+
+2018-01-29 Release 0.15.2
+-------------------------
+(last merged pull request is
+[#1849](https://github.com/open-source-economics/Tax-Calculator/pull/1849))
+
+**API Changes**
+- None
+
+**New Features**
+- Add ability to specify a compound reform in the tc `--reform` option
+  [[#1842](https://github.com/open-source-economics/Tax-Calculator/pull/1842)
+  by Martin Holmer as requested by Ernie Tedeschi]
+- Add compatible-data information for each policy parameter to user documentation
+  [[#1844](https://github.com/open-source-economics/Tax-Calculator/pull/1844)
+  by Martin Holmer as requested by Matt Jensen]
+
+**Bug Fixes**
+- Add error checking for Calculator misuse in presence of behavioral responses
+  [[#1848](https://github.com/open-source-economics/Tax-Calculator/pull/1848)
+  by Martin Holmer]
+- Add error checking for diagnostic_table misuse in presence of behavioral responses
+  [[#1849](https://github.com/open-source-economics/Tax-Calculator/pull/1849)
+  by Martin Holmer]
 
 
 2018-01-20 Release 0.15.1
