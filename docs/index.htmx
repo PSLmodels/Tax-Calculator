@@ -25,12 +25,12 @@ Python source code &mdash; you should go to
 the <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
 
-<p>Please cite the source of your analysis as <q>Tax-Calculator v.
-#.#.#, author's calculations.</q> If you wish to link to Tax-Calculator,
-this page is preferred. Additionally, we strongly recommend that you 
-provide a link to the materials required to replicate your
-analysis or, at least, note that those materials are available 
-upon request.</p>
+<p>Please cite the source of your analysis as <q>Tax-Calculator
+release #.#.#, author's calculations.</q> If you wish to link to
+Tax-Calculator, this page is preferred.  Additionally, we strongly
+recommend that you describe the input data used, and provide a link to
+the materials required to replicate your analysis or, at least, note
+that those materials are available upon request.</p>
 
 
 <h2 id="whatsnew">What's New</h2>
@@ -41,6 +41,10 @@ and higher
 
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1830#issue-288673028">FAQ on using Tax-Calculator when TCJA is current law</a> is
 now available
+
+<p><a href="#compoundreform">Compound reform</a> capability allows tc
+users to analyze a reform that is specified in more than one JSON
+reform file in Tax-Calculator release 0.15.2 and higher
 
 <p><a href="#partdump">Partial dump</a> capability requires use of
 tc <kbd>--dvars</kbd> option in Tax-Calculator release 0.15.0 and higher
@@ -305,7 +309,7 @@ writing JSON reform files, go
 to <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md">this
 page</a>.</p>
 
-<p>If you want to upload reform files to TaxBrain for static analysis
+<p>If you want to upload a reform file to TaxBrain for static analysis
 (rather than use the tc CLI on your computer for analysis), go to this
 section's <a href="#cli-taxbrain-upload">last part</a>, which
 discusses uploading files to TaxBrain.  If you want to assume any
@@ -597,6 +601,18 @@ the <kbd>ref3.json</kbd> file.  Because no <kbd>--assump</kbd>
 option is used, the output results are produced using static analysis.
 The name of the output file in this example is
 <kbd>test-21-ref3-#.csv</kbd>.</p>
+
+<p id="compoundreform">If, in addition to <kbd>ref3.json</kbd>, there
+was a <kbd>ref4.json</kbd> reform file and analysis of the <b>compound
+reform</b> (consisting of first implementing the <kbd>ref3.json</kbd>
+reform relative to current-law policy and then implementing
+the <kbd>ref4.json</kbd> reform relative to the <kbd>ref3.json</kbd>
+reform) is desired, both reform files can be mentioned in
+the tc <kbd>--reform</kbd> option as follows:
+<pre>
+$ tc test.csv 2021 --reform ref3.json+ref4.json
+</pre>
+The above command generates an output file named <kbd>test-21-ref3+ref4-#.csv</kbd></p>
 
 <p><pre>
 (6)$ tc test.csv 2021 --reform ref3.json --assump res1.json
