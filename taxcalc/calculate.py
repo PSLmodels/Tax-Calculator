@@ -1042,15 +1042,21 @@ class Calculator(object):
     OPTIONAL_ASSUMP_KEYS = set(['growmodel'])
 
     @staticmethod
-    def reform_documentation(params):
+    def reform_documentation(params, policy_dicts=None):
         """
         Generate reform documentation.
 
         Parameters
         ----------
         params: dict
-            compound dictionary structured as dict returned from
+            dictionary is structured like dict returned from
             the static Calculator method read_json_param_objects()
+
+        policy_dicts : list of dict or None
+            each dictionary in list is a params['policy'] dictionary
+            representing second or subsequent elements of a compound
+            reform; None implies no compound reform with the simple
+            reform characterized in the params['policy'] dictionary
 
         Returns
         -------
@@ -1073,6 +1079,7 @@ class Calculator(object):
             -------
             doc: String
             """
+            # pylint: disable=too-many-locals
 
             # nested function used only in param_doc
             def lines(text, num_indent_spaces, max_line_length=77):
@@ -1106,12 +1113,13 @@ class Calculator(object):
             # begin main logic of param_doc
             # pylint: disable=too-many-nested-blocks
             assert len(years) == len(change.keys())
-            basevals = getattr(base, '_vals', None)
+            basex = copy.deepcopy(base)
+            basevals = getattr(basex, '_vals', None)
             assert isinstance(basevals, dict)
             doc = ''
             for year in years:
                 # write year
-                base.set_year(year)
+                basex.set_year(year)
                 doc += '{}:\n'.format(year)
                 # write info for each param in year
                 for param in sorted(change[year].keys()):
@@ -1145,13 +1153,13 @@ class Calculator(object):
                         for line in lines('desc: ' + desc, 6):
                             doc += '  ' + line
                     # ... write baseline_value line
-                    if isinstance(base, Policy):
+                    if isinstance(basex, Policy):
                         if param.endswith('_cpi'):
                             rootparam = param[:-4]
                             bval = basevals[rootparam].get('cpi_inflated',
                                                            False)
                         else:
-                            bval = getattr(base, param[1:], None)
+                            bval = getattr(basex, param[1:], None)
                             if isinstance(bval, np.ndarray):
                                 bval = bval.tolist()
                                 if basevals[param]['boolean_value']:
@@ -1160,7 +1168,7 @@ class Calculator(object):
                             elif basevals[param]['boolean_value']:
                                 bval = bool(bval)
                         doc += '  baseline_value: {}\n'.format(bval)
-                    else:  # if base is Growdiff object
+                    else:  # if basex is Growdiff object
                         # all Growdiff parameters have zero as default value
                         doc += '  baseline_value: 0.0\n'
             return doc
@@ -1189,6 +1197,18 @@ class Calculator(object):
             doc += param_doc(years, params['policy'], clp)
         else:
             doc += 'none: using current-law policy parameters\n'
+        if policy_dicts is not None:
+            assert isinstance(policy_dicts, list)
+            base = clp
+            base.implement_reform(params['policy'])
+            assert not base.reform_errors
+            for policy_dict in policy_dicts:
+                assert isinstance(policy_dict, dict)
+                doc += 'Policy Reform Parameter Values by Year:\n'
+                years = sorted(policy_dict.keys())
+                doc += param_doc(years, policy_dict, base)
+                base.implement_reform(policy_dict)
+                assert not base.reform_errors
         return doc
 
     def ce_aftertax_income(self, calc,

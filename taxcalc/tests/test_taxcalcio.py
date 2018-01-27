@@ -323,8 +323,8 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2,
         reform = reformfile0.name
     elif ref == 'reformfilex1':
         reform = reformfilex1.name
-    elif ref == 'reformfilex2':
-        reform = reformfilex2.name
+    elif ref == 'reformfilex2':  # specify compound reform
+        reform = '{}+{}'.format(reformfilex1.name, reformfilex2.name)
     else:
         reform = ref
     if asm == 'assumpfile0':
@@ -450,7 +450,7 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
         assert len(varset) == num_vars
 
 
-def test_output_otions(rawinputfile, reformfile1, assumpfile1):
+def test_output_options(rawinputfile, reformfile1, assumpfile1):
     """
     Test TaxCalcIO output_ceeu & output_dump options when writing_output_file.
     """
@@ -505,6 +505,32 @@ def test_output_otions(rawinputfile, reformfile1, assumpfile1):
     # if tries were successful, remove output file and doc file
     if os.path.isfile(outfilepath):
         os.remove(outfilepath)
+    docfilepath = outfilepath.replace('.csv', '-doc.text')
+    if os.path.isfile(docfilepath):
+        os.remove(docfilepath)
+
+
+def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):
+    """
+    Test write_doc_file with compound reform.
+    """
+    taxyear = 2021
+    compound_reform = '{}+{}'.format(reformfile1.name, reformfile1.name)
+    tcio = TaxCalcIO(input_data=rawinputfile.name,
+                     tax_year=taxyear,
+                     reform=compound_reform,
+                     assump=assumpfile1.name)
+    assert not tcio.errmsg
+    tcio.init(input_data=rawinputfile.name,
+              tax_year=taxyear,
+              reform=compound_reform,
+              assump=assumpfile1.name,
+              growdiff_response=None,
+              aging_input_data=False,
+              exact_calculations=False)
+    assert not tcio.errmsg
+    tcio.write_doc_file()
+    outfilepath = tcio.output_filepath()
     docfilepath = outfilepath.replace('.csv', '-doc.text')
     if os.path.isfile(docfilepath):
         os.remove(docfilepath)

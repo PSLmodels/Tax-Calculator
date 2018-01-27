@@ -37,7 +37,7 @@ def cli_tc_main():
                      'file, with the OUTPUT computed from the INPUT for the '
                      'TAXYEAR using Tax-Calculator. The OUTPUT file is a '
                      'CSV-formatted file that contains tax information for '
-                     'each INPUT filing unit under the reform.'))
+                     'each INPUT filing unit under the reform(s).'))
     parser.add_argument('INPUT', nargs='?',
                         help=('INPUT is name of CSV-formatted file that '
                               'contains for each filing unit variables used '
@@ -52,6 +52,8 @@ def cli_tc_main():
                         default=0)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
+                              'A compound reform can be specified using two '
+                              'file names separated by a plus (+) character. '
                               'No --reform implies a "null" reform (that is, '
                               'current-law policy).'),
                         default=None)

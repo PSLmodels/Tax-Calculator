@@ -24,6 +24,7 @@ be used to conduct revenue scoring and distributional analyses of tax
 policies.  Tax-Calculator is written in Python, an interpreted
 language that can execute on Windows, Mac, or Linux.
 
+
 Disclaimer
 ----------
 
@@ -33,6 +34,7 @@ people from all backgrounds can contribute to the models that our
 society uses to assess economic policy; when community-contributed
 improvements are incorporated, the model will produce different
 results.
+
 
 Getting Started
 ---------------
@@ -59,6 +61,14 @@ If you are relying on Tax-Calculator capabilities in your own project,
 be sure to read the definition of the [Tax-Calculator Public
 API](http://taxcalc.readthedocs.io/en/latest/public_api.html).
 
+
 Citing Tax-Calculator
 ---------------------
-Please cite the source of your analysis as "Tax-Calculator v. #.#.#, author's calculations." If you wish to link to Tax-Calculator, http://open-source-economics.github.io/Tax-Calculator/ is preferred. Additionally, we strongly recommend that you provide a link to the materials required to replicate your analysis or, at least, note that those materials are available upon request.
+
+Please cite the source of your analysis as "Tax-Calculator release
+#.#.#, author's calculations." If you wish to link to Tax-Calculator,
+http://open-source-economics.github.io/Tax-Calculator/ is
+preferred. Additionally, we strongly recommend that you describe the
+input data used, and provide a link to the materials required to
+replicate your analysis or, at least, note that those materials are
+available upon request.
