@@ -81,22 +81,37 @@ def policy_param_text(pname, param):
     txt += '<br><i>Description:</i> {}'.format(param['description'])
     if len(param['notes']) > 0:
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
+    txt += '<br><i>Has An Effect When Using:</i>'
+    txt += '&nbsp;&nbsp; <i>PUF data:</i> '
+    if param['compatible_data']['puf']:
+        txt += 'True'
+    else:
+        txt += 'False'
+    txt += '&nbsp;&nbsp; <i>CPS data:</i> '
+    if param['compatible_data']['cps']:
+        txt += 'True'
+    else:
+        txt += 'False'
+    txt += '<br><i>Can Be Inflation Indexed:</i> '
     if param['cpi_inflatable']:
-        txt += '<br><i>Can Be Inflation Indexed:</i> True'
+        txt += 'True'
     else:
-        txt += '<br><i>Can Be Inflation Indexed:</i> False'
+        txt += 'False'
+    txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> '
     if param['cpi_inflated']:
-        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True'
+        txt += 'True'
     else:
-        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False'
+        txt += 'False'
+    txt += '<br><i>Integer Value:</i> '
     if param['integer_value']:
-        txt += '<br><i>Integer Value:</i> True'
+        txt += 'True'
     else:
-        txt += '<br><i>Integer Value:</i> False'
+        txt += 'False'
+    txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Boolean Value:</i> '
     if param['boolean_value']:
-        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Boolean Value:</i> True'
+        txt += 'True'
     else:
-        txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Boolean Value:</i> False'
+        txt += 'False'
     txt += '<br><i>Known Values:</i>'
     if len(param['col_label']) > 0:
         cols = ', '.join(param['col_label'])
