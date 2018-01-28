@@ -40,6 +40,10 @@ class TaxCalcIO(object):
     tax_year: integer
         calendar year for which taxes will be computed for INPUT.
 
+    baseline: None or string
+        None implies baseline policy is current-law policy, or
+        string is name of optional BASELINE file.
+
     reform: None or string
         None implies no policy reform (current-law policy), or
         string is name of optional REFORM file(s).
@@ -58,7 +62,8 @@ class TaxCalcIO(object):
     """
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(self, input_data, tax_year, reform, assump, outdir=None):
+    def __init__(self, input_data, tax_year, baseline, reform, assump,
+                 outdir=None):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-branches,too-many-statements
         self.errmsg = ''
@@ -176,16 +181,17 @@ class TaxCalcIO(object):
         self.param_dict = None
         self.policy_dicts = list()
 
-    def init(self, input_data, tax_year, reform, assump,
+    def init(self, input_data, tax_year, baseline, reform, assump,
              growdiff_response,
-             aging_input_data, exact_calculations):
+             aging_input_data,
+             exact_calculations):
         """
         TaxCalcIO class post-constructor method that completes initialization.
 
         Parameters
         ----------
-        First four parameters are same as for TaxCalcIO constructor:
-            input_data, tax_year, reform, assump.
+        First five are same as the first five of the TaxCalcIO constructor:
+            input_data, tax_year, baseline, reform, assump.
 
         growdiff_response: Growdiff object or None
             growdiff_response Growdiff object is used only by the
@@ -729,7 +735,8 @@ class TaxCalcIO(object):
         return odf
 
     @staticmethod
-    def growmodel_analysis(input_data, tax_year, reform, assump,
+    def growmodel_analysis(input_data, tax_year,
+                           baseline, reform, assump,
                            aging_input_data, exact_calculations,
                            writing_output_file=False,
                            output_tables=False,
@@ -760,7 +767,7 @@ class TaxCalcIO(object):
             growdiff_response = Growdiff()
             growdiff_response.update_growdiff(gdiff_dict)
             gd_dict = TaxCalcIO.annual_analysis(input_data, tax_year,
-                                                reform, assump,
+                                                baseline, reform, assump,
                                                 aging_input_data,
                                                 exact_calculations,
                                                 growdiff_response, year,
@@ -772,7 +779,7 @@ class TaxCalcIO(object):
             gdiff_dict[year + 1] = gd_dict
 
     @staticmethod
-    def annual_analysis(input_data, tax_year, reform, assump,
+    def annual_analysis(input_data, tax_year, baseline, reform, assump,
                         aging_input_data, exact_calculations,
                         growdiff_response, year,
                         writing_output_file,
@@ -795,14 +802,16 @@ class TaxCalcIO(object):
         -------
         gd_dict: Growdiff sub-dictionary for year+1
         """
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         # instantiate TaxCalcIO object for specified year and growdiff_response
         tcio = TaxCalcIO(input_data=input_data,
                          tax_year=year,
+                         baseline=baseline,
                          reform=reform,
                          assump=assump)
         tcio.init(input_data=input_data,
                   tax_year=year,
+                  baseline=baseline,
                   reform=reform,
                   assump=assump,
                   growdiff_response=growdiff_response,

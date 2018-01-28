@@ -24,7 +24,7 @@ def cli_tc_main():
     # pylint: disable=too-many-statements
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
-        '[--reform REFORM] [--assump  ASSUMP]\n',
+        '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
         '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb]\n',
         '          ',
@@ -50,6 +50,11 @@ def cli_tc_main():
                               'are computed.'),
                         type=int,
                         default=0)
+    parser.add_argument('--baseline',
+                        help=('BASELINE is name of optional JSON reform file. '
+                              'No --baseline implies baseline policy is '
+                              'current-law policy.'),
+                        default=None)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'A compound reform can be specified using two '
@@ -134,6 +139,7 @@ def cli_tc_main():
         taxyear = args.TAXYEAR
     # instantiate taxcalcio object and do tax analysis
     tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
+                     baseline=args.baseline,
                      reform=args.reform, assump=args.assump,
                      outdir=args.outdir)
     if tcio.errmsg:
@@ -142,6 +148,7 @@ def cli_tc_main():
         return 1
     aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
     tcio.init(input_data=inputfn, tax_year=taxyear,
+              baseline=args.baseline,
               reform=args.reform, assump=args.assump,
               growdiff_response=None,
               aging_input_data=aging,
