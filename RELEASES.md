@@ -35,12 +35,12 @@ for a complete commit history.
 - Add ability to specify a compound reform in the tc `--reform` option
   [[#1842](https://github.com/open-source-economics/Tax-Calculator/pull/1842)
   by Martin Holmer as requested by Ernie Tedeschi]
-- Add tc `--baseline BASELINE` option that sets baseline policy equal to that specified in BASELINE reform file (rather than baseline policy being current-law poliy)
-  [[#1851](https://github.com/open-source-economics/Tax-Calculator/pull/1851)
-  by Martin Holmer as requested by Matt Jensen and Ernie Tedeschi]
 - Add compatible-data information for each policy parameter to user documentation
   [[#1844](https://github.com/open-source-economics/Tax-Calculator/pull/1844)
   by Martin Holmer as requested by Matt Jensen]
+- Add tc `--baseline BASELINE` option that sets baseline policy equal to that specified in BASELINE reform file (rather than baseline policy being current-law poliy)
+  [[#1851](https://github.com/open-source-economics/Tax-Calculator/pull/1851)
+  by Martin Holmer as requested by Matt Jensen and Ernie Tedeschi]
 
 **Bug Fixes**
 - Add error checking for Calculator misuse in presence of behavioral responses
