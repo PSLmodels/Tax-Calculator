@@ -14,7 +14,7 @@ from taxcalc import TaxCalcIO
 
 
 TEST_INPUT_FILENAME = 'test.csv'
-TEST_TAXYEAR = 2017
+TEST_TAXYEAR = 2018
 
 
 def cli_tc_main():
@@ -190,7 +190,7 @@ def cli_tc_main():
 
 
 EXPECTED_TEST_OUTPUT_FILENAME = 'test-{}-out.csv'.format(str(TEST_TAXYEAR)[2:])
-ACTUAL_TEST_OUTPUT_FILENAME = 'test-{}-#-#.csv'.format(str(TEST_TAXYEAR)[2:])
+ACTUAL_TEST_OUTPUT_FILENAME = 'test-{}-#-#-#.csv'.format(str(TEST_TAXYEAR)[2:])
 
 
 def _write_expected_test_output():
@@ -206,8 +206,8 @@ def _write_expected_test_output():
         ifile.write(input_data)
     expected_output_data = (
         'RECID,YEAR,WEIGHT,INCTAX,LSTAX,PAYTAX\n'
-        '1,2017,0.00,682.99,0.00,6120.00\n'
-        '2,2017,0.00,29690.00,0.00,21572.80\n'
+        '1,2018,0.00,123.51,0.00,6120.00\n'
+        '2,2018,0.00,28879.00,0.00,22167.43\n'
     )
     with open(EXPECTED_TEST_OUTPUT_FILENAME, 'w') as ofile:
         ofile.write(expected_output_data)
