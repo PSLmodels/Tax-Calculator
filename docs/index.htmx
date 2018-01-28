@@ -35,6 +35,11 @@ that those materials are available upon request.</p>
 
 <h2 id="whatsnew">What's New</h2>
 
+<p><i>Click your browser's Reload button to
+ensure you are viewing the most recent version of this page rather
+than an older version that your browser has saved in its cache of
+previously visited pages.</i></p>
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">Pre-TCJA policy reform file</a> is available
 given that TCJA is current-law policy in Tax-Calculator release 0.15.0
 and higher

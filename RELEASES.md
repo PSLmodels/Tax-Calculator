@@ -4,16 +4,18 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-02-?? Release 0.1?.?
+2018-02-?? Release 0.16.0
 -------------------------
 (last merged pull request is
 [#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
-- None
+- Improve data quality of existing CPS variables, which causes changes in CPS results
+  [[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx)
+  by Anderson Frailey]
 
 **New Features**
-- Add CPS benefits data to Tax-Calculator; improve data quality of existing CPS variables, which causes some CPS results changes
+- Add C-TAM imputed benefits data and associated policy parameters
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
 
@@ -21,10 +23,10 @@ for a complete commit history.
 - None
 
 
-2018-01-29 Release 0.15.2
+2018-0?-?? Release 0.15.2
 -------------------------
 (last merged pull request is
-[#1849](https://github.com/open-source-economics/Tax-Calculator/pull/1849))
+[#1851](https://github.com/open-source-economics/Tax-Calculator/pull/1851))
 
 **API Changes**
 - None
@@ -33,6 +35,9 @@ for a complete commit history.
 - Add ability to specify a compound reform in the tc `--reform` option
   [[#1842](https://github.com/open-source-economics/Tax-Calculator/pull/1842)
   by Martin Holmer as requested by Ernie Tedeschi]
+- Add tc `--baseline BASELINE` option that sets baseline policy equal to that specified in BASELINE reform file (rather than baseline policy being current-law poliy)
+  [[#1851](https://github.com/open-source-economics/Tax-Calculator/pull/1851)
+  by Martin Holmer as requested by Matt Jensen and Ernie Tedeschi]
 - Add compatible-data information for each policy parameter to user documentation
   [[#1844](https://github.com/open-source-economics/Tax-Calculator/pull/1844)
   by Martin Holmer as requested by Matt Jensen]
