@@ -260,7 +260,8 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     (2020, 'reformfile0', 'reformfile0', None, dict()),
     (2020, 'reformfile0', 'reformfile0', 'assumpfile0', 'has_gdiff_response'),
     (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', 'has_gdiff_response'),
-    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', 'has_gdiff_response')
+    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', 'has_gdiff_response'),
+    (2020, 'reformfilex1', 'reformfile0', 'assumpfile0', 'has_gdiff_response')
 ])
 def test_init_errors(reformfile0, reformfilex1, reformfilex2,
                      assumpfile0, year, base, ref, asm, gdr):
@@ -272,6 +273,8 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2,
     recdf = pd.DataFrame(data=recdict, index=[0])
     if base == 'reformfile0':
         baseline = reformfile0.name
+    elif base == 'reformfilex1':
+        baseline = reformfilex1.name
     else:
         baseline = base
     if ref == 'reformfile0':
