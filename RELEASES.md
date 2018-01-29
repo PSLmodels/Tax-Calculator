@@ -10,7 +10,7 @@ for a complete commit history.
 [#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
-- Improve data quality of existing CPS variables, which causes changes in CPS results
+- Improve data quality of several existing CPS variables, which causes changes in CPS tax results
   [[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx)
   by Anderson Frailey]
 
@@ -23,7 +23,7 @@ for a complete commit history.
 - None
 
 
-2018-0?-?? Release 0.15.2
+2018-01-30 Release 0.15.2
 -------------------------
 (last merged pull request is
 [#1851](https://github.com/open-source-economics/Tax-Calculator/pull/1851))
