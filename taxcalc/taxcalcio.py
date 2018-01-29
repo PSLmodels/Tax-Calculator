@@ -280,15 +280,15 @@ class TaxCalcIO(object):
         gdiff_baseline.apply_to(gfactors_ref)
         if gdiff_response is not None:
             gdiff_response.apply_to(gfactors_ref)
-        # create Policy objects
-        # ... baseline Policy object
+        # create Policy objects:
+        # ... the baseline Policy object
         base = Policy(gfactors=gfactors_base)
         try:
             base.implement_reform(basedict['policy'])
             self.errmsg += base.reform_errors
         except ValueError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
-        # ... reform Policy object
+        # ... the reform Policy object
         if self.specified_reform:
             pol = Policy(gfactors=gfactors_ref)
             for poldict in policydicts:
