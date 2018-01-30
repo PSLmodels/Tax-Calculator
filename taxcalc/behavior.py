@@ -322,6 +322,7 @@ class Behavior(ParametersBase):
                                               calc2_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
         calc2_behv.calc_all()
+        calc2_behv.records_include_behavioral_responses()
         return calc2_behv
 
     # ----- begin private methods of Behavior class -----

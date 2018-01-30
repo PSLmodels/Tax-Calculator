@@ -301,6 +301,12 @@ class Calculator(object):
         else:
             setattr(self.__behavior, param_name, param_value)
 
+    def records_include_behavioral_responses(self):
+        """
+        Mark embedded Records object as including behavioral responses
+        """
+        self.__records.behavioral_responses_are_included = True
+
     @property
     def reform_warnings(self):
         """
