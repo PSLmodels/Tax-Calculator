@@ -301,6 +301,12 @@ class Calculator(object):
         else:
             setattr(self.__behavior, param_name, param_value)
 
+    def records_include_behavioral_responses(self):
+        """
+        Mark embedded Records object as including behavioral responses
+        """
+        self.__records.behavioral_responses_are_included = True
+
     @property
     def reform_warnings(self):
         """
@@ -343,7 +349,7 @@ class Calculator(object):
         num_years : Integer
             number of years to include in diagnostic table starting
             with the Calculator object's current_year (must be at least
-            one and no more than what would exceed Policy end_year
+            one and no more than what would exceed Policy end_year)
 
         Returns
         -------
@@ -355,6 +361,7 @@ class Calculator(object):
         calc = copy.deepcopy(self)
         tlist = list()
         for iyr in range(1, num_years + 1):
+            assert calc.behavior_has_response() is False
             calc.calc_all()
             diag = create_diagnostic_table(calc.dataframe(DIST_VARIABLES),
                                            calc.current_year)
