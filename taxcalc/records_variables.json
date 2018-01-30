@@ -594,12 +594,6 @@
       "form": {"2014-2027": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
-    "oasdi_ben": {
-      "type": "float",
-      "desc": "Imputed OASDI benefits",
-      "form": {"2014-2027": "imputed using the C-TAM model"},
-      "availability": "taxdata_cps"
-    },
     "vet_ben": {
       "type": "float",
       "desc": "Imputed Veteran's benefits",
