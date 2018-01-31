@@ -197,3 +197,59 @@ def test_boolean_value_infomation(tests_path):
                   val,
                   val_is_boolean)
             assert beh[param]['boolean_value'] == val_is_boolean
+
+
+@pytest.mark.test_behavioral_response_using_different_years
+def test_behavioral_response_using_different_years(cps_subsample):
+    """
+    Check consistency of behavioral response.
+    """
+    res = dict()
+    beh_base_year_1 = 2017
+    beh_base_year_2 = 2020
+    for year in [beh_base_year_1, beh_base_year_2]:
+        # create Records object
+        rec = Records.cps_constructor(data=cps_subsample)
+        # create Policy object
+        pol = Policy()
+        # create current-law Calculator object
+        calc1 = Calculator(policy=pol, records=rec)
+        # specify reform and assumptions
+        reform_json = """
+        {"policy": {
+            "_II_rt5": {"2017": [0.25]},
+            "_II_rt6": {"2017": [0.25]},
+            "_II_rt7": {"2017": [0.25]},
+            "_PT_rt5": {"2017": [0.25]},
+            "_PT_rt6": {"2017": [0.25]},
+            "_PT_rt7": {"2017": [0.25]},
+            "_II_em": {"2017": [1000]}
+        }}
+        """
+        assump_json = """
+        {"behavior": {"_BE_sub": {"2017": [0.25]}},
+         "growdiff_baseline": {},
+         "growdiff_response": {},
+         "consumption": {}
+        }
+        """
+        params = Calculator.read_json_param_objects(reform_json, assump_json)
+        # create reform Calculator object with behavioral response
+        behv = Behavior()
+        pol.implement_reform(params['policy'])
+        behv.update_behavior(params['behavior'])
+        calc2 = Calculator(policy=pol, records=rec, behavior=behv)
+        # advance calculators to different years
+        calc1.advance_to_year(year)
+        calc2.advance_to_year(year)
+        # check calculator has behavior response or not
+        assert calc2.behavior_has_response()
+        calc2 = Behavior.response(calc1, calc2)
+        calc2.advance_to_year(2021)
+        calc2.calc_all()
+        # check calculator is in year 2021
+        assert calc2.current_year == 2021
+        res[year] = calc2.weighted_total('combined')
+
+    # compare values generated in two ways
+    assert res[beh_base_year_1] == res[beh_base_year_2]
