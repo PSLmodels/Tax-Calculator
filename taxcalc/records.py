@@ -411,8 +411,8 @@ class Records(object):
         setattr(self, 'vet_ben', self.BEN['vet_{}'.format(year)])
         setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
-        AWAGE = self.gfactors.factor_value('AWAGE', year)
-        self.other_ben *= AWAGE
+        ABENEFITS = self.gfactors.factor_value('ABENEFITS', year)
+        self.other_ben *= ABENEFITS
 
     def _read_data(self, data, exact_calcs):
         """
