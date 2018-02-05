@@ -201,12 +201,17 @@ def test_boolean_value_infomation(tests_path):
 
 @pytest.mark.test_drop_hi_mtr
 def test_drop_hi_mtr(cps_subsample):
+    # create Records object
     rec = Records.cps_constructor(data=cps_subsample)
+    # create Policy object
     pol = Policy()
+    # create current-law Calculator object
     calc_b = Calculator(policy=pol, records=rec)
+    # implement policy reform
     reform = {2017: {"_II_em": [1000]}}
     pol.implement_reform(reform)
     behv = Behavior()
+    # specify behavior assumptions
     behv.update_behavior({2014: {'_BE_sub': [0.25]},
                           2014: {'_BE_cg': [-1.4]},
                           2014: {'_BE_charity': [[-0.5, -0.5, -0.5]]}})
@@ -214,10 +219,12 @@ def test_drop_hi_mtr(cps_subsample):
     cyr = 2018
     calc_b.advance_to_year(cyr)
     calc_ref.advance_to_year(cyr)
+    assert behv.has_any_response()
+    # calculate behavior response
     calc_beh_drop = Behavior.response(calc_b, calc_ref, drop_hi_mtr=True)
     calc_beh_reg = Behavior.response(calc_b, calc_ref, drop_hi_mtr=False)
-
-    reltol = 2e-3
+    # compare the two sets of results to make sure the difference is very small
+    reltol = 2e-4
     assert np.allclose(calc_beh_drop.weighted_total('combined'),
                        calc_beh_reg.weighted_total('combined'),
                        atol=0.0, rtol=reltol)

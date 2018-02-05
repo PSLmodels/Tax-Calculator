@@ -453,11 +453,17 @@ class Behavior(ParametersBase):
         """
         Computes marginal tax rates for Calculator objects calc1 and calc2
         for specified mtr_of income type and specified tax_type.
+
+        The drop_hi_mtr option allows users to calculate behavior response
+        without considering units with high (>0.7) marginal tax rates.
         """
         _, iitax1, combined1 = calc1.mtr(mtr_of, wrt_full_compensation=True)
         _, iitax2, combined2 = calc2.mtr(mtr_of, wrt_full_compensation=True)
         if drop_hi_mtr:
+            # marginal tax rate > 0.7 is considered to be unreasonably high.
             mtr_cap = 0.7
+            # use symmetry to ensure percentage change is zero when calculating
+            # any behavior responses.
             combined1 = np.where(combined1 > mtr_cap, combined2, combined1)
             combined2 = np.where(combined2 > mtr_cap, combined1, combined2)
             iitax1 = np.where(iitax1 > mtr_cap, iitax2, iitax1)
