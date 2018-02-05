@@ -87,7 +87,6 @@ def test_growfactors_csv_values():
     """
     gfo = Growfactors()
     min_data_year = min(Records.PUFCSV_YEAR, Records.CPSCSV_YEAR)
-    print min_data_year, Policy.JSON_START_YEAR
     if min_data_year < Policy.JSON_START_YEAR:
         for gfname in Growfactors.VALID_NAMES:
             val = gfo.factor_value(gfname, min_data_year)
