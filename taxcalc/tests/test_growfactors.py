@@ -79,8 +79,8 @@ def test_proper_usage():
     assert val > 1.0
 
 
-# TODO: remove pytest.xfail after upgrade to new puf.csv file in 2018
-@pytest.xfail
+# TODO: remove pytest.mark.xfail after upgrade to new puf.csv file
+@pytest.mark.xfail
 def test_growfactors_csv_values():
     """
     Test numerical contents of growfactors.csv file.
