@@ -109,7 +109,7 @@ class Behavior(ParametersBase):
         return False
 
     @staticmethod
-    def response(calc1, calc2, trace=False):
+    def response(calc1, calc2, trace=False, drop_hi_mtr=True):
         """
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
@@ -178,16 +178,15 @@ class Behavior(ParametersBase):
             # (e00200p is taxpayer's wages+salary)
             wage_mtr1, wage_mtr2 = Behavior._mtr12(calc1, calc2,
                                                    mtr_of='e00200p',
-                                                   tax_type='combined')
+                                                   tax_type='combined',
+                                                   drop_hi_mtr=True)
             # calculate magnitude of substitution effect
             if calc2.behavior('BE_sub') == 0.0:
                 sub = np.zeros(calc1.array_len)
             else:
                 # proportional change in marginal net-of-tax rates on earnings
-                nearone = 0.999999
-                mtr1 = np.where(wage_mtr1 > nearone, nearone, wage_mtr1)
-                mtr2 = np.where(wage_mtr2 > nearone, nearone, wage_mtr2)
-                pch = ((1. - mtr2) / (1. - mtr1)) - 1.
+                pch = ((1. - wage_mtr1) / (1. - wage_mtr2)) - 1.
+
                 if calc2.behavior('BE_subinc_wrt_earnings'):
                     # Note: e00200 is filing unit's wages+salaries
                     sub = (calc2.behavior('BE_sub') *
@@ -237,7 +236,8 @@ class Behavior(ParametersBase):
             # (p23250 is filing units' long-term capital gains)
             ltcg_mtr1, ltcg_mtr2 = Behavior._mtr12(calc1, calc2,
                                                    mtr_of='p23250',
-                                                   tax_type='iitax')
+                                                   tax_type='iitax',
+                                                   drop_hi_mtr=True)
             rch = ltcg_mtr2 - ltcg_mtr1
             exp_term = np.exp(calc2.behavior('BE_cg') * rch)
             new_ltcg = calc1.array('p23250') * exp_term
@@ -254,12 +254,14 @@ class Behavior(ParametersBase):
             # e20100 is filing units' non-cash charitable contributions
             # cash:
             c_charity_mtr1, c_charity_mtr2 = Behavior._mtr12(
-                calc1, calc2, mtr_of='e19800', tax_type='combined')
+                calc1, calc2, mtr_of='e19800', tax_type='combined',
+                drop_hi_mtr=True)
             c_charity_price_pch = (((1. + c_charity_mtr2) /
                                     (1. + c_charity_mtr1)) - 1.)
             # non-cash:
             nc_charity_mtr1, nc_charity_mtr2 = Behavior._mtr12(
-                calc1, calc2, mtr_of='e20100', tax_type='combined')
+                calc1, calc2, mtr_of='e20100', tax_type='combined',
+                drop_hi_mtr=True)
             nc_charity_price_pch = (((1. + nc_charity_mtr2) /
                                      (1. + nc_charity_mtr1)) - 1.)
             # identify income bin based on baseline income
@@ -446,13 +448,20 @@ class Behavior(ParametersBase):
         return calc
 
     @staticmethod
-    def _mtr12(calc1, calc2, mtr_of='e00200p', tax_type='combined'):
+    def _mtr12(calc1, calc2, mtr_of='e00200p', tax_type='combined',
+               drop_hi_mtr=True):
         """
         Computes marginal tax rates for Calculator objects calc1 and calc2
         for specified mtr_of income type and specified tax_type.
         """
         _, iitax1, combined1 = calc1.mtr(mtr_of, wrt_full_compensation=True)
         _, iitax2, combined2 = calc2.mtr(mtr_of, wrt_full_compensation=True)
+        if drop_hi_mtr:
+            mtr_cap = 0.7
+            combined1 = np.where(combined1 > mtr_cap, combined2, combined1)
+            combined2 = np.where(combined2 > mtr_cap, combined1, combined2)
+            iitax1 = np.where(iitax1 > mtr_cap, iitax2, iitax1)
+            iitax2 = np.where(iitax2 > mtr_cap, iitax1, iitax2)
         if tax_type == 'combined':
             return (combined1, combined2)
         elif tax_type == 'iitax':
