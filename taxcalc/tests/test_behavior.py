@@ -197,3 +197,27 @@ def test_boolean_value_infomation(tests_path):
                   val,
                   val_is_boolean)
             assert beh[param]['boolean_value'] == val_is_boolean
+
+
+@pytest.mark.test_drop_hi_mtr
+def test_drop_hi_mtr(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    calc_b = Calculator(policy=pol, records=rec)
+    reform = {2017: {"_II_em": [1000]}}
+    pol.implement_reform(reform)
+    behv = Behavior()
+    behv.update_behavior({2014: {'_BE_sub': [0.25]},
+                          2014: {'_BE_cg': [-1.4]},
+                          2014: {'_BE_charity': [[-0.5, -0.5, -0.5]]}})
+    calc_ref = Calculator(policy=pol, records=rec, behavior=behv)
+    cyr = 2018
+    calc_b.advance_to_year(cyr)
+    calc_ref.advance_to_year(cyr)
+    calc_beh_drop = Behavior.response(calc_b, calc_ref, drop_hi_mtr=True)
+    calc_beh_reg = Behavior.response(calc_b, calc_ref, drop_hi_mtr=False)
+
+    reltol = 2e-3
+    assert np.allclose(calc_beh_drop.weighted_total('combined'),
+                       calc_beh_reg.weighted_total('combined'),
+                       atol=0.0, rtol=reltol)
