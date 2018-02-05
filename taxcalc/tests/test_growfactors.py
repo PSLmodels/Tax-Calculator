@@ -93,4 +93,3 @@ def test_growfactors_csv_values():
             val = gfo.factor_value(gfname, min_data_year)
             print gfname, val
             assert val == 1
-    assert 1 == 2
