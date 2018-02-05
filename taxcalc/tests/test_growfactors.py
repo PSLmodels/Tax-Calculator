@@ -90,5 +90,4 @@ def test_growfactors_csv_values():
     if min_data_year < Policy.JSON_START_YEAR:
         for gfname in Growfactors.VALID_NAMES:
             val = gfo.factor_value(gfname, min_data_year)
-            print gfname, val
             assert val == 1
