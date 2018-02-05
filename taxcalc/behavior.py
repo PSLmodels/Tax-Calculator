@@ -179,7 +179,7 @@ class Behavior(ParametersBase):
             wage_mtr1, wage_mtr2 = Behavior._mtr12(calc1, calc2,
                                                    mtr_of='e00200p',
                                                    tax_type='combined',
-                                                   drop_hi_mtr=True)
+                                                   drop_hi_mtr=drop_hi_mtr)
             # calculate magnitude of substitution effect
             if calc2.behavior('BE_sub') == 0.0:
                 sub = np.zeros(calc1.array_len)
@@ -237,7 +237,7 @@ class Behavior(ParametersBase):
             ltcg_mtr1, ltcg_mtr2 = Behavior._mtr12(calc1, calc2,
                                                    mtr_of='p23250',
                                                    tax_type='iitax',
-                                                   drop_hi_mtr=True)
+                                                   drop_hi_mtr=drop_hi_mtr)
             rch = ltcg_mtr2 - ltcg_mtr1
             exp_term = np.exp(calc2.behavior('BE_cg') * rch)
             new_ltcg = calc1.array('p23250') * exp_term
@@ -255,13 +255,13 @@ class Behavior(ParametersBase):
             # cash:
             c_charity_mtr1, c_charity_mtr2 = Behavior._mtr12(
                 calc1, calc2, mtr_of='e19800', tax_type='combined',
-                drop_hi_mtr=True)
+                drop_hi_mtr=drop_hi_mtr)
             c_charity_price_pch = (((1. + c_charity_mtr2) /
                                     (1. + c_charity_mtr1)) - 1.)
             # non-cash:
             nc_charity_mtr1, nc_charity_mtr2 = Behavior._mtr12(
                 calc1, calc2, mtr_of='e20100', tax_type='combined',
-                drop_hi_mtr=True)
+                drop_hi_mtr=drop_hi_mtr)
             nc_charity_price_pch = (((1. + nc_charity_mtr2) /
                                      (1. + nc_charity_mtr1)) - 1.)
             # identify income bin based on baseline income
