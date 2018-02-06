@@ -494,13 +494,13 @@
     "mcaid_ben": {
       "type": "float",
       "desc": "Imputed Medicaid benefits",
-      "form": {"2014-2027": "imputed using the C-TAM model"},
+      "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
     "mcare_ben": {
       "type": "float",
       "desc": "Imputed Medicare benefits",
-      "form": {"2014-2027": "imputed using the C-TAM model"},
+      "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
     "n24": {
@@ -527,7 +527,7 @@
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
-    "n1821": {
+    "n1820": {
       "type": "int",
       "desc": "Number of people age 18-20 years old in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
@@ -542,7 +542,7 @@
     "other_ben": {
       "type": "float",
       "desc": "Non-imputed benefits",
-      "form": {"2014-2027": "determined using government benefit program data"},
+      "form": {"2014-20??": "determined using government benefit program data"},
       "availability": "taxdata_cps"
     },
     "p08000": {
@@ -585,19 +585,19 @@
     "snap_ben": {
       "type": "float",
       "desc": "Imputed SNAP benefits",
-      "form": {"2014-2027": "imputed using the C-TAM model"},
+      "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
     "ssi_ben": {
       "type": "float",
       "desc": "Imputed SSI benefits",
-      "form": {"2014-2027": "imputed using the C-TAM model"},
+      "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
     "vet_ben": {
       "type": "float",
       "desc": "Imputed Veteran's benefits",
-      "form": {"2014-2027": "imputed using the C-TAM model"},
+      "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     }
   },

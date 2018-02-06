@@ -4,21 +4,51 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-01-?? Release 0.15.2
+2018-02-?? Release 0.16.0
 -------------------------
 (last merged pull request is
-[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx))
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
-- None
+- Improve data quality of several existing CPS variables, which causes changes in CPS tax results
+  [[#1853](https://github.com/open-source-economics/Tax-Calculator/pull/1853)
+  by Anderson Frailey with assistance from Martin Holmer]
 
 **New Features**
-- Add imputed CPS benefits data to Tax-Calculator
+- Add ability to extrapolate imputed benefits and benefit-related policy parameters
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
 
 **Bug Fixes**
 - None
+
+
+2018-01-30 Release 0.15.2
+-------------------------
+(last merged pull request is
+[#1851](https://github.com/open-source-economics/Tax-Calculator/pull/1851))
+
+**API Changes**
+- None
+
+**New Features**
+- Add ability to specify a compound reform in the tc `--reform` option
+  [[#1842](https://github.com/open-source-economics/Tax-Calculator/pull/1842)
+  by Martin Holmer as requested by Ernie Tedeschi]
+- Add compatible-data information for each policy parameter to user documentation
+  [[#1844](https://github.com/open-source-economics/Tax-Calculator/pull/1844)
+  by Martin Holmer as requested by Matt Jensen]
+- Add tc `--baseline BASELINE` option that sets baseline policy equal to that specified in BASELINE reform file (rather than baseline policy being current-law poliy)
+  [[#1851](https://github.com/open-source-economics/Tax-Calculator/pull/1851)
+  by Martin Holmer as requested by Matt Jensen and Ernie Tedeschi]
+
+**Bug Fixes**
+- Add error checking for Calculator misuse in presence of behavioral responses
+  [[#1848](https://github.com/open-source-economics/Tax-Calculator/pull/1848)
+  by Martin Holmer]
+- Add error checking for diagnostic_table misuse in presence of behavioral responses
+  [[#1849](https://github.com/open-source-economics/Tax-Calculator/pull/1849)
+  by Martin Holmer]
 
 
 2018-01-20 Release 0.15.1

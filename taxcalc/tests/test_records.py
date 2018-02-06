@@ -157,8 +157,14 @@ def test_records_variables_content(tests_path):
                 else:
                     indefinite_yrange = False
                     eyr = int(yrlist[1])
-                    assert fyr == prior_eyr + 1
-                    assert eyr <= last_form_year
+                    if fyr != (prior_eyr + 1):
+                        msg1 = '{} fyr {}'.format(vname, fyr)
+                        msg2 = '!= prior_eyr_1 {}'.format(prior_eyr + 1)
+                        assert msg1 == msg2
+                    if eyr > last_form_year:
+                        msg1 = '{} eyr {}'.format(vname, eyr)
+                        msg2 = '> last_form_year {}'.format(last_form_year)
+                        assert msg1 == msg2
                     prior_eyr = eyr
             if not indefinite_yrange and len(yranges) > 0:
                 assert (prior_eyr == last_form_year or
