@@ -1262,6 +1262,7 @@ class Calculator(object):
         if zero_out_calc_vars:
             self.__records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
+        BenefitPrograms(self.__policy, self.__records)
         EI_PayrollTax(self.__policy, self.__records)
         DependentCare(self.__policy, self.__records)
         Adj(self.__policy, self.__records)
@@ -1317,7 +1318,6 @@ class Calculator(object):
         C1040(self.__policy, self.__records)
         CTC_new(self.__policy, self.__records)
         IITAX(self.__policy, self.__records)
-        BenefitPrograms(self.__policy, self.__records)
 
     @staticmethod
     def _read_json_policy_reform_text(text_string,

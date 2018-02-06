@@ -23,6 +23,38 @@ from taxcalc.decorators import iterate_jit, jit
 
 
 @iterate_jit(nopython=True)
+def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben,
+                    e02400, e02300, other_ben, BEN_SSI_repeal, BEN_SNAP_repeal,
+                    BEN_Vet_repeal, BEN_MCARE_repeal, BEN_MCAID_repeal,
+                    BEN_OASDI_repeal, BEN_Unemployment_repeal,
+                    BEN_Other_repeal, benefit_total):
+    """
+    Calculate total benefit value and benefit welfare value
+    """
+    # zero out any repealed benefits
+    if BEN_SSI_repeal:  # SSI
+        ssi_ben = 0.
+    if BEN_SNAP_repeal:  # SNAP
+        snap_ben = 0.
+    if BEN_Vet_repeal:  # Veterans Benefits
+        vet_ben = 0.
+    if BEN_MCARE_repeal:  # Medicare
+        mcare_ben = 0.
+    if BEN_MCAID_repeal:  # Medicaid
+        mcaid_ben = 0.
+    if BEN_OASDI_repeal:  # Social Security
+        e02400 = 0.
+    if BEN_Unemployment_repeal:  # Unemployment Benefits
+        e02300 = 0.
+    if BEN_Other_repeal:  # Other benefits
+        other_ben = 0.
+    benefit_total = (ssi_ben + snap_ben + vet_ben + mcare_ben + mcaid_ben +
+                     e02400 + e02300 + other_ben)
+
+    return benefit_total
+
+
+@iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
@@ -1762,38 +1794,6 @@ def LumpSumTax(DSI, num, XTOT,
         lumpsum_tax = LST * max(num, XTOT)
     combined += lumpsum_tax
     return (lumpsum_tax, combined)
-
-
-@iterate_jit(nopython=True)
-def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben,
-                    e02400, e02300, other_ben, BEN_SSI_repeal, BEN_SNAP_repeal,
-                    BEN_Vet_repeal, BEN_MCARE_repeal, BEN_MCAID_repeal,
-                    BEN_OASDI_repeal, BEN_Unemployment_repeal,
-                    BEN_Other_repeal, ben_total):
-    """
-    Calculate total benefit value and benefit welfare value
-    """
-    # zero out any repealed benefits
-    if BEN_SSI_repeal:  # SSI
-        ssi_ben = 0.
-    if BEN_SNAP_repeal:  # SNAP
-        snap_ben = 0.
-    if BEN_Vet_repeal:  # Veterans Benefits
-        vet_ben = 0.
-    if BEN_MCARE_repeal:  # Medicare
-        mcare_ben = 0.
-    if BEN_MCAID_repeal:  # Medicaid
-        mcaid_ben = 0.
-    if BEN_OASDI_repeal:  # Social Security
-        e02400 = 0.
-    if BEN_Unemployment_repeal:  # Unemployment Benefits
-        e02300 = 0.
-    if BEN_Other_repeal:  # Other benefits
-        other_ben = 0.
-    ben_total = (ssi_ben + snap_ben + vet_ben + mcare_ben + mcaid_ben +
-                 e02400 + e02300 + other_ben)
-
-    return ben_total
 
 
 @iterate_jit(nopython=True)

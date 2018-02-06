@@ -1080,7 +1080,7 @@
       "desc": "After tax income is equal to expanded_income minus combined",
       "form": {"2013-20??": "calculated variable"}
     },
-    "ben_total": {
+    "benefit_total": {
       "type": "float",
       "desc": "Total benefits recieved by that tax unit",
       "form": {"2013-20??": "calculated variable"}

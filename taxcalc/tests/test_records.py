@@ -116,9 +116,7 @@ def test_records_variables_content(tests_path):
     # specify test information
     reqkeys = ['type', 'desc', 'form']
     first_year = Policy.JSON_START_YEAR
-    first_year_cps = Records.CPSCSV_YEAR
     last_form_year = 2016
-    last_calculated_year = 2027
     # read JSON variable file into a dictionary
     path = os.path.join(tests_path, '..', 'records_variables.json')
     vfile = open(path, 'r')
@@ -150,10 +148,6 @@ def test_records_variables_content(tests_path):
                 if yrlist[1] == '20??':
                     indefinite_yrange = True
                     assert yrange_num == num_yranges
-                elif int(yrlist[1]) == last_calculated_year:
-                    indefinite_yrange = False
-                    assert fyr == first_year_cps
-                    prior_eyr = int(yrlist[1])
                 else:
                     indefinite_yrange = False
                     eyr = int(yrlist[1])
@@ -167,8 +161,7 @@ def test_records_variables_content(tests_path):
                         assert msg1 == msg2
                     prior_eyr = eyr
             if not indefinite_yrange and len(yranges) > 0:
-                assert (prior_eyr == last_form_year or
-                        prior_eyr == last_calculated_year)
+                assert prior_eyr == last_form_year
 
 
 def test_csv_input_vars_md_contents(tests_path):
