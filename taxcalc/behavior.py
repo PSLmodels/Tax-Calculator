@@ -197,6 +197,16 @@ class Behavior(ParametersBase):
                     sub = (calc2.behavior('BE_sub') *
                            pch * calc1.array('c04800'))
                     if trace:
+                        trace_output('wmtr1', wage_mtr1,
+                                     [-9e99, 0.00, 0.25, 0.50, 0.60,
+                                      0.70, 0.80, 0.90, 0.999999, 1.1,
+                                      1.2, 1.3, 9e99],
+                                     calc1.array('s006'),
+                                     np.zeros(calc1.array_len))
+                        print('high wage_mtr1:',
+                              wage_mtr1[wage_mtr1 > 0.999999])
+                        print('wage_mtr2 them:',
+                              wage_mtr2[wage_mtr1 > 0.999999])
                         trace_output('pch', pch,
                                      [-9e99, -1.00, -0.50, -0.20, -0.10,
                                       -0.00001, 0.00001,
