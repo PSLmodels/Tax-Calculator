@@ -170,7 +170,7 @@ class Behavior(ParametersBase):
         assert calc1.array_len == calc2.array_len
         assert calc1.current_year == calc2.current_year
         assert nearone >= 0.95 and nearone < 1.0
-        assert max_pch >= 0.0 and max_pch <= 2.0
+        assert max_pch >= 0.0 and max_pch <= 9e99
         if trace:
             context = '*** TRACE *** nearone={} and max_pch={}'
             print(context.format(nearone, max_pch))
