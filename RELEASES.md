@@ -11,11 +11,11 @@ for a complete commit history.
 
 **API Changes**
 - Improve data quality of several existing CPS variables, which causes changes in CPS tax results
-  [[#18xx](https://github.com/open-source-economics/Tax-Calculator/pull/18xx)
-  by Anderson Frailey]
+  [[#1853](https://github.com/open-source-economics/Tax-Calculator/pull/1853)
+  by Anderson Frailey with assistance from Martin Holmer]
 
 **New Features**
-- Add C-TAM imputed benefits data and associated policy parameters
+- Add ability to extrapolate imputed benefits and benefit-related policy parameters
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
 

@@ -491,6 +491,18 @@
       "form": {"2013-2016": "1065 (Schedule K-1) box 14"},
       "availability": "taxdata_puf"
     },
+    "mcaid_ben": {
+      "type": "float",
+      "desc": "Imputed Medicaid benefits",
+      "form": {"2014-20??": "imputed using the C-TAM model"},
+      "availability": "taxdata_cps"
+    },
+    "mcare_ben": {
+      "type": "float",
+      "desc": "Imputed Medicare benefits",
+      "form": {"2014-20??": "imputed using the C-TAM model"},
+      "availability": "taxdata_cps"
+    },
     "n24": {
       "type": "int",
       "desc": "Number of children eligible for Child Tax Credit",
@@ -515,7 +527,7 @@
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
-    "n1821": {
+    "n1820": {
       "type": "int",
       "desc": "Number of people age 18-20 years old in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
@@ -526,6 +538,12 @@
       "desc": "Number of people 21 years old or older in the filing unit",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
+    },
+    "other_ben": {
+      "type": "float",
+      "desc": "Non-imputed benefits",
+      "form": {"2014-20??": "determined using government benefit program data"},
+      "availability": "taxdata_cps"
     },
     "p08000": {
       "type": "float",
@@ -563,6 +581,24 @@
       "desc": "Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output",
       "form": {"2013-2016": "not used in filing unit tax calculations"},
       "availability": "taxdata_puf, taxdata_cps"
+    },
+    "snap_ben": {
+      "type": "float",
+      "desc": "Imputed SNAP benefits",
+      "form": {"2014-20??": "imputed using the C-TAM model"},
+      "availability": "taxdata_cps"
+    },
+    "ssi_ben": {
+      "type": "float",
+      "desc": "Imputed SSI benefits",
+      "form": {"2014-20??": "imputed using the C-TAM model"},
+      "availability": "taxdata_cps"
+    },
+    "vet_ben": {
+      "type": "float",
+      "desc": "Imputed Veteran's benefits",
+      "form": {"2014-20??": "imputed using the C-TAM model"},
+      "availability": "taxdata_cps"
     }
   },
   "calc": {
