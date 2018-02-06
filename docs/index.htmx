@@ -35,12 +35,21 @@ that those materials are available upon request.</p>
 
 <h2 id="whatsnew">What's New</h2>
 
+<p><i>Click your browser's Reload button to
+ensure you are viewing the most recent version of this page rather
+than an older version that your browser has saved in its cache of
+previously visited pages.</i></p>
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">Pre-TCJA policy reform file</a> is available
 given that TCJA is current-law policy in Tax-Calculator release 0.15.0
 and higher
 
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1830#issue-288673028">FAQ on using Tax-Calculator when TCJA is current law</a> is
 now available
+
+<p><a href="#baseline">Baseline option</a> allows specification of a
+baseline policy that differs from current-law policy in Tax-Calculator
+release 0.15.2 and higher
 
 <p><a href="#compoundreform">Compound reform</a> capability allows tc
 users to analyze a reform that is specified in more than one JSON
@@ -472,10 +481,15 @@ using its own set of three age-count input variables.
 <h3 id="cli-init-analysis">Initiate Reform Analysis</h3>
 
 <p>The tc CLI to Tax-Calculator requires only an input file containing
-one or more filing units.  A policy reform file is optional; no reform
-file implies you want to analyze current-law policy.  A response
-assumption file is also optional; no assumption file implies you want
-to conduct static analysis.</p>
+one or more filing units.  A baseline file is optional; no baseline
+file implies the policy baseline is current-law policy.  A policy
+reform file is optional; no reform file implies no reform (that is,
+you want to analyze current-law policy).  A response assumption file
+is also optional; no assumption file implies you want to conduct
+static analysis.  The output files written by tc are built-up from
+the name of the input file, baseline file, reform file, and
+assumption file using a <kbd>#</kbd> character if the option is
+not specified.</p>
 
 <p>Here we explain how to conduct tax analysis with the tc CLI by
 presenting a series of examples and explaining what output is produced
@@ -493,11 +507,12 @@ which was mentioned in previous part of this section.</p>
 liabilities for each filing unit assuming the income amounts in the
 input file are amounts for 2020 and assuming current-law tax policy
 projected to 2020.  The name of the CSV-formatted output file is
-<kbd>test-20-#-#.csv</kbd>.
-The first <kbd>#</kbd> symbol indicates we did not specify a
-policy reform file and the second <kbd>#</kbd> symbol indicates we did
-not specify a response assumption file.  The variables included
-in the minimal output file include:
+<kbd>test-20-#-#-#.csv</kbd>.  The first <kbd>#</kbd> symbol indicates
+we did not specify a baseline file and the second <kbd>#</kbd> symbol
+indicates we did not specify a policy reform file and the
+third <kbd>#</kbd> symbol indicates we did not specify a response
+assumption file.
+The variables included in the minimal output file include:
 <kbd>RECID</kbd> (of filing unit in the input file),
 <kbd>YEAR</kbd> (specified when executing tc CLI),
 <kbd>WEIGHT</kbd> (which is same as <kbd>s006</kbd>),
@@ -508,16 +523,16 @@ in the minimal output file include:
 
 <p>Also, documentation of the reform is always written to a text file
 ending in <kbd>-doc.text</kbd>, which in this example would be
-named <kbd>test-20-#-#-doc.text</kbd>.</p>
+named <kbd>test-20-#-#-#-doc.text</kbd>.</p>
 
 <p><pre>
 (2)$ tc test.csv 2020 --dump
 </pre></p>
 
 <p>Example (2) produces a much more complete output file with the same
-name <kbd>test-20-#-#.csv</kbd> as the minimal output file produced in
+name <kbd>test-20-#-#-#.csv</kbd> as the minimal output file produced in
 example (1).  No other output is generated other than the
-<kbd>test-20-#-#-doc.text</kbd> file.   The
+<kbd>test-20-#-#-#-doc.text</kbd> file.   The
 <kbd>--dump</kbd> option causes <b>all</b> the input variables (including
 the ones understood by Tax-Calculator but not included
 in <kbd>test.csv</kbd>, which are all zero) and <b>all</b> the output
@@ -532,7 +547,7 @@ the same tax liabilities (apart from rounding errors of one or two
 cents) as in the original dump output.</p>
 
 <p id="partdump">This full dump output can be useful for debugging and
-is small when using a several stylized filing units as input.  But
+is small when using just a few filing units as input.  But
 when using large samples as input (for example, the <kbd>cps.csv</kbd>
 input file), the size of the dump output becomes quite large. For
 Tax-Calculator versions 0.15.0 and higher, there is a way to specify
@@ -540,15 +555,13 @@ a <b>partial dump</b> that includes only variables of interest.  To
 have <kbd>tc</kbd> do a partial dump, create a text file that lists
 the names of the variables to be included in the partial dump.  You
 can put the varible names on separate lines and/or put several names
-on one line separated by spaces.  Then point that that file using the
+on one line separated by spaces.  Then point to that file using the
 <kbd>--dvars</kbd> option.  So, for example, if your list of dump
 variables is in a file named <kbd>mydumpvars</kbd>, a partial dump
 file is created this way:
-
-<p><pre>
+<pre>
 $ tc cps.csv 2020 --dump --dvars mydumpvars
-</pre></p>
-
+</pre>
 If there is no <kbd>--dvars</kbd> option, the <kbd>--dump</kbd> option
 produces a full dump.</p>
 
@@ -559,16 +572,16 @@ produces a full dump.</p>
 <p>Example (3) produces the same dump output as example (2) except
 that the dump output is written not to a CSV-formatted file, but to
 the dump table in an SQLite3 database file, which is
-called <kbd>test-20-#-#.db</kbd> in this example.  Because
+called <kbd>test-20-#-#-#.db</kbd> in this example.  Because
 the <kbd>--dump</kbd> option is not used in example (3), minimal
-output will be written to the <kbd>test-20-#-#.csv</kbd> file.
+output will be written to the <kbd>test-20-#-#-#.csv</kbd> file.
 Note that use of the <kbd>--dvars</kbd> option causes
 the contents of the database file to be a partial dump.</p>
 
 <p> Pros and cons of putting dump output in a CSV file or an SQLite3
 database table:  The CSV file is almost twice as large as the
 database, but it can be easily imported into a wide range of
-statistical packages and spreadsheets.  The main advantage of the
+statistical packages.  The main advantage of the
 SQLite3 database is that the Anaconda Python distribution includes
 <a href="http://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe
 on Windows), a command-line tool that can be used to tabulate dump
@@ -600,7 +613,7 @@ subsequent examples to generate more complete output for the reform.</p>
 the <kbd>ref3.json</kbd> file.  Because no <kbd>--assump</kbd>
 option is used, the output results are produced using static analysis.
 The name of the output file in this example is
-<kbd>test-21-ref3-#.csv</kbd>.</p>
+<kbd>test-21-#-ref3-#.csv</kbd>.</p>
 
 <p id="compoundreform">If, in addition to <kbd>ref3.json</kbd>, there
 was a <kbd>ref4.json</kbd> reform file and analysis of the <b>compound
@@ -612,7 +625,8 @@ the tc <kbd>--reform</kbd> option as follows:
 <pre>
 $ tc test.csv 2021 --reform ref3.json+ref4.json
 </pre>
-The above command generates an output file named <kbd>test-21-ref3+ref4-#.csv</kbd></p>
+The above command generates an output file named
+<kbd>test-21-#-ref3+ref4-#.csv</kbd></p>
 
 <p><pre>
 (6)$ tc test.csv 2021 --reform ref3.json --assump res1.json
@@ -623,7 +637,7 @@ The above command generates an output file named <kbd>test-21-ref3+ref4-#.csv</k
 the <kbd>ref3.json</kbd> file and the response assumptions
 specified in the <kbd>res1.json</kbd> file.  The output results
 produced by this non-static analysis are written to the 
-<kbd>test-21-ref3-res1.csv</kbd> file.</p>
+<kbd>test-21-#-ref3-res1.csv</kbd> file.</p>
 
 <p id="outdir">In the preceding examples, all the output files are
 written in the directory where the tc command was executed.  If you
@@ -631,7 +645,7 @@ want the output files to be written in a different directory, use
 the <kbd>--outdir</kbd> option.  So, for example, you have created
 the <kbd>myoutput</kbd> directory as directory at the same level as
 the directory from where you are running tc, output files will be
-written there if you use the <kbd>--outdir myoutput</kbd> option.
+written there if you use the <kbd>--outdir myoutput</kbd> option.</p>
 
 <p>The following examples illustrate output options that work only if
 each filing unit in the input file has a positive sampling weight
@@ -646,7 +660,7 @@ the <kbd>ref3.json</kbd> file, the content of which is:
         "_II_em": {"2022": [8000]}
     }
 }
-</pre>
+</pre></p>
 
 <p>The output options illustrated in the following examples generate
 tables of the post-reform level and the reform-induced change in tax
@@ -665,9 +679,9 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2022.
 
 (7)$ ls cps-22*
-cps-22-ref3-#-doc.text	cps-22-ref3-#-tab.text	cps-22-ref3-#.csv
+cps-22-#-ref3-#-doc.text   cps-22-#-ref3-#-tab.text   cps-22-#-ref3-#.csv
 
-(7)$ cat cps-22-ref3-#-tab.text
+(7)$ cat cps-22-#-ref3-#-tab.text
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
@@ -706,7 +720,7 @@ extrapolate (or <q>age</q>) filing unit data in the <kbd>cps.csv</kbd>
 file to the specified tax year.  It knows to do that because of the
 special input file name <kbd>cps.csv</kbd>.  The tables produced by
 this static analysis are written to the
-<kbd>cps-22-ref3-#-tab.text</kbd> file.  Note that on Windows
+<kbd>cps-22-#-ref3-#-tab.text</kbd> file.  Note that on Windows
 you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and 
 <kbd>type</kbd> instead of <kbd>cat</kbd>.</p>
 
@@ -716,8 +730,8 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24*
-cps-24-ref3-#-atr.html	cps-24-ref3-#-doc.text	cps-24-ref3-#.csv
-cps-24-ref3-#-dec.html	cps-24-ref3-#-mtr.html
+cps-24-#-ref3-#-atr.html   cps-24-#-ref3-#-doc.text   cps-24-#-ref3-#.csv
+cps-24-#-ref3-#-dec.html   cps-24-#-ref3-#-mtr.html
 </pre></p>
 
 <p>Example (8) is like example (7) except we ask for 2024 static
@@ -726,17 +740,17 @@ both.  The HTML files containing the graphs can be viewed in your
 browser.</p>
 
 <p>Here is what the average tax rate graph
-in <kbd>cps-24-ref3-#-atr.html</kbd> looks like.</p>
+in <kbd>cps-24-#-ref3-#-atr.html</kbd> looks like.</p>
 
 <p><img src="atr.png" alt="atr graph"></p>
 
 <p>Here is what the marginal tax rate graph
-in <kbd>cps-24-ref3-#-mtr.html</kbd> looks like:</p>
+in <kbd>cps-24-#-ref3-#-mtr.html</kbd> looks like:</p>
 
 <p><img src="mtr.png" alt="mtr graph"></p>
 
 <p>Here is what the percentage after-tax income change by income
-decile graph in <kbd>cps-24-ref3-#-dec.html</kbd> looks like:</p>
+decile graph in <kbd>cps-24-#-ref3-#-dec.html</kbd> looks like:</p>
 
 <p><img src="dec.png" alt="dec graph"></p>
 
@@ -751,6 +765,26 @@ Python source code for the <kbd>ce_aftertax_expanded_income</kbd>
 function in the <kbd>taxcalc/utils.py</kbd> file at the
 <a href="https://github.com/open-source-economics/Tax-Calculator">
 developer website</a>.</p>
+
+<p id="baseline">None of the above examples use the
+<kbd>--baseline</kbd> option, which means that baseline policy in
+those examples is current-law policy.  The following example shows how
+to use the <kbd>--baseline</kbd> option to engage in counter-factual
+historical analysis.  Suppose we want to analyze what would have
+happened if some alternative to TCJA had been enacted in late 2017.
+To do this we need to have pre-TCJA policy be the baseline policy and
+we need to have the alternative reform be implemented relative to
+pre-TCJA policy.  The following tc run does exactly that using a local
+copy of
+the <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">2017_law.json<a>
+file and the <kbd>alt_reform.json</kbd> file containing the
+alternative reform defined relative to pre-TCJA law.</p>
+
+<p><pre>
+(9)$ tc cps.csv 2019 --baseline 2017_law.json --reform 2017_law.json+alt_reform.json
+You loaded data for 2014.
+Tax-Calculator startup automatically extrapolated your data to 2019.
+</pre></p>
 
 <p id="fastexec">In all the examples in this section, we have executed
 one tc run at at time.  But <b>what if you want to execute many tc
@@ -808,7 +842,7 @@ amount of typing required to conduct exploratory data analysis.
 $ tc cps.csv 2016 --sqldb
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2016.
-$ sqlite3 cps-16-#-#.db
+$ sqlite3 cps-16-#-#-#.db
 SQLite version 3.20.1 2017-08-24 16:21:36
 Enter ".help" for usage hints.
 sqlite> select count(*) from dump;
@@ -859,7 +893,7 @@ select "weighted count of all filing units",
         round(sum(s006)*1e-6,3)
 from dump;
 
-$ cat tab.sql | sqlite3 cps-16-#-#.db
+$ cat tab.sql | sqlite3 cps-16-#-#-#.db
 weighted count of those with negative MTR|22.504
 bin number|weighted count|average MTR in bin
 -1.0|35.373|0.0
@@ -882,9 +916,8 @@ the validity of those high marginal tax rates, rest assured that all
 filing units with marginal income tax rates greater than seventy
 percent have been checked by hand and are valid: most are
 caught in the rapid phase-out of non-refundable education credits.
-The negative
-marginal tax rates are caused by refundable credits, primarily the
-earned income tax credit.)</p>
+The negative marginal tax rates are caused by refundable credits,
+primarily the earned income tax credit.)</p>
 
 <p>If you want to use the <kbd>sqlite3</kbd> tool to tabulate the
 changes caused by a reform, use the tc CLI to generate two database

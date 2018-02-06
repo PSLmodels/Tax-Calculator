@@ -68,7 +68,7 @@ g20500,Sch A: Gross (before 10% AGI disregard) casualty or theft loss,      27, 
 iitax,Federal income tax liability,    7720,    8881,    9610,    9665,   10120,   10389,   10598,   10834,   11115,   11451,   11828,   12219,   12626,   13059,   13443
 k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -232,    -264,    -260,    -247,    -235,    -225,    -225,    -228,    -232,    -240,    -250,    -257,    -270,    -276,    -174
 k1bx14s,Partner self-employment earnings/loss for spouse (included in e26270 total),      22,      22,      23,      24,      26,      27,      27,      27,      27,      25,      26,      25,      26,      28,      47
-n1821,Number of people age 18-20 years old in the filing unit,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
+n1820,Number of people age 18-20 years old in the filing unit,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 n21,Number of people 21 years old or older in the filing unit,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1
 nu05,Number of dependents under 5 years old,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 nu13,Number of dependents under 13 years old,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0

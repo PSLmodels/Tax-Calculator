@@ -14,17 +14,18 @@ from taxcalc import TaxCalcIO
 
 
 TEST_INPUT_FILENAME = 'test.csv'
-TEST_TAXYEAR = 2017
+TEST_TAXYEAR = 2018
 
 
 def cli_tc_main():
     """
     Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
-    # pylint: disable=too-many-statements
+    # pylint: disable=too-many-statements,too-many-branches
+    # pylint: disable=too-many-return-statements
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
-        '[--reform REFORM] [--assump  ASSUMP]\n',
+        '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
         '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb]\n',
         '          ',
@@ -50,6 +51,11 @@ def cli_tc_main():
                               'are computed.'),
                         type=int,
                         default=0)
+    parser.add_argument('--baseline',
+                        help=('BASELINE is name of optional JSON reform file. '
+                              'No --baseline implies baseline policy is '
+                              'current-law policy.'),
+                        default=None)
     parser.add_argument('--reform',
                         help=('REFORM is name of optional JSON reform file. '
                               'A compound reform can be specified using two '
@@ -134,6 +140,7 @@ def cli_tc_main():
         taxyear = args.TAXYEAR
     # instantiate taxcalcio object and do tax analysis
     tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
+                     baseline=args.baseline,
                      reform=args.reform, assump=args.assump,
                      outdir=args.outdir)
     if tcio.errmsg:
@@ -142,6 +149,7 @@ def cli_tc_main():
         return 1
     aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
     tcio.init(input_data=inputfn, tax_year=taxyear,
+              baseline=args.baseline,
               reform=args.reform, assump=args.assump,
               growdiff_response=None,
               aging_input_data=aging,
@@ -183,6 +191,7 @@ def cli_tc_main():
     if TaxCalcIO.using_growmodel(args.assump):
         TaxCalcIO.growmodel_analysis(input_data=inputfn,
                                      tax_year=taxyear,
+                                     baseline=args.baseline,
                                      reform=args.reform,
                                      assump=args.assump,
                                      aging_input_data=aging,
@@ -195,17 +204,21 @@ def cli_tc_main():
                                      output_sqldb=args.sqldb)
     else:
         tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                         reform=args.reform, assump=args.assump)
-        if len(tcio.errmsg) > 0:
+                         baseline=args.baseline,
+                         reform=args.reform,
+                         assump=args.assump)
+        if tcio.errmsg:
             sys.stderr.write(tcio.errmsg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
         tcio.init(input_data=inputfn, tax_year=taxyear,
-                  reform=args.reform, assump=args.assump,
+                  baseline=args.baseline,
+                  reform=args.reform,
+                  assump=args.assump,
                   growdiff_response=None,
                   aging_input_data=aging,
                   exact_calculations=args.exact)
-        if len(tcio.errmsg) > 0:
+        if tcio.errmsg:
             sys.stderr.write(tcio.errmsg)
             sys.stderr.write('USAGE: tc --help\n')
             return 1
@@ -221,7 +234,7 @@ def cli_tc_main():
 
 
 EXPECTED_TEST_OUTPUT_FILENAME = 'test-{}-out.csv'.format(str(TEST_TAXYEAR)[2:])
-ACTUAL_TEST_OUTPUT_FILENAME = 'test-{}-#-#.csv'.format(str(TEST_TAXYEAR)[2:])
+ACTUAL_TEST_OUTPUT_FILENAME = 'test-{}-#-#-#.csv'.format(str(TEST_TAXYEAR)[2:])
 
 
 def _write_expected_test_output():
@@ -237,8 +250,8 @@ def _write_expected_test_output():
         ifile.write(input_data)
     expected_output_data = (
         'RECID,YEAR,WEIGHT,INCTAX,LSTAX,PAYTAX\n'
-        '1,2017,0.00,682.99,0.00,6120.00\n'
-        '2,2017,0.00,29690.00,0.00,21572.80\n'
+        '1,2018,0.00,123.51,0.00,6120.00\n'
+        '2,2018,0.00,28879.00,0.00,22167.43\n'
     )
     with open(EXPECTED_TEST_OUTPUT_FILENAME, 'w') as ofile:
         ofile.write(expected_output_data)
