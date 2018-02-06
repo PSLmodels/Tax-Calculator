@@ -24,8 +24,8 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
-                               FairShareTax, LumpSumTax, ExpandIncome,
-                               AfterTaxIncome)
+                               FairShareTax, LumpSumTax, BenefitPrograms,
+                               ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
@@ -1262,6 +1262,7 @@ class Calculator(object):
         if zero_out_calc_vars:
             self.__records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
+        BenefitPrograms(self.__policy, self.__records)
         EI_PayrollTax(self.__policy, self.__records)
         DependentCare(self.__policy, self.__records)
         Adj(self.__policy, self.__records)

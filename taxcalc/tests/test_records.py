@@ -21,6 +21,9 @@ def test_incorrect_Records_instantiation(cps_subsample):
     with pytest.raises(ValueError):
         recs = Records(data=cps_subsample, gfactors=None, weights=None,
                        adjust_ratios=list())
+    with pytest.raises(ValueError):
+        recs = Records(data=cps_subsample, gfactors=None, weights=None,
+                       adjust_ratios=None, benefits=list())
 
 
 def test_correct_Records_instantiation(cps_subsample):
@@ -37,11 +40,15 @@ def test_correct_Records_instantiation(cps_subsample):
     ratio_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
     ratio_df = pd.read_csv(ratio_path)
     ratio_df = ratio_df.transpose()
+    benefit_path = os.path.join(Records.CUR_PATH,
+                                Records.CPS_BENEFITS_FILENAME)
+    benefit_df = pd.read_csv(benefit_path)
     rec2 = Records(data=cps_subsample,
                    exact_calculations=False,
                    gfactors=Growfactors(),
                    weights=wghts_df,
                    adjust_ratios=ratio_df,
+                   benefits=benefit_df,
                    start_year=Records.CPSCSV_YEAR)
     assert rec2
     assert np.all(rec2.MARS != 0)
