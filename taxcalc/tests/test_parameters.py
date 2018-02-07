@@ -133,8 +133,6 @@ def test_json_file_contents(tests_path, fname):
                 assert len(clab) == 4
             elif cvar == 'idedtype':
                 assert len(clab) == 7
-            elif cvar == 'benefittype':
-                assert len(clab) == 7
             elif cvar == 'c00100':
                 pass
             else:

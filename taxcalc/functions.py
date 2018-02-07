@@ -22,36 +22,54 @@ import numpy as np
 from taxcalc.decorators import iterate_jit, jit
 
 
-@iterate_jit(nopython=True)
-def BenefitPrograms(ssi_ben, snap_ben, vet_ben, mcare_ben, mcaid_ben,
-                    e02400, e02300, other_ben, BEN_SSI_repeal, BEN_SNAP_repeal,
-                    BEN_Vet_repeal, BEN_MCARE_repeal, BEN_MCAID_repeal,
-                    BEN_OASDI_repeal, BEN_Unemployment_repeal,
-                    BEN_Other_repeal, benefit_total):
+def BenefitPrograms(calc):
     """
-    Calculate total benefit value and benefit welfare value
+    Calculate total government cost and consumption value of benefits
+    delivered by non-repealed benefit programs.
     """
-    # zero out any repealed benefits
-    if BEN_SSI_repeal:  # SSI
-        ssi_ben = 0.
-    if BEN_SNAP_repeal:  # SNAP
-        snap_ben = 0.
-    if BEN_Vet_repeal:  # Veterans Benefits
-        vet_ben = 0.
-    if BEN_MCARE_repeal:  # Medicare
-        mcare_ben = 0.
-    if BEN_MCAID_repeal:  # Medicaid
-        mcaid_ben = 0.
-    if BEN_OASDI_repeal:  # Social Security
-        e02400 = 0.
-    if BEN_Unemployment_repeal:  # Unemployment Benefits
-        e02300 = 0.
-    if BEN_Other_repeal:  # Other benefits
-        other_ben = 0.
-    benefit_total = (ssi_ben + snap_ben + vet_ben + mcare_ben + mcaid_ben +
-                     e02400 + e02300 + other_ben)
-
-    return benefit_total
+    # zero out benefits delivered by repealed programs
+    zero = np.zeros(calc.array_len)
+    if calc.param('BEN_SSI_repeal'):
+        calc.array('ssi_ben', zero)
+    if calc.param('BEN_SNAP_repeal'):
+        calc.array('snap_ben', zero)
+    if calc.param('BEN_Vet_repeal'):
+        calc.array('vet_ben', zero)
+    if calc.param('BEN_MCARE_repeal'):
+        calc.array('mcare_ben', zero)
+    if calc.param('BEN_MCAID_repeal'):
+        calc.array('mcaid_ben', zero)
+    if calc.param('BEN_OASDI_repeal'):
+        calc.array('e02400', zero)
+    if calc.param('BEN_Unemployment_repeal'):
+        calc.array('e02300', zero)
+    if calc.param('BEN_Other_repeal'):
+        calc.array('other_ben', zero)
+    # calculate government cost of all benefits
+    cost = np.array(
+        calc.array('ssi_ben') +
+        calc.array('snap_ben') +
+        calc.array('vet_ben') +
+        calc.array('mcare_ben') +
+        calc.array('mcaid_ben') +
+        calc.array('e02400') +
+        calc.array('e02300') +
+        calc.array('other_ben')
+    )
+    calc.array('benefit_value_total', cost)
+    # calculate consumption value of all benefits
+    # (assuming that cash benefits have full value)
+    value = np.array(
+        calc.array('ssi_ben') +
+        calc.array('snap_ben') * calc.consump_param('snap_value') +
+        calc.array('vet_ben') * calc.consump_param('vet_value') +
+        calc.array('mcare_ben') * calc.consump_param('mcare_value') +
+        calc.array('mcaid_ben') * calc.consump_param('mcaid_value') +
+        calc.array('e02400') +
+        calc.array('e02300') +
+        calc.array('other_ben') * calc.consump_param('other_value')
+    )
+    calc.array('benefit_value_total', value)
 
 
 @iterate_jit(nopython=True)
@@ -1797,7 +1815,7 @@ def LumpSumTax(DSI, num, XTOT,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(c00100, ptax_was, e02400, c02500,
+def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
                  c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
                  expanded_income):
     """
@@ -1807,6 +1825,8 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     employer_fica_share = 0.5 * ptax_was
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
+    # consumption value of all benefits except UI and OASDI benefits
+    benefits_value = benefit_value_total - e02300 - e02400
     # compute expanded income as AGI plus several additional amounts
     expanded_income = (c00100 +  # adjusted gross income, AGI
                        c02900_in_ei +  # ajustments to AGI
@@ -1815,6 +1835,7 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
                        cmbtp +  # AMT taxable income items from Form 6251
                        non_taxable_ss_benefits +
                        employer_fica_share +
+                       benefits_value +
                        nontaxable_ubi)  # universal basic income
     return expanded_income
 

@@ -177,6 +177,7 @@ class Calculator(object):
         """
         # conducts static analysis of Calculator object for current_year
         assert self.__records.current_year == self.__policy.current_year
+        BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
         BenefitLimitation(self)
@@ -281,6 +282,12 @@ class Calculator(object):
             return getattr(self.__policy, param_name)
         else:
             setattr(self.__policy, param_name, param_value)
+
+    def consump_param(self, param_name):
+        """
+        Return value of named parameter in embedded Consumption object.
+        """
+        return getattr(self.__consumption, param_name, 1.0)  # TODO: drop 1.0
 
     def behavior_has_response(self):
         """
@@ -1262,7 +1269,6 @@ class Calculator(object):
         if zero_out_calc_vars:
             self.__records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
-        BenefitPrograms(self.__policy, self.__records)
         EI_PayrollTax(self.__policy, self.__records)
         DependentCare(self.__policy, self.__records)
         Adj(self.__policy, self.__records)
