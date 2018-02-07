@@ -80,6 +80,7 @@ class Consumption(ParametersBase):
         self.set_year(precall_current_year)
 
     RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
+    BENEFIT_VARS = set(['snap', 'vet', 'mcare', 'mcaid', 'other'])
 
     def has_response(self):
         """
@@ -88,6 +89,9 @@ class Consumption(ParametersBase):
         """
         for var in Consumption.RESPONSE_VARS:
             if getattr(self, 'MPC_{}'.format(var)) > 0.0:
+                return True
+        for var in Consumption.BENEFIT_VARS:
+            if getattr(self, '_BEN_{}_value'.format(var)) < 1.0:
                 return True
         return False
 
