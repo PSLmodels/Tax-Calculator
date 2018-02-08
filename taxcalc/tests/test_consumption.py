@@ -65,6 +65,16 @@ def test_future_update_consumption():
     assert consump.has_response() is True
     consump.set_year(cyr - 1)
     assert consump.has_response() is False
+    # test future updates for benefits
+    consump_ben = Consumption()
+    assert consump_ben.current_year == consump_ben.start_year
+    assert consump_ben.has_response() is False
+    consump_ben.set_year(cyr)
+    consump_ben.update_consumption({cyr: {'_BEN_vet_value': [0.95]}})
+    assert consump_ben.current_year == cyr
+    assert consump_ben.has_response() is True
+    consump_ben.set_year(cyr - 1)
+    assert consump_ben.has_response() is False
 
 
 def test_consumption_default_data():
