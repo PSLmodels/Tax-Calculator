@@ -91,7 +91,7 @@ class Consumption(ParametersBase):
             if getattr(self, 'MPC_{}'.format(var)) > 0.0:
                 return True
         for var in Consumption.BENEFIT_VARS:
-            if getattr(self, '_BEN_{}_value'.format(var)) < 1.0:
+            if getattr(self, 'BEN_{}_value'.format(var)) < 1.0:
                 return True
         return False
 
