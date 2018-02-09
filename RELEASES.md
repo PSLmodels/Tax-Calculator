@@ -18,6 +18,9 @@ for a complete commit history.
 - Add ability to extrapolate imputed benefits and benefit-related policy parameters
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
+- Add ability to specify the consumption value of in-kind benefits to be less than the government cost of providing in-kind benefits
+  [[#1863](https://github.com/open-source-economics/Tax-Calculator/pull/1863)
+  by Anderson Frailey]
 
 **Bug Fixes**
 - None

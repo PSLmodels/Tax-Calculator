@@ -29,21 +29,21 @@ def BenefitPrograms(calc):
     """
     # zero out benefits delivered by repealed programs
     zero = np.zeros(calc.array_len)
-    if calc.param('BEN_SSI_repeal'):
+    if calc.param('BEN_ssi_repeal'):
         calc.array('ssi_ben', zero)
-    if calc.param('BEN_SNAP_repeal'):
+    if calc.param('BEN_snap_repeal'):
         calc.array('snap_ben', zero)
-    if calc.param('BEN_Vet_repeal'):
+    if calc.param('BEN_vet_repeal'):
         calc.array('vet_ben', zero)
-    if calc.param('BEN_MCARE_repeal'):
+    if calc.param('BEN_mcare_repeal'):
         calc.array('mcare_ben', zero)
-    if calc.param('BEN_MCAID_repeal'):
+    if calc.param('BEN_mcaid_repeal'):
         calc.array('mcaid_ben', zero)
-    if calc.param('BEN_OASDI_repeal'):
+    if calc.param('BEN_oasdi_repeal'):
         calc.array('e02400', zero)
-    if calc.param('BEN_Unemployment_repeal'):
+    if calc.param('BEN_ui_repeal'):
         calc.array('e02300', zero)
-    if calc.param('BEN_Other_repeal'):
+    if calc.param('BEN_other_repeal'):
         calc.array('other_ben', zero)
     # calculate government cost of all benefits
     cost = np.array(

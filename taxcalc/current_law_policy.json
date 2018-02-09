@@ -6592,7 +6592,7 @@
         "compatible_data": {"puf": true, "cps": false}
     },
 
-    "_BEN_SSI_repeal": {
+    "_BEN_ssi_repeal": {
         "long_name": "SSI benefit repeal switch",
         "description": "SSI benefits can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
@@ -6616,7 +6616,7 @@
         "compatible_data": {"puf": false, "cps": true}
     },
 
-    "_BEN_SNAP_repeal": {
+    "_BEN_snap_repeal": {
         "long_name": "SNAP benefit repeal switch",
         "description": "SNAP benefits can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
@@ -6640,7 +6640,7 @@
         "compatible_data": {"puf": false, "cps": true}
     },
 
-    "_BEN_Vet_repeal": {
+    "_BEN_vet_repeal": {
         "long_name": "Veterans benefit repeal switch",
         "description": "Veterans benefits can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
@@ -6664,7 +6664,7 @@
         "compatible_data": {"puf": false, "cps": true}
     },
 
-    "_BEN_MCARE_repeal": {
+    "_BEN_mcare_repeal": {
         "long_name": "Medicare benefit repeal switch",
         "description": "Medicare benefits can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
@@ -6688,7 +6688,7 @@
         "compatible_data": {"puf": false, "cps": true}
     },
 
-    "_BEN_MCAID_repeal": {
+    "_BEN_mcaid_repeal": {
         "long_name": "Medicaid benefit repeal switch",
         "description": "Medicaid benefits can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
@@ -6712,9 +6712,9 @@
         "compatible_data": {"puf": false, "cps": true}
     },
 
-    "_BEN_OASDI_repeal": {
+    "_BEN_oasdi_repeal": {
         "long_name": "Social Security benefit repeal switch",
-        "description": "Social Security benefits can be repealed by switching this parameter to true.",
+        "description": "Social Security benefits (e02400) can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "irs_ref": "",
@@ -6733,12 +6733,12 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": false, "cps": true}
+        "compatible_data": {"puf": true, "cps": true}
     },
 
-    "_BEN_Unemployment_repeal": {
-        "long_name": "Unemployment compensation benefit repeal switch",
-        "description": "Unemployment compensation benefits can be repealed by switching this parameter to true.",
+    "_BEN_ui_repeal": {
+        "long_name": "Unemployment insurance benefit repeal switch",
+        "description": "Unemployment insurance benefits (e02300) can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "irs_ref": "",
@@ -6757,10 +6757,10 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": false, "cps": true}
+        "compatible_data": {"puf": true, "cps": true}
     },
 
-    "_BEN_Other_repeal": {
+    "_BEN_other_repeal": {
         "long_name": "Other benefit repeal switch",
         "description": "Other benefits can be repealed by switching this parameter to true.",
         "section_1": "Benefits",

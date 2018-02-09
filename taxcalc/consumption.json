@@ -76,7 +76,7 @@
 
     "_BEN_snap_value": {
         "long_name": "Consumption value of SNAP benefits",
-        "description": "Portion of SNAP benefits consumed by the beneficiary.",
+        "description": "Consumption value per dollar of SNAP benefits, all of which are in-kind benefits.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -93,8 +93,8 @@
     },
 
     "_BEN_vet_value": {
-        "long_name": "Consumption value of Veterans benefits",
-        "description": "Portion of veterans benefits consumed by the beneficiary.",
+        "long_name": "Consumption value of veterans benefits",
+        "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -112,7 +112,7 @@
 
     "_BEN_mcare_value": {
         "long_name": "Consumption value of Medicare benefits",
-        "description": "Portion of Medicare benefits consumed by the beneficiary.",
+        "description": "Consumption value per dollar of Medicare benefits, all of which are in-kind benefits.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -130,7 +130,7 @@
 
     "_BEN_mcaid_value": {
         "long_name": "Consumption value of Medicaid benefits",
-        "description": "Portion of Medicaid benefits consumed by the beneficiary.",
+        "description": "Consumption value per dollar of Medicaid benefits, all of which are in-kind benefits.",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -148,7 +148,7 @@
 
     "_BEN_other_value": {
         "long_name": "Consumption value of other benefits",
-        "description": "Portion of other benefits consumed by the beneficiary.",
+        "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits.",
         "section_1": "",
         "section_2": "",
         "notes": "",
