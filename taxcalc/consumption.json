@@ -72,5 +72,95 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0]
+    },
+
+    "_BEN_snap_value": {
+        "long_name": "Consumption value of SNAP benefits",
+        "description": "Portion of SNAP benefits consumed by the beneficiary.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_vet_value": {
+        "long_name": "Consumption value of Veterans benefits",
+        "description": "Portion of veterans benefits consumed by the beneficiary.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_mcare_value": {
+        "long_name": "Consumption value of Medicare benefits",
+        "description": "Portion of Medicare benefits consumed by the beneficiary.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_mcaid_value": {
+        "long_name": "Consumption value of Medicaid benefits",
+        "description": "Portion of Medicaid benefits consumed by the beneficiary.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_other_value": {
+        "long_name": "Consumption value of other benefits",
+        "description": "Portion of other benefits consumed by the beneficiary.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
     }
 }
