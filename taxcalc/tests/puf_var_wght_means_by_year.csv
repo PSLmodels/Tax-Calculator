@@ -26,8 +26,8 @@ e01500,Pensions and annuities,    6111,    6366,    6636,    6797,    6996,    7
 e01700,Taxable pensions and annuities,    3931,    4088,    4243,    4325,    4429,    4556,    4688,    4824,    4972,    5125,    5281,    5442,    5603,    5780,    5987
 e02000,"Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200 and p25470)",    3996,    4452,    4425,    4349,    4290,    4228,    4208,    4213,    4246,    4308,    4411,    4524,    4641,    4775,    4931
 e02100,Farm net income/loss for filing unit from Sch F,    -162,    -147,     -74,     -50,     -41,     -59,     -77,     -93,    -109,    -120,    -129,    -135,    -139,    -140,    -122
-e02300,Unemployment compensation benefits,     331,     214,     194,     150,     148,     144,     155,     182,     202,     214,     224,     232,     241,     251,     259
-e02400,Total social security benefits,    4644,    4822,    4989,    5087,    5176,    5382,    5679,    5997,    6308,    6647,    6999,    7371,    7744,    8127,    8494
+e02300,Unemployment insurance benefits,     331,     214,     194,     150,     148,     144,     155,     182,     202,     214,     224,     232,     241,     251,     259
+e02400,Total social security (OASDI) benefits,    4644,    4822,    4989,    5087,    5176,    5382,    5679,    5997,    6308,    6647,    6999,    7371,    7744,    8127,    8494
 e03150,Total deductible IRA contributions,      74,      75,      78,      79,      81,      84,      86,      89,      92,      95,      98,     101,     104,     107,     116
 e03210,Student loan interest,      55,      56,      58,      59,      60,      62,      64,      66,      68,      70,      72,      74,      76,      79,      82
 e03220,Educator expenses,       7,       7,       7,       7,       7,       7,       8,       8,       8,       8,       9,       9,       9,       9,      10
