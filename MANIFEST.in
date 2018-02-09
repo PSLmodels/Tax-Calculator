@@ -11,3 +11,4 @@ include taxcalc/consumption.json
 include taxcalc/records_variables.json
 include taxcalc/cps.csv.gz
 include taxcalc/cps_weights.csv.gz
+include taxcalc/cps_benefits.csv.gz
