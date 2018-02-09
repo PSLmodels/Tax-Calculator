@@ -208,13 +208,13 @@
     },
     "e02300": {
       "type": "float",
-      "desc": "Unemployment compensation benefits",
+      "desc": "Unemployment insurance benefits",
       "form": {"2013-2016": "1040 line 19"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e02400": {
       "type": "float",
-      "desc": "Total social security benefits",
+      "desc": "Total social security (OASDI) benefits",
       "form": {"2013-2016": "1040 line 20a"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -709,7 +709,7 @@
     },
     "c02500": {
       "type": "float",
-      "desc": "Social security benefits included in AGI",
+      "desc": "Social security (OASDI) benefits included in AGI",
       "form": {"2013-2016": "1040 line 20b"}
     },
     "c02900": {
