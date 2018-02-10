@@ -65,7 +65,10 @@ class Calculator(object):
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
         no consumption responses assumed in marginal tax rate calculations;
-        when argument is an object it is copied for internal use
+        when argument is an object it is copied for internal use;
+        also specifies consumption value of in-kind benefis with no in-kind
+        consumption values specified implying consumption value is equal to
+        government cost of providing the in-kind benefits
 
     behavior: Behavior class object
         specifies behavioral responses used by Calculator; default is None,
@@ -287,7 +290,7 @@ class Calculator(object):
         """
         Return value of named parameter in embedded Consumption object.
         """
-        return getattr(self.__consumption, param_name, 1.0)  # TODO: drop 1.0
+        return getattr(self.__consumption, param_name)
 
     def behavior_has_response(self):
         """
