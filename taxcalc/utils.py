@@ -495,7 +495,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             #              in 'pandas._libs.lib.is_bool_array' ignored
             #                                                  ^^^^^^^
             # It is hoped that Pandas PR#18252, which is scheduled for
-            # inclusion in Pandas version 0.23.0 (Feb 2018), will fix this.
+            # inclusion in Pandas version 0.23.0 (Apr 2018), will fix this.
             # See discussion at the following URL:
             # https://github.com/pandas-dev/pandas/issues/19037
             pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
