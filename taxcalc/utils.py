@@ -1416,7 +1416,7 @@ def dec_graph_plot(data,
     if xlabel == '':
         xlabel = data['xlabel']
     fig.xaxis.axis_label = xlabel
-    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+d%%')
+    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+.1f%%')
     if ylabel == '':
         ylabel = data['ylabel']
     fig.yaxis.axis_label = ylabel
