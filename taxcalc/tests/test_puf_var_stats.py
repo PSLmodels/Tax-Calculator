@@ -49,6 +49,7 @@ def create_base_table(test_path):
                           'filer', 'matched_weight', 'e00200p', 'e00200s',
                           'e00900p', 'e00900s', 'e02100p', 'e02100s',
                           'age_head', 'age_spouse',
+                          'nu18', 'n1820', 'n21',
                           'ssi_ben', 'snap_ben', 'other_ben',
                           'mcare_ben', 'mcaid_ben', 'vet_ben',
                           'blind_head', 'blind_spouse'])
@@ -74,14 +75,22 @@ def calculate_corr_stats(calc, table):
     """
     Calculate correlation coefficient matrix.
     """
+    errmsg = ''
     for varname1 in table.index:
         var1 = calc.array(varname1)
         var1_cc = list()
         for varname2 in table.index:
             var2 = calc.array(varname2)
-            cor = np.corrcoef(var1, var2)[0][1]
+            try:
+                cor = np.corrcoef(var1, var2)[0][1]
+            except FloatingPointError:
+                msg = 'corr-coef error for {} and {}\n'
+                errmsg += msg.format(varname1, varname2)
+                cor = 9.99  # because could not compute it
             var1_cc.append(cor)
         table[varname1] = var1_cc
+    if errmsg:
+        raise ValueError('\n' + errmsg)
 
 
 def calculate_mean_stats(calc, table, year):
@@ -128,7 +137,7 @@ def differences(new_filename, old_filename, stat_kind, small):
 MEAN_FILENAME = 'puf_var_wght_means_by_year.csv'
 CORR_FILENAME = 'puf_var_correl_coeffs_2016.csv'
 
-
+@pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_puf_var_stats(tests_path, puf_fullsample):
     """

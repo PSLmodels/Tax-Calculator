@@ -471,7 +471,7 @@
       "type": "int",
       "desc": "FIPS state code (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "h_seq": {
       "type": "int",
