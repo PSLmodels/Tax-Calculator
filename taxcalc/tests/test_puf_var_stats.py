@@ -74,14 +74,22 @@ def calculate_corr_stats(calc, table):
     """
     Calculate correlation coefficient matrix.
     """
+    errmsg = ''
     for varname1 in table.index:
         var1 = calc.array(varname1)
         var1_cc = list()
         for varname2 in table.index:
             var2 = calc.array(varname2)
-            cor = np.corrcoef(var1, var2)[0][1]
+            try:
+                cor = np.corrcoef(var1, var2)[0][1]
+            except FloatingPointError:
+                msg = 'corr-coef error for {} and {}\n'
+                errmsg += msg.format(varname1, varname2)
+                cor = 9.99  # because could not compute it
             var1_cc.append(cor)
         table[varname1] = var1_cc
+    if errmsg:
+        raise ValueError('\n' + errmsg)
 
 
 def calculate_mean_stats(calc, table, year):
