@@ -137,7 +137,7 @@ def differences(new_filename, old_filename, stat_kind, small):
 MEAN_FILENAME = 'puf_var_wght_means_by_year.csv'
 CORR_FILENAME = 'puf_var_correl_coeffs_2016.csv'
 
-@pytest.mark.one
+
 @pytest.mark.requires_pufcsv
 def test_puf_var_stats(tests_path, puf_fullsample):
     """
