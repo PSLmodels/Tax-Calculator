@@ -15,6 +15,7 @@ Read tax-calculator/TESTING.md for details.
 import os
 import sys
 import json
+import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
@@ -123,3 +124,18 @@ def test_cps_availability(tests_path, cps_path):
     # check that cpsvars and recvars sets are the same
     assert (cpsvars - recvars) == set()
     assert (recvars - cpsvars) == set()
+
+
+@pytest.mark.xfail
+def test_ubi_variables(cps_path):
+    """
+    Ensure that the three UBI head-count variables add up to XTOT variable.
+    """
+    cpsdf = pd.read_csv(cps_path)
+    xtot = cpsdf['XTOT']
+    nsum = cpsdf['nu18'] + cpsdf['n1820'] + cpsdf['n21']
+    if not np.allclose(xtot, nsum):
+        print 'number of diffs', np.sum(xtot != nsum)
+        print 'number xtot < nsum', np.sum(xtot < nsum)
+        print 'number xtot > nsum', np.sum(xtot > nsum)
+        assert 'XTOT' == '(nu18+n1820+n21)'
