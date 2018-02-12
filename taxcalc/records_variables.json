@@ -570,7 +570,7 @@
       "form": {"2013-2016": "1040 Sch E line 18"},
       "availability": "taxdata_puf"
     },
-    "p87521": {
+    "e87521": {
       "type": "float",
       "desc": "Total tentative AmOppCredit amount for all students",
       "form": {"2013-2016": "8863 Part I line 1 and 8863 Part III line 30"},

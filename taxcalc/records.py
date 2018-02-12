@@ -392,7 +392,7 @@ class Records(object):
         self.e58990 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
-        self.p87521 *= ATXPY
+        self.e87521 *= ATXPY
         self.cmbtp *= ATXPY
 
     def _adjust(self, year):

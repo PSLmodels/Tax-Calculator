@@ -1264,7 +1264,7 @@ def PersonalTaxCredit(MARS, c00100,
 
 
 @iterate_jit(nopython=True)
-def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
+def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
                      CR_AmOppNonRefundable_hc, c10960, c87668):
     """
     American Opportunity Credit (Form 8863) nonrefundable (c87668) and
@@ -1272,7 +1272,7 @@ def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
     Logic corresponds to Form 8863, Part I
 
     This function applies a phaseout to the Form 8863, line 1,
-    American Opportunity Credit amount, p87521, and then applies
+    American Opportunity Credit amount, e87521, and then applies
     the 0.4 refundable rate.
 
     Notes
@@ -1291,7 +1291,7 @@ def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
     ----------
         exact : whether or not to do rounding of phaseout fraction
 
-        p87521 : total tentative American Opportunity Credit for all students,
+        e87521 : total tentative American Opportunity Credit for all students,
                  Form 8863, line 1
 
         num : number of people filing jointly
@@ -1310,14 +1310,14 @@ def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
 
         c87668 : Tentative nonrefundable part of American Opportunity Credit
     """
-    if p87521 > 0.:
+    if e87521 > 0.:
         c87658 = max(0., 90000. * num - c00100)
         c87660 = 10000. * num
         if exact == 1:  # exact calculation as on tax forms
             c87662 = 1000. * min(1., round(c87658 / c87660, 3))
         else:
             c87662 = 1000. * min(1., c87658 / c87660)
-        c87664 = c87662 * p87521 / 1000.
+        c87664 = c87662 * e87521 / 1000.
         c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
         c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
     else:
