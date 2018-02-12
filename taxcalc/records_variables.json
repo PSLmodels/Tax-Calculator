@@ -184,7 +184,7 @@
     },
     "e02000": {
       "type": "float",
-      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200 and p25470)",
+      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)",
       "form": {"2013-2016": "1040 line 17"},
       "availability": "taxdata_puf"
     },
@@ -562,12 +562,6 @@
       "type": "float",
       "desc": "Sch D: Net long-term capital gains/losses",
       "form": {"2013-2016": "1040 Sch D line 15"},
-      "availability": "taxdata_puf"
-    },
-    "p25470": {
-      "type": "float",
-      "desc": "Sch E: Royalty depletion and/or rental depreciation (included in e02000)",
-      "form": {"2013-2016": "1040 Sch E line 18"},
       "availability": "taxdata_puf"
     },
     "e87521": {

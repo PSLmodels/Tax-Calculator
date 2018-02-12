@@ -381,7 +381,6 @@ class Records(object):
         self.e24515 *= ACGNS
         self.e24518 *= ACGNS
         # SCHEDULE E
-        self.p25470 *= ASCHEI
         self.e26270 *= ASCHEI
         self.e27200 *= ASCHEI
         self.k1bx14p *= ASCHEI

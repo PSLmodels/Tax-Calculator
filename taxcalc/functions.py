@@ -1145,7 +1145,7 @@ def EITCamount(phasein_rate, earnings, max_amount,
 
 @iterate_jit(nopython=True)
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
-         p25470, e27200, age_head, age_spouse, earned, earned_p, earned_s,
+         e27200, age_head, age_spouse, earned, earned_p, earned_s,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c, EITC_indiv,
          c59660):
@@ -1156,7 +1156,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     if not EITC_indiv:
         # filing-unit and number-of-kids based EITC (rather than indiv EITC)
         invinc = (e00400 + e00300 + e00600 +
-                  max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
+                  max(0., c01000) + max(0., e27200))
         if MARS == 3 or DSI == 1 or invinc > EITC_InvestIncome_c:
             c59660 = 0.
         else:
