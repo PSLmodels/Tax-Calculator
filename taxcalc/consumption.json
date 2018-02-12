@@ -94,7 +94,7 @@
 
     "_BEN_vet_value": {
         "long_name": "Consumption value of veterans benefits",
-        "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits.",
+        "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (about 40% are in-kind medical benefits).",
         "section_1": "",
         "section_2": "",
         "notes": "",
@@ -148,7 +148,7 @@
 
     "_BEN_other_value": {
         "long_name": "Consumption value of other benefits",
-        "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits.",
+        "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between xx% and yy% are in-kind benefits).",
         "section_1": "",
         "section_2": "",
         "notes": "",
