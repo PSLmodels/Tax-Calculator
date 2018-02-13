@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-02-?? Release 0.16.0
+2018-02-13 Release 0.16.0
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1871](https://github.com/open-source-economics/Tax-Calculator/pull/1871))
 
 **API Changes**
 - Improve data quality of several existing CPS variables, which causes changes in CPS tax results
