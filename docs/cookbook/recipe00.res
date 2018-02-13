@@ -47,93 +47,93 @@ Policy Reform Parameter Values by Year:
         and above tax bracket 6.
   baseline_value: 0.37
 
-2020_CLP_itax_rev($B)= 1280.12
-2020_REF_itax_rev($B)= 1272.53
+2020_CLP_itax_rev($B)= 1178.30
+2020_REF_itax_rev($B)= 1170.16
 
 CLP diagnostic table:
                                      2020
 Returns (#m)                       174.51
-AGI ($b)                        11,492.77
-Itemizers (#m)                      30.21
-Itemized Deduction ($b)            843.61
-Standard Deduction Filers (#m)     125.80
-Standard Deduction ($b)          2,257.60
+AGI ($b)                        10,957.82
+Itemizers (#m)                      30.33
+Itemized Deduction ($b)            855.21
+Standard Deduction Filers (#m)     125.68
+Standard Deduction ($b)          2,252.26
 Personal Exemption ($b)              0.00
-Taxable Income ($b)              8,725.23
-Regular Tax ($b)                 1,462.90
-AMT Income ($b)                 10,904.75
-AMT Liability ($b)                   2.13
-AMT Filers (#m)                      0.47
-Tax before Credits ($b)          1,465.03
-Refundable Credits ($b)             92.93
-Nonrefundable Credits ($b)         102.59
+Taxable Income ($b)              8,195.37
+Regular Tax ($b)                 1,364.44
+AMT Income ($b)                 10,356.83
+AMT Liability ($b)                   1.78
+AMT Filers (#m)                      0.45
+Tax before Credits ($b)          1,366.22
+Refundable Credits ($b)             96.03
+Nonrefundable Credits ($b)         101.09
 Reform Surtaxes ($b)                 0.00
-Other Taxes ($b)                    10.61
-Ind Income Tax ($b)              1,280.12
-Payroll Taxes ($b)               1,344.74
-Combined Liability ($b)          2,624.87
-With Income Tax <= 0 (#m)           76.01
-With Combined Tax <= 0 (#m)         50.35
+Other Taxes ($b)                     9.20
+Ind Income Tax ($b)              1,178.30
+Payroll Taxes ($b)               1,300.25
+Combined Liability ($b)          2,478.55
+With Income Tax <= 0 (#m)           77.09
+With Combined Tax <= 0 (#m)         50.91
 
 REF diagnostic table:
                                      2020
 Returns (#m)                       174.51
-AGI ($b)                        11,492.77
-Itemizers (#m)                      30.06
-Itemized Deduction ($b)            839.35
-Standard Deduction Filers (#m)     125.95
-Standard Deduction ($b)          2,260.35
-Personal Exemption ($b)            302.93
-Taxable Income ($b)              8,488.61
-Regular Tax ($b)                 1,453.17
-AMT Income ($b)                 10,908.01
-AMT Liability ($b)                   2.07
-AMT Filers (#m)                      0.49
-Tax before Credits ($b)          1,455.24
-Refundable Credits ($b)             95.72
-Nonrefundable Credits ($b)          97.59
+AGI ($b)                        10,957.82
+Itemizers (#m)                      30.16
+Itemized Deduction ($b)            850.47
+Standard Deduction Filers (#m)     125.84
+Standard Deduction ($b)          2,255.19
+Personal Exemption ($b)            303.70
+Taxable Income ($b)              7,960.03
+Regular Tax ($b)                 1,354.10
+AMT Income ($b)                 10,360.56
+AMT Liability ($b)                   1.74
+AMT Filers (#m)                      0.47
+Tax before Credits ($b)          1,355.84
+Refundable Credits ($b)             98.87
+Nonrefundable Credits ($b)          96.01
 Reform Surtaxes ($b)                 0.00
-Other Taxes ($b)                    10.61
-Ind Income Tax ($b)              1,272.53
-Payroll Taxes ($b)               1,344.74
-Combined Liability ($b)          2,617.27
-With Income Tax <= 0 (#m)           78.26
-With Combined Tax <= 0 (#m)         50.77
+Other Taxes ($b)                     9.20
+Ind Income Tax ($b)              1,170.16
+Payroll Taxes ($b)               1,300.25
+Combined Liability ($b)          2,470.42
+With Income Tax <= 0 (#m)           79.35
+With Combined Tax <= 0 (#m)         51.30
 
 Extract of 2020 distribution table by baseline expanded-income decile:
     funits(#m)  itax1($b)  itax2($b)  aftertax_inc1($b)  aftertax_inc2($b)
-0        17.45      -1.94      -1.94              -4.93              -4.93
-1        17.45     -14.47     -14.49             186.06             186.09
-2        17.45     -17.92     -18.37             316.40             316.86
-3        17.45     -16.83     -17.82             442.67             443.66
-4        17.45      -2.82      -4.58             573.63             575.39
-5        17.45      21.17      18.32             734.07             736.92
-6        17.45      58.67      53.99             949.22             953.90
-7        17.45     114.82     109.31           1,271.24           1,276.75
-8        17.45     210.70     201.79           1,793.22           1,802.14
-9        17.45     928.74     946.33           4,010.69           3,993.11
-10      174.51   1,280.12   1,272.53          10,272.28          10,279.87
-11        8.73     201.38     196.26           1,269.33           1,274.45
-12        6.98     316.53     314.64           1,543.61           1,545.50
-13        1.75     410.83     435.43           1,197.76           1,173.16
+0        17.45      -8.02      -8.02              72.44              72.44
+1        17.45     -14.80     -15.32             320.94             321.47
+2        17.45     -11.13     -12.11             463.97             464.94
+3        17.45      -2.19      -3.64             596.79             598.23
+4        17.45       9.68       7.64             748.71             750.75
+5        17.45      29.95      26.76             934.72             937.92
+6        17.45      58.99      54.94           1,176.49           1,180.53
+7        17.45     101.44      96.61           1,500.69           1,505.51
+8        17.45     187.73     179.50           2,014.19           2,022.42
+9        17.45     826.65     843.80           4,113.39           4,096.24
+10      174.51   1,178.30   1,170.16          11,942.33          11,950.46
+11        8.73     178.31     173.73           1,371.04           1,375.62
+12        6.98     274.86     272.80           1,610.61           1,612.68
+13        1.75     373.47     397.27           1,131.74           1,107.94
 Note: deciles are numbered 0-9 with top decile divided into bottom 5%,
       next 4%, and top 1%, in the lines numbered 11-13, respectively
 
 Extract of 2020 income-tax difference table by expanded-income decile:
     funits(#m)  agg_diff($b)  mean_diff($)  aftertaxinc_diff(%)
-0        17.45         -0.00         -0.00                -0.00
-1        17.45         -0.03         -1.48                 0.01
-2        17.45         -0.46        -26.11                 0.14
-3        17.45         -0.99        -56.61                 0.22
-4        17.45         -1.76       -100.90                 0.31
-5        17.45         -2.85       -163.14                 0.39
-6        17.45         -4.68       -268.10                 0.49
-7        17.45         -5.51       -315.78                 0.43
-8        17.45         -8.91       -510.78                 0.50
-9        17.45         17.59      1,007.82                -0.44
-10      174.51         -7.59        -43.51                 0.07
-11        8.73         -5.12       -587.26                 0.40
-12        6.98         -1.89       -270.77                 0.12
-13        1.75         24.60     14,097.41                -2.05
+0        17.45         -0.00         -0.04                 0.00
+1        17.45         -0.52        -30.05                 0.16
+2        17.45         -0.98        -55.91                 0.21
+3        17.45         -1.45        -82.85                 0.24
+4        17.45         -2.04       -117.00                 0.27
+5        17.45         -3.19       -183.07                 0.34
+6        17.45         -4.05       -231.90                 0.34
+7        17.45         -4.82       -276.27                 0.32
+8        17.45         -8.23       -471.65                 0.41
+9        17.45         17.15        982.66                -0.42
+10      174.51         -8.13        -46.60                 0.07
+11        8.73         -4.58       -524.71                 0.33
+12        6.98         -2.07       -296.25                 0.13
+13        1.75         23.80     13,634.71                -2.10
 Note: deciles are numbered 0-9 with top decile divided into bottom 5%,
       next 4%, and top 1%, in the lines numbered 11-13, respectively
