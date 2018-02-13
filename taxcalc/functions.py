@@ -22,6 +22,56 @@ import numpy as np
 from taxcalc.decorators import iterate_jit, jit
 
 
+def BenefitPrograms(calc):
+    """
+    Calculate total government cost and consumption value of benefits
+    delivered by non-repealed benefit programs.
+    """
+    # zero out benefits delivered by repealed programs
+    zero = np.zeros(calc.array_len)
+    if calc.param('BEN_ssi_repeal'):
+        calc.array('ssi_ben', zero)
+    if calc.param('BEN_snap_repeal'):
+        calc.array('snap_ben', zero)
+    if calc.param('BEN_vet_repeal'):
+        calc.array('vet_ben', zero)
+    if calc.param('BEN_mcare_repeal'):
+        calc.array('mcare_ben', zero)
+    if calc.param('BEN_mcaid_repeal'):
+        calc.array('mcaid_ben', zero)
+    if calc.param('BEN_oasdi_repeal'):
+        calc.array('e02400', zero)
+    if calc.param('BEN_ui_repeal'):
+        calc.array('e02300', zero)
+    if calc.param('BEN_other_repeal'):
+        calc.array('other_ben', zero)
+    # calculate government cost of all benefits
+    cost = np.array(
+        calc.array('ssi_ben') +
+        calc.array('snap_ben') +
+        calc.array('vet_ben') +
+        calc.array('mcare_ben') +
+        calc.array('mcaid_ben') +
+        calc.array('e02400') +
+        calc.array('e02300') +
+        calc.array('other_ben')
+    )
+    calc.array('benefit_value_total', cost)
+    # calculate consumption value of all benefits
+    # (assuming that cash benefits have full value)
+    value = np.array(
+        calc.array('ssi_ben') +
+        calc.array('snap_ben') * calc.consump_param('BEN_snap_value') +
+        calc.array('vet_ben') * calc.consump_param('BEN_vet_value') +
+        calc.array('mcare_ben') * calc.consump_param('BEN_mcare_value') +
+        calc.array('mcaid_ben') * calc.consump_param('BEN_mcaid_value') +
+        calc.array('e02400') +
+        calc.array('e02300') +
+        calc.array('other_ben') * calc.consump_param('BEN_other_value')
+    )
+    calc.array('benefit_value_total', value)
+
+
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
@@ -1095,7 +1145,7 @@ def EITCamount(phasein_rate, earnings, max_amount,
 
 @iterate_jit(nopython=True)
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
-         p25470, e27200, age_head, age_spouse, earned, earned_p, earned_s,
+         e27200, age_head, age_spouse, earned, earned_p, earned_s,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c, EITC_indiv,
          c59660):
@@ -1106,7 +1156,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     if not EITC_indiv:
         # filing-unit and number-of-kids based EITC (rather than indiv EITC)
         invinc = (e00400 + e00300 + e00600 +
-                  max(0., c01000) + max(0., (0. - p25470)) + max(0., e27200))
+                  max(0., c01000) + max(0., e27200))
         if MARS == 3 or DSI == 1 or invinc > EITC_InvestIncome_c:
             c59660 = 0.
         else:
@@ -1214,7 +1264,7 @@ def PersonalTaxCredit(MARS, c00100,
 
 
 @iterate_jit(nopython=True)
-def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
+def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
                      CR_AmOppNonRefundable_hc, c10960, c87668):
     """
     American Opportunity Credit (Form 8863) nonrefundable (c87668) and
@@ -1222,7 +1272,7 @@ def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
     Logic corresponds to Form 8863, Part I
 
     This function applies a phaseout to the Form 8863, line 1,
-    American Opportunity Credit amount, p87521, and then applies
+    American Opportunity Credit amount, e87521, and then applies
     the 0.4 refundable rate.
 
     Notes
@@ -1241,7 +1291,7 @@ def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
     ----------
         exact : whether or not to do rounding of phaseout fraction
 
-        p87521 : total tentative American Opportunity Credit for all students,
+        e87521 : total tentative American Opportunity Credit for all students,
                  Form 8863, line 1
 
         num : number of people filing jointly
@@ -1260,14 +1310,14 @@ def AmOppCreditParts(exact, p87521, num, c00100, CR_AmOppRefundable_hc,
 
         c87668 : Tentative nonrefundable part of American Opportunity Credit
     """
-    if p87521 > 0.:
+    if e87521 > 0.:
         c87658 = max(0., 90000. * num - c00100)
         c87660 = 10000. * num
         if exact == 1:  # exact calculation as on tax forms
             c87662 = 1000. * min(1., round(c87658 / c87660, 3))
         else:
             c87662 = 1000. * min(1., c87658 / c87660)
-        c87664 = c87662 * p87521 / 1000.
+        c87664 = c87662 * e87521 / 1000.
         c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
         c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
     else:
@@ -1765,7 +1815,7 @@ def LumpSumTax(DSI, num, XTOT,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(c00100, ptax_was, e02400, c02500,
+def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
                  c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
                  expanded_income):
     """
@@ -1775,6 +1825,8 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
     employer_fica_share = 0.5 * ptax_was
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
+    # consumption value of all benefits except UI and OASDI benefits
+    benefits_value = benefit_value_total - e02300 - e02400
     # compute expanded income as AGI plus several additional amounts
     expanded_income = (c00100 +  # adjusted gross income, AGI
                        c02900_in_ei +  # ajustments to AGI
@@ -1783,6 +1835,7 @@ def ExpandIncome(c00100, ptax_was, e02400, c02500,
                        cmbtp +  # AMT taxable income items from Form 6251
                        non_taxable_ss_benefits +
                        employer_fica_share +
+                       benefits_value +
                        nontaxable_ubi)  # universal basic income
     return expanded_income
 

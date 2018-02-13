@@ -10,7 +10,7 @@ import os
 import sys
 import argparse
 import difflib
-from taxcalc import TaxCalcIO
+import taxcalc as tc
 
 
 TEST_INPUT_FILENAME = 'test.csv'
@@ -23,12 +23,14 @@ def cli_tc_main():
     """
     # pylint: disable=too-many-statements
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
-        '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n',
+    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}{}{}'.format(
+        '[--baseline BASELINE]\n',
+        '          ',
+        '[--reform REFORM] [--assump  ASSUMP]\n',
         '          ',
         '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb]\n',
         '          ',
-        '[--outdir] [--test]')
+        '[--outdir] [--test] [--version] [--help]')
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -89,7 +91,7 @@ def cli_tc_main():
                               'expected-utility (ceeu) of after-tax income '
                               'values for different '
                               'constant-relative-risk-aversion parameter '
-                              'values, to be written to screen.'),
+                              'values, to be written to stdout.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--dump',
@@ -125,10 +127,20 @@ def cli_tc_main():
                         default=None)
     parser.add_argument('--test',
                         help=('optional flag that conducts installation '
-                              'test.'),
+                              'test, writes test result to stdout, '
+                              'and quits.'),
+                        default=False,
+                        action="store_true")
+    parser.add_argument('--version',
+                        help=('optional flag that writes Tax-Calculator '
+                              'release version to stdout and quits.'),
                         default=False,
                         action="store_true")
     args = parser.parse_args()
+    # show Tsx-Calculator version and quit if --version option specified
+    if args.version:
+        sys.stdout.write('Tax-Calculator {}\n'.format(tc.__version__))
+        return 0
     # write test input and expected output files if --test option specified
     if args.test:
         _write_expected_test_output()
@@ -138,10 +150,10 @@ def cli_tc_main():
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
     # instantiate taxcalcio object and do tax analysis
-    tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                     baseline=args.baseline,
-                     reform=args.reform, assump=args.assump,
-                     outdir=args.outdir)
+    tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
+                        baseline=args.baseline,
+                        reform=args.reform, assump=args.assump,
+                        outdir=args.outdir)
     if tcio.errmsg:
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')

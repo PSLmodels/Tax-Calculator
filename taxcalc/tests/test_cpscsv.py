@@ -12,9 +12,11 @@ Read tax-calculator/TESTING.md for details.
 # pep8 --ignore=E402 test_cpscsv.py
 # pylint --disable=locally-disabled test_cpscsv.py
 
+from __future__ import print_function
 import os
 import sys
 import json
+import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
@@ -123,3 +125,18 @@ def test_cps_availability(tests_path, cps_path):
     # check that cpsvars and recvars sets are the same
     assert (cpsvars - recvars) == set()
     assert (recvars - cpsvars) == set()
+
+
+@pytest.mark.xfail
+def test_ubi_n_variables(cps_path):
+    """
+    Ensure that the three UBI n* variables add up to XTOT variable.
+    """
+    cpsdf = pd.read_csv(cps_path)
+    xtot = cpsdf['XTOT']
+    nsum = cpsdf['nu18'] + cpsdf['n1820'] + cpsdf['n21']
+    if not np.allclose(xtot, nsum):
+        print('number of diffs is:', np.sum(xtot != nsum))
+        print('number xtot < nsum is:', np.sum(xtot < nsum))
+        print('number xtot > nsum is:', np.sum(xtot > nsum))
+        assert 'XTOT' == '(nu18+n1820+n21)'

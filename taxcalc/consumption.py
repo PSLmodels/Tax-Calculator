@@ -1,5 +1,5 @@
 """
-Tax-Calculator marginal Consumption class.
+Tax-Calculator Consumption class.
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 consumption.py
@@ -15,19 +15,20 @@ class Consumption(ParametersBase):
     Consumption is a subclass of the abstract ParametersBase class, and
     therefore, inherits its methods (none of which are shown here).
 
-    Constructor for marginal Consumption class.
+    Constructor for Consumption class.
 
     Parameters
     ----------
     consumption_dict: dictionary of PARAM:DESCRIPTION pairs
-        dictionary of marginal propensity to consume (MPC) parameters;
-        if None, all MPC parameters are read from DEFAULTS_FILENAME file.
+        dictionary of marginal propensity to consume (MPC) parameters and
+        benefit (BEN) value-of-in-kind-benefit parameters;
+        if None, all parameters are read from DEFAULTS_FILENAME file.
 
     start_year: integer
-        first calendar year for MPC parameters.
+        first calendar year for consumption parameters.
 
     num_years: integer
-        number of calendar years for which to specify MPC parameter
+        number of calendar years for which to specify parameter
         values beginning with start_year.
 
     Raises
@@ -66,9 +67,9 @@ class Consumption(ParametersBase):
         For example: {2014: {'_MPC_xxx': [0.2, 0.1]}}
 
         Note that this method uses the specified revisions to update the
-        default MPC parameter values, so use this method just once
-        rather than calling it sequentially in an attempt to update
-        MPC parameters in several steps.
+        default MPC parameter values and the default BEN parameter values,
+        so use this method just once rather than calling it sequentially
+        in an attempt to update the parameters in several steps.
         """
         precall_current_year = self.current_year
         self.set_default_vals()
@@ -80,20 +81,27 @@ class Consumption(ParametersBase):
         self.set_year(precall_current_year)
 
     RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
+    BENEFIT_VARS = set(['snap', 'vet', 'mcare', 'mcaid', 'other'])
 
     def has_response(self):
         """
-        Return true if any MPC parameters are positive for current_year;
-        return false if all MPC parameters are zero.
+        Return true if any MPC parameters are positive for current_year or
+        if any BEN value parameters are less than one for current_year;
+        return false if all MPC parameters are zero and all BEN value
+        parameters are one
         """
         for var in Consumption.RESPONSE_VARS:
             if getattr(self, 'MPC_{}'.format(var)) > 0.0:
+                return True
+        for var in Consumption.BENEFIT_VARS:
+            if getattr(self, 'BEN_{}_value'.format(var)) < 1.0:
                 return True
         return False
 
     def response(self, records, income_change):
         """
-        Changes consumption-related records variables given income_change.
+        Changes consumption-related records variables given income_change
+        and the current values of the MPC consumption parameters
         """
         if not isinstance(records, Records):
             raise ValueError('records is not a Records object')

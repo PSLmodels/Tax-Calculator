@@ -36,24 +36,26 @@ def test_improper_usage(bad_gf_file):
     with pytest.raises(ValueError):
         gfo = Growfactors(bad_gf_file.name)
     gfo = Growfactors()
+    fyr = gfo.first_year
+    lyr = gfo.last_year
     with pytest.raises(ValueError):
-        gfo.price_inflation_rates(2000, 2099)
+        gfo.price_inflation_rates(fyr - 1, lyr)
     with pytest.raises(ValueError):
-        gfo.price_inflation_rates(2009, 2099)
+        gfo.price_inflation_rates(fyr, lyr + 1)
     with pytest.raises(ValueError):
-        gfo.price_inflation_rates(2021, 2013)
+        gfo.price_inflation_rates(lyr, fyr)
     with pytest.raises(ValueError):
-        gfo.wage_growth_rates(2000, 2099)
+        gfo.wage_growth_rates(fyr - 1, lyr)
     with pytest.raises(ValueError):
-        gfo.wage_growth_rates(2009, 2099)
+        gfo.wage_growth_rates(fyr, lyr + 1)
     with pytest.raises(ValueError):
-        gfo.wage_growth_rates(2021, 2013)
+        gfo.wage_growth_rates(lyr, fyr)
     with pytest.raises(ValueError):
-        gfo.factor_value('BADNAME', 2020)
+        gfo.factor_value('BADNAME', fyr)
     with pytest.raises(ValueError):
-        gfo.factor_value('AWAGE', 2000)
+        gfo.factor_value('AWAGE', fyr - 1)
     with pytest.raises(ValueError):
-        gfo.factor_value('AWAGE', 2099)
+        gfo.factor_value('AWAGE', lyr + 1)
 
 
 def test_update_after_use():
@@ -79,8 +81,6 @@ def test_proper_usage():
     assert val > 1.0
 
 
-# TODO: remove pytest.mark.xfail after upgrade to new puf.csv file
-@pytest.mark.xfail
 def test_growfactors_csv_values():
     """
     Test numerical contents of growfactors.csv file.

@@ -176,7 +176,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
 
     # These parameters are exempt because they are not active under
     # current law and activating them would deactivate other parameters.
-    exempt = ['_CG_ec', '_CG_reinvest_ec_rt']
+    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt']
 
     # Loop through the parameters in allparams_batch
     errmsg = 'ERROR: {} not {} for {}\n'
@@ -221,8 +221,16 @@ def test_compatible_data(cps_subsample, puf_subsample,
         c_yy = Calculator(policy=p_yy, records=rec_yy, verbose=False)
         c_yy.advance_to_year(TEST_YEAR)
         c_yy.calc_all()
-        max_reform_change = (c_yy.weighted_total('combined') -
-                             c_xx.weighted_total('combined'))
+        if pname.startswith('_BEN') and pname.endswith('_repeal'):
+            max_reform_change = (
+                c_yy.weighted_total('benefit_cost_total') -
+                c_xx.weighted_total('benefit_cost_total')
+            )
+        else:
+            max_reform_change = (
+                c_yy.weighted_total('combined') -
+                c_xx.weighted_total('combined')
+            )
         min_reform_change = 0
         # assess whether min reform changes results, if max reform did not
         if max_reform_change == 0:
@@ -231,9 +239,17 @@ def test_compatible_data(cps_subsample, puf_subsample,
             c_yy = Calculator(policy=p_yy, records=rec_xx)
             c_yy.advance_to_year(TEST_YEAR)
             c_yy.calc_all()
-            min_reform_change = (c_yy.weighted_total('combined') -
-                                 c_xx.weighted_total('combined'))
-            if min_reform_change == 0 and pname not in exempt:
+            if pname.startswith('_BEN') and pname.endswith('_repeal'):
+                min_reform_change = (
+                    c_yy.weighted_total('benefit_cost_total') -
+                    c_xx.weighted_total('benefit_cost_total')
+                )
+            else:
+                min_reform_change = (
+                    c_yy.weighted_total('combined') -
+                    c_xx.weighted_total('combined')
+                )
+            if min_reform_change == 0 and pname not in exempt_from_testing:
                 if puftest:
                     if param['compatible_data']['puf'] is not False:
                         errors += errmsg.format(pname, 'False', 'puf')
