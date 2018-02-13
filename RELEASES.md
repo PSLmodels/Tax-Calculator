@@ -20,7 +20,9 @@ for a complete commit history.
   by Anderson Frailey]
 
 **Bug Fixes**
-- None
+- Improve handling of very high marginal tax rates in the `Behavior.response` method
+  [[#1858](https://github.com/open-source-economics/Tax-Calculator/pull/1858)
+  by Martin Holmer with assistance from Matt Jensen]
 
 
 2018-01-30 Release 0.15.2
