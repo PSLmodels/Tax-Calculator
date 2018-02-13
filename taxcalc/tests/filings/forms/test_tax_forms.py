@@ -142,7 +142,7 @@ def test_year_support(form_class, supported_years):
     (US8801, 2013, {'line25': 'e07600'}),
     (US8863, 2013, {
         'line4': 'e87530',
-        'line7': 'p87521',
+        'line7': 'e87521',
         'line30': 'P87482',
     }),
 ])

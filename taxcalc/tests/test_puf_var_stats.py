@@ -49,6 +49,7 @@ def create_base_table(test_path):
                           'filer', 'matched_weight', 'e00200p', 'e00200s',
                           'e00900p', 'e00900s', 'e02100p', 'e02100s',
                           'age_head', 'age_spouse',
+                          'nu18', 'n1820', 'n21',
                           'ssi_ben', 'snap_ben', 'other_ben',
                           'mcare_ben', 'mcaid_ben', 'vet_ben',
                           'blind_head', 'blind_spouse'])

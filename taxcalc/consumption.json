@@ -148,7 +148,7 @@
 
     "_BEN_other_value": {
         "long_name": "Consumption value of other benefits",
-        "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between xx% and yy% are in-kind benefits).",
+        "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between 52% and 76% are in-kind benefits).",
         "section_1": "",
         "section_2": "",
         "notes": "",

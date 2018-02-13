@@ -34,7 +34,8 @@ class Records(object):
         default value is false.
 
     gfactors: Growfactors class instance or None
-        containing record data extrapolation (or "blowup") factors
+        containing record data extrapolation (or "blowup") factors.
+        NOTE: the constructor should never call the _blowup() method.
 
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
@@ -96,7 +97,7 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUFCSV_YEAR = 2009
+    PUFCSV_YEAR = 2011
     CPSCSV_YEAR = 2014
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -166,12 +167,6 @@ class Records(object):
         else:
             msg = 'start_year is not an integer'
             raise ValueError(msg)
-        # consider applying initial-year grow factors
-        # TODO: completely drop init blowup when start using 2011 puf.csv
-        if gfactors is not None and start_year == self.__data_year:
-            # skip initial-year blowup when using CPSCSV data
-            if start_year == Records.PUFCSV_YEAR:
-                self._blowup(start_year)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
@@ -386,7 +381,6 @@ class Records(object):
         self.e24515 *= ACGNS
         self.e24518 *= ACGNS
         # SCHEDULE E
-        self.p25470 *= ASCHEI
         self.e26270 *= ASCHEI
         self.e27200 *= ASCHEI
         self.k1bx14p *= ASCHEI
@@ -397,7 +391,7 @@ class Records(object):
         self.e58990 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
-        self.p87521 *= ATXPY
+        self.e87521 *= ATXPY
         self.cmbtp *= ATXPY
 
     def _adjust(self, year):

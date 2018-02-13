@@ -184,7 +184,7 @@
     },
     "e02000": {
       "type": "float",
-      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200 and p25470)",
+      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)",
       "form": {"2013-2016": "1040 line 17"},
       "availability": "taxdata_puf"
     },
@@ -471,7 +471,7 @@
       "type": "int",
       "desc": "FIPS state code (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "h_seq": {
       "type": "int",
@@ -564,13 +564,7 @@
       "form": {"2013-2016": "1040 Sch D line 15"},
       "availability": "taxdata_puf"
     },
-    "p25470": {
-      "type": "float",
-      "desc": "Sch E: Royalty depletion and/or rental depreciation (included in e02000)",
-      "form": {"2013-2016": "1040 Sch E line 18"},
-      "availability": "taxdata_puf"
-    },
-    "p87521": {
+    "e87521": {
       "type": "float",
       "desc": "Total tentative AmOppCredit amount for all students",
       "form": {"2013-2016": "8863 Part I line 1 and 8863 Part III line 30"},

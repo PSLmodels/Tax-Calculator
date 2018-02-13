@@ -362,7 +362,7 @@ def test_behavioral_response(puf_subsample):
     # NOTE that the tbi results have been "fuzzed" for PUF privacy reasons,
     #      so there is no expectation that the results should be identical.
     no_diffs = True
-    reltol = 2e-3  # std and tbi differ if more than 0.2 percent different
+    reltol = 2.5e-3  # std and tbi differ if more than 0.25 percent different
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
         col = '0_{}'.format(year)
