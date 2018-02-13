@@ -109,7 +109,7 @@ class Behavior(ParametersBase):
         return False
 
     @staticmethod
-    def response(calc1, calc2, trace=False):
+    def response(calc1, calc2, mtr_cap=0.99, trace=False):
         """
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
@@ -169,6 +169,9 @@ class Behavior(ParametersBase):
         # begin main logic of response
         assert calc1.array_len == calc2.array_len
         assert calc1.current_year == calc2.current_year
+        assert mtr_cap >= 0.95 and mtr_cap < 1.0
+        if trace:
+            print('*** TRACE *** mtr_cap={}'.format(mtr_cap))
         # calculate sum of substitution and income effects
         if calc2.behavior('BE_sub') == 0.0 and calc2.behavior('BE_inc') == 0.0:
             zero_sub_and_inc = True
@@ -184,9 +187,8 @@ class Behavior(ParametersBase):
                 sub = np.zeros(calc1.array_len)
             else:
                 # proportional change in marginal net-of-tax rates on earnings
-                nearone = 0.999999
-                mtr1 = np.where(wage_mtr1 > nearone, nearone, wage_mtr1)
-                mtr2 = np.where(wage_mtr2 > nearone, nearone, wage_mtr2)
+                mtr1 = np.where(wage_mtr1 > mtr_cap, mtr_cap, wage_mtr1)
+                mtr2 = np.where(wage_mtr2 > mtr_cap, mtr_cap, wage_mtr2)
                 pch = ((1. - mtr2) / (1. - mtr1)) - 1.
                 if calc2.behavior('BE_subinc_wrt_earnings'):
                     # Note: e00200 is filing unit's wages+salaries
@@ -265,11 +267,19 @@ class Behavior(ParametersBase):
             # cash:
             c_charity_mtr1, c_charity_mtr2 = Behavior._mtr12(
                 calc1, calc2, mtr_of='e19800', tax_type='combined')
+            c_charity_mtr1 = np.where(c_charity_mtr1 > mtr_cap,
+                                      mtr_cap, c_charity_mtr1)
+            c_charity_mtr2 = np.where(c_charity_mtr2 > mtr_cap,
+                                      mtr_cap, c_charity_mtr2)
             c_charity_price_pch = (((1. + c_charity_mtr2) /
                                     (1. + c_charity_mtr1)) - 1.)
             # non-cash:
             nc_charity_mtr1, nc_charity_mtr2 = Behavior._mtr12(
                 calc1, calc2, mtr_of='e20100', tax_type='combined')
+            nc_charity_mtr1 = np.where(nc_charity_mtr1 > mtr_cap,
+                                       mtr_cap, nc_charity_mtr1)
+            nc_charity_mtr2 = np.where(nc_charity_mtr2 > mtr_cap,
+                                       mtr_cap, nc_charity_mtr2)
             nc_charity_price_pch = (((1. + nc_charity_mtr2) /
                                      (1. + nc_charity_mtr1)) - 1.)
             # identify income bin based on baseline income
