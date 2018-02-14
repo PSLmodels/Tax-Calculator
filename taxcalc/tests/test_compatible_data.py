@@ -155,7 +155,7 @@ def fixture_allparams_batch(request, allparams, sorted_param_names):
     Suppose we have N parameters and choose batch size n. Then, we have
     B batches where B equals floor(N / n) + 1.
 
-    Case 1: N mod n = 0.
+    Case 1: N  %  n = 0
     Then we have:
     idx_min = {i * b, i = 0, 1, 2, 3, ..., B - 1} and
     idx_max = {min((i + 1) * b, N), i = 0, 1, 2, 3, ..., B - 1}
@@ -164,7 +164,7 @@ def fixture_allparams_batch(request, allparams, sorted_param_names):
     Then, if i equals B, then idx_min is n * (B - 1) = N and idx_max is N and
     thus, the last batch is empty.
 
-    Case 2: N mod n = r > 0
+    Case 2: N  %  n = r > 0
     Then, everything is the same as case 1, except for the final batch.
     In the final batch, idx_min = b * (B - 1) = b * floor(N / n) < N, and
     idx_max is N. So, we our final batch size is
