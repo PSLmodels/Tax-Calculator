@@ -125,6 +125,7 @@ NPARAMS = len(Policy.default_data())
 BATCHSIZE = 10
 BATCHES = int(np.floor(NPARAMS / BATCHSIZE))
 
+
 @pytest.fixture(scope='module', name='allparams_batch',
                 params=[i for i in range(0, BATCHES + 1)])
 def fixture_allparams_batch(request, allparams, sorted_param_names):
