@@ -20,7 +20,7 @@ if [ $? -eq 1 ]; then
 fi
 
 # check version of conda package
-conda list conda | awk '$1=="conda"{v=$2;gsub(/\./,"",v);nv=v+0if(nv<444)rc=1}END{exit(rc)}'
+conda list conda | awk '$1=="conda"{v=$2;gsub(/\./,"",v);nv=v+0;if(nv<444)rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
     echo "==> Installing conda 4.4.4+"
     conda install conda>=4.4.4 --yes 2>&1 > /dev/null
