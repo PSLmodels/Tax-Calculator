@@ -1,6 +1,10 @@
 
 """
 Tests of the compatible_data fields in the current_law_policy.json file.
+
+In order to tap into the parallelization capabilities of py.test, this module
+leans heavily on py.tests's `parametrization` method. Once you do so, the
+plug-in pytest-xdist is able to run all parametrized functions in parallel
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 test_compatible_data.py
@@ -61,10 +65,6 @@ def test_compatible_data_presence(allparams):
             print(msg.format(pname))
         assert 'list of problem_pnames' == 'empty list'
 
-
-NPARAMS = len(Policy.default_data())
-BATCHSIZE = 10
-BATCHES = int(np.floor(NPARAMS / BATCHSIZE) + 1)
 XX_YEAR = 2019
 TEST_YEAR = 2020
 
@@ -121,12 +121,57 @@ def fixture_sorted_param_names(allparams):
     """
     return sorted(list(allparams.keys()))
 
+NPARAMS = len(Policy.default_data())
+BATCHSIZE = 10
+BATCHES = int(np.floor(NPARAMS / BATCHSIZE)) + 1
+
 
 @pytest.fixture(scope='module', name='allparams_batch',
                 params=[i for i in range(0, BATCHES)])
 def fixture_allparams_batch(request, allparams, sorted_param_names):
     """
     Fixture for grouping Tax-Calculator parameters
+
+    Experiments indicated that there is some overhead when you run
+    `test_compatible_data` on each parameter individually. Suppose it takes X
+    amount of time to set up the test data for `test_compatible_data` and Y
+    amount of time to run `test_compatible_data` on each parameter wihtout
+    parallelization. Then, if there is no overhead from parallelization, you
+    would expect it to take Y + (X / NUMBER_WORKERS) to run these tests in
+    parallel. Note that setup data is only created once if you set the
+    fixture scope to 'module'. However, experiments indicated that there was
+    so much overhead that the tests weren't that much faster in parallel than
+    if they were run sequentially.
+
+    I found that running the parameters in batches decreased the amount of
+    overhead. Further, there was an optimal batch size that I found through
+    trial and error. On my local machine, this was something like 10
+    parameters. Others may find a different optimal batch size on their
+    machines. Further, if the number of parameters changes, the optimal
+    batch size could change, too.
+
+    Math for partitioning the parameters:
+
+    Suppose we have N parameters and choose batch size n. Then, we have
+    B batches where B equals floor(N / n) + 1.
+
+    Case 1: N  %  n = 0
+    Then we have:
+    idx_min = {i * b, i = 0, 1, 2, 3, ..., B - 1} and
+    idx_max = {min((i + 1) * b, N), i = 0, 1, 2, 3, ..., B - 1}
+
+    So, if i equals 0, the batch contains the first b - 1 parameters.
+    Then, if i equals B, then idx_min is n * (B - 1) = N and idx_max is N and
+    thus, the last batch is empty.
+
+    Case 2: N  %  n = r > 0
+    Then, everything is the same as case 1, except for the final batch.
+    In the final batch, idx_min = b * (B - 1) = b * floor(N / n) < N, and
+    idx_max is N. So, we our final batch size is
+    idx_max - idx_min = N - b * B = r.
+
+    returns: dictionary of size, BATCHSIZE, or for the final batch,
+    either an empty dictionary or dictionary of size NPARAMS mod BATCHSIZE
     """
     idx = request.param
     idx_start = idx * BATCHSIZE
