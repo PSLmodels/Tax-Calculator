@@ -41,6 +41,15 @@ ensure you are viewing the most recent version of this page rather
 than an older version that your browser has saved in its cache of
 previously visited pages.</i></p>
 
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-02-13-release-0160">New CPS data</a> include several
+cash and in-kind benefit amounts, the consumption value of which are
+included in expanded income, in Tax-Calculator release 0.16.0 and
+higher
+
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-02-13-release-0160">New PUF data</a> for 2011, which produce
+slightly different results than the old 2009 PUF data produced, in
+Tax-Calculator release 0.16.0 and higher
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">Pre-TCJA policy reform file</a> is available
 given that TCJA is current-law policy in Tax-Calculator release 0.15.0
 and higher
@@ -240,9 +249,9 @@ files to TaxBrain.</p>
 
 <p><b>Install the free Anaconda Python distribution</b> by going to
 the <a href="https://www.continuum.io/downloads">Continuum Analytics
-download page</a> and selecting a version of Python.  You can install
-either Python 2.7 or Python 3.6 because we test Tax-Calculator with
-both.  You must do this installation even if you already
+download page</a> and selecting a version of Python.  You should install
+Python 3.6 because we will be forced to discontinue support for Python
+2.7 at the end of 2018.  You must do this installation even if you already
 have Python installed on your computer because the Anaconda
 distribution contains all the additional Python packages that
 Tax-Calculator uses to conduct tax calculations (many of which are not
@@ -259,10 +268,9 @@ in any directory:
 <pre>$ conda --version</pre>
 Expected output is something like <kbd>conda 4.4.7</kbd>
 <pre>$ python --version</pre>
-Expected output should contain either the <kbd>Python 2.7</kbd> or
-the <kbd>Python 3.6</kbd> phrase as well as the
-<kbd>Anaconda</kbd> phrase, the presence of which confirm that the
-installation went smoothly.
+Expected output should contain the <kbd>Python 3.6</kbd> phrase as
+well as the <kbd>Anaconda</kbd> phrase, the presence of which confirm
+that the installation went smoothly.</p>
 
 <p><b>Install the free taxcalc package</b> by entering the following:
 <pre>$ conda install -c ospc taxcalc</pre>
