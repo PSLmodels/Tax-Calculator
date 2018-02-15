@@ -18,12 +18,16 @@ def test_correct_but_not_recommended_Consumption_instantiation():
 
 def test_validity_of_consumption_vars_set():
     assert Consumption.RESPONSE_VARS.issubset(Records.USABLE_READ_VARS)
+    useable_vars = set(['snap', 'vet', 'mcare', 'mcaid', 'other'])
+    assert Consumption.BENEFIT_VARS.issubset(useable_vars)
 
 
 def test_update_consumption():
     consump = Consumption(start_year=2013)
-    consump.update_consumption({2014: {'_MPC_e20400': [0.05]},
-                                2015: {'_MPC_e20400': [0.06]}})
+    consump.update_consumption({2014: {'_MPC_e20400': [0.05],
+                                       '_BEN_mcare_value': [0.75]},
+                                2015: {'_MPC_e20400': [0.06],
+                                       '_BEN_mcare_value': [0.80]}})
     expected_mpc_e20400 = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.06)
     expected_mpc_e20400[0] = 0.0
     expected_mpc_e20400[1] = 0.05
@@ -33,10 +37,21 @@ def test_update_consumption():
     assert np.allclose(consump._MPC_e17500,
                        np.zeros((Consumption.DEFAULT_NUM_YEARS,)),
                        rtol=0.0)
+    expected_ben_mcare_value = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.80)
+    expected_ben_mcare_value[0] = 1.0
+    expected_ben_mcare_value[1] = 0.75
+    assert np.allclose(consump._BEN_mcare_value,
+                       expected_ben_mcare_value,
+                       rtol=0.0)
+    assert np.allclose(consump._BEN_snap_value,
+                       np.ones((Consumption.DEFAULT_NUM_YEARS,)),
+                       rtol=0.0)
     consump.set_year(2015)
     assert consump.current_year == 2015
     assert consump.MPC_e20400 == 0.06
     assert consump.MPC_e17500 == 0.0
+    assert consump.BEN_mcare_value == 0.80
+    assert consump.BEN_snap_value == 1.0
 
 
 def test_future_update_consumption():
@@ -50,12 +65,25 @@ def test_future_update_consumption():
     assert consump.has_response() is True
     consump.set_year(cyr - 1)
     assert consump.has_response() is False
+    # test future updates for benefits
+    consump_ben = Consumption()
+    assert consump_ben.current_year == consump_ben.start_year
+    assert consump_ben.has_response() is False
+    consump_ben.set_year(cyr)
+    consump_ben.update_consumption({cyr: {'_BEN_vet_value': [0.95]}})
+    assert consump_ben.current_year == cyr
+    assert consump_ben.has_response() is True
+    consump_ben.set_year(cyr - 1)
+    assert consump_ben.has_response() is False
 
 
 def test_consumption_default_data():
     paramdata = Consumption.default_data()
     for param in paramdata:
-        assert paramdata[param] == [0.0]
+        if param.startswith('_MPC'):
+            assert paramdata[param] == [0.0]
+        elif param.startswith('_BEN'):
+            assert paramdata[param] == [1.0]
 
 
 def test_consumption_response(cps_subsample):

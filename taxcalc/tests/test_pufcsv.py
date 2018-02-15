@@ -15,6 +15,7 @@ Read tax-calculator/TESTING.md for details.
 # pep8 --ignore=E402 test_pufcsv.py
 # pylint --disable=locally-disabled test_pufcsv.py
 
+from __future__ import print_function
 import os
 import sys
 import json
@@ -341,3 +342,19 @@ def test_puf_availability(tests_path, puf_path):
     # check that pufvars and recvars sets are the same
     assert (pufvars - recvars) == set()
     assert (recvars - pufvars) == set()
+
+
+@pytest.mark.requires_pufcsv
+@pytest.mark.xfail
+def test_ubi_n_variables(puf_path):
+    """
+    Ensure that the three UBI n* variables add up to XTOT variable,
+    recognizing that XTOT values are often capped in the IRS-SOI PUF,
+    so that XTOT < NSUM might not indicate any data inconsistency.
+    """
+    pufdf = pd.read_csv(puf_path)
+    xtot = pufdf['XTOT']
+    nsum = pufdf['nu18'] + pufdf['n1820'] + pufdf['n21']
+    if not np.sum(xtot > nsum) == 0:
+        print('number xtot > nsum is:', np.sum(xtot > nsum))
+        assert 'XTOT' <= '(nu18+n1820+n21)'

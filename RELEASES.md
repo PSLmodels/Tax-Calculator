@@ -4,23 +4,33 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-02-?? Release 0.16.0
+2018-02-13 Release 0.16.0
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1871](https://github.com/open-source-economics/Tax-Calculator/pull/1871))
 
 **API Changes**
 - Improve data quality of several existing CPS variables, which causes changes in CPS tax results
   [[#1853](https://github.com/open-source-economics/Tax-Calculator/pull/1853)
   by Anderson Frailey with assistance from Martin Holmer]
+- Use 2011 PUF data (rather than the older 2009 PUF data), which causes changes in PUF tax results
+  [[#1871](https://github.com/open-source-economics/Tax-Calculator/pull/1871)
+  by Anderson Frailey and Martin Holmer], which requires new `puf.csv` input file with this information:
+  * Byte size: 54714632
+  * MD5 checksum: de4a59c9bce0a7d5e6c3110172237c9b
 
 **New Features**
 - Add ability to extrapolate imputed benefits and benefit-related policy parameters
   [[#1719](https://github.com/open-source-economics/Tax-Calculator/pull/1719)
   by Anderson Frailey]
+- Add ability to specify the consumption value of in-kind benefits to be less than the government cost of providing in-kind benefits
+  [[#1863](https://github.com/open-source-economics/Tax-Calculator/pull/1863)
+  by Anderson Frailey]
 
 **Bug Fixes**
-- None
+- Improve handling of very high marginal tax rates in the `Behavior.response` method
+  [[#1858](https://github.com/open-source-economics/Tax-Calculator/pull/1858)
+  by Martin Holmer with assistance from Matt Jensen]
 
 
 2018-01-30 Release 0.15.2

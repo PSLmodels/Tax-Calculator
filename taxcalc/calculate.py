@@ -24,8 +24,8 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
-                               FairShareTax, LumpSumTax, ExpandIncome,
-                               AfterTaxIncome)
+                               FairShareTax, LumpSumTax, BenefitPrograms,
+                               ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
@@ -65,7 +65,10 @@ class Calculator(object):
         specifies consumption response assumptions used to calculate
         "effective" marginal tax rates; default is None, which implies
         no consumption responses assumed in marginal tax rate calculations;
-        when argument is an object it is copied for internal use
+        when argument is an object it is copied for internal use;
+        also specifies consumption value of in-kind benefis with no in-kind
+        consumption values specified implying consumption value is equal to
+        government cost of providing the in-kind benefits
 
     behavior: Behavior class object
         specifies behavioral responses used by Calculator; default is None,
@@ -177,6 +180,7 @@ class Calculator(object):
         """
         # conducts static analysis of Calculator object for current_year
         assert self.__records.current_year == self.__policy.current_year
+        BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
         BenefitLimitation(self)
@@ -281,6 +285,12 @@ class Calculator(object):
             return getattr(self.__policy, param_name)
         else:
             setattr(self.__policy, param_name, param_value)
+
+    def consump_param(self, param_name):
+        """
+        Return value of named parameter in embedded Consumption object.
+        """
+        return getattr(self.__consumption, param_name)
 
     def behavior_has_response(self):
         """

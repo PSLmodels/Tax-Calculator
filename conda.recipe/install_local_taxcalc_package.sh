@@ -20,7 +20,7 @@ if [ $? -eq 1 ]; then
 fi
 
 # check version of conda package
-conda list conda | awk '$1=="conda"{v=$2;gsub(/\./,"",v);if(v<444)rc=1}END{exit(rc)}'
+conda list conda | awk '$1=="conda"{v=$2;gsub(/\./,"",v);nv=v+0;if(nv<444)rc=1}END{exit(rc)}'
 if [ $? -eq 1 ]; then
     echo "==> Installing conda 4.4.4+"
     conda install conda>=4.4.4 --yes 2>&1 > /dev/null
@@ -45,10 +45,10 @@ conda build $NOHASH --python $pversion . 2>&1 | awk '$1~/BUILD/||$1~/TEST/'
 # install taxcalc conda package
 echo "INSTALLATION..."
 conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
-#NOTE# the --use-local option was broken by conda 4.4.0 and fixed by 4.4.4
-#NOTE# see https://github.com/conda/conda/issues/6520
-#NOTE# interim usage was as follows:
-#NOTE# conda install -c local taxcalc=0.0.0 --yes 2>&1 > /dev/null
+# NOTE: the --use-local option was broken by conda 4.4.0 and fixed by 4.4.4
+# NOTE: see https://github.com/conda/conda/issues/6520
+# NOTE: interim usage was as follows:
+# NOTE: conda install -c local taxcalc=0.0.0 --yes 2>&1 > /dev/null
 
 # clean-up after package build
 echo "CLEAN-UP..."

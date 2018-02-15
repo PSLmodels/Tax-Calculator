@@ -34,7 +34,8 @@ class Records(object):
         default value is false.
 
     gfactors: Growfactors class instance or None
-        containing record data extrapolation (or "blowup") factors
+        containing record data extrapolation (or "blowup") factors.
+        NOTE: the constructor should never call the _blowup() method.
 
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
@@ -96,7 +97,7 @@ class Records(object):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUFCSV_YEAR = 2009
+    PUFCSV_YEAR = 2011
     CPSCSV_YEAR = 2014
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -105,6 +106,7 @@ class Records(object):
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
     VAR_INFO_FILENAME = 'records_variables.json'
+    CPS_BENEFITS_FILENAME = 'cps_benefits.csv.gz'
 
     def __init__(self,
                  data='puf.csv',
@@ -112,6 +114,7 @@ class Records(object):
                  gfactors=Growfactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
+                 benefits=None,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments
         self.__data_year = start_year
@@ -146,6 +149,9 @@ class Records(object):
         self._read_weights(weights)
         self.ADJ = None
         self._read_ratios(adjust_ratios)
+        # read extrapolated benefit variables
+        self.BEN = None
+        self._read_benefits(benefits)
         # weights must be same size as tax record data
         if not self.WT.empty and self.array_length != len(self.WT):
             # scale-up sub-sample weights by year-specific factor
@@ -161,12 +167,6 @@ class Records(object):
         else:
             msg = 'start_year is not an integer'
             raise ValueError(msg)
-        # consider applying initial-year grow factors
-        # TODO: completely drop init blowup when start using 2011 puf.csv
-        if gfactors is not None and start_year == self.__data_year:
-            # skip initial-year blowup when using CPSCSV data
-            if start_year == Records.PUFCSV_YEAR:
-                self._blowup(start_year)
         # construct sample weights for current_year
         wt_colname = 'WT{}'.format(self.current_year)
         if wt_colname in self.WT.columns:
@@ -195,6 +195,7 @@ class Records(object):
                        gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
+                       benefits=Records.CPS_BENEFITS_FILENAME,
                        start_year=Records.CPSCSV_YEAR)
 
     @property
@@ -237,6 +238,9 @@ class Records(object):
             wt_colname = 'WT{}'.format(self.__current_year)
             if wt_colname in self.WT.columns:
                 self.s006 = self.WT[wt_colname] * 0.01
+        # extrapolate benefit values
+        if self.BEN.size > 0:
+            self._extrapolate_benefits(self.current_year)
 
     def set_current_year(self, new_current_year):
         """
@@ -377,7 +381,6 @@ class Records(object):
         self.e24515 *= ACGNS
         self.e24518 *= ACGNS
         # SCHEDULE E
-        self.p25470 *= ASCHEI
         self.e26270 *= ASCHEI
         self.e27200 *= ASCHEI
         self.k1bx14p *= ASCHEI
@@ -388,7 +391,7 @@ class Records(object):
         self.e58990 *= ATXPY
         self.e62900 *= ATXPY
         self.e87530 *= ATXPY
-        self.p87521 *= ATXPY
+        self.e87521 *= ATXPY
         self.cmbtp *= ATXPY
 
     def _adjust(self, year):
@@ -400,6 +403,18 @@ class Records(object):
             # Interest income
             adj_array = self.ADJ['INT{}'.format(year)][self.agi_bin].values
             self.e00300 *= adj_array
+
+    def _extrapolate_benefits(self, year):
+        """
+        Extrapolate benefit variables
+        """
+        setattr(self, 'ssi_ben', self.BEN['ssi_{}'.format(year)])
+        setattr(self, 'snap_ben', self.BEN['snap_{}'.format(year)])
+        setattr(self, 'vet_ben', self.BEN['vet_{}'.format(year)])
+        setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
+        setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
+        ABENEFITS = self.gfactors.factor_value('ABENEFITS', year)
+        self.other_ben *= ABENEFITS
 
     def _read_data(self, data, exact_calcs):
         """
@@ -524,3 +539,36 @@ class Records(object):
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
         self.ADJ = ADJ
+
+    def _read_benefits(self, benefits):
+        """
+        Read Records extrapolated benefits from a file or uses a specified
+        DataFrame or creates an empty DataFrame if None. Should only be
+        used with the cps.csv file
+        """
+        if benefits is None:
+            BEN = pd.DataFrame({'Nothing': []})
+            setattr(self, 'BEN', BEN)
+            return
+        if isinstance(benefits, pd.DataFrame):
+            BEN_partial = benefits
+        elif isinstance(benefits, six.string_types):
+            benefits_path = os.path.join(Records.CUR_PATH, benefits)
+            if os.path.isfile(benefits_path):
+                BEN_partial = pd.read_csv(benefits_path)
+            else:
+                # cannot call read_egg_ function in unit tests
+                b_path = os.path.basename(benefits_path)  # pragma: no cover
+                BEN_partial = read_egg_csv(b_path)  # pragma: no cover
+        else:
+            msg = 'benefits is not Nont or a string or a Pandas DataFrame'
+            raise ValueError(msg)
+        assert isinstance(BEN_partial, pd.DataFrame)
+        # expand benefits DataFrame to include those who don't receive benefits
+        recid_df = pd.DataFrame({'RECID': self.RECID})
+        # merge benefits with DataFrame of RECID
+        full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
+        # fill missing values
+        BEN = full_df.fillna(0.0)
+        assert len(recid_df) == len(BEN)
+        self.BEN = BEN

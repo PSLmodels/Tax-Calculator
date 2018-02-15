@@ -72,5 +72,95 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0]
+    },
+
+    "_BEN_snap_value": {
+        "long_name": "Consumption value of SNAP benefits",
+        "description": "Consumption value per dollar of SNAP benefits, all of which are in-kind benefits.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_vet_value": {
+        "long_name": "Consumption value of veterans benefits",
+        "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (about 40% are in-kind medical benefits).",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_mcare_value": {
+        "long_name": "Consumption value of Medicare benefits",
+        "description": "Consumption value per dollar of Medicare benefits, all of which are in-kind benefits.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_mcaid_value": {
+        "long_name": "Consumption value of Medicaid benefits",
+        "description": "Consumption value per dollar of Medicaid benefits, all of which are in-kind benefits.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_other_value": {
+        "long_name": "Consumption value of other benefits",
+        "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between 52% and 76% are in-kind benefits).",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
     }
 }

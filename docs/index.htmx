@@ -40,6 +40,15 @@ ensure you are viewing the most recent version of this page rather
 than an older version that your browser has saved in its cache of
 previously visited pages.</i></p>
 
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-02-13-release-0160">New CPS data</a> include several
+cash and in-kind benefit amounts, the consumption value of which are
+included in expanded income, in Tax-Calculator release 0.16.0 and
+higher
+
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-02-13-release-0160">New PUF data</a> for 2011, which produce
+slightly different results than the old 2009 PUF data produced, in
+Tax-Calculator release 0.16.0 and higher
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">Pre-TCJA policy reform file</a> is available
 given that TCJA is current-law policy in Tax-Calculator release 0.15.0
 and higher
@@ -239,9 +248,9 @@ files to TaxBrain.</p>
 
 <p><b>Install the free Anaconda Python distribution</b> by going to
 the <a href="https://www.continuum.io/downloads">Continuum Analytics
-download page</a> and selecting a version of Python.  You can install
-either Python 2.7 or Python 3.6 because we test Tax-Calculator with
-both.  You must do this installation even if you already
+download page</a> and selecting a version of Python.  You should install
+Python 3.6 because we will be forced to discontinue support for Python
+2.7 at the end of 2018.  You must do this installation even if you already
 have Python installed on your computer because the Anaconda
 distribution contains all the additional Python packages that
 Tax-Calculator uses to conduct tax calculations (many of which are not
@@ -258,10 +267,9 @@ in any directory:
 <pre>$ conda --version</pre>
 Expected output is something like <kbd>conda 4.4.7</kbd>
 <pre>$ python --version</pre>
-Expected output should contain either the <kbd>Python 2.7</kbd> or
-the <kbd>Python 3.6</kbd> phrase as well as the
-<kbd>Anaconda</kbd> phrase, the presence of which confirm that the
-installation went smoothly.
+Expected output should contain the <kbd>Python 3.6</kbd> phrase as
+well as the <kbd>Anaconda</kbd> phrase, the presence of which confirm
+that the installation went smoothly.</p>
 
 <p><b>Install the free taxcalc package</b> by entering the following:
 <pre>$ conda install -c ospc taxcalc</pre>
@@ -685,32 +693,32 @@ cps-22-#-ref3-#-doc.text   cps-22-#-ref3-#-tab.text   cps-22-#-ref3-#.csv
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.5      -2.2       3.6       0.0       1.4
- 1    17.93     201.9     -15.8      13.6       0.0      -2.3
- 2    17.93     351.9     -21.5      25.0       0.0       3.5
- 3    17.93     512.8     -23.3      47.2       0.0      23.9
- 4    17.93     696.2     -12.4      72.5       0.0      60.1
- 5    17.93     929.0       7.1     104.4       0.0     111.5
- 6    17.93    1248.8      34.0     148.4       0.0     182.4
- 7    17.93    1728.2      83.9     215.6       0.0     299.5
- 8    17.93    2504.8     167.3     318.8       0.0     486.1
- 9    17.93    5945.2     956.8     516.7       0.0    1473.5
- A   179.26   14115.3    1173.8    1465.8       0.0    2639.7
+ 0    17.93      81.4      -8.8      10.9       0.0       2.1
+ 1    17.93     362.0     -18.6      27.7       0.0       9.2
+ 2    17.93     538.8     -17.6      44.0       0.0      26.5
+ 3    17.93     711.3     -10.5      60.9       0.0      50.4
+ 4    17.93     911.0      -1.0      81.7       0.0      80.7
+ 5    17.93    1162.4      13.5     108.5       0.0     122.0
+ 6    17.93    1491.4      36.4     142.0       0.0     178.5
+ 7    17.93    1946.2      75.2     196.0       0.0     271.2
+ 8    17.92    2685.3     147.7     281.6       0.0     429.2
+ 9    17.93    5899.8     854.3     464.1       0.0    1318.4
+ A   179.26   15789.6    1070.6    1417.5       0.0    2488.1
 
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      -3.5      -0.0       0.0       0.0      -0.0
- 1    17.93     201.9      -0.0       0.0       0.0      -0.0
- 2    17.93     351.9      -2.3       0.0       0.0      -2.3
- 3    17.93     512.8      -6.1       0.0       0.0      -6.1
- 4    17.93     696.2     -11.2       0.0       0.0     -11.2
- 5    17.93     929.0     -18.2       0.0       0.0     -18.2
- 6    17.93    1248.8     -32.5       0.0       0.0     -32.5
- 7    17.93    1728.2     -43.6       0.0       0.0     -43.6
- 8    17.93    2504.8     -66.2       0.0       0.0     -66.2
- 9    17.93    5945.2     -78.3       0.0       0.0     -78.3
- A   179.26   14115.3    -258.4       0.0       0.0    -258.4
+ 0    17.93      81.4      -0.0       0.0       0.0      -0.0
+ 1    17.93     362.0      -2.7       0.0       0.0      -2.7
+ 2    17.93     538.8      -6.2       0.0       0.0      -6.2
+ 3    17.93     711.3      -9.4       0.0       0.0      -9.4
+ 4    17.93     911.0     -13.2       0.0       0.0     -13.2
+ 5    17.93    1162.4     -21.1       0.0       0.0     -21.1
+ 6    17.93    1491.4     -30.1       0.0       0.0     -30.1
+ 7    17.93    1946.2     -37.5       0.0       0.0     -37.5
+ 8    17.92    2685.3     -60.8       0.0       0.0     -60.8
+ 9    17.93    5899.8     -71.8       0.0       0.0     -71.8
+ A   179.26   15789.6    -252.8       0.0       0.0    -252.8
 </pre></p>
 
 <p>Example (7) produces 2022 static output for the filing units in the
@@ -894,16 +902,16 @@ select "weighted count of all filing units",
 from dump;
 
 $ cat tab.sql | sqlite3 cps-16-#-#-#.db
-weighted count of those with negative MTR|22.504
+weighted count of those with negative MTR|22.821
 bin number|weighted count|average MTR in bin
--1.0|35.373|0.0
-0.0|2.31|7.28
-1.0|56.978|14.11
-2.0|32.867|25.38
-3.0|14.568|32.18
-4.0|0.719|43.05
-5.0|0.069|54.61
-6.0|0.011|66.75
+-1.0|35.7|0.0
+0.0|2.455|7.24
+1.0|57.576|14.13
+2.0|32.298|25.39
+3.0|13.746|32.19
+4.0|0.693|43.11
+5.0|0.093|55.34
+6.0|0.016|66.65
 weighted count of all filing units|165.399
 </pre>
 The <kbd>cat</kbd> command writes the contents of
@@ -975,6 +983,7 @@ section.</p>
 <p><a href="#pol-refundable-credits">Refundable Credits</a></p>
 <p><a href="#pol-surtaxes">Surtaxes</a></p>
 <p><a href="#pol-ubi">Universal Basic Income</a></p>
+<p><a href="#pol-benefits">Benefits</a></p>
 <p><a href="#pol-other-parameters">Other Parameters</a></p>
 
 
@@ -1134,6 +1143,13 @@ section.</p>
 <!-- Universal Basic Income @ UBI Benefits -->
 
 <!-- Universal Basic Income @ UBI Taxability -->
+
+<p><a href="#pol">Back to Section Contents</a></p>
+
+
+<h3 id="pol-benefits">Benefits</h3>
+
+<!-- Benefits @ Benefit Repeal -->
 
 <p><a href="#pol">Back to Section Contents</a></p>
 

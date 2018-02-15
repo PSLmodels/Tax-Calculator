@@ -184,7 +184,7 @@
     },
     "e02000": {
       "type": "float",
-      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200 and p25470)",
+      "desc": "Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)",
       "form": {"2013-2016": "1040 line 17"},
       "availability": "taxdata_puf"
     },
@@ -208,13 +208,13 @@
     },
     "e02300": {
       "type": "float",
-      "desc": "Unemployment compensation benefits",
+      "desc": "Unemployment insurance benefits",
       "form": {"2013-2016": "1040 line 19"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e02400": {
       "type": "float",
-      "desc": "Total social security benefits",
+      "desc": "Total social security (OASDI) benefits",
       "form": {"2013-2016": "1040 line 20a"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -471,7 +471,7 @@
       "type": "int",
       "desc": "FIPS state code (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_cps"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "h_seq": {
       "type": "int",
@@ -564,13 +564,7 @@
       "form": {"2013-2016": "1040 Sch D line 15"},
       "availability": "taxdata_puf"
     },
-    "p25470": {
-      "type": "float",
-      "desc": "Sch E: Royalty depletion and/or rental depreciation (included in e02000)",
-      "form": {"2013-2016": "1040 Sch E line 18"},
-      "availability": "taxdata_puf"
-    },
-    "p87521": {
+    "e87521": {
       "type": "float",
       "desc": "Total tentative AmOppCredit amount for all students",
       "form": {"2013-2016": "8863 Part I line 1 and 8863 Part III line 30"},
@@ -709,7 +703,7 @@
     },
     "c02500": {
       "type": "float",
-      "desc": "Social security benefits included in AGI",
+      "desc": "Social security (OASDI) benefits included in AGI",
       "form": {"2013-2016": "1040 line 20b"}
     },
     "c02900": {
@@ -1078,6 +1072,16 @@
     "aftertax_income": {
       "type": "float",
       "desc": "After tax income is equal to expanded_income minus combined",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "benefit_cost_total": {
+      "type": "float",
+      "desc": "Government cost of all benefits recieved by tax unit",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "benefit_value_total": {
+      "type": "float",
+      "desc": "Consumption value of all benefits recieved by tax unit",
       "form": {"2013-20??": "calculated variable"}
     }
   }

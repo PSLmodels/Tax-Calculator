@@ -185,6 +185,8 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
         code_text = ''
         for var in Consumption.RESPONSE_VARS:
             code_text += 'MPC_{}\n'.format(var)
+        for var in Consumption.BENEFIT_VARS:
+            code_text += 'BEN_{}_value\n'.format(var)
     else:
         # parameters are explicitly named in PYTHON file
         path = os.path.join(tests_path, '..', pfname)
