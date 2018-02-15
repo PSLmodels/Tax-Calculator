@@ -651,6 +651,15 @@ class TaxCalcIO(object):
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(dec_fname, dec_title, reason)
+        # income-change-by-quintile graph
+        qin_fname = self._output_filename.replace('.csv', '-qin.html')
+        qin_title = 'Income Change by Income Quintile'
+        if pos_wght_sum:
+            fig = self.calc_base.quintile_graph(self.calc)
+            write_graph_file(fig, qin_fname, qin_title)
+        else:
+            reason = 'No graph because sum of weights is not positive'
+            TaxCalcIO.write_empty_graph_file(qin_fname, qin_title, reason)
         # average-tax-rate graph
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
