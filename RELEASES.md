@@ -4,6 +4,26 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-0?-?? Release 0.16.1
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- None
+
+**New Features**
+- Add graph of percentage change in after-tax expanded income by baseline expanded-income quintiles
+  [[#1880](https://github.com/open-source-economics/Tax-Calculator/pull/1880)
+  by Martin Holmer]
+- Improve consistency of UBI-related head-count-by-age values in the CPS data
+  [[#1882](https://github.com/open-source-economics/Tax-Calculator/pull/1882)
+  by Anderson Frailey]
+
+**Bug Fixes**
+- None
+
+
 2018-02-13 Release 0.16.0
 -------------------------
 (last merged pull request is
