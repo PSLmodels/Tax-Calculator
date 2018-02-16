@@ -56,7 +56,7 @@ def BenefitPrograms(calc):
         calc.array('e02300') +
         calc.array('other_ben')
     )
-    calc.array('benefit_value_total', cost)
+    calc.array('benefit_cost_total', cost)
     # calculate consumption value of all benefits
     # (assuming that cash benefits have full value)
     value = np.array(

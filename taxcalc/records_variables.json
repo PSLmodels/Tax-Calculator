@@ -455,6 +455,12 @@
       "form": {"2013-2016": "6251"},
       "availability": "taxdata_puf"
     },
+    "a_lineno": {
+      "type": "int",
+      "desc": "CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)",
+      "form": {"2013-2016": "sample construction info"},
+      "availability": "taxdata_cps"
+    },
     "ffpos": {
       "type": "int",
       "desc": "CPS family identifier within household (not used in tax-calculation logic)",
