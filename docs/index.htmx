@@ -673,8 +673,9 @@ the <kbd>ref3.json</kbd> file, the content of which is:
 <p>The output options illustrated in the following examples generate
 tables of the post-reform level and the reform-induced change in tax
 liability by income deciles as well as graphs of marginal and average
-tax rates by income percentile and percentage change in aftertax
-income by income decile.  These tables and graphs are meant to provide
+tax rates by income percentile and graphs of percentage change in
+aftertax income by income deciles and by income quintiles.
+These tables and graphs are meant to provide
 a quick glance at the impact of a reform.  Any serious analysis of a
 reform will involve generating custom tables and graphs using
 <a href="#partdump">partial dump</a> output.  One of many examples
@@ -739,7 +740,7 @@ Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24*
 cps-24-#-ref3-#-atr.html   cps-24-#-ref3-#-doc.text   cps-24-#-ref3-#.csv
-cps-24-#-ref3-#-dec.html   cps-24-#-ref3-#-mtr.html
+cps-24-#-ref3-#-dec.html   cps-24-#-ref3-#-mtr.html   cps-24-#-ref3-#-qin.html
 </pre></p>
 
 <p>Example (8) is like example (7) except we ask for 2024 static
