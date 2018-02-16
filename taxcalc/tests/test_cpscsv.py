@@ -127,7 +127,6 @@ def test_cps_availability(tests_path, cps_path):
     assert (recvars - cpsvars) == set()
 
 
-@pytest.mark.xfail
 def test_ubi_n_variables(cps_path):
     """
     Ensure that the three UBI n* variables add up to XTOT variable.
