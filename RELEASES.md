@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-0?-?? Release 0.16.1
+2018-02-16 Release 0.16.1
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1885](https://github.com/open-source-economics/Tax-Calculator/pull/1885))
 
 **API Changes**
 - None
@@ -18,6 +18,9 @@ for a complete commit history.
   by Martin Holmer]
 - Improve consistency of UBI-related head-count-by-age values in the CPS data
   [[#1882](https://github.com/open-source-economics/Tax-Calculator/pull/1882)
+  by Anderson Frailey]
+- Add variable to `cps.csv.gz` that facilitates matching CPS data to Tax-Calculator filing units
+  [[#1885](https://github.com/open-source-economics/Tax-Calculator/pull/1885)
   by Anderson Frailey]
 
 **Bug Fixes**
