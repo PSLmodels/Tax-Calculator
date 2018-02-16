@@ -116,7 +116,7 @@ class Records(object):
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  benefits=None,
                  start_year=PUFCSV_YEAR):
-        # pylint: disable=too-many-arguments
+        # pylint: disable=too-many-arguments,too-many-locals
         self.__data_year = start_year
         # read specified data
         self._read_data(data, exact_calculations)
