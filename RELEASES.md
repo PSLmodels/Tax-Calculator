@@ -7,7 +7,7 @@ for a complete commit history.
 2018-02-16 Release 0.16.1
 -------------------------
 (last merged pull request is
-[#1885](https://github.com/open-source-economics/Tax-Calculator/pull/1885))
+[#1886](https://github.com/open-source-economics/Tax-Calculator/pull/1886))
 
 **API Changes**
 - None
@@ -24,7 +24,9 @@ for a complete commit history.
   by Anderson Frailey]
 
 **Bug Fixes**
-- None
+- Fix lack of calculation of `benefit_cost_total` variable
+  [[#1886](https://github.com/open-source-economics/Tax-Calculator/pull/1886)
+  by Anderson Frailey]
 
 
 2018-02-13 Release 0.16.0
