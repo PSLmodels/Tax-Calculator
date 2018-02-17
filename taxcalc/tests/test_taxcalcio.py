@@ -605,6 +605,9 @@ def test_no_tables_or_graphs(reformfile1):
     fname = output_filename.replace('.csv', '-mtr.html')
     if os.path.isfile(fname):
         os.remove(fname)
+    fname = output_filename.replace('.csv', '-qin.html')
+    if os.path.isfile(fname):
+        os.remove(fname)
 
 
 def test_tables(reformfile1):

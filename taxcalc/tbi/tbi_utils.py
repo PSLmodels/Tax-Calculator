@@ -17,7 +17,7 @@ from taxcalc import (Policy, Records, Calculator,
 from taxcalc.utils import (add_income_bins, add_quantile_bins,
                            create_difference_table, create_distribution_table,
                            DIST_VARIABLES, DIST_TABLE_COLUMNS,
-                           WEBAPP_INCOME_BINS, read_egg_csv)
+                           STANDARD_INCOME_BINS, read_egg_csv)
 
 
 def check_years_return_first_year(year_n, start_year, use_puf_not_cps):
@@ -330,7 +330,7 @@ def create_results_columns(df1, df2, mask):
         if bin_type == 'dec':
             df2 = add_quantile_bins(df2, imeasure, 10)
         elif bin_type == 'bin':
-            df2 = add_income_bins(df2, imeasure, bins=WEBAPP_INCOME_BINS)
+            df2 = add_income_bins(df2, imeasure, bins=STANDARD_INCOME_BINS)
         else:
             df2 = add_quantile_bins(df2, imeasure, 1)
         gdf2 = df2.groupby('bins')
@@ -427,7 +427,7 @@ def summary(df1, df2, mask):
     df2['iitax'] = df2['iitax_xbin']
     diff_itax_xbin = \
         create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
+                                groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
     diff_itax_xbin.drop(diff_itax_xbin.index[0], inplace=True)
@@ -436,7 +436,7 @@ def summary(df1, df2, mask):
     df2['payrolltax'] = df2['payrolltax_xbin']
     diff_ptax_xbin = \
         create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
+                                groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='payrolltax')
     diff_ptax_xbin.drop(diff_ptax_xbin.index[0], inplace=True)
@@ -445,7 +445,7 @@ def summary(df1, df2, mask):
     df2['combined'] = df2['combined_xbin']
     diff_comb_xbin = \
         create_difference_table(df1, df2,
-                                groupby='webapp_income_bins',
+                                groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='combined')
     diff_comb_xbin.drop(diff_comb_xbin.index[0], inplace=True)
@@ -470,7 +470,7 @@ def summary(df1, df2, mask):
 
     # create distribution tables grouped by xbin (removing negative-income bin)
     dist1_xbin = \
-        create_distribution_table(df1, groupby='webapp_income_bins',
+        create_distribution_table(df1, groupby='standard_income_bins',
                                   income_measure='expanded_income',
                                   result_type='weighted_sum')
     dist1_xbin.drop(dist1_xbin.index[0], inplace=True)
@@ -483,7 +483,7 @@ def summary(df1, df2, mask):
         df2[root_col_name] = df2[col]
     df2['expanded_income_baseline'] = df1['expanded_income']
     dist2_xbin = \
-        create_distribution_table(df2, groupby='webapp_income_bins',
+        create_distribution_table(df2, groupby='standard_income_bins',
                                   income_measure='expanded_income_baseline',
                                   result_type='weighted_sum')
     dist2_xbin.drop(dist2_xbin.index[0], inplace=True)
