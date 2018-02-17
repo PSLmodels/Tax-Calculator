@@ -25,8 +25,14 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_VARIABLES, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
-                     DECILE_ROW_NAMES, WEBBIN_ROW_NAMES,
-                     proportional_change_in_gdp, Growdiff, Growfactors, Policy)
+                     proportional_change_in_gdp, Growdiff, Growfactors, Policy,
+                     DECILE_ROW_NAMES)
+
+WEBBIN_ROW_NAMES = ['$0-10K', '$10-20K', '$20-30K', '$30-40K',
+                    '$40-50K', '$50-75K', '$75-100K',
+                    '$100-200K', '$200-500K',
+                    '$500-1000K', '>$1000K', 'all']
+# the negative-income bin is removed in the summary() function
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
