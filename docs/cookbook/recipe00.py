@@ -80,8 +80,8 @@ scaling_factors = [1e-6, 1e-9, 1e0, 1e0, 1e0]
 for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
     diff_extract[ename] = diff_table[dname] * sfactor
 
-# generate a graph and save in an HTML file
-fig = calc1.decile_graph(calc2)
+# generate percentage-change-in-aftertax-income graph and save in an HTML file
+fig = calc1.pch_graph(calc2)
 write_graph_file(fig, 'recipe00.graph.html', 'recipe00.graph')
 
 print('CLP diagnostic table:')

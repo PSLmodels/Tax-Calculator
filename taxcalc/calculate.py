@@ -37,8 +37,8 @@ from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            create_diagnostic_table,
                            ce_aftertax_expanded_income,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
-                           pch_graph_data, pch_graph_plot,
                            dec_graph_data, dec_graph_plot,
+                           pch_graph_data, pch_graph_plot,
                            qin_graph_data, qin_graph_plot)
 # import pdb
 
@@ -353,7 +353,7 @@ class Calculator(object):
 
     def diagnostic_table(self, num_years):
         """
-        Generate multi-year diagnostic table;
+        Generate multi-year diagnostic table containing aggregate statistics;
         this method leaves the Calculator object unchanged.
 
         Parameters
@@ -390,9 +390,12 @@ class Calculator(object):
         Get results from self and calc, sort them based on groupby using
         income_measure, manipulate grouped statistics based on result_type,
         and return tables as a pair of Pandas dataframes.
+        This method leaves the Calculator object(s) unchanged.
         Note that the returned tables have consistent income groups (based
-        on the self income_measure) even though the income_measure in self
-        and the income_measure in calc are different.
+        on the self income_measure) even though the baseline income_measure
+        in self and the income_measure in calc are different.
+        Also, note that some subgroups may contain filing units with negative
+        or zero baseline (self) income.
 
         Parameters
         ----------
@@ -473,6 +476,9 @@ class Calculator(object):
         """
         Get results from self and calc, sort them based on groupby using
         income_measure, and return tax-difference table as a Pandas dataframe.
+        This method leaves the Calculator objects unchanged.
+        Note that some subgroups may contain filing units with negative or
+        zero baseline (self) income.
 
         Parameters
         ----------
@@ -978,6 +984,8 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
+        Note that some deciles may contain filing units with negative
+        or zero baseline (self) expanded income.
 
         Parameters
         ----------
@@ -1010,8 +1018,7 @@ class Calculator(object):
         return fig
 
     def quintile_graph(self, calc):
-        """
-        Create graph that shows percentage change in aftertax expanded
+        """Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
         each expanded-income quintile and subgroups of the top quintile.
         The graph can be written to an HTML file (using the
@@ -1019,6 +1026,8 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
+        Note that some quintiles may contain filing units with negative
+        or zero baseline (self) expanded income.
 
         Parameters
         ----------
@@ -1030,6 +1039,7 @@ class Calculator(object):
         Returns
         -------
         graph that is a bokeh.plotting figure object
+
         """
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
