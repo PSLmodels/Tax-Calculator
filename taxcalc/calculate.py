@@ -37,6 +37,7 @@ from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            create_diagnostic_table,
                            ce_aftertax_expanded_income,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
+                           pch_graph_data, pch_graph_plot,
                            dec_graph_data, dec_graph_plot,
                            qin_graph_data, qin_graph_plot)
 # import pdb
@@ -835,15 +836,16 @@ class Calculator(object):
 
     def atr_graph(self, calc,
                   mars='ALL',
-                  atr_measure='combined',
-                  min_avginc=1000):
+                  atr_measure='combined'):
         """
         Create average tax rate graph that can be written to an HTML
         file (using the write_graph_file utility function) or shown on
         the screen immediately in an interactive or notebook session
         (following the instructions in the documentation of the
         xtr_graph_plot utility function).  The graph shows the mean
-        average tax rate for each expanded-income percentile.
+        average tax rate for each expanded-income percentile excluding
+        any percentile that includes a filing unit with negative or
+        zero basline expanded income.
 
         Parameters
         ----------
@@ -874,10 +876,6 @@ class Calculator(object):
 
             - 'combined': sum of average income and payroll tax rates
 
-        min_avginc : float
-            specifies the minimum average expanded income for a percentile to
-            be included in the graph data; value must be positive
-
         Returns
         -------
         graph that is a bokeh.plotting figure object
@@ -891,7 +889,6 @@ class Calculator(object):
         assert (atr_measure == 'combined' or
                 atr_measure == 'itax' or
                 atr_measure == 'ptax')
-        assert min_avginc > 0
         # extract needed output that is assumed unchanged by reform from self
         record_variables = ['s006']
         if mars != 'ALL':
@@ -915,8 +912,7 @@ class Calculator(object):
         data = atr_graph_data(vdf,
                               year=self.current_year,
                               mars=mars,
-                              atr_measure=atr_measure,
-                              min_avginc=min_avginc)
+                              atr_measure=atr_measure)
         # construct figure from data
         fig = xtr_graph_plot(data,
                              width=850,
@@ -925,6 +921,51 @@ class Calculator(object):
                              ylabel='',
                              title='',
                              legendloc='bottom_right')
+        return fig
+
+    def pch_graph(self, calc):
+        """
+        Create percentage change in after-tax expanded income graph that
+        can be written to an HTML file (using the write_graph_file utility
+        function) or shown on the screen immediately in an interactive or
+        notebook session (following the instructions in the documentation
+        of the xtr_graph_plot utility function).  The graph shows the
+        dollar-weighted mean percentage change in after-tax expanded income
+        for each expanded-income percentile excluding any percentile that
+        includes a filing unit with negative or zero basline expanded income.
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline,
+            where both self and calc have calculated taxes for this year
+            before being used by this method
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object
+        """
+        # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.array_len == self.array_len
+        # extract needed output from baseline and reform Calculator objects
+        vdf1 = self.dataframe(['s006', 'expanded_income', 'aftertax_income'])
+        vdf2 = calc.dataframe(['s006', 'aftertax_income'])
+        assert np.allclose(vdf1['s006'], vdf2['s006'])
+        vdf = pd.DataFrame()
+        vdf['s006'] = vdf1['s006']
+        vdf['expanded_income'] = vdf1['expanded_income']
+        vdf['chg_aftinc'] = vdf2['aftertax_income'] - vdf1['aftertax_income']
+        # construct data for graph
+        data = pch_graph_data(vdf, year=self.current_year)
+        # construct figure from data
+        fig = pch_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='')
         return fig
 
     def decile_graph(self, calc):
