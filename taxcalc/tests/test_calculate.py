@@ -943,13 +943,6 @@ def test_atr_graph(cps_subsample):
     assert fig
 
 
-def test_pch_graph(cps_subsample):
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample))
-    fig = calc.pch_graph(calc)
-    assert fig
-
-
 def test_privacy_of_embedded_objects(cps_subsample):
     calc = Calculator(policy=Policy(),
                       records=Records.cps_constructor(data=cps_subsample))

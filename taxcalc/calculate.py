@@ -1039,7 +1039,6 @@ class Calculator(object):
         Returns
         -------
         graph that is a bokeh.plotting figure object
-
         """
         # check that two Calculator objects are comparable
         assert isinstance(calc, Calculator)
