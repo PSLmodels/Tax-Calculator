@@ -112,7 +112,7 @@ def fixture_reform_xx():
             '_AGI_surtax_trt': [0.5],
             '_ID_AmountCap_rt': [0.9],
             '_II_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
-            '_ID_BenefitCap_rt': [0.4],
+            '_ID_BenefitCap_rt': [0.3],
             '_PT_rt7': [.35],
             '_II_em': [1000],
             '_ID_Casualty_hc': [.1],
