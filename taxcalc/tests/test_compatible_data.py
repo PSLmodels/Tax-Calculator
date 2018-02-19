@@ -76,7 +76,7 @@ def fixture_reform_xx():
 
     The provisions in the baseline reform, designated in _reform_xx,
     are chosen to activate parameters that are inactive under current law.
-    For example a phaseout rate for a new credit is inactive is the credit's
+    For example a phaseout rate for a new credit is inactive if the credit's
     amount is set to zero under current law. In order to activate the phaseout
     rate, the credit amount should be set above zero. The provisions interact
     with each other: you may acidentally deactivate one parameter
