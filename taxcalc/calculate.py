@@ -851,7 +851,7 @@ class Calculator(object):
         xtr_graph_plot utility function).  The graph shows the mean
         average tax rate for each expanded-income percentile excluding
         any percentile that includes a filing unit with negative or
-        zero basline expanded income.
+        zero basline (self) expanded income.
 
         Parameters
         ----------
@@ -938,7 +938,8 @@ class Calculator(object):
         of the xtr_graph_plot utility function).  The graph shows the
         dollar-weighted mean percentage change in after-tax expanded income
         for each expanded-income percentile excluding any percentile that
-        includes a filing unit with negative or zero basline expanded income.
+        includes a filing unit with negative or zero basline (self) expanded
+        income.
 
         Parameters
         ----------
