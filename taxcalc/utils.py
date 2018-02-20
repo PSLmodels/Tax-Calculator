@@ -119,16 +119,16 @@ QUINTILE_ROW_NAMES = ['0-20', '20-40', '40-60', '60-80', '80-100',
                       'all',
                       '80-90', '90-95', '95-99', 'Top 1%']
 
-WEBAPP_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                      199999, 499999, 1000000, 9e99]
+STANDARD_ROW_NAMES = ['<$0K', '$0-10K', '$10-20K', '$20-30K', '$30-40K',
+                      '$40-50K', '$50-75K', '$75-100K',
+                      '$100-200K', '$200-500K',
+                      '$500-1000K', '>$1000K', 'all']
 
-WEBBIN_ROW_NAMES = ['<$10K', '$10-20K', '$20-30K', '$30-40K',
-                    '$40-50K', '$50-75K', '$75-100K',
-                    '$100-200K', '$200-500K',
-                    '$500-1000K', '>$1000K', 'all']
+STANDARD_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999,
+                        74999, 99999, 199999, 499999, 1000000, 9e99]
 
-LARGE_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-                     200000, 9e99]
+LARGE_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999,
+                     74999, 99999, 200000, 9e99]
 
 SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
                      49999, 74999, 99999, 199999, 499999, 999999, 1499999,
@@ -194,7 +194,7 @@ def add_income_bins(pdf, income_measure,
         specifies income variable used to construct bins
 
     bin_type: String, optional
-        options for input: 'webapp', 'tpc', 'soi'
+        options for input: 'standard', 'tpc', 'soi'
         default: 'soi'
 
     bins: iterable of scalars, optional income breakpoints
@@ -212,8 +212,8 @@ def add_income_bins(pdf, income_measure,
         the original input plus the added 'bin' column
     """
     if not bins:
-        if bin_type == 'webapp':
-            bins = WEBAPP_INCOME_BINS
+        if bin_type == 'standard':
+            bins = STANDARD_INCOME_BINS
         elif bin_type == 'tpc':
             bins = LARGE_INCOME_BINS
         elif bin_type == 'soi':
@@ -252,7 +252,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         call like this: vdf = calc.dataframe(STATS_VARIABLES)
 
     groupby : String object
-        options for input: 'weighted_deciles', 'webapp_income_bins',
+        options for input: 'weighted_deciles', 'standard_income_bins',
                            'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
     NOTE: when groupby is 'weighted_deciles', the returned table has three
@@ -329,7 +329,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # main logic of create_distribution_table
     assert isinstance(vdf, pd.DataFrame)
     assert (groupby == 'weighted_deciles' or
-            groupby == 'webapp_income_bins' or
+            groupby == 'standard_income_bins' or
             groupby == 'large_income_bins' or
             groupby == 'small_income_bins')
     assert result_type == 'weighted_sum' or result_type == 'weighted_avg'
@@ -344,8 +344,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
         pdf = add_quantile_bins(res, income_measure, 10)
-    elif groupby == 'webapp_income_bins':
-        pdf = add_income_bins(res, income_measure, bin_type='webapp')
+    elif groupby == 'standard_income_bins':
+        pdf = add_income_bins(res, income_measure, bin_type='standard')
     elif groupby == 'large_income_bins':
         pdf = add_income_bins(res, income_measure, bin_type='tpc')
     elif groupby == 'small_income_bins':
@@ -396,7 +396,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
            Calculator.dataframe method
 
     groupby : String object
-        options for input: 'weighted_deciles', 'webapp_income_bins',
+        options for input: 'weighted_deciles', 'standard_income_bins',
                            'large_income_bins', 'small_income_bins'
         specifies kind of bins used to group filing units
     NOTE: when groupby is 'weighted_deciles', the returned table has three
@@ -468,8 +468,8 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         # add bin column to res2 given specified groupby and income_measure
         if groupby == 'weighted_deciles':
             pdf = add_quantile_bins(res2, income_measure, 10)
-        elif groupby == 'webapp_income_bins':
-            pdf = add_income_bins(res2, income_measure, bin_type='webapp')
+        elif groupby == 'standard_income_bins':
+            pdf = add_income_bins(res2, income_measure, bin_type='standard')
         elif groupby == 'large_income_bins':
             pdf = add_income_bins(res2, income_measure, bin_type='tpc')
         elif groupby == 'small_income_bins':
@@ -515,7 +515,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     assert isinstance(vdf1, pd.DataFrame)
     assert isinstance(vdf2, pd.DataFrame)
     assert (groupby == 'weighted_deciles' or
-            groupby == 'webapp_income_bins' or
+            groupby == 'standard_income_bins' or
             groupby == 'large_income_bins' or
             groupby == 'small_income_bins')
     assert (income_measure == 'expanded_income' or
