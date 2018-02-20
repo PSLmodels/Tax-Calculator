@@ -72,7 +72,17 @@ TEST_YEAR = 2020
 @pytest.fixture(scope='module', name='reform_xx')
 def fixture_reform_xx():
     """
-    Fixture for reform dictionary where reform starts before TEST_YEAR
+    Fixture for reform dictionary where reform starts before TEST_YEAR.
+
+    The provisions in the baseline reform, designated in _reform_xx,
+    are chosen to activate parameters that are inactive under current law.
+    For example a phaseout rate for a new credit is inactive if the credit's
+    amount is set to zero under current law. In order to activate the phaseout
+    rate, the credit amount should be set above zero. The provisions interact
+    with each other: you may acidentally deactivate one parameter
+    by introducing a provision to activate another. If you find that a pair of
+    parameters are impossible test jointly, add one to the local variable
+    `exempt_from_testing` in `test_compatible_data()` as a last resort.
     """
     assert XX_YEAR < TEST_YEAR
 
@@ -102,7 +112,7 @@ def fixture_reform_xx():
             '_AGI_surtax_trt': [0.5],
             '_ID_AmountCap_rt': [0.9],
             '_II_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
-            '_ID_BenefitCap_rt': [0.4],
+            '_ID_BenefitCap_rt': [0.3],
             '_PT_rt7': [.35],
             '_II_em': [1000],
             '_ID_Casualty_hc': [.1],
