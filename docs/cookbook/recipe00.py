@@ -58,6 +58,11 @@ clp_diagnostic_table = calc1.diagnostic_table(1)
 ref_diagnostic_table = calc2.diagnostic_table(1)
 
 # income-tax distribution for cyr with CLP and REF results side-by-side
+# NOTE: the bottom decile contains filing units with negative or zero
+#       expanded income in the baseline (calc1) Calculator object;
+#       if you want to somehow drop the filing units with non-positive
+#       expanded income, extract the required data from calc1 and calc2
+#       and use the extracted data to construct the table you want.
 dist_table1, dist_table2 = calc1.distribution_tables(calc2)
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
