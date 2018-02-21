@@ -4,6 +4,25 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-0?-?? Release 0.16.2
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- None
+
+**New Features**
+- Add graph of percentage change in after-tax expanded income by baseline expanded-income percentile and include it in `tc --graphs` output and in the Cookbook's basic recipe
+  [[#1890](https://github.com/open-source-economics/Tax-Calculator/pull/1890)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Correct bottom bin name in distribution/difference tables exported to TaxBrain
+  [[#1889](https://github.com/open-source-economics/Tax-Calculator/pull/1889)
+  by Martin Holmer]
+
+
 2018-02-16 Release 0.16.1
 -------------------------
 (last merged pull request is
