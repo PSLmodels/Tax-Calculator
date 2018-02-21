@@ -477,8 +477,13 @@ class Calculator(object):
         Get results from self and calc, sort them based on groupby using
         income_measure, and return tax-difference table as a Pandas dataframe.
         This method leaves the Calculator objects unchanged.
-        Note that some subgroups may contain filing units with negative or
-        zero baseline (self) income.
+        Note that the returned tables have consistent income groups (based
+        on the self income_measure) even though the baseline income_measure
+        in self and the income_measure in calc are different.
+        Note that filing units are put into groupby categories using the
+        specified income_measure in the baseline (self) situation.
+        Also, note that some subgroups may contain filing units with negative
+        or zero baseline (self) income.
 
         Parameters
         ----------
