@@ -980,7 +980,7 @@ class Calculator(object):
                              title='')
         return fig
 
-    def decile_graph(self, calc):
+    def decile_graph(self, calc, set_bottom_decile_result_to_zero=True):
         """
         Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
@@ -1000,6 +1000,12 @@ class Calculator(object):
             where both self and calc have calculated taxes for this year
             before being used by this method
 
+        set_bottom_decile_result_to_zero : boolean
+            specify whether or not bottom decile (which contains filing
+            units with non-positive expanded income) result is shown in the
+            graph (default value is True; set to False to show the bottom
+            decile result)
+
         Returns
         -------
         graph that is a bokeh.plotting figure object
@@ -1014,6 +1020,8 @@ class Calculator(object):
                                            tax_to_diff='combined')
         # construct data for graph
         data = dec_graph_data(diff_table, year=self.current_year)
+        if set_bottom_decile_result_to_zero:
+            data['bars'][0]['value'] = 0
         # construct figure from data
         fig = dec_graph_plot(data,
                              width=850,
@@ -1023,7 +1031,7 @@ class Calculator(object):
                              title='')
         return fig
 
-    def quintile_graph(self, calc):
+    def quintile_graph(self, calc, set_bottom_quintile_result_to_zero=True):
         """Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
         each expanded-income quintile and subgroups of the top quintile.
@@ -1042,6 +1050,12 @@ class Calculator(object):
             where both self and calc have calculated taxes for this year
             before being used by this method
 
+        set_bottom_quintile_result_to_zero : boolean
+            specify whether or not bottom quintile (which contains filing
+            units with non-positive expanded income) result is shown in the
+            graph (default value is True; set to False to show the bottom
+            quintile result)
+
         Returns
         -------
         graph that is a bokeh.plotting figure object
@@ -1056,6 +1070,8 @@ class Calculator(object):
                                            tax_to_diff='combined')
         # construct data for graph
         data = qin_graph_data(diff_table, year=self.current_year)
+        if set_bottom_quintile_result_to_zero:
+            data['bars'][0]['value'] = 0
         # construct figure from data
         fig = qin_graph_plot(data,
                              width=850,
