@@ -4,7 +4,7 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-0?-?? Release 0.16.2
+2018-03-?? Release 0.16.2
 -------------------------
 (last merged pull request is
 [#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
@@ -20,6 +20,9 @@ for a complete commit history.
 **Bug Fixes**
 - Correct bottom bin name in distribution/difference tables exported to TaxBrain
   [[#1889](https://github.com/open-source-economics/Tax-Calculator/pull/1889)
+  by Martin Holmer]
+- Add missing check of equality of `BEN_*_value` parameters in baseline and reform Calculator objects when using `expanded_income` in tables or graphs
+  [[#1894](https://github.com/open-source-economics/Tax-Calculator/pull/1894)
   by Martin Holmer]
 
 
