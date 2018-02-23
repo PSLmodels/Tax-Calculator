@@ -1294,6 +1294,8 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.array_len == self.array_len
         assert calc.current_year == self.current_year
+        assert np.allclose(calc.consump_benval_params(),
+                           self.consump_benval_params())
         # extract data from self and calc
         records_variables = ['s006', 'combined', 'expanded_income']
         df1 = self.dataframe(records_variables)
