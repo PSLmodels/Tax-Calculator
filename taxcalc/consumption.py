@@ -109,3 +109,10 @@ class Consumption(ParametersBase):
             records_var = getattr(records, var)
             mpc_var = getattr(self, 'MPC_{}'.format(var))
             records_var[:] += mpc_var * income_change
+
+    def benval_params(self):
+        """
+        Returns list of BEN_*_value parameter values
+        """
+        return [getattr(self, 'BEN_{}_value'.format(var))
+                for var in Consumption.BENEFIT_VARS]

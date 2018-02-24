@@ -116,20 +116,18 @@ class Calculator(object):
             self.__consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
             self.__consumption = copy.deepcopy(consumption)
-            while self.__consumption.current_year < self.__policy.current_year:
-                next_year = self.__consumption.current_year + 1
-                self.__consumption.set_year(next_year)
         else:
             raise ValueError('consumption must be None or Consumption object')
+        if self.__consumption.current_year < self.__policy.current_year:
+            self.__consumption.set_year(self.__policy.current_year)
         if behavior is None:
             self.__behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
             self.__behavior = copy.deepcopy(behavior)
-            while self.__behavior.current_year < self.__policy.current_year:
-                next_year = self.__behavior.current_year + 1
-                self.__behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
+        if self.__behavior.current_year < self.__policy.current_year:
+            self.__behavior.set_year(self.__policy.current_year)
         current_year_is_data_year = (
             self.__records.current_year == self.__records.data_year)
         if sync_years and current_year_is_data_year:
@@ -293,6 +291,13 @@ class Calculator(object):
         """
         return getattr(self.__consumption, param_name)
 
+    def consump_benval_params(self):
+        """
+        Return list of benefit-consumption-value parameter values
+        in embedded Consumption object.
+        """
+        return self.__consumption.benval_params()
+
     def behavior_has_response(self):
         """
         Return True if embedded Behavior object has response;
@@ -453,6 +458,9 @@ class Calculator(object):
         else:
             assert calc.current_year == self.current_year
             assert calc.array_len == self.array_len
+            if income_measure == 'expanded_income':
+                assert np.allclose(self.consump_benval_params(),
+                                   calc.consump_benval_params())
             var_dataframe = calc.dataframe(DIST_VARIABLES)
             if have_same_income_measure(self, calc, income_measure):
                 imeasure = income_measure
@@ -504,6 +512,9 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
+        if income_measure == 'expanded_income':
+            assert np.allclose(self.consump_benval_params(),
+                               calc.consump_benval_params())
         diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
                                        calc.dataframe(DIFF_VARIABLES),
                                        groupby=groupby,
@@ -1283,6 +1294,8 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.array_len == self.array_len
         assert calc.current_year == self.current_year
+        assert np.allclose(calc.consump_benval_params(),
+                           self.consump_benval_params())
         # extract data from self and calc
         records_variables = ['s006', 'combined', 'expanded_income']
         df1 = self.dataframe(records_variables)
