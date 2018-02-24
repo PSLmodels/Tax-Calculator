@@ -101,7 +101,7 @@ class Records(object):
     CPSCSV_YEAR = 2014
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-    PUF_WEIGHTS_FILENAME = 'puf_weights.csv'
+    PUF_WEIGHTS_FILENAME = 'puf_weights.csv.gz'
     PUF_RATIOS_FILENAME = 'puf_ratios.csv'
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
