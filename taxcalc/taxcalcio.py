@@ -195,7 +195,7 @@ class TaxCalcIO(object):
             delete_file(self._output_filename.replace('.csv', '-tab.text'))
             delete_file(self._output_filename.replace('.csv', '-atr.html'))
             delete_file(self._output_filename.replace('.csv', '-mtr.html'))
-            delete_file(self._output_filename.replace('.csv', '-dec.html'))
+            delete_file(self._output_filename.replace('.csv', '-pch.html'))
         # initialize variables whose values are set in init method
         self.behavior_has_any_response = False
         self.calc = None
@@ -642,24 +642,6 @@ class TaxCalcIO(object):
         Write graphs to HTML files.
         """
         pos_wght_sum = self.calc.total_weight() > 0.0
-        # income-change-by-decile graph
-        dec_fname = self._output_filename.replace('.csv', '-dec.html')
-        dec_title = 'Income Change by Income Decile'
-        if pos_wght_sum:
-            fig = self.calc_base.decile_graph(self.calc)
-            write_graph_file(fig, dec_fname, dec_title)
-        else:
-            reason = 'No graph because sum of weights is not positive'
-            TaxCalcIO.write_empty_graph_file(dec_fname, dec_title, reason)
-        # income-change-by-quintile graph
-        qin_fname = self._output_filename.replace('.csv', '-qin.html')
-        qin_title = 'Income Change by Income Quintile'
-        if pos_wght_sum:
-            fig = self.calc_base.quintile_graph(self.calc)
-            write_graph_file(fig, qin_fname, qin_title)
-        else:
-            reason = 'No graph because sum of weights is not positive'
-            TaxCalcIO.write_empty_graph_file(qin_fname, qin_title, reason)
         # average-tax-rate graph
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
@@ -679,6 +661,15 @@ class TaxCalcIO(object):
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(mtr_fname, mtr_title, reason)
+        # percentage-aftertax-income-change graph
+        pch_fname = self._output_filename.replace('.csv', '-pch.html')
+        pch_title = 'PCH by Income Percentile'
+        if pos_wght_sum:
+            fig = self.calc_base.pch_graph(self.calc)
+            write_graph_file(fig, pch_fname, pch_title)
+        else:
+            reason = 'No graph because sum of weights is not positive'
+            TaxCalcIO.write_empty_graph_file(pch_fname, pch_title, reason)
 
     @staticmethod
     def write_empty_graph_file(fname, title, reason):
