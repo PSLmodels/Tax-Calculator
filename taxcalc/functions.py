@@ -245,16 +245,12 @@ def Adj(e03150, e03210, c03260,
                     (1. - ALD_Tuition_hc) * e03230 +
                     (1. - ALD_DomesticProduction_hc) * e03240 +
                     (1. - ALD_HSADeduction_hc) * e03290 +
+                    (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
+                    (1. - ALD_IRAContributions_hc) * e03150 +
+                    (1. - ALD_KEOGH_SEP_hc) * e03300 +
                     care_deduction)
     # add in Form 1040 adjustments that are not included in expanded income:
-    c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-                             # deductible IRA contributions
-                             (1. - ALD_IRAContributions_hc) * e03150 +
-                             (1. - ALD_KEOGH_SEP_hc) * e03300)
-    # FUTURE: move e03270 term into c02900_in_ei after
-    #         health-insurance-premium imputations are available
-    # FUTURE: move e03150 and e03300 term into c02900_in_ei after
-    #         pension-contribution imputations are available
+    c02900 = c02900_in_ei
     return (c02900, c02900_in_ei)
 
 
