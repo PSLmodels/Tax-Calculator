@@ -269,7 +269,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
-             ALD_BusinessLosses_c, MARS, c02900,
+             ALD_BusinessLosses_c, MARS,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
