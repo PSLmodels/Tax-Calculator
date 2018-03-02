@@ -170,7 +170,7 @@ def Adj(e03150, e03210, c03260,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
-        c02900, c02900_in_ei):
+        c02900):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
 
@@ -231,27 +231,23 @@ def Adj(e03150, e03210, c03260,
     Returns
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
-
-    c02900_in_ei : total adjustments included in expanded income
     """
     # Form 2555 foreign earned income deduction is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
-    c02900_in_ei = ((1. - ALD_StudentLoan_hc) * e03210 +
-                    c03260 +
-                    (1. - ALD_EarlyWithdraw_hc) * e03400 +
-                    (1. - ALD_AlimonyPaid_hc) * e03500 +
-                    (1. - ALD_AlimonyReceived_hc) * e00800 +
-                    (1. - ALD_EducatorExpenses_hc) * e03220 +
-                    (1. - ALD_Tuition_hc) * e03230 +
-                    (1. - ALD_DomesticProduction_hc) * e03240 +
-                    (1. - ALD_HSADeduction_hc) * e03290 +
-                    (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-                    (1. - ALD_IRAContributions_hc) * e03150 +
-                    (1. - ALD_KEOGH_SEP_hc) * e03300 +
-                    care_deduction)
-    # add in Form 1040 adjustments that are not included in expanded income:
-    c02900 = c02900_in_ei
-    return (c02900, c02900_in_ei)
+    c02900 = ((1. - ALD_StudentLoan_hc) * e03210 +
+              c03260 +
+              (1. - ALD_EarlyWithdraw_hc) * e03400 +
+              (1. - ALD_AlimonyPaid_hc) * e03500 +
+              (1. - ALD_AlimonyReceived_hc) * e00800 +
+              (1. - ALD_EducatorExpenses_hc) * e03220 +
+              (1. - ALD_Tuition_hc) * e03230 +
+              (1. - ALD_DomesticProduction_hc) * e03240 +
+              (1. - ALD_HSADeduction_hc) * e03290 +
+              (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
+              (1. - ALD_IRAContributions_hc) * e03150 +
+              (1. - ALD_KEOGH_SEP_hc) * e03300 +
+              care_deduction)
+    return c02900
 
 
 @iterate_jit(nopython=True)
@@ -273,7 +269,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
-             ALD_BusinessLosses_c, MARS, c02900_in_ei,
+             ALD_BusinessLosses_c, MARS, c02900,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
@@ -306,7 +302,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
     # compute business loss excluded from ymod1 but included in expanded_income
     excluded_loss = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
-    c02900_in_ei += excluded_loss
+    c02900 += excluded_loss
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
@@ -318,7 +314,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1, invinc_agi_ec, c02900_in_ei)
+    return (c01000, c23650, ymod, ymod1, invinc_agi_ec, c02900)
 
 
 @iterate_jit(nopython=True)
@@ -1812,7 +1808,7 @@ def LumpSumTax(DSI, num, XTOT,
 
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
-                 c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
+                 c02900, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
                  e01500, e01700, expanded_income):
     """
     ExpandIncome function calculates and returns expanded_income.
@@ -1827,7 +1823,7 @@ def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
     benefits_value = benefit_value_total - e02300 - e02400
     # compute expanded income as AGI plus several additional amounts
     expanded_income = (c00100 +  # adjusted gross income, AGI
-                       c02900_in_ei +  # ajustments to AGI
+                       c02900 +  # ajustments to AGI
                        e00400 +  # non-taxable interest income
                        invinc_agi_ec +  # AGI-excluded taxable invest income
                        cmbtp +  # AMT taxable income items from Form 6251
