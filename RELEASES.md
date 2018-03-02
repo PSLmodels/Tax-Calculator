@@ -24,6 +24,14 @@ for a complete commit history.
 - Add missing check of equality of `BEN_*_value` parameters in baseline and reform Calculator objects when using `expanded_income` in tables or graphs
   [[#1894](https://github.com/open-source-economics/Tax-Calculator/pull/1894)
   by Martin Holmer]
+- Correct `expanded_income` calculation, which requires new `puf.csv` input file with this information:
+  * Byte size: 54718219
+  * MD5 checksum: e22429702920a0d927a36ea1103ba067
+  [[#1897](https://github.com/open-source-economics/Tax-Calculator/pull/1897)
+   [#1899](https://github.com/open-source-economics/Tax-Calculator/pull/1899)
+   [#1900](https://github.com/open-source-economics/Tax-Calculator/pull/1900)
+   [#1901](https://github.com/open-source-economics/Tax-Calculator/pull/1901)
+  by Martin Holmer and Anderson Frailey]
 
 
 2018-02-16 Release 0.16.1
