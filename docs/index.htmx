@@ -673,8 +673,7 @@ the <kbd>ref3.json</kbd> file, the content of which is:
 <p>The output options illustrated in the following examples generate
 tables of the post-reform level and the reform-induced change in tax
 liability by income deciles as well as graphs of marginal and average
-tax rates by income percentile and graphs of percentage change in
-aftertax income by income deciles and by income quintiles.
+tax rates and percentage change in aftertax income by income percentiles.
 These tables and graphs are meant to provide
 a quick glance at the impact of a reform.  Any serious analysis of a
 reform will involve generating custom tables and graphs using
@@ -733,14 +732,20 @@ this static analysis are written to the
 you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and 
 <kbd>type</kbd> instead of <kbd>cat</kbd>.</p>
 
+<p>Also note that the tables above in example (7) include in the bottom
+decile some filing units who have negative or zero expanded income in
+the baseline.  If you want tables that somehow exclude those filing
+units, use the <kbd>--dump</kbd> option and tabulate your own tables.
+
 <p><pre>
 (8)$ tc cps.csv 2024 --reform ref3.json --graphs
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
-(8)$ ls cps-24*
-cps-24-#-ref3-#-atr.html   cps-24-#-ref3-#-doc.text   cps-24-#-ref3-#.csv
-cps-24-#-ref3-#-dec.html   cps-24-#-ref3-#-mtr.html   cps-24-#-ref3-#-qin.html
+(8)$ ls cps-24-*
+cps-24-#-ref3-#-atr.html	cps-24-#-ref3-#-pch.html
+cps-24-#-ref3-#-doc.text	cps-24-#-ref3-#.csv
+cps-24-#-ref3-#-mtr.html
 </pre></p>
 
 <p>Example (8) is like example (7) except we ask for 2024 static
@@ -758,15 +763,10 @@ in <kbd>cps-24-#-ref3-#-mtr.html</kbd> looks like:</p>
 
 <p><img src="mtr.png" alt="mtr graph"></p>
 
-<p>Here is what the percentage after-tax income change by income
-decile graph in <kbd>cps-24-#-ref3-#-dec.html</kbd> looks like:</p>
+<p>Here is what the percentage change in aftertax income graph
+in <kbd>cps-24-#-ref3-#-pch.html</kbd> looks like:</p>
 
-<p><img src="dec.png" alt="dec graph"></p>
-
-<p>Here is what the percentage after-tax income change by income
-quintile graph in <kbd>cps-24-#-ref3-#-qin.html</kbd> looks like:</p>
-
-<p><img src="qin.png" alt="qin graph"></p>
+<p><img src="pch.png" alt="pch graph"></p>
 
 <p>There is yet another tc CLI output option that writes to the screen
 results from a normative welfare analysis of the specified policy

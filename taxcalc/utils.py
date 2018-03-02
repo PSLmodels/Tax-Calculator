@@ -830,8 +830,7 @@ def mtr_graph_data(vdf, year,
 
 def atr_graph_data(vdf, year,
                    mars='ALL',
-                   atr_measure='combined',
-                   min_avginc=1000):
+                   atr_measure='combined'):
     """
     Prepare average tax rate data needed by xtr_graph_plot utility function.
 
@@ -865,15 +864,11 @@ def atr_graph_data(vdf, year,
 
         - 'combined': sum of average income and payroll tax rates
 
-    min_avginc : float
-        specifies the minimum average expanded income for a percentile to
-        be included in the graph data; value must be positive
-
     Returns
     -------
     dictionary object suitable for passing to xtr_graph_plot utility function
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-locals,too-many-statements
     # check validity of function arguments
     # . . check mars value
     if isinstance(mars, six.string_types):
@@ -898,20 +893,25 @@ def atr_graph_data(vdf, year,
         msg = ('atr_measure="{}" is neither '
                '"itax" nor "ptax" nor "combined"')
         raise ValueError(msg.format(atr_measure))
-    # . . check min_avginc value
-    assert min_avginc > 0
     # . . check vdf object
     assert isinstance(vdf, pd.DataFrame)
+    # determine last bin that contains non-positive expanded_income values
+    weights = vdf['s006']
+    nonpos = np.array(vdf['expanded_income'] <= 0, dtype=bool)
+    nonpos_frac = weights[nonpos].sum() / weights.sum()
+    num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
     # create 'bins' column
     dfx = add_quantile_bins(vdf, 'expanded_income', 100)
+    # specify which 'bins' are included
+    include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
+    included = np.array(include, dtype=bool)
     # split dfx into groups specified by 'bins' column
     gdfx = dfx.groupby('bins', as_index=False)
-    # apply weighted_mean function to percentile-grouped income/tax values
+    # apply weighted_mean function to percentile-grouped values
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates for each included income percentile
-    included = np.array(avginc_series >= min_avginc, dtype=bool)
     atr1_series = np.zeros_like(avginc_series)
     atr1_series[included] = avgtax1_series[included] / avginc_series[included]
     atr2_series = np.zeros_like(avginc_series)
@@ -1010,8 +1010,10 @@ def xtr_graph_plot(data,
     fig = bp.figure(plot_width=width, plot_height=height, title=title)
     fig.title.text_font_size = '12pt'
     lines = data['lines']
-    fig.line(lines.index, lines.base, line_color='blue', legend='Baseline')
-    fig.line(lines.index, lines.reform, line_color='red', legend='Reform')
+    fig.line(lines.index, lines.base,
+             line_color='blue', line_width=3, legend='Baseline')
+    fig.line(lines.index, lines.reform,
+             line_color='red', line_width=3, legend='Reform')
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     if xlabel == '':
         xlabel = data['xlabel']
@@ -1033,6 +1035,124 @@ def xtr_graph_plot(data,
     fig.legend.glyph_height = 14
     fig.legend.spacing = 5
     fig.legend.padding = 5
+    return fig
+
+
+def pch_graph_data(vdf, year):
+    """
+    Prepare percentage change in after-tax expanded income data needed by
+    pch_graph_plot utility function.
+
+    Parameters
+    ----------
+    vdf : a Pandas DataFrame object containing variables
+        (See Calculator.pch_graph method for required elements of vdf.)
+
+    year : integer
+        specifies calendar year of the data in vdf
+
+    Returns
+    -------
+    dictionary object suitable for passing to pch_graph_plot utility function
+    """
+    # pylint: disable=too-many-locals
+    # check validity of function arguments
+    assert isinstance(vdf, pd.DataFrame)
+    # determine last bin that contains non-positive expanded_income values
+    weights = vdf['s006']
+    nonpos = np.array(vdf['expanded_income'] <= 0, dtype=bool)
+    nonpos_frac = weights[nonpos].sum() / weights.sum()
+    num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
+    # create 'bins' column
+    dfx = add_quantile_bins(vdf, 'expanded_income', 100)
+    # specify which 'bins' are included
+    include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
+    included = np.array(include, dtype=bool)
+    # split dfx into groups specified by 'bins' column
+    gdfx = dfx.groupby('bins', as_index=False)
+    # apply weighted_mean function to percentile-grouped values
+    avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
+    change_series = gdfx.apply(weighted_mean, 'chg_aftinc')
+    # compute percentage change statistic each included income percentile
+    pch_series = np.zeros_like(avginc_series)
+    pch_series[included] = change_series[included] / avginc_series[included]
+    # construct DataFrame containing the pch_series expressed as percent
+    line = pd.DataFrame()
+    line['pch'] = pch_series * 100
+    # include only percentiles with average income no less than min_avginc
+    line = line[included]
+    # construct dictionary containing plot line and auto-generated labels
+    data = dict()
+    data['line'] = line
+    data['ylabel'] = 'Change in After-Tax Expanded Income'
+    data['xlabel'] = 'Baseline Expanded-Income Percentile'
+    title_str = ('Percentage Change in After-Tax Expanded Income '
+                 'by Income Percentile')
+    title_str = '{} for {}'.format(title_str, year)
+    data['title'] = title_str
+    return data
+
+
+def pch_graph_plot(data,
+                   width=850,
+                   height=500,
+                   xlabel='',
+                   ylabel='',
+                   title=''):
+    """
+    Plot percentage change in after-tax expanded income using data returned
+    from the pch_graph_data function.
+
+    Parameters
+    ----------
+    data : dictionary object returned from ?tr_graph_data() utility function
+
+    width : integer
+        width of plot expressed in pixels
+
+    height : integer
+        height of plot expressed in pixels
+
+    xlabel : string
+        x-axis label; if '', then use label generated by pch_graph_data
+
+    ylabel : string
+        y-axis label; if '', then use label generated by pch_graph_data
+
+    title : string
+        graph title; if '', then use title generated by pch_graph_data
+
+    Returns
+    -------
+    bokeh.plotting figure object containing a raster graphics plot
+
+    Notes
+    -----
+    See Notes to xtr_graph_plot function.
+    """
+    # pylint: disable=too-many-arguments
+    if title == '':
+        title = data['title']
+    fig = bp.figure(plot_width=width, plot_height=height, title=title)
+    fig.title.text_font_size = '12pt'
+    fig.line(data['line'].index, data['line'].pch,
+             line_color='blue', line_width=3)
+    fig.circle(0, 0, visible=False)  # force zero to be included on y axis
+    zero_grid_line_range = range(0, 101)
+    zero_grid_line_height = [0] * len(zero_grid_line_range)
+    fig.line(zero_grid_line_range, zero_grid_line_height,
+             line_color='black', line_width=1)
+    if xlabel == '':
+        xlabel = data['xlabel']
+    fig.xaxis.axis_label = xlabel
+    fig.xaxis.axis_label_text_font_size = '12pt'
+    fig.xaxis.axis_label_text_font_style = 'normal'
+    if ylabel == '':
+        ylabel = data['ylabel']
+    fig.yaxis.axis_label = ylabel
+    fig.yaxis.axis_label_text_font_size = '12pt'
+    fig.yaxis.axis_label_text_font_style = 'normal'
+    fig.yaxis[0].formatter = PrintfTickFormatter(format='%+.1f%%')
     return fig
 
 

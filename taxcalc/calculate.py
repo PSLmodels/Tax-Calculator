@@ -38,6 +38,7 @@ from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            ce_aftertax_expanded_income,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
                            dec_graph_data, dec_graph_plot,
+                           pch_graph_data, pch_graph_plot,
                            qin_graph_data, qin_graph_plot)
 # import pdb
 
@@ -116,20 +117,18 @@ class Calculator(object):
             self.__consumption = Consumption(start_year=policy.start_year)
         elif isinstance(consumption, Consumption):
             self.__consumption = copy.deepcopy(consumption)
-            while self.__consumption.current_year < self.__policy.current_year:
-                next_year = self.__consumption.current_year + 1
-                self.__consumption.set_year(next_year)
         else:
             raise ValueError('consumption must be None or Consumption object')
+        if self.__consumption.current_year < self.__policy.current_year:
+            self.__consumption.set_year(self.__policy.current_year)
         if behavior is None:
             self.__behavior = Behavior(start_year=policy.start_year)
         elif isinstance(behavior, Behavior):
             self.__behavior = copy.deepcopy(behavior)
-            while self.__behavior.current_year < self.__policy.current_year:
-                next_year = self.__behavior.current_year + 1
-                self.__behavior.set_year(next_year)
         else:
             raise ValueError('behavior must be None or Behavior object')
+        if self.__behavior.current_year < self.__policy.current_year:
+            self.__behavior.set_year(self.__policy.current_year)
         current_year_is_data_year = (
             self.__records.current_year == self.__records.data_year)
         if sync_years and current_year_is_data_year:
@@ -293,6 +292,13 @@ class Calculator(object):
         """
         return getattr(self.__consumption, param_name)
 
+    def consump_benval_params(self):
+        """
+        Return list of benefit-consumption-value parameter values
+        in embedded Consumption object.
+        """
+        return self.__consumption.benval_params()
+
     def behavior_has_response(self):
         """
         Return True if embedded Behavior object has response;
@@ -352,7 +358,7 @@ class Calculator(object):
 
     def diagnostic_table(self, num_years):
         """
-        Generate multi-year diagnostic table;
+        Generate multi-year diagnostic table containing aggregate statistics;
         this method leaves the Calculator object unchanged.
 
         Parameters
@@ -389,9 +395,12 @@ class Calculator(object):
         Get results from self and calc, sort them based on groupby using
         income_measure, manipulate grouped statistics based on result_type,
         and return tables as a pair of Pandas dataframes.
+        This method leaves the Calculator object(s) unchanged.
         Note that the returned tables have consistent income groups (based
-        on the self income_measure) even though the income_measure in self
-        and the income_measure in calc are different.
+        on the self income_measure) even though the baseline income_measure
+        in self and the income_measure in calc are different.
+        Also, note that some subgroups may contain filing units with negative
+        or zero baseline (self) income.
 
         Parameters
         ----------
@@ -453,6 +462,9 @@ class Calculator(object):
         else:
             assert calc.current_year == self.current_year
             assert calc.array_len == self.array_len
+            if income_measure == 'expanded_income':
+                assert np.allclose(self.consump_benval_params(),
+                                   calc.consump_benval_params())
             var_dataframe = calc.dataframe(DIST_VARIABLES)
             if have_same_income_measure(self, calc, income_measure):
                 imeasure = income_measure
@@ -472,6 +484,14 @@ class Calculator(object):
         """
         Get results from self and calc, sort them based on groupby using
         income_measure, and return tax-difference table as a Pandas dataframe.
+        This method leaves the Calculator objects unchanged.
+        Note that the returned tables have consistent income groups (based
+        on the self income_measure) even though the baseline income_measure
+        in self and the income_measure in calc are different.
+        Note that filing units are put into groupby categories using the
+        specified income_measure in the baseline (self) situation.
+        Also, note that some subgroups may contain filing units with negative
+        or zero baseline (self) income.
 
         Parameters
         ----------
@@ -504,6 +524,9 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
+        if income_measure == 'expanded_income':
+            assert np.allclose(self.consump_benval_params(),
+                               calc.consump_benval_params())
         diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
                                        calc.dataframe(DIFF_VARIABLES),
                                        groupby=groupby,
@@ -835,15 +858,16 @@ class Calculator(object):
 
     def atr_graph(self, calc,
                   mars='ALL',
-                  atr_measure='combined',
-                  min_avginc=1000):
+                  atr_measure='combined'):
         """
         Create average tax rate graph that can be written to an HTML
         file (using the write_graph_file utility function) or shown on
         the screen immediately in an interactive or notebook session
         (following the instructions in the documentation of the
         xtr_graph_plot utility function).  The graph shows the mean
-        average tax rate for each expanded-income percentile.
+        average tax rate for each expanded-income percentile excluding
+        any percentile that includes a filing unit with negative or
+        zero basline (self) expanded income.
 
         Parameters
         ----------
@@ -874,10 +898,6 @@ class Calculator(object):
 
             - 'combined': sum of average income and payroll tax rates
 
-        min_avginc : float
-            specifies the minimum average expanded income for a percentile to
-            be included in the graph data; value must be positive
-
         Returns
         -------
         graph that is a bokeh.plotting figure object
@@ -891,7 +911,6 @@ class Calculator(object):
         assert (atr_measure == 'combined' or
                 atr_measure == 'itax' or
                 atr_measure == 'ptax')
-        assert min_avginc > 0
         # extract needed output that is assumed unchanged by reform from self
         record_variables = ['s006']
         if mars != 'ALL':
@@ -915,8 +934,7 @@ class Calculator(object):
         data = atr_graph_data(vdf,
                               year=self.current_year,
                               mars=mars,
-                              atr_measure=atr_measure,
-                              min_avginc=min_avginc)
+                              atr_measure=atr_measure)
         # construct figure from data
         fig = xtr_graph_plot(data,
                              width=850,
@@ -927,7 +945,53 @@ class Calculator(object):
                              legendloc='bottom_right')
         return fig
 
-    def decile_graph(self, calc):
+    def pch_graph(self, calc):
+        """
+        Create percentage change in after-tax expanded income graph that
+        can be written to an HTML file (using the write_graph_file utility
+        function) or shown on the screen immediately in an interactive or
+        notebook session (following the instructions in the documentation
+        of the xtr_graph_plot utility function).  The graph shows the
+        dollar-weighted mean percentage change in after-tax expanded income
+        for each expanded-income percentile excluding any percentile that
+        includes a filing unit with negative or zero basline (self) expanded
+        income.
+
+        Parameters
+        ----------
+        calc : Calculator object
+            calc represents the reform while self represents the baseline,
+            where both self and calc have calculated taxes for this year
+            before being used by this method
+
+        Returns
+        -------
+        graph that is a bokeh.plotting figure object
+        """
+        # check that two Calculator objects are comparable
+        assert isinstance(calc, Calculator)
+        assert calc.current_year == self.current_year
+        assert calc.array_len == self.array_len
+        # extract needed output from baseline and reform Calculator objects
+        vdf1 = self.dataframe(['s006', 'expanded_income', 'aftertax_income'])
+        vdf2 = calc.dataframe(['s006', 'aftertax_income'])
+        assert np.allclose(vdf1['s006'], vdf2['s006'])
+        vdf = pd.DataFrame()
+        vdf['s006'] = vdf1['s006']
+        vdf['expanded_income'] = vdf1['expanded_income']
+        vdf['chg_aftinc'] = vdf2['aftertax_income'] - vdf1['aftertax_income']
+        # construct data for graph
+        data = pch_graph_data(vdf, year=self.current_year)
+        # construct figure from data
+        fig = pch_graph_plot(data,
+                             width=850,
+                             height=500,
+                             xlabel='',
+                             ylabel='',
+                             title='')
+        return fig
+
+    def decile_graph(self, calc, set_bottom_decile_result_to_zero=True):
         """
         Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
@@ -937,6 +1001,8 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
+        Note that some deciles may contain filing units with negative
+        or zero baseline (self) expanded income.
 
         Parameters
         ----------
@@ -944,6 +1010,12 @@ class Calculator(object):
             calc represents the reform while self represents the baseline,
             where both self and calc have calculated taxes for this year
             before being used by this method
+
+        set_bottom_decile_result_to_zero : boolean
+            specify whether or not bottom decile (which contains filing
+            units with non-positive expanded income) result is shown in the
+            graph (default value is True; set to False to show the bottom
+            decile result)
 
         Returns
         -------
@@ -959,6 +1031,8 @@ class Calculator(object):
                                            tax_to_diff='combined')
         # construct data for graph
         data = dec_graph_data(diff_table, year=self.current_year)
+        if set_bottom_decile_result_to_zero:
+            data['bars'][0]['value'] = 0
         # construct figure from data
         fig = dec_graph_plot(data,
                              width=850,
@@ -968,9 +1042,8 @@ class Calculator(object):
                              title='')
         return fig
 
-    def quintile_graph(self, calc):
-        """
-        Create graph that shows percentage change in aftertax expanded
+    def quintile_graph(self, calc, set_bottom_quintile_result_to_zero=True):
+        """Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
         each expanded-income quintile and subgroups of the top quintile.
         The graph can be written to an HTML file (using the
@@ -978,6 +1051,8 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
+        Note that some quintiles may contain filing units with negative
+        or zero baseline (self) expanded income.
 
         Parameters
         ----------
@@ -985,6 +1060,12 @@ class Calculator(object):
             calc represents the reform while self represents the baseline,
             where both self and calc have calculated taxes for this year
             before being used by this method
+
+        set_bottom_quintile_result_to_zero : boolean
+            specify whether or not bottom quintile (which contains filing
+            units with non-positive expanded income) result is shown in the
+            graph (default value is True; set to False to show the bottom
+            quintile result)
 
         Returns
         -------
@@ -1000,6 +1081,8 @@ class Calculator(object):
                                            tax_to_diff='combined')
         # construct data for graph
         data = qin_graph_data(diff_table, year=self.current_year)
+        if set_bottom_quintile_result_to_zero:
+            data['bars'][0]['value'] = 0
         # construct figure from data
         fig = qin_graph_plot(data,
                              width=850,
@@ -1299,6 +1382,8 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.array_len == self.array_len
         assert calc.current_year == self.current_year
+        assert np.allclose(calc.consump_benval_params(),
+                           self.consump_benval_params())
         # extract data from self and calc
         records_variables = ['s006', 'combined', 'expanded_income']
         df1 = self.dataframe(records_variables)

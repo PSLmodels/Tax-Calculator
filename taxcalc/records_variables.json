@@ -641,7 +641,7 @@
     },
     "expanded_income": {
       "type": "float",
-      "desc": "Broad income measure",
+      "desc": "Broad income measure that includes benefit_value_total",
       "form": {"2013-20??": "calculated variable"}
     },
     "iitax": {
@@ -1082,12 +1082,12 @@
     },
     "benefit_cost_total": {
       "type": "float",
-      "desc": "Government cost of all benefits recieved by tax unit",
+      "desc": "Government cost of all benefits received by tax unit",
       "form": {"2013-20??": "calculated variable"}
     },
     "benefit_value_total": {
       "type": "float",
-      "desc": "Consumption value of all benefits recieved by tax unit",
+      "desc": "Consumption value of all benefits received by tax unit, which is included in expanded_income",
       "form": {"2013-20??": "calculated variable"}
     }
   }
