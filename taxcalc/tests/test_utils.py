@@ -87,17 +87,17 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                0.02,
-                0.58,
-                0.72,
-                0.67,
-                0.78,
-                0.77,
-                0.64,
-                0.56,
-                0.17,
-                0.53]
-    tabcol = 'perc_aftertax'
+                -0.02,
+                -0.58,
+                -0.72,
+                -0.67,
+                -0.78,
+                -0.77,
+                -0.64,
+                -0.56,
+                -0.17,
+                -0.53]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -112,19 +112,19 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                0.02,
-                0.58,
-                0.72,
-                0.67,
-                0.78,
-                0.77,
-                0.64,
-                0.56,
-                0.22,
-                0.08,
-                0.06,
-                0.53]
-    tabcol = 'perc_aftertax'
+                -0.02,
+                -0.58,
+                -0.72,
+                -0.67,
+                -0.78,
+                -0.77,
+                -0.64,
+                -0.56,
+                -0.22,
+                -0.08,
+                -0.06,
+                -0.53]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -139,26 +139,26 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                0.01,
-                0.03,
-                0.24,
-                0.78,
-                0.66,
-                0.76,
-                0.67,
-                0.78,
-                0.77,
-                0.64,
-                0.56,
-                0.22,
-                0.08,
-                0.08,
-                0.07,
-                0.05,
-                0.03,
+                -0.01,
+                -0.03,
+                -0.24,
+                -0.78,
+                -0.66,
+                -0.76,
+                -0.67,
+                -0.78,
+                -0.77,
+                -0.64,
+                -0.56,
+                -0.22,
+                -0.08,
+                -0.08,
+                -0.07,
+                -0.05,
+                -0.03,
                 0.00,
-                0.53]
-    tabcol = 'perc_aftertax'
+                -0.53]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -217,21 +217,21 @@ def test_create_tables(cps_subsample):
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
     expected = [0.00,
-                0.02,
-                0.63,
-                0.72,
-                0.69,
-                0.77,
-                0.75,
-                0.75,
-                0.62,
-                0.59,
-                0.28,
-                0.53,
-                0.52,
-                0.23,
-                0.06]
-    tabcol = 'perc_aftertax'
+                -0.02,
+                -0.63,
+                -0.72,
+                -0.69,
+                -0.77,
+                -0.75,
+                -0.75,
+                -0.62,
+                -0.59,
+                -0.28,
+                -0.53,
+                -0.52,
+                -0.23,
+                -0.06]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True

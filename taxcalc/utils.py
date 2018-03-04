@@ -96,7 +96,6 @@ DIFF_TABLE_COLUMNS = ['count',
                       'mean',
                       'tot_change',
                       'share_of_change',
-                      'perc_aftertax',
                       'pc_aftertaxinc']
 
 DIFF_TABLE_LABELS = ['All Tax Units',
@@ -107,17 +106,12 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Average Tax Change',
                      'Total Tax Difference',
                      'Share of Overall Change',
-                     'Change as % of After-Tax Income',
                      '% Change in After-Tax Income']
 
 DECILE_ROW_NAMES = ['0-10n', '0-10p', '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
                     'all',
                     '90-95', '95-99', 'Top 1%']
-
-QUINTILE_ROW_NAMES = ['0-20', '20-40', '40-60', '60-80', '80-100',
-                      'all',
-                      '80-90', '90-95', '95-99', 'Top 1%']
 
 STANDARD_ROW_NAMES = ['<$0K', '$0-10K', '$10-20K', '$20-30K', '$30-40K',
                       '$40-50K', '$50-75K', '$75-100K',
@@ -258,7 +252,10 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
           extra rows containing top-decile detail consisting of statistics
           for the 0.90-0.95 quantile range (bottom half of top decile),
           for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent).
+          for the 0.99-1.00 quantile range (top one percent); and the returned
+          table may have a fourth extra row that shows bottom-decile detail
+          with the bottom decile split into filing units with non-positive and
+          positive values of the specified income_measure variable.
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
@@ -413,7 +410,10 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
           extra rows containing top-decile detail consisting of statistics
           for the 0.90-0.95 quantile range (bottom half of top decile),
           for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent).
+          for the 0.99-1.00 quantile range (top one percent); and the returned
+          table may have a fourth extra row that shows bottom-decile detail
+          with the bottom decile split into filing units with non-positive and
+          positive values of the specified income_measure variable.
 
     income_measure : String object
         options for input: 'expanded_income', 'c00100'(AGI)
@@ -552,16 +552,14 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     res2['atinc1'] = res1['aftertax_income']
     res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
-    diffs['perc_aftertax'] = diffs['tot_change'] / diffs['atinc1']
-    diffs['perc_aftertax'].replace(to_replace=np.nan, value=0, inplace=True)
     diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
     diffs['pc_aftertaxinc'].replace(to_replace=np.nan, value=0, inplace=True)
     # delete intermediate atinc1 and atinc2 columns
     del diffs['atinc1']
     del diffs['atinc2']
     # convert some columns to percentages
-    percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
-                       'perc_aftertax', 'pc_aftertaxinc']
+    percent_columns = ['perc_inc', 'perc_cut',
+                       'share_of_change', 'pc_aftertaxinc']
     for col in percent_columns:
         diffs[col] *= 100.0
     # set print display format for float table elements
@@ -1585,168 +1583,6 @@ def dec_graph_plot(data,
             bheight *= 0.4
         elif blabel == 'Top 1%':
             bheight *= 0.1
-        fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
-                 y=(yidx + 0.5),   # y-coordinate of center of the rectangle
-                 width=abs(bval),  # width of the rectangle
-                 height=bheight,   # height of the rectangle
-                 color=bcolor)
-        yidx += 1
-    return fig
-
-
-def qin_graph_data(diff_table, year):
-    """
-    Prepare data needed by qin_graph_plot utility function.
-
-    Parameters
-    ----------
-    diff_table : a Pandas DataFrame object returned from the
-        Calculator class difference_table method
-
-    year : integer
-        specifies calendar year of the data in the diff_table
-
-    Returns
-    -------
-    dictionary object suitable for passing to qin_graph_plot utility function
-    """
-    # aggregate decile+details diff_table into quintile+details diff
-    qdiff = dict()
-    for qin in range(0, 5):
-        dec = 2 * qin
-        qdiff[qin] = 0.5 * (diff_table['pc_aftertaxinc'][dec] +
-                            diff_table['pc_aftertaxinc'][dec + 1])
-    qdiff[5] = diff_table['pc_aftertaxinc'][10]  # all
-    qdiff[6] = diff_table['pc_aftertaxinc'][8]  # 80-90 detail
-    qdiff[7] = diff_table['pc_aftertaxinc'][11]  # 90-95 detail
-    qdiff[8] = diff_table['pc_aftertaxinc'][12]  # 95-99 detail
-    qdiff[9] = diff_table['pc_aftertaxinc'][13]  # Top 1% detail
-    assert len(qdiff) == len(QUINTILE_ROW_NAMES)
-    # construct dictionary containing the bar data required by qin_graph_plot
-    bars = dict()
-    nbins = len(qdiff)
-    for idx in range(0, nbins):
-        info = dict()
-        info['label'] = QUINTILE_ROW_NAMES[idx]
-        info['value'] = qdiff[idx]
-        if info['label'] == 'all':
-            info['label'] = '---------'
-            info['value'] = 0
-        bars[idx] = info
-    # construct dictionary containing bar data and auto-generated labels
-    data = dict()
-    data['bars'] = bars
-    xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
-    data['xlabel'] = xlabel
-    ylabel = 'Expanded Income Percentile Group'
-    data['ylabel'] = ylabel
-    title_str = 'Change in After-Tax Income by Income Percentile Group'
-    data['title'] = '{} for {}'.format(title_str, year)
-    return data
-
-
-def qin_graph_plot(data,
-                   width=850,
-                   height=500,
-                   xlabel='',
-                   ylabel='',
-                   title=''):
-    """
-    Plot stacked quintile graph using data returned from the
-    qin_graph_data function.
-
-    Parameters
-    ----------
-    data : dictionary object returned from qin_graph_data() utility function
-
-    width : integer
-        width of plot expressed in pixels
-
-    height : integer
-        height of plot expressed in pixels
-
-    xlabel : string
-        x-axis label; if '', then use label generated by dec_graph_data
-
-    ylabel : string
-        y-axis label; if '', then use label generated by dec_graph_data
-
-    title : string
-        graph title; if '', then use title generated by dec_graph_data
-
-    Returns
-    -------
-    bokeh.plotting figure object containing a raster graphics plot
-
-    Notes
-    -----
-    USAGE EXAMPLE::
-
-      gdata = dec_graph_data(...)
-      gplot = dec_graph_plot(gdata)
-
-    THEN when working interactively in a Python notebook::
-
-      bp.show(gplot)
-
-    OR when executing script using Python command-line interpreter::
-
-      bio.output_file('graph-name.html', title='Change in After-Tax Income')
-      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
-
-    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
-
-    To convert the visualized graph into a PNG-formatted file, click on
-    the "Save" icon on the Toolbar (located in the top-right corner of
-    the visualized graph) and a PNG-formatted file will written to your
-    Download directory.
-
-    The ONLY output option the bokeh.plotting figure has is HTML format,
-    which (as described above) can be converted into a PNG-formatted
-    raster graphics file.  There is no option to make the bokeh.plotting
-    figure generate a vector graphics file such as an EPS file.
-    """
-    # pylint: disable=too-many-arguments,too-many-locals
-    if title == '':
-        title = data['title']
-    bar_keys = sorted(data['bars'].keys())
-    bar_labels = [data['bars'][key]['label'] for key in bar_keys]
-    fig = bp.figure(plot_width=width, plot_height=height, title=title,
-                    y_range=bar_labels)
-    fig.title.text_font_size = '12pt'
-    fig.outline_line_color = None
-    fig.axis.axis_line_color = None
-    fig.axis.minor_tick_line_color = None
-    fig.axis.axis_label_text_font_size = '12pt'
-    fig.axis.axis_label_text_font_style = 'normal'
-    fig.axis.major_label_text_font_size = '12pt'
-    if xlabel == '':
-        xlabel = data['xlabel']
-    fig.xaxis.axis_label = xlabel
-    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+.1f%%')
-    if ylabel == '':
-        ylabel = data['ylabel']
-    fig.yaxis.axis_label = ylabel
-    fig.ygrid.grid_line_color = None
-    # plot thick x-axis grid line at zero
-    fig.line(x=[0, 0], y=[0, 14], line_width=1, line_color='black')
-    # plot bars
-    barheight = 0.8
-    bcolor = 'blue'
-    yidx = 0
-    for idx in bar_keys:
-        bval = data['bars'][idx]['value']
-        blabel = data['bars'][idx]['label']
-        bheight = barheight
-        if blabel == '80-90':
-            bheight *= 0.50
-            bcolor = 'red'
-        if blabel == '90-95':
-            bheight *= 0.25
-        elif blabel == '95-99':
-            bheight *= 0.20
-        elif blabel == 'Top 1%':
-            bheight *= 0.05
         fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
                  y=(yidx + 0.5),   # y-coordinate of center of the rectangle
                  width=abs(bval),  # width of the rectangle
