@@ -1445,7 +1445,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(diff_table, year):
+def dec_graph_data(diff_table, year, hide_negative_incomes=True):
     """
     Prepare data needed by dec_graph_plot utility function.
 
@@ -1464,7 +1464,14 @@ def dec_graph_data(diff_table, year):
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
     nbins = len(DECILE_ROW_NAMES)
-    for idx in range(0, nbins):
+    if hide_negative_incomes:
+        first_bin = 1
+        bottom_size = (diff_table['count'][1] /
+                       (diff_table['count'][0] + diff_table['count'][1]))
+    else:
+        first_bin = 0
+        bottom_size = 1.0
+    for idx in range(first_bin, nbins):
         info = dict()
         info['label'] = DECILE_ROW_NAMES[idx]
         info['value'] = diff_table['pc_aftertaxinc'][idx]
@@ -1475,6 +1482,7 @@ def dec_graph_data(diff_table, year):
     # construct dictionary containing bar data and auto-generated labels
     data = dict()
     data['bars'] = bars
+    data['bottom_bar_size'] = bottom_size
     xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
     data['xlabel'] = xlabel
     ylabel = 'Expanded Income Percentile Group'
@@ -1576,6 +1584,8 @@ def dec_graph_plot(data,
         bval = data['bars'][idx]['value']
         blabel = data['bars'][idx]['label']
         bheight = barheight
+        if yidx == 0:
+            bheight *= data['bottom_bar_size']
         if blabel == '90-95':
             bheight *= 0.5
             bcolor = 'red'

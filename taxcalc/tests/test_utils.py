@@ -988,10 +988,10 @@ def test_dec_qin_graph_plots(cps_subsample):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
-    fig_dec = calc1.decile_graph(calc2)
-    assert fig_dec
-    fig_qin = calc1.quintile_graph(calc2)
-    assert fig_qin
+    fig_dec_hide = calc1.decile_graph(calc2)
+    assert fig_dec_hide
+    fig_dec_show = calc1.decile_graph(calc2, hide_negative_incomes=False)
+    assert fig_dec_show
 
 
 def test_nonsmall_diffs():

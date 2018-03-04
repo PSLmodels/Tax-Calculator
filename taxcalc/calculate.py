@@ -990,7 +990,7 @@ class Calculator(object):
                              title='')
         return fig
 
-    def decile_graph(self, calc):
+    def decile_graph(self, calc, hide_negative_incomes=True):
         """
         Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
@@ -1000,8 +1000,6 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
-        Note that the bottom decile result omits filing units with
-        negative or zero baseline (self) expanded income.
 
         Parameters
         ----------
@@ -1009,6 +1007,17 @@ class Calculator(object):
             calc represents the reform while self represents the baseline,
             where both self and calc have calculated taxes for this year
             before being used by this method
+
+        hide_negative_incomes : boolean
+            if True (which is the default), the bottom table bin containing
+            filing units with non-positive expanded_income is not shown in
+            the graph and the table bin containing filing units with positive
+            expanded_income in the bottom decile is shown with its bar width
+            adjusted to the number of weighted filing units in bottom decile
+            who have positive expanded_income; if False, the bottom table bin
+            containing filing units with non-positive expanded_income is shown,
+            which may be misleading because the percentage change is correctly
+            calculated with a negative divisor.
 
         Returns
         -------
@@ -1023,7 +1032,8 @@ class Calculator(object):
                                            income_measure='expanded_income',
                                            tax_to_diff='combined')
         # construct data for graph
-        data = dec_graph_data(diff_table, year=self.current_year)
+        data = dec_graph_data(diff_table, year=self.current_year,
+                              hide_negative_incomes=hide_negative_incomes)
         # construct figure from data
         fig = dec_graph_plot(data,
                              width=850,
