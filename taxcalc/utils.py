@@ -110,7 +110,7 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Change as % of After-Tax Income',
                      '% Change in After-Tax Income']
 
-DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
+DECILE_ROW_NAMES = ['0-10n', '0-10p', '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
                     'all',
                     '90-95', '95-99', 'Top 1%']
@@ -150,7 +150,7 @@ def weighted_sum(pdf, col_name):
 
 
 def add_quantile_bins(pdf, income_measure, num_bins,
-                      weight_by_income_measure=False, labels=None):
+                      weight_by_income_measure=False):
     """
     Add a column of income bins to specified Pandas DataFrame, pdf, with
     the new column being named 'bins'.  The bins hold equal number of
@@ -173,8 +173,7 @@ def add_quantile_bins(pdf, income_measure, num_bins,
     bin_edges = list(min_cumsum + np.arange(0, (num_bins + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
     bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
-    if not labels:
-        labels = range(1, (num_bins + 1))
+    labels = range(1, (num_bins + 1))
     pdf['bins'] = pd.cut(pdf['cumsum_temp'], bins=bin_edges, labels=labels)
     pdf.drop('cumsum_temp', axis=1, inplace=True)
     return pdf
@@ -272,9 +271,10 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     Notes
     -----
     Taxpayer Characteristics:
-        c04470 : Total itemized deduction
 
-        c00100 : AGI (Defecit)
+        c04470 : Total itemized deductions
+
+        c00100 : AGI
 
         c09600 : Alternative minimum tax
 
@@ -356,6 +356,16 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # append sum row
     row = get_sums(dist_table)[dist_table.columns]
     dist_table = dist_table.append(row)
+    # replace bottom decile row with non-positive and positive rows
+    if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
+        pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
+        pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
+        pdf['bins'] = pd.cut(pdf[income_measure],
+                             bins=[-9e99, 1e-9, 9e99],
+                             labels=[1, 2])
+        gpdfx = pdf.groupby('bins', as_index=False)
+        rows = stat_dataframe(gpdfx)
+        dist_table = pd.concat([rows, dist_table.iloc[1:11]])
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
         pdf = gpdf.get_group(10)  # top decile as its own DataFrame
@@ -365,8 +375,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         pdf['bins'].replace(to_replace=[6, 7, 8, 9],
                             value=[1, 1, 1, 1], inplace=True)
         pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
-        gpdf = pdf.groupby('bins', as_index=False)
-        rows = stat_dataframe(gpdf)
+        gpdfx = pdf.groupby('bins', as_index=False)
+        rows = stat_dataframe(gpdfx)
         dist_table = dist_table.append(rows, ignore_index=True)
     # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
@@ -487,6 +497,16 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         row['perc_inc'] = sums_perc_inc
         row['share_of_change'] = 1.0  # avoid rounding error
         diffs = diffs_without_sums.append(row)
+        # replace bottom decile row with non-positive and positive rows
+        if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
+            pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
+            pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
+            pdf['bins'] = pd.cut(pdf[income_measure],
+                                 bins=[-9e99, 1e-9, 9e99],
+                                 labels=[1, 2])
+            gpdfx = pdf.groupby('bins', as_index=False)
+            rows = stat_dataframe(gpdfx)
+            diffs = pd.concat([rows, diffs.iloc[1:11]])
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame

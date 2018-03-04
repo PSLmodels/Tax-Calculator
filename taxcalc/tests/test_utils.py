@@ -172,7 +172,8 @@ def test_create_tables(cps_subsample):
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
-    expected = [171711,
+    expected = [0,
+                171711,
                 15725179,
                 26767322,
                 33151429,
@@ -193,7 +194,8 @@ def test_create_tables(cps_subsample):
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [0.03,
+    expected = [0.00,
+                0.03,
                 2.94,
                 5.00,
                 6.20,
@@ -214,7 +216,8 @@ def test_create_tables(cps_subsample):
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
-    expected = [0.02,
+    expected = [0.00,
+                0.02,
                 0.63,
                 0.72,
                 0.69,
@@ -235,7 +238,8 @@ def test_create_tables(cps_subsample):
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
-    expected = [-0.02,
+    expected = [0.00,
+                -0.02,
                 -0.63,
                 -0.72,
                 -0.69,
@@ -264,7 +268,8 @@ def test_create_tables(cps_subsample):
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
-    expected = [-58122959,
+    expected = [0,
+                -58122959,
                 -69644449,
                 -67116585,
                 47133880,
@@ -285,7 +290,8 @@ def test_create_tables(cps_subsample):
         print('dist', tabcol)
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [1202,
+    expected = [0,
+                1202,
                 13625,
                 22333,
                 27220,
@@ -306,7 +312,8 @@ def test_create_tables(cps_subsample):
         print('dist', tabcol)
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [795716514,
+    expected = [0,
+                795716514,
                 2643384899,
                 3946422611,
                 5277286335,
@@ -327,7 +334,8 @@ def test_create_tables(cps_subsample):
         print('dist', tabcol)
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [782122416,
+    expected = [0,
+                782122416,
                 2478134056,
                 3682019346,
                 4789142820,
@@ -707,17 +715,9 @@ def test_add_quantile_bins():
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
-    # custom labels
     dfb = add_quantile_bins(dfx, 'expanded_income', 100,
                             weight_by_income_measure=True)
     assert 'bins' in dfb
-    custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-    dfb = add_quantile_bins(dfx, 'expanded_income', 10,
-                            labels=custom_labels)
-    assert 'bins' in dfb
-    bin_labels = dfb['bins'].unique()
-    for lab in bin_labels:
-        assert lab in custom_labels
 
 
 def test_dist_table_sum_row(cps_subsample):
