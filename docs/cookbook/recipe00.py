@@ -58,6 +58,11 @@ clp_diagnostic_table = calc1.diagnostic_table(1)
 ref_diagnostic_table = calc2.diagnostic_table(1)
 
 # income-tax distribution for cyr with CLP and REF results side-by-side
+# NOTE: the bottom decile contains filing units with negative or zero
+#       expanded income in the baseline (calc1) Calculator object;
+#       if you want to somehow drop the filing units with non-positive
+#       expanded income, extract the required data from calc1 and calc2
+#       and use the extracted data to construct the table you want.
 dist_table1, dist_table2 = calc1.distribution_tables(calc2)
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
@@ -69,6 +74,11 @@ dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income'] * 1e-9
 dist_extract['aftertax_inc2($b)'] = dist_table2['aftertax_income'] * 1e-9
 
 # income-tax difference table by expanded-income decile for cyr
+# NOTE: the bottom decile contains filing units with negative or zero
+#       expanded income in the baseline (calc1) Calculator object;
+#       if you want to somehow drop the filing units with non-positive
+#       expanded income, extract the required data from calc1 and calc2
+#       and use the extracted data to construct the table you want.
 diff_table = calc1.difference_table(calc2, tax_to_diff='iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
@@ -80,8 +90,8 @@ scaling_factors = [1e-6, 1e-9, 1e0, 1e0, 1e0]
 for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
     diff_extract[ename] = diff_table[dname] * sfactor
 
-# generate a graph and save in an HTML file
-fig = calc1.decile_graph(calc2)
+# generate percentage-change-in-aftertax-income graph and save in an HTML file
+fig = calc1.pch_graph(calc2)
 write_graph_file(fig, 'recipe00.graph.html', 'recipe00.graph')
 
 print('CLP diagnostic table:')
