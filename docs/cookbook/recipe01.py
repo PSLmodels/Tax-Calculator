@@ -58,6 +58,11 @@ iitax_rev1 = calc1.weighted_total('iitax')
 iitax_rev2 = calc2.weighted_total('iitax')
 
 # construct reform2-vs-reform1 difference table with results for income deciles
+# NOTE: the bottom decile contains filing units with negative or zero
+#       expanded income in the baseline (calc1) Calculator object;
+#       if you want to somehow drop the filing units with non-positive
+#       expanded income, extract the required data from calc1 and calc2
+#       and use the extracted data to construct the table you want.
 diff_table = calc1.difference_table(calc2, tax_to_diff='iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
