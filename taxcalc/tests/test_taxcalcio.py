@@ -599,13 +599,10 @@ def test_no_tables_or_graphs(reformfile1):
     fname = output_filename.replace('.csv', '-atr.html')
     if os.path.isfile(fname):
         os.remove(fname)
-    fname = output_filename.replace('.csv', '-dec.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
     fname = output_filename.replace('.csv', '-mtr.html')
     if os.path.isfile(fname):
         os.remove(fname)
-    fname = output_filename.replace('.csv', '-qin.html')
+    fname = output_filename.replace('.csv', '-pch.html')
     if os.path.isfile(fname):
         os.remove(fname)
 
@@ -683,13 +680,10 @@ def test_graphs(reformfile1):
     fname = output_filename.replace('.csv', '-atr.html')
     if os.path.isfile(fname):
         os.remove(fname)
-    fname = output_filename.replace('.csv', '-dec.html')
-    if os.path.isfile(fname):
-        os.remove(fname)
     fname = output_filename.replace('.csv', '-mtr.html')
     if os.path.isfile(fname):
         os.remove(fname)
-    fname = output_filename.replace('.csv', '-qin.html')
+    fname = output_filename.replace('.csv', '-pch.html')
     if os.path.isfile(fname):
         os.remove(fname)
 
