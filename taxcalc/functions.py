@@ -1817,7 +1817,7 @@ def LumpSumTax(DSI, num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
                  c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
-                 expanded_income):
+                 e01500, e01700, expanded_income):
     """
     ExpandIncome function calculates and returns expanded_income.
     """
@@ -1825,6 +1825,8 @@ def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
     employer_fica_share = 0.5 * ptax_was
     # compute OASDI benefits not included in AGI
     non_taxable_ss_benefits = e02400 - c02500
+    # compute non-taxable pension and annuity income
+    non_taxable_pensions = e01500 - e01700
     # consumption value of all benefits except UI and OASDI benefits
     benefits_value = benefit_value_total - e02300 - e02400
     # compute expanded income as AGI plus several additional amounts
@@ -1834,6 +1836,7 @@ def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
                        invinc_agi_ec +  # AGI-excluded taxable invest income
                        cmbtp +  # AMT taxable income items from Form 6251
                        non_taxable_ss_benefits +
+                       non_taxable_pensions +
                        employer_fica_share +
                        benefits_value +
                        nontaxable_ubi)  # universal basic income
