@@ -1808,8 +1808,9 @@ def LumpSumTax(DSI, num, XTOT,
 
 @iterate_jit(nopython=True)
 def ExpandIncome(e00200, e00300, e00400, e00600, e00700, e00800, e00900,
-                 c01000, e01100, e01200, e01400, e01500,
-                 e02000, e02100, cmbtp, ptax_was, benefit_value_total, ubi,
+                 e01100, e01200, e01400, e01500,
+                 e02000, e02100, p22250, p23250,
+                 cmbtp, ptax_was, benefit_value_total, ubi,
                  expanded_income):
     """
     Calculate expanded_income from component income types.
@@ -1822,13 +1823,14 @@ def ExpandIncome(e00200, e00300, e00400, e00600, e00700, e00800, e00900,
         e00700 +  # state and local income tax refunds
         e00800 +  # alimony received
         e00900 +  # Sch C business net income/loss
-        c01000 +  # short- and long-term capital gain/loss (with loss limited)
         e01100 +  # capital gain distributions not reported on Sch D
         e01200 +  # Form 4797 other net gain/loss
         e01400 +  # taxable IRA distributions
         e01500 +  # total pension and annuity income
         e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
         e02100 +  # Sch F farm net income/loss
+        p22250 +  # Sch D: net short-term capital gain/loss
+        p23250 +  # Sch D: net long-term capital gain/loss
         cmbtp +  # other AMT taxable income items from Form 6251
         0.5 * ptax_was +  # employer share of FICA taxes
         benefit_value_total +  # consumption value of all benefits received
