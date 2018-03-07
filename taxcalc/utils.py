@@ -533,7 +533,9 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
     diffs['perc_aftertax'] = diffs['tot_change'] / diffs['atinc1']
+    diffs['perc_aftertax'].replace(to_replace=np.nan, value=0, inplace=True)
     diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
+    diffs['pc_aftertaxinc'].replace(to_replace=np.nan, value=0, inplace=True)
     # delete intermediate atinc1 and atinc2 columns
     del diffs['atinc1']
     del diffs['atinc2']
