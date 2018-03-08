@@ -16,6 +16,9 @@ for a complete commit history.
 - Add graph of percentage change in after-tax expanded income by baseline expanded-income percentile and include it in `tc --graphs` output and in the Cookbook's basic recipe
   [[#1890](https://github.com/open-source-economics/Tax-Calculator/pull/1890)
   by Martin Holmer]
+- Improve handling of those with negative or zero `expanded_income` in tables and graphs
+  [[#1902](https://github.com/open-source-economics/Tax-Calculator/pull/1902)
+  by Martin Holmer]
 
 **Bug Fixes**
 - Correct bottom bin name in distribution/difference tables exported to TaxBrain
@@ -33,6 +36,9 @@ for a complete commit history.
   input file with this information:
   * Byte size: 54718219
   * MD5 checksum: e22429702920a0d927a36ea1103ba067
+- Correct AGI concept used in EITC phase-out logic
+  [[#1907](https://github.com/open-source-economics/Tax-Calculator/pull/1907)
+  by Martin Holmer as reported by Max Ghenis]
 
 
 2018-02-16 Release 0.16.1
