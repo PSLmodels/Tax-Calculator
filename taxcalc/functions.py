@@ -1123,14 +1123,14 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
 
 @jit(nopython=True)
 def EITCamount(phasein_rate, earnings, max_amount,
-               phaseout_start, eitc_agi, phaseout_rate):
+               phaseout_start, agi, phaseout_rate):
     """
     Return EITC amount given specified parameters
     """
     eitc = min(phasein_rate * earnings, max_amount)
-    if earnings > phaseout_start or eitc_agi > phaseout_start:
+    if earnings > phaseout_start or agi > phaseout_start:
         eitcx = max(0., (max_amount - phaseout_rate *
-                         max(0., max(earnings, eitc_agi) - phaseout_start)))
+                         max(0., max(earnings, agi) - phaseout_start)))
         eitc = min(eitc, eitcx)
     return eitc
 
@@ -1155,9 +1155,8 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             po_start = EITC_ps[EIC]
             if MARS == 2:
                 po_start += EITC_ps_MarriedJ[EIC]
-            eitc_agi = c00100 + e00400
             eitc = EITCamount(EITC_rt[EIC], earned, EITC_c[EIC],
-                              po_start, eitc_agi, EITC_prt[EIC])
+                              po_start, c00100, EITC_prt[EIC])
             if EIC == 0:
                 # enforce age eligibility rule for those with no EITC-eligible
                 # kids assuming that an unknown age_* value implies EITC age
