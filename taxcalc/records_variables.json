@@ -172,7 +172,7 @@
     },
     "e01500": {
       "type": "float",
-      "desc": "Pensions and annuities",
+      "desc": "Total pensions and annuities",
       "form": {"2013-2016": "1040 line 16a"},
       "availability": "taxdata_puf, taxdata_cps"
     },

@@ -138,6 +138,12 @@ class Records(object):
                            rtol=0.0, atol=tol):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
+        # check that total pension income is no less than taxable pension inc
+        nontaxable_pensions = np.maximum(0., self.e01500 - self.e01700)
+        if not np.allclose(self.e01500, self.e01700 + nontaxable_pensions,
+                           rtol=0.0, atol=tol):
+            msg = 'expression "e01500 >= e01700" is not true for every record'
+            raise ValueError(msg)
         # handle grow factors
         is_correct_type = isinstance(gfactors, Growfactors)
         if gfactors is not None and not is_correct_type:

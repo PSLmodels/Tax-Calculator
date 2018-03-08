@@ -83,6 +83,10 @@ def test_correct_Records_instantiation(cps_subsample):
     (
         u'RECID,MARS,e00600,e00650\n'
         u'1,    1,        8,     9\n'
+    ),
+    (
+        u'RECID,MARS,e01500,e01700\n'
+        u'1,    1,        6,     7\n'
     )
 ])
 def test_read_data(csv):
