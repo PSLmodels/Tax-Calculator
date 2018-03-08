@@ -1445,7 +1445,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(diff_table, year, hide_negative_incomes=True):
+def dec_graph_data(diff_table, year, hide_nonpos_incomes=True):
     """
     Prepare data needed by dec_graph_plot utility function.
 
@@ -1457,6 +1457,17 @@ def dec_graph_data(diff_table, year, hide_negative_incomes=True):
     year : integer
         specifies calendar year of the data in the diff_table
 
+    hide_nonpos_incomes : boolean
+        if True (which is the default), the bottom table bin containing
+        filing units with non-positive expanded_income is not shown in
+        the graph and the table bin containing filing units with positive
+        expanded_income in the bottom decile is shown with its bar width
+        adjusted to the number of weighted filing units in bottom decile
+        who have positive expanded_income; if False, the bottom table bin
+        containing filing units with non-positive expanded_income is shown,
+        which may be misleading because the percentage change is correctly
+        calculated with a negative divisor.
+
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
@@ -1464,7 +1475,7 @@ def dec_graph_data(diff_table, year, hide_negative_incomes=True):
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
     nbins = len(DECILE_ROW_NAMES)
-    if hide_negative_incomes:
+    if hide_nonpos_incomes:
         first_bin = 1
     else:
         first_bin = 0
@@ -1478,7 +1489,7 @@ def dec_graph_data(diff_table, year, hide_negative_incomes=True):
         bars[idx] = info
     # construct dictionary containing bar data and auto-generated labels
     data = dict()
-    data['hide_neg'] = hide_negative_incomes
+    data['hide_nonpos'] = hide_nonpos_incomes
     bottom_count = diff_table['count'][0] + diff_table['count'][1]
     data['neg_bar_size'] = diff_table['count'][0] / bottom_count
     data['pos_bar_size'] = diff_table['count'][1] / bottom_count
@@ -1584,7 +1595,7 @@ def dec_graph_plot(data,
         bval = data['bars'][idx]['value']
         blabel = data['bars'][idx]['label']
         bheight = barheight
-        if data['hide_neg']:
+        if data['hide_nonpos']:
             if yidx == 0:
                 bheight *= data['pos_bar_size']
         else:

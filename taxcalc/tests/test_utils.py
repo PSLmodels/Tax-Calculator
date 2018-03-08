@@ -990,7 +990,7 @@ def test_dec_qin_graph_plots(cps_subsample):
     calc2.calc_all()
     fig_dec_hide = calc1.decile_graph(calc2)
     assert fig_dec_hide
-    fig_dec_show = calc1.decile_graph(calc2, hide_negative_incomes=False)
+    fig_dec_show = calc1.decile_graph(calc2, hide_nonpositive_incomes=False)
     assert fig_dec_show
 
 
