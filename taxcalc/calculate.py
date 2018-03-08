@@ -990,7 +990,7 @@ class Calculator(object):
                              title='')
         return fig
 
-    def decile_graph(self, calc, hide_negative_incomes=True):
+    def decile_graph(self, calc, hide_nonpositive_incomes=True):
         """
         Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
@@ -1008,7 +1008,7 @@ class Calculator(object):
             where both self and calc have calculated taxes for this year
             before being used by this method
 
-        hide_negative_incomes : boolean
+        hide_nonpositive_incomes : boolean
             if True (which is the default), the bottom table bin containing
             filing units with non-positive expanded_income is not shown in
             the graph and the table bin containing filing units with positive
@@ -1033,7 +1033,7 @@ class Calculator(object):
                                            tax_to_diff='combined')
         # construct data for graph
         data = dec_graph_data(diff_table, year=self.current_year,
-                              hide_negative_incomes=hide_negative_incomes)
+                              hide_nonpos_incomes=hide_nonpositive_incomes)
         # construct figure from data
         fig = dec_graph_plot(data,
                              width=850,
