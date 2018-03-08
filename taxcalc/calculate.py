@@ -38,8 +38,7 @@ from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            ce_aftertax_expanded_income,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
                            dec_graph_data, dec_graph_plot,
-                           pch_graph_data, pch_graph_plot,
-                           qin_graph_data, qin_graph_plot)
+                           pch_graph_data, pch_graph_plot)
 # import pdb
 
 
@@ -991,7 +990,7 @@ class Calculator(object):
                              title='')
         return fig
 
-    def decile_graph(self, calc, set_bottom_decile_result_to_zero=True):
+    def decile_graph(self, calc, hide_negative_incomes=True):
         """
         Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
@@ -1001,8 +1000,6 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
-        Note that some deciles may contain filing units with negative
-        or zero baseline (self) expanded income.
 
         Parameters
         ----------
@@ -1011,11 +1008,16 @@ class Calculator(object):
             where both self and calc have calculated taxes for this year
             before being used by this method
 
-        set_bottom_decile_result_to_zero : boolean
-            specify whether or not bottom decile (which contains filing
-            units with non-positive expanded income) result is shown in the
-            graph (default value is True; set to False to show the bottom
-            decile result)
+        hide_negative_incomes : boolean
+            if True (which is the default), the bottom table bin containing
+            filing units with non-positive expanded_income is not shown in
+            the graph and the table bin containing filing units with positive
+            expanded_income in the bottom decile is shown with its bar width
+            adjusted to the number of weighted filing units in bottom decile
+            who have positive expanded_income; if False, the bottom table bin
+            containing filing units with non-positive expanded_income is shown,
+            which may be misleading because the percentage change is correctly
+            calculated with a negative divisor.
 
         Returns
         -------
@@ -1030,61 +1032,10 @@ class Calculator(object):
                                            income_measure='expanded_income',
                                            tax_to_diff='combined')
         # construct data for graph
-        data = dec_graph_data(diff_table, year=self.current_year)
-        if set_bottom_decile_result_to_zero:
-            data['bars'][0]['value'] = 0
+        data = dec_graph_data(diff_table, year=self.current_year,
+                              hide_negative_incomes=hide_negative_incomes)
         # construct figure from data
         fig = dec_graph_plot(data,
-                             width=850,
-                             height=500,
-                             xlabel='',
-                             ylabel='',
-                             title='')
-        return fig
-
-    def quintile_graph(self, calc, set_bottom_quintile_result_to_zero=True):
-        """Create graph that shows percentage change in aftertax expanded
-        income (from going from policy in self to policy in calc) for
-        each expanded-income quintile and subgroups of the top quintile.
-        The graph can be written to an HTML file (using the
-        write_graph_file utility function) or shown on the screen
-        immediately in an interactive or notebook session (following
-        the instructions in the documentation of the xtr_graph_plot
-        utility function).
-        Note that some quintiles may contain filing units with negative
-        or zero baseline (self) expanded income.
-
-        Parameters
-        ----------
-        calc : Calculator object
-            calc represents the reform while self represents the baseline,
-            where both self and calc have calculated taxes for this year
-            before being used by this method
-
-        set_bottom_quintile_result_to_zero : boolean
-            specify whether or not bottom quintile (which contains filing
-            units with non-positive expanded income) result is shown in the
-            graph (default value is True; set to False to show the bottom
-            quintile result)
-
-        Returns
-        -------
-        graph that is a bokeh.plotting figure object
-        """
-        # check that two Calculator objects are comparable
-        assert isinstance(calc, Calculator)
-        assert calc.current_year == self.current_year
-        assert calc.array_len == self.array_len
-        diff_table = self.difference_table(calc,
-                                           groupby='weighted_deciles',
-                                           income_measure='expanded_income',
-                                           tax_to_diff='combined')
-        # construct data for graph
-        data = qin_graph_data(diff_table, year=self.current_year)
-        if set_bottom_quintile_result_to_zero:
-            data['bars'][0]['value'] = 0
-        # construct figure from data
-        fig = qin_graph_plot(data,
                              width=850,
                              height=500,
                              xlabel='',
