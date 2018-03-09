@@ -87,16 +87,16 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                -0.02,
+                -0.14,
                 -0.58,
-                -0.72,
-                -0.67,
-                -0.78,
-                -0.77,
-                -0.64,
-                -0.56,
-                -0.17,
-                -0.53]
+                -0.70,
+                -0.71,
+                -0.81,
+                -0.83,
+                -0.74,
+                -0.65,
+                -0.18,
+                -0.59]
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
@@ -112,18 +112,18 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                -0.02,
+                -0.14,
                 -0.58,
-                -0.72,
-                -0.67,
-                -0.78,
-                -0.77,
-                -0.64,
-                -0.56,
-                -0.22,
-                -0.08,
+                -0.70,
+                -0.71,
+                -0.81,
+                -0.83,
+                -0.74,
+                -0.65,
+                -0.23,
+                -0.09,
                 -0.06,
-                -0.53]
+                -0.59]
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
@@ -139,25 +139,25 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                -0.01,
-                -0.03,
-                -0.24,
-                -0.78,
-                -0.66,
-                -0.76,
-                -0.67,
-                -0.78,
-                -0.77,
-                -0.64,
-                -0.56,
+                -0.29,
+                -0.07,
                 -0.22,
-                -0.08,
+                -0.80,
+                -0.65,
+                -0.74,
+                -0.71,
+                -0.81,
+                -0.83,
+                -0.74,
+                -0.65,
+                -0.23,
+                -0.09,
                 -0.08,
                 -0.07,
                 -0.05,
-                -0.03,
+                -0.02,
                 0.00,
-                -0.53]
+                -0.59]
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
@@ -173,20 +173,20 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [0,
-                171711,
-                15725179,
-                26767322,
-                33151429,
-                47689055,
-                59102568,
-                75654358,
-                79779908,
-                99445733,
-                97489502,
-                534976765,
-                59878155,
-                31665362,
-                5945985]
+                855188,
+                15425829,
+                26212078,
+                33369237,
+                50208703,
+                63312937,
+                82312360,
+                90711899,
+                117518598,
+                101779164,
+                581705993,
+                62142547,
+                33919755,
+                5716862]
     tabcol = 'tot_change'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.51, rtol=0.0):
@@ -195,20 +195,20 @@ def test_create_tables(cps_subsample):
         for val in diff[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0.00,
-                0.03,
-                2.94,
-                5.00,
-                6.20,
-                8.91,
-                11.05,
-                14.14,
-                14.91,
-                18.59,
-                18.22,
+                0.15,
+                2.65,
+                4.51,
+                5.74,
+                8.63,
+                10.88,
+                14.15,
+                15.59,
+                20.20,
+                17.50,
                 100.00,
-                11.19,
-                5.92,
-                1.11]
+                10.68,
+                5.83,
+                0.98]
     tabcol = 'share_of_change'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0):
@@ -217,19 +217,19 @@ def test_create_tables(cps_subsample):
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
     expected = [0.00,
-                -0.02,
-                -0.63,
-                -0.72,
-                -0.69,
-                -0.77,
-                -0.75,
-                -0.75,
+                -0.11,
                 -0.62,
+                -0.71,
+                -0.69,
+                -0.81,
+                -0.82,
+                -0.82,
+                -0.72,
+                -0.71,
+                -0.30,
                 -0.59,
-                -0.28,
-                -0.53,
-                -0.52,
-                -0.23,
+                -0.55,
+                -0.25,
                 -0.06]
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
@@ -239,19 +239,19 @@ def test_create_tables(cps_subsample):
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
     expected = [0.00,
-                -0.02,
-                -0.63,
-                -0.72,
-                -0.69,
-                -0.77,
-                -0.75,
-                -0.75,
+                -0.11,
                 -0.62,
+                -0.71,
+                -0.69,
+                -0.81,
+                -0.82,
+                -0.82,
+                -0.72,
+                -0.71,
+                -0.30,
                 -0.59,
-                -0.28,
-                -0.53,
-                -0.52,
-                -0.23,
+                -0.55,
+                -0.25,
                 -0.06]
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
@@ -269,20 +269,20 @@ def test_create_tables(cps_subsample):
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [0,
-                -58123243,
-                -69694267,
-                -67181494,
-                47113612,
-                186460706,
-                300606405,
-                525592811,
-                853135573,
-                1490980249,
-                6751954525,
-                9960844878,
-                1541661847,
-                2070553973,
-                3139738705]
+                -56140397,
+                -67237556,
+                -58897159,
+                17222017,
+                212673684,
+                328116256,
+                573255089,
+                992965515,
+                1730626734,
+                7142993526,
+                10815577709,
+                1625179635,
+                2241659962,
+                3276153930]
     tabcol = 'iitax'
     if not np.allclose(dist[tabcol].values, expected,
                        atol=0.5, rtol=0.0):
@@ -292,19 +292,19 @@ def test_create_tables(cps_subsample):
             print('{:.0f},'.format(val))
     expected = [0,
                 1202,
-                13625,
-                22333,
-                27220,
-                48414,
-                61445,
-                77306,
-                83710,
-                111716,
-                128409,
-                575381,
-                63631,
-                51016,
-                13762]
+                13981,
+                21932,
+                27445,
+                52318,
+                62509,
+                79749,
+                91861,
+                117068,
+                129463,
+                597527,
+                63940,
+                52137,
+                13387]
     tabcol = 'num_returns_ItemDed'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -313,20 +313,20 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0,
-                795716514,
-                2643384899,
-                3946422611,
-                5277286335,
-                6986771067,
-                8949450219,
-                11620796703,
-                14774819651,
-                20030445723,
-                44540701033,
-                119565794755,
-                14429028533,
-                16881618277,
-                13230054223]
+                812766585,
+                2639118220,
+                3940557055,
+                5243088362,
+                6988752253,
+                8827238879,
+                11605062543,
+                14729565181,
+                19894042635,
+                44374875397,
+                119055067109,
+                14255277238,
+                17039539254,
+                13080058905]
     tabcol = 'expanded_income'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -335,20 +335,20 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0,
-                782122701,
-                2478183874,
-                3682084255,
-                4789163087,
-                6179702104,
-                7842918294,
-                10063420722,
-                12700751035,
-                16714200850,
-                34582837753,
-                99815384674,
-                11476106014,
-                13555463283,
-                9551268456]
+                801755209,
+                2466382489,
+                3674186760,
+                4779876836,
+                6150380331,
+                7701226391,
+                10000914935,
+                12515316309,
+                16352910962,
+                34006973974,
+                98449924197,
+                11219604941,
+                13525917494,
+                9261451538]
     tabcol = 'aftertax_income'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -363,18 +363,18 @@ def test_create_tables(cps_subsample):
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [0,
-                -46738685,
-                -83307439,
-                -56890405,
-                32347721,
-                201050742,
-                710401700,
-                914376616,
-                2944626727,
-                2600275783,
-                919111563,
-                1825590555,
-                9960844878]
+                -44670465,
+                -79534586,
+                -61791623,
+                34666275,
+                216487136,
+                742113595,
+                1099657851,
+                3270948526,
+                2826393721,
+                962881064,
+                1848426216,
+                10815577709]
     tabcol = 'iitax'
     if not np.allclose(dist[tabcol], expected,
                        atol=0.5, rtol=0.0):
@@ -385,16 +385,16 @@ def test_create_tables(cps_subsample):
     expected = [0,
                 1202,
                 13625,
-                27007,
-                31380,
-                47533,
-                113117,
-                95870,
-                176376,
-                61053,
-                5289,
-                2928,
-                575381]
+                27355,
+                33694,
+                50236,
+                116751,
+                104035,
+                181572,
+                60936,
+                5196,
+                2924,
+                597527]
     tabcol = 'num_returns_ItemDed'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):

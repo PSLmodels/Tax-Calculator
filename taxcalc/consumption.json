@@ -74,6 +74,24 @@
         "value": [0.0]
     },
 
+    "_BEN_housing_value": {
+        "long_name": "Consumption value of housing benefits",
+        "description": "Consumption value per dollar of housing benefits, all of which are in-kind benefits.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
     "_BEN_snap_value": {
         "long_name": "Consumption value of SNAP benefits",
         "description": "Consumption value per dollar of SNAP benefits, all of which are in-kind benefits.",
@@ -92,9 +110,45 @@
         "value": [1.0]
     },
 
+    "_BEN_tanf_value": {
+        "long_name": "Consumption value of TANF benefits",
+        "description": "Consumption value per dollar of TANF benefits, some of which are cash benefits and some of which are in-kind benefits.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
     "_BEN_vet_value": {
         "long_name": "Consumption value of veterans benefits",
         "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (about 40% are in-kind medical benefits and overall about 51% are in-kind benefits).",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [1.0]
+    },
+
+    "_BEN_wic_value": {
+        "long_name": "Consumption value of WIC benefits",
+        "description": "Consumption value per dollar of WIC benefits, all of which are in-kind benefits.",
         "section_1": "",
         "section_2": "",
         "notes": "",
