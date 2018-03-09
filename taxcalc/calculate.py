@@ -769,9 +769,8 @@ class Calculator(object):
 
             - 'agi': adjusted gross income, AGI (c00100)
 
-            - 'expanded_income': sum of AGI, non-taxable interest income,
-              non-taxable social security benefits, and employer share of
-              FICA taxes.
+            - 'expanded_income': broader than AGI (see definition in
+                                 functions.py file).
 
         dollar_weighting : boolean
             False implies both income_measure percentiles on x axis
