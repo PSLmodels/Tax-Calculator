@@ -87,17 +87,17 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                0.02,
-                0.52,
-                0.69,
-                0.64,
-                0.78,
-                0.77,
-                0.73,
-                0.64,
-                0.17,
-                0.57]
-    tabcol = 'perc_aftertax'
+                -0.02,
+                -0.58,
+                -0.72,
+                -0.67,
+                -0.78,
+                -0.77,
+                -0.64,
+                -0.56,
+                -0.17,
+                -0.53]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -112,19 +112,19 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                0.02,
-                0.52,
-                0.69,
-                0.64,
-                0.78,
-                0.77,
-                0.73,
-                0.64,
-                0.21,
-                0.08,
-                0.06,
-                0.57]
-    tabcol = 'perc_aftertax'
+                -0.02,
+                -0.58,
+                -0.72,
+                -0.67,
+                -0.78,
+                -0.77,
+                -0.64,
+                -0.56,
+                -0.22,
+                -0.08,
+                -0.06,
+                -0.53]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -139,26 +139,26 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [0.00,
-                0.01,
-                0.03,
-                0.23,
-                0.68,
-                0.59,
-                0.79,
-                0.64,
-                0.78,
-                0.77,
-                0.73,
-                0.64,
-                0.21,
-                0.08,
-                0.09,
-                0.07,
-                0.05,
-                0.03,
-                np.nan,
-                0.57]
-    tabcol = 'perc_aftertax'
+                -0.01,
+                -0.03,
+                -0.24,
+                -0.78,
+                -0.66,
+                -0.76,
+                -0.67,
+                -0.78,
+                -0.77,
+                -0.64,
+                -0.56,
+                -0.22,
+                -0.08,
+                -0.08,
+                -0.07,
+                -0.05,
+                -0.03,
+                0.00,
+                -0.53]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -172,20 +172,21 @@ def test_create_tables(cps_subsample):
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
-    expected = [147118,
-                12859694,
-                23270398,
-                33369638,
-                42039505,
-                52638679,
-                75736947,
-                89239051,
-                106865593,
-                98810140,
+    expected = [0,
+                171711,
+                15725179,
+                26767322,
+                33151429,
+                47689055,
+                59102568,
+                75654358,
+                79779908,
+                99445733,
+                97489502,
                 534976765,
-                59253736,
-                34163671,
-                5392733]
+                59878155,
+                31665362,
+                5945985]
     tabcol = 'tot_change'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.51, rtol=0.0):
@@ -193,20 +194,21 @@ def test_create_tables(cps_subsample):
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [0.03,
-                2.40,
-                4.35,
-                6.24,
-                7.86,
-                9.84,
-                14.16,
-                16.68,
-                19.98,
-                18.47,
+    expected = [0.00,
+                0.03,
+                2.94,
+                5.00,
+                6.20,
+                8.91,
+                11.05,
+                14.14,
+                14.91,
+                18.59,
+                18.22,
                 100.00,
-                11.08,
-                6.39,
-                1.01]
+                11.19,
+                5.92,
+                1.11]
     tabcol = 'share_of_change'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0):
@@ -214,40 +216,42 @@ def test_create_tables(cps_subsample):
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
-    expected = [0.02,
-                0.53,
-                0.66,
-                0.74,
-                0.71,
-                0.72,
-                0.81,
-                0.76,
-                0.69,
-                0.30,
-                0.57,
-                0.55,
-                0.27,
-                0.06]
-    tabcol = 'perc_aftertax'
+    expected = [0.00,
+                -0.02,
+                -0.63,
+                -0.72,
+                -0.69,
+                -0.77,
+                -0.75,
+                -0.75,
+                -0.62,
+                -0.59,
+                -0.28,
+                -0.53,
+                -0.52,
+                -0.23,
+                -0.06]
+    tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
-    expected = [-0.02,
-                -0.53,
-                -0.66,
-                -0.74,
-                -0.71,
+    expected = [0.00,
+                -0.02,
+                -0.63,
                 -0.72,
-                -0.81,
-                -0.76,
                 -0.69,
-                -0.30,
-                -0.57,
-                -0.55,
-                -0.27,
+                -0.77,
+                -0.75,
+                -0.75,
+                -0.62,
+                -0.59,
+                -0.28,
+                -0.53,
+                -0.52,
+                -0.23,
                 -0.06]
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
@@ -264,21 +268,21 @@ def test_create_tables(cps_subsample):
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
-
-    expected = [-53463941,
-                -73450720,
-                -66970520,
-                39264353,
-                130051987,
-                274838886,
-                454740381,
-                889531415,
-                1530207314,
-                6836633146,
-                9961382302,
-                1473739937,
-                2212245241,
-                3150647968]
+    expected = [0,
+                -58123243,
+                -69694267,
+                -67181494,
+                47113612,
+                186460706,
+                300606405,
+                525592811,
+                853135573,
+                1490980249,
+                6751954525,
+                9960844878,
+                1541661847,
+                2070553973,
+                3139738705]
     tabcol = 'iitax'
     if not np.allclose(dist[tabcol].values, expected,
                        atol=0.5, rtol=0.0):
@@ -286,20 +290,21 @@ def test_create_tables(cps_subsample):
         print('dist', tabcol)
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [1269,
-                16504,
-                14271,
-                27908,
-                45939,
-                62372,
-                76789,
-                93703,
-                109195,
-                127432,
+    expected = [0,
+                1202,
+                13625,
+                22333,
+                27220,
+                48414,
+                61445,
+                77306,
+                83710,
+                111716,
+                128409,
                 575381,
-                62101,
-                52103,
-                13227]
+                63631,
+                51016,
+                13762]
     tabcol = 'num_returns_ItemDed'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -307,20 +312,21 @@ def test_create_tables(cps_subsample):
         print('dist', tabcol)
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [768067764,
-                2556462723,
-                3730347470,
-                4939962889,
-                6539467530,
-                8312149470,
-                10649872111,
-                13776806032,
-                18803146255,
-                42921265525,
-                112997547768,
-                13509481969,
-                16380425859,
-                13031357697]
+    expected = [0,
+                795716514,
+                2643384899,
+                3946422611,
+                5277286335,
+                6986771067,
+                8949450219,
+                11620796703,
+                14774819651,
+                20030445723,
+                44540701033,
+                119565794755,
+                14429028533,
+                16881618277,
+                13230054223]
     tabcol = 'expanded_income'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -328,20 +334,21 @@ def test_create_tables(cps_subsample):
         print('dist', tabcol)
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
-    expected = [755154507,
-                2409520393,
-                3501855611,
-                4490426206,
-                5846761795,
-                7308918068,
-                9220996810,
-                11578167929,
-                15358579028,
-                32776219915,
-                93246600262,
-                10671354987,
-                12777598172,
-                9327266756]
+    expected = [0,
+                782122701,
+                2478183874,
+                3682084255,
+                4789163087,
+                6179702104,
+                7842918294,
+                10063420722,
+                12700751035,
+                16714200850,
+                34582837753,
+                99815384674,
+                11476106014,
+                13555463283,
+                9551268456]
     tabcol = 'aftertax_income'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -355,19 +362,19 @@ def test_create_tables(cps_subsample):
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
-    expected = [-103177,
-                -46726448,
-                -86243295,
-                -55672622,
-                29294744,
-                213614893,
-                732389375,
-                963656355,
-                2987196971,
-                2512540321,
-                905124049,
-                1806311138,
-                9961382302]
+    expected = [0,
+                -46738685,
+                -83307439,
+                -56890405,
+                32347721,
+                201050742,
+                710401700,
+                914376616,
+                2944626727,
+                2600275783,
+                919111563,
+                1825590555,
+                9960844878]
     tabcol = 'iitax'
     if not np.allclose(dist[tabcol], expected,
                        atol=0.5, rtol=0.0):
@@ -377,16 +384,16 @@ def test_create_tables(cps_subsample):
             print('{:.0f},'.format(val))
     expected = [0,
                 1202,
-                17659,
-                28170,
-                31701,
-                52688,
-                123737,
-                95811,
-                162810,
-                53985,
-                4816,
-                2802,
+                13625,
+                27007,
+                31380,
+                47533,
+                113117,
+                95870,
+                176376,
+                61053,
+                5289,
+                2928,
                 575381]
     tabcol = 'num_returns_ItemDed'
     if not np.allclose(dist[tabcol].tolist(), expected,
@@ -708,17 +715,9 @@ def test_add_quantile_bins():
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
-    # custom labels
     dfb = add_quantile_bins(dfx, 'expanded_income', 100,
                             weight_by_income_measure=True)
     assert 'bins' in dfb
-    custom_labels = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
-    dfb = add_quantile_bins(dfx, 'expanded_income', 10,
-                            labels=custom_labels)
-    assert 'bins' in dfb
-    bin_labels = dfb['bins'].unique()
-    for lab in bin_labels:
-        assert lab in custom_labels
 
 
 def test_dist_table_sum_row(cps_subsample):
@@ -989,10 +988,10 @@ def test_dec_qin_graph_plots(cps_subsample):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
-    fig_dec = calc1.decile_graph(calc2)
-    assert fig_dec
-    fig_qin = calc1.quintile_graph(calc2)
-    assert fig_qin
+    fig_dec_hide = calc1.decile_graph(calc2)
+    assert fig_dec_hide
+    fig_dec_show = calc1.decile_graph(calc2, hide_nonpositive_incomes=False)
+    assert fig_dec_show
 
 
 def test_nonsmall_diffs():

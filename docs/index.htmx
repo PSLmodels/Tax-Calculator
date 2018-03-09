@@ -464,9 +464,12 @@ above equations hold for each filing unit in the input file.</p>
 <p>In addition to this earnings-splitting data-preparation issue,
 Tax-Calculator expects that the value of ordinary dividends
 (<kbd>e00600</kbd>) will be no less than the value of qualified
-dividends (<kbd>e00650</kbd>) for each filing unit.  Again, it is your
-responsibility to prepare input data in a way that ensures this
-relationship is true for each filing unit.</p>
+dividends (<kbd>e00650</kbd>) for each filing unit.  And it also
+expects that the value of total pension and annuity income
+(<kbd>e01500</kbd>) will be no less than the value of taxable pension
+and annuity income (<kbd>e01700</kbd>) for each filing unit.  Again,
+it is your responsibility to prepare input data in a way that ensures
+these relationships are true for each filing unit.</p>
 
 <p id="marskids">Here's an example of how to specify a few stylized
 filing units with and without young children.

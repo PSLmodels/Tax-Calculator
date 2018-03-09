@@ -96,7 +96,6 @@ DIFF_TABLE_COLUMNS = ['count',
                       'mean',
                       'tot_change',
                       'share_of_change',
-                      'perc_aftertax',
                       'ubi',
                       'pc_aftertaxinc']
 
@@ -108,33 +107,28 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Average Tax Change',
                      'Total Tax Difference',
                      'Share of Overall Change',
-                     'Change as % of After-Tax Income',
                      'Universal Basic Income',
                      '% Change in After-Tax Income']
 
-DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
+DECILE_ROW_NAMES = ['0-10zn', '0-10p', '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
                     'all',
                     '90-95', '95-99', 'Top 1%']
 
-QUINTILE_ROW_NAMES = ['0-20', '20-40', '40-60', '60-80', '80-100',
-                      'all',
-                      '80-90', '90-95', '95-99', 'Top 1%']
-
-STANDARD_ROW_NAMES = ['<$0K', '$0-10K', '$10-20K', '$20-30K', '$30-40K',
+STANDARD_ROW_NAMES = ['<=$0K', '$0-10K', '$10-20K', '$20-30K', '$30-40K',
                       '$40-50K', '$50-75K', '$75-100K',
                       '$100-200K', '$200-500K',
                       '$500-1000K', '>$1000K', 'all']
 
-STANDARD_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999,
+STANDARD_INCOME_BINS = [-9e99, 1e-9, 9999, 19999, 29999, 39999, 49999,
                         74999, 99999, 199999, 499999, 1000000, 9e99]
 
-LARGE_INCOME_BINS = [-9e99, 0, 9999, 19999, 29999, 39999, 49999,
+LARGE_INCOME_BINS = [-9e99, 1e-9, 9999, 19999, 29999, 39999, 49999,
                      74999, 99999, 200000, 9e99]
 
-SMALL_INCOME_BINS = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
-                     49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-                     1999999, 4999999, 9999999, 9e99]
+SMALL_INCOME_BINS = [-9e99, 1e-9, 4999, 9999, 14999, 19999, 24999, 29999,
+                     39999, 49999, 74999, 99999, 199999, 499999, 999999,
+                     1499999, 1999999, 4999999, 9999999, 9e99]
 
 
 def unweighted_sum(pdf, col_name):
@@ -152,7 +146,7 @@ def weighted_sum(pdf, col_name):
 
 
 def add_quantile_bins(pdf, income_measure, num_bins,
-                      weight_by_income_measure=False, labels=None):
+                      weight_by_income_measure=False):
     """
     Add a column of income bins to specified Pandas DataFrame, pdf, with
     the new column being named 'bins'.  The bins hold equal number of
@@ -175,8 +169,7 @@ def add_quantile_bins(pdf, income_measure, num_bins,
     bin_edges = list(min_cumsum + np.arange(0, (num_bins + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
     bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
-    if not labels:
-        labels = range(1, (num_bins + 1))
+    labels = range(1, (num_bins + 1))
     pdf['bins'] = pd.cut(pdf['cumsum_temp'], bins=bin_edges, labels=labels)
     pdf.drop('cumsum_temp', axis=1, inplace=True)
     return pdf
@@ -261,7 +254,10 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
           extra rows containing top-decile detail consisting of statistics
           for the 0.90-0.95 quantile range (bottom half of top decile),
           for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent).
+          for the 0.99-1.00 quantile range (top one percent); and the returned
+          table may have a fourth extra row that shows bottom-decile detail
+          with the bottom decile split into filing units with non-positive and
+          positive values of the specified income_measure variable.
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
@@ -274,9 +270,10 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     Notes
     -----
     Taxpayer Characteristics:
-        c04470 : Total itemized deduction
 
-        c00100 : AGI (Defecit)
+        c04470 : Total itemized deductions
+
+        c00100 : AGI
 
         c09600 : Alternative minimum tax
 
@@ -358,6 +355,16 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # append sum row
     row = get_sums(dist_table)[dist_table.columns]
     dist_table = dist_table.append(row)
+    # replace bottom decile row with non-positive and positive rows
+    if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
+        pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
+        pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
+        pdf['bins'] = pd.cut(pdf[income_measure],
+                             bins=[-9e99, 1e-9, 9e99],
+                             labels=[1, 2])
+        gpdfx = pdf.groupby('bins', as_index=False)
+        rows = stat_dataframe(gpdfx)
+        dist_table = pd.concat([rows, dist_table.iloc[1:11]])
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
         pdf = gpdf.get_group(10)  # top decile as its own DataFrame
@@ -367,8 +374,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         pdf['bins'].replace(to_replace=[6, 7, 8, 9],
                             value=[1, 1, 1, 1], inplace=True)
         pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
-        gpdf = pdf.groupby('bins', as_index=False)
-        rows = stat_dataframe(gpdf)
+        gpdfx = pdf.groupby('bins', as_index=False)
+        rows = stat_dataframe(gpdfx)
         dist_table = dist_table.append(rows, ignore_index=True)
     # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
@@ -405,7 +412,10 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
           extra rows containing top-decile detail consisting of statistics
           for the 0.90-0.95 quantile range (bottom half of top decile),
           for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent).
+          for the 0.99-1.00 quantile range (top one percent); and the returned
+          table may have a fourth extra row that shows bottom-decile detail
+          with the bottom decile split into filing units with non-positive and
+          positive values of the specified income_measure variable.
 
     income_measure : String object
         options for input: 'expanded_income', 'c00100'(AGI)
@@ -490,6 +500,16 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         row['perc_inc'] = sums_perc_inc
         row['share_of_change'] = 1.0  # avoid rounding error
         diffs = diffs_without_sums.append(row)
+        # replace bottom decile row with non-positive and positive rows
+        if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
+            pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
+            pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
+            pdf['bins'] = pd.cut(pdf[income_measure],
+                                 bins=[-9e99, 1e-9, 9e99],
+                                 labels=[1, 2])
+            gpdfx = pdf.groupby('bins', as_index=False)
+            rows = stat_dataframe(gpdfx)
+            diffs = pd.concat([rows, diffs.iloc[1:11]])
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
@@ -535,14 +555,14 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     res2['atinc1'] = res1['aftertax_income']
     res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
-    diffs['perc_aftertax'] = diffs['tot_change'] / diffs['atinc1']
     diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
+    diffs['pc_aftertaxinc'].replace(to_replace=np.nan, value=0, inplace=True)
     # delete intermediate atinc1 and atinc2 columns
     del diffs['atinc1']
     del diffs['atinc2']
     # convert some columns to percentages
-    percent_columns = ['perc_inc', 'perc_cut', 'share_of_change',
-                       'perc_aftertax', 'pc_aftertaxinc']
+    percent_columns = ['perc_inc', 'perc_cut',
+                       'share_of_change', 'pc_aftertaxinc']
     for col in percent_columns:
         diffs[col] *= 100.0
     # set print display format for float table elements
@@ -1428,7 +1448,7 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(diff_table, year):
+def dec_graph_data(diff_table, year, hide_nonpos_incomes=True):
     """
     Prepare data needed by dec_graph_plot utility function.
 
@@ -1440,6 +1460,17 @@ def dec_graph_data(diff_table, year):
     year : integer
         specifies calendar year of the data in the diff_table
 
+    hide_nonpos_incomes : boolean
+        if True (which is the default), the bottom table bin containing
+        filing units with non-positive expanded_income is not shown in
+        the graph and the table bin containing filing units with positive
+        expanded_income in the bottom decile is shown with its bar width
+        adjusted to the number of weighted filing units in bottom decile
+        who have positive expanded_income; if False, the bottom table bin
+        containing filing units with non-positive expanded_income is shown,
+        which may be misleading because the percentage change is correctly
+        calculated with a negative divisor.
+
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
@@ -1447,7 +1478,11 @@ def dec_graph_data(diff_table, year):
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
     nbins = len(DECILE_ROW_NAMES)
-    for idx in range(0, nbins):
+    if hide_nonpos_incomes:
+        first_bin = 1
+    else:
+        first_bin = 0
+    for idx in range(first_bin, nbins):
         info = dict()
         info['label'] = DECILE_ROW_NAMES[idx]
         info['value'] = diff_table['pc_aftertaxinc'][idx]
@@ -1457,6 +1492,10 @@ def dec_graph_data(diff_table, year):
         bars[idx] = info
     # construct dictionary containing bar data and auto-generated labels
     data = dict()
+    data['hide_nonpos'] = hide_nonpos_incomes
+    bottom_count = diff_table['count'][0] + diff_table['count'][1]
+    data['neg_bar_size'] = diff_table['count'][0] / bottom_count
+    data['pos_bar_size'] = diff_table['count'][1] / bottom_count
     data['bars'] = bars
     xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
     data['xlabel'] = xlabel
@@ -1559,6 +1598,14 @@ def dec_graph_plot(data,
         bval = data['bars'][idx]['value']
         blabel = data['bars'][idx]['label']
         bheight = barheight
+        if data['hide_nonpos']:
+            if yidx == 0:
+                bheight *= data['pos_bar_size']
+        else:
+            if yidx == 0:
+                bheight *= data['neg_bar_size']
+            elif yidx == 1:
+                bheight *= data['pos_bar_size']
         if blabel == '90-95':
             bheight *= 0.5
             bcolor = 'red'
@@ -1566,168 +1613,6 @@ def dec_graph_plot(data,
             bheight *= 0.4
         elif blabel == 'Top 1%':
             bheight *= 0.1
-        fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
-                 y=(yidx + 0.5),   # y-coordinate of center of the rectangle
-                 width=abs(bval),  # width of the rectangle
-                 height=bheight,   # height of the rectangle
-                 color=bcolor)
-        yidx += 1
-    return fig
-
-
-def qin_graph_data(diff_table, year):
-    """
-    Prepare data needed by qin_graph_plot utility function.
-
-    Parameters
-    ----------
-    diff_table : a Pandas DataFrame object returned from the
-        Calculator class difference_table method
-
-    year : integer
-        specifies calendar year of the data in the diff_table
-
-    Returns
-    -------
-    dictionary object suitable for passing to qin_graph_plot utility function
-    """
-    # aggregate decile+details diff_table into quintile+details diff
-    qdiff = dict()
-    for qin in range(0, 5):
-        dec = 2 * qin
-        qdiff[qin] = 0.5 * (diff_table['pc_aftertaxinc'][dec] +
-                            diff_table['pc_aftertaxinc'][dec + 1])
-    qdiff[5] = diff_table['pc_aftertaxinc'][10]  # all
-    qdiff[6] = diff_table['pc_aftertaxinc'][8]  # 80-90 detail
-    qdiff[7] = diff_table['pc_aftertaxinc'][11]  # 90-95 detail
-    qdiff[8] = diff_table['pc_aftertaxinc'][12]  # 95-99 detail
-    qdiff[9] = diff_table['pc_aftertaxinc'][13]  # Top 1% detail
-    assert len(qdiff) == len(QUINTILE_ROW_NAMES)
-    # construct dictionary containing the bar data required by qin_graph_plot
-    bars = dict()
-    nbins = len(qdiff)
-    for idx in range(0, nbins):
-        info = dict()
-        info['label'] = QUINTILE_ROW_NAMES[idx]
-        info['value'] = qdiff[idx]
-        if info['label'] == 'all':
-            info['label'] = '---------'
-            info['value'] = 0
-        bars[idx] = info
-    # construct dictionary containing bar data and auto-generated labels
-    data = dict()
-    data['bars'] = bars
-    xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
-    data['xlabel'] = xlabel
-    ylabel = 'Expanded Income Percentile Group'
-    data['ylabel'] = ylabel
-    title_str = 'Change in After-Tax Income by Income Percentile Group'
-    data['title'] = '{} for {}'.format(title_str, year)
-    return data
-
-
-def qin_graph_plot(data,
-                   width=850,
-                   height=500,
-                   xlabel='',
-                   ylabel='',
-                   title=''):
-    """
-    Plot stacked quintile graph using data returned from the
-    qin_graph_data function.
-
-    Parameters
-    ----------
-    data : dictionary object returned from qin_graph_data() utility function
-
-    width : integer
-        width of plot expressed in pixels
-
-    height : integer
-        height of plot expressed in pixels
-
-    xlabel : string
-        x-axis label; if '', then use label generated by dec_graph_data
-
-    ylabel : string
-        y-axis label; if '', then use label generated by dec_graph_data
-
-    title : string
-        graph title; if '', then use title generated by dec_graph_data
-
-    Returns
-    -------
-    bokeh.plotting figure object containing a raster graphics plot
-
-    Notes
-    -----
-    USAGE EXAMPLE::
-
-      gdata = dec_graph_data(...)
-      gplot = dec_graph_plot(gdata)
-
-    THEN when working interactively in a Python notebook::
-
-      bp.show(gplot)
-
-    OR when executing script using Python command-line interpreter::
-
-      bio.output_file('graph-name.html', title='Change in After-Tax Income')
-      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
-
-    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
-
-    To convert the visualized graph into a PNG-formatted file, click on
-    the "Save" icon on the Toolbar (located in the top-right corner of
-    the visualized graph) and a PNG-formatted file will written to your
-    Download directory.
-
-    The ONLY output option the bokeh.plotting figure has is HTML format,
-    which (as described above) can be converted into a PNG-formatted
-    raster graphics file.  There is no option to make the bokeh.plotting
-    figure generate a vector graphics file such as an EPS file.
-    """
-    # pylint: disable=too-many-arguments,too-many-locals
-    if title == '':
-        title = data['title']
-    bar_keys = sorted(data['bars'].keys())
-    bar_labels = [data['bars'][key]['label'] for key in bar_keys]
-    fig = bp.figure(plot_width=width, plot_height=height, title=title,
-                    y_range=bar_labels)
-    fig.title.text_font_size = '12pt'
-    fig.outline_line_color = None
-    fig.axis.axis_line_color = None
-    fig.axis.minor_tick_line_color = None
-    fig.axis.axis_label_text_font_size = '12pt'
-    fig.axis.axis_label_text_font_style = 'normal'
-    fig.axis.major_label_text_font_size = '12pt'
-    if xlabel == '':
-        xlabel = data['xlabel']
-    fig.xaxis.axis_label = xlabel
-    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+.1f%%')
-    if ylabel == '':
-        ylabel = data['ylabel']
-    fig.yaxis.axis_label = ylabel
-    fig.ygrid.grid_line_color = None
-    # plot thick x-axis grid line at zero
-    fig.line(x=[0, 0], y=[0, 14], line_width=1, line_color='black')
-    # plot bars
-    barheight = 0.8
-    bcolor = 'blue'
-    yidx = 0
-    for idx in bar_keys:
-        bval = data['bars'][idx]['value']
-        blabel = data['bars'][idx]['label']
-        bheight = barheight
-        if blabel == '80-90':
-            bheight *= 0.50
-            bcolor = 'red'
-        if blabel == '90-95':
-            bheight *= 0.25
-        elif blabel == '95-99':
-            bheight *= 0.20
-        elif blabel == 'Top 1%':
-            bheight *= 0.05
         fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
                  y=(yidx + 0.5),   # y-coordinate of center of the rectangle
                  width=abs(bval),  # width of the rectangle

@@ -170,7 +170,7 @@ def Adj(e03150, e03210, c03260,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
-        c02900, c02900_in_ei):
+        c02900):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
 
@@ -231,31 +231,23 @@ def Adj(e03150, e03210, c03260,
     Returns
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
-
-    c02900_in_ei : total adjustments included in expanded income
     """
     # Form 2555 foreign earned income deduction is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
-    c02900_in_ei = ((1. - ALD_StudentLoan_hc) * e03210 +
-                    c03260 +
-                    (1. - ALD_EarlyWithdraw_hc) * e03400 +
-                    (1. - ALD_AlimonyPaid_hc) * e03500 +
-                    (1. - ALD_AlimonyReceived_hc) * e00800 +
-                    (1. - ALD_EducatorExpenses_hc) * e03220 +
-                    (1. - ALD_Tuition_hc) * e03230 +
-                    (1. - ALD_DomesticProduction_hc) * e03240 +
-                    (1. - ALD_HSADeduction_hc) * e03290 +
-                    care_deduction)
-    # add in Form 1040 adjustments that are not included in expanded income:
-    c02900 = c02900_in_ei + ((1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
-                             # deductible IRA contributions
-                             (1. - ALD_IRAContributions_hc) * e03150 +
-                             (1. - ALD_KEOGH_SEP_hc) * e03300)
-    # FUTURE: move e03270 term into c02900_in_ei after
-    #         health-insurance-premium imputations are available
-    # FUTURE: move e03150 and e03300 term into c02900_in_ei after
-    #         pension-contribution imputations are available
-    return (c02900, c02900_in_ei)
+    c02900 = ((1. - ALD_StudentLoan_hc) * e03210 +
+              c03260 +
+              (1. - ALD_EarlyWithdraw_hc) * e03400 +
+              (1. - ALD_AlimonyPaid_hc) * e03500 +
+              (1. - ALD_AlimonyReceived_hc) * e00800 +
+              (1. - ALD_EducatorExpenses_hc) * e03220 +
+              (1. - ALD_Tuition_hc) * e03230 +
+              (1. - ALD_DomesticProduction_hc) * e03240 +
+              (1. - ALD_HSADeduction_hc) * e03290 +
+              (1. - ALD_SelfEmp_HealthIns_hc) * e03270 +
+              (1. - ALD_IRAContributions_hc) * e03150 +
+              (1. - ALD_KEOGH_SEP_hc) * e03300 +
+              care_deduction)
+    return c02900
 
 
 @iterate_jit(nopython=True)
@@ -277,7 +269,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
-             ALD_BusinessLosses_c, MARS, c02900_in_ei,
+             ALD_BusinessLosses_c, MARS,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
@@ -310,7 +302,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
     # compute business loss excluded from ymod1 but included in expanded_income
     excluded_loss = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
-    c02900_in_ei += excluded_loss
+    c02900 += excluded_loss
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
@@ -322,7 +314,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1, invinc_agi_ec, c02900_in_ei)
+    return (c01000, c23650, ymod, ymod1, invinc_agi_ec, c02900)
 
 
 @iterate_jit(nopython=True)
@@ -1131,14 +1123,14 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
 
 @jit(nopython=True)
 def EITCamount(phasein_rate, earnings, max_amount,
-               phaseout_start, eitc_agi, phaseout_rate):
+               phaseout_start, c00100, phaseout_rate):
     """
     Return EITC amount given specified parameters
     """
     eitc = min(phasein_rate * earnings, max_amount)
-    if earnings > phaseout_start or eitc_agi > phaseout_start:
+    if earnings > phaseout_start or c00100 > phaseout_start:
         eitcx = max(0., (max_amount - phaseout_rate *
-                         max(0., max(earnings, eitc_agi) - phaseout_start)))
+                         max(0., max(earnings, c00100) - phaseout_start)))
         eitc = min(eitc, eitcx)
     return eitc
 
@@ -1163,9 +1155,8 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             po_start = EITC_ps[EIC]
             if MARS == 2:
                 po_start += EITC_ps_MarriedJ[EIC]
-            eitc_agi = c00100 + e00400
             eitc = EITCamount(EITC_rt[EIC], earned, EITC_c[EIC],
-                              po_start, eitc_agi, EITC_prt[EIC])
+                              po_start, c00100, EITC_prt[EIC])
             if EIC == 0:
                 # enforce age eligibility rule for those with no EITC-eligible
                 # kids assuming that an unknown age_* value implies EITC age
@@ -1815,28 +1806,35 @@ def LumpSumTax(DSI, num, XTOT,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(c00100, ptax_was, e02300, e02400, c02500, benefit_value_total,
-                 c02900_in_ei, e00400, invinc_agi_ec, cmbtp, nontaxable_ubi,
+def ExpandIncome(e00200, e00300, e00400, e00600, e00700, e00800, e00900,
+                 e01100, e01200, e01400, e01500,
+                 e02000, e02100, p22250, p23250,
+                 cmbtp, ptax_was, benefit_value_total, ubi,
                  expanded_income):
     """
-    ExpandIncome function calculates and returns expanded_income.
+    Calculate expanded_income from component income types.
     """
-    # compute employer share of OASDI+HI payroll tax on wages and salaries
-    employer_fica_share = 0.5 * ptax_was
-    # compute OASDI benefits not included in AGI
-    non_taxable_ss_benefits = e02400 - c02500
-    # consumption value of all benefits except UI and OASDI benefits
-    benefits_value = benefit_value_total - e02300 - e02400
-    # compute expanded income as AGI plus several additional amounts
-    expanded_income = (c00100 +  # adjusted gross income, AGI
-                       c02900_in_ei +  # ajustments to AGI
-                       e00400 +  # non-taxable interest income
-                       invinc_agi_ec +  # AGI-excluded taxable invest income
-                       cmbtp +  # AMT taxable income items from Form 6251
-                       non_taxable_ss_benefits +
-                       employer_fica_share +
-                       benefits_value +
-                       nontaxable_ubi)  # universal basic income
+    expanded_income = (
+        e00200 +  # wage and salary income
+        e00300 +  # taxable interest income
+        e00400 +  # non-taxable interest income
+        e00600 +  # dividends
+        e00700 +  # state and local income tax refunds
+        e00800 +  # alimony received
+        e00900 +  # Sch C business net income/loss
+        e01100 +  # capital gain distributions not reported on Sch D
+        e01200 +  # Form 4797 other net gain/loss
+        e01400 +  # taxable IRA distributions
+        e01500 +  # total pension and annuity income
+        e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
+        e02100 +  # Sch F farm net income/loss
+        p22250 +  # Sch D: net short-term capital gain/loss
+        p23250 +  # Sch D: net long-term capital gain/loss
+        cmbtp +  # other AMT taxable income items from Form 6251
+        0.5 * ptax_was +  # employer share of FICA taxes
+        benefit_value_total +  # consumption value of all benefits received
+        ubi  # total UBI benefit
+    )
     return expanded_income
 
 

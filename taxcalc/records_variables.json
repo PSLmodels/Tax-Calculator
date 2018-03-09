@@ -172,7 +172,7 @@
     },
     "e01500": {
       "type": "float",
-      "desc": "Pensions and annuities",
+      "desc": "Total pensions and annuities",
       "form": {"2013-2016": "1040 line 16a"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -714,13 +714,8 @@
     },
     "c02900": {
       "type": "float",
-      "desc": "Total of all income adjustments to get AGI",
+      "desc": "Total of all 'above the line' income adjustments to get AGI",
       "form": {"2013-2016": "1040 line 36"}
-    },
-    "c02900_in_ei": {
-      "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
-      "form": {"2013-20??": "calculated variable"}
     },
     "c03260": {
       "type": "float",
