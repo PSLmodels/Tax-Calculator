@@ -134,6 +134,7 @@ def DependentCare(nu13, elderly_dependent, earned,
                   ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
     """
+    Computes dependent-care above-the-line deduction.
 
     Parameters
     ----------
@@ -149,7 +150,6 @@ def DependentCare(nu13, elderly_dependent, earned,
     Returns
     -------
     care_deduction: Total above the line deductions for dependent care.
-
     """
 
     if earned <= ALD_Dependents_thd[MARS - 1]:
@@ -172,7 +172,7 @@ def Adj(e03150, e03210, c03260,
         ALD_DomesticProduction_hc, ALD_Tuition_hc,
         c02900):
     """
-    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions)
+    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
     Notes
     -----
@@ -255,7 +255,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
                        e00300, e00600, e01100, e01200,
                        invinc_ec_base):
     """
-    Compute invinc_ec_base
+    Computes invinc_ec_base.
     """
     # limitation on net short-term and long-term capital losses
     cgain = max((-3000. / sep), p22250 + p23250)
@@ -321,7 +321,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
 def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2, c02500):
     """
-    SSBenefits function calculates OASDI benefits included in AGI, c02500.
+    Calculates OASDI benefits included in AGI, c02500.
     """
     if ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
@@ -339,24 +339,31 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
         ubi, taxable_ubi, nontaxable_ubi):
     """
+    Calculates total and taxable Universal Basic Income (UBI) amount.
 
     Parameters
     ----------
     nu18: Number of people in the tax unit under 18
+
     n1820: Number of people in the tax unit age 18-20
+
     n21: Number of people in the tax unit age 21+
+
     UBI_u18: UBI benefit for those under 18
+
     UBI_1820: UBI benefit for those between 18 to 20
+
     UBI_21: UBI benefit for those 21 or more
+
     UBI_ecrt: Fraction of UBI benefits that are not included in AGI
 
     Returns
     -------
-    ubi: total UBI received by the tax unit
-    taxable_ubi: amount of UBI that is taxable. This is added to AGI
-    nontaxable_ubi: amount of UBI that is nontaxable.
-                    This is added to expanded income
+    ubi: total UBI received by the tax unit (is included in expanded_income)
 
+    taxable_ubi: amount of UBI that is taxable (is added to AGI)
+
+    nontaxable_ubi: amount of UBI that is nontaxable
     """
     ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n21 * UBI_21
     taxable_ubi = ubi * (1. - UBI_ecrt)
@@ -369,8 +376,8 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         II_em, II_em_ps, II_prt, II_no_em_nu18,
         c00100, pre_c04600, c04600):
     """
-    AGI function: compute Adjusted Gross Income, c00100 and
-                  compute personal exemption amount, c04600
+    Computes Adjusted Gross Income (AGI), c00100, and
+    compute personal exemption amount, c04600.
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
@@ -401,7 +408,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
                e18400_capped, e18500_capped, e19200_capped, e19800_capped,
                e20100_capped, e20400_capped, g20500_capped):
     """
-    Apply a cap to gross itemized deductions.
+    Applies a cap to gross itemized deductions.
 
     Notes
     -----
@@ -447,7 +454,6 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
 
         g20500_capped : Gross casualty or theft loss (before disregard),
         capped by ItemDedCap
-
     """
     # pylint: disable=too-many-branches
 
@@ -519,7 +525,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
             ID_Miscellaneous_c, ID_AllTaxes_c, ID_StateLocalTax_crt,
             ID_RealEstate_crt):
     """
-    ItemDed function: itemized deductions, Form 1040, Schedule A
+    Calculates itemized deductions, Form 1040, Schedule A.
 
     Notes
     -----
@@ -697,12 +703,8 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, standard, c19700,
            STD_allow_charity_ded_nonitemizers):
     """
-    StdDed function:
-
-    Standard Deduction; Form 1040
-
-    This function calculates standard deduction,
-    including standard deduction for dependents, aged and bind.
+    Calculates standard deduction, including standard deduction for
+    dependents, aged and bind.
 
     Notes
     -----
@@ -729,9 +731,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
     Returns
     -------
-    standard
-        Standard deduction amount for each taxpayer
-        who files standard deduction. Otherwise value is zero.
+    standard : the standard deduction amount for filing unit
     """
     # calculate deduction for dependents
     if DSI == 1:
@@ -764,7 +764,7 @@ def TaxInc(c00100, standard, c04470, c04600, c04800, MARS,
            PT_excl_rt, PT_excl_wagelim_rt, PT_excl_wagelim_thd,
            PT_excl_wagelim_prt, e00900, e26270, e00200):
     """
-    TaxInc function: ...
+    Calculates taxable income, c04800.
     """
     pt_excl_pre = max(0., PT_excl_rt * (e00900 + e26270))
     wagelim_pre = e00200 * PT_excl_wagelim_rt
@@ -791,7 +791,7 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
            PT_EligibleRate_passive, PT_wages_active_income,
            PT_top_stacking):
     """
-    Return Schedule X, Y, Z tax amount for specified taxable_income.
+    Returns Schedule X, Y, Z tax amount for specified taxable_income.
     """
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
@@ -877,7 +877,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
-    if CG_nodiff is false
+    if CG_nodiff is false.
     """
     # pylint: disable=too-many-statements
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
@@ -977,7 +977,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
 @iterate_jit(nopython=True)
 def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
     """
-    AGIsurtax computes surtax on AGI above some threshold
+    Computes surtax on AGI above some threshold.
     """
     if AGI_surtax_trt > 0.:
         hiAGItax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
@@ -996,12 +996,12 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
-    AMT function computes Alternative Minimum Tax taxable income and liability:
-    c62100 is AMT taxable income
-    c09600 is AMT tax liability
-    c05800 is total (regular + AMT) income tax liability before credits
+    Computes Alternative Minimum Tax (AMT) taxable income and liability, where
+    c62100 is AMT taxable income,
+    c09600 is AMT tax liability, and
+    c05800 is total (regular + AMT) income tax liability before credits.
 
-    Note that line-number variable names refer to (2015) Form 6251.
+    Note that line-number variable names refer to 2015 Form 6251.
     """
     # pylint: disable=too-many-statements,too-many-branches
     # Form 6251, Part I
@@ -1081,8 +1081,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
                  c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit):
     """
-    NetInvIncTax function computes Net Investment Income Tax amount
-    (assume all annuity income is excluded from net investment income)
+    Computes Net Investment Income Tax (NIIT) amount assuming that
+    all annuity income is excluded from net investment income.
     """
     modAGI = c00100  # no deducted foreign earned income to add
     if not NIIT_PT_taxed:
@@ -1097,7 +1097,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
           exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
     """
-    Form 2441 calculation of child and dependent care expense credit, c07180
+    Calculates Form 2441 child and dependent care expense credit, c07180.
     """
     c32880 = earned_p  # earned income of taxpayer
     if MARS == 2:
@@ -1125,7 +1125,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
 def EITCamount(phasein_rate, earnings, max_amount,
                phaseout_start, c00100, phaseout_rate):
     """
-    Return EITC amount given specified parameters
+    Returns EITC amount given specified parameters (c00100 is AGI)
     """
     eitc = min(phasein_rate * earnings, max_amount)
     if earnings > phaseout_start or c00100 > phaseout_start:
@@ -1142,7 +1142,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c, EITC_indiv,
          c59660):
     """
-    EITC function computes EITC amount, c59660
+    Computes EITC amount, c59660.
     """
     # pylint: disable=too-many-branches
     if not EITC_indiv:
@@ -1204,7 +1204,7 @@ def ChildTaxCredit(n24, MARS, c00100, exact,
                    DependentCredit_Child_c, DependentCredit_Nonchild_c,
                    DependentCredit_c, FilerCredit_c, dep_credit):
     """
-    ChildTaxCredit function computes prectc amount and dependent credit
+    Computes prectc amount and dependent credit.
     """
     # calculate prectc amount
     prectc = CTC_c * n24 + CTC_c_under5_bonus * nu05
@@ -1236,8 +1236,8 @@ def PersonalTaxCredit(MARS, c00100,
                       personal_refundable_credit,
                       personal_nonrefundable_credit):
     """
-    Compute personal_refundable_credit and personal_nonrefundable_credit,
-    neither of which are part of current-law policy
+    Computes personal_refundable_credit and personal_nonrefundable_credit,
+    neither of which are part of current-law policy.
     """
     # calculate personal refundable credit amount with phase-out
     personal_refundable_credit = II_credit[MARS - 1]
@@ -1258,13 +1258,9 @@ def PersonalTaxCredit(MARS, c00100,
 def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
                      CR_AmOppNonRefundable_hc, c10960, c87668):
     """
-    American Opportunity Credit (Form 8863) nonrefundable (c87668) and
-                                            refundable (c10960) parts
-    Logic corresponds to Form 8863, Part I
-
-    This function applies a phaseout to the Form 8863, line 1,
-    American Opportunity Credit amount, e87521, and then applies
-    the 0.4 refundable rate.
+    Applies a phaseout to the Form 8863, line 1, American Opportunity Credit
+    amount, e87521, and then applies the 0.4 refundable rate.
+    Logic corresponds to Form 8863, Part I.
 
     Notes
     -----
@@ -1322,15 +1318,15 @@ def SchR(age_head, age_spouse, MARS, c00100,
          c05800, e07300, c07180, e02400, c02500, e01500, e01700, CR_SchR_hc,
          c07200):
     """
-    Calculate Schedule R credit for the elderly and the disabled, c07200
+    Calculates Schedule R credit for the elderly and the disabled, c07200.
 
-    Note that all Schedule R policy parameters are not inflation indexed.
+    Note that no Schedule R policy parameters are inflation indexed.
 
     Note that all Schedule R policy parameters are hard-coded, and therefore,
     are not able to be changed using Policy class parameters.
 
-    CR_SchR_hc allows the user to eliminate or reduce total schedule R credits
-    applied
+    Note that the CR_SchR_hc policy parameter allows the user to eliminate
+    or reduce total schedule R credits.
     """
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled (so line12 = line10)
@@ -1379,8 +1375,8 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
                        CR_Education_hc,
                        c07230):
     """
-    Education Tax Credits (Form 8863) nonrefundable amount, c07230
-    Logic corresponds to Form 8863, Part II
+    Computes Education Tax Credits (Form 8863) nonrefundable amount, c07230.
+    Logic corresponds to Form 8863, Part II.
 
     Notes
     -----
@@ -1445,7 +1441,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          c07260, c07300, c07400, c07600, c08000,
                          DependentCredit_before_CTC):
     """
-    NonRefundableCredits function sequentially limits credits to tax liability
+    NonRefundableCredits function sequentially limits credits to tax liability.
 
     Parameters
     ----------
@@ -1510,7 +1506,7 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
                   c03260, e09800, c59660, e11200, c11070, nu05,
                   ACTC_rt_bonus_under5family):
     """
-    Calculates Additional (refundable) Child Tax Credit, c11070
+    Calculates Additional (refundable) Child Tax Credit, c11070.
     """
     c82925 = 0.
     c82930 = 0.
@@ -1565,9 +1561,8 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
           c07100, c09200, dep_credit, personal_nonrefundable_credit):
     """
-    C1040 function computes total used nonrefundable credits, c07100,
-                            othertaxes, and
-                            income tax before refundable credits, c09200
+    Computes total used nonrefundable credits, c07100, othertaxes, and
+    income tax before refundable credits, c09200.
     """
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
@@ -1588,7 +1583,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
             ctc_new, CTC_new_refund_limited_all_payroll, payrolltax):
     """
-    Compute new refundable child tax credit with numeric parameters
+    Computes new refundable child tax credit using specified parameters.
     """
     if n24 > 0:
         posagi = max(c00100, 0.)
@@ -1618,7 +1613,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new,
           c09200, payrolltax,
           eitc, refund, iitax, combined):
     """
-    Compute final taxes
+    Computes final taxes.
     """
     eitc = c59660
     refund = eitc + c11070 + c10960 + personal_refundable_credit + ctc_new
@@ -1691,8 +1686,8 @@ def ComputeBenefit(calc, ID_switch):
 
 def BenefitSurtax(calc):
     """
-    BenefitSurtax function: computes itemized-deduction-benefit surtax and
-    adds the surtax amount to income tax, combined tax, and surtax liabilities.
+    Computes itemized-deduction-benefit surtax and adds the surtax amount
+    to income tax, combined tax, and surtax liabilities.
     """
     if calc.param('ID_BenefitSurtax_crt') != 1.:
         ben = ComputeBenefit(calc, calc.param('ID_BenefitSurtax_Switch'))
@@ -1709,8 +1704,8 @@ def BenefitSurtax(calc):
 
 def BenefitLimitation(calc):
     """
-    BenefitLimitation function: limits the benefits of select itemized
-    deductions to a fraction of deductible expenses.
+    Limits the benefits of select itemized deductions to a fraction of
+    deductible expenses.
     """
     if calc.param('ID_BenefitCap_rt') != 1.:
         # pylint: disable=no-member
@@ -1750,7 +1745,7 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
                  FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
                  fstax, iitax, combined, surtax):
     """
-    Computes Fair Share Tax, or "Buffet Rule", types of reforms
+    Computes Fair Share Tax, or "Buffet Rule", types of reforms.
 
     Taxpayer Characteristics
     ------------------------
@@ -1795,7 +1790,7 @@ def LumpSumTax(DSI, num, XTOT,
                LST,
                lumpsum_tax, combined):
     """
-    Compute lump-sum tax and add it to combined taxes.
+    Computes lump-sum tax and add it to combined taxes.
     """
     if LST == 0.0 or DSI == 1:
         lumpsum_tax = 0.
@@ -1812,7 +1807,7 @@ def ExpandIncome(e00200, e00300, e00400, e00600, e00700, e00800, e00900,
                  cmbtp, ptax_was, benefit_value_total, ubi,
                  expanded_income):
     """
-    Calculate expanded_income from component income types.
+    Calculates expanded_income from component income types.
     """
     expanded_income = (
         e00200 +  # wage and salary income
@@ -1841,7 +1836,7 @@ def ExpandIncome(e00200, e00300, e00400, e00600, e00700, e00800, e00900,
 @iterate_jit(nopython=True)
 def AfterTaxIncome(combined, expanded_income, aftertax_income):
     """
-    Calculate after tax income
+    Calculates after-tax expanded income.
 
     Parameters
     ----------
