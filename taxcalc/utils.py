@@ -86,7 +86,7 @@ DIST_TABLE_LABELS = ['Returns',
 # labels list to map a label to the correct column in a difference table.
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
-                  'iitax', 'payrolltax', 'combined', 's006']
+                  'iitax', 'payrolltax', 'combined', 's006','ubi']
 
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
@@ -97,6 +97,7 @@ DIFF_TABLE_COLUMNS = ['count',
                       'tot_change',
                       'share_of_change',
                       'perc_aftertax',
+                      'ubi',
                       'pc_aftertaxinc']
 
 DIFF_TABLE_LABELS = ['All Tax Units',
@@ -108,6 +109,7 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Total Tax Difference',
                      'Share of Overall Change',
                      'Change as % of After-Tax Income',
+                     'Universal Basic Income',
                      '% Change in After-Tax Income']
 
 DECILE_ROW_NAMES = ['0-10', '10-20', '20-30', '30-40', '40-50',
@@ -459,6 +461,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             res2['afinc2'] = res2['aftertax_income']
             sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
             sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
+            sdf['ubi'] = gpdf.apply(weighted_sum, 'ubi')
             return sdf
 
         # main logic of diff_table_stats function
