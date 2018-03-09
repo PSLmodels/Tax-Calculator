@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-03-?? Release 0.16.2
+2018-03-09 Release 0.16.2
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1911](https://github.com/open-source-economics/Tax-Calculator/pull/1911))
 
 **API Changes**
 - None
@@ -19,6 +19,9 @@ for a complete commit history.
 - Improve handling of those with negative or zero `expanded_income` in tables and graphs
   [[#1902](https://github.com/open-source-economics/Tax-Calculator/pull/1902)
   by Martin Holmer]
+- Add three new benefits and improve imputation of interest, dividend, and pension income in CPS data
+  [[#1911](https://github.com/open-source-economics/Tax-Calculator/pull/1911)
+  by Anderson Frailey and Martin Holmer]
 
 **Bug Fixes**
 - Correct bottom bin name in distribution/difference tables exported to TaxBrain
