@@ -1123,14 +1123,14 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
 
 @jit(nopython=True)
 def EITCamount(phasein_rate, earnings, max_amount,
-               phaseout_start, agi, phaseout_rate):
+               phaseout_start, c00100, phaseout_rate):
     """
     Return EITC amount given specified parameters
     """
     eitc = min(phasein_rate * earnings, max_amount)
-    if earnings > phaseout_start or agi > phaseout_start:
+    if earnings > phaseout_start or c00100 > phaseout_start:
         eitcx = max(0., (max_amount - phaseout_rate *
-                         max(0., max(earnings, agi) - phaseout_start)))
+                         max(0., max(earnings, c00100) - phaseout_start)))
         eitc = min(eitc, eitcx)
     return eitc
 
