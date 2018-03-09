@@ -52,6 +52,7 @@ def create_base_table(test_path):
                           'nu18', 'n1820', 'n21',
                           'ssi_ben', 'snap_ben', 'other_ben',
                           'mcare_ben', 'mcaid_ben', 'vet_ben',
+                          'housing_ben', 'tanf_ben', 'wic_ben',
                           'blind_head', 'blind_spouse'])
     read_vars = list(Records.USABLE_READ_VARS - unused_var_set)
     # get read variable information from JSON file

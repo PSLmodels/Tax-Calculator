@@ -6602,6 +6602,30 @@
         "compatible_data": {"puf": false, "cps": true}
     },
 
+    "_BEN_housing_repeal": {
+        "long_name": "Housing benefit repeal switch",
+        "description": "Housing benefits can be repealed by switching this parameter to true.",
+        "section_1": "Benefits",
+        "section_2": "Benefit Repeal",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": false, "cps": true}
+    },
+
     "_BEN_snap_repeal": {
         "long_name": "SNAP benefit repeal switch",
         "description": "SNAP benefits can be repealed by switching this parameter to true.",
@@ -6626,9 +6650,57 @@
         "compatible_data": {"puf": false, "cps": true}
     },
 
+    "_BEN_tanf_repeal": {
+        "long_name": "TANF benefit repeal switch",
+        "description": "TANF benefits can be repealed by switching this parameter to true.",
+        "section_1": "Benefits",
+        "section_2": "Benefit Repeal",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": false, "cps": true}
+    },
+
     "_BEN_vet_repeal": {
         "long_name": "Veterans benefit repeal switch",
         "description": "Veterans benefits can be repealed by switching this parameter to true.",
+        "section_1": "Benefits",
+        "section_2": "Benefit Repeal",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": true,
+        "integer_value": true,
+        "value": [false],
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": false, "cps": true}
+    },
+
+    "_BEN_wic_repeal": {
+        "long_name": "WIC benefit repeal switch",
+        "description": "WIC benefits can be repealed by switching this parameter to true.",
         "section_1": "Benefits",
         "section_2": "Benefit Repeal",
         "irs_ref": "",

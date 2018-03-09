@@ -414,9 +414,12 @@ class Records(object):
         """
         Extrapolate benefit variables
         """
+        setattr(self, 'housing_ben', self.BEN['housing_{}'.format(year)])
         setattr(self, 'ssi_ben', self.BEN['ssi_{}'.format(year)])
         setattr(self, 'snap_ben', self.BEN['snap_{}'.format(year)])
+        setattr(self, 'tanf_ben', self.BEN['tanf_{}'.format(year)])
         setattr(self, 'vet_ben', self.BEN['vet_{}'.format(year)])
+        setattr(self, 'wic_ben', self.BEN['wic_{}'.format(year)])
         setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
         ABENEFITS = self.gfactors.factor_value('ABENEFITS', year)

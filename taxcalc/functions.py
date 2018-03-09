@@ -29,12 +29,18 @@ def BenefitPrograms(calc):
     """
     # zero out benefits delivered by repealed programs
     zero = np.zeros(calc.array_len)
+    if calc.param('BEN_housing_repeal'):
+        calc.array('housing_ben', zero)
     if calc.param('BEN_ssi_repeal'):
         calc.array('ssi_ben', zero)
     if calc.param('BEN_snap_repeal'):
         calc.array('snap_ben', zero)
+    if calc.param('BEN_tanf_repeal'):
+        calc.array('tanf_ben', zero)
     if calc.param('BEN_vet_repeal'):
         calc.array('vet_ben', zero)
+    if calc.param('BEN_wic_repeal'):
+        calc.array('wic_ben', zero)
     if calc.param('BEN_mcare_repeal'):
         calc.array('mcare_ben', zero)
     if calc.param('BEN_mcaid_repeal'):
@@ -47,9 +53,12 @@ def BenefitPrograms(calc):
         calc.array('other_ben', zero)
     # calculate government cost of all benefits
     cost = np.array(
+        calc.array('housing_ben') +
         calc.array('ssi_ben') +
         calc.array('snap_ben') +
+        calc.array('tanf_ben') +
         calc.array('vet_ben') +
+        calc.array('wic_ben') +
         calc.array('mcare_ben') +
         calc.array('mcaid_ben') +
         calc.array('e02400') +
@@ -60,9 +69,12 @@ def BenefitPrograms(calc):
     # calculate consumption value of all benefits
     # (assuming that cash benefits have full value)
     value = np.array(
+        calc.array('housing_ben') * calc.consump_param('BEN_housing_value') +
         calc.array('ssi_ben') +
         calc.array('snap_ben') * calc.consump_param('BEN_snap_value') +
+        calc.array('tanf_ben') * calc.consump_param('BEN_tanf_value') +
         calc.array('vet_ben') * calc.consump_param('BEN_vet_value') +
+        calc.array('wic_ben') * calc.consump_param('BEN_wic_value') +
         calc.array('mcare_ben') * calc.consump_param('BEN_mcare_value') +
         calc.array('mcaid_ben') * calc.consump_param('BEN_mcaid_value') +
         calc.array('e02400') +
