@@ -4,6 +4,46 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-03-09 Release 0.16.2
+-------------------------
+(last merged pull request is
+[#1911](https://github.com/open-source-economics/Tax-Calculator/pull/1911))
+
+**API Changes**
+- None
+
+**New Features**
+- Add graph of percentage change in after-tax expanded income by baseline expanded-income percentile and include it in `tc --graphs` output and in the Cookbook's basic recipe
+  [[#1890](https://github.com/open-source-economics/Tax-Calculator/pull/1890)
+  by Martin Holmer]
+- Improve handling of those with negative or zero `expanded_income` in tables and graphs
+  [[#1902](https://github.com/open-source-economics/Tax-Calculator/pull/1902)
+  by Martin Holmer]
+- Add three new benefits and improve imputation of interest, dividend, and pension income in CPS data
+  [[#1911](https://github.com/open-source-economics/Tax-Calculator/pull/1911)
+  by Anderson Frailey and Martin Holmer]
+
+**Bug Fixes**
+- Correct bottom bin name in distribution/difference tables exported to TaxBrain
+  [[#1889](https://github.com/open-source-economics/Tax-Calculator/pull/1889)
+  by Martin Holmer]
+- Add missing check of equality of `BEN_*_value` parameters in baseline and reform Calculator objects when using `expanded_income` in tables or graphs
+  [[#1894](https://github.com/open-source-economics/Tax-Calculator/pull/1894)
+  by Martin Holmer]
+- Correct and simplify calculation of `expanded_income`
+  [[#1897](https://github.com/open-source-economics/Tax-Calculator/pull/1897)
+   [#1899](https://github.com/open-source-economics/Tax-Calculator/pull/1899)
+   [#1900](https://github.com/open-source-economics/Tax-Calculator/pull/1900)
+   [#1901](https://github.com/open-source-economics/Tax-Calculator/pull/1901)
+  by Martin Holmer and Anderson Frailey], which requires new `puf.csv`
+  input file with this information:
+  * Byte size: 54718219
+  * MD5 checksum: e22429702920a0d927a36ea1103ba067
+- Correct AGI concept used in EITC phase-out logic
+  [[#1907](https://github.com/open-source-economics/Tax-Calculator/pull/1907)
+  by Martin Holmer as reported by Max Ghenis]
+
+
 2018-02-16 Release 0.16.1
 -------------------------
 (last merged pull request is
