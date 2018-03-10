@@ -1504,7 +1504,7 @@ def dec_graph_data(diff_table, year, hide_nonpos_incomes=True):
         info = dict()
         info['label'] = DECILE_ROW_NAMES[idx]
         info['value'] = diff_table['pc_aftertaxinc'][idx]
-        if info['label'] == 'all':
+        if info['label'] == 'ALL':
             info['label'] = '---------'
             info['value'] = 0
         bars[idx] = info
