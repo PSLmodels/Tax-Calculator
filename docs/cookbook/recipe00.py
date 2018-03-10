@@ -58,11 +58,6 @@ clp_diagnostic_table = calc1.diagnostic_table(1)
 ref_diagnostic_table = calc2.diagnostic_table(1)
 
 # income-tax distribution for cyr with CLP and REF results side-by-side
-# NOTE: the bottom decile contains filing units with negative or zero
-#       expanded income in the baseline (calc1) Calculator object;
-#       if you want to somehow drop the filing units with non-positive
-#       expanded income, extract the required data from calc1 and calc2
-#       and use the extracted data to construct the table you want.
 dist_table1, dist_table2 = calc1.distribution_tables(calc2)
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
@@ -74,11 +69,6 @@ dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income'] * 1e-9
 dist_extract['aftertax_inc2($b)'] = dist_table2['aftertax_income'] * 1e-9
 
 # income-tax difference table by expanded-income decile for cyr
-# NOTE: the bottom decile contains filing units with negative or zero
-#       expanded income in the baseline (calc1) Calculator object;
-#       if you want to somehow drop the filing units with non-positive
-#       expanded income, extract the required data from calc1 and calc2
-#       and use the extracted data to construct the table you want.
 diff_table = calc1.difference_table(calc2, tax_to_diff='iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
@@ -104,12 +94,18 @@ print('')
 title = 'Extract of {} distribution table by baseline expanded-income decile:'
 print(title.format(cyr))
 print(dist_extract)
-print('Note: deciles are numbered 0-9 with top decile divided into bottom 5%,')
-print('      next 4%, and top 1%, in the lines numbered 11-13, respectively')
+print('Note: deciles are numbered 0-10 with bottom decile divided into')
+print('      those with negative or zero income and those with positive')
+print('      income, in the lines numbered 0 and 1, respectively, and with')
+print('      the top decile divided into bottom 5%, next 4%, and top 1%, in')
+print('      the lines numbered 12-14, respectively')
 print('')
 
 title = 'Extract of {} income-tax difference table by expanded-income decile:'
 print(title.format(cyr))
 print(diff_extract)
-print('Note: deciles are numbered 0-9 with top decile divided into bottom 5%,')
-print('      next 4%, and top 1%, in the lines numbered 11-13, respectively')
+print('Note: deciles are numbered 0-10 with bottom decile divided into')
+print('      those with negative or zero income and those with positive')
+print('      income, in the lines numbered 0 and 1, respectively, and with')
+print('      the top decile divided into bottom 5%, next 4%, and top 1%, in')
+print('      the lines numbered 12-14, respectively')
