@@ -4,6 +4,31 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-03-?? Release 0.17.0
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Make `run_nth_year_tax_calc_model` function return tables with all rows
+  [[#1914](https://github.com/open-source-economics/Tax-Calculator/pull/1914)
+  by Martin Holmer]
+- Rename Calculator class `param` method as `policy_param`
+  [[#1915](https://github.com/open-source-economics/Tax-Calculator/pull/1915)
+  by Martin Holmer]
+
+**New Features**
+- Add UBI benefits statistic to distribution and difference tables
+  [[#1909](https://github.com/open-source-economics/Tax-Calculator/pull/1909)
+  by Full Name for <Kpinkelman>]
+- Add row names to distribution and difference tables
+  [[#1913](https://github.com/open-source-economics/Tax-Calculator/pull/1913)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+
 2018-03-09 Release 0.16.2
 -------------------------
 (last merged pull request is
