@@ -20,7 +20,7 @@ for a complete commit history.
 **New Features**
 - Add UBI benefits statistic to distribution and difference tables
   [[#1909](https://github.com/open-source-economics/Tax-Calculator/pull/1909)
-  by Full Name for <Kpinkelman>]
+  by Full Name for Kpinkelman]
 - Add row names to distribution and difference tables
   [[#1913](https://github.com/open-source-economics/Tax-Calculator/pull/1913)
   by Martin Holmer]
