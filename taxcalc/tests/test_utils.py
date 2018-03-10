@@ -86,7 +86,7 @@ def test_create_tables(cps_subsample):
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
-    expected = [0.00,
+    expected = [np.nan,
                 -0.14,
                 -0.58,
                 -0.70,
@@ -111,7 +111,7 @@ def test_create_tables(cps_subsample):
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
-    expected = [0.00,
+    expected = [np.nan,
                 -0.14,
                 -0.58,
                 -0.70,
@@ -138,7 +138,7 @@ def test_create_tables(cps_subsample):
                                    income_measure='expanded_income',
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
-    expected = [0.00,
+    expected = [np.nan,
                 -0.29,
                 -0.07,
                 -0.22,
@@ -156,7 +156,7 @@ def test_create_tables(cps_subsample):
                 -0.07,
                 -0.05,
                 -0.02,
-                0.00,
+                np.nan,
                 -0.59]
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
@@ -216,7 +216,7 @@ def test_create_tables(cps_subsample):
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
-    expected = [0.00,
+    expected = [np.nan,
                 -0.11,
                 -0.62,
                 -0.71,
@@ -238,7 +238,7 @@ def test_create_tables(cps_subsample):
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
-    expected = [0.00,
+    expected = [np.nan,
                 -0.11,
                 -0.62,
                 -0.71,
