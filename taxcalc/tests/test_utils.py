@@ -21,6 +21,7 @@ from taxcalc.utils import (DIST_VARIABLES,
                            DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
                            DIFF_VARIABLES,
                            DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
+                           SMALL_INCOME_BINS, LARGE_INCOME_BINS,
                            create_distribution_table, create_difference_table,
                            weighted_count_lt_zero, weighted_count_gt_zero,
                            weighted_count, weighted_sum, weighted_mean,
@@ -87,6 +88,7 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [np.nan,
+                np.nan,
                 -0.14,
                 -0.58,
                 -0.70,
@@ -112,6 +114,7 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [np.nan,
+                np.nan,
                 -0.14,
                 -0.58,
                 -0.70,
@@ -139,6 +142,7 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [np.nan,
+                np.nan,
                 -0.29,
                 -0.07,
                 -0.22,
@@ -173,6 +177,7 @@ def test_create_tables(cps_subsample):
                                    tax_to_diff='combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [0,
+                0,
                 855188,
                 15425829,
                 26212078,
@@ -195,6 +200,7 @@ def test_create_tables(cps_subsample):
         for val in diff[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0.00,
+                0.00,
                 0.15,
                 2.65,
                 4.51,
@@ -217,6 +223,7 @@ def test_create_tables(cps_subsample):
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
     expected = [np.nan,
+                np.nan,
                 -0.11,
                 -0.62,
                 -0.71,
@@ -239,6 +246,7 @@ def test_create_tables(cps_subsample):
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
     expected = [np.nan,
+                np.nan,
                 -0.11,
                 -0.62,
                 -0.71,
@@ -269,6 +277,7 @@ def test_create_tables(cps_subsample):
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [0,
+                0,
                 -56140397,
                 -67237556,
                 -58897159,
@@ -291,6 +300,7 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0,
+                0,
                 1202,
                 13981,
                 21932,
@@ -313,6 +323,7 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0,
+                0,
                 812766585,
                 2639118220,
                 3940557055,
@@ -335,6 +346,7 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0,
+                0,
                 801755209,
                 2466382489,
                 3674186760,
@@ -363,6 +375,7 @@ def test_create_tables(cps_subsample):
                                      result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [0,
+                0,
                 -44670465,
                 -79534586,
                 -61791623,
@@ -383,6 +396,7 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
     expected = [0,
+                0,
                 1202,
                 13625,
                 27355,
@@ -638,8 +652,7 @@ EPSILON = 1e-5
 def test_add_income_bins():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-9e99, 0, 9999, 19999, 29999, 39999, 49999, 74999, 99999,
-            200000, 9e99]
+    bins = LARGE_INCOME_BINS
     dfr = add_income_bins(dfx, 'expanded_income', bin_type='tpc', bins=None,
                           right=True)
     groupedr = dfr.groupby('bins')
@@ -661,9 +674,8 @@ def test_add_income_bins():
 def test_add_income_bins_soi():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
-    bins = [-9e99, 0, 4999, 9999, 14999, 19999, 24999, 29999, 39999,
-            49999, 74999, 99999, 199999, 499999, 999999, 1499999,
-            1999999, 4999999, 9999999, 9e99]
+
+    bins = SMALL_INCOME_BINS
     dfr = add_income_bins(dfx, 'expanded_income', bin_type='soi', right=True)
     groupedr = dfr.groupby('bins')
     idx = 1
