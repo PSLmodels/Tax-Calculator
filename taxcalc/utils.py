@@ -1521,7 +1521,14 @@ def dec_graph_data(dist_table1, dist_table2, year,
     bars = dict()
     # ... bottom bar
     info = dict()
-    info['label'] = '0-10'
+    if include_zero_incomes and include_negative_incomes:
+        info['label'] = '0-10'
+    elif include_zero_incomes and not include_negative_incomes:
+        info['label'] = '0-10zp'
+    if not include_zero_incomes and include_negative_incomes:
+        info['label'] = '0-10np'
+    if not include_zero_incomes and not include_negative_incomes:
+        info['label'] = '0-10p'
     info['value'] = bottom_bar_value
     bars[0] = info
     # ... other bars
