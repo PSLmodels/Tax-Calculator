@@ -24,6 +24,12 @@ for a complete commit history.
 - Add row names to distribution and difference tables
   [[#1913](https://github.com/open-source-economics/Tax-Calculator/pull/1913)
   by Martin Holmer]
+- Add row for those with zero income in distribution and difference tables
+  [[#1917](https://github.com/open-source-economics/Tax-Calculator/pull/1917)
+  by Martin Holmer]
+- Revise Calculator class decile_graph method to provide option for including those with zero income and/or those with negative income in the bottom decile
+  [[#1918](https://github.com/open-source-economics/Tax-Calculator/pull/1918)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None
