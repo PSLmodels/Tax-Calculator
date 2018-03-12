@@ -981,7 +981,7 @@ def test_table_columns_labels():
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
 
 
-def test_dec_qin_graph_plots(cps_subsample):
+def test_dec_graph_plots(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=rec)
@@ -1000,10 +1000,8 @@ def test_dec_qin_graph_plots(cps_subsample):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
-    fig_dec_hide = calc1.decile_graph(calc2)
-    assert fig_dec_hide
-    fig_dec_show = calc1.decile_graph(calc2, hide_nonpositive_incomes=False)
-    assert fig_dec_show
+    fig = calc1.decile_graph(calc2)
+    assert fig
 
 
 def test_nonsmall_diffs():
