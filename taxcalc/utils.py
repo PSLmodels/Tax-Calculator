@@ -88,7 +88,7 @@ DIST_TABLE_LABELS = ['Returns',
 # labels list to map a label to the correct column in a difference table.
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
-                  'iitax', 'payrolltax', 'combined', 's006','ubi']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi']
 
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
