@@ -35,7 +35,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                   'c05800', 'othertaxes', 'refund', 'c07100', 'surtax',
-                  'iitax', 'payrolltax', 'combined', 's006']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi']
 
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
@@ -57,7 +57,8 @@ DIST_TABLE_COLUMNS = ['s006',
                       'payrolltax',
                       'combined',
                       'expanded_income',
-                      'aftertax_income']
+                      'aftertax_income',
+                      'ubi']
 
 DIST_TABLE_LABELS = ['Returns',
                      'AGI',
@@ -79,7 +80,8 @@ DIST_TABLE_LABELS = ['Returns',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities',
                      'Expanded Income',
-                     'After-Tax Expanded Income']
+                     'After-Tax Expanded Income',
+                     'Universal Basic Income']
 
 # Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
 # DIFF_TABLE_LABELS list below; this correspondence allows us to use this
