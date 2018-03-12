@@ -56,9 +56,9 @@ DIST_TABLE_COLUMNS = ['s006',
                       'iitax',
                       'payrolltax',
                       'combined',
+                      'ubi',
                       'expanded_income',
-                      'aftertax_income',
-                      'ubi']
+                      'aftertax_income']
 
 DIST_TABLE_LABELS = ['Returns',
                      'AGI',
@@ -79,9 +79,9 @@ DIST_TABLE_LABELS = ['Returns',
                      'Individual Income Tax Liabilities',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities',
+                     'Universal Basic Income'
                      'Expanded Income',
-                     'After-Tax Expanded Income',
-                     'Universal Basic Income']
+                     'After-Tax Expanded Income']
 
 # Items in the DIFF_TABLE_COLUMNS list below correspond to the items in the
 # DIFF_TABLE_LABELS list below; this correspondence allows us to use this
