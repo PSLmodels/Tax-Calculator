@@ -980,7 +980,7 @@ def test_table_columns_labels():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
 
-
+@pytest.mark.one
 def test_dec_graph_plots(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
@@ -1002,6 +1002,19 @@ def test_dec_graph_plots(cps_subsample):
     calc2.calc_all()
     fig = calc1.decile_graph(calc2)
     assert fig
+    dt1, dt2 = calc1.distribution_tables(calc2)
+    dta = graph_dec_data(dt1, dt2, year,
+                         include_zero_incomes=True,
+                         include_negative_incomes=False)
+    assert isinstance(dta, dict)
+    dta = graph_dec_data(dt1, dt2, year,
+                         include_zero_incomes=False,
+                         include_negative_incomes=True)
+    assert isinstance(dta, dict)
+    dta = graph_dec_data(dt1, dt2, year,
+                         include_zero_incomes=False,
+                         include_negative_incomes=False)
+    assert isinstance(dta, dict)
 
 
 def test_nonsmall_diffs():
