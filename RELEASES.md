@@ -18,9 +18,6 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
-- Add UBI benefits statistic to distribution and difference tables
-  [[#1909](https://github.com/open-source-economics/Tax-Calculator/pull/1909)
-  by Killian Pinkelman]
 - Add row names to distribution and difference tables
   [[#1913](https://github.com/open-source-economics/Tax-Calculator/pull/1913)
   by Martin Holmer]
@@ -30,6 +27,9 @@ for a complete commit history.
 - Revise Calculator class decile_graph method to provide option for including those with zero income and/or those with negative income in the bottom decile
   [[#1918](https://github.com/open-source-economics/Tax-Calculator/pull/1918)
   by Martin Holmer]
+- Add UBI benefits statistic to distribution and difference tables
+  [[#1919](https://github.com/open-source-economics/Tax-Calculator/pull/1919)
+  by Killian Pinkelman]
 
 **Bug Fixes**
 - None
