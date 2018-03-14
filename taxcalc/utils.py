@@ -79,7 +79,7 @@ DIST_TABLE_LABELS = ['Returns',
                      'Individual Income Tax Liabilities',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities',
-                     'Universal Basic Income'
+                     'Universal Basic Income',
                      'Expanded Income',
                      'After-Tax Expanded Income']
 
