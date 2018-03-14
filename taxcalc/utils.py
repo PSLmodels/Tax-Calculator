@@ -2,7 +2,7 @@
 PUBLIC low-level utility functions for Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 utils.py
+# pep8 utils.py
 # pylint --disable=locally-disabled utils.py
 #
 # pylint: disable=too-many-lines

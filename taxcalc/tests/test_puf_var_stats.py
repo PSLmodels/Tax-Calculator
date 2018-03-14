@@ -2,7 +2,7 @@
 Test generates statistics for puf.csv variables.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_puf_var_stats.py
+# pep8 test_puf_var_stats.py
 # pylint --disable=locally-disabled test_puf_var_stats.py
 
 import os

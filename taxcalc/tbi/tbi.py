@@ -11,7 +11,7 @@ post-reform tax results for the selected units with their pre-reform
 tax results.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 tbi.py
+# pep8 tbi.py
 # pylint --disable=locally-disabled tbi.py
 
 from __future__ import print_function

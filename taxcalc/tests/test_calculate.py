@@ -1,3 +1,6 @@
+# CODING-STYLE CHECKS:
+# pep8 test_calculate.py
+
 import os
 import json
 from io import StringIO
