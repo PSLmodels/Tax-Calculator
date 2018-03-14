@@ -114,13 +114,13 @@ DIFF_TABLE_LABELS = ['All Tax Units',
 
 DECILE_ROW_NAMES = ['0-10zn', '0-10p', '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
-                    'all',
+                    'ALL',
                     '90-95', '95-99', 'Top 1%']
 
 STANDARD_ROW_NAMES = ['<=$0K', '$0-10K', '$10-20K', '$20-30K', '$30-40K',
                       '$40-50K', '$50-75K', '$75-100K',
                       '$100-200K', '$200-500K',
-                      '$500-1000K', '>$1000K', 'all']
+                      '$500-1000K', '>$1000K', 'ALL']
 
 STANDARD_INCOME_BINS = [-9e99, 1e-9, 9999, 19999, 29999, 39999, 49999,
                         74999, 99999, 199999, 499999, 1000000, 9e99]
@@ -388,6 +388,17 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     pd.options.display.float_format = '{:8,.0f}'.format
     # ensure dist_table columns are in correct order
     assert dist_table.columns.values.tolist() == DIST_TABLE_COLUMNS
+    # add row names to table if using weighted_deciles or standard_income_bins
+    if groupby == 'weighted_deciles':
+        rownames = DECILE_ROW_NAMES
+    elif groupby == 'standard_income_bins':
+        rownames = STANDARD_ROW_NAMES
+    else:
+        rownames = None
+    if rownames:
+        assert len(dist_table.index) == len(rownames)
+        dist_table.index = rownames
+    # return table as Pandas DataFrame
     return dist_table
 
 
@@ -558,7 +569,6 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
     diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
-    diffs['pc_aftertaxinc'].replace(to_replace=np.nan, value=0, inplace=True)
     # delete intermediate atinc1 and atinc2 columns
     del diffs['atinc1']
     del diffs['atinc2']
@@ -571,6 +581,17 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     pd.options.display.float_format = '{:10,.2f}'.format
     # ensure diffs columns are in correct order
     assert diffs.columns.values.tolist() == DIFF_TABLE_COLUMNS
+    # add row names to table if using weighted_deciles or standard_income_bins
+    if groupby == 'weighted_deciles':
+        rownames = DECILE_ROW_NAMES
+    elif groupby == 'standard_income_bins':
+        rownames = STANDARD_ROW_NAMES
+    else:
+        rownames = None
+    if rownames:
+        assert len(diffs.index) == len(rownames)
+        diffs.index = rownames
+    # return table as Pandas DataFrame
     return diffs
 
 
@@ -1488,7 +1509,7 @@ def dec_graph_data(diff_table, year, hide_nonpos_incomes=True):
         info = dict()
         info['label'] = DECILE_ROW_NAMES[idx]
         info['value'] = diff_table['pc_aftertaxinc'][idx]
-        if info['label'] == 'all':
+        if info['label'] == 'ALL':
             info['label'] = '---------'
             info['value'] = 0
         bars[idx] = info
