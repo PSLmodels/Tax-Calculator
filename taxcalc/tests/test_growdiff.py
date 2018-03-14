@@ -1,3 +1,6 @@
+# CODING-STYLE CHECKS:
+# pep8 test_growdiff.py
+
 import os
 import json
 from numpy.testing import assert_allclose

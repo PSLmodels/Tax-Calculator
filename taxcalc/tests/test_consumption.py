@@ -1,3 +1,6 @@
+# CODING-STYLE CHECKS:
+# pep8 test_consumption.py
+
 import numpy as np
 import pytest
 import copy

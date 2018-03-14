@@ -1,3 +1,6 @@
+# CODING-STYLE CHECKS:
+# pep8 test_notebooks.py
+
 import os
 import json
 import subprocess

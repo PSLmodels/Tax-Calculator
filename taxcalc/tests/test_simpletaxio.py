@@ -2,13 +2,13 @@
 Tests for SimpleTaxIO class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_simpletaxio.py
+# pep8 test_simpletaxio.py
 # pylint --disable=locally-disabled test_simpletaxio.py
 
 import os
 import tempfile
 import pytest
-from simpletaxio import SimpleTaxIO
+from taxcalc import SimpleTaxIO  # pylint: disable=import-error
 
 
 NUM_INPUT_LINES = 4

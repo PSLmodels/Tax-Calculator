@@ -16,19 +16,38 @@ should follow on your local computer before submitting a development
 branch as a pull request to the central Tax-Calculator repository at
 GitHub.
 
-Currently there are two phases of testing.
+Currently there are three phases of testing.
+
+Testing with pep8
+-----------------
+
+The first phase of testing checks the formatting of the Python code
+against the PEP8 standard.  Assuming you are in the top-level directory
+of the repository, do the PEP8 tests either of these two ways:
+
+```
+cd taxcalc
+pep8 .
+```
+or
+```
+pep8 taxcalc
+```
+
+No messages indicate the PEP8 tests pass.  Fix any errors.  When you
+pass all the PEP8 tests, proceed to the second phase of testing.
 
 Testing with py.test
 --------------------
 
-There are two variants of this first testing phase depending on
+There are two variants of this second testing phase depending on
 whether or not you have access to a file called `puf.csv` that
 contains a representative sample of tax filing units used by the
 [TaxBrain web application](http://www.ospc.org/taxbrain) and by core
 Tax-Calculator developers.
 
 A brief description of the `puf.csv` file is followed by
-instructions on how to run the two variants of the first-phase tests.
+instructions on how to run the two variants of the second-phase tests.
 
 The Tax-Calculator `puf.csv` file has been constructed by the core
 development team by merging information from the most recent publicly
@@ -46,7 +65,7 @@ execute a `conda update ... taxpuf` command (as described in the
 described below.
 
 **NO PUF.CSV**: If you do not have access to the `puf.csv` file (or if
-you want to do just a quick test), run the first-phase of testing as
+you want to do just a quick test), run the second-phase of testing as
 follows at the command prompt in the tax-calculator directory at the
 top of the repository directory tree:
 
@@ -67,7 +86,7 @@ take at least twice as long to execute), simply omit the `-n4` option.
 **HAVE PUF.CSV**: If you do have access to the `puf.csv` file, copy it
 into the tax-calculator directory at the top of the repository
 directory tree (but **never** add it to your repository) and run the
-first-phase of testing as follows at the command prompt in the
+second-phase of testing as follows at the command prompt in the
 tax-calculator directory at the top of the repository directory tree:
 
 ```
@@ -110,7 +129,7 @@ Testing with validation/tests.sh
 --------------------------------
 
 The current version of the validation tests run only under Mac and
-Linux; if you are working under Windows, skip this second phase of
+Linux; if you are working under Windows, skip this third phase of
 testing.  See the [description of the validation
 tests](taxcalc/validation/README.md) for more details.
 
@@ -148,7 +167,7 @@ Updating the Test Results
 -------------------------
 
 After an enhancement or bug fix, you may be convinced that the new and
-different first-phase test results are, in fact, correct.  How do you
+different second-phase test results are, in fact, correct.  How do you
 eliminate the test failures?  For all but the few tests that require
 the `puf.csv` file as input, simply edit the appropriate
 `taxcalc/tests/test_*.py` file so that the test passes when you rerun
