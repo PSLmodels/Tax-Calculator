@@ -2,7 +2,7 @@
 Tax-Calculator Consumption class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 consumption.py
+# pep8 consumption.py
 # pylint --disable=locally-disabled consumption.py
 
 from taxcalc.parameters import ParametersBase

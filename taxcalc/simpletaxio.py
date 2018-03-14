@@ -2,7 +2,7 @@
 Tax-Calculator simple tax input-output class used in TAXSIM validation work.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 simpletaxio.py
+# pep8 simpletaxio.py
 # pylint --disable=locally-disabled simpletaxio.py
 
 import os
