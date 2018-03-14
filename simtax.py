@@ -1,5 +1,5 @@
 """
-SIMple input-output capabilities for TAX-calculator.
+SIMple input-output capabilities for TAX-calculator used in validation work
 """
 # CODING-STYLE CHECKS:
 # pep8 --ignore=E402 simtax.py
@@ -7,7 +7,11 @@ SIMple input-output capabilities for TAX-calculator.
 
 import argparse
 import sys
-from simpletaxio import SimpleTaxIO
+import os
+import re
+import six
+import pandas as pd
+from taxcalc import SimpleTaxIO
 
 
 def main():

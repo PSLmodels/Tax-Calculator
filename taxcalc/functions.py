@@ -8,7 +8,7 @@ parameters (as would be done in a reform that introduces chained-CPI
 indexing).
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 functions.py
+# pep8 functions.py
 # pylint --disable=locally-disabled functions.py
 #
 # pylint: disable=too-many-lines

@@ -2,7 +2,7 @@
 Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 calculate.py
+# pep8 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines

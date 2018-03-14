@@ -3,7 +3,7 @@ Implement numba JIT decorators used to speed-up Tax-Calculator functions in
 the functions.py module.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 decorators.py
+# pep8 decorators.py
 # pylint --disable=locally-disabled decorators.py
 
 import ast
