@@ -99,14 +99,14 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     calc = Calculator(policy=pol, records=rec)
     # check that Policy object embedded in Calculator object is correct
     assert calc.current_year == year
-    assert calc.param('II_em') == 4000
-    assert np.allclose(calc.param('_II_em'),
+    assert calc.policy_param('II_em') == 4000
+    assert np.allclose(calc.policy_param('_II_em'),
                        np.array([4000] * Policy.DEFAULT_NUM_YEARS))
     exp_STD_Aged = [[1600, 1300, 1300,
                      1600, 1600]] * Policy.DEFAULT_NUM_YEARS
-    assert np.allclose(calc.param('_STD_Aged'),
+    assert np.allclose(calc.policy_param('_STD_Aged'),
                        np.array(exp_STD_Aged))
-    assert np.allclose(calc.param('STD_Aged'),
+    assert np.allclose(calc.policy_param('STD_Aged'),
                        np.array([1600, 1300, 1300, 1600, 1600]))
 
 
@@ -125,14 +125,14 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     # check that Policy object embedded in Calculator object is correct
     assert pol.num_years == Policy.DEFAULT_NUM_YEARS
     assert calc.current_year == year
-    assert calc.param('II_em') == 3950
+    assert calc.policy_param('II_em') == 3950
     exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
-    assert np.allclose(calc.param('_II_em'),
+    assert np.allclose(calc.policy_param('_II_em'),
                        np.array(exp_II_em))
     calc.increment_year()
     calc.increment_year()
     assert calc.current_year == 2016
-    assert np.allclose(calc.param('STD_Aged'),
+    assert np.allclose(calc.policy_param('STD_Aged'),
                        np.array([1600, 1300, 1600, 1300, 1600]))
 
 
@@ -247,10 +247,10 @@ def test_make_calculator_increment_years_first(cps_subsample):
                              [std5, std5, std5, std5, std5],
                              [std6, std6, std6, std6, std6],
                              [std7, std7, std7, std7, std7]])
-    act_STD_Aged = calc.param('_STD_Aged')
+    act_STD_Aged = calc.policy_param('_STD_Aged')
     assert np.allclose(act_STD_Aged[:5], exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
-    act_II_em = calc.param('_II_em')
+    act_II_em = calc.policy_param('_II_em')
     assert np.allclose(act_II_em[:5], exp_II_em)
 
 

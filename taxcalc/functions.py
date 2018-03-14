@@ -29,27 +29,27 @@ def BenefitPrograms(calc):
     """
     # zero out benefits delivered by repealed programs
     zero = np.zeros(calc.array_len)
-    if calc.param('BEN_housing_repeal'):
+    if calc.policy_param('BEN_housing_repeal'):
         calc.array('housing_ben', zero)
-    if calc.param('BEN_ssi_repeal'):
+    if calc.policy_param('BEN_ssi_repeal'):
         calc.array('ssi_ben', zero)
-    if calc.param('BEN_snap_repeal'):
+    if calc.policy_param('BEN_snap_repeal'):
         calc.array('snap_ben', zero)
-    if calc.param('BEN_tanf_repeal'):
+    if calc.policy_param('BEN_tanf_repeal'):
         calc.array('tanf_ben', zero)
-    if calc.param('BEN_vet_repeal'):
+    if calc.policy_param('BEN_vet_repeal'):
         calc.array('vet_ben', zero)
-    if calc.param('BEN_wic_repeal'):
+    if calc.policy_param('BEN_wic_repeal'):
         calc.array('wic_ben', zero)
-    if calc.param('BEN_mcare_repeal'):
+    if calc.policy_param('BEN_mcare_repeal'):
         calc.array('mcare_ben', zero)
-    if calc.param('BEN_mcaid_repeal'):
+    if calc.policy_param('BEN_mcaid_repeal'):
         calc.array('mcaid_ben', zero)
-    if calc.param('BEN_oasdi_repeal'):
+    if calc.policy_param('BEN_oasdi_repeal'):
         calc.array('e02400', zero)
-    if calc.param('BEN_ui_repeal'):
+    if calc.policy_param('BEN_ui_repeal'):
         calc.array('e02300', zero)
-    if calc.param('BEN_other_repeal'):
+    if calc.policy_param('BEN_other_repeal'):
         calc.array('other_ben', zero)
     # calculate government cost of all benefits
     cost = np.array(
@@ -1677,19 +1677,19 @@ def ComputeBenefit(calc, ID_switch):
     # the types of itemized deductions covered under the BenefitSurtax
     no_ID_calc = copy.deepcopy(calc)
     if ID_switch[0]:
-        no_ID_calc.param('ID_Medical_hc', 1.)
+        no_ID_calc.policy_param('ID_Medical_hc', 1.)
     if ID_switch[1]:
-        no_ID_calc.param('ID_StateLocalTax_hc', 1.)
+        no_ID_calc.policy_param('ID_StateLocalTax_hc', 1.)
     if ID_switch[2]:
-        no_ID_calc.param('ID_RealEstate_hc', 1.)
+        no_ID_calc.policy_param('ID_RealEstate_hc', 1.)
     if ID_switch[3]:
-        no_ID_calc.param('ID_Casualty_hc', 1.)
+        no_ID_calc.policy_param('ID_Casualty_hc', 1.)
     if ID_switch[4]:
-        no_ID_calc.param('ID_Miscellaneous_hc', 1.)
+        no_ID_calc.policy_param('ID_Miscellaneous_hc', 1.)
     if ID_switch[5]:
-        no_ID_calc.param('ID_InterestPaid_hc', 1.)
+        no_ID_calc.policy_param('ID_InterestPaid_hc', 1.)
     if ID_switch[6]:
-        no_ID_calc.param('ID_Charity_hc', 1.)
+        no_ID_calc.policy_param('ID_Charity_hc', 1.)
     no_ID_calc._calc_one_year()  # pylint: disable=protected-access
     diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
     benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
@@ -1701,12 +1701,15 @@ def BenefitSurtax(calc):
     Computes itemized-deduction-benefit surtax and adds the surtax amount
     to income tax, combined tax, and surtax liabilities.
     """
-    if calc.param('ID_BenefitSurtax_crt') != 1.:
-        ben = ComputeBenefit(calc, calc.param('ID_BenefitSurtax_Switch'))
-        ben_deduct = calc.param('ID_BenefitSurtax_crt') * calc.array('c00100')
-        ben_exempt = calc.param('ID_BenefitSurtax_em')[calc.array('MARS') - 1]
+    if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
+        benefit_surtax_switch = calc.policy_param('ID_BenefitSurtax_Switch')
+        ben = ComputeBenefit(calc, benefit_surtax_switch)
+        agi = calc.array('c00100')
+        ben_deduct = calc.policy_param('ID_BenefitSurtax_crt') * agi
+        ben_exempt_array = calc.policy_param('ID_BenefitSurtax_em')
+        ben_exempt = ben_exempt_array[calc.array('MARS') - 1]
         ben_dedem = ben_deduct + ben_exempt
-        ben_surtax = (calc.param('ID_BenefitSurtax_trt') *
+        ben_surtax = (calc.policy_param('ID_BenefitSurtax_trt') *
                       np.where(ben > ben_dedem, ben - ben_dedem, 0.))
         # add ben_surtax to income & combined taxes and to surtax subtotal
         calc.incarray('iitax', ben_surtax)
@@ -1719,31 +1722,32 @@ def BenefitLimitation(calc):
     Limits the benefits of select itemized deductions to a fraction of
     deductible expenses.
     """
-    if calc.param('ID_BenefitCap_rt') != 1.:
+    if calc.policy_param('ID_BenefitCap_rt') != 1.:
         # pylint: disable=no-member
         # (above pylint comment eliminates bogus np.maximum warnings)
-        benefit = ComputeBenefit(calc, calc.param('ID_BenefitCap_Switch'))
-        # Calculate total deductible expenses under the cap.
-        deductible_expenses = 0.
-        if calc.param('ID_BenefitCap_Switch')[0]:  # Medical
-            deductible_expenses += calc.array('c17000')
-        if calc.param('ID_BenefitCap_Switch')[1]:  # StateLocal
-            deductible_expenses += ((1. - calc.param('ID_StateLocalTax_hc')) *
-                                    np.maximum(calc.array('e18400_capped'),
-                                               0.))
-        if calc.param('ID_BenefitCap_Switch')[2]:
-            deductible_expenses += ((1. - calc.param('ID_RealEstate_hc')) *
-                                    calc.array('e18500_capped'))
-        if calc.param('ID_BenefitCap_Switch')[3]:  # Casualty
-            deductible_expenses += calc.array('c20500')
-        if calc.param('ID_BenefitCap_Switch')[4]:  # Miscellaneous
-            deductible_expenses += calc.array('c20800')
-        if calc.param('ID_BenefitCap_Switch')[5]:  # Mortgage and interest paid
-            deductible_expenses += calc.array('c19200')
-        if calc.param('ID_BenefitCap_Switch')[6]:  # Charity
-            deductible_expenses += calc.array('c19700')
+        benefit = ComputeBenefit(calc,
+                                 calc.policy_param('ID_BenefitCap_Switch'))
+        # Calculate total deductible expenses under the cap
+        deduct_exps = 0.
+        if calc.policy_param('ID_BenefitCap_Switch')[0]:  # medical
+            deduct_exps += calc.array('c17000')
+        if calc.policy_param('ID_BenefitCap_Switch')[1]:  # statelocal
+            one_minus_hc = 1. - calc.policy_param('ID_StateLocalTax_hc')
+            deduct_exps += (one_minus_hc *
+                            np.maximum(calc.array('e18400_capped'), 0.))
+        if calc.policy_param('ID_BenefitCap_Switch')[2]:  # realestate
+            one_minus_hc = 1. - calc.policy_param('ID_RealEstate_hc')
+            deduct_exps += one_minus_hc * calc.array('e18500_capped')
+        if calc.policy_param('ID_BenefitCap_Switch')[3]:  # casualty
+            deduct_exps += calc.array('c20500')
+        if calc.policy_param('ID_BenefitCap_Switch')[4]:  # misc
+            deduct_exps += calc.array('c20800')
+        if calc.policy_param('ID_BenefitCap_Switch')[5]:  # interest
+            deduct_exps += calc.array('c19200')
+        if calc.policy_param('ID_BenefitCap_Switch')[6]:  # charity
+            deduct_exps += calc.array('c19700')
         # Calculate cap value for itemized deductions
-        benefit_limit = deductible_expenses * calc.param('ID_BenefitCap_rt')
+        benefit_limit = deduct_exps * calc.policy_param('ID_BenefitCap_rt')
         # Add the difference between the actual benefit and capped benefit
         # to income tax and combined tax liabilities.
         excess_benefit = np.maximum(benefit - benefit_limit, 0)
