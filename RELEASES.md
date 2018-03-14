@@ -16,6 +16,9 @@ for a complete commit history.
 - Rename Calculator class `param` method as `policy_param`
   [[#1915](https://github.com/open-source-economics/Tax-Calculator/pull/1915)
   by Martin Holmer]
+- Add notice of end of Python 2.7 support beginning in 2019
+  [[#1923](https://github.com/open-source-economics/Tax-Calculator/pull/1923)
+  by Martin Holmer]
 
 **New Features**
 - Add row names to distribution and difference tables
