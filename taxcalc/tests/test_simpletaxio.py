@@ -8,7 +8,7 @@ Tests for SimpleTaxIO class.
 import os
 import tempfile
 import pytest
-from simpletaxio import SimpleTaxIO
+from taxcalc import SimpleTaxIO  # pylint: disable=import-error
 
 
 NUM_INPUT_LINES = 4

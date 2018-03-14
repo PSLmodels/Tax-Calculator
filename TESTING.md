@@ -26,7 +26,7 @@ against the PEP8 standard.  Do the checks this way:
 
 ```
 cd taxcalc
-pep8 --ignore=E402 .
+pep8 .
 ```
 
 No messages indicate the PEP8 tests pass.  Once you get that result,
