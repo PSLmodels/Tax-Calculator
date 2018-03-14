@@ -12,7 +12,7 @@ your options.
 Read tax-calculator/TESTING.md for details.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_pufcsv.py
+# pep8 test_pufcsv.py
 # pylint --disable=locally-disabled test_pufcsv.py
 
 from __future__ import print_function

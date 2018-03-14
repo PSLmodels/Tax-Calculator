@@ -1,3 +1,6 @@
+# CODING-STYLE CHECKS:
+# pep8 test_policy.py
+
 import os
 import sys
 import six

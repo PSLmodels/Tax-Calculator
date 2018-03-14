@@ -2,7 +2,7 @@
 PRIVATE utility functions for Tax-Calculator PUBLIC utility functions.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 utilsprvt.py
+# pep8 utilsprvt.py
 # pylint --disable=locally-disabled utilsprvt.py
 
 

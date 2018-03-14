@@ -2,7 +2,7 @@
 Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 calculate.py
+# pep8 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
@@ -273,7 +273,7 @@ class Calculator(object):
         """
         return self.__records.array_length
 
-    def param(self, param_name, param_value=None):
+    def policy_param(self, param_name, param_value=None):
         """
         If param_value is None, return named parameter in
          embedded Policy object.
@@ -687,10 +687,10 @@ class Calculator(object):
         mtr_on_earnings = (variable_str == 'e00200p' or
                            variable_str == 'e00200s')
         if wrt_full_compensation and mtr_on_earnings:
-            adj = np.where(variable < self.param('SS_Earnings_c'),
-                           0.5 * (self.param('FICA_ss_trt') +
-                                  self.param('FICA_mc_trt')),
-                           0.5 * self.param('FICA_mc_trt'))
+            adj = np.where(variable < self.policy_param('SS_Earnings_c'),
+                           0.5 * (self.policy_param('FICA_ss_trt') +
+                                  self.policy_param('FICA_mc_trt')),
+                           0.5 * self.policy_param('FICA_mc_trt'))
         else:
             adj = 0.0
         # compute marginal tax rates

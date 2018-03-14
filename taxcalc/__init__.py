@@ -9,6 +9,7 @@ from taxcalc.filings import *
 from taxcalc.growfactors import *
 from taxcalc.growdiff import *
 from taxcalc.records import *
+from taxcalc.simpletaxio import *
 from taxcalc.taxcalcio import *
 from taxcalc.utils import *
 from taxcalc.macro_elasticity import *
