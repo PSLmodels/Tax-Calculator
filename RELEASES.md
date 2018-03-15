@@ -33,6 +33,9 @@ for a complete commit history.
 - Add UBI benefits statistic to distribution and difference tables
   [[#1919](https://github.com/open-source-economics/Tax-Calculator/pull/1919)
   by Killian Pinkelman]
+- Add two benefits statistics to distribution and difference tables
+  [[#1925](https://github.com/open-source-economics/Tax-Calculator/pull/1925)
+  by Anderson Frailey]
 
 **Bug Fixes**
 - None
