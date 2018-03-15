@@ -35,7 +35,8 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                   'c05800', 'othertaxes', 'refund', 'c07100', 'surtax',
-                  'iitax', 'payrolltax', 'combined', 's006', 'ubi']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi',
+                  'benefit_cost_total', 'benefit_value_total']
 
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
@@ -57,6 +58,8 @@ DIST_TABLE_COLUMNS = ['s006',
                       'payrolltax',
                       'combined',
                       'ubi',
+                      'benefit_cost_total',
+                      'benefit_value_total',
                       'expanded_income',
                       'aftertax_income']
 
@@ -80,6 +83,8 @@ DIST_TABLE_LABELS = ['Returns',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities',
                      'Universal Basic Income',
+                     'Total Cost of Benefits',
+                     'Consumption Value of Benefits',
                      'Expanded Income',
                      'After-Tax Expanded Income']
 
@@ -88,7 +93,8 @@ DIST_TABLE_LABELS = ['Returns',
 # labels list to map a label to the correct column in a difference table.
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
-                  'iitax', 'payrolltax', 'combined', 's006', 'ubi']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi',
+                  'benefit_cost_total', 'benefit_value_total']
 
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
@@ -99,6 +105,8 @@ DIFF_TABLE_COLUMNS = ['count',
                       'tot_change',
                       'share_of_change',
                       'ubi',
+                      'benefit_cost_total',
+                      'benefit_value_total',
                       'pc_aftertaxinc']
 
 DIFF_TABLE_LABELS = ['All Tax Units',
@@ -110,6 +118,8 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Total Tax Difference',
                      'Share of Overall Change',
                      'Universal Basic Income',
+                     'Total Cost of Benefits',
+                     'Consumption Value of Benefits',
                      '% Change in After-Tax Income']
 
 DECILE_ROW_NAMES = ['0-10zn', '0-10p', '10-20', '20-30', '30-40', '40-50',
@@ -485,6 +495,10 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
             sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
             sdf['ubi'] = gpdf.apply(weighted_sum, 'ubi')
+            sdf['benefit_cost_total'] = gpdf.apply(weighted_sum,
+                                                   'benefit_cost_total')
+            sdf['benefit_value_total'] = gpdf.apply(weighted_sum,
+                                                    'benefit_value_total')
             return sdf
 
         # main logic of diff_table_stats function
