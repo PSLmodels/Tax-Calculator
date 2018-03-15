@@ -35,7 +35,8 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                   'c05800', 'othertaxes', 'refund', 'c07100', 'surtax',
-                  'iitax', 'payrolltax', 'combined', 's006', 'ubi']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi',
+                  'benefit_cost_total', 'benefit_value_total']
 
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
@@ -57,6 +58,8 @@ DIST_TABLE_COLUMNS = ['s006',
                       'payrolltax',
                       'combined',
                       'ubi',
+                      'benefit_cost_total',
+                      'benefit_value_total',
                       'expanded_income',
                       'aftertax_income']
 
@@ -80,6 +83,8 @@ DIST_TABLE_LABELS = ['Returns',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities',
                      'Universal Basic Income',
+                     'Total Cost of Benefits',
+                     'Consumption Value of Benefits',
                      'Expanded Income',
                      'After-Tax Expanded Income']
 
@@ -88,7 +93,8 @@ DIST_TABLE_LABELS = ['Returns',
 # labels list to map a label to the correct column in a difference table.
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
-                  'iitax', 'payrolltax', 'combined', 's006', 'ubi']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi',
+                  'benefit_cost_total', 'benefit_value_total']
 
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
@@ -99,6 +105,8 @@ DIFF_TABLE_COLUMNS = ['count',
                       'tot_change',
                       'share_of_change',
                       'ubi',
+                      'benefit_cost_total',
+                      'benefit_value_total',
                       'pc_aftertaxinc']
 
 DIFF_TABLE_LABELS = ['All Tax Units',
@@ -110,6 +118,8 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Total Tax Difference',
                      'Share of Overall Change',
                      'Universal Basic Income',
+                     'Total Cost of Benefits',
+                     'Consumption Value of Benefits',
                      '% Change in After-Tax Income']
 
 DECILE_ROW_NAMES = ['0-10n', '0-10z', '0-10p',
@@ -258,15 +268,18 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
           for the 0.95-0.99 quantile range, and
           for the 0.99-1.00 quantile range (top one percent); and the
           returned table splits the bottom decile into filing units with
-          negative, zero, and positive values of the specified income_measure.
+          negative (denoted by a 0-10n row label),
+          zero (denoted by a 0-10z row label), and
+          positive (denoted by a 0-10p row label) values of the
+          specified income_measure.
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
-        determines how the data should be manipulated
+        determines how the table statistices are computed
 
     income_measure : String object
-        options for input: 'expanded_income', 'c00100'(AGI),
-                           'expanded_income_baseline', 'c00100_baseline'
+        options for input: 'expanded_income', 'c00100'(AGI)
+        specifies statistic used to place filing units in bins or deciles
 
     Notes
     -----
@@ -418,19 +431,22 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
 
     groupby : String object
         options for input: 'weighted_deciles', 'standard_income_bins',
-                           'large_income_bins', 'small_income_bins'
-        specifies kind of bins used to group filing units
+                           'large_income_bins', 'small_income_bins';
+        determines how the columns in the resulting Pandas DataFrame are sorted
     NOTE: when groupby is 'weighted_deciles', the returned table has three
           extra rows containing top-decile detail consisting of statistics
           for the 0.90-0.95 quantile range (bottom half of top decile),
           for the 0.95-0.99 quantile range, and
           for the 0.99-1.00 quantile range (top one percent); and the
           returned table splits the bottom decile into filing units with
-          negative, zero, and positive values of the specified income_measure.
+          negative (denoted by a 0-10n row label),
+          zero (denoted by a 0-10z row label), and
+          positive (denoted by a 0-10p row label) values of the
+          specified income_measure.
 
     income_measure : String object
         options for input: 'expanded_income', 'c00100'(AGI)
-        specifies statistic to place filing units in bins
+        specifies statistic used to place filing units in bins or deciles
 
     tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
@@ -483,6 +499,10 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
             sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
             sdf['ubi'] = gpdf.apply(weighted_sum, 'ubi')
+            sdf['benefit_cost_total'] = gpdf.apply(weighted_sum,
+                                                   'benefit_cost_total')
+            sdf['benefit_value_total'] = gpdf.apply(weighted_sum,
+                                                    'benefit_value_total')
             return sdf
 
         # main logic of diff_table_stats function
