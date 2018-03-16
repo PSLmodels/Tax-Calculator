@@ -29,7 +29,7 @@ from taxcalc.utils import (DIST_VARIABLES,
                            expanded_income_weighted,
                            weighted_perc_inc, weighted_perc_cut,
                            add_income_bins, add_quantile_bins,
-                           mtr_graph_data, atr_graph_data,
+                           mtr_graph_data, atr_graph_data, dec_graph_data,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
@@ -981,7 +981,7 @@ def test_table_columns_labels():
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
 
 
-def test_dec_qin_graph_plots(cps_subsample):
+def test_dec_graph_plots(cps_subsample):
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=rec)
@@ -1000,10 +1000,21 @@ def test_dec_qin_graph_plots(cps_subsample):
     assert calc1.current_year == calc2.current_year
     calc1.calc_all()
     calc2.calc_all()
-    fig_dec_hide = calc1.decile_graph(calc2)
-    assert fig_dec_hide
-    fig_dec_show = calc1.decile_graph(calc2, hide_nonpositive_incomes=False)
-    assert fig_dec_show
+    fig = calc1.decile_graph(calc2)
+    assert fig
+    dt1, dt2 = calc1.distribution_tables(calc2)
+    dta = dec_graph_data(dt1, dt2, year,
+                         include_zero_incomes=True,
+                         include_negative_incomes=False)
+    assert isinstance(dta, dict)
+    dta = dec_graph_data(dt1, dt2, year,
+                         include_zero_incomes=False,
+                         include_negative_incomes=True)
+    assert isinstance(dta, dict)
+    dta = dec_graph_data(dt1, dt2, year,
+                         include_zero_incomes=False,
+                         include_negative_incomes=False)
+    assert isinstance(dta, dict)
 
 
 def test_nonsmall_diffs():

@@ -1007,7 +1007,9 @@ class Calculator(object):
                              title='')
         return fig
 
-    def decile_graph(self, calc, hide_nonpositive_incomes=True):
+    def decile_graph(self, calc,
+                     include_zero_incomes=True,
+                     include_negative_incomes=True):
         """
         Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
@@ -1017,6 +1019,9 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
+        NOTE: this method calls the distribution_tables method to
+              compute the values of the graphed statistic; consult
+              that method for details on how the values are computed.
 
         Parameters
         ----------
@@ -1025,16 +1030,17 @@ class Calculator(object):
             where both self and calc have calculated taxes for this year
             before being used by this method
 
-        hide_nonpositive_incomes : boolean
-            if True (which is the default), the bottom table bin containing
-            filing units with non-positive expanded_income is not shown in
-            the graph and the table bin containing filing units with positive
-            expanded_income in the bottom decile is shown with its bar width
-            adjusted to the number of weighted filing units in bottom decile
-            who have positive expanded_income; if False, the bottom table bin
-            containing filing units with non-positive expanded_income is shown,
-            which may be misleading because the percentage change is correctly
-            calculated with a negative divisor.
+        include_zero_incomes : boolean
+            if True (which is the default), the bottom decile does contain
+            filing units with zero expanded_income;
+            if False, the bottom decile does not contain filing units with
+            zero expanded_income.
+
+        include_negative_incomes : boolean
+            if True (which is the default), the bottom decile does contain
+            filing units with negative expanded_income;
+            if False, the bottom decile does not contain filing units with
+            negative expanded_income.
 
         Returns
         -------
@@ -1044,13 +1050,15 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
-        diff_table = self.difference_table(calc,
-                                           groupby='weighted_deciles',
-                                           income_measure='expanded_income',
-                                           tax_to_diff='combined')
+        dt1, dt2 = self.distribution_tables(calc,
+                                            groupby='weighted_deciles',
+                                            income_measure='expanded_income',
+                                            result_type='weighted_sum')
         # construct data for graph
-        data = dec_graph_data(diff_table, year=self.current_year,
-                              hide_nonpos_incomes=hide_nonpositive_incomes)
+        data = dec_graph_data(
+            dt1, dt2, year=self.current_year,
+            include_zero_incomes=include_zero_incomes,
+            include_negative_incomes=include_negative_incomes)
         # construct figure from data
         fig = dec_graph_plot(data,
                              width=850,

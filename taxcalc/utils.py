@@ -1485,54 +1485,88 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(diff_table, year, hide_nonpos_incomes=True):
+def dec_graph_data(dist_table1, dist_table2, year,
+                   include_zero_incomes, include_negative_incomes):
     """
     Prepare data needed by dec_graph_plot utility function.
 
     Parameters
     ----------
-    diff_table : a Pandas DataFrame object returned from the
-        Calculator class difference_table method
+    dist_table1 : a Pandas DataFrame object returned from the
+        Calculator class distribution_tables method for baseline
+
+    dist_table2 : a Pandas DataFrame object returned from the
+        Calculator class distribution_tables method for reform
 
     year : integer
         specifies calendar year of the data in the diff_table
 
-    hide_nonpos_incomes : boolean
-        if True (which is the default), the bottom table bin containing
-        filing units with non-positive expanded_income is not shown in
-        the graph and the table bin containing filing units with positive
-        expanded_income in the bottom decile is shown with its bar width
-        adjusted to the number of weighted filing units in bottom decile
-        who have positive expanded_income; if False, the bottom table bin
-        containing filing units with non-positive expanded_income is shown,
-        which may be misleading because the percentage change is correctly
-        calculated with a negative divisor.
+    include_zero_incomes : boolean
+        if True, the bottom decile does contain filing units
+        with zero expanded_income;
+        if False, the bottom decile does not contain filing units
+        with zero expanded_income.
+
+    include_negative_incomes : boolean
+        if True, the bottom decile does contain filing units
+        with negative expanded_income;
+        if False, the bottom decile does not contain filing units
+        with negative expanded_income.
 
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
     """
+    # pylint: disable=too-many-locals
+    # check that the two distribution tables are consistent
+    assert len(dist_table1.index) == len(DECILE_ROW_NAMES)
+    assert len(dist_table2.index) == len(DECILE_ROW_NAMES)
+    assert np.allclose(dist_table1['s006'], dist_table2['s006'])
+    # compute bottom bar width and statistic value
+    wght = dist_table1['s006']
+    total_wght = wght[2] + wght[1] + wght[0]
+    included_wght = wght[2]
+    included_val1 = dist_table1['aftertax_income'][2] * wght[2]
+    included_val2 = dist_table2['aftertax_income'][2] * wght[2]
+    if include_zero_incomes:
+        included_wght += wght[1]
+        included_val1 += dist_table1['aftertax_income'][1] * wght[1]
+        included_val2 += dist_table2['aftertax_income'][1] * wght[1]
+    if include_negative_incomes:
+        included_wght += wght[0]
+        included_val1 += dist_table1['aftertax_income'][0] * wght[0]
+        included_val2 += dist_table2['aftertax_income'][0] * wght[0]
+    bottom_bar_width = included_wght / total_wght
+    bottom_bar_value = (included_val2 / included_val1 - 1.) * 100.
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
-    nbins = len(DECILE_ROW_NAMES)
-    if hide_nonpos_incomes:
-        first_bin = 1
-    else:
-        first_bin = 0
-    for idx in range(first_bin, nbins):
+    # ... bottom bar
+    info = dict()
+    if include_zero_incomes and include_negative_incomes:
+        info['label'] = '0-10'
+    elif include_zero_incomes and not include_negative_incomes:
+        info['label'] = '0-10zp'
+    if not include_zero_incomes and include_negative_incomes:
+        info['label'] = '0-10np'
+    if not include_zero_incomes and not include_negative_incomes:
+        info['label'] = '0-10p'
+    info['value'] = bottom_bar_value
+    bars[0] = info
+    # ... other bars
+    offset = 2
+    for idx in range(offset + 1, len(DECILE_ROW_NAMES)):
         info = dict()
         info['label'] = DECILE_ROW_NAMES[idx]
-        info['value'] = diff_table['pc_aftertaxinc'][idx]
+        val1 = dist_table1['aftertax_income'][idx] * wght[idx]
+        val2 = dist_table2['aftertax_income'][idx] * wght[idx]
+        info['value'] = (val2 / val1 - 1.) * 100.
         if info['label'] == 'ALL':
             info['label'] = '---------'
             info['value'] = 0
-        bars[idx] = info
+        bars[idx - offset] = info
     # construct dictionary containing bar data and auto-generated labels
     data = dict()
-    data['hide_nonpos'] = hide_nonpos_incomes
-    bottom_count = diff_table['count'][0] + diff_table['count'][1]
-    data['neg_bar_size'] = diff_table['count'][0] / bottom_count
-    data['pos_bar_size'] = diff_table['count'][1] / bottom_count
+    data['bottom_bar_width'] = bottom_bar_width
     data['bars'] = bars
     xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
     data['xlabel'] = xlabel
@@ -1635,15 +1669,9 @@ def dec_graph_plot(data,
         bval = data['bars'][idx]['value']
         blabel = data['bars'][idx]['label']
         bheight = barheight
-        if data['hide_nonpos']:
-            if yidx == 0:
-                bheight *= data['pos_bar_size']
-        else:
-            if yidx == 0:
-                bheight *= data['neg_bar_size']
-            elif yidx == 1:
-                bheight *= data['pos_bar_size']
-        if blabel == '90-95':
+        if blabel == '0-10':
+            bheight *= data['bottom_bar_width']
+        elif blabel == '90-95':
             bheight *= 0.5
             bcolor = 'red'
         elif blabel == '95-99':
