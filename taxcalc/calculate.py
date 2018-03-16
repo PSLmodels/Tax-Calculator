@@ -8,6 +8,7 @@ Tax-Calculator federal tax Calculator class.
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
 import os
+import sys
 import json
 import re
 import copy
@@ -146,6 +147,11 @@ class Calculator(object):
                 print('Tax-Calculator startup automatically ' +
                       'extrapolated your data to ' +
                       str(self.__records.current_year) + '.')
+        if verbose and sys.version_info.major == 2:  # running Python 2.7
+            print('WARNING: Tax-Calculator packages for Python 2.7 will')
+            print('         no longer be provided beginning in 2019')
+            print('         because Pandas is stopping development for 2.7.')
+            print('SOLUTION: upgrade to Python 3.6 now.')
         assert self.__policy.current_year == self.__records.current_year
         self.__stored_records = None
 
