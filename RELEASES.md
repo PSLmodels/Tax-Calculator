@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-03-?? Release 0.17.0
+2018-03-16 Release 0.17.0
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1926](https://github.com/open-source-economics/Tax-Calculator/pull/1926))
 
 **API Changes**
 - Make `run_nth_year_tax_calc_model` function return tables with all rows

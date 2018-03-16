@@ -94,18 +94,8 @@ print('')
 title = 'Extract of {} distribution table by baseline expanded-income decile:'
 print(title.format(cyr))
 print(dist_extract)
-print('Note: deciles are numbered 0-10 with bottom decile divided into')
-print('      those with negative or zero income and those with positive')
-print('      income, in the lines numbered 0 and 1, respectively, and with')
-print('      the top decile divided into bottom 5%, next 4%, and top 1%, in')
-print('      the lines numbered 12-14, respectively')
 print('')
 
 title = 'Extract of {} income-tax difference table by expanded-income decile:'
 print(title.format(cyr))
 print(diff_extract)
-print('Note: deciles are numbered 0-10 with bottom decile divided into')
-print('      those with negative or zero income and those with positive')
-print('      income, in the lines numbered 0 and 1, respectively, and with')
-print('      the top decile divided into bottom 5%, next 4%, and top 1%, in')
-print('      the lines numbered 12-14, respectively')
