@@ -409,16 +409,6 @@ class Calculator(object):
             options for input: 'weighted_deciles', 'standard_income_bins',
                                'large_income_bins', 'small_income_bins';
             determines how the columns in resulting Pandas DataFrame are sorted
-        NOTE: when groupby is 'weighted_deciles', the returned table has three
-              extra rows containing top-decile detail consisting of statistics
-              for the 0.90-0.95 quantile range (bottom half of top decile),
-              for the 0.95-0.99 quantile range, and
-              for the 0.99-1.00 quantile range (top one percent); and the
-              returned table splits the bottom decile into filing units with
-              negative (denoted by a 0-10n row label),
-              zero (denoted by a 0-10z row label), and
-              positive (denoted by a 0-10p row label) values of the
-              specified income_measure.
 
         income_measure : String object
             options for input: 'expanded_income' or 'c00100'(AGI)
@@ -428,13 +418,25 @@ class Calculator(object):
             options for input: 'weighted_sum' or 'weighted_avg';
             determines how the table statistices are computed
 
-        Typical usage
-        -------------
+        Return and typical usage
+        ------------------------
         dist1, dist2 = calc1.distribution_tables(calc2)
         OR
         dist1, _ = calc1.distribution_tables(None)
         (where calc1 is a baseline Calculator object
-        and calc2 is a reform Calculator object)
+        and calc2 is a reform Calculator object).
+        Each of the dist1 and optional dist2 is a distribution table as a
+        Pandas DataFrame with DIST_TABLE_COLUMNS and groupby rows.
+        NOTE: when groupby is 'weighted_deciles', the returned tables have 3
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent); and the
+              returned table splits the bottom decile into filing units with
+              negative (denoted by a 0-10n row label),
+              zero (denoted by a 0-10z row label), and
+              positive (denoted by a 0-10p row label) values of the
+              specified income_measure.
         """
         # nested function used only by this method
         def have_same_income_measure(calc1, calc2, income_measure):
@@ -503,6 +505,22 @@ class Calculator(object):
             options for input: 'weighted_deciles', 'standard_income_bins',
                                'large_income_bins', 'small_income_bins';
             determines how the columns in resulting Pandas DataFrame are sorted
+
+        income_measure : String object
+            options for input: 'expanded_income' or 'c00100'(AGI)
+            specifies statistic used to place filing units in bins or deciles
+
+        tax_to_diff : String object
+            options for input: 'iitax', 'payrolltax', 'combined'
+            specifies which tax to difference
+
+        Returns and typical usage
+        -------------------------
+        diff = calc1.difference_table(calc2)
+        (where calc1 is a baseline Calculator object
+        and calc2 is a reform Calculator object).
+        The returned diff is a difference table as a Pandas DataFrame
+        with DIST_TABLE_COLUMNS and groupby rows.
         NOTE: when groupby is 'weighted_deciles', the returned table has three
               extra rows containing top-decile detail consisting of statistics
               for the 0.90-0.95 quantile range (bottom half of top decile),
@@ -513,20 +531,6 @@ class Calculator(object):
               zero (denoted by a 0-10z row label), and
               positive (denoted by a 0-10p row label) values of the
               specified income_measure.
-
-        income_measure : String object
-            options for input: 'expanded_income' or 'c00100'(AGI)
-            specifies statistic used to place filing units in bins or deciles
-
-        tax_to_diff : String object
-            options for input: 'iitax', 'payrolltax', 'combined'
-            specifies which tax to difference
-
-        Typical usage
-        -------------
-        diff = calc1.difference_table(calc2)
-        (where calc1 is a baseline Calculator object
-        and calc2 is a reform Calculator object)
         """
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
