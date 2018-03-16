@@ -4,6 +4,43 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-03-16 Release 0.17.0
+-------------------------
+(last merged pull request is
+[#1926](https://github.com/open-source-economics/Tax-Calculator/pull/1926))
+
+**API Changes**
+- Make `run_nth_year_tax_calc_model` function return tables with all rows
+  [[#1914](https://github.com/open-source-economics/Tax-Calculator/pull/1914)
+  by Martin Holmer]
+- Rename Calculator class `param` method as `policy_param`
+  [[#1915](https://github.com/open-source-economics/Tax-Calculator/pull/1915)
+  by Martin Holmer]
+- Add notice of end of Python 2.7 support beginning in 2019
+  [[#1923](https://github.com/open-source-economics/Tax-Calculator/pull/1923)
+  by Martin Holmer]
+
+**New Features**
+- Add row names to distribution and difference tables
+  [[#1913](https://github.com/open-source-economics/Tax-Calculator/pull/1913)
+  by Martin Holmer]
+- Add row for those with zero income in distribution and difference tables
+  [[#1917](https://github.com/open-source-economics/Tax-Calculator/pull/1917)
+  by Martin Holmer]
+- Revise Calculator class decile_graph method to provide option for including those with zero income and/or those with negative income in the bottom decile
+  [[#1918](https://github.com/open-source-economics/Tax-Calculator/pull/1918)
+  by Martin Holmer]
+- Add UBI benefits statistic to distribution and difference tables
+  [[#1919](https://github.com/open-source-economics/Tax-Calculator/pull/1919)
+  by Killian Pinkelman]
+- Add two benefits statistics to distribution and difference tables
+  [[#1925](https://github.com/open-source-economics/Tax-Calculator/pull/1925)
+  by Anderson Frailey]
+
+**Bug Fixes**
+- None
+
+
 2018-03-09 Release 0.16.2
 -------------------------
 (last merged pull request is

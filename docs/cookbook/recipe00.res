@@ -1,7 +1,15 @@
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2014.
+WARNING: Tax-Calculator packages for Python 2.7 will
+         no longer be provided beginning in 2019
+         because Pandas is stopping development for 2.7.
+SOLUTION: upgrade to Python 3.6 now.
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2014.
+WARNING: Tax-Calculator packages for Python 2.7 will
+         no longer be provided beginning in 2019
+         because Pandas is stopping development for 2.7.
+SOLUTION: upgrade to Python 3.6 now.
 
 REFORM DOCUMENTATION
 Baseline Growth-Difference Assumption Values by Year:
@@ -101,47 +109,39 @@ With Income Tax <= 0 (#m)           73.35
 With Combined Tax <= 0 (#m)         46.36
 
 Extract of 2020 distribution table by baseline expanded-income decile:
-    funits(#m)  itax1($b)  itax2($b)  aftertax_inc1($b)  aftertax_inc2($b)
-0         1.35       0.18       0.19             -25.62             -25.63
-1        16.10      -8.18      -8.18             105.39             105.39
-2        17.45     -15.10     -15.68             329.18             329.76
-3        17.45     -11.53     -12.62             477.87             478.96
-4        17.45      -0.76      -2.34             619.94             621.52
-5        17.45      13.75      11.46             784.26             786.56
-6        17.45      38.29      34.70             986.44             990.03
-7        17.45      71.95      67.63           1,251.48           1,255.80
-8        17.45     117.10     111.71           1,608.38           1,613.77
-9        17.45     211.83     203.51           2,155.37           2,163.69
-10       17.45     855.91     874.03           4,320.46           4,302.34
-11      174.51   1,273.46   1,264.41          12,613.14          12,622.19
-12        8.73     190.71     186.30           1,461.26           1,465.67
-13        6.98     287.12     285.42           1,699.42           1,701.11
-14        1.75     378.07     402.30           1,159.78           1,135.55
-Note: deciles are numbered 0-10 with bottom decile divided into
-      those with negative or zero income and those with positive
-      income, in the lines numbered 0 and 1, respectively, and with
-      the top decile divided into bottom 5%, next 4%, and top 1%, in
-      the lines numbered 12-14, respectively
+        funits(#m)  itax1($b)  itax2($b)  aftertax_inc1($b)  aftertax_inc2($b)
+0-10n         0.09       0.18       0.19             -25.62             -25.63
+0-10z         1.25       0.00       0.00               0.00               0.00
+0-10p        16.10      -8.18      -8.18             105.39             105.39
+10-20        17.45     -15.10     -15.68             329.18             329.76
+20-30        17.45     -11.53     -12.62             477.87             478.96
+30-40        17.45      -0.76      -2.34             619.94             621.52
+40-50        17.45      13.75      11.46             784.26             786.56
+50-60        17.45      38.29      34.70             986.44             990.03
+60-70        17.45      71.95      67.63           1,251.48           1,255.80
+70-80        17.45     117.10     111.71           1,608.38           1,613.77
+80-90        17.45     211.83     203.51           2,155.37           2,163.69
+90-100       17.45     855.91     874.03           4,320.46           4,302.34
+ALL         174.51   1,273.46   1,264.41          12,613.14          12,622.19
+90-95         8.73     190.71     186.30           1,461.26           1,465.67
+95-99         6.98     287.12     285.42           1,699.42           1,701.11
+Top 1%        1.75     378.07     402.30           1,159.78           1,135.55
 
 Extract of 2020 income-tax difference table by expanded-income decile:
-    funits(#m)  agg_diff($b)  mean_diff($)  aftertaxinc_diff(%)
-0         1.35          0.01          6.46                 0.03
-1        16.10         -0.00         -0.06                 0.00
-2        17.45         -0.58        -32.95                 0.17
-3        17.45         -1.09        -62.62                 0.23
-4        17.45         -1.58        -90.59                 0.26
-5        17.45         -2.30       -131.52                 0.29
-6        17.45         -3.59       -205.76                 0.36
-7        17.45         -4.32       -247.61                 0.35
-8        17.45         -5.39       -308.90                 0.34
-9        17.45         -8.33       -477.06                 0.39
-10       17.45         18.12      1,038.18                -0.42
-11      174.51         -9.05        -51.84                 0.07
-12        8.73         -4.41       -505.61                 0.30
-13        6.98         -1.70       -243.23                 0.10
-14        1.75         24.23     13,882.68                -2.09
-Note: deciles are numbered 0-10 with bottom decile divided into
-      those with negative or zero income and those with positive
-      income, in the lines numbered 0 and 1, respectively, and with
-      the top decile divided into bottom 5%, next 4%, and top 1%, in
-      the lines numbered 12-14, respectively
+        funits(#m)  agg_diff($b)  mean_diff($)  aftertaxinc_diff(%)
+0-10n         0.09          0.01         94.10                 0.03
+0-10z         1.25          0.00          0.00                  nan
+0-10p        16.10         -0.00         -0.06                 0.00
+10-20        17.45         -0.58        -32.95                 0.17
+20-30        17.45         -1.09        -62.62                 0.23
+30-40        17.45         -1.58        -90.59                 0.26
+40-50        17.45         -2.30       -131.52                 0.29
+50-60        17.45         -3.59       -205.76                 0.36
+60-70        17.45         -4.32       -247.61                 0.35
+70-80        17.45         -5.39       -308.90                 0.34
+80-90        17.45         -8.33       -477.06                 0.39
+90-100       17.45         18.12      1,038.18                -0.42
+ALL         174.51         -9.05        -51.84                 0.07
+90-95         8.73         -4.41       -505.61                 0.30
+95-99         6.98         -1.70       -243.23                 0.10
+Top 1%        1.75         24.23     13,882.68                -2.09
