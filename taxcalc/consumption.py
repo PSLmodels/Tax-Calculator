@@ -2,7 +2,7 @@
 Tax-Calculator Consumption class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 consumption.py
+# pep8 consumption.py
 # pylint --disable=locally-disabled consumption.py
 
 from taxcalc.parameters import ParametersBase
@@ -81,7 +81,8 @@ class Consumption(ParametersBase):
         self.set_year(precall_current_year)
 
     RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
-    BENEFIT_VARS = set(['snap', 'vet', 'mcare', 'mcaid', 'other'])
+    BENEFIT_VARS = set(['housing', 'snap', 'tanf', 'vet', 'wic',
+                        'mcare', 'mcaid', 'other'])
 
     def has_response(self):
         """

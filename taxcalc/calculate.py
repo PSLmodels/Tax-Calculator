@@ -2,12 +2,13 @@
 Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 calculate.py
+# pep8 calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
 import os
+import sys
 import json
 import re
 import copy
@@ -38,8 +39,7 @@ from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            ce_aftertax_expanded_income,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
                            dec_graph_data, dec_graph_plot,
-                           pch_graph_data, pch_graph_plot,
-                           qin_graph_data, qin_graph_plot)
+                           pch_graph_data, pch_graph_plot)
 # import pdb
 
 
@@ -147,6 +147,11 @@ class Calculator(object):
                 print('Tax-Calculator startup automatically ' +
                       'extrapolated your data to ' +
                       str(self.__records.current_year) + '.')
+        if verbose and sys.version_info.major == 2:  # running Python 2.7
+            print('WARNING: Tax-Calculator packages for Python 2.7 will')
+            print('         no longer be provided beginning in 2019')
+            print('         because Pandas is stopping development for 2.7.')
+            print('SOLUTION: upgrade to Python 3.6 now.')
         assert self.__policy.current_year == self.__records.current_year
         self.__stored_records = None
 
@@ -274,7 +279,7 @@ class Calculator(object):
         """
         return self.__records.array_length
 
-    def param(self, param_name, param_value=None):
+    def policy_param(self, param_name, param_value=None):
         """
         If param_value is None, return named parameter in
          embedded Policy object.
@@ -393,14 +398,12 @@ class Calculator(object):
                             result_type='weighted_sum'):
         """
         Get results from self and calc, sort them based on groupby using
-        income_measure, manipulate grouped statistics based on result_type,
+        income_measure, compute grouped statistics based on result_type,
         and return tables as a pair of Pandas dataframes.
         This method leaves the Calculator object(s) unchanged.
         Note that the returned tables have consistent income groups (based
         on the self income_measure) even though the baseline income_measure
         in self and the income_measure in calc are different.
-        Also, note that some subgroups may contain filing units with negative
-        or zero baseline (self) income.
 
         Parameters
         ----------
@@ -409,29 +412,37 @@ class Calculator(object):
             if calc is None, the second returned table is None
 
         groupby : String object
-            options for input: 'weighted_deciles', 'webapp_income_bins',
+            options for input: 'weighted_deciles', 'standard_income_bins',
                                'large_income_bins', 'small_income_bins';
-            determines how the columns in returned tables are sorted
-        NOTE: when groupby is 'weighted_deciles', the returned table has three
-              extra rows containing top-decile detail consisting of statistics
-              for the 0.90-0.95 quantile range (bottom half of top decile),
-              for the 0.95-0.99 quantile range, and
-              for the 0.99-1.00 quantile range (top one percent).
+            determines how the columns in resulting Pandas DataFrame are sorted
 
         income_measure : String object
             options for input: 'expanded_income' or 'c00100'(AGI)
+            specifies statistic used to place filing units in bins or deciles
 
         result_type : String object
             options for input: 'weighted_sum' or 'weighted_avg';
-            determines how whether or not table entries are averages or totals
+            determines how the table statistices are computed
 
-        Typical usage
-        -------------
+        Return and typical usage
+        ------------------------
         dist1, dist2 = calc1.distribution_tables(calc2)
         OR
         dist1, _ = calc1.distribution_tables(None)
         (where calc1 is a baseline Calculator object
-        and calc2 is a reform Calculator object)
+        and calc2 is a reform Calculator object).
+        Each of the dist1 and optional dist2 is a distribution table as a
+        Pandas DataFrame with DIST_TABLE_COLUMNS and groupby rows.
+        NOTE: when groupby is 'weighted_deciles', the returned tables have 3
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent); and the
+              returned table splits the bottom decile into filing units with
+              negative (denoted by a 0-10n row label),
+              zero (denoted by a 0-10z row label), and
+              positive (denoted by a 0-10p row label) values of the
+              specified income_measure.
         """
         # nested function used only by this method
         def have_same_income_measure(calc1, calc2, income_measure):
@@ -490,8 +501,6 @@ class Calculator(object):
         in self and the income_measure in calc are different.
         Note that filing units are put into groupby categories using the
         specified income_measure in the baseline (self) situation.
-        Also, note that some subgroups may contain filing units with negative
-        or zero baseline (self) income.
 
         Parameters
         ----------
@@ -499,27 +508,35 @@ class Calculator(object):
             calc represents the reform while self represents the baseline
 
         groupby : String object
-            options for input: 'weighted_deciles', 'webapp_income_bins',
+            options for input: 'weighted_deciles', 'standard_income_bins',
                                'large_income_bins', 'small_income_bins';
-            determines how the columns in returned tables are sorted
-        NOTE: when groupby is 'weighted_deciles', the returned table has three
-              extra rows containing top-decile detail consisting of statistics
-              for the 0.90-0.95 quantile range (bottom half of top decile),
-              for the 0.95-0.99 quantile range, and
-              for the 0.99-1.00 quantile range (top one percent).
+            determines how the columns in resulting Pandas DataFrame are sorted
 
         income_measure : String object
             options for input: 'expanded_income' or 'c00100'(AGI)
+            specifies statistic used to place filing units in bins or deciles
 
         tax_to_diff : String object
             options for input: 'iitax', 'payrolltax', 'combined'
             specifies which tax to difference
 
-        Typical usage
-        -------------
+        Returns and typical usage
+        -------------------------
         diff = calc1.difference_table(calc2)
         (where calc1 is a baseline Calculator object
-        and calc2 is a reform Calculator object)
+        and calc2 is a reform Calculator object).
+        The returned diff is a difference table as a Pandas DataFrame
+        with DIST_TABLE_COLUMNS and groupby rows.
+        NOTE: when groupby is 'weighted_deciles', the returned table has three
+              extra rows containing top-decile detail consisting of statistics
+              for the 0.90-0.95 quantile range (bottom half of top decile),
+              for the 0.95-0.99 quantile range, and
+              for the 0.99-1.00 quantile range (top one percent); and the
+              returned table splits the bottom decile into filing units with
+              negative (denoted by a 0-10n row label),
+              zero (denoted by a 0-10z row label), and
+              positive (denoted by a 0-10p row label) values of the
+              specified income_measure.
         """
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
@@ -688,10 +705,10 @@ class Calculator(object):
         mtr_on_earnings = (variable_str == 'e00200p' or
                            variable_str == 'e00200s')
         if wrt_full_compensation and mtr_on_earnings:
-            adj = np.where(variable < self.param('SS_Earnings_c'),
-                           0.5 * (self.param('FICA_ss_trt') +
-                                  self.param('FICA_mc_trt')),
-                           0.5 * self.param('FICA_mc_trt'))
+            adj = np.where(variable < self.policy_param('SS_Earnings_c'),
+                           0.5 * (self.policy_param('FICA_ss_trt') +
+                                  self.policy_param('FICA_mc_trt')),
+                           0.5 * self.policy_param('FICA_mc_trt'))
         else:
             adj = 0.0
         # compute marginal tax rates
@@ -770,9 +787,8 @@ class Calculator(object):
 
             - 'agi': adjusted gross income, AGI (c00100)
 
-            - 'expanded_income': sum of AGI, non-taxable interest income,
-              non-taxable social security benefits, and employer share of
-              FICA taxes.
+            - 'expanded_income': broader than AGI (see definition in
+                                 functions.py file).
 
         dollar_weighting : boolean
             False implies both income_measure percentiles on x axis
@@ -991,7 +1007,9 @@ class Calculator(object):
                              title='')
         return fig
 
-    def decile_graph(self, calc, set_bottom_decile_result_to_zero=True):
+    def decile_graph(self, calc,
+                     include_zero_incomes=True,
+                     include_negative_incomes=True):
         """
         Create graph that shows percentage change in aftertax expanded
         income (from going from policy in self to policy in calc) for
@@ -1001,8 +1019,9 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
-        Note that some deciles may contain filing units with negative
-        or zero baseline (self) expanded income.
+        NOTE: this method calls the distribution_tables method to
+              compute the values of the graphed statistic; consult
+              that method for details on how the values are computed.
 
         Parameters
         ----------
@@ -1011,11 +1030,17 @@ class Calculator(object):
             where both self and calc have calculated taxes for this year
             before being used by this method
 
-        set_bottom_decile_result_to_zero : boolean
-            specify whether or not bottom decile (which contains filing
-            units with non-positive expanded income) result is shown in the
-            graph (default value is True; set to False to show the bottom
-            decile result)
+        include_zero_incomes : boolean
+            if True (which is the default), the bottom decile does contain
+            filing units with zero expanded_income;
+            if False, the bottom decile does not contain filing units with
+            zero expanded_income.
+
+        include_negative_incomes : boolean
+            if True (which is the default), the bottom decile does contain
+            filing units with negative expanded_income;
+            if False, the bottom decile does not contain filing units with
+            negative expanded_income.
 
         Returns
         -------
@@ -1025,66 +1050,17 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
-        diff_table = self.difference_table(calc,
-                                           groupby='weighted_deciles',
-                                           income_measure='expanded_income',
-                                           tax_to_diff='combined')
+        dt1, dt2 = self.distribution_tables(calc,
+                                            groupby='weighted_deciles',
+                                            income_measure='expanded_income',
+                                            result_type='weighted_sum')
         # construct data for graph
-        data = dec_graph_data(diff_table, year=self.current_year)
-        if set_bottom_decile_result_to_zero:
-            data['bars'][0]['value'] = 0
+        data = dec_graph_data(
+            dt1, dt2, year=self.current_year,
+            include_zero_incomes=include_zero_incomes,
+            include_negative_incomes=include_negative_incomes)
         # construct figure from data
         fig = dec_graph_plot(data,
-                             width=850,
-                             height=500,
-                             xlabel='',
-                             ylabel='',
-                             title='')
-        return fig
-
-    def quintile_graph(self, calc, set_bottom_quintile_result_to_zero=True):
-        """Create graph that shows percentage change in aftertax expanded
-        income (from going from policy in self to policy in calc) for
-        each expanded-income quintile and subgroups of the top quintile.
-        The graph can be written to an HTML file (using the
-        write_graph_file utility function) or shown on the screen
-        immediately in an interactive or notebook session (following
-        the instructions in the documentation of the xtr_graph_plot
-        utility function).
-        Note that some quintiles may contain filing units with negative
-        or zero baseline (self) expanded income.
-
-        Parameters
-        ----------
-        calc : Calculator object
-            calc represents the reform while self represents the baseline,
-            where both self and calc have calculated taxes for this year
-            before being used by this method
-
-        set_bottom_quintile_result_to_zero : boolean
-            specify whether or not bottom quintile (which contains filing
-            units with non-positive expanded income) result is shown in the
-            graph (default value is True; set to False to show the bottom
-            quintile result)
-
-        Returns
-        -------
-        graph that is a bokeh.plotting figure object
-        """
-        # check that two Calculator objects are comparable
-        assert isinstance(calc, Calculator)
-        assert calc.current_year == self.current_year
-        assert calc.array_len == self.array_len
-        diff_table = self.difference_table(calc,
-                                           groupby='weighted_deciles',
-                                           income_measure='expanded_income',
-                                           tax_to_diff='combined')
-        # construct data for graph
-        data = qin_graph_data(diff_table, year=self.current_year)
-        if set_bottom_quintile_result_to_zero:
-            data['bars'][0]['value'] = 0
-        # construct figure from data
-        fig = qin_graph_plot(data,
                              width=850,
                              height=500,
                              xlabel='',

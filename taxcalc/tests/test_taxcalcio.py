@@ -2,7 +2,7 @@
 Tests for Tax-Calculator TaxCalcIO class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_taxcalcio.py
+# pep8 test_taxcalcio.py
 # pylint --disable=locally-disabled test_taxcalcio.py
 
 import os

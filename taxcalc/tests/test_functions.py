@@ -2,7 +2,7 @@
 Tests for Tax-Calculator functions.py logic.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_functions.py
+# pep8 test_functions.py
 # pylint --disable=locally-disabled test_functions.py
 
 import os

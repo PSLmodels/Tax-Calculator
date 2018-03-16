@@ -10,7 +10,7 @@ repository](https://github.com/open-source-economics/Tax-Calculator)
 to your GitHub account and to your local computer, and are familiar
 with how to prepare a pull request for consideration by the core
 development team.  This document describes the coding style you should
-follow when preparing a pull request on local computer.  By coding
+follow when preparing a pull request on your local computer.  By coding
 style we mean primarily the vertical and horizontal spacing of the
 code and the naming of new variables.
 
@@ -70,6 +70,17 @@ pep8 --ignore=E501,E121 current_law_policy.json
 ```
 where in the above example you want to check the coding style of your
 proposed revisions to the `current_law_policy.json` file.
+
+Note that you can easily check **all** the Python files in the
+directory tree beginning with the `taxcalc` directory as follows:
+```
+cd taxcalc
+pep8 .
+```
+or
+```
+pep8 taxcalc
+```
 
 pylint
 ------

@@ -2,7 +2,7 @@
 Tax-Calculator federal tax policy Policy class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 policy.py
+# pep8 policy.py
 # pylint --disable=locally-disabled policy.py
 
 import six

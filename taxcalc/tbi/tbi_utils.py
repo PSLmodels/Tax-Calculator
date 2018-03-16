@@ -2,7 +2,7 @@
 Private utility functions used only by public functions in the tbi.py file.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 tbi_utils.py
+# pep8 tbi_utils.py
 # pylint --disable=locally-disabled tbi_utils.py
 
 from __future__ import print_function
@@ -423,14 +423,13 @@ def summary(df1, df2, mask):
                                 income_measure='expanded_income',
                                 tax_to_diff='combined')
 
-    # create difference tables grouped by xbin (removing negative-income bin)
+    # create difference tables grouped by xbin
     df2['iitax'] = df2['iitax_xbin']
     diff_itax_xbin = \
         create_difference_table(df1, df2,
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
-    diff_itax_xbin.drop(diff_itax_xbin.index[0], inplace=True)
     summ['diff_itax_xbin'] = diff_itax_xbin
 
     df2['payrolltax'] = df2['payrolltax_xbin']
@@ -439,7 +438,6 @@ def summary(df1, df2, mask):
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='payrolltax')
-    diff_ptax_xbin.drop(diff_ptax_xbin.index[0], inplace=True)
     summ['diff_ptax_xbin'] = diff_ptax_xbin
 
     df2['combined'] = df2['combined_xbin']
@@ -448,7 +446,6 @@ def summary(df1, df2, mask):
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='combined')
-    diff_comb_xbin.drop(diff_comb_xbin.index[0], inplace=True)
     summ['diff_comb_xbin'] = diff_comb_xbin
 
     # create distribution tables grouped by xdec
@@ -468,12 +465,11 @@ def summary(df1, df2, mask):
                                   income_measure='expanded_income_baseline',
                                   result_type='weighted_sum')
 
-    # create distribution tables grouped by xbin (removing negative-income bin)
+    # create distribution tables grouped by xbin
     dist1_xbin = \
         create_distribution_table(df1, groupby='standard_income_bins',
                                   income_measure='expanded_income',
                                   result_type='weighted_sum')
-    dist1_xbin.drop(dist1_xbin.index[0], inplace=True)
     summ['dist1_xbin'] = dist1_xbin
 
     suffix = '_xbin'
@@ -486,7 +482,6 @@ def summary(df1, df2, mask):
         create_distribution_table(df2, groupby='standard_income_bins',
                                   income_measure='expanded_income_baseline',
                                   result_type='weighted_sum')
-    dist2_xbin.drop(dist2_xbin.index[0], inplace=True)
     summ['dist2_xbin'] = dist2_xbin
 
     # return dictionary of summary results

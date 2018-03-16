@@ -1,3 +1,6 @@
+# CODING-STYLE CHECKS:
+# pep8 test_consumption.py
+
 import numpy as np
 import pytest
 import copy
@@ -18,7 +21,8 @@ def test_correct_but_not_recommended_Consumption_instantiation():
 
 def test_validity_of_consumption_vars_set():
     assert Consumption.RESPONSE_VARS.issubset(Records.USABLE_READ_VARS)
-    useable_vars = set(['snap', 'vet', 'mcare', 'mcaid', 'other'])
+    useable_vars = set(['housing', 'snap', 'tanf', 'vet', 'wic',
+                        'mcare', 'mcaid', 'other'])
     assert Consumption.BENEFIT_VARS.issubset(useable_vars)
 
 

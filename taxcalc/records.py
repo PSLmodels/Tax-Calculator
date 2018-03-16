@@ -2,7 +2,7 @@
 Tax-Calculator tax-filing-unit Records class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 records.py
+# pep8 records.py
 # pylint --disable=locally-disabled records.py
 
 import os
@@ -137,6 +137,12 @@ class Records(object):
         if not np.allclose(self.e00600, self.e00650 + other_dividends,
                            rtol=0.0, atol=tol):
             msg = 'expression "e00600 >= e00650" is not true for every record'
+            raise ValueError(msg)
+        # check that total pension income is no less than taxable pension inc
+        nontaxable_pensions = np.maximum(0., self.e01500 - self.e01700)
+        if not np.allclose(self.e01500, self.e01700 + nontaxable_pensions,
+                           rtol=0.0, atol=tol):
+            msg = 'expression "e01500 >= e01700" is not true for every record'
             raise ValueError(msg)
         # handle grow factors
         is_correct_type = isinstance(gfactors, Growfactors)
@@ -408,9 +414,12 @@ class Records(object):
         """
         Extrapolate benefit variables
         """
+        setattr(self, 'housing_ben', self.BEN['housing_{}'.format(year)])
         setattr(self, 'ssi_ben', self.BEN['ssi_{}'.format(year)])
         setattr(self, 'snap_ben', self.BEN['snap_{}'.format(year)])
+        setattr(self, 'tanf_ben', self.BEN['tanf_{}'.format(year)])
         setattr(self, 'vet_ben', self.BEN['vet_{}'.format(year)])
+        setattr(self, 'wic_ben', self.BEN['wic_{}'.format(year)])
         setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
         ABENEFITS = self.gfactors.factor_value('ABENEFITS', year)

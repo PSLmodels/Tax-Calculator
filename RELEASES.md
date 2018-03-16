@@ -4,6 +4,83 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-03-16 Release 0.17.0
+-------------------------
+(last merged pull request is
+[#1926](https://github.com/open-source-economics/Tax-Calculator/pull/1926))
+
+**API Changes**
+- Make `run_nth_year_tax_calc_model` function return tables with all rows
+  [[#1914](https://github.com/open-source-economics/Tax-Calculator/pull/1914)
+  by Martin Holmer]
+- Rename Calculator class `param` method as `policy_param`
+  [[#1915](https://github.com/open-source-economics/Tax-Calculator/pull/1915)
+  by Martin Holmer]
+- Add notice of end of Python 2.7 support beginning in 2019
+  [[#1923](https://github.com/open-source-economics/Tax-Calculator/pull/1923)
+  by Martin Holmer]
+
+**New Features**
+- Add row names to distribution and difference tables
+  [[#1913](https://github.com/open-source-economics/Tax-Calculator/pull/1913)
+  by Martin Holmer]
+- Add row for those with zero income in distribution and difference tables
+  [[#1917](https://github.com/open-source-economics/Tax-Calculator/pull/1917)
+  by Martin Holmer]
+- Revise Calculator class decile_graph method to provide option for including those with zero income and/or those with negative income in the bottom decile
+  [[#1918](https://github.com/open-source-economics/Tax-Calculator/pull/1918)
+  by Martin Holmer]
+- Add UBI benefits statistic to distribution and difference tables
+  [[#1919](https://github.com/open-source-economics/Tax-Calculator/pull/1919)
+  by Killian Pinkelman]
+- Add two benefits statistics to distribution and difference tables
+  [[#1925](https://github.com/open-source-economics/Tax-Calculator/pull/1925)
+  by Anderson Frailey]
+
+**Bug Fixes**
+- None
+
+
+2018-03-09 Release 0.16.2
+-------------------------
+(last merged pull request is
+[#1911](https://github.com/open-source-economics/Tax-Calculator/pull/1911))
+
+**API Changes**
+- None
+
+**New Features**
+- Add graph of percentage change in after-tax expanded income by baseline expanded-income percentile and include it in `tc --graphs` output and in the Cookbook's basic recipe
+  [[#1890](https://github.com/open-source-economics/Tax-Calculator/pull/1890)
+  by Martin Holmer]
+- Improve handling of those with negative or zero `expanded_income` in tables and graphs
+  [[#1902](https://github.com/open-source-economics/Tax-Calculator/pull/1902)
+  by Martin Holmer]
+- Add three new benefits and improve imputation of interest, dividend, and pension income in CPS data
+  [[#1911](https://github.com/open-source-economics/Tax-Calculator/pull/1911)
+  by Anderson Frailey and Martin Holmer]
+
+**Bug Fixes**
+- Correct bottom bin name in distribution/difference tables exported to TaxBrain
+  [[#1889](https://github.com/open-source-economics/Tax-Calculator/pull/1889)
+  by Martin Holmer]
+- Add missing check of equality of `BEN_*_value` parameters in baseline and reform Calculator objects when using `expanded_income` in tables or graphs
+  [[#1894](https://github.com/open-source-economics/Tax-Calculator/pull/1894)
+  by Martin Holmer]
+- Correct and simplify calculation of `expanded_income`
+  [[#1897](https://github.com/open-source-economics/Tax-Calculator/pull/1897)
+   [#1899](https://github.com/open-source-economics/Tax-Calculator/pull/1899)
+   [#1900](https://github.com/open-source-economics/Tax-Calculator/pull/1900)
+   [#1901](https://github.com/open-source-economics/Tax-Calculator/pull/1901)
+  by Martin Holmer and Anderson Frailey], which requires new `puf.csv`
+  input file with this information:
+  * Byte size: 54718219
+  * MD5 checksum: e22429702920a0d927a36ea1103ba067
+- Correct AGI concept used in EITC phase-out logic
+  [[#1907](https://github.com/open-source-economics/Tax-Calculator/pull/1907)
+  by Martin Holmer as reported by Max Ghenis]
+
+
 2018-02-16 Release 0.16.1
 -------------------------
 (last merged pull request is

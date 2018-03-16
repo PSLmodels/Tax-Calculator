@@ -2,7 +2,7 @@
 Tax-Calculator Growdiff class.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 growdiff.py
+# pep8 growdiff.py
 # pylint --disable=locally-disabled growdiff.py
 
 import numpy as np
