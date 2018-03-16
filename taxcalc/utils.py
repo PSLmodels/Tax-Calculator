@@ -2,7 +2,7 @@
 PUBLIC low-level utility functions for Tax-Calculator.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 utils.py
+# pep8 utils.py
 # pylint --disable=locally-disabled utils.py
 #
 # pylint: disable=too-many-lines
@@ -35,7 +35,8 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                   'c05800', 'othertaxes', 'refund', 'c07100', 'surtax',
-                  'iitax', 'payrolltax', 'combined', 's006']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi',
+                  'benefit_cost_total', 'benefit_value_total']
 
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
@@ -56,6 +57,9 @@ DIST_TABLE_COLUMNS = ['s006',
                       'iitax',
                       'payrolltax',
                       'combined',
+                      'ubi',
+                      'benefit_cost_total',
+                      'benefit_value_total',
                       'expanded_income',
                       'aftertax_income']
 
@@ -78,6 +82,9 @@ DIST_TABLE_LABELS = ['Returns',
                      'Individual Income Tax Liabilities',
                      'Payroll Tax Liablities',
                      'Combined Payroll and Individual Income Tax Liabilities',
+                     'Universal Basic Income',
+                     'Total Cost of Benefits',
+                     'Consumption Value of Benefits',
                      'Expanded Income',
                      'After-Tax Expanded Income']
 
@@ -86,7 +93,8 @@ DIST_TABLE_LABELS = ['Returns',
 # labels list to map a label to the correct column in a difference table.
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
-                  'iitax', 'payrolltax', 'combined', 's006']
+                  'iitax', 'payrolltax', 'combined', 's006', 'ubi',
+                  'benefit_cost_total', 'benefit_value_total']
 
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
@@ -96,6 +104,9 @@ DIFF_TABLE_COLUMNS = ['count',
                       'mean',
                       'tot_change',
                       'share_of_change',
+                      'ubi',
+                      'benefit_cost_total',
+                      'benefit_value_total',
                       'pc_aftertaxinc']
 
 DIFF_TABLE_LABELS = ['All Tax Units',
@@ -106,26 +117,29 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Average Tax Change',
                      'Total Tax Difference',
                      'Share of Overall Change',
+                     'Universal Basic Income',
+                     'Total Cost of Benefits',
+                     'Consumption Value of Benefits',
                      '% Change in After-Tax Income']
 
-DECILE_ROW_NAMES = ['0-10zn', '0-10p', '10-20', '20-30', '30-40', '40-50',
+DECILE_ROW_NAMES = ['0-10n', '0-10z', '0-10p',
+                    '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
-                    'all',
+                    'ALL',
                     '90-95', '95-99', 'Top 1%']
 
-STANDARD_ROW_NAMES = ['<=$0K', '$0-10K', '$10-20K', '$20-30K', '$30-40K',
-                      '$40-50K', '$50-75K', '$75-100K',
-                      '$100-200K', '$200-500K',
-                      '$500-1000K', '>$1000K', 'all']
+STANDARD_ROW_NAMES = ['<$0K', '=$0K', '$0-10K', '$10-20K', '$20-30K',
+                      '$30-40K', '$40-50K', '$50-75K', '$75-100K',
+                      '$100-200K', '$200-500K', '$500-1000K', '>$1000K', 'ALL']
 
-STANDARD_INCOME_BINS = [-9e99, 1e-9, 9999, 19999, 29999, 39999, 49999,
+STANDARD_INCOME_BINS = [-9e99, -1e-9, 1e-9, 9999, 19999, 29999, 39999, 49999,
                         74999, 99999, 199999, 499999, 1000000, 9e99]
 
-LARGE_INCOME_BINS = [-9e99, 1e-9, 9999, 19999, 29999, 39999, 49999,
+LARGE_INCOME_BINS = [-9e99, -1e-9, 1e-9, 9999, 19999, 29999, 39999, 49999,
                      74999, 99999, 200000, 9e99]
 
-SMALL_INCOME_BINS = [-9e99, 1e-9, 4999, 9999, 14999, 19999, 24999, 29999,
-                     39999, 49999, 74999, 99999, 199999, 499999, 999999,
+SMALL_INCOME_BINS = [-9e99, -1e-9, 1e-9, 4999, 9999, 14999, 19999, 24999,
+                     29999, 39999, 49999, 74999, 99999, 199999, 499999, 999999,
                      1499999, 1999999, 4999999, 9999999, 9e99]
 
 
@@ -248,22 +262,14 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         options for input: 'weighted_deciles', 'standard_income_bins',
                            'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
-    NOTE: when groupby is 'weighted_deciles', the returned table has three
-          extra rows containing top-decile detail consisting of statistics
-          for the 0.90-0.95 quantile range (bottom half of top decile),
-          for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent); and the returned
-          table may have a fourth extra row that shows bottom-decile detail
-          with the bottom decile split into filing units with non-positive and
-          positive values of the specified income_measure variable.
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
-        determines how the data should be manipulated
+        determines how the table statistices are computed
 
     income_measure : String object
-        options for input: 'expanded_income', 'c00100'(AGI),
-                           'expanded_income_baseline', 'c00100_baseline'
+        options for input: 'expanded_income', 'c00100'(AGI)
+        specifies statistic used to place filing units in bins or deciles
 
     Notes
     -----
@@ -279,10 +285,18 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
 
     Returns
     -------
-    distribution table as a Pandas DataFrame, with DIST_TABLE_COLUMNS and
-    groupby rows, where the rows run from lowest bin/decile to the highest
-    followed by a sums row with the top-decile detail in an additional three
-    rows following the sums row
+    distribution table as a Pandas DataFrame with DIST_TABLE_COLUMNS and
+    groupby rows.
+    NOTE: when groupby is 'weighted_deciles', the returned table has three
+          extra rows containing top-decile detail consisting of statistics
+          for the 0.90-0.95 quantile range (bottom half of top decile),
+          for the 0.95-0.99 quantile range, and
+          for the 0.99-1.00 quantile range (top one percent); and the
+          returned table splits the bottom decile into filing units with
+          negative (denoted by a 0-10n row label),
+          zero (denoted by a 0-10z row label), and
+          positive (denoted by a 0-10p row label) values of the
+          specified income_measure.
     """
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     # nested function that specifies calculated columns
@@ -358,8 +372,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
         pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
         pdf['bins'] = pd.cut(pdf[income_measure],
-                             bins=[-9e99, 1e-9, 9e99],
-                             labels=[1, 2])
+                             bins=[-9e99, -1e-9, 1e-9, 9e99],
+                             labels=[1, 2, 3])
         gpdfx = pdf.groupby('bins', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = pd.concat([rows, dist_table.iloc[1:11]])
@@ -384,6 +398,17 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     pd.options.display.float_format = '{:8,.0f}'.format
     # ensure dist_table columns are in correct order
     assert dist_table.columns.values.tolist() == DIST_TABLE_COLUMNS
+    # add row names to table if using weighted_deciles or standard_income_bins
+    if groupby == 'weighted_deciles':
+        rownames = DECILE_ROW_NAMES
+    elif groupby == 'standard_income_bins':
+        rownames = STANDARD_ROW_NAMES
+    else:
+        rownames = None
+    if rownames:
+        assert len(dist_table.index) == len(rownames)
+        dist_table.index = rownames
+    # return table as Pandas DataFrame
     return dist_table
 
 
@@ -404,20 +429,12 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
 
     groupby : String object
         options for input: 'weighted_deciles', 'standard_income_bins',
-                           'large_income_bins', 'small_income_bins'
-        specifies kind of bins used to group filing units
-    NOTE: when groupby is 'weighted_deciles', the returned table has three
-          extra rows containing top-decile detail consisting of statistics
-          for the 0.90-0.95 quantile range (bottom half of top decile),
-          for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent); and the returned
-          table may have a fourth extra row that shows bottom-decile detail
-          with the bottom decile split into filing units with non-positive and
-          positive values of the specified income_measure variable.
+                           'large_income_bins', 'small_income_bins';
+        determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
         options for input: 'expanded_income', 'c00100'(AGI)
-        specifies statistic to place filing units in bins
+        specifies statistic used to place filing units in bins or deciles
 
     tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
@@ -425,10 +442,18 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
 
     Returns
     -------
-    difference table as a Pandas DataFrame, with DIFF_TABLE_COLUMNS and
-    groupby rows, where the rows run from lowest bin/decile to the highest
-    followed by a sums row with the top-decile detail in an additional three
-    rows following the sums row
+    difference table as a Pandas DataFrame with DIFF_TABLE_COLUMNS and
+    groupby rows.
+    NOTE: when groupby is 'weighted_deciles', the returned table has three
+          extra rows containing top-decile detail consisting of statistics
+          for the 0.90-0.95 quantile range (bottom half of top decile),
+          for the 0.95-0.99 quantile range, and
+          for the 0.99-1.00 quantile range (top one percent); and the
+          returned table splits the bottom decile into filing units with
+          negative (denoted by a 0-10n row label),
+          zero (denoted by a 0-10z row label), and
+          positive (denoted by a 0-10p row label) values of the
+          specified income_measure.
     """
     # pylint: disable=too-many-statements
     # nested function that actually creates the difference table
@@ -469,6 +494,11 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             res2['afinc2'] = res2['aftertax_income']
             sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
             sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
+            sdf['ubi'] = gpdf.apply(weighted_sum, 'ubi')
+            sdf['benefit_cost_total'] = gpdf.apply(weighted_sum,
+                                                   'benefit_cost_total')
+            sdf['benefit_value_total'] = gpdf.apply(weighted_sum,
+                                                    'benefit_value_total')
             return sdf
 
         # main logic of diff_table_stats function
@@ -502,8 +532,8 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
             pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
             pdf['bins'] = pd.cut(pdf[income_measure],
-                                 bins=[-9e99, 1e-9, 9e99],
-                                 labels=[1, 2])
+                                 bins=[-9e99, -1e-9, 1e-9, 9e99],
+                                 labels=[1, 2, 3])
             gpdfx = pdf.groupby('bins', as_index=False)
             rows = stat_dataframe(gpdfx)
             diffs = pd.concat([rows, diffs.iloc[1:11]])
@@ -553,7 +583,6 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     res2['atinc2'] = res2['aftertax_income']
     diffs = diff_table_stats(res2, groupby, baseline_income_measure)
     diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
-    diffs['pc_aftertaxinc'].replace(to_replace=np.nan, value=0, inplace=True)
     # delete intermediate atinc1 and atinc2 columns
     del diffs['atinc1']
     del diffs['atinc2']
@@ -566,6 +595,17 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     pd.options.display.float_format = '{:10,.2f}'.format
     # ensure diffs columns are in correct order
     assert diffs.columns.values.tolist() == DIFF_TABLE_COLUMNS
+    # add row names to table if using weighted_deciles or standard_income_bins
+    if groupby == 'weighted_deciles':
+        rownames = DECILE_ROW_NAMES
+    elif groupby == 'standard_income_bins':
+        rownames = STANDARD_ROW_NAMES
+    else:
+        rownames = None
+    if rownames:
+        assert len(diffs.index) == len(rownames)
+        diffs.index = rownames
+    # return table as Pandas DataFrame
     return diffs
 
 
@@ -1445,54 +1485,88 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     return bsest
 
 
-def dec_graph_data(diff_table, year, hide_nonpos_incomes=True):
+def dec_graph_data(dist_table1, dist_table2, year,
+                   include_zero_incomes, include_negative_incomes):
     """
     Prepare data needed by dec_graph_plot utility function.
 
     Parameters
     ----------
-    diff_table : a Pandas DataFrame object returned from the
-        Calculator class difference_table method
+    dist_table1 : a Pandas DataFrame object returned from the
+        Calculator class distribution_tables method for baseline
+
+    dist_table2 : a Pandas DataFrame object returned from the
+        Calculator class distribution_tables method for reform
 
     year : integer
         specifies calendar year of the data in the diff_table
 
-    hide_nonpos_incomes : boolean
-        if True (which is the default), the bottom table bin containing
-        filing units with non-positive expanded_income is not shown in
-        the graph and the table bin containing filing units with positive
-        expanded_income in the bottom decile is shown with its bar width
-        adjusted to the number of weighted filing units in bottom decile
-        who have positive expanded_income; if False, the bottom table bin
-        containing filing units with non-positive expanded_income is shown,
-        which may be misleading because the percentage change is correctly
-        calculated with a negative divisor.
+    include_zero_incomes : boolean
+        if True, the bottom decile does contain filing units
+        with zero expanded_income;
+        if False, the bottom decile does not contain filing units
+        with zero expanded_income.
+
+    include_negative_incomes : boolean
+        if True, the bottom decile does contain filing units
+        with negative expanded_income;
+        if False, the bottom decile does not contain filing units
+        with negative expanded_income.
 
     Returns
     -------
     dictionary object suitable for passing to dec_graph_plot utility function
     """
+    # pylint: disable=too-many-locals
+    # check that the two distribution tables are consistent
+    assert len(dist_table1.index) == len(DECILE_ROW_NAMES)
+    assert len(dist_table2.index) == len(DECILE_ROW_NAMES)
+    assert np.allclose(dist_table1['s006'], dist_table2['s006'])
+    # compute bottom bar width and statistic value
+    wght = dist_table1['s006']
+    total_wght = wght[2] + wght[1] + wght[0]
+    included_wght = wght[2]
+    included_val1 = dist_table1['aftertax_income'][2] * wght[2]
+    included_val2 = dist_table2['aftertax_income'][2] * wght[2]
+    if include_zero_incomes:
+        included_wght += wght[1]
+        included_val1 += dist_table1['aftertax_income'][1] * wght[1]
+        included_val2 += dist_table2['aftertax_income'][1] * wght[1]
+    if include_negative_incomes:
+        included_wght += wght[0]
+        included_val1 += dist_table1['aftertax_income'][0] * wght[0]
+        included_val2 += dist_table2['aftertax_income'][0] * wght[0]
+    bottom_bar_width = included_wght / total_wght
+    bottom_bar_value = (included_val2 / included_val1 - 1.) * 100.
     # construct dictionary containing the bar data required by dec_graph_plot
     bars = dict()
-    nbins = len(DECILE_ROW_NAMES)
-    if hide_nonpos_incomes:
-        first_bin = 1
-    else:
-        first_bin = 0
-    for idx in range(first_bin, nbins):
+    # ... bottom bar
+    info = dict()
+    if include_zero_incomes and include_negative_incomes:
+        info['label'] = '0-10'
+    elif include_zero_incomes and not include_negative_incomes:
+        info['label'] = '0-10zp'
+    if not include_zero_incomes and include_negative_incomes:
+        info['label'] = '0-10np'
+    if not include_zero_incomes and not include_negative_incomes:
+        info['label'] = '0-10p'
+    info['value'] = bottom_bar_value
+    bars[0] = info
+    # ... other bars
+    offset = 2
+    for idx in range(offset + 1, len(DECILE_ROW_NAMES)):
         info = dict()
         info['label'] = DECILE_ROW_NAMES[idx]
-        info['value'] = diff_table['pc_aftertaxinc'][idx]
-        if info['label'] == 'all':
+        val1 = dist_table1['aftertax_income'][idx] * wght[idx]
+        val2 = dist_table2['aftertax_income'][idx] * wght[idx]
+        info['value'] = (val2 / val1 - 1.) * 100.
+        if info['label'] == 'ALL':
             info['label'] = '---------'
             info['value'] = 0
-        bars[idx] = info
+        bars[idx - offset] = info
     # construct dictionary containing bar data and auto-generated labels
     data = dict()
-    data['hide_nonpos'] = hide_nonpos_incomes
-    bottom_count = diff_table['count'][0] + diff_table['count'][1]
-    data['neg_bar_size'] = diff_table['count'][0] / bottom_count
-    data['pos_bar_size'] = diff_table['count'][1] / bottom_count
+    data['bottom_bar_width'] = bottom_bar_width
     data['bars'] = bars
     xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
     data['xlabel'] = xlabel
@@ -1595,15 +1669,9 @@ def dec_graph_plot(data,
         bval = data['bars'][idx]['value']
         blabel = data['bars'][idx]['label']
         bheight = barheight
-        if data['hide_nonpos']:
-            if yidx == 0:
-                bheight *= data['pos_bar_size']
-        else:
-            if yidx == 0:
-                bheight *= data['neg_bar_size']
-            elif yidx == 1:
-                bheight *= data['pos_bar_size']
-        if blabel == '90-95':
+        if blabel == '0-10':
+            bheight *= data['bottom_bar_width']
+        elif blabel == '90-95':
             bheight *= 0.5
             bcolor = 'red'
         elif blabel == '95-99':

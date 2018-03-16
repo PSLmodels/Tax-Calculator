@@ -1,3 +1,6 @@
+# CODING-STYLE CHECKS:
+# pep8 test_behavior.py
+
 import os
 import json
 import numpy as np

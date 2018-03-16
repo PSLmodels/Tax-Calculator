@@ -2,7 +2,7 @@
 Implements TaxBrain "Macroeconomic Elasticities Simulation" dynamic analysis.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 macro_elasticity.py
+# pep8 macro_elasticity.py
 # pylint --disable=locally-disabled macro_elasticity.py
 
 from taxcalc.policy import Policy

@@ -2,7 +2,7 @@
 Tax-Calculator simple tax input-output class used in TAXSIM validation work.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 simpletaxio.py
+# pep8 simpletaxio.py
 # pylint --disable=locally-disabled simpletaxio.py
 
 import os
@@ -10,10 +10,9 @@ import sys
 import re
 import six
 import pandas as pd
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..', '..', '..'))
-# pylint: disable=import-error,wrong-import-position
-from taxcalc import Policy, Records, Calculator
+from taxcalc.policy import Policy
+from taxcalc.records import Records
+from taxcalc.calculate import Calculator
 
 
 class SimpleTaxIO(object):
@@ -93,7 +92,7 @@ class SimpleTaxIO(object):
         self._using_input_file = True
         self._output_filename = '{}.out-simtax{}'.format(input_filename, ref)
         if os.path.isfile(self._output_filename):
-            os.remove(self._output_filename)
+            os.remove(self._output_filename)  # pragma: no cover
         # check for existence of file named input_filename
         if not os.path.isfile(input_filename):
             msg = 'INPUT file named {} could not be found'
@@ -171,7 +170,8 @@ class SimpleTaxIO(object):
         olines = ''
         writing_possible = self._using_input_file and self._using_reform_file
         if writing_possible and writing_output_file:
-            SimpleTaxIO.write_output_file(output, self._output_filename)
+            SimpleTaxIO.write_output_file(
+                output, self._output_filename)  # pragma: no cover
         else:
             for idx in range(0, len(output)):
                 olines += SimpleTaxIO.construct_output_line(output[idx])
@@ -343,8 +343,11 @@ class SimpleTaxIO(object):
             num += 1
             dvar = calc.array(dvar_name)
             if dvar is None:
-                msg = 'debugging variable name "{}" not in Records object'
-                raise ValueError(msg.format(dvar_name))
+                msg = '{} "{}" {}'.format(  # pragma: no cover
+                    'debugging variable name',
+                    dvar_name,
+                    'not in Records object')
+                raise ValueError(msg)  # pragma: no cover
             else:
                 ovar[num] = dvar[idx]
         return ovar
@@ -364,10 +367,11 @@ class SimpleTaxIO(object):
         -------
         nothing: void
         """
-        with open(output_filename, 'w') as output_file:
-            for idx in range(0, len(output)):
-                outline = SimpleTaxIO.construct_output_line(output[idx])
-                output_file.write(outline)
+        with open(output_filename, 'w') as output_file:  # pragma: no cover
+            for idx in range(0, len(output)):  # pragma: no cover
+                outline = SimpleTaxIO.construct_output_line(
+                    output[idx])  # pragma: no cover
+                output_file.write(outline)  # pragma: no cover
 
     OVAR_NUM = 28
     DVAR_NAMES = [  # OPTIONAL DEBUGGING OUTPUT VARIABLE NAMES
@@ -618,11 +622,11 @@ class SimpleTaxIO(object):
                                        emulate_taxsim_2441_logic)
         # optionally write Records.USABLE_READ_VARS content to file
         if output_records:
-            recdf = pd.DataFrame()
-            for varname in Records.USABLE_READ_VARS:
-                vardata = getattr(recs, varname)
-                recdf[varname] = vardata
-            recdf.to_csv(re.sub('out-simtax', 'records',
+            recdf = pd.DataFrame()  # pragma: no cover
+            for varname in Records.USABLE_READ_VARS:  # pragma: no cover
+                vardata = getattr(recs, varname)  # pragma: no cover
+                recdf[varname] = vardata  # pragma: no cover
+            recdf.to_csv(re.sub('out-simtax', 'records',  # pragma: no cover
                                 self._output_filename),
                          float_format='%.2f', index=False)
         # create Calculator object containing all tax filing units

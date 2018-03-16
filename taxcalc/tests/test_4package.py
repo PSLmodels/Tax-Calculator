@@ -2,7 +2,7 @@
 Tests for package existence and dependencies consistency.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_4package.py
+# pep8 test_4package.py
 # pylint --disable=locally-disabled test_4package.py
 
 import os
