@@ -122,24 +122,24 @@ DIFF_TABLE_LABELS = ['All Tax Units',
                      'Consumption Value of Benefits',
                      '% Change in After-Tax Income']
 
-DECILE_ROW_NAMES = ['0-10zn', '0-10p', '10-20', '20-30', '30-40', '40-50',
+DECILE_ROW_NAMES = ['0-10n', '0-10z', '0-10p',
+                    '10-20', '20-30', '30-40', '40-50',
                     '50-60', '60-70', '70-80', '80-90', '90-100',
                     'ALL',
                     '90-95', '95-99', 'Top 1%']
 
-STANDARD_ROW_NAMES = ['<=$0K', '$0-10K', '$10-20K', '$20-30K', '$30-40K',
-                      '$40-50K', '$50-75K', '$75-100K',
-                      '$100-200K', '$200-500K',
-                      '$500-1000K', '>$1000K', 'ALL']
+STANDARD_ROW_NAMES = ['<$0K', '=$0K', '$0-10K', '$10-20K', '$20-30K',
+                      '$30-40K', '$40-50K', '$50-75K', '$75-100K',
+                      '$100-200K', '$200-500K', '$500-1000K', '>$1000K', 'ALL']
 
-STANDARD_INCOME_BINS = [-9e99, 1e-9, 9999, 19999, 29999, 39999, 49999,
+STANDARD_INCOME_BINS = [-9e99, -1e-9, 1e-9, 9999, 19999, 29999, 39999, 49999,
                         74999, 99999, 199999, 499999, 1000000, 9e99]
 
-LARGE_INCOME_BINS = [-9e99, 1e-9, 9999, 19999, 29999, 39999, 49999,
+LARGE_INCOME_BINS = [-9e99, -1e-9, 1e-9, 9999, 19999, 29999, 39999, 49999,
                      74999, 99999, 200000, 9e99]
 
-SMALL_INCOME_BINS = [-9e99, 1e-9, 4999, 9999, 14999, 19999, 24999, 29999,
-                     39999, 49999, 74999, 99999, 199999, 499999, 999999,
+SMALL_INCOME_BINS = [-9e99, -1e-9, 1e-9, 4999, 9999, 14999, 19999, 24999,
+                     29999, 39999, 49999, 74999, 99999, 199999, 499999, 999999,
                      1499999, 1999999, 4999999, 9999999, 9e99]
 
 
@@ -262,22 +262,14 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         options for input: 'weighted_deciles', 'standard_income_bins',
                            'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
-    NOTE: when groupby is 'weighted_deciles', the returned table has three
-          extra rows containing top-decile detail consisting of statistics
-          for the 0.90-0.95 quantile range (bottom half of top decile),
-          for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent); and the returned
-          table may have a fourth extra row that shows bottom-decile detail
-          with the bottom decile split into filing units with non-positive and
-          positive values of the specified income_measure variable.
 
     result_type : String object
         options for input: 'weighted_sum' or 'weighted_avg';
-        determines how the data should be manipulated
+        determines how the table statistices are computed
 
     income_measure : String object
-        options for input: 'expanded_income', 'c00100'(AGI),
-                           'expanded_income_baseline', 'c00100_baseline'
+        options for input: 'expanded_income', 'c00100'(AGI)
+        specifies statistic used to place filing units in bins or deciles
 
     Notes
     -----
@@ -293,10 +285,18 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
 
     Returns
     -------
-    distribution table as a Pandas DataFrame, with DIST_TABLE_COLUMNS and
-    groupby rows, where the rows run from lowest bin/decile to the highest
-    followed by a sums row with the top-decile detail in an additional three
-    rows following the sums row
+    distribution table as a Pandas DataFrame with DIST_TABLE_COLUMNS and
+    groupby rows.
+    NOTE: when groupby is 'weighted_deciles', the returned table has three
+          extra rows containing top-decile detail consisting of statistics
+          for the 0.90-0.95 quantile range (bottom half of top decile),
+          for the 0.95-0.99 quantile range, and
+          for the 0.99-1.00 quantile range (top one percent); and the
+          returned table splits the bottom decile into filing units with
+          negative (denoted by a 0-10n row label),
+          zero (denoted by a 0-10z row label), and
+          positive (denoted by a 0-10p row label) values of the
+          specified income_measure.
     """
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     # nested function that specifies calculated columns
@@ -372,8 +372,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
         pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
         pdf['bins'] = pd.cut(pdf[income_measure],
-                             bins=[-9e99, 1e-9, 9e99],
-                             labels=[1, 2])
+                             bins=[-9e99, -1e-9, 1e-9, 9e99],
+                             labels=[1, 2, 3])
         gpdfx = pdf.groupby('bins', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = pd.concat([rows, dist_table.iloc[1:11]])
@@ -429,20 +429,12 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
 
     groupby : String object
         options for input: 'weighted_deciles', 'standard_income_bins',
-                           'large_income_bins', 'small_income_bins'
-        specifies kind of bins used to group filing units
-    NOTE: when groupby is 'weighted_deciles', the returned table has three
-          extra rows containing top-decile detail consisting of statistics
-          for the 0.90-0.95 quantile range (bottom half of top decile),
-          for the 0.95-0.99 quantile range, and
-          for the 0.99-1.00 quantile range (top one percent); and the returned
-          table may have a fourth extra row that shows bottom-decile detail
-          with the bottom decile split into filing units with non-positive and
-          positive values of the specified income_measure variable.
+                           'large_income_bins', 'small_income_bins';
+        determines how the columns in the resulting Pandas DataFrame are sorted
 
     income_measure : String object
         options for input: 'expanded_income', 'c00100'(AGI)
-        specifies statistic to place filing units in bins
+        specifies statistic used to place filing units in bins or deciles
 
     tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
@@ -450,10 +442,18 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
 
     Returns
     -------
-    difference table as a Pandas DataFrame, with DIFF_TABLE_COLUMNS and
-    groupby rows, where the rows run from lowest bin/decile to the highest
-    followed by a sums row with the top-decile detail in an additional three
-    rows following the sums row
+    difference table as a Pandas DataFrame with DIFF_TABLE_COLUMNS and
+    groupby rows.
+    NOTE: when groupby is 'weighted_deciles', the returned table has three
+          extra rows containing top-decile detail consisting of statistics
+          for the 0.90-0.95 quantile range (bottom half of top decile),
+          for the 0.95-0.99 quantile range, and
+          for the 0.99-1.00 quantile range (top one percent); and the
+          returned table splits the bottom decile into filing units with
+          negative (denoted by a 0-10n row label),
+          zero (denoted by a 0-10z row label), and
+          positive (denoted by a 0-10p row label) values of the
+          specified income_measure.
     """
     # pylint: disable=too-many-statements
     # nested function that actually creates the difference table
@@ -532,8 +532,8 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
             pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
             pdf['bins'] = pd.cut(pdf[income_measure],
-                                 bins=[-9e99, 1e-9, 9e99],
-                                 labels=[1, 2])
+                                 bins=[-9e99, -1e-9, 1e-9, 9e99],
+                                 labels=[1, 2, 3])
             gpdfx = pdf.groupby('bins', as_index=False)
             rows = stat_dataframe(gpdfx)
             diffs = pd.concat([rows, diffs.iloc[1:11]])
