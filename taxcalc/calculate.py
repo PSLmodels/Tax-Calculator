@@ -1009,6 +1009,9 @@ class Calculator(object):
         immediately in an interactive or notebook session (following
         the instructions in the documentation of the xtr_graph_plot
         utility function).
+        NOTE: this method calls the distribution_tables method to
+              compute the values of the graphed statistic; consult
+              that method for details on how the values are computed.
 
         Parameters
         ----------
