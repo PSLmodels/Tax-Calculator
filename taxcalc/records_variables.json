@@ -439,7 +439,7 @@
     },
     "elderly_dependent": {
       "type": "int",
-      "desc": "1 if filing unit has an elderly dependent; otherwise 0",
+      "desc": "1 if filing unit has a dependent age 65+; otherwise 0",
       "form": {"2013-2016": "imputed from CPS data; not used in tax law"},
       "availability": "taxdata_puf, taxdata_cps"
     },
