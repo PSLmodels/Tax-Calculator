@@ -1,0 +1,7 @@
+// ref3.json raises personal exemption amount to 8000 in 2022,
+// after which it continues to be indexed to price inflation.
+{
+    "policy": {
+        "_II_em": {"2022": [8000]}
+    }
+}
