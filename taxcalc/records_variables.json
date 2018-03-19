@@ -511,7 +511,7 @@
     },
     "n24": {
       "type": "int",
-      "desc": "Number of children under age 17 eligible for Child Tax Credit",
+      "desc": "Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
