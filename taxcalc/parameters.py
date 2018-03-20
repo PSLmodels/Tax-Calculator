@@ -8,6 +8,7 @@ import os
 import json
 import six
 import abc
+import ast
 import collections as collect
 import numpy as np
 from taxcalc.utils import read_egg_json
@@ -522,3 +523,26 @@ class ParametersBase(object):
             return expanded_rates
         else:
             return None
+
+
+    OP_DICT = {
+        '+': lambda pvalue, val: pvalue + val,
+        '-': lambda pvalue, val: pvalue - val,
+        '*': lambda pvalue, val: pvalue * val,
+        '/': lambda pvalue, val: pvalue / val if val > 0 else 'ERROR: Cannot divide by zero',
+    }
+
+    def simple_eval(self, vval):
+        pieces = vval.split(' ')
+        against = pieces[0]
+        # vval is of the form 'vval op value'
+        if len(pieces) > 1:
+            op = pieces[1]
+            scalar = ast.literal_eval(pieces[2])
+            vvalue = getattr(self, against)
+            assert vvalue is not None and isinstance(vvalue, (int, float, np.ndarray))
+            assert op in ParametersBase.OP_DICT
+            return ParametersBase.OP_DICT[op](vvalue, scalar)
+        else:
+            # vval is just the parameter name
+            return getattr(self, vval)

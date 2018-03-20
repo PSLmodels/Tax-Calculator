@@ -960,6 +960,29 @@ def test_validate_param_values_warnings_errors():
     assert pol6.reform_warnings == ''
 
 
+def test_validate_against_param_with_operator():
+    pol = Policy()
+
+    reform = {
+        2018: {
+            "_DOUBLE_FICA_rt": [0.10]
+        }
+    }
+    pol.implement_reform(reform)
+    exp = ("ERROR: 2018 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2019 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2020 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2021 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2022 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2023 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2024 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2025 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2026 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n"
+           "ERROR: 2027 _DOUBLE_FICA_rt value 0.1 < min value 0.248 for _FICA_ss_trt * 2\n")
+    act = pol.reform_errors
+    assert act == exp
+
+
 def test_indexing_rates_for_update():
     """
     Check private _indexing_rates_for_update method.

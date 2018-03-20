@@ -55,6 +55,30 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
+    "_DOUBLE_FICA_rt": {
+        "long_name": "hank's made up FICA rate",
+        "description": "TWICE YOUR FICA.",
+        "section_1": "Payroll Taxes",
+        "section_2": "Social Security FICA",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.25],
+        "range": {"min": "_FICA_ss_trt * 2", "max": 2},
+        "out_of_range_minmsg": "for _FICA_ss_trt * 2",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
+    },
+
     "_SS_Earnings_c": {
         "long_name": "Maximum taxable earnings for Social Security",
         "description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
