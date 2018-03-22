@@ -64,7 +64,7 @@ e62900,Alternative Minimum Tax foreign tax credit from Form 6251,      88,      
 e87521,Total tentative AmOppCredit amount for all students,     192,     197,     204,     209,     214,     221,     227,     233,     240,     246,     253,     261,     268,     276,     284
 e87530,Adjusted qualified lifetime learning expenses for all students,     104,     104,     108,     110,     112,     115,     118,     121,     125,     128,     132,     137,     141,     145,     149
 eitc,Federal EITC,     413,     410,     406,     398,     390,     392,     396,     401,     405,     410,     414,     419,     423,     427,     432
-elderly_dependent,1 if filing unit has an elderly dependent; otherwise 0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
+elderly_dependent,1 if filing unit has a dependent age 65+; otherwise 0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 g20500,Sch A: Gross (before 10% AGI disregard) casualty or theft loss,      32,      33,      34,      34,      35,      36,      38,      40,      41,      43,      44,      46,      47,      49,      51
 iitax,Federal income tax liability,    7361,    8413,    9075,    9184,    9620,    9897,   10114,   10353,   10629,   10958,   11326,   11707,   12102,   12519,   12957
 k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -245,    -272,    -271,    -269,    -264,    -260,    -258,    -261,    -264,    -273,    -285,    -296,    -307,    -318,    -329
