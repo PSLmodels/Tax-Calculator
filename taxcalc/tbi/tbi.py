@@ -105,6 +105,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
     # construct TaxBrain summary results from raw results
     summ = summary(rawres1, rawres2, mask)
+    del rawres1
+    del rawres2
 
     def append_year(pdf):
         """
