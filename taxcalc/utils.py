@@ -369,16 +369,19 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     dist_table = dist_table.append(row)
     # replace bottom decile row with non-positive and positive rows
     if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
-        pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
-        pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
+        del pdf
+        # bottom decile as its own DataFrame
+        pdf = copy.deepcopy(gpdf.get_group(1))
         pdf['bins'] = pd.cut(pdf[income_measure],
                              bins=[-9e99, -1e-9, 1e-9, 9e99],
                              labels=[1, 2, 3])
         gpdfx = pdf.groupby('bins', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = pd.concat([rows, dist_table.iloc[1:11]])
+        del gpdfx
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
+        del pdf
         pdf = gpdf.get_group(10)  # top decile as its own DataFrame
         pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
         pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
@@ -389,6 +392,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         gpdfx = pdf.groupby('bins', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = dist_table.append(rows, ignore_index=True)
+        del gpdfx
     # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
@@ -531,16 +535,19 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         diffs = diffs_without_sums.append(row)
         # replace bottom decile row with non-positive and positive rows
         if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
-            pdf = gpdf.get_group(1)  # bottom decile as its own DataFrame
-            pdf = copy.deepcopy(pdf)  # eliminates Pandas warning in pd.cut()
+            del pdf
+            # bottom decile as its own DataFrame
+            pdf = copy.deepcopy(gpdf.get_group(1))
             pdf['bins'] = pd.cut(pdf[income_measure],
                                  bins=[-9e99, -1e-9, 1e-9, 9e99],
                                  labels=[1, 2, 3])
             gpdfx = pdf.groupby('bins', as_index=False)
             rows = stat_dataframe(gpdfx)
             diffs = pd.concat([rows, diffs.iloc[1:11]])
+            del gpdfx
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
+            del pdf
             pdf = gpdf.get_group(10)  # top decile as its own DataFrame
             pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
             # TODO: following statement generates this IGNORED error:
@@ -559,9 +566,10 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             pdf['bins'].replace(to_replace=[6, 7, 8, 9],
                                 value=[1, 1, 1, 1], inplace=True)
             pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
-            gpdf = pdf.groupby('bins', as_index=False)
-            sdf = stat_dataframe(gpdf)
+            gpdfx = pdf.groupby('bins', as_index=False)
+            sdf = stat_dataframe(gpdfx)
             diffs = diffs.append(sdf, ignore_index=True)
+            del gpdfx
         # delete intermediate Pandas DataFrame objects
         del gpdf
         del pdf
