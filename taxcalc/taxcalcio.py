@@ -6,6 +6,7 @@ Tax-Calculator Input-Output class.
 # pylint --disable=locally-disabled taxcalcio.py
 
 import os
+import gc
 import copy
 import sqlite3
 import six
@@ -526,6 +527,8 @@ class TaxCalcIO(object):
         assert len(outdf.index) == self.calc.array_len
         outdf.to_csv(self._output_filename, columns=column_order,
                      index=False, float_format='%.2f')
+        del outdf
+        gc.collect()
 
     def write_doc_file(self):
         """
@@ -550,6 +553,8 @@ class TaxCalcIO(object):
         dbcon = sqlite3.connect(db_fname)
         outdf.to_sql('dump', dbcon, if_exists='replace', index=False)
         dbcon.close()
+        del outdf
+        gc.collect()
 
     def write_tables_file(self):
         """
@@ -585,6 +590,10 @@ class TaxCalcIO(object):
             TaxCalcIO.write_decile_table(distdf, tfile, tkind='Reform Totals')
             tfile.write('\n')
             TaxCalcIO.write_decile_table(diffdf, tfile, tkind='Differences')
+        # delete intermediate DataFrame objects
+        del distdf
+        del diffdf
+        gc.collect()
 
     @staticmethod
     def write_decile_table(dfx, tfile, tkind='Totals'):

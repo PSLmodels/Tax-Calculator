@@ -8,6 +8,7 @@ Tax-Calculator federal tax Calculator class.
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
 import os
+import gc
 import sys
 import json
 import re
@@ -998,6 +999,10 @@ class Calculator(object):
         vdf['chg_aftinc'] = vdf2['aftertax_income'] - vdf1['aftertax_income']
         # construct data for graph
         data = pch_graph_data(vdf, year=self.current_year)
+        del vdf
+        del vdf1
+        del vdf2
+        gc.collect()
         # construct figure from data
         fig = pch_graph_plot(data,
                              width=850,

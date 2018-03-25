@@ -6,6 +6,7 @@ Tax-Calculator tax-filing-unit Records class.
 # pylint --disable=locally-disabled records.py
 
 import os
+import gc
 import json
 import six
 import numpy as np
@@ -465,6 +466,9 @@ class Records(object):
         if not Records.MUST_READ_VARS.issubset(READ_VARS):
             msg = 'Records data missing one or more MUST_READ_VARS'
             raise ValueError(msg)
+        # delete intermediate taxdf object
+        del taxdf
+        gc.collect()
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.USABLE_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
@@ -518,6 +522,8 @@ class Records(object):
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
         setattr(self, 'WT', WT.astype(np.float64))
+        del WT
+        gc.collect()
 
     def _read_ratios(self, ratios):
         """
@@ -548,6 +554,8 @@ class Records(object):
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
         self.ADJ = ADJ
+        del ADJ
+        gc.collect()
 
     def _read_benefits(self, benefits):
         """
@@ -581,3 +589,9 @@ class Records(object):
         BEN = full_df.fillna(0.0)
         assert len(recid_df) == len(BEN)
         self.BEN = BEN
+        # delete intermediate DataFrame objects
+        del BEN
+        del full_df
+        del recid_df
+        del BEN_partial
+        gc.collect()
