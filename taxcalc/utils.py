@@ -461,14 +461,14 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     """
     # pylint: disable=too-many-statements
     # nested function that actually creates the difference table
-    def diff_table_stats(res2, groupby, income_measure):
+    def diff_table_stats(resd, groupby, income_measure):
         """
         Return new Pandas DataFrame containing difference table statistics
-        based on grouped values of specified col_name in the specified res2.
+        based on grouped values of specified col_name in the specified resd.
 
-        res2: reform difference results Pandas DataFrame
+        resd: reform difference results Pandas DataFrame
         groupby: string naming type of bins
-        income_measure: string naming column used to create res2 bins
+        income_measure: string naming column used to create resd bins
         """
         # pylint: disable=too-many-locals
         def stat_dataframe(gpdf):
@@ -491,11 +491,9 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             sdf['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
             sdf['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
             sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-            wtotal = (res2['tax_diff'] * res2['s006']).sum()
+            wtotal = (resd['tax_diff'] * resd['s006']).sum()
             sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
                                                 'tax_diff', wtotal)
-            res2['afinc1'] = res1['aftertax_income']
-            res2['afinc2'] = res2['aftertax_income']
             sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
             sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
             sdf['ubi'] = gpdf.apply(weighted_sum, 'ubi')
@@ -507,17 +505,17 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
 
         # main logic of diff_table_stats function
         # calculate whole-sample perc_cut and perc_inc statistics
-        sums_perc_cut = weighted_perc_cut(res2, 'tax_diff')
-        sums_perc_inc = weighted_perc_inc(res2, 'tax_diff')
-        # add bin column to res2 given specified groupby and income_measure
+        sums_perc_cut = weighted_perc_cut(resd, 'tax_diff')
+        sums_perc_inc = weighted_perc_inc(resd, 'tax_diff')
+        # add bin column to resd given specified groupby and income_measure
         if groupby == 'weighted_deciles':
-            pdf = add_quantile_bins(res2, income_measure, 10)
+            pdf = add_quantile_bins(resd, income_measure, 10)
         elif groupby == 'standard_income_bins':
-            pdf = add_income_bins(res2, income_measure, bin_type='standard')
+            pdf = add_income_bins(resd, income_measure, bin_type='standard')
         elif groupby == 'large_income_bins':
-            pdf = add_income_bins(res2, income_measure, bin_type='tpc')
+            pdf = add_income_bins(resd, income_measure, bin_type='tpc')
         elif groupby == 'small_income_bins':
-            pdf = add_income_bins(res2, income_measure, bin_type='soi')
+            pdf = add_income_bins(resd, income_measure, bin_type='soi')
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
         # create difference table statistics from gpdf in a new DataFrame
