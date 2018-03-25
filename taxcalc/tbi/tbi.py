@@ -15,6 +15,7 @@ tax results.
 # pylint --disable=locally-disabled tbi.py
 
 from __future__ import print_function
+import gc
 import time
 import numpy as np
 import pandas as pd
@@ -107,6 +108,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     summ = summary(rawres1, rawres2, mask)
     del rawres1
     del rawres2
+    gc.collect()
 
     def append_year(pdf):
         """
