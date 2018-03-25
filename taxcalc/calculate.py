@@ -465,10 +465,13 @@ class Calculator(object):
                 income_measure == 'c00100')
         assert (result_type == 'weighted_sum' or
                 result_type == 'weighted_avg')
-        dt1 = create_distribution_table(self.dataframe(DIST_VARIABLES),
+        var_dataframe = self.dataframe(DIST_VARIABLES)
+        dt1 = create_distribution_table(var_dataframe,
                                         groupby=groupby,
                                         income_measure=income_measure,
                                         result_type=result_type)
+        del var_dataframe
+        gc.collect()
         if calc is None:
             dt2 = None
         else:
@@ -487,6 +490,8 @@ class Calculator(object):
                                             groupby=groupby,
                                             income_measure=imeasure,
                                             result_type=result_type)
+            del var_dataframe
+            gc.collect()
         return dt1, dt2
 
     def difference_table(self, calc,
@@ -545,11 +550,16 @@ class Calculator(object):
         if income_measure == 'expanded_income':
             assert np.allclose(self.consump_benval_params(),
                                calc.consump_benval_params())
-        diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
-                                       calc.dataframe(DIFF_VARIABLES),
+        self_var_dataframe = self.dataframe(DIFF_VARIABLES)
+        calc_var_dataframe = calc.dataframe(DIFF_VARIABLES)
+        diff = create_difference_table(self_var_dataframe,
+                                       calc_var_dataframe,
                                        groupby=groupby,
                                        income_measure=income_measure,
                                        tax_to_diff=tax_to_diff)
+        del self_var_dataframe
+        del calc_var_dataframe
+        gc.collect()
         return diff
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',

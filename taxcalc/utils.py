@@ -526,8 +526,11 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             pdf = add_income_bins(resd, income_measure, bin_type='tpc')
         elif groupby == 'small_income_bins':
             pdf = add_income_bins(resd, income_measure, bin_type='soi')
+        min_income_measure = pdf[income_measure].min()
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
+        del pdf
+        gc.collect()
         # create difference table statistics from gpdf in a new DataFrame
         diffs_without_sums = stat_dataframe(gpdf)
         # calculate sums row
@@ -540,9 +543,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         row['share_of_change'] = 1.0  # avoid rounding error
         diffs = diffs_without_sums.append(row)
         # replace bottom decile row with non-positive and positive rows
-        if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
-            del pdf
-            gc.collect()
+        if groupby == 'weighted_deciles' and min_income_measure <= 0:
             # bottom decile as its own DataFrame
             pdf = copy.deepcopy(gpdf.get_group(1))
             pdf['bins'] = pd.cut(pdf[income_measure],
@@ -551,14 +552,14 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             gpdfx = pdf.groupby('bins', as_index=False)
             rows = stat_dataframe(gpdfx)
             diffs = pd.concat([rows, diffs.iloc[1:11]])
+            del pdf
             del gpdfx
             gc.collect()
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
-            del pdf
-            gc.collect()
-            pdf = gpdf.get_group(10)  # top decile as its own DataFrame
-            pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
+            # top decile as its own DataFrame
+            pdf = copy.deepcopy(gpdf.get_group(10))
+            pdf = add_quantile_bins(pdf, income_measure, 10)
             # TODO: following statement generates this IGNORED error:
             # ValueError: Buffer dtype mismatch,
             #             expected 'Python object' but got 'long'
@@ -578,11 +579,11 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             gpdfx = pdf.groupby('bins', as_index=False)
             sdf = stat_dataframe(gpdfx)
             diffs = diffs.append(sdf, ignore_index=True)
+            del pdf
             del gpdfx
             gc.collect()
         # delete intermediate Pandas DataFrame objects
         del gpdf
-        del pdf
         gc.collect()
         # return difference statistics
         return diffs

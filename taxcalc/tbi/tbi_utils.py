@@ -7,6 +7,7 @@ Private utility functions used only by public functions in the tbi.py file.
 
 from __future__ import print_function
 import os
+import gc
 import time
 import copy
 import hashlib
@@ -174,9 +175,16 @@ def calculate(year_n, start_year,
             np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
         )
         assert np.any(mask)
-    else:  # if use_cps_not_cps is False
+        # delete intermediate objects
+        del recs1p
+        del policy1p
+        del calc1p
+        del res1p
+    else:  # if use_puf_not_cps is False
         # indicate that no fuzzing of reform results is required
         mask = np.zeros(res1.shape[0], dtype=np.int8)
+    del res1
+    gc.collect()
 
     # specify Behavior instance
     behv = Behavior()
@@ -207,8 +215,22 @@ def calculate(year_n, start_year,
                        consumption=consump, behavior=behv)
     while calc2.current_year < start_year:
         calc2.increment_year()
-    calc2.calc_all()
     assert calc2.current_year == start_year
+
+    # delete objects now embedded in calc1 and calc2
+    del sample
+    del full_sample
+    del consump
+    del growdiff_baseline
+    del growdiff_response
+    del growfactors_pre
+    del growfactors_post
+    del behv
+    del recs1
+    del recs2
+    del policy1
+    del policy2
+    gc.collect()
 
     # increment Calculator objects for year_n years and calculate
     for _ in range(0, year_n):
