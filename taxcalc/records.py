@@ -138,18 +138,20 @@ class Records(object):
                            rtol=0.0, atol=tol):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
+        del other_dividends
         # check that total pension income is no less than taxable pension inc
         nontaxable_pensions = np.maximum(0., self.e01500 - self.e01700)
         if not np.allclose(self.e01500, self.e01700 + nontaxable_pensions,
                            rtol=0.0, atol=tol):
             msg = 'expression "e01500 >= e01700" is not true for every record'
             raise ValueError(msg)
+        del nontaxable_pensions
         # handle grow factors
         is_correct_type = isinstance(gfactors, Growfactors)
         if gfactors is not None and not is_correct_type:
             msg = 'gfactors is neither None nor a Growfactors instance'
             raise ValueError(msg)
-        self.gfactors = gfactors
+        self.gfactors = gfactors  # TODO setattr float32
         # read sample weights
         self.WT = None
         self._read_weights(weights)
@@ -165,7 +167,7 @@ class Records(object):
             self.WT = self.WT.iloc[self.__index]
             sum_sub_weights = self.WT.sum()
             factor = sum_full_weights / sum_sub_weights
-            self.WT = self.WT * factor
+            self.WT *= factor
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self.__current_year = start_year
@@ -407,8 +409,7 @@ class Records(object):
         """
         if self.ADJ.size > 0:
             # Interest income
-            adj_array = self.ADJ['INT{}'.format(year)][self.agi_bin].values
-            self.e00300 *= adj_array
+            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values
 
     def _extrapolate_benefits(self, year):
         """
@@ -422,8 +423,7 @@ class Records(object):
         setattr(self, 'wic_ben', self.BEN['wic_{}'.format(year)])
         setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
-        ABENEFITS = self.gfactors.factor_value('ABENEFITS', year)
-        self.other_ben *= ABENEFITS
+        self.other_ben *= self.gfactors.factor_value('ABENEFITS', year)
 
     def _read_data(self, data, exact_calcs):
         """
@@ -494,6 +494,7 @@ class Records(object):
         for varname in Records.CHANGING_CALCULATED_VARS:
             var = getattr(self, varname)
             var.fill(0.)
+        del var
 
     def _read_weights(self, weights):
         """
