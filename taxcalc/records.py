@@ -6,7 +6,6 @@ Tax-Calculator tax-filing-unit Records class.
 # pylint --disable=locally-disabled records.py
 
 import os
-import gc
 import json
 import six
 import numpy as np
@@ -468,7 +467,6 @@ class Records(object):
             raise ValueError(msg)
         # delete intermediate taxdf object
         del taxdf
-        gc.collect()
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.USABLE_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
@@ -504,8 +502,7 @@ class Records(object):
         create empty DataFrame if None.
         """
         if weights is None:
-            WT = pd.DataFrame({'nothing': []})
-            setattr(self, 'WT', WT)
+            setattr(self, 'WT', pd.DataFrame({'nothing': []}))
             return
         if isinstance(weights, pd.DataFrame):
             WT = weights
@@ -523,7 +520,6 @@ class Records(object):
         assert isinstance(WT, pd.DataFrame)
         setattr(self, 'WT', WT.astype(np.float64))
         del WT
-        gc.collect()
 
     def _read_ratios(self, ratios):
         """
@@ -531,8 +527,7 @@ class Records(object):
         as data or creates empty DataFrame if None
         """
         if ratios is None:
-            ADJ = pd.DataFrame({'nothing': []})
-            setattr(self, 'ADJ', ADJ)
+            setattr(self, 'ADJ', pd.DataFrame({'nothing': []}))
             return
         if isinstance(ratios, pd.DataFrame):
             ADJ = ratios
@@ -545,17 +540,16 @@ class Records(object):
                 # cannot call read_egg_ function in unit tests
                 ADJ = read_egg_csv(os.path.basename(ratios_path),
                                    index_col=0)  # pragma: no cover
-            ADJ = ADJ.transpose()
         else:
             msg = ('adjust_ratios is not None or a string'
                    'or a Pandas DataFrame')
             raise ValueError(msg)
         assert isinstance(ADJ, pd.DataFrame)
+        ADJ = ADJ.transpose()
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
-        self.ADJ = ADJ
+        setattr(self, 'ADJ', ADJ.astype(np.float64))
         del ADJ
-        gc.collect()
 
     def _read_benefits(self, benefits):
         """
@@ -564,8 +558,7 @@ class Records(object):
         used with the cps.csv file
         """
         if benefits is None:
-            BEN = pd.DataFrame({'Nothing': []})
-            setattr(self, 'BEN', BEN)
+            setattr(self, 'BEN', pd.DataFrame({'Nothing': []}))
             return
         if isinstance(benefits, pd.DataFrame):
             BEN_partial = benefits
@@ -586,12 +579,10 @@ class Records(object):
         # merge benefits with DataFrame of RECID
         full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
         # fill missing values
-        BEN = full_df.fillna(0.0)
-        assert len(recid_df) == len(BEN)
-        self.BEN = BEN
+        full_df.fillna(0.0, inplace=True)
+        assert len(recid_df) == len(full_df)
+        setattr(self, 'BEN', full_df.astype(np.float64))
         # delete intermediate DataFrame objects
-        del BEN
         del full_df
         del recid_df
         del BEN_partial
-        gc.collect()
