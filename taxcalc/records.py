@@ -151,7 +151,7 @@ class Records(object):
         if gfactors is not None and not is_correct_type:
             msg = 'gfactors is neither None nor a Growfactors instance'
             raise ValueError(msg)
-        self.gfactors = gfactors  # TODO setattr float32
+        self.gfactors = gfactors
         # read sample weights
         self.WT = None
         self._read_weights(weights)
@@ -501,6 +501,7 @@ class Records(object):
         Read Records weights from file or
         use specified DataFrame as data or
         create empty DataFrame if None.
+        Assumes weights are integers equal to 100 times the real weight.
         """
         if weights is None:
             setattr(self, 'WT', pd.DataFrame({'nothing': []}))
@@ -519,7 +520,7 @@ class Records(object):
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
-        setattr(self, 'WT', WT.astype(np.float64))
+        setattr(self, 'WT', WT.astype(np.int32))
         del WT
 
     def _read_ratios(self, ratios):
@@ -549,7 +550,7 @@ class Records(object):
         ADJ = ADJ.transpose()
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
-        setattr(self, 'ADJ', ADJ.astype(np.float64))
+        setattr(self, 'ADJ', ADJ.astype(np.float32))
         del ADJ
 
     def _read_benefits(self, benefits):
@@ -582,7 +583,7 @@ class Records(object):
         # fill missing values
         full_df.fillna(0.0, inplace=True)
         assert len(recid_df) == len(full_df)
-        setattr(self, 'BEN', full_df.astype(np.float64))
+        setattr(self, 'BEN', full_df.astype(np.float32))
         # delete intermediate DataFrame objects
         del full_df
         del recid_df
