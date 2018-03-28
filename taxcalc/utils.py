@@ -8,7 +8,6 @@ PUBLIC low-level utility functions for Tax-Calculator.
 # pylint: disable=too-many-lines
 
 import os
-import gc
 import math
 import copy
 import json
@@ -320,22 +319,20 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
         return pdf
 
-    # nested function that specifies calculated columns
+    # nested function that returns calculated column statistics as a DataFrame
     def stat_dataframe(gpdf):
         """
-        Nested function that returns statistics DataFrame derived from the
-        specified grouped Dataframe object, gpdf.
+        Returns calculated distribution table column statistics derived from
+        the specified grouped Dataframe object, gpdf.
         """
         unweighted_columns = ['s006', 'num_returns_StandardDed',
                               'num_returns_ItemDed', 'num_returns_AMT']
-        stats = list()
+        sdf = pd.DataFrame()
         for col in DIST_TABLE_COLUMNS:
             if col in unweighted_columns:
-                stats.append(gpdf.apply(unweighted_sum, col))
+                sdf[col] = gpdf.apply(unweighted_sum, col)
             else:
-                stats.append(gpdf.apply(weighted_sum, col))
-        sdf = pd.DataFrame(data=np.column_stack(stats),
-                           columns=DIST_TABLE_COLUMNS)
+                sdf[col] = gpdf.apply(weighted_sum, col)
         return sdf
 
     # main logic of create_distribution_table
@@ -371,7 +368,6 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # replace bottom decile row with non-positive and positive rows
     if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
         del pdf
-        gc.collect()
         # bottom decile as its own DataFrame
         pdf = copy.deepcopy(gpdf.get_group(1))
         pdf['bins'] = pd.cut(pdf[income_measure],
@@ -381,11 +377,9 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         rows = stat_dataframe(gpdfx)
         dist_table = pd.concat([rows, dist_table.iloc[1:11]])
         del gpdfx
-        gc.collect()
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
         del pdf
-        gc.collect()
         pdf = gpdf.get_group(10)  # top decile as its own DataFrame
         pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
         pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
@@ -397,7 +391,6 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         rows = stat_dataframe(gpdfx)
         dist_table = dist_table.append(rows, ignore_index=True)
         del gpdfx
-        gc.collect()
     # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
@@ -421,7 +414,6 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     del gpdf
     del pdf
     del res
-    gc.collect()
     # return table as Pandas DataFrame
     return dist_table
 
@@ -530,7 +522,6 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         # create grouped Pandas DataFrame
         gpdf = pdf.groupby('bins', as_index=False)
         del pdf
-        gc.collect()
         # create difference table statistics from gpdf in a new DataFrame
         diffs_without_sums = stat_dataframe(gpdf)
         # calculate sums row
@@ -554,7 +545,6 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             diffs = pd.concat([rows, diffs.iloc[1:11]])
             del pdf
             del gpdfx
-            gc.collect()
         # append top-decile-detail rows
         if groupby == 'weighted_deciles':
             # top decile as its own DataFrame
@@ -581,10 +571,8 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             diffs = diffs.append(sdf, ignore_index=True)
             del pdf
             del gpdfx
-            gc.collect()
         # delete intermediate Pandas DataFrame objects
         del gpdf
-        gc.collect()
         # return difference statistics
         return diffs
     # main logic of create_difference_table
@@ -615,7 +603,6 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     # delete intermediate Pandas DataFrame objects
     del res1
     del res2
-    gc.collect()
     # convert some columns to percentages
     percent_columns = ['perc_inc', 'perc_cut',
                        'share_of_change', 'pc_aftertaxinc']
