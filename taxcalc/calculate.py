@@ -7,8 +7,8 @@ Tax-Calculator federal tax Calculator class.
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
+from __future__ import print_function
 import os
-import gc
 import sys
 import json
 import re
@@ -215,7 +215,9 @@ class Calculator(object):
         """
         assert isinstance(variable_list, list)
         arys = [self.array(vname) for vname in variable_list]
-        return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
+        pdf = pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
+        del arys
+        return pdf
 
     def array(self, variable_name, variable_value=None):
         """
@@ -260,6 +262,7 @@ class Calculator(object):
         """
         assert isinstance(self.__stored_records, Records)
         self.__records = copy.deepcopy(self.__stored_records)
+        del self.__stored_records
         self.__stored_records = None
 
     def records_current_year(self, year=None):
@@ -391,6 +394,8 @@ class Calculator(object):
             tlist.append(diag)
             if iyr < num_years:
                 calc.increment_year()
+        del calc
+        del diag
         return pd.concat(tlist, axis=1)
 
     def distribution_tables(self, calc,
@@ -471,7 +476,6 @@ class Calculator(object):
                                         income_measure=income_measure,
                                         result_type=result_type)
         del var_dataframe
-        gc.collect()
         if calc is None:
             dt2 = None
         else:
@@ -491,7 +495,6 @@ class Calculator(object):
                                             income_measure=imeasure,
                                             result_type=result_type)
             del var_dataframe
-            gc.collect()
         return dt1, dt2
 
     def difference_table(self, calc,
@@ -559,7 +562,6 @@ class Calculator(object):
                                        tax_to_diff=tax_to_diff)
         del self_var_dataframe
         del calc_var_dataframe
-        gc.collect()
         return diff
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
@@ -732,6 +734,26 @@ class Calculator(object):
             mtr_payrolltax = np.where(mars == 2, mtr_payrolltax, np.nan)
             mtr_incometax = np.where(mars == 2, mtr_incometax, np.nan)
             mtr_combined = np.where(mars == 2, mtr_combined, np.nan)
+        # delete intermediate variables
+        del variable
+        if variable_str == 'e00200p' or variable_str == 'e00200s':
+            del earnings_var
+        elif variable_str == 'e00900p':
+            del seincome_var
+        elif variable_str == 'e00650':
+            del divincome_var
+        elif variable_str == 'e26270':
+            del schEincome_var
+        del payrolltax_chng
+        del incometax_chng
+        del combined_taxes_chng
+        del payrolltax_base
+        del incometax_base
+        del combined_taxes_base
+        del payrolltax_diff
+        del incometax_diff
+        del combined_diff
+        del adj
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
@@ -873,6 +895,17 @@ class Calculator(object):
                               mtr_wrt_full_compen=mtr_wrt_full_compen,
                               income_measure=income_measure,
                               dollar_weighting=dollar_weighting)
+        # delete intermediate variables
+        del vdf
+        del mtr1_ptax
+        del mtr1_itax
+        del mtr1_combined
+        del mtr1
+        del mtr2_ptax
+        del mtr2_itax
+        del mtr2_combined
+        del mtr2
+        del record_variables
         # construct figure from data
         fig = xtr_graph_plot(data,
                              width=850,
@@ -881,6 +914,7 @@ class Calculator(object):
                              ylabel='',
                              title='',
                              legendloc='bottom_right')
+        del data
         return fig
 
     def atr_graph(self, calc,
@@ -962,6 +996,9 @@ class Calculator(object):
                               year=self.current_year,
                               mars=mars,
                               atr_measure=atr_measure)
+        # delete intermediate variables
+        del vdf
+        del record_variables
         # construct figure from data
         fig = xtr_graph_plot(data,
                              width=850,
@@ -970,6 +1007,7 @@ class Calculator(object):
                              ylabel='',
                              title='',
                              legendloc='bottom_right')
+        del data
         return fig
 
     def pch_graph(self, calc):
@@ -1012,7 +1050,6 @@ class Calculator(object):
         del vdf
         del vdf1
         del vdf2
-        gc.collect()
         # construct figure from data
         fig = pch_graph_plot(data,
                              width=850,
@@ -1020,6 +1057,7 @@ class Calculator(object):
                              xlabel='',
                              ylabel='',
                              title='')
+        del data
         return fig
 
     def decile_graph(self, calc,
@@ -1081,6 +1119,9 @@ class Calculator(object):
                              xlabel='',
                              ylabel='',
                              title='')
+        del data
+        del dt1
+        del dt2
         return fig
 
     @staticmethod

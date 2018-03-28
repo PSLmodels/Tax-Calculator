@@ -6,8 +6,8 @@ Tax-Calculator Growfactors class.
 # pylint --disable=locally-disabled growfactors.py
 
 import os
-import gc
 import six
+import numpy as np
 import pandas as pd
 from taxcalc.utils import read_egg_csv
 
@@ -72,10 +72,8 @@ class Growfactors(object):
         self._first_year = min(gfdf.index)
         self._last_year = max(gfdf.index)
         # set gfdf as attribute of class
-        self.gfdf = pd.DataFrame()
-        setattr(self, 'gfdf', gfdf)
+        setattr(self, 'gfdf', gfdf.astype(np.float64))
         del gfdf
-        gc.collect()
         # specify factors as being unused (that is, not yet accessed)
         self.used = False
 
