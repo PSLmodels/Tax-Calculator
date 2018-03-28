@@ -130,7 +130,7 @@
 
     "_BEN_vet_value": {
         "long_name": "Consumption value of veterans benefits",
-        "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (only about 48% are cash benefits according to https://github.com/open-source-economics/C-TAM/issues/62#issuecomment-375931734).",
+        "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (only about 48% are cash benefits).",
         "section_1": "",
         "section_2": "",
         "notes": "",
