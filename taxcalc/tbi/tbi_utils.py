@@ -7,9 +7,7 @@ Private utility functions used only by public functions in the tbi.py file.
 
 from __future__ import print_function
 import os
-import gc
 import time
-import copy
 import hashlib
 import numpy as np
 import pandas as pd
@@ -137,10 +135,10 @@ def calculate(year_n, start_year,
 
     # create pre-reform Calculator instance
     if use_puf_not_cps:
-        recs1 = Records(data=copy.deepcopy(sample),
+        recs1 = Records(data=sample,
                         gfactors=growfactors_pre)
     else:
-        recs1 = Records.cps_constructor(data=copy.deepcopy(sample),
+        recs1 = Records.cps_constructor(data=sample,
                                         gfactors=growfactors_pre)
     policy1 = Policy(gfactors=growfactors_pre)
     calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
@@ -153,8 +151,7 @@ def calculate(year_n, start_year,
     res1 = calc1.dataframe(DIST_VARIABLES)
     if use_puf_not_cps:
         # create pre-reform Calculator instance with extra income
-        recs1p = Records(data=copy.deepcopy(sample),
-                         gfactors=growfactors_pre)
+        recs1p = Records(data=sample, gfactors=growfactors_pre)
         # add one dollar to the income of each filing unit to determine
         # which filing units undergo a resulting change in tax liability
         recs1p.e00200 += 1.0  # pylint: disable=no-member
@@ -184,7 +181,6 @@ def calculate(year_n, start_year,
         # indicate that no fuzzing of reform results is required
         mask = np.zeros(res1.shape[0], dtype=np.int8)
     del res1
-    gc.collect()
 
     # specify Behavior instance
     behv = Behavior()
@@ -203,10 +199,10 @@ def calculate(year_n, start_year,
 
     # create post-reform Calculator instance
     if use_puf_not_cps:
-        recs2 = Records(data=copy.deepcopy(sample),
+        recs2 = Records(data=sample,
                         gfactors=growfactors_post)
     else:
-        recs2 = Records.cps_constructor(data=copy.deepcopy(sample),
+        recs2 = Records.cps_constructor(data=sample,
                                         gfactors=growfactors_post)
     policy2 = Policy(gfactors=growfactors_post)
     policy_reform = user_mods['policy']
@@ -230,7 +226,6 @@ def calculate(year_n, start_year,
     del recs2
     del policy1
     del policy2
-    gc.collect()
 
     # increment Calculator objects for year_n years and calculate
     for _ in range(0, year_n):
