@@ -525,15 +525,13 @@ class Records(object):
 
     def _read_ratios(self, ratios):
         """
-        Read Records adjustment ratios from file or uses specified DataFrame
-        as data or creates empty DataFrame if None
+        Read Records adjustment ratios from file or
+        create empty DataFrame if None
         """
         if ratios is None:
             setattr(self, 'ADJ', pd.DataFrame({'nothing': []}))
             return
-        if isinstance(ratios, pd.DataFrame):
-            ADJ = ratios
-        elif isinstance(ratios, six.string_types):
+        if isinstance(ratios, six.string_types):
             ratios_path = os.path.join(Records.CUR_PATH, ratios)
             if os.path.isfile(ratios_path):
                 ADJ = pd.read_csv(ratios_path,
@@ -543,8 +541,7 @@ class Records(object):
                 ADJ = read_egg_csv(os.path.basename(ratios_path),
                                    index_col=0)  # pragma: no cover
         else:
-            msg = ('adjust_ratios is not None or a string'
-                   'or a Pandas DataFrame')
+            msg = 'ratios is neither None nor a string'
             raise ValueError(msg)
         assert isinstance(ADJ, pd.DataFrame)
         ADJ = ADJ.transpose()
