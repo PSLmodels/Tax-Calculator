@@ -5,7 +5,6 @@ Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
 # pep8 test_tbi.py
 
 from __future__ import print_function
-import sys
 import json
 import numpy as np
 import pandas as pd
