@@ -365,6 +365,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # append sum row
     row = get_sums(dist_table)[dist_table.columns]
     dist_table = dist_table.append(row)
+    del row
     # replace bottom decile row with non-positive and positive rows
     if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
         del pdf
@@ -376,12 +377,14 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         gpdfx = pdf.groupby('bins', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = pd.concat([rows, dist_table.iloc[1:11]])
+        del rows
         del gpdfx
     # append top-decile-detail rows
     if groupby == 'weighted_deciles':
         del pdf
-        pdf = gpdf.get_group(10)  # top decile as its own DataFrame
-        pdf = add_quantile_bins(copy.deepcopy(pdf), income_measure, 10)
+        # top decile as its own DataFrame
+        pdf = copy.deepcopy(gpdf.get_group(10))
+        pdf = add_quantile_bins(pdf, income_measure, 10)
         pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
                             value=[0, 0, 0, 0, 0], inplace=True)
         pdf['bins'].replace(to_replace=[6, 7, 8, 9],
@@ -390,6 +393,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         gpdfx = pdf.groupby('bins', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = dist_table.append(rows, ignore_index=True)
+        del rows
         del gpdfx
     # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
@@ -410,6 +414,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     if rownames:
         assert len(dist_table.index) == len(rownames)
         dist_table.index = rownames
+        del rownames
     # delete intermediate Pandas DataFrame objects
     del gpdf
     del pdf
@@ -533,6 +538,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         row['perc_inc'] = sums_perc_inc
         row['share_of_change'] = 1.0  # avoid rounding error
         diffs = diffs_without_sums.append(row)
+        del row
         # replace bottom decile row with non-positive and positive rows
         if groupby == 'weighted_deciles' and min_income_measure <= 0:
             # bottom decile as its own DataFrame
@@ -543,6 +549,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             gpdfx = pdf.groupby('bins', as_index=False)
             rows = stat_dataframe(gpdfx)
             diffs = pd.concat([rows, diffs.iloc[1:11]])
+            del rows
             del pdf
             del gpdfx
         # append top-decile-detail rows
@@ -569,6 +576,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             gpdfx = pdf.groupby('bins', as_index=False)
             sdf = stat_dataframe(gpdfx)
             diffs = diffs.append(sdf, ignore_index=True)
+            del sdf
             del pdf
             del gpdfx
         # delete intermediate Pandas DataFrame objects
@@ -622,6 +630,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     if rownames:
         assert len(diffs.index) == len(rownames)
         diffs.index = rownames
+        del rownames
     # return table as Pandas DataFrame
     return diffs
 

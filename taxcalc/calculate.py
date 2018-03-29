@@ -463,7 +463,7 @@ class Calculator(object):
         # main logic of method
         assert calc is None or isinstance(calc, Calculator)
         assert (groupby == 'weighted_deciles' or
-                groupby == 'webapp_income_bins' or
+                groupby == 'standard_income_bins' or
                 groupby == 'large_income_bins' or
                 groupby == 'small_income_bins')
         assert (income_measure == 'expanded_income' or

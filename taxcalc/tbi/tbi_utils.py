@@ -178,8 +178,8 @@ def calculate(year_n, start_year,
         del calc1p
         del res1p
     else:  # if use_puf_not_cps is False
-        # indicate that no fuzzing of reform results is required
-        mask = np.zeros(res1.shape[0], dtype=np.int8)
+        # indicate that fuzzing of reform results is not required
+        mask = np.full(res1.shape, False)
     del res1
 
     # specify Behavior instance
