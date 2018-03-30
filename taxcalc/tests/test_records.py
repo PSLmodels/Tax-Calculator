@@ -40,9 +40,6 @@ def test_correct_Records_instantiation(cps_subsample):
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
     wghts_path = os.path.join(Records.CUR_PATH, Records.CPS_WEIGHTS_FILENAME)
     wghts_df = pd.read_csv(wghts_path)
-    ratio_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
-    ratio_df = pd.read_csv(ratio_path)
-    ratio_df = ratio_df.transpose()
     benefit_path = os.path.join(Records.CUR_PATH,
                                 Records.CPS_BENEFITS_FILENAME)
     benefit_df = pd.read_csv(benefit_path)
@@ -50,7 +47,7 @@ def test_correct_Records_instantiation(cps_subsample):
                    exact_calculations=False,
                    gfactors=Growfactors(),
                    weights=wghts_df,
-                   adjust_ratios=ratio_df,
+                   adjust_ratios=None,
                    benefits=benefit_df,
                    start_year=Records.CPSCSV_YEAR)
     assert rec2

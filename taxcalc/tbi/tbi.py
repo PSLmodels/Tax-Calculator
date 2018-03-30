@@ -15,6 +15,7 @@ tax results.
 # pylint --disable=locally-disabled tbi.py
 
 from __future__ import print_function
+import gc
 import time
 import numpy as np
 import pandas as pd
@@ -98,6 +99,11 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     rawres1 = calc1.dataframe(DIST_VARIABLES)
     rawres2 = calc2.dataframe(DIST_VARIABLES)
 
+    # delete calc1 and calc2 now that raw results have been extracted
+    del calc1
+    del calc2
+    gc.collect()
+
     # seed random number generator with a seed value based on user_mods
     seed = random_seed(user_mods)
     print('seed={}'.format(seed))
@@ -105,6 +111,9 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
     # construct TaxBrain summary results from raw results
     summ = summary(rawres1, rawres2, mask)
+    del rawres1
+    del rawres2
+    gc.collect()
 
     def append_year(pdf):
         """
