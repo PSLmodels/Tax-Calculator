@@ -1,8 +1,8 @@
 #!/bin/bash
 if [[ "$#" -ne 2 ]]; then
-    echo "csvshow prints all non-zero CSV file column values for RECID"
+    echo "csv_show.sh prints all non-zero CSV file column values for RECID"
     echo "ERROR: must specify exactly two command-line arguments"
-    echo "USAGE: csvshow FILENAME RECID"
+    echo "USAGE: ./csv_show.sh FILENAME RECID"
     exit 1
 fi
 awk -F, '
