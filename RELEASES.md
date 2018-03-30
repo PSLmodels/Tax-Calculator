@@ -4,6 +4,27 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-03-30 Release 0.18.0
+-------------------------
+(last merged pull request is
+[#1942](https://github.com/open-source-economics/Tax-Calculator/pull/1942))
+
+**API Changes**
+- Remove obsolete `_DependentCredit_c` policy parameter and fix dependent credit phase-out logic
+  [[#1937](https://github.com/open-source-economics/Tax-Calculator/pull/1937)
+  by Martin Holmer]
+
+**New Features**
+- Add memory management logic to reduce memory usage
+  [[#1942](https://github.com/open-source-economics/Tax-Calculator/pull/1942)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Replace monthly housing benefits with annual housing benefits in CPS data
+  [[#1941](https://github.com/open-source-economics/Tax-Calculator/pull/1941)
+  by Anderson Frailey]
+
+
 2018-03-16 Release 0.17.0
 -------------------------
 (last merged pull request is
