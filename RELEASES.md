@@ -10,7 +10,7 @@ for a complete commit history.
 [#1942](https://github.com/open-source-economics/Tax-Calculator/pull/1942))
 
 **API Changes**
-- Remove obsolete `_DependentCredit_c` policy parameter and fix dependent credit phase-out logic
+- Remove redundant `_DependentCredit_c` policy parameter and fix dependent credit phase-out logic
   [[#1937](https://github.com/open-source-economics/Tax-Calculator/pull/1937)
   by Martin Holmer]
 
