@@ -579,7 +579,7 @@ class Records(object):
         # merge benefits with DataFrame of RECID
         full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
         # fill missing values
-        full_df.fillna(0.0, inplace=True)
+        full_df.fillna(0, inplace=True)
         assert len(recid_df) == len(full_df)
         self.BEN = pd.DataFrame()
         setattr(self, 'BEN', full_df.astype(np.float32))
