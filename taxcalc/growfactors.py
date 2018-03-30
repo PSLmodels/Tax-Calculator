@@ -72,7 +72,9 @@ class Growfactors(object):
         self._first_year = min(gfdf.index)
         self._last_year = max(gfdf.index)
         # set gfdf as attribute of class
-        setattr(self, 'gfdf', gfdf.astype(np.float64))
+        self.gfdf = pd.DataFrame()
+        setattr(self, 'gfdf',
+                gfdf.astype(np.float64))  # pylint: disable=no-member
         del gfdf
         # specify factors as being unused (that is, not yet accessed)
         self.used = False
