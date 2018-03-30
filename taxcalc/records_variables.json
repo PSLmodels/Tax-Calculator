@@ -966,7 +966,7 @@
     },
     "dep_credit": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "Dependent Credit added on top of Child Tax Credit",
       "form": {"2013-20??": "calculated variable"}
     },
     "personal_refundable_credit": {

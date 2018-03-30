@@ -138,12 +138,14 @@ class Records(object):
                            rtol=0.0, atol=tol):
             msg = 'expression "e00600 >= e00650" is not true for every record'
             raise ValueError(msg)
+        del other_dividends
         # check that total pension income is no less than taxable pension inc
         nontaxable_pensions = np.maximum(0., self.e01500 - self.e01700)
         if not np.allclose(self.e01500, self.e01700 + nontaxable_pensions,
                            rtol=0.0, atol=tol):
             msg = 'expression "e01500 >= e01700" is not true for every record'
             raise ValueError(msg)
+        del nontaxable_pensions
         # handle grow factors
         is_correct_type = isinstance(gfactors, Growfactors)
         if gfactors is not None and not is_correct_type:
@@ -165,7 +167,7 @@ class Records(object):
             self.WT = self.WT.iloc[self.__index]
             sum_sub_weights = self.WT.sum()
             factor = sum_full_weights / sum_sub_weights
-            self.WT = self.WT * factor
+            self.WT *= factor
         # specify current_year and FLPDYR values
         if isinstance(start_year, int):
             self.__current_year = start_year
@@ -407,8 +409,7 @@ class Records(object):
         """
         if self.ADJ.size > 0:
             # Interest income
-            adj_array = self.ADJ['INT{}'.format(year)][self.agi_bin].values
-            self.e00300 *= adj_array
+            self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values
 
     def _extrapolate_benefits(self, year):
         """
@@ -422,8 +423,7 @@ class Records(object):
         setattr(self, 'wic_ben', self.BEN['wic_{}'.format(year)])
         setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
-        ABENEFITS = self.gfactors.factor_value('ABENEFITS', year)
-        self.other_ben *= ABENEFITS
+        self.other_ben *= self.gfactors.factor_value('ABENEFITS', year)
 
     def _read_data(self, data, exact_calcs):
         """
@@ -465,6 +465,8 @@ class Records(object):
         if not Records.MUST_READ_VARS.issubset(READ_VARS):
             msg = 'Records data missing one or more MUST_READ_VARS'
             raise ValueError(msg)
+        # delete intermediate taxdf object
+        del taxdf
         # create other class variables that are set to all zeros
         UNREAD_VARS = Records.USABLE_READ_VARS - READ_VARS
         ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
@@ -492,16 +494,17 @@ class Records(object):
         for varname in Records.CHANGING_CALCULATED_VARS:
             var = getattr(self, varname)
             var.fill(0.)
+        del var
 
     def _read_weights(self, weights):
         """
         Read Records weights from file or
         use specified DataFrame as data or
         create empty DataFrame if None.
+        Assumes weights are integers equal to 100 times the real weight.
         """
         if weights is None:
-            WT = pd.DataFrame({'nothing': []})
-            setattr(self, 'WT', WT)
+            setattr(self, 'WT', pd.DataFrame({'nothing': []}))
             return
         if isinstance(weights, pd.DataFrame):
             WT = weights
@@ -517,20 +520,18 @@ class Records(object):
             msg = 'weights is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(WT, pd.DataFrame)
-        setattr(self, 'WT', WT.astype(np.float64))
+        setattr(self, 'WT', WT.astype(np.int32))
+        del WT
 
     def _read_ratios(self, ratios):
         """
-        Read Records adjustment ratios from file or uses specified DataFrame
-        as data or creates empty DataFrame if None
+        Read Records adjustment ratios from file or
+        create empty DataFrame if None
         """
         if ratios is None:
-            ADJ = pd.DataFrame({'nothing': []})
-            setattr(self, 'ADJ', ADJ)
+            setattr(self, 'ADJ', pd.DataFrame({'nothing': []}))
             return
-        if isinstance(ratios, pd.DataFrame):
-            ADJ = ratios
-        elif isinstance(ratios, six.string_types):
+        if isinstance(ratios, six.string_types):
             ratios_path = os.path.join(Records.CUR_PATH, ratios)
             if os.path.isfile(ratios_path):
                 ADJ = pd.read_csv(ratios_path,
@@ -539,15 +540,15 @@ class Records(object):
                 # cannot call read_egg_ function in unit tests
                 ADJ = read_egg_csv(os.path.basename(ratios_path),
                                    index_col=0)  # pragma: no cover
-            ADJ = ADJ.transpose()
         else:
-            msg = ('adjust_ratios is not None or a string'
-                   'or a Pandas DataFrame')
+            msg = 'ratios is neither None nor a string'
             raise ValueError(msg)
         assert isinstance(ADJ, pd.DataFrame)
+        ADJ = ADJ.transpose()
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
-        self.ADJ = ADJ
+        setattr(self, 'ADJ', ADJ.astype(np.float32))
+        del ADJ
 
     def _read_benefits(self, benefits):
         """
@@ -556,8 +557,7 @@ class Records(object):
         used with the cps.csv file
         """
         if benefits is None:
-            BEN = pd.DataFrame({'Nothing': []})
-            setattr(self, 'BEN', BEN)
+            setattr(self, 'BEN', pd.DataFrame({'Nothing': []}))
             return
         if isinstance(benefits, pd.DataFrame):
             BEN_partial = benefits
@@ -578,6 +578,10 @@ class Records(object):
         # merge benefits with DataFrame of RECID
         full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
         # fill missing values
-        BEN = full_df.fillna(0.0)
-        assert len(recid_df) == len(BEN)
-        self.BEN = BEN
+        full_df.fillna(0.0, inplace=True)
+        assert len(recid_df) == len(full_df)
+        setattr(self, 'BEN', full_df.astype(np.float32))
+        # delete intermediate DataFrame objects
+        del full_df
+        del recid_df
+        del BEN_partial
