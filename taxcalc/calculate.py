@@ -20,8 +20,8 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                DependentCare, ALD_InvInc_ec_base, CapGains,
                                SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
                                StdDed, AdditionalMedicareTax, F2441, EITC,
-                               SchR, ChildTaxCredit, AdditionalCTC, CTC_new,
-                               PersonalTaxCredit,
+                               ChildDepTaxCredit, AdditionalCTC, CTC_new,
+                               PersonalTaxCredit, SchR,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
@@ -1420,7 +1420,7 @@ class Calculator(object):
         self._taxinc_to_amt()
         F2441(self.__policy, self.__records)
         EITC(self.__policy, self.__records)
-        ChildTaxCredit(self.__policy, self.__records)
+        ChildDepTaxCredit(self.__policy, self.__records)
         PersonalTaxCredit(self.__policy, self.__records)
         AmOppCreditParts(self.__policy, self.__records)
         SchR(self.__policy, self.__records)
