@@ -547,6 +547,7 @@ class Records(object):
         ADJ = ADJ.transpose()
         if ADJ.index.name != 'agi_bin':
             ADJ.index.name = 'agi_bin'
+        self.ADJ = pd.DataFrame()
         setattr(self, 'ADJ', ADJ.astype(np.float32))
         del ADJ
 
@@ -578,8 +579,9 @@ class Records(object):
         # merge benefits with DataFrame of RECID
         full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
         # fill missing values
-        full_df.fillna(0.0, inplace=True)
+        full_df.fillna(0, inplace=True)
         assert len(recid_df) == len(full_df)
+        self.BEN = pd.DataFrame()
         setattr(self, 'BEN', full_df.astype(np.float32))
         # delete intermediate DataFrame objects
         del full_df
