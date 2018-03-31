@@ -7,6 +7,7 @@ Tax-Calculator federal tax Calculator class.
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
+from __future__ import print_function
 import os
 import sys
 import json
@@ -20,8 +21,8 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                DependentCare, ALD_InvInc_ec_base, CapGains,
                                SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
                                StdDed, AdditionalMedicareTax, F2441, EITC,
-                               SchR, ChildTaxCredit, AdditionalCTC, CTC_new,
-                               PersonalTaxCredit,
+                               ChildDepTaxCredit, AdditionalCTC, CTC_new,
+                               PersonalTaxCredit, SchR,
                                AmOppCreditParts, EducationTaxCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
@@ -214,7 +215,9 @@ class Calculator(object):
         """
         assert isinstance(variable_list, list)
         arys = [self.array(vname) for vname in variable_list]
-        return pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
+        pdf = pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
+        del arys
+        return pdf
 
     def array(self, variable_name, variable_value=None):
         """
@@ -259,6 +262,7 @@ class Calculator(object):
         """
         assert isinstance(self.__stored_records, Records)
         self.__records = copy.deepcopy(self.__stored_records)
+        del self.__stored_records
         self.__stored_records = None
 
     def records_current_year(self, year=None):
@@ -390,6 +394,8 @@ class Calculator(object):
             tlist.append(diag)
             if iyr < num_years:
                 calc.increment_year()
+        del calc
+        del diag
         return pd.concat(tlist, axis=1)
 
     def distribution_tables(self, calc,
@@ -457,17 +463,19 @@ class Calculator(object):
         # main logic of method
         assert calc is None or isinstance(calc, Calculator)
         assert (groupby == 'weighted_deciles' or
-                groupby == 'webapp_income_bins' or
+                groupby == 'standard_income_bins' or
                 groupby == 'large_income_bins' or
                 groupby == 'small_income_bins')
         assert (income_measure == 'expanded_income' or
                 income_measure == 'c00100')
         assert (result_type == 'weighted_sum' or
                 result_type == 'weighted_avg')
-        dt1 = create_distribution_table(self.dataframe(DIST_VARIABLES),
+        var_dataframe = self.dataframe(DIST_VARIABLES)
+        dt1 = create_distribution_table(var_dataframe,
                                         groupby=groupby,
                                         income_measure=income_measure,
                                         result_type=result_type)
+        del var_dataframe
         if calc is None:
             dt2 = None
         else:
@@ -486,6 +494,7 @@ class Calculator(object):
                                             groupby=groupby,
                                             income_measure=imeasure,
                                             result_type=result_type)
+            del var_dataframe
         return dt1, dt2
 
     def difference_table(self, calc,
@@ -544,11 +553,15 @@ class Calculator(object):
         if income_measure == 'expanded_income':
             assert np.allclose(self.consump_benval_params(),
                                calc.consump_benval_params())
-        diff = create_difference_table(self.dataframe(DIFF_VARIABLES),
-                                       calc.dataframe(DIFF_VARIABLES),
+        self_var_dataframe = self.dataframe(DIFF_VARIABLES)
+        calc_var_dataframe = calc.dataframe(DIFF_VARIABLES)
+        diff = create_difference_table(self_var_dataframe,
+                                       calc_var_dataframe,
                                        groupby=groupby,
                                        income_measure=income_measure,
                                        tax_to_diff=tax_to_diff)
+        del self_var_dataframe
+        del calc_var_dataframe
         return diff
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
@@ -721,6 +734,26 @@ class Calculator(object):
             mtr_payrolltax = np.where(mars == 2, mtr_payrolltax, np.nan)
             mtr_incometax = np.where(mars == 2, mtr_incometax, np.nan)
             mtr_combined = np.where(mars == 2, mtr_combined, np.nan)
+        # delete intermediate variables
+        del variable
+        if variable_str == 'e00200p' or variable_str == 'e00200s':
+            del earnings_var
+        elif variable_str == 'e00900p':
+            del seincome_var
+        elif variable_str == 'e00650':
+            del divincome_var
+        elif variable_str == 'e26270':
+            del schEincome_var
+        del payrolltax_chng
+        del incometax_chng
+        del combined_taxes_chng
+        del payrolltax_base
+        del incometax_base
+        del combined_taxes_base
+        del payrolltax_diff
+        del incometax_diff
+        del combined_diff
+        del adj
         # return the three marginal tax rate arrays
         return (mtr_payrolltax, mtr_incometax, mtr_combined)
 
@@ -862,6 +895,17 @@ class Calculator(object):
                               mtr_wrt_full_compen=mtr_wrt_full_compen,
                               income_measure=income_measure,
                               dollar_weighting=dollar_weighting)
+        # delete intermediate variables
+        del vdf
+        del mtr1_ptax
+        del mtr1_itax
+        del mtr1_combined
+        del mtr1
+        del mtr2_ptax
+        del mtr2_itax
+        del mtr2_combined
+        del mtr2
+        del record_variables
         # construct figure from data
         fig = xtr_graph_plot(data,
                              width=850,
@@ -870,6 +914,7 @@ class Calculator(object):
                              ylabel='',
                              title='',
                              legendloc='bottom_right')
+        del data
         return fig
 
     def atr_graph(self, calc,
@@ -951,6 +996,9 @@ class Calculator(object):
                               year=self.current_year,
                               mars=mars,
                               atr_measure=atr_measure)
+        # delete intermediate variables
+        del vdf
+        del record_variables
         # construct figure from data
         fig = xtr_graph_plot(data,
                              width=850,
@@ -959,6 +1007,7 @@ class Calculator(object):
                              ylabel='',
                              title='',
                              legendloc='bottom_right')
+        del data
         return fig
 
     def pch_graph(self, calc):
@@ -998,6 +1047,9 @@ class Calculator(object):
         vdf['chg_aftinc'] = vdf2['aftertax_income'] - vdf1['aftertax_income']
         # construct data for graph
         data = pch_graph_data(vdf, year=self.current_year)
+        del vdf
+        del vdf1
+        del vdf2
         # construct figure from data
         fig = pch_graph_plot(data,
                              width=850,
@@ -1005,6 +1057,7 @@ class Calculator(object):
                              xlabel='',
                              ylabel='',
                              title='')
+        del data
         return fig
 
     def decile_graph(self, calc,
@@ -1066,6 +1119,9 @@ class Calculator(object):
                              xlabel='',
                              ylabel='',
                              title='')
+        del data
+        del dt1
+        del dt2
         return fig
 
     @staticmethod
@@ -1436,7 +1492,7 @@ class Calculator(object):
         self._taxinc_to_amt()
         F2441(self.__policy, self.__records)
         EITC(self.__policy, self.__records)
-        ChildTaxCredit(self.__policy, self.__records)
+        ChildDepTaxCredit(self.__policy, self.__records)
         PersonalTaxCredit(self.__policy, self.__records)
         AmOppCreditParts(self.__policy, self.__records)
         SchR(self.__policy, self.__records)

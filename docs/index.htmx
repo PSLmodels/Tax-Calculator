@@ -690,32 +690,32 @@ cps-22-#-ref3-#-doc.text   cps-22-#-ref3-#-tab.text   cps-22-#-ref3-#.csv
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      89.4      -8.8      10.6       0.0       1.8
- 1    17.93     371.8     -19.1      29.1       0.0      10.0
- 2    17.93     557.6     -18.8      48.7       0.0      29.9
- 3    17.92     742.6      -9.7      66.1       0.0      56.4
- 4    17.93     960.8       1.8      89.3       0.0      91.1
- 5    17.93    1235.0      19.4     115.8       0.0     135.2
- 6    17.92    1594.7      48.2     150.3       0.0     198.5
- 7    17.93    2082.5      89.8     196.8       0.0     286.6
- 8    17.93    2858.7     171.5     271.9       0.0     443.4
- 9    17.93    6139.4     889.0     438.8       0.0    1327.7
- A   179.26   16632.5    1163.3    1417.5       0.0    2580.8
+ 0    17.93      91.8      -9.0      10.9       0.0       1.9
+ 1    17.93     378.4     -19.1      29.9       0.0      10.8
+ 2    17.93     563.7     -18.4      48.9       0.0      30.5
+ 3    17.93     748.5      -9.3      66.6       0.0      57.3
+ 4    17.93     965.9       1.9      89.1       0.0      91.0
+ 5    17.93    1238.7      19.5     115.6       0.0     135.0
+ 6    17.93    1597.8      48.0     149.8       0.0     197.8
+ 7    17.93    2084.8      89.6     196.5       0.0     286.2
+ 8    17.93    2860.1     171.4     271.7       0.0     443.0
+ 9    17.93    6140.7     888.4     438.6       0.0    1327.0
+ A   179.26   16670.3    1163.0    1417.5       0.0    2580.4
 
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      89.4      -0.0       0.0       0.0      -0.0
- 1    17.93     371.8      -3.1       0.0       0.0      -3.1
- 2    17.93     557.6      -7.0       0.0       0.0      -7.0
- 3    17.92     742.6     -10.3       0.0       0.0     -10.3
- 4    17.93     960.8     -14.9       0.0       0.0     -14.9
- 5    17.93    1235.0     -24.3       0.0       0.0     -24.3
- 6    17.92    1594.7     -32.9       0.0       0.0     -32.9
- 7    17.93    2082.5     -40.3       0.0       0.0     -40.3
- 8    17.93    2858.7     -63.8       0.0       0.0     -63.8
- 9    17.93    6139.4     -70.3       0.0       0.0     -70.3
- A   179.26   16632.5    -266.9       0.0       0.0    -266.9
+ 0    17.93      91.8      -0.0       0.0       0.0      -0.0
+ 1    17.93     378.4      -3.3       0.0       0.0      -3.3
+ 2    17.93     563.7      -7.0       0.0       0.0      -7.0
+ 3    17.93     748.5     -10.4       0.0       0.0     -10.4
+ 4    17.93     965.9     -14.9       0.0       0.0     -14.9
+ 5    17.93    1238.7     -24.3       0.0       0.0     -24.3
+ 6    17.93    1597.8     -32.8       0.0       0.0     -32.8
+ 7    17.93    2084.8     -40.3       0.0       0.0     -40.3
+ 8    17.93    2860.1     -63.7       0.0       0.0     -63.7
+ 9    17.93    6140.7     -70.3       0.0       0.0     -70.3
+ A   179.26   16670.3    -266.9       0.0       0.0    -266.9
 </pre></p>
 
 <p>Example (7) produces 2022 static output for the filing units in the
@@ -856,18 +856,10 @@ Tax-Calculator startup automatically extrapolated your data to 2016.
 $ sqlite3 cps-16-#-#-#.db
 SQLite version 3.20.1 2017-08-24 16:21:36
 Enter ".help" for usage hints.
-sqlite> select count(*) from dump;
-456465
-sqlite> select count(*),sum(s006) from dump;
-456465|165398918.379996
-sqlite> select count(*),round(sum(s006)*1e-6,3) from dump;
-456465|165.399
-sqlite> select round(sum(s006)*1e-6,3) from dump where MARS=2;
-68.234
-sqlite> select MARS,round(sum(s006)*1e-6,3) from dump group by MARS;
-1|87.385
-2|68.234
-4|9.781
+sqlite> YOUR FIRST SQL COMMAND GOES HERE
+sqlite> YOUR SECOND SQL COMMAND GOES HERE
+sqlite> ...
+sqlite> YOUR FINAL SQL COMMAND GOES HERE
 sqlite> .quit
 $ 
 </pre>
@@ -882,40 +874,54 @@ with <kbd>type</kbd>.
 </p>
 <pre>
 $ cat tab.sql
--- tabulate weight of those with negative marginal income tax rates
-select "weighted count of those with negative MTR",
-        round(sum(s006)*1e-6,3)
+-- tabulate unweighted and weighted number of filing units
+select "unweighted count | weighted count (#m) of filing units";
+select count(*),  -- unweighted count of filing units
+       round(sum(s006)*1e-6,3) -- weighted count of filing units (#m)
+from dump;
+
+-- weighted count by filing status (MARS)
+select "filing status (MARS) | weighted count of filing units";
+select MARS, -- filing status
+       round(sum(s006)*1e-6,3) -- weighted count of filing units (#m)
+from dump
+group by MARS;
+
+-- tabulate weight of those with NEGATIVE marginal income tax rates
+select "weighted count of those with NEGATIVE MTR";
+select round(sum(s006)*1e-6,3) -- weighted count of filing units (#m)
 from dump
 where mtr_inctax < 0;
 
--- construct marginal income tax rate histogram with bin width 10
-select "bin number|weighted count|average MTR in bin";
-select round((mtr_inctax-5)/10) as mtr_bin, -- histogram bin number
-       round(sum(s006)*1e-6,3), -- weight of those in bin (m#)
-       -- weighted average marginal income tax rate on taxpayer earnings in bin:
+-- construct NON-NEGATIVE marginal income tax rate histogram with bin width 10
+select "bin number | weighted count | mean NON-NEGATIVE MTR in bin";
+select cast(round((mtr_inctax-5)/10) as int) as mtr_bin, -- histogram bin number
+       round(sum(s006)*1e-6,3), -- weight count of filing units in bin (#m)
+       -- weighted mean marginal income tax rate on taxpayer earnings in bin:
        round(sum(mtr_inctax*s006)/sum(s006),2)
 from dump
-where mtr_inctax >= 0  -- include only those with positive MTR
+where mtr_inctax >= 0 -- include only those with NON-NEGATIVE marginal tax rate
 group by mtr_bin
 order by mtr_bin;
 
--- tabulate weight of all filing units
-select "weighted count of all filing units",
-        round(sum(s006)*1e-6,3)
-from dump;
-
 $ cat tab.sql | sqlite3 cps-16-#-#-#.db
-weighted count of those with negative MTR|21.707
-bin number|weighted count|average MTR in bin
--1.0|30.994|0.0
-0.0|2.586|7.18
-1.0|58.614|14.14
-2.0|36.489|25.47
-3.0|14.091|32.21
-4.0|0.798|43.4
-5.0|0.102|55.2
-6.0|0.017|66.73
-weighted count of all filing units|165.399
+unweighted count | weighted count (#m) of filing units
+456465|165.399
+filing status (MARS) | weighted count of filing units
+1|87.385
+2|68.234
+4|9.781
+weighted count of those with NEGATIVE MTR
+21.708
+bin number | weighted count | mean NON-NEGATIVE MTR in bin
+-1|30.993|0.0
+0|2.586|7.18
+1|58.614|14.14
+2|36.492|25.47
+3|14.089|32.21
+4|0.798|43.4
+5|0.102|55.2
+6|0.017|66.73
 </pre>
 The <kbd>cat</kbd> command writes the contents of
 the <kbd>tab.sql</kbd> file to stdout.  We do nothing but that in the
@@ -924,9 +930,10 @@ command pipes the contents of the <kbd>tab.sql</kbd> file into
 the <kbd>sqlite3</kbd> tool, which executes the SQL statements and
 writes the tabulation results to stdout.  (If you're wondering about
 the validity of those high marginal tax rates, rest assured that all
-filing units with marginal income tax rates greater than seventy
+filing units with marginal income tax rates greater than sixty
 percent have been checked by hand and are valid: most are
-caught in the rapid phase-out of non-refundable education credits.
+caught in the rapid phase-out of non-refundable education credits
+or in the phase-in of taxation of social security benefits.
 The negative marginal tax rates are caused by refundable credits,
 primarily the earned income tax credit.)</p>
 

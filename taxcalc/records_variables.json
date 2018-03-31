@@ -439,7 +439,7 @@
     },
     "elderly_dependent": {
       "type": "int",
-      "desc": "1 if filing unit has an elderly dependent; otherwise 0",
+      "desc": "1 if filing unit has a dependent age 65+; otherwise 0",
       "form": {"2013-2016": "imputed from CPS data; not used in tax law"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -511,7 +511,7 @@
     },
     "n24": {
       "type": "int",
-      "desc": "Number of children eligible for Child Tax Credit",
+      "desc": "Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -966,7 +966,7 @@
     },
     "dep_credit": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "Dependent Credit added on top of Child Tax Credit",
       "form": {"2013-20??": "calculated variable"}
     },
     "personal_refundable_credit": {

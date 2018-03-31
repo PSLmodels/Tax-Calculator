@@ -6,6 +6,7 @@ Tax-Calculator Input-Output class.
 # pylint --disable=locally-disabled taxcalcio.py
 
 import os
+import gc
 import copy
 import sqlite3
 import six
@@ -538,6 +539,8 @@ class TaxCalcIO(object):
         assert len(outdf.index) == self.calc.array_len
         outdf.to_csv(self._output_filename, columns=column_order,
                      index=False, float_format='%.2f')
+        del outdf
+        gc.collect()
 
     def write_doc_file(self):
         """
@@ -562,6 +565,8 @@ class TaxCalcIO(object):
         dbcon = sqlite3.connect(db_fname)
         outdf.to_sql('dump', dbcon, if_exists='replace', index=False)
         dbcon.close()
+        del outdf
+        gc.collect()
 
     def write_tables_file(self):
         """
@@ -597,6 +602,10 @@ class TaxCalcIO(object):
             TaxCalcIO.write_decile_table(distdf, tfile, tkind='Reform Totals')
             tfile.write('\n')
             TaxCalcIO.write_decile_table(diffdf, tfile, tkind='Differences')
+        # delete intermediate DataFrame objects
+        del distdf
+        del diffdf
+        gc.collect()
 
     @staticmethod
     def write_decile_table(dfx, tfile, tkind='Totals'):
@@ -648,12 +657,21 @@ class TaxCalcIO(object):
                              htax_series.sum() * 1e-9,
                              ctax_series.sum() * 1e-9)
         tfile.write(row)
+        del gdfx
+        del rtns_series
+        del xinc_series
+        del itax_series
+        del ptax_series
+        del htax_series
+        del ctax_series
+        gc.collect()
 
     def write_graph_files(self):
         """
         Write graphs to HTML files.
         """
         pos_wght_sum = self.calc.total_weight() > 0.0
+        fig = None
         # average-tax-rate graph
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
@@ -682,6 +700,9 @@ class TaxCalcIO(object):
         else:
             reason = 'No graph because sum of weights is not positive'
             TaxCalcIO.write_empty_graph_file(pch_fname, pch_title, reason)
+        if fig:
+            del fig
+            gc.collect()
 
     @staticmethod
     def write_empty_graph_file(fname, title, reason):

@@ -618,7 +618,7 @@
       "name": "Set Dependend Credit for Children at $500",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-8.4,-8.1,-7.9,-7.6"
+      "expected": "Tax-Calculator,-12.4,-12.3,-12.2,-12.1"
   },
 
   "57": {
@@ -629,7 +629,7 @@
       "name": "Set Dependend Credit for Children at $500 AND stack dependent credit before CTC",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-14.3,-14.0,-13.8,-13.3"
+      "expected": "Tax-Calculator,-18.3,-18.2,-18.1,-17.8"
   },
 
   "58": {

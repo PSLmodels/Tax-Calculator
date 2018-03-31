@@ -8,7 +8,6 @@ Private utility functions used only by public functions in the tbi.py file.
 from __future__ import print_function
 import os
 import time
-import copy
 import hashlib
 import numpy as np
 import pandas as pd
@@ -136,10 +135,10 @@ def calculate(year_n, start_year,
 
     # create pre-reform Calculator instance
     if use_puf_not_cps:
-        recs1 = Records(data=copy.deepcopy(sample),
+        recs1 = Records(data=sample,
                         gfactors=growfactors_pre)
     else:
-        recs1 = Records.cps_constructor(data=copy.deepcopy(sample),
+        recs1 = Records.cps_constructor(data=sample,
                                         gfactors=growfactors_pre)
     policy1 = Policy(gfactors=growfactors_pre)
     calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
@@ -152,8 +151,7 @@ def calculate(year_n, start_year,
     res1 = calc1.dataframe(DIST_VARIABLES)
     if use_puf_not_cps:
         # create pre-reform Calculator instance with extra income
-        recs1p = Records(data=copy.deepcopy(sample),
-                         gfactors=growfactors_pre)
+        recs1p = Records(data=sample, gfactors=growfactors_pre)
         # add one dollar to the income of each filing unit to determine
         # which filing units undergo a resulting change in tax liability
         recs1p.e00200 += 1.0  # pylint: disable=no-member
@@ -174,9 +172,15 @@ def calculate(year_n, start_year,
             np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
         )
         assert np.any(mask)
-    else:  # if use_cps_not_cps is False
-        # indicate that no fuzzing of reform results is required
-        mask = np.zeros(res1.shape[0], dtype=np.int8)
+        # delete intermediate objects
+        del recs1p
+        del policy1p
+        del calc1p
+        del res1p
+    else:  # if use_puf_not_cps is False
+        # indicate that fuzzing of reform results is not required
+        mask = np.full(res1.shape, False)
+    del res1
 
     # specify Behavior instance
     behv = Behavior()
@@ -195,10 +199,10 @@ def calculate(year_n, start_year,
 
     # create post-reform Calculator instance
     if use_puf_not_cps:
-        recs2 = Records(data=copy.deepcopy(sample),
+        recs2 = Records(data=sample,
                         gfactors=growfactors_post)
     else:
-        recs2 = Records.cps_constructor(data=copy.deepcopy(sample),
+        recs2 = Records.cps_constructor(data=sample,
                                         gfactors=growfactors_post)
     policy2 = Policy(gfactors=growfactors_post)
     policy_reform = user_mods['policy']
@@ -207,8 +211,21 @@ def calculate(year_n, start_year,
                        consumption=consump, behavior=behv)
     while calc2.current_year < start_year:
         calc2.increment_year()
-    calc2.calc_all()
     assert calc2.current_year == start_year
+
+    # delete objects now embedded in calc1 and calc2
+    del sample
+    del full_sample
+    del consump
+    del growdiff_baseline
+    del growdiff_response
+    del growfactors_pre
+    del growfactors_post
+    del behv
+    del recs1
+    del recs2
+    del policy1
+    del policy2
 
     # increment Calculator objects for year_n years and calculate
     for _ in range(0, year_n):
