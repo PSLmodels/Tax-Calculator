@@ -34,7 +34,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 
 DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
-                  'c05800', 'othertaxes', 'refund', 'c07100', 'surtax',
+                  'c05800', 'othertaxes', 'refund', 'c07100',
                   'iitax', 'payrolltax', 'combined', 's006', 'ubi',
                   'benefit_cost_total', 'benefit_value_total']
 
