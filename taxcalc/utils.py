@@ -299,26 +299,6 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
           specified income_measure.
     """
     # pylint: disable=too-many-statements,too-many-locals,too-many-branches
-    # nested function that specifies calculated columns
-    def add_columns(pdf):
-        """
-        Nested function that adds several columns to
-        the specified Pandas DataFrame, pdf.
-        """
-        # weight of returns with positive AGI and
-        # itemized deduction greater than standard deduction
-        pdf['c04470'] = pdf['c04470'].where(
-            ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
-        # weight of returns with positive AGI and itemized deduction
-        pdf['num_returns_ItemDed'] = pdf['s006'].where(
-            ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
-        # weight of returns with positive AGI and standard deduction
-        pdf['num_returns_StandardDed'] = pdf['s006'].where(
-            ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
-        # weight of returns with positive Alternative Minimum Tax (AMT)
-        pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
-        return pdf
-
     # nested function that returns calculated column statistics as a DataFrame
     def stat_dataframe(gpdf):
         """
@@ -334,7 +314,6 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
             else:
                 sdf[col] = gpdf.apply(weighted_sum, col)
         return sdf
-
     # main logic of create_distribution_table
     assert isinstance(vdf, pd.DataFrame)
     assert (groupby == 'weighted_deciles' or
@@ -349,7 +328,6 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     assert income_measure in vdf
     # copy vdf and add variable columns
     res = copy.deepcopy(vdf)
-    res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
         pdf = add_quantile_bins(res, income_measure, 10)

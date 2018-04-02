@@ -219,6 +219,25 @@ class Calculator(object):
         del arys
         return pdf
 
+    def distribution_table_dataframe(self):
+        """
+        Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables
+        from embedded Records object.
+        """
+        pdf = self.dataframe(DIST_VARIABLES)
+        # revise itemized deduction amount to include only those with AGI>0
+        pdf['c04470'][:] = pdf['c04470'].where(
+            ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
+        # weighted count of itemizer returns among those with AGI>0
+        pdf['num_returns_ItemDed'] = pdf['s006'].where(
+            ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
+        # weighted count of standard-deduction returns among those with AGI>0
+        pdf['num_returns_StandardDed'] = pdf['s006'].where(
+            ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
+        # weight count of returns with positive Alternative Minimum Tax (AMT)
+        pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
+        return pdf
+
     def array(self, variable_name, variable_value=None):
         """
         If variable_value is None, return numpy ndarray containing the
@@ -472,7 +491,7 @@ class Calculator(object):
                 income_measure == 'c00100')
         assert (result_type == 'weighted_sum' or
                 result_type == 'weighted_avg')
-        var_dataframe = self.dataframe(DIST_VARIABLES)
+        var_dataframe = self.distribution_table_dataframe()
         dt1 = create_distribution_table(var_dataframe,
                                         groupby=groupby,
                                         income_measure=income_measure,
@@ -486,7 +505,7 @@ class Calculator(object):
             if income_measure == 'expanded_income':
                 assert np.allclose(self.consump_benval_params(),
                                    calc.consump_benval_params())
-            var_dataframe = calc.dataframe(DIST_VARIABLES)
+            var_dataframe = calc.distribution_table_dataframe()
             if have_same_income_measure(self, calc, income_measure):
                 imeasure = income_measure
             else:

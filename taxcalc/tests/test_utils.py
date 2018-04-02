@@ -277,7 +277,7 @@ def test_create_tables(cps_subsample):
 
     # test creating various distribution tables
 
-    dist = create_distribution_table(calc2.dataframe(DIST_VARIABLES),
+    dist = create_distribution_table(calc2.distribution_table_dataframe(),
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -375,7 +375,7 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
 
-    dist = create_distribution_table(calc2.dataframe(DIST_VARIABLES),
+    dist = create_distribution_table(calc2.distribution_table_dataframe(),
                                      groupby='standard_income_bins',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -742,16 +742,16 @@ def test_dist_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
-    tb1 = create_distribution_table(calc.dataframe(DIST_VARIABLES),
+    tb1 = create_distribution_table(calc.distribution_table_dataframe(),
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
-    tb2 = create_distribution_table(calc.dataframe(DIST_VARIABLES),
+    tb2 = create_distribution_table(calc.distribution_table_dataframe(),
                                     groupby='large_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_sum')
     assert np.allclose(tb1[-1:], tb2[-1:])
-    tb3 = create_distribution_table(calc.dataframe(DIST_VARIABLES),
+    tb3 = create_distribution_table(calc.distribution_table_dataframe(),
                                     groupby='small_income_bins',
                                     income_measure='expanded_income',
                                     result_type='weighted_avg')
