@@ -254,9 +254,9 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
 
     Parameters
     ----------
-    vdf : Pandas DataFrame including columns named as in STATS_VARIABLES list
-        for example, object returned from Calculator dataframe method in a
-        call like this: vdf = calc.dataframe(STATS_VARIABLES)
+    vdf : Pandas DataFrame including columns named in DIST_TABLE_COLUMNS list
+        for example, object returned from the Calculator class
+        distribution_table_dataframe method
 
     groupby : String object
         options for input: 'weighted_deciles', 'standard_income_bins',
@@ -408,13 +408,13 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
 
     Parameters
     ----------
-    vdf1 : Pandas DataFrame object including columns in the DIFF_VARIABLES
-           list drawn from a baseline Calculator object using the
-           Calculator.dataframe method
+    vdf1 : Pandas DataFrame including columns named in DIFF_VARIABLES list
+           for example, object returned from a dataframe(DIFF_VARIABLE) call
+           on the basesline Calculator object
 
-    vdf2 : Pandas DataFrame object including columns in the DIFF_VARIABLES
-           list drawn from a baseline Calculator object using the
-           Calculator.dataframe method
+    vdf2 : Pandas DataFrame including columns in the DIFF_VARIABLES list
+           for example, object returned from a dataframe(DIFF_VARIABLE) call
+           on the reform Calculator object
 
     groupby : String object
         options for input: 'weighted_deciles', 'standard_income_bins',
