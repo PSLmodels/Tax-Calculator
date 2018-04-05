@@ -282,8 +282,8 @@ def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(bad2_mods)
     assert len(msg_dict['policy']['warnings']) == 0
     assert len(msg_dict['policy']['errors']) > 0
-
-    bad3_mods = dict(USER_MODS, **{'behavior': {'_BE_inc': 1}})
+    bad3_mods = dict(USER_MODS, **{'behavior': {2017: {'_BE_inc': [0.8]}}})
+    msg_dict = reform_warnings_errors(bad3_mods)
     assert len(msg_dict['policy']['warnings']) == 0
     assert len(msg_dict['policy']['errors']) == 0
     assert len(msg_dict['behavior']['warnings']) == 0
