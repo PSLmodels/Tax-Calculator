@@ -194,6 +194,26 @@ def test_validate_param_values_warnings_errors():
     assert len(behv2.behavior_errors) == 0
     assert len(behv2.behavior_warnings) == 0
 
+def test_baseline_version():
+    syr = 2013
+    nyrs = 8
+    behv = Behavior(start_year=syr, num_years=nyrs)
+    default_inc = behv._BE_inc
+    baseline_inc_2015 = default_inc[2015 - syr]
+    baseline_inc_2016 = default_inc[2016 - syr]
+    revision = {2016: {'_BE_inc': [-0.3]}}
+    behv.update_behavior(revision)
+    default_inc = behv._BE_inc
+    rev_inc_2015 = default_inc[2015 - syr]
+    rev_inc_2016 = default_inc[2016 - syr]
+    blv = behv.baseline_version()
+    blv_inc = blv._BE_inc
+    blv_inc_2015 = blv_inc[2015 - syr]
+    blv_inc_2016 = blv_inc[2016 - syr]
+    print(locals())
+    assert baseline_inc_2015 == rev_inc_2015 == blv_inc_2015
+    assert baseline_inc_2016 != rev_inc_2016
+    assert baseline_inc_2016 == blv_inc_2016
 
 def test_future_update_behavior():
     behv = Behavior()

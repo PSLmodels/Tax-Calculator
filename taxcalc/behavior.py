@@ -137,6 +137,12 @@ class Behavior(ParametersBase):
         # validate reform parameter values
         self._validate_parameter_values(reform_parameters)
 
+    def baseline_version(self):
+        startyear = self.start_year
+        numyears = self.num_years
+        blv = Behavior(start_year=startyear, num_years=numyears)
+        blv.set_year(self.current_year)
+        return blv
 
     def has_response(self):
         """
