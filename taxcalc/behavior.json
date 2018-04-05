@@ -15,7 +15,10 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0],
-        "validations": {"min": 0.0}
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_BE_inc": {
@@ -34,7 +37,10 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0],
-        "validations": {"max": 0.0}
+        "range": {"min": -9e99, "max": 0.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_BE_subinc_wrt_earnings": {
@@ -53,7 +59,10 @@
         "boolean_value": true,
         "integer_value": true,
         "value": [false],
-        "validations": {"min": false, "max": true}
+        "range": {"min": false, "max": true},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_BE_cg": {
@@ -72,7 +81,10 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0],
-        "validations": {"max": 0.0}
+        "range": {"min": -9e99, "max": 0.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     },
 
     "_BE_charity": {
@@ -91,6 +103,9 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [[0.0, 0.0, 0.0]],
-        "validations": {"max": 0.0}
+        "range": {"min": -9e99, "max": 0.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop"
     }
 }
