@@ -36,6 +36,13 @@ def test_incorrect_Policy_instantiation():
         p = Policy(gfactors=dict())
     with pytest.raises(ValueError):
         p = Policy(parameter_dict=list())
+    # similar test to test_behavior.test_incorrect_behavior_instantiation-2
+    # fails because this dict is not validated
+    bad_pol_dict = {
+        '_SS_Earnings_c': {'start_year': 2013, 'value': [0.1]}
+    }
+    with pytest.raises(ValueError):
+        p = Policy(parameter_dict=bad_pol_dict)
     with pytest.raises(ValueError):
         p = Policy(num_years=0)
 
