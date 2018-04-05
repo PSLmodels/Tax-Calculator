@@ -60,9 +60,15 @@ class Behavior(ParametersBase):
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         self.initialize(start_year, num_years)
-        self._validate_parameter_values()
 
-    def update_behavior(self, revisions):
+        self.behavior_errors = ''
+        self.behavior_warnings = ''
+        self._ignore_errors = False
+
+        # Policy() doesn't do this in the __init__, why should Behavior()?
+        # self._validate_parameter_values()
+
+    def update_behavior_old(self, revisions):
         """
         Update behavior for given revisions, a dictionary consisting
         of one or more year:modification dictionaries.
@@ -82,6 +88,55 @@ class Behavior(ParametersBase):
             self._update({year: revisions[year]})
         self.set_year(precall_current_year)
         self._validate_parameter_values()
+
+    def update_behavior(self, reform):
+        # check that all revisions dictionary keys are integers
+        if not isinstance(reform, dict):
+            raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
+        if not reform:
+            return  # no reform to implement
+        reform_years = sorted(list(reform.keys()))
+        for year in reform_years:
+            if not isinstance(year, int):
+                msg = 'ERROR: {} KEY {}'
+                details = 'KEY in reform is not an integer calendar year'
+                raise ValueError(msg.format(year, details))
+        # check range of remaining reform_years
+        first_reform_year = min(reform_years)
+        if first_reform_year < self.start_year:
+            msg = 'ERROR: {} YEAR reform provision in YEAR < start_year={}'
+            raise ValueError(msg.format(first_reform_year, self.start_year))
+        if first_reform_year < self.current_year:
+            msg = 'ERROR: {} YEAR reform provision in YEAR < current_year={}'
+            raise ValueError(msg.format(first_reform_year, self.current_year))
+        last_reform_year = max(reform_years)
+        if last_reform_year > self.end_year:
+            msg = 'ERROR: {} YEAR reform provision in YEAR > end_year={}'
+            raise ValueError(msg.format(last_reform_year, self.end_year))
+        # validate reform parameter names and types
+        self._validate_parameter_names_types(reform)
+        if not self._ignore_errors and self.behavior_errors:
+            raise ValueError(self.behavior_errors)
+
+        #####################
+        # don't need to do cpi offset
+        # # optionally apply cpi_offset to inflation_rates and re-initialize
+        # if Policy._cpi_offset_in_reform(reform):
+        #     known_years = self._apply_reform_cpi_offset(reform)
+        #     self.set_default_vals(known_years=known_years)
+        #####################
+
+        # implement the reform year by year
+        precall_current_year = self.current_year
+        reform_parameters = set()
+        for year in reform_years:
+            self.set_year(year)
+            reform_parameters.update(reform[year].keys())
+            self._update({year: reform[year]})
+        self.set_year(precall_current_year)
+        # validate reform parameter values
+        self._validate_parameter_values(reform_parameters)
+
 
     def has_response(self):
         """
@@ -347,7 +402,7 @@ class Behavior(ParametersBase):
 
     # ----- begin private methods of Behavior class -----
 
-    def _validate_parameter_values(self):
+    def _validate_parameter_values_old(self):
         """
         Check that all behavioral-response parameters have valid values.
         """
@@ -406,6 +461,13 @@ class Behavior(ParametersBase):
                 zero_inc = inc_elasticity[year] == 0.0
                 if zero_sub and zero_inc:
                     raise ValueError(msg.format(year + self.start_year))
+
+    # not sure about revisions name
+    def _validate_parameter_names_types(self, revisions):
+        print('not implemented')
+
+    def _validate_parameter_values(self, parameters_set):
+        print('not implemented')
 
     @staticmethod
     def _update_earnings(change, calc):
