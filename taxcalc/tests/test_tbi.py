@@ -244,8 +244,8 @@ def test_with_pufcsv(puf_fullsample):
 
 def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(USER_MODS)
-    assert len(msg_dict['warnings']) == 0
-    assert len(msg_dict['errors']) == 0
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) == 0
     bad1_mods = {
         'policy': {2020: {'_II_rt3': [1.4]}, 2021: {'_STD_Dep': [0]}},
         'consumption': {},
@@ -254,8 +254,8 @@ def test_reform_warnings_errors():
         'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad1_mods)
-    assert len(msg_dict['warnings']) > 0
-    assert len(msg_dict['errors']) > 0
+    assert len(msg_dict['policy']['warnings']) > 0
+    assert len(msg_dict['policy']['errors']) > 0
     bad2_mods = {
         'policy': {2020: {'_II_rt33': [0.4]}, 2021: {'_STD_Dep': [0]}},
         'consumption': {},
@@ -264,8 +264,14 @@ def test_reform_warnings_errors():
         'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad2_mods)
-    assert len(msg_dict['warnings']) == 0
-    assert len(msg_dict['errors']) > 0
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) > 0
+
+    bad3_mods = dict(USER_MODS, **{'behavior': {'_BE_inc': 1}})
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) == 0
+    assert len(msg_dict['behavior']['warnings']) == 0
+    assert len(msg_dict['behavior']['errors']) > 0
 
 
 @pytest.mark.pre_release

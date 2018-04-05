@@ -25,7 +25,8 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_VARIABLES, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
-                     proportional_change_in_gdp, Growdiff, Growfactors, Policy)
+                     proportional_change_in_gdp, Growdiff, Growfactors, Policy,
+                     Behavior)
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
@@ -50,7 +51,8 @@ def reform_warnings_errors(user_mods):
     reform specified in user_mods, and therefore, no range-related
     warnings or errors will be returned in this case.
     """
-    rtn_dict = {'warnings': '', 'errors': ''}
+    rtn_dict = {'policy': {'warnings': '', 'errors': ''},
+                'behavior': {'warnings': '', 'errors': ''}}
     # create Growfactors object
     gdiff_baseline = Growdiff()
     gdiff_baseline.update_growdiff(user_mods['growdiff_baseline'])
@@ -63,10 +65,18 @@ def reform_warnings_errors(user_mods):
     pol = Policy(gfactors=growfactors)
     try:
         pol.implement_reform(user_mods['policy'])
-        rtn_dict['warnings'] = pol.reform_warnings
-        rtn_dict['errors'] = pol.reform_errors
+        rtn_dict['policy']['warnings'] = pol.reform_warnings
+        rtn_dict['policy']['errors'] = pol.reform_errors
     except ValueError as valerr_msg:
-        rtn_dict['errors'] = valerr_msg.__str__()
+        rtn_dict['policy']['errors'] = valerr_msg.__str__()
+
+    behv = Behavior()
+    try:
+        behv.update_behavior(user_mods['behavior'])
+        rtn_dict['behavior']['warnings'] = behv.reform_warnings
+        rtn_dict['behavior']['errors'] = behv.reform_errors
+    except ValueError as valerr_msg:
+        rtn_dict['behavior']['errors'] = valerr_msg.__str__()
     return rtn_dict
 
 
