@@ -116,6 +116,11 @@ class Behavior(ParametersBase):
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
         self._validate_parameter_names_types(reform)
+
+        ########################
+        # why do we check _ignore_errors after name/type validation but not
+        # values
+        #######################
         if not self._ignore_errors and self.behavior_errors:
             raise ValueError(self.behavior_errors)
 
@@ -137,6 +142,12 @@ class Behavior(ParametersBase):
         self.set_year(precall_current_year)
         # validate reform parameter values
         self._validate_parameter_values(reform_parameters)
+        ####################
+        # Additional Behavior specific logic
+        # check behavior_errors and _ignore_errors after values validation, too
+        ###################
+        if not self._ignore_errors and self.behavior_errors:
+            raise ValueError(self.behavior_errors)
 
     def baseline_version(self):
         startyear = self.start_year
