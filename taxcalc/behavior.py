@@ -570,9 +570,10 @@ class Behavior(ParametersBase):
                                 # but we are expecting an integer or float
                                 # i.e. boolean_value = integer_value = False
                                 ################################
-
-                                if (not isinstance(pvalue[idx], (float, int)) or
-                                   isinstance(pvalue[idx], bool)):
+                                is_not_float_int = not isinstance(pvalue[idx],
+                                                                  (float, int))
+                                is_bool = isinstance(pvalue[idx], bool)
+                                if is_not_float_int or is_bool:
                                     msg = '{} {} value {} is not a number'
                                     self.behavior_errors += (
                                         'ERROR: ' +
