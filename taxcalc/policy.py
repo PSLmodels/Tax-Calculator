@@ -506,7 +506,6 @@ class Policy(ParametersBase):
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
                 if isinstance(vval, six.string_types):
-                    print('up', pname, vop, vval)
                     if vval == 'default':
                         vvalue = getattr(clp, pname)
                         if vop == 'min':
@@ -516,8 +515,8 @@ class Policy(ParametersBase):
                         # (see test_range_infomation in test_policy.py)
                         # --> elif vop == 'max':
                         # -->    vvalue += rounding_error
-                    else:                        
-                        vvalue = self.simple_eval(vval)
+                    else:
+                        vvalue = getattr(self, vval)
                 else:
                     vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
