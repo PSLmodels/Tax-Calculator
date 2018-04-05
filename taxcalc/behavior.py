@@ -463,8 +463,104 @@ class Behavior(ParametersBase):
                     raise ValueError(msg.format(year + self.start_year))
 
     # not sure about revisions name
-    def _validate_parameter_names_types(self, revisions):
-        print('not implemented')
+    def _validate_parameter_names_types(self, reform):
+        """
+        Check validity of parameter names and parameter types used
+        in the specified reform dictionary.
+        """
+        # pylint: disable=too-many-branches,too-many-nested-blocks
+        data_names = set(self._vals.keys())
+        for year in sorted(reform.keys()):
+            for name in reform[year]:
+
+                ########################
+                # Policy() specific code -- Behavior does not need CPI logic
+                if name.endswith('_cpi'):
+                    raise ValueError('Why does a Behavior end with CPI?')
+                    if isinstance(reform[year][name], bool):
+                        pname = name[:-4]  # root parameter name
+                        if pname not in data_names:
+                            msg = '{} {} unknown parameter name'
+                            self.behavior_errors += (
+                                'ERROR: ' + msg.format(year, name) + '\n'
+                            )
+                        else:
+                            # check if root parameter is cpi inflatable
+                            if not self._vals[pname]['cpi_inflatable']:
+                                msg = '{} {} parameter is not cpi inflatable'
+                                self.behavior_errors += (
+                                    'ERROR: ' + msg.format(year, pname) + '\n'
+                                )
+                    else:
+                        msg = '{} {} parameter is not true or false'
+                        self.behavior_errors += (
+                            'ERROR: ' + msg.format(year, name) + '\n'
+                        )
+                ########################
+
+                else:  # if name does not end with '_cpi'
+                    if name not in data_names:
+                        msg = '{} {} unknown parameter name'
+                        self.behavior_errors += (
+                            'ERROR: ' + msg.format(year, name) + '\n'
+                        )
+                    else:
+                        # check parameter value type
+                        bool_type = self._vals[name]['boolean_value']
+                        int_type = self._vals[name]['integer_value']
+                        assert isinstance(reform[year][name], list)
+                        pvalue = reform[year][name][0]
+                        if isinstance(pvalue, list):
+                            scalar = False  # parameter value is a list
+                        else:
+                            scalar = True  # parameter value is a scalar
+                            pvalue = [pvalue]  # make scalar a single-item list
+                        for idx in range(0, len(pvalue)):
+                            if scalar:
+                                pname = name
+                            else:
+                                pname = '{}_{}'.format(name, idx)
+                            pvalue_boolean = (
+                                isinstance(pvalue[idx], bool) or
+                                (isinstance(pvalue[idx], int) and
+                                 (pvalue[idx] == 0 or pvalue[idx] == 1)) or
+                                (isinstance(pvalue[idx], float) and
+                                 (pvalue[idx] == 0.0 or pvalue[idx] == 1.0))
+                            )
+                            if bool_type:
+                                if not pvalue_boolean:
+                                    msg = '{} {} value {} is not boolean'
+                                    self.behavior_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
+                            elif int_type:
+                                if not isinstance(pvalue[idx], int):
+                                    msg = '{} {} value {} is not integer'
+                                    self.behavior_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
+                            else:  # param is neither bool_type nor int_type
+
+                                ################################
+                                # additional Behavior specific logic
+                                # isinstance(True, (float, int)) is True--
+                                # catches case where value is given as bool
+                                # but we are expecting an integer or float
+                                # i.e. boolean_value = integer_value = False
+                                ################################
+
+                                if (not isinstance(pvalue[idx], (float, int)) or
+                                    isinstance(pvalue[idx], bool)):
+                                    msg = '{} {} value {} is not a number'
+                                    self.behavior_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pvalue[idx]) +
+                                        '\n'
+                                    )
 
     def _validate_parameter_values(self, parameters_set):
         print('not implemented')
