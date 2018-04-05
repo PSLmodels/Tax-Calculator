@@ -1,3 +1,4 @@
+
 """
 Tax-Calculator functions that calculate payroll and individual income taxes.
 
@@ -1210,34 +1211,34 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 
 @iterate_jit(nopython=True)
-def ChildTaxCredit(n24, MARS, c00100, exact,
-                   CTC_c, CTC_ps, CTC_prt, prectc, nu05,
-                   CTC_c_under5_bonus, XTOT, num,
-                   DependentCredit_Child_c, DependentCredit_Nonchild_c,
-                   DependentCredit_c, FilerCredit_c, dep_credit):
+def ChildDepTaxCredit(n24, MARS, c00100, exact,
+                      CTC_c, CTC_ps, CTC_prt, prectc, nu05,
+                      CTC_c_under5_bonus, XTOT, num,
+                      DependentCredit_Child_c, DependentCredit_Nonchild_c,
+                      FilerCredit_c, dep_credit):
     """
-    Computes prectc amount and dependent credit.
+    Computes pre-CTC amount (prectc) and nonrefundable dependent credit.
     """
-    # calculate prectc amount
-    prectc = CTC_c * n24 + CTC_c_under5_bonus * nu05
-    modAGI = c00100  # no deducted foreign earned income to add
-    if modAGI > CTC_ps[MARS - 1]:
+    modAGI = c00100  # no foreign earned income deduction to add to AGI
+    # calculate and phase-out pre-CTC amount
+    base_ctc = CTC_c * n24 + CTC_c_under5_bonus * nu05
+    prectc = base_ctc
+    if prectc > 0. and modAGI > CTC_ps[MARS - 1]:
         excess = modAGI - CTC_ps[MARS - 1]
         if exact == 1:  # exact calculation as on tax forms
             excess = 1000. * math.ceil(excess / 1000.)
         prectc = max(0., prectc - CTC_prt * excess)
-    # calculate and phase-out dependent credit
-    dep_credit = (DependentCredit_c * max(0, XTOT - num) +
-                  DependentCredit_Child_c * n24 +
+    # calculate and phase-out dependent credit after pre-CTC is phased out
+    dep_credit = (DependentCredit_Child_c * n24 +
                   DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
                   FilerCredit_c[MARS - 1])
-    if CTC_prt > 0. and c00100 > CTC_ps[MARS - 1]:
-        thresh = CTC_ps[MARS - 1] + n24 * CTC_c / CTC_prt
-        excess = c00100 - thresh
-        if exact == 1:  # exact calculation as on tax forms
-            excess = 1000. * math.ceil(excess / 1000.)
-        dep_phaseout = CTC_prt * (c00100 - excess)
-        dep_credit = max(0., dep_credit - dep_phaseout)
+    if dep_credit > 0. and CTC_prt > 0.:
+        thresh = CTC_ps[MARS - 1] + base_ctc / CTC_prt
+        if modAGI > thresh:
+            excess = modAGI - thresh
+            if exact == 1:  # exact calculation as on tax forms
+                excess = 1000. * math.ceil(excess / 1000.)
+            dep_credit = max(0., dep_credit - CTC_prt * excess)
     return (prectc, dep_credit)
 
 

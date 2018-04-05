@@ -15,7 +15,7 @@
 // - 1: _II_rt? and _PT_rt?
 // - 2: four _PT_excl_* parameters
 // - 3: _CTC_c and _CTC_ps and _ACTC_Income_thd
-// - 4: four different _DependentCredit_* parameters
+// - 4: three different _DependentCredit_* parameters
 // - 5: three _ALD_* parameters
 // - 6: seven different _ID_* parameters
 // NOTE: this reform projects pre-TCJA 2017 parameter values forward using the
@@ -46,8 +46,7 @@
         "_ACTC_Income_thd": {"2018": [3000.0]},
         "_DependentCredit_Child_c": {"2018": [0.0]},
         "_DependentCredit_Nonchild_c": {"2018": [0.0]},
-        "_DependentCredit_Nonchild_c": {"2018": [0.0]},
-        "_DependentCredit_before_CTC": {"2018": [0.0]},
+        "_DependentCredit_before_CTC": {"2018": [false]},
         "_ALD_AlimonyPaid_hc": {"2019": [0.0]},
         "_ALD_AlimonyReceived_hc": {"2019": [1.0]},
         "_ALD_DomesticProduction_hc": {"2018": [0.0]},
