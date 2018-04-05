@@ -572,7 +572,7 @@ class Behavior(ParametersBase):
                                 ################################
 
                                 if (not isinstance(pvalue[idx], (float, int)) or
-                                    isinstance(pvalue[idx], bool)):
+                                   isinstance(pvalue[idx], bool)):
                                     msg = '{} {} value {} is not a number'
                                     self.behavior_errors += (
                                         'ERROR: ' +

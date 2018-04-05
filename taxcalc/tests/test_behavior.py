@@ -202,6 +202,7 @@ def test_validate_param_values_warnings_errors():
     with pytest.raises(ValueError):
         behv3.update_behavior(specs0)
 
+
 def test_baseline_version():
     syr = 2013
     nyrs = 8
@@ -221,6 +222,7 @@ def test_baseline_version():
     assert baseline_inc_2015 == rev_inc_2015 == blv_inc_2015
     assert baseline_inc_2016 != rev_inc_2016
     assert baseline_inc_2016 == blv_inc_2016
+
 
 def test_future_update_behavior():
     behv = Behavior()
