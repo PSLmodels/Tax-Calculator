@@ -96,8 +96,8 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                      behavior_allowed=True)
 
     # extract raw results from calc1 and calc2
-    rawres1 = calc1.dataframe(DIST_VARIABLES)
-    rawres2 = calc2.dataframe(DIST_VARIABLES)
+    rawres1 = calc1.distribution_table_dataframe()
+    rawres2 = calc2.distribution_table_dataframe()
 
     # delete calc1 and calc2 now that raw results have been extracted
     del calc1
