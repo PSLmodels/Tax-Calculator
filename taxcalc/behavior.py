@@ -587,7 +587,7 @@ class Behavior(ParametersBase):
         # above handles non-rounding of inflation-indexed parameter values
         clp = self.baseline_version()
         parameters = sorted(parameters_set)
-        syr = Policy.JSON_START_YEAR
+        syr = Behavior.JSON_START_YEAR
         for pname in parameters:
             if pname.endswith('_cpi'):
                 continue  # *_cpi parameter values validated elsewhere
