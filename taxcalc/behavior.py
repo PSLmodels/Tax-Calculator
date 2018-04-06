@@ -453,7 +453,7 @@ class Behavior(ParametersBase):
                     if val > 0.0:
                         raise ValueError(msg.format(param, pos, cyr, val))
                 elif param == '_BE_subinc_wrt_earnings':
-                    if val < 0 or val > 1:
+                    if not (val == 0 or val == 1):
                         raise ValueError(msg.format(param, nob, cyr, val))
                 elif param == '_BE_cg':
                     if val > 0.0:
