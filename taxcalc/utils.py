@@ -1441,7 +1441,7 @@ def read_egg_csv(fname, index_col=None):
                 path_in_egg),
             index_col=index_col
         )
-    except:
+    except Exception:
         raise ValueError('could not read {} data from egg'.format(fname))
     # cannot call read_egg_ function in unit tests
     return vdf  # pragma: no cover
@@ -1460,7 +1460,7 @@ def read_egg_json(fname):
                 path_in_egg).read().decode('utf-8'),
             object_pairs_hook=collections.OrderedDict
         )
-    except:
+    except Exception:
         raise ValueError('could not read {} data from egg'.format(fname))
     # cannot call read_egg_ function in unit tests
     return pdict  # pragma: no cover
