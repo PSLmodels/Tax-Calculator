@@ -805,7 +805,8 @@ def test_read_json_param_with_suffixes_and_errors():
     params = Calculator.read_json_param_objects(json_reform, None)
     assert isinstance(params, dict)
     pol = Policy()
-    pol.implement_reform(params['policy'])
+    pol.implement_reform(params['policy'],
+                         print_warnings=False, raise_errors=False)
     assert len(pol.reform_errors) > 0
     assert len(pol.reform_warnings) > 0
 

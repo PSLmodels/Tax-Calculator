@@ -5,6 +5,7 @@ Tax-Calculator federal tax policy Policy class.
 # pep8 policy.py
 # pylint --disable=locally-disabled policy.py
 
+from __future__ import print_function
 import six
 import numpy as np
 from taxcalc.parameters import ParametersBase
@@ -102,7 +103,7 @@ class Policy(ParametersBase):
         """
         return self._wage_growth_rates
 
-    def implement_reform(self, reform):
+    def implement_reform(self, reform, print_warnings=True, raise_errors=True):
         """
         Implement multi-year policy reform and leave current_year unchanged.
 
@@ -110,6 +111,16 @@ class Policy(ParametersBase):
         ----------
         reform: dictionary of one or more YEAR:MODS pairs
             see Notes to Parameters _update method for info on MODS structure
+
+        print_warnings: boolean
+            if True (the default), prints warnings when reform_warnings exists;
+            if False, does not print warnings when reform_warnings exists and
+                      leaves warning handling to caller of implement_reform.
+
+        raise_errors: boolean
+            if True (the default), raises ValueError when reform_errors exists;
+            if False, does not raise ValueError when reform_errors exists and
+                      leaves error handling to caller of implement_reform.
 
         Raises
         ------
@@ -212,6 +223,10 @@ class Policy(ParametersBase):
         self.set_year(precall_current_year)
         # validate reform parameter values
         self._validate_parameter_values(reform_parameters)
+        if self.reform_warnings and print_warnings:
+            print(self.reform_warnings)
+        if self.reform_errors and raise_errors:
+            raise ValueError('\n' + self.reform_errors)
 
     def current_law_version(self):
         """
@@ -308,6 +323,8 @@ class Policy(ParametersBase):
                 gdiff_baseline.apply_to(growfactors)
                 gdiff_response.apply_to(growfactors)
             else:
+                gdiff_baseline = None
+                gdiff_response = None
                 growfactors = None
             pol = Policy(gfactors=growfactors)
             pol.ignore_reform_errors()
@@ -323,7 +340,13 @@ class Policy(ParametersBase):
                         idx = Policy.JSON_REFORM_SUFFIXES[suffix]
                         odict[param][year][0][idx] = gdict[param][year][suffix]
                         udict = {int(year): {param: odict[param][year]}}
-                        pol.implement_reform(udict)
+                        pol.implement_reform(udict,
+                                             print_warnings=False,
+                                             raise_errors=False)
+            del gdiff_baseline
+            del gdiff_response
+            del growfactors
+            del pol
             return odict
 
         # high-level logic of translate_json_reform_suffixes method:
@@ -450,6 +473,7 @@ class Policy(ParametersBase):
                         else:
                             scalar = True  # parameter value is a scalar
                             pvalue = [pvalue]  # make scalar a single-item list
+                        # pylint: disable=consider-using-enumerate
                         for idx in range(0, len(pvalue)):
                             if scalar:
                                 pname = name

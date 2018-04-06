@@ -286,7 +286,9 @@ class TaxCalcIO(object):
         # ... the baseline Policy object
         base = Policy(gfactors=gfactors_base)
         try:
-            base.implement_reform(basedict['policy'])
+            base.implement_reform(basedict['policy'],
+                                  print_warnings=False,
+                                  raise_errors=False)
             self.errmsg += base.reform_errors
         except ValueError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
@@ -295,7 +297,9 @@ class TaxCalcIO(object):
             pol = Policy(gfactors=gfactors_ref)
             for poldict in policydicts:
                 try:
-                    pol.implement_reform(poldict)
+                    pol.implement_reform(poldict,
+                                         print_warnings=False,
+                                         raise_errors=False)
                     self.errmsg += pol.reform_errors
                 except ValueError as valerr_msg:
                     self.errmsg += valerr_msg.__str__()
