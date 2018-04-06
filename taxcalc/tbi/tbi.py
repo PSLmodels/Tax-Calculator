@@ -65,17 +65,11 @@ def reform_warnings_errors(user_mods):
     # create Policy object and implement reform
     pol = Policy(gfactors=growfactors)
     try:
-<<<<<<< HEAD
-        pol.implement_reform(user_mods['policy'])
-        rtn_dict['policy']['warnings'] = pol.reform_warnings
-        rtn_dict['policy']['errors'] = pol.reform_errors
-=======
         pol.implement_reform(user_mods['policy'],
                              print_warnings=False,
                              raise_errors=False)
         rtn_dict['warnings'] = pol.reform_warnings
         rtn_dict['errors'] = pol.reform_errors
->>>>>>> upstream/master
     except ValueError as valerr_msg:
         rtn_dict['policy']['errors'] = valerr_msg.__str__()
 
