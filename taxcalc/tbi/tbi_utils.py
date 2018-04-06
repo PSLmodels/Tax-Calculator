@@ -13,7 +13,8 @@ import numpy as np
 import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, Growfactors, Growdiff)
-from taxcalc.utils import (add_income_bins, add_quantile_bins,
+from taxcalc.utils import (add_income_table_row_variable,
+                           add_quantile_table_row_variable,
                            create_difference_table, create_distribution_table,
                            DIST_VARIABLES, DIST_TABLE_COLUMNS,
                            STANDARD_INCOME_BINS, read_egg_csv)
@@ -345,12 +346,13 @@ def create_results_columns(df1, df2, mask):
         # pylint: disable=too-many-arguments
         assert bin_type == 'dec' or bin_type == 'bin' or bin_type == 'agg'
         if bin_type == 'dec':
-            df2 = add_quantile_bins(df2, imeasure, 10)
+            df2 = add_quantile_table_row_variable(df2, imeasure, 10)
         elif bin_type == 'bin':
-            df2 = add_income_bins(df2, imeasure, bins=STANDARD_INCOME_BINS)
+            df2 = add_income_table_row_variable(df2, imeasure,
+                                                bins=STANDARD_INCOME_BINS)
         else:
-            df2 = add_quantile_bins(df2, imeasure, 1)
-        gdf2 = df2.groupby('bins')
+            df2 = add_quantile_table_row_variable(df2, imeasure, 1)
+        gdf2 = df2.groupby('table_row')
         if do_fuzzing:
             df2['nofuzz'] = gdf2['mask'].transform(chooser)
         else:  # never do any results fuzzing

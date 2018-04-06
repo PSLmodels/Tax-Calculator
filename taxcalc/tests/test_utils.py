@@ -28,7 +28,8 @@ from taxcalc.utils import (DIST_VARIABLES,
                            wage_weighted, agi_weighted,
                            expanded_income_weighted,
                            weighted_perc_inc, weighted_perc_cut,
-                           add_income_bins, add_quantile_bins,
+                           add_income_table_row_variable,
+                           add_quantile_table_row_variable,
                            mtr_graph_data, atr_graph_data, dec_graph_data,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
@@ -655,21 +656,21 @@ def test_weighted_perc_cut():
 EPSILON = 1e-5
 
 
-def test_add_income_bins():
+def test_add_income_table_row_var():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     bins = LARGE_INCOME_BINS
-    dfr = add_income_bins(dfx, 'expanded_income', bin_type='tpc', bins=None,
-                          right=True)
-    groupedr = dfr.groupby('bins')
+    dfr = add_income_table_row_variable(dfx, 'expanded_income',
+                                        bin_type='tpc', bins=None, right=True)
+    groupedr = dfr.groupby('table_row')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, 'expanded_income', bin_type='tpc', bins=None,
-                          right=False)
-    groupedl = dfl.groupby('bins')
+    dfl = add_income_table_row_variable(dfx, 'expanded_income',
+                                        bin_type='tpc', bins=None, right=False)
+    groupedl = dfl.groupby('table_row')
     idx = 1
     for name, _ in groupedl:
         assert name.closed == 'left'
@@ -677,20 +678,22 @@ def test_add_income_bins():
         idx += 1
 
 
-def test_add_income_bins_soi():
+def test_add_income_table_row_soi():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
 
     bins = SMALL_INCOME_BINS
-    dfr = add_income_bins(dfx, 'expanded_income', bin_type='soi', right=True)
-    groupedr = dfr.groupby('bins')
+    dfr = add_income_table_row_variable(dfx, 'expanded_income',
+                                        bin_type='soi', right=True)
+    groupedr = dfr.groupby('table_row')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, 'expanded_income', bin_type='soi', right=False)
-    groupedl = dfl.groupby('bins')
+    dfl = add_income_table_row_variable(dfx, 'expanded_income',
+                                        bin_type='soi', right=False)
+    groupedl = dfl.groupby('table_row')
     idx = 1
     for name, _ in groupedl:
         assert name.closed == 'left'
@@ -698,19 +701,21 @@ def test_add_income_bins_soi():
         idx += 1
 
 
-def test_add_exp_income_bins():
+def test_add_exp_income_table_row_var():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     bins = [-9e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 9e99]
-    dfr = add_income_bins(dfx, 'expanded_income', bins=bins, right=True)
-    groupedr = dfr.groupby('bins')
+    dfr = add_income_table_row_variable(dfx, 'expanded_income',
+                                        bins=bins, right=True)
+    groupedr = dfr.groupby('table_row')
     idx = 1
     for name, _ in groupedr:
         assert name.closed == 'right'
         assert abs(name.right - bins[idx]) < EPSILON
         idx += 1
-    dfl = add_income_bins(dfx, 'expanded_income', bins=bins, right=False)
-    groupedl = dfl.groupby('bins')
+    dfl = add_income_table_row_variable(dfx, 'expanded_income',
+                                        bins=bins, right=False)
+    groupedl = dfl.groupby('table_row')
     idx = 1
     for name, _ in groupedl:
         assert name.closed == 'left'
@@ -718,24 +723,25 @@ def test_add_exp_income_bins():
         idx += 1
 
 
-def test_add_income_bins_raises():
+def test_add_income_table_row_var_raises():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     with pytest.raises(ValueError):
-        dfx = add_income_bins(dfx, 'expanded_income', bin_type='stuff')
+        dfx = add_income_table_row_variable(dfx, 'expanded_income',
+                                            bin_type='stuff')
 
 
-def test_add_quantile_bins():
+def test_add_quantile_table_row_var():
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
-    dfb = add_quantile_bins(dfx, 'expanded_income', 100,
-                            weight_by_income_measure=False)
-    bin_labels = dfb['bins'].unique()
+    dfb = add_quantile_table_row_variable(dfx, 'expanded_income', 100,
+                                          weight_by_income_measure=False)
+    bin_labels = dfb['table_row'].unique()
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
-    dfb = add_quantile_bins(dfx, 'expanded_income', 100,
-                            weight_by_income_measure=True)
-    assert 'bins' in dfb
+    dfb = add_quantile_table_row_variable(dfx, 'expanded_income', 100,
+                                          weight_by_income_measure=True)
+    assert 'table_row' in dfb
 
 
 def test_dist_table_sum_row(cps_subsample):

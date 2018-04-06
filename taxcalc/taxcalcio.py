@@ -20,7 +20,8 @@ from taxcalc.growdiff import Growdiff
 from taxcalc.growfactors import Growfactors
 from taxcalc.calculate import Calculator
 from taxcalc.utils import (delete_file, write_graph_file,
-                           add_quantile_bins, unweighted_sum, weighted_sum)
+                           add_quantile_table_row_variable,
+                           unweighted_sum, weighted_sum)
 
 
 class TaxCalcIO(object):
@@ -600,9 +601,9 @@ class TaxCalcIO(object):
         """
         Write to tfile the tkind decile table using dfx DataFrame.
         """
-        dfx = add_quantile_bins(dfx, 'expanded_income', 10,
-                                weight_by_income_measure=False)
-        gdfx = dfx.groupby('bins', as_index=False)
+        dfx = add_quantile_table_row_variable(dfx, 'expanded_income', 10,
+                                              weight_by_income_measure=False)
+        gdfx = dfx.groupby('table_row', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
         xinc_series = gdfx.apply(weighted_sum, 'expanded_income')
         itax_series = gdfx.apply(weighted_sum, 'iitax')
