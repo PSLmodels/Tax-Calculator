@@ -63,7 +63,9 @@ def reform_warnings_errors(user_mods):
     # create Policy object and implement reform
     pol = Policy(gfactors=growfactors)
     try:
-        pol.implement_reform(user_mods['policy'])
+        pol.implement_reform(user_mods['policy'],
+                             print_warnings=False,
+                             raise_errors=False)
         rtn_dict['warnings'] = pol.reform_warnings
         rtn_dict['errors'] = pol.reform_errors
     except ValueError as valerr_msg:
