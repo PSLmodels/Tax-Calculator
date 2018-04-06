@@ -174,12 +174,12 @@ def test_validate_param_names_types_errors():
 def test_validate_param_values_warnings_errors():
     behv0 = Behavior()
     specs0 = {2020: {'_BE_cg': [0.2]}}
-    behv0.update_behavior(specs0)
+    behv0.update_behavior(specs0, print_warnings=False, raise_errors=False)
     assert len(behv0.behavior_errors) > 0
     assert len(behv0.behavior_warnings) == 0
     behv1 = Behavior()
     specs1 = {2022: {'_BE_sub': [-0.2]}}
-    behv1.update_behavior(specs1)
+    behv1.update_behavior(specs1, print_warnings=False, raise_errors=False)
     assert len(behv1.behavior_errors) > 0
     assert len(behv1.behavior_warnings) == 0
     behv2 = Behavior()
@@ -190,9 +190,13 @@ def test_validate_param_values_warnings_errors():
             '_BE_sub': [0.3]
         }
     }
-    behv2.update_behavior(specs2)
+    behv2.update_behavior(specs2, print_warnings=False, raise_errors=False)
     assert len(behv2.behavior_errors) == 0
     assert len(behv2.behavior_warnings) == 0
+    behv3 = Behavior()
+    specs3 = {2022: {'_BE_sub': [-0.2]}}
+    with pytest.raises(ValueError):
+        behv3.update_behavior(specs1, print_warnings=False, raise_errors=True)
 
 
 def test_baseline_version():

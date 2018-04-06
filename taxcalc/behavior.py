@@ -90,7 +90,7 @@ class Behavior(ParametersBase):
         self.set_year(precall_current_year)
         self._validate_parameter_values()
 
-    def update_behavior(self, reform):
+    def update_behavior(self, reform, print_warnings=True, raise_errors=True):
         # check that all revisions dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
@@ -142,6 +142,10 @@ class Behavior(ParametersBase):
         self.set_year(precall_current_year)
         # validate reform parameter values
         self._validate_parameter_values(reform_parameters)
+        if self.behavior_warnings and print_warnings:
+            print(self.behavior_warnings)
+        if self.behavior_errors and raise_errors:
+            raise ValueError('\n' + self.behavior_errors)
 
     def baseline_version(self):
         startyear = self.start_year
