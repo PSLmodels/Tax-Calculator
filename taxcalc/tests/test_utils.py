@@ -64,7 +64,7 @@ def test_validity_of_name_lists():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     Records.read_var_info()
     assert set(DIST_VARIABLES).issubset(Records.CALCULATED_VARS | {'s006'})
-    assert len(set(DIST_VARIABLES) - set(DIST_TABLE_COLUMNS)) == 0
+    assert len(set(DIST_VARIABLES)) == len(set(DIST_TABLE_COLUMNS))
     extra_vars_set = set(['num_returns_StandardDed',
                           'num_returns_ItemDed',
                           'num_returns_AMT'])
@@ -894,7 +894,7 @@ def test_write_graph_file(cps_subsample):
     htmlfname = temporary_filename(suffix='.html')
     try:
         write_graph_file(gplot, htmlfname, 'title')
-    except:  # pylint: disable=bare-except
+    except Exception:
         if os.path.isfile(htmlfname):
             try:
                 os.remove(htmlfname)

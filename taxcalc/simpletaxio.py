@@ -484,7 +484,7 @@ class SimpleTaxIO(object):
                     # convert istr to integer value
                     try:
                         val = int(istr)
-                    except:
+                    except ValueError:
                         msg = ('simtax INPUT line {} variable {} has '
                                'value {} that is not an integer')
                         raise ValueError(msg.format(lnum, vnum, istr))

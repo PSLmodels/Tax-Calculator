@@ -65,6 +65,7 @@ def test_compatible_data_presence(allparams):
             print(msg.format(pname))
         assert 'list of problem_pnames' == 'empty list'
 
+
 XX_YEAR = 2019
 TEST_YEAR = 2020
 
@@ -130,6 +131,7 @@ def fixture_sorted_param_names(allparams):
     Fixture for storing a sorted parameter list
     """
     return sorted(list(allparams.keys()))
+
 
 NPARAMS = len(Policy.default_data())
 BATCHSIZE = 10
