@@ -157,11 +157,11 @@ def weighted_sum(pdf, col_name):
     return (pdf[col_name] * pdf['s006']).sum()
 
 
-def add_quantile_bins(pdf, income_measure, num_bins,
-                      weight_by_income_measure=False):
+def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
+                                    weight_by_income_measure=False):
     """
-    Add a column of income bins to specified Pandas DataFrame, pdf, with
-    the new column being named 'bins'.  The bins hold equal number of
+    Add a variable to specified Pandas DataFrame, pdf, that specifies the
+    table row and is called 'table_row'.  The rows hold equal number of
     filing units when weight_by_income_measure=False or equal number of
     income dollars when weight_by_income_measure=True.  Assumes that
     specified pdf contains columns for the specified income_measure and
@@ -177,20 +177,24 @@ def add_quantile_bins(pdf, income_measure, num_bins,
         min_cumsum = 0.  # because s006 values are non-negative
     max_cumsum = pdf['cumsum_temp'].values[-1]
     cumsum_range = max_cumsum - min_cumsum
-    bin_width = cumsum_range / float(num_bins)
-    bin_edges = list(min_cumsum + np.arange(0, (num_bins + 1)) * bin_width)
+    bin_width = cumsum_range / float(num_quantiles)
+    bin_edges = list(min_cumsum +
+                     np.arange(0, (num_quantiles + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
     bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
-    labels = range(1, (num_bins + 1))
-    pdf['bins'] = pd.cut(pdf['cumsum_temp'], bins=bin_edges, labels=labels)
+    labels = range(1, (num_quantiles + 1))
+    pdf['table_row'] = pd.cut(pdf['cumsum_temp'],
+                              bins=bin_edges, labels=labels)
     pdf.drop('cumsum_temp', axis=1, inplace=True)
     return pdf
 
 
-def add_income_bins(pdf, income_measure,
-                    bin_type='soi', bins=None, right=True):
+def add_income_table_row_variable(pdf, income_measure,
+                                  bin_type='soi', bins=None, right=True):
     """
-    Add a column of income bins of income_measure using Pandas 'cut' function.
+    Add a variable to specified Pandas DataFrame, pdf, that specifies the
+    table row and is called 'table_row'.  The rows are defined by the
+    specified bin_type and optional bins function arguments.
 
     Parameters
     ----------
@@ -216,7 +220,7 @@ def add_income_bins(pdf, income_measure,
     Returns
     -------
     pdf: Pandas DataFrame
-        the original input plus the added 'bin' column
+        the original input plus the added 'table_row' column
     """
     if not bins:
         if bin_type == 'standard':
@@ -228,7 +232,8 @@ def add_income_bins(pdf, income_measure,
         else:
             msg = 'Unknown bin_type argument {}'.format(bin_type)
             raise ValueError(msg)
-    pdf['bins'] = pd.cut(pdf[income_measure], bins, right=right)
+    pdf['table_row'] = pd.cut(pdf[income_measure],
+                              bins, right=right)
     return pdf
 
 
@@ -242,7 +247,7 @@ def get_sums(pdf):
     """
     sums = dict()
     for col in pdf.columns.values.tolist():
-        if col != 'bins':
+        if col != 'table_row':
             sums[col] = pdf[col].sum()
     return pd.Series(sums, name='sums')
 
@@ -352,15 +357,18 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     res = add_columns(res)
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        pdf = add_quantile_bins(res, income_measure, 10)
+        pdf = add_quantile_table_row_variable(res, income_measure, 10)
     elif groupby == 'standard_income_bins':
-        pdf = add_income_bins(res, income_measure, bin_type='standard')
+        pdf = add_income_table_row_variable(res, income_measure,
+                                            bin_type='standard')
     elif groupby == 'large_income_bins':
-        pdf = add_income_bins(res, income_measure, bin_type='tpc')
+        pdf = add_income_table_row_variable(res, income_measure,
+                                            bin_type='tpc')
     elif groupby == 'small_income_bins':
-        pdf = add_income_bins(res, income_measure, bin_type='soi')
+        pdf = add_income_table_row_variable(res, income_measure,
+                                            bin_type='soi')
     # construct weighted_sum table
-    gpdf = pdf.groupby('bins', as_index=False)
+    gpdf = pdf.groupby('table_row', as_index=False)
     dist_table = stat_dataframe(gpdf)
     # append sum row
     row = get_sums(dist_table)[dist_table.columns]
@@ -371,10 +379,10 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         del pdf
         # bottom decile as its own DataFrame
         pdf = copy.deepcopy(gpdf.get_group(1))
-        pdf['bins'] = pd.cut(pdf[income_measure],
-                             bins=[-9e99, -1e-9, 1e-9, 9e99],
-                             labels=[1, 2, 3])
-        gpdfx = pdf.groupby('bins', as_index=False)
+        pdf['table_row'] = pd.cut(pdf[income_measure],
+                                  bins=[-9e99, -1e-9, 1e-9, 9e99],
+                                  labels=[1, 2, 3])
+        gpdfx = pdf.groupby('table_row', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = pd.concat([rows, dist_table.iloc[1:11]])
         del rows
@@ -384,13 +392,14 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         del pdf
         # top decile as its own DataFrame
         pdf = copy.deepcopy(gpdf.get_group(10))
-        pdf = add_quantile_bins(pdf, income_measure, 10)
-        pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
-                            value=[0, 0, 0, 0, 0], inplace=True)
-        pdf['bins'].replace(to_replace=[6, 7, 8, 9],
-                            value=[1, 1, 1, 1], inplace=True)
-        pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
-        gpdfx = pdf.groupby('bins', as_index=False)
+        pdf = add_quantile_table_row_variable(pdf, income_measure, 10)
+        pdf['table_row'].replace(to_replace=[1, 2, 3, 4, 5],
+                                 value=[0, 0, 0, 0, 0], inplace=True)
+        pdf['table_row'].replace(to_replace=[6, 7, 8, 9],
+                                 value=[1, 1, 1, 1], inplace=True)
+        pdf['table_row'].replace(to_replace=[10],
+                                 value=[2], inplace=True)
+        gpdfx = pdf.groupby('table_row', as_index=False)
         rows = stat_dataframe(gpdfx)
         dist_table = dist_table.append(rows, ignore_index=True)
         del rows
@@ -474,8 +483,8 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         based on grouped values of specified col_name in the specified resd.
 
         resd: reform difference results Pandas DataFrame
-        groupby: string naming type of bins
-        income_measure: string naming column used to create resd bins
+        groupby: string naming type of table rows
+        income_measure: string naming column used to create resd table rows
         """
         # pylint: disable=too-many-locals
         def stat_dataframe(gpdf):
@@ -514,18 +523,21 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         # calculate whole-sample perc_cut and perc_inc statistics
         sums_perc_cut = weighted_perc_cut(resd, 'tax_diff')
         sums_perc_inc = weighted_perc_inc(resd, 'tax_diff')
-        # add bin column to resd given specified groupby and income_measure
+        # add column to resd given specified groupby and income_measure
         if groupby == 'weighted_deciles':
-            pdf = add_quantile_bins(resd, income_measure, 10)
+            pdf = add_quantile_table_row_variable(resd, income_measure, 10)
         elif groupby == 'standard_income_bins':
-            pdf = add_income_bins(resd, income_measure, bin_type='standard')
+            pdf = add_income_table_row_variable(resd, income_measure,
+                                                bin_type='standard')
         elif groupby == 'large_income_bins':
-            pdf = add_income_bins(resd, income_measure, bin_type='tpc')
+            pdf = add_income_table_row_variable(resd, income_measure,
+                                                bin_type='tpc')
         elif groupby == 'small_income_bins':
-            pdf = add_income_bins(resd, income_measure, bin_type='soi')
+            pdf = add_income_table_row_variable(resd, income_measure,
+                                                bin_type='soi')
         min_income_measure = pdf[income_measure].min()
         # create grouped Pandas DataFrame
-        gpdf = pdf.groupby('bins', as_index=False)
+        gpdf = pdf.groupby('table_row', as_index=False)
         del pdf
         # create difference table statistics from gpdf in a new DataFrame
         diffs_without_sums = stat_dataframe(gpdf)
@@ -543,10 +555,10 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         if groupby == 'weighted_deciles' and min_income_measure <= 0:
             # bottom decile as its own DataFrame
             pdf = copy.deepcopy(gpdf.get_group(1))
-            pdf['bins'] = pd.cut(pdf[income_measure],
-                                 bins=[-9e99, -1e-9, 1e-9, 9e99],
-                                 labels=[1, 2, 3])
-            gpdfx = pdf.groupby('bins', as_index=False)
+            pdf['table_row'] = pd.cut(pdf[income_measure],
+                                      bins=[-9e99, -1e-9, 1e-9, 9e99],
+                                      labels=[1, 2, 3])
+            gpdfx = pdf.groupby('table_row', as_index=False)
             rows = stat_dataframe(gpdfx)
             diffs = pd.concat([rows, diffs.iloc[1:11]])
             del rows
@@ -556,7 +568,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         if groupby == 'weighted_deciles':
             # top decile as its own DataFrame
             pdf = copy.deepcopy(gpdf.get_group(10))
-            pdf = add_quantile_bins(pdf, income_measure, 10)
+            pdf = add_quantile_table_row_variable(pdf, income_measure, 10)
             # TODO: following statement generates this IGNORED error:
             # ValueError: Buffer dtype mismatch,
             #             expected 'Python object' but got 'long'
@@ -568,12 +580,13 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
             # inclusion in Pandas version 0.23.0 (Apr 2018), will fix this.
             # See discussion at the following URL:
             # https://github.com/pandas-dev/pandas/issues/19037
-            pdf['bins'].replace(to_replace=[1, 2, 3, 4, 5],
-                                value=[0, 0, 0, 0, 0], inplace=True)
-            pdf['bins'].replace(to_replace=[6, 7, 8, 9],
-                                value=[1, 1, 1, 1], inplace=True)
-            pdf['bins'].replace(to_replace=[10], value=[2], inplace=True)
-            gpdfx = pdf.groupby('bins', as_index=False)
+            pdf['table_row'].replace(to_replace=[1, 2, 3, 4, 5],
+                                     value=[0, 0, 0, 0, 0], inplace=True)
+            pdf['table_row'].replace(to_replace=[6, 7, 8, 9],
+                                     value=[1, 1, 1, 1], inplace=True)
+            pdf['table_row'].replace(to_replace=[10],
+                                     value=[2], inplace=True)
+            gpdfx = pdf.groupby('table_row', as_index=False)
             sdf = stat_dataframe(gpdfx)
             diffs = diffs.append(sdf, ignore_index=True)
             del sdf
@@ -877,11 +890,11 @@ def mtr_graph_data(vdf, year,
         raise ValueError(msg.format(mtr_measure))
     # . . check vdf
     assert isinstance(vdf, pd.DataFrame)
-    # create 'bins' column given specified income_var and dollar_weighting
-    dfx = add_quantile_bins(vdf, income_var, 100,
-                            weight_by_income_measure=dollar_weighting)
-    # split dfx into groups specified by 'bins' column
-    gdfx = dfx.groupby('bins', as_index=False)
+    # create 'table_row' column given specified income_var and dollar_weighting
+    dfx = add_quantile_table_row_variable(
+        vdf, income_var, 100, weight_by_income_measure=dollar_weighting)
+    # split dfx into groups specified by 'table_row' column
+    gdfx = dfx.groupby('table_row', as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
     mtr1_series = gdfx.apply(weighting_function, 'mtr1')
     mtr2_series = gdfx.apply(weighting_function, 'mtr2')
@@ -986,13 +999,13 @@ def atr_graph_data(vdf, year,
     nonpos = np.array(vdf['expanded_income'] <= 0, dtype=bool)
     nonpos_frac = weights[nonpos].sum() / weights.sum()
     num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
-    # create 'bins' column
-    dfx = add_quantile_bins(vdf, 'expanded_income', 100)
-    # specify which 'bins' are included
+    # create 'table_row' column
+    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100)
+    # specify which 'table_row' are included
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
-    # split dfx into groups specified by 'bins' column
-    gdfx = dfx.groupby('bins', as_index=False)
+    # split dfx into groups specified by 'table_row' column
+    gdfx = dfx.groupby('table_row', as_index=False)
     # apply weighted_mean function to percentile-grouped values
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
@@ -1149,13 +1162,13 @@ def pch_graph_data(vdf, year):
     nonpos = np.array(vdf['expanded_income'] <= 0, dtype=bool)
     nonpos_frac = weights[nonpos].sum() / weights.sum()
     num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
-    # create 'bins' column
-    dfx = add_quantile_bins(vdf, 'expanded_income', 100)
-    # specify which 'bins' are included
+    # create 'table_row' column
+    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100)
+    # specify which 'table_row' are included
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
-    # split dfx into groups specified by 'bins' column
-    gdfx = dfx.groupby('bins', as_index=False)
+    # split dfx into groups specified by 'table_row' column
+    gdfx = dfx.groupby('table_row', as_index=False)
     # apply weighted_mean function to percentile-grouped values
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     change_series = gdfx.apply(weighted_mean, 'chg_aftinc')
