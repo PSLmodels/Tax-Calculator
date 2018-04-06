@@ -141,8 +141,6 @@ def test_incorrect_update_behavior():
     with pytest.raises(ValueError):
         Behavior().update_behavior({2017: {'_BE_subinc_wrt_earnings': [2]}})
     with pytest.raises(ValueError):
-        Behavior().update_behavior({2020: {'_BE_subinc_wrt_earnings': [True]}})
-    with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_charity': [[0.2, -0.2, 0.2]]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_cg': [+0.8]}})
