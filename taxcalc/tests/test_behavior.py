@@ -173,19 +173,16 @@ def test_validate_param_names_types_errors():
 
 def test_validate_param_values_warnings_errors():
     behv0 = Behavior()
-    behv0._ignore_errors = True
     specs0 = {2020: {'_BE_cg': [0.2]}}
     behv0.update_behavior(specs0)
     assert len(behv0.behavior_errors) > 0
     assert len(behv0.behavior_warnings) == 0
     behv1 = Behavior()
-    behv1._ignore_errors = True
     specs1 = {2022: {'_BE_sub': [-0.2]}}
     behv1.update_behavior(specs1)
     assert len(behv1.behavior_errors) > 0
     assert len(behv1.behavior_warnings) == 0
     behv2 = Behavior()
-    behv2._ignore_errors = True
     specs2 = {
         2020: {
             '_BE_subinc_wrt_earnings': [True],
@@ -196,11 +193,6 @@ def test_validate_param_values_warnings_errors():
     behv2.update_behavior(specs2)
     assert len(behv2.behavior_errors) == 0
     assert len(behv2.behavior_warnings) == 0
-    behv3 = Behavior()
-    # behv3._ignore_errors is False --> ValueError will be raised
-    specs3 = {2020: {'_BE_cg': [0.2]}}
-    with pytest.raises(ValueError):
-        behv3.update_behavior(specs0)
 
 
 def test_baseline_version():
