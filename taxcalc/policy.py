@@ -473,6 +473,7 @@ class Policy(ParametersBase):
                         else:
                             scalar = True  # parameter value is a scalar
                             pvalue = [pvalue]  # make scalar a single-item list
+                        # pylint: disable=consider-using-enumerate
                         for idx in range(0, len(pvalue)):
                             if scalar:
                                 pname = name
