@@ -699,7 +699,7 @@ def test_add_income_table_row_soi():
         idx += 1
 
 
-def test_add_exp_income_table_row_var():
+def test_add_income_trow_var():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     bins = [-9e99, 0, 4999, 9999, 14999, 19999, 29999, 32999, 43999, 9e99]
@@ -721,7 +721,7 @@ def test_add_exp_income_table_row_var():
         idx += 1
 
 
-def test_add_income_table_row_var_raises():
+def test_add_income_trow_var_raises():
     dta = np.arange(1, 1e6, 5000)
     dfx = pd.DataFrame(data=dta, columns=['expanded_income'])
     with pytest.raises(ValueError):
@@ -729,7 +729,7 @@ def test_add_income_table_row_var_raises():
                                             bin_type='stuff')
 
 
-def test_add_quantile_table_row_var():
+def test_add_quantile_trow_var():
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
     dfb = add_quantile_table_row_variable(dfx, 'expanded_income', 100,
                                           weight_by_income_measure=False)
@@ -892,7 +892,7 @@ def test_write_graph_file(cps_subsample):
     htmlfname = temporary_filename(suffix='.html')
     try:
         write_graph_file(gplot, htmlfname, 'title')
-    except Exception:
+    except Exception:  # pylint: disable=broad-except
         if os.path.isfile(htmlfname):
             try:
                 os.remove(htmlfname)

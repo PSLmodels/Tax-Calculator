@@ -111,9 +111,10 @@ def test_json_file_contents(tests_path, fname):
         rowlabel = param['row_label']
         assert isinstance(rowlabel, list)
         # check all row_label values
-        for idx in range(0, len(rowlabel)):
-            cyr = first_year + idx
-            assert int(rowlabel[idx]) == cyr
+        cyr = first_year
+        for rlabel in rowlabel:
+            assert int(rlabel) == cyr
+            cyr += 1
         # check type and dimension of value
         value = param['value']
         assert isinstance(value, list)
