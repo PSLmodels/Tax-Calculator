@@ -918,7 +918,7 @@ def test_validate_param_names_types_errors():
     with pytest.raises(ValueError):
         pol4.implement_reform(ref4)
     pol5 = Policy()
-    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
+    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     with pytest.raises(ValueError):
         pol5.implement_reform(ref5)
     pol6 = Policy()
@@ -929,6 +929,16 @@ def test_validate_param_names_types_errors():
     ref7 = {2019: {'_FICA_ss_trt_cpi': True}}
     with pytest.raises(ValueError):
         pol7.implement_reform(ref7)
+    # test 8 was contributed by Hank Doupe in bug report #1956
+    pol8 = Policy()
+    ref8 = {2019: {'_AMEDT_rt': [True]}}
+    with pytest.raises(ValueError):
+        pol8.implement_reform(ref8)
+    # test 9 extends test 8 to integer parameters
+    pol9 = Policy()
+    ref9 = {2019: {'_AMT_KT_c_Age': [True]}}
+    with pytest.raises(ValueError):
+        pol9.implement_reform(ref9)
 
 
 def test_validate_param_values_warnings_errors():
@@ -952,9 +962,10 @@ def test_validate_param_values_warnings_errors():
     pol4.implement_reform(ref4, print_warnings=False, raise_errors=False)
     assert len(pol4.reform_errors) > 0
     pol5 = Policy()
+    pol5.ignore_reform_errors()
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
-    assert len(pol5.reform_errors) == 0
+    assert len(pol4.reform_errors) > 0
     pol6 = Policy()
     ref6 = {2013: {'_STD': [[20000, 25000, 20000, 20000, 25000]]}}
     pol6.implement_reform(ref6, print_warnings=False, raise_errors=False)
