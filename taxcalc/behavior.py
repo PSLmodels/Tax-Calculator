@@ -115,6 +115,8 @@ class Behavior(ParametersBase):
             msg = 'ERROR: {} YEAR reform provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
+        self.parameter_errors = ''
+        self.parameter_warnings = ''
         self._validate_parameter_names_types(reform)
 
         ########################
@@ -478,24 +480,20 @@ class Behavior(ParametersBase):
                 if zero_sub and zero_inc:
                     raise ValueError(msg.format(year + self.start_year))
 
-    # not sure about revisions name
     def _validate_parameter_names_types(self, reform):
         """
         Check validity of parameter names and parameter types used
         in the specified reform dictionary.
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
-        data_names = set(self._vals.keys())
+        # pylint: disable=too-many-locals
+        param_names = set(self._vals.keys())
         for year in sorted(reform.keys()):
             for name in reform[year]:
-
-                ########################
-                # Policy() specific code -- Behavior does not need CPI logic
                 if name.endswith('_cpi'):
-                    raise ValueError('Why does a Behavior end with CPI?')
                     if isinstance(reform[year][name], bool):
                         pname = name[:-4]  # root parameter name
-                        if pname not in data_names:
+                        if pname not in param_names:
                             msg = '{} {} unknown parameter name'
                             self.parameter_errors += (
                                 'ERROR: ' + msg.format(year, name) + '\n'
@@ -512,18 +510,18 @@ class Behavior(ParametersBase):
                         self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
-                ########################
-
                 else:  # if name does not end with '_cpi'
-                    if name not in data_names:
+                    if name not in param_names:
                         msg = '{} {} unknown parameter name'
                         self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
                     else:
-                        # check parameter value type
-                        bool_type = self._vals[name]['boolean_value']
-                        int_type = self._vals[name]['integer_value']
+                        # check parameter value type avoiding use of isinstance
+                        # because isinstance(True, (int,float)) is True, which
+                        # makes it impossible to check float parameters
+                        bool_param_type = self._vals[name]['boolean_value']
+                        int_param_type = self._vals[name]['integer_value']
                         assert isinstance(reform[year][name], list)
                         pvalue = reform[year][name][0]
                         if isinstance(pvalue, list):
@@ -531,53 +529,42 @@ class Behavior(ParametersBase):
                         else:
                             scalar = True  # parameter value is a scalar
                             pvalue = [pvalue]  # make scalar a single-item list
+                        # pylint: disable=consider-using-enumerate
                         for idx in range(0, len(pvalue)):
                             if scalar:
                                 pname = name
                             else:
                                 pname = '{}_{}'.format(name, idx)
-                            pvalue_boolean = (
-                                isinstance(pvalue[idx], bool) or
-                                (isinstance(pvalue[idx], int) and
-                                 (pvalue[idx] == 0 or pvalue[idx] == 1)) or
-                                (isinstance(pvalue[idx], float) and
-                                 (pvalue[idx] == 0.0 or pvalue[idx] == 1.0))
-                            )
-                            if bool_type:
-                                if not pvalue_boolean:
+                            pval = pvalue[idx]
+                            # pylint: disable=unidiomatic-typecheck
+                            pval_is_bool = type(pval) == bool
+                            pval_is_int = type(pval) == int
+                            pval_is_float = type(pval) == float
+                            if bool_param_type:
+                                if not pval_is_bool:
                                     msg = '{} {} value {} is not boolean'
                                     self.parameter_errors += (
                                         'ERROR: ' +
-                                        msg.format(year, pname, pvalue[idx]) +
+                                        msg.format(year, pname, pval) +
                                         '\n'
                                     )
-                            elif int_type:
-                                if not isinstance(pvalue[idx], int):
+                            elif int_param_type:
+                                if not pval_is_int:
                                     msg = '{} {} value {} is not integer'
                                     self.parameter_errors += (
                                         'ERROR: ' +
-                                        msg.format(year, pname, pvalue[idx]) +
+                                        msg.format(year, pname, pval) +
                                         '\n'
                                     )
-                            else:  # param is neither bool_type nor int_type
-
-                                ################################
-                                # additional Behavior specific logic
-                                # isinstance(True, (float, int)) is True--
-                                # catches case where value is given as bool
-                                # but we are expecting an integer or float
-                                # i.e. boolean_value = integer_value = False
-                                ################################
-                                is_not_float_int = not isinstance(pvalue[idx],
-                                                                  (float, int))
-                                is_bool = isinstance(pvalue[idx], bool)
-                                if is_not_float_int or is_bool:
+                            else:  # param is float type
+                                if not (pval_is_int or pval_is_float):
                                     msg = '{} {} value {} is not a number'
                                     self.parameter_errors += (
                                         'ERROR: ' +
-                                        msg.format(year, pname, pvalue[idx]) +
+                                        msg.format(year, pname, pval) +
                                         '\n'
                                     )
+        del param_names
 
     def _validate_parameter_values(self, parameters_set):
         """
@@ -651,6 +638,8 @@ class Behavior(ParametersBase):
                                                        pvalue[idx],
                                                        vvalue[idx]) + '\n'
                             )
+        del clp
+        del parameters
 
     @staticmethod
     def _update_earnings(change, calc):
