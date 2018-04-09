@@ -4,6 +4,25 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-04-?? Release 0.19.0
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Improve data quality of several CPS age variables, which causes changes in CPS tax results
+  [[#1962](https://github.com/open-source-economics/Tax-Calculator/pull/1962)
+  by Anderson Frailey and Martin Holmer]
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Fix loose checking of the data type of parameters in reform dictionaries passed to the Policy class `implement_reform` method
+  [[#1960](https://github.com/open-source-economics/Tax-Calculator/pull/1960)
+  by Martin Holmer]
+
+
 2018-03-30 Release 0.18.0
 -------------------------
 (last merged pull request is
