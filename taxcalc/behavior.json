@@ -17,8 +17,7 @@
         "value": [0.0],
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_maxmsg": ""
     },
 
     "_BE_inc": {
@@ -39,8 +38,7 @@
         "value": [0.0],
         "range": {"min": -9e99, "max": 0.0},
         "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_maxmsg": ""
     },
 
     "_BE_subinc_wrt_earnings": {
@@ -61,8 +59,7 @@
         "value": [false],
         "range": {"min": false, "max": true},
         "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_maxmsg": ""
     },
 
     "_BE_cg": {
@@ -83,8 +80,7 @@
         "value": [0.0],
         "range": {"min": -9e99, "max": 0.0},
         "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_maxmsg": ""
     },
 
     "_BE_charity": {
@@ -105,7 +101,6 @@
         "value": [[0.0, 0.0, 0.0]],
         "range": {"min": -9e99, "max": 0.0},
         "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop"
+        "out_of_range_maxmsg": ""
     }
 }
