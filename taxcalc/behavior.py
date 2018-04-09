@@ -63,7 +63,6 @@ class Behavior(ParametersBase):
         self.initialize(start_year, num_years)
 
         self.parameter_errors = ''
-        self.parameter_warnings = ''
         self._ignore_errors = False
 
         # Policy() doesn't do this in the __init__, why should Behavior()?
@@ -90,7 +89,7 @@ class Behavior(ParametersBase):
         self.set_year(precall_current_year)
         self._validate_parameter_values()
 
-    def update_behavior(self, reform, print_warnings=True, raise_errors=True):
+    def update_behavior(self, reform, raise_errors=True):
         # check that all revisions dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
@@ -116,7 +115,6 @@ class Behavior(ParametersBase):
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
         self.parameter_errors = ''
-        self.parameter_warnings = ''
         self._validate_parameter_names_types(reform)
 
         ########################
@@ -144,8 +142,6 @@ class Behavior(ParametersBase):
         self.set_year(precall_current_year)
         # validate reform parameter values
         self._validate_parameter_values(reform_parameters)
-        if self.parameter_warnings and print_warnings:
-            print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
 
@@ -619,25 +615,17 @@ class Behavior(ParametersBase):
                         if extra:
                             msg += ' {}'.format(extra)
                     if out_of_range:
-                        action = self._vals[pname]['out_of_range_action']
                         if scalar:
                             name = pname
                         else:
                             name = '{}_{}'.format(pname, idx[1])
                             if extra:
                                 msg += '_{}'.format(idx[1])
-                        if action == 'warn':
-                            self.parameter_warnings += (
-                                'WARNING: ' + msg.format(idx[0] + syr, name,
-                                                         pvalue[idx],
-                                                         vvalue[idx]) + '\n'
-                            )
-                        if action == 'stop':
-                            self.parameter_errors += (
-                                'ERROR: ' + msg.format(idx[0] + syr, name,
-                                                       pvalue[idx],
-                                                       vvalue[idx]) + '\n'
-                            )
+                        self.parameter_errors += (
+                            'ERROR: ' + msg.format(idx[0] + syr, name,
+                                                   pvalue[idx],
+                                                   vvalue[idx]) + '\n'
+                        )
         del clp
         del parameters
 

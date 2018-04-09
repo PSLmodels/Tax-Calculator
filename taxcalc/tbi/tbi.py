@@ -76,7 +76,6 @@ def reform_warnings_errors(user_mods):
     behv = Behavior()
     try:
         behv.update_behavior(user_mods['behavior'])
-        rtn_dict['behavior']['warnings'] = behv.parameter_warnings
         rtn_dict['behavior']['errors'] = behv.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['behavior']['errors'] = valerr_msg.__str__()
