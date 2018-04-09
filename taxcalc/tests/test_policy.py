@@ -972,7 +972,7 @@ def test_validate_param_values_warnings_errors():
     pol5.ignore_reform_errors()
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
-    assert len(pol5.parameter_errors) == 0
+    assert len(pol5.parameter_errors) > 0
     pol6 = Policy()
     ref6 = {2013: {'_STD': [[20000, 25000, 20000, 20000, 25000]]}}
     pol6.implement_reform(ref6, print_warnings=False, raise_errors=False)
