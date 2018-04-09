@@ -12,7 +12,7 @@ for a complete commit history.
 **API Changes**
 - Improve data quality of several CPS age variables, which causes changes in CPS tax results
   [[#1962](https://github.com/open-source-economics/Tax-Calculator/pull/1962)
-  by Anderson Frailey and Martin Holmer]
+  by Anderson Frailey and Martin Holmer based on bug reported by Max Ghenis]
 
 **New Features**
 - None
@@ -20,7 +20,7 @@ for a complete commit history.
 **Bug Fixes**
 - Fix loose checking of the data type of parameters in reform dictionaries passed to the Policy class `implement_reform` method
   [[#1960](https://github.com/open-source-economics/Tax-Calculator/pull/1960)
-  by Martin Holmer]
+  by Martin Holmer based on bug reported by Hank Doupe]
 
 
 2018-03-30 Release 0.18.0
