@@ -207,8 +207,8 @@ class Policy(ParametersBase):
             msg = 'ERROR: {} YEAR reform provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
-        self.reform_warnings = ''
-        self.reform_errors = ''
+        self.paramter_warnings = ''
+        self.parameter_errors = ''
         self._validate_parameter_names_types(reform)
         if not self._ignore_errors and self.parameter_errors:
             raise ValueError(self.parameter_errors)
