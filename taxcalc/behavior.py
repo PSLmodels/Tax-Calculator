@@ -605,22 +605,14 @@ class Behavior(ParametersBase):
                     if vop == 'min' and pvalue[idx] < vvalue[idx]:
                         out_of_range = True
                         msg = '{} {} value {} < min value {}'
-                        extra = self._vals[pname]['out_of_range_minmsg']
-                        if extra:
-                            msg += ' {}'.format(extra)
                     if vop == 'max' and pvalue[idx] > vvalue[idx]:
                         out_of_range = True
                         msg = '{} {} value {} > max value {}'
-                        extra = self._vals[pname]['out_of_range_maxmsg']
-                        if extra:
-                            msg += ' {}'.format(extra)
                     if out_of_range:
                         if scalar:
                             name = pname
                         else:
                             name = '{}_{}'.format(pname, idx[1])
-                            if extra:
-                                msg += '_{}'.format(idx[1])
                         self.parameter_errors += (
                             'ERROR: ' + msg.format(idx[0] + syr, name,
                                                    pvalue[idx],
