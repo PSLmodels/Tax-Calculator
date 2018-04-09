@@ -27,7 +27,7 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      proportional_change_in_gdp,
-                     Growdiff, Growfactors, Policy)
+                     Growdiff, Growfactors, Policy, Behavior)
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
