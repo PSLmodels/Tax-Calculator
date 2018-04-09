@@ -896,8 +896,8 @@ def test_range_infomation(tests_path):
     # check all current-law-policy parameters for range validity
     clp = Policy()
     clp._validate_parameter_values(parameters)
-    assert len(clp.reform_warnings) == 0
-    assert len(clp.reform_errors) == 0
+    assert len(clp.parameter_warnings) == 0
+    assert len(clp.parameter_errors) == 0
 
 
 def test_validate_param_names_types_errors():
@@ -945,28 +945,28 @@ def test_validate_param_values_warnings_errors():
     pol1 = Policy()
     ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
     pol1.implement_reform(ref1, print_warnings=False, raise_errors=False)
-    assert len(pol1.reform_warnings) > 0
+    assert len(pol1.parameter_warnings) > 0
     pol2 = Policy()
     ref2 = {2021: {'_ID_Charity_crt_all': [0.61]}}
     pol2.implement_reform(ref2, print_warnings=False, raise_errors=False)
-    assert len(pol2.reform_warnings) > 0
+    assert len(pol2.parameter_warnings) > 0
     pol3 = Policy()
     ref3 = {2024: {'_II_brk4': [[0, 0, 0, 0, 0]]}}
     pol3.implement_reform(ref3, print_warnings=False, raise_errors=False)
-    assert len(pol3.reform_errors) > 0
+    assert len(pol3.parameter_errors) > 0
     pol4 = Policy()
     ref4 = {2024: {'_II_brk4': [[0, 9e9, 0, 0, 0]]}}
     pol4.implement_reform(ref4, print_warnings=False, raise_errors=False)
-    assert len(pol4.reform_errors) > 0
+    assert len(pol4.parameter_errors) > 0
     pol5 = Policy()
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
-    assert len(pol5.reform_errors) == 0
+    assert len(pol5.parameter_errors) == 0
     pol6 = Policy()
     ref6 = {2013: {'_STD': [[20000, 25000, 20000, 20000, 25000]]}}
     pol6.implement_reform(ref6, print_warnings=False, raise_errors=False)
-    assert pol6.reform_errors == ''
-    assert pol6.reform_warnings == ''
+    assert pol6.parameter_errors == ''
+    assert pol6.parameter_warnings == ''
 
 
 def test_indexing_rates_for_update():

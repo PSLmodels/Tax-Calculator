@@ -62,8 +62,8 @@ class Behavior(ParametersBase):
             raise ValueError('num_years < 1 in Behavior ctor')
         self.initialize(start_year, num_years)
 
-        self.behavior_errors = ''
-        self.behavior_warnings = ''
+        self.parameter_errors = ''
+        self.parameter_warnings = ''
         self._ignore_errors = False
 
         # Policy() doesn't do this in the __init__, why should Behavior()?
@@ -121,8 +121,8 @@ class Behavior(ParametersBase):
         # why do we check _ignore_errors after name/type validation but not
         # values
         #######################
-        if not self._ignore_errors and self.behavior_errors:
-            raise ValueError(self.behavior_errors)
+        if not self._ignore_errors and self.parameter_errors:
+            raise ValueError(self.parameter_errors)
 
         #####################
         # don't need to do cpi offset
@@ -142,10 +142,10 @@ class Behavior(ParametersBase):
         self.set_year(precall_current_year)
         # validate reform parameter values
         self._validate_parameter_values(reform_parameters)
-        if self.behavior_warnings and print_warnings:
-            print(self.behavior_warnings)
-        if self.behavior_errors and raise_errors:
-            raise ValueError('\n' + self.behavior_errors)
+        if self.parameter_warnings and print_warnings:
+            print(self.parameter_warnings)
+        if self.parameter_errors and raise_errors:
+            raise ValueError('\n' + self.parameter_errors)
 
     def baseline_version(self):
         startyear = self.start_year
@@ -497,19 +497,19 @@ class Behavior(ParametersBase):
                         pname = name[:-4]  # root parameter name
                         if pname not in data_names:
                             msg = '{} {} unknown parameter name'
-                            self.behavior_errors += (
+                            self.parameter_errors += (
                                 'ERROR: ' + msg.format(year, name) + '\n'
                             )
                         else:
                             # check if root parameter is cpi inflatable
                             if not self._vals[pname]['cpi_inflatable']:
                                 msg = '{} {} parameter is not cpi inflatable'
-                                self.behavior_errors += (
+                                self.parameter_errors += (
                                     'ERROR: ' + msg.format(year, pname) + '\n'
                                 )
                     else:
                         msg = '{} {} parameter is not true or false'
-                        self.behavior_errors += (
+                        self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
                 ########################
@@ -517,7 +517,7 @@ class Behavior(ParametersBase):
                 else:  # if name does not end with '_cpi'
                     if name not in data_names:
                         msg = '{} {} unknown parameter name'
-                        self.behavior_errors += (
+                        self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
                     else:
@@ -546,7 +546,7 @@ class Behavior(ParametersBase):
                             if bool_type:
                                 if not pvalue_boolean:
                                     msg = '{} {} value {} is not boolean'
-                                    self.behavior_errors += (
+                                    self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pvalue[idx]) +
                                         '\n'
@@ -554,7 +554,7 @@ class Behavior(ParametersBase):
                             elif int_type:
                                 if not isinstance(pvalue[idx], int):
                                     msg = '{} {} value {} is not integer'
-                                    self.behavior_errors += (
+                                    self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pvalue[idx]) +
                                         '\n'
@@ -573,7 +573,7 @@ class Behavior(ParametersBase):
                                 is_bool = isinstance(pvalue[idx], bool)
                                 if is_not_float_int or is_bool:
                                     msg = '{} {} value {} is not a number'
-                                    self.behavior_errors += (
+                                    self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pvalue[idx]) +
                                         '\n'
@@ -640,13 +640,13 @@ class Behavior(ParametersBase):
                             if extra:
                                 msg += '_{}'.format(idx[1])
                         if action == 'warn':
-                            self.behavior_warnings += (
+                            self.parameter_warnings += (
                                 'WARNING: ' + msg.format(idx[0] + syr, name,
                                                          pvalue[idx],
                                                          vvalue[idx]) + '\n'
                             )
                         if action == 'stop':
-                            self.behavior_errors += (
+                            self.parameter_errors += (
                                 'ERROR: ' + msg.format(idx[0] + syr, name,
                                                        pvalue[idx],
                                                        vvalue[idx]) + '\n'

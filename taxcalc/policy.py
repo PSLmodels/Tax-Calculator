@@ -87,8 +87,8 @@ class Policy(ParametersBase):
 
         self.initialize(start_year, num_years)
 
-        self.reform_warnings = ''
-        self.reform_errors = ''
+        self.parameter_warnings = ''
+        self.parameter_errors = ''
         self._ignore_errors = False
 
     def inflation_rates(self):
@@ -113,13 +113,13 @@ class Policy(ParametersBase):
             see Notes to Parameters _update method for info on MODS structure
 
         print_warnings: boolean
-            if True (the default), prints warnings when reform_warnings exists;
-            if False, does not print warnings when reform_warnings exists and
+            if True (the default), prints warnings when parameter_warnings exists;
+            if False, does not print warnings when parameter_warnings exists and
                       leaves warning handling to caller of implement_reform.
 
         raise_errors: boolean
-            if True (the default), raises ValueError when reform_errors exists;
-            if False, does not raise ValueError when reform_errors exists and
+            if True (the default), raises ValueError when parameter_errors exists;
+            if False, does not raise ValueError when parameter_errors exists and
                       leaves error handling to caller of implement_reform.
 
         Raises
@@ -207,8 +207,8 @@ class Policy(ParametersBase):
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
         self._validate_parameter_names_types(reform)
-        if not self._ignore_errors and self.reform_errors:
-            raise ValueError(self.reform_errors)
+        if not self._ignore_errors and self.parameter_errors:
+            raise ValueError(self.parameter_errors)
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
             known_years = self._apply_reform_cpi_offset(reform)
@@ -223,10 +223,10 @@ class Policy(ParametersBase):
         self.set_year(precall_current_year)
         # validate reform parameter values
         self._validate_parameter_values(reform_parameters)
-        if self.reform_warnings and print_warnings:
-            print(self.reform_warnings)
-        if self.reform_errors and raise_errors:
-            raise ValueError('\n' + self.reform_errors)
+        if self.parameter_warnings and print_warnings:
+            print(self.parameter_warnings)
+        if self.parameter_errors and raise_errors:
+            raise ValueError('\n' + self.parameter_errors)
 
     def current_law_version(self):
         """
@@ -441,25 +441,25 @@ class Policy(ParametersBase):
                         pname = name[:-4]  # root parameter name
                         if pname not in data_names:
                             msg = '{} {} unknown parameter name'
-                            self.reform_errors += (
+                            self.parameter_errors += (
                                 'ERROR: ' + msg.format(year, name) + '\n'
                             )
                         else:
                             # check if root parameter is cpi inflatable
                             if not self._vals[pname]['cpi_inflatable']:
                                 msg = '{} {} parameter is not cpi inflatable'
-                                self.reform_errors += (
+                                self.parameter_errors += (
                                     'ERROR: ' + msg.format(year, pname) + '\n'
                                 )
                     else:
                         msg = '{} {} parameter is not true or false'
-                        self.reform_errors += (
+                        self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
                 else:  # if name does not end with '_cpi'
                     if name not in data_names:
                         msg = '{} {} unknown parameter name'
-                        self.reform_errors += (
+                        self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
                     else:
@@ -489,7 +489,7 @@ class Policy(ParametersBase):
                             if bool_type:
                                 if not pvalue_boolean:
                                     msg = '{} {} value {} is not boolean'
-                                    self.reform_errors += (
+                                    self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pvalue[idx]) +
                                         '\n'
@@ -497,7 +497,7 @@ class Policy(ParametersBase):
                             elif int_type:
                                 if not isinstance(pvalue[idx], int):
                                     msg = '{} {} value {} is not integer'
-                                    self.reform_errors += (
+                                    self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pvalue[idx]) +
                                         '\n'
@@ -505,7 +505,7 @@ class Policy(ParametersBase):
                             else:  # param is neither bool_type nor int_type
                                 if not isinstance(pvalue[idx], (float, int)):
                                     msg = '{} {} value {} is not a number'
-                                    self.reform_errors += (
+                                    self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pvalue[idx]) +
                                         '\n'
@@ -572,13 +572,13 @@ class Policy(ParametersBase):
                             if extra:
                                 msg += '_{}'.format(idx[1])
                         if action == 'warn':
-                            self.reform_warnings += (
+                            self.parameter_warnings += (
                                 'WARNING: ' + msg.format(idx[0] + syr, name,
                                                          pvalue[idx],
                                                          vvalue[idx]) + '\n'
                             )
                         if action == 'stop':
-                            self.reform_errors += (
+                            self.parameter_errors += (
                                 'ERROR: ' + msg.format(idx[0] + syr, name,
                                                        pvalue[idx],
                                                        vvalue[idx]) + '\n'

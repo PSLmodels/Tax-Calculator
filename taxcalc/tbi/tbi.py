@@ -68,16 +68,16 @@ def reform_warnings_errors(user_mods):
         pol.implement_reform(user_mods['policy'],
                              print_warnings=False,
                              raise_errors=False)
-        rtn_dict['warnings'] = pol.reform_warnings
-        rtn_dict['errors'] = pol.reform_errors
+        rtn_dict['warnings'] = pol.parameter_warnings
+        rtn_dict['errors'] = pol.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['policy']['errors'] = valerr_msg.__str__()
 
     behv = Behavior()
     try:
         behv.update_behavior(user_mods['behavior'])
-        rtn_dict['behavior']['warnings'] = behv.behavior_warnings
-        rtn_dict['behavior']['errors'] = behv.behavior_errors
+        rtn_dict['behavior']['warnings'] = behv.parameter_warnings
+        rtn_dict['behavior']['errors'] = behv.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['behavior']['errors'] = valerr_msg.__str__()
     return rtn_dict

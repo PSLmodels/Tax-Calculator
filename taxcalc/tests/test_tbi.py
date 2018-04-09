@@ -352,7 +352,7 @@ def test_behavioral_response(puf_subsample):
                 pol = Policy()
                 calc1 = Calculator(policy=pol, records=rec)
                 pol.implement_reform(params['policy'])
-                assert not pol.reform_errors
+                assert not pol.parameter_errors
                 beh = Behavior()
                 beh.update_behavior(params['behavior'])
                 calc2 = Calculator(policy=pol, records=rec, behavior=beh)
