@@ -454,7 +454,7 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
     # --ceeu output and standard output
     try:
         tcio.analyze(writing_output_file=True, output_ceeu=True)
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
@@ -464,7 +464,7 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
     # --dump output with full dump
     try:
         tcio.analyze(writing_output_file=True, output_dump=True)
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
@@ -477,7 +477,7 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
         tcio.analyze(writing_output_file=True,
                      dump_varset=set(['combined']),
                      output_dump=True)
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
@@ -545,7 +545,7 @@ def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
     # --sqldb output
     try:
         tcio.analyze(writing_output_file=False, output_sqldb=True)
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         if os.path.isfile(dbfilepath):
             try:
                 os.remove(dbfilepath)
@@ -826,5 +826,5 @@ def test_growmodel_analysis(reformfile1, assumpfile1):
                                      assump=assumpfile1.name,
                                      aging_input_data=False,
                                      exact_calculations=False)
-    except:  # pylint: disable=bare-except
+    except Exception:  # pylint: disable=broad-except
         assert 'TaxCalcIO.growmodel_analysis_ok' == 'no'

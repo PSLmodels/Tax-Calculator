@@ -173,7 +173,8 @@ class SimpleTaxIO(object):
             SimpleTaxIO.write_output_file(
                 output, self._output_filename)  # pragma: no cover
         else:
-            for idx in range(0, len(output)):
+            idx_range = range(0, len(output))
+            for idx in idx_range:
                 olines += SimpleTaxIO.construct_output_line(output[idx])
         return olines
 
@@ -368,7 +369,8 @@ class SimpleTaxIO(object):
         nothing: void
         """
         with open(output_filename, 'w') as output_file:  # pragma: no cover
-            for idx in range(0, len(output)):  # pragma: no cover
+            idx_range = range(0, len(output))  # pragma: no cover
+            for idx in idx_range:  # pragma: no cover
                 outline = SimpleTaxIO.construct_output_line(
                     output[idx])  # pragma: no cover
                 output_file.write(outline)  # pragma: no cover
@@ -484,7 +486,7 @@ class SimpleTaxIO(object):
                     # convert istr to integer value
                     try:
                         val = int(istr)
-                    except:
+                    except ValueError:
                         msg = ('simtax INPUT line {} variable {} has '
                                'value {} that is not an integer')
                         raise ValueError(msg.format(lnum, vnum, istr))

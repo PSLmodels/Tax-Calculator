@@ -243,13 +243,14 @@ class Calculator(object):
         If variable_value is None, return numpy ndarray containing the
          named variable in embedded Records object.
         If variable_value is not None, set named variable in embedded Records
-         object to specified variable_value.
+         object to specified variable_value and return None (which can be
+         ignored).
         """
         if variable_value is None:
             return getattr(self.__records, variable_name)
-        else:
-            assert isinstance(variable_value, np.ndarray)
-            setattr(self.__records, variable_name, variable_value)
+        assert isinstance(variable_value, np.ndarray)
+        setattr(self.__records, variable_name, variable_value)
+        return None
 
     def incarray(self, variable_name, variable_add):
         """
@@ -287,13 +288,14 @@ class Calculator(object):
     def records_current_year(self, year=None):
         """
         If year is None, return current_year of embedded Records object.
-        If year is not None, set embedded Records current_year to year.
+        If year is not None, set embedded Records current_year to year and
+         return None (which can be ignored).
         """
         if year is None:
             return self.__records.current_year
-        else:
-            assert isinstance(year, int)
-            self.__records.set_current_year(year)
+        assert isinstance(year, int)
+        self.__records.set_current_year(year)
+        return None
 
     @property
     def array_len(self):
@@ -307,12 +309,13 @@ class Calculator(object):
         If param_value is None, return named parameter in
          embedded Policy object.
         If param_value is not None, set named parameter in
-         embedded Policy object to specified param_value.
+         embedded Policy object to specified param_value and
+         return None (which can be ignored).
         """
         if param_value is None:
             return getattr(self.__policy, param_name)
-        else:
-            setattr(self.__policy, param_name, param_value)
+        setattr(self.__policy, param_name, param_value)
+        return None
 
     def consump_param(self, param_name):
         """
@@ -339,12 +342,13 @@ class Calculator(object):
         If param_value is None, return named parameter in
          embedded Behavior object.
         If param_value is not None, set named parameter in
-         embedded Behavior object to specified param_value.
+         embedded Behavior object to specified param_value and
+         return None (which can be ignored).
         """
         if param_value is None:
             return getattr(self.__behavior, param_name)
-        else:
-            setattr(self.__behavior, param_name, param_value)
+        setattr(self.__behavior, param_name, param_value)
+        return None
 
     def records_include_behavioral_responses(self):
         """
@@ -362,13 +366,14 @@ class Calculator(object):
     def policy_current_year(self, year=None):
         """
         If year is None, return current_year of embedded Policy object.
-        If year is not None, set embedded Policy current_year to year.
+        If year is not None, set embedded Policy current_year to year and
+         return None (which can be ignored).
         """
         if year is None:
             return self.__policy.current_year
-        else:
-            assert isinstance(year, int)
-            self.__policy.set_year(year)
+        assert isinstance(year, int)
+        self.__policy.set_year(year)
+        return None
 
     @property
     def current_year(self):
