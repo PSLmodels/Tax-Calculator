@@ -580,20 +580,7 @@ class Behavior(ParametersBase):
                 continue  # *_cpi parameter values validated elsewhere
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
-                if isinstance(vval, six.string_types):
-                    if vval == 'default':
-                        vvalue = getattr(clp, pname)
-                        if vop == 'min':
-                            vvalue -= rounding_error
-                        # the follow branch can never be reached, so it
-                        # is commented out because it can never be tested
-                        # (see test_range_infomation in test_policy.py)
-                        # --> elif vop == 'max':
-                        # -->    vvalue += rounding_error
-                    else:
-                        vvalue = getattr(self, vval)
-                else:
-                    vvalue = np.full(pvalue.shape, vval)
+                vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
                 assert len(pvalue.shape) <= 2
                 if len(pvalue.shape) == 2:
