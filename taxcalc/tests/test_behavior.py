@@ -148,6 +148,21 @@ def test_incorrect_update_behavior():
         Behavior().update_behavior({2013: {'_BE_xx': [0.0]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_xx_cpi': [True]}})
+    # year in update must be greater than or equal start year
+    with pytest.raises(ValueError):
+        Behavior(start_year=2014).update_behavior({2013: {'_BE_inc': [-0.2]}})
+    # year in update must be greater than or equal to current year
+    with pytest.raises(ValueError):
+        behv = Behavior(start_year=2014)
+        behv.set_year(2015)
+        behv.update_behavior({2014: {'_BE_inc': [-0.2]}})
+    # start year greater than start_year + DEFAULT_NUM_YEARS
+    with pytest.raises(ValueError):
+        Behavior().update_behavior({2040: {'_BE_inc': [-0.2]}})
+    # invalid start year
+    with pytest.raises(ValueError):
+        Behavior().update_behavior({'notayear': {'_BE_inc': [-0.2]}})
+
 
 
 def test_validate_param_names_types_errors():
