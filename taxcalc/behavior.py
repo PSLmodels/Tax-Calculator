@@ -67,15 +67,83 @@ class Behavior(ParametersBase):
 
     def update_behavior(self, reform, raise_errors=True):
         """
-        Update behavior for given revisions, a dictionary consisting
-        of one or more year:modification dictionaries.
-        For example: {2014: {'_BE_sub': [0.4, 0.3]}}
-        Also checks for valid elasticity values in revisions dictionary.
+        Implement multi-year policy reform and leave current_year unchanged.
 
-        Note that this method uses the specified revisions to update the
-        default elasticity values, so use this method just once
-        rather than calling it sequentially in an attempt to update
-        elasticities in several steps.
+        Parameters
+        ----------
+        reform: dictionary of one or more YEAR:MODS pairs
+            see Notes to Parameters _update method for info on MODS structure
+
+        print_warnings: boolean
+            if True (the default), prints warnings when parameter_warnings exists;
+            if False, does not print warnings when parameter_warnings exists and
+                      leaves warning handling to caller of implement_reform.
+
+        raise_errors: boolean
+            if True (the default), raises ValueError when parameter_errors exists;
+            if False, does not raise ValueError when parameter_errors exists and
+                      leaves error handling to caller of implement_reform.
+
+        Raises
+        ------
+        ValueError:
+            if reform is not a dictionary.
+            if each YEAR in reform is not an integer.
+            if minimum YEAR in the YEAR:MODS pairs is less than start_year.
+            if minimum YEAR in the YEAR:MODS pairs is less than current_year.
+            if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
+            if Policy._validate_parameter_names_types generates error messages.
+            if Policy._validate_parameter_values generates error messages.
+
+        Returns
+        -------
+        nothing: void
+
+        Notes
+        -----
+        Given a reform dictionary, typical usage of the Policy class
+        is as follows::
+
+            policy = Policy()
+            policy.implement_reform(reform)
+
+        In the above statements, the Policy() call instantiates a
+        policy object (policy) containing current-law policy parameters,
+        and the implement_reform(reform) call applies the (possibly
+        multi-year) reform specified in reform and then sets the
+        current_year to the value of current_year when implement_reform
+        was called with parameters set for that pre-call year.
+
+        An example of a multi-year, multi-parameter reform is as follows::
+
+            reform = {
+                2016: {
+                    '_EITC_c': [[900, 5000, 8000, 9000]],
+                    '_II_em': [7000],
+                    '_SS_Earnings_c': [300000]
+                },
+                2017: {
+                    '_SS_Earnings_c': [500000], '_SS_Earnings_c_cpi': False
+                },
+                2019: {
+                    '_EITC_c': [[1200, 7000, 10000, 12000]],
+                    '_II_em': [9000],
+                    '_SS_Earnings_c': [700000], '_SS_Earnings_c_cpi': True
+                }
+            }
+
+        Notice that each of the four YEAR:MODS pairs is specified as
+        required by the private _update method, whose documentation
+        provides several MODS dictionary examples.
+
+        IMPORTANT NOTICE: when specifying a reform dictionary always group
+        all reform provisions for a specified year into one YEAR:MODS pair.
+        If you make the mistake of specifying two or more YEAR:MODS pairs
+        with the same YEAR value, all but the last one will be overwritten,
+        and therefore, not part of the reform.  This is because Python
+        expects unique (not multiple) dictionary keys.  There is no way to
+        catch this error, so be careful to specify reform dictionaries
+        correctly.
         """
         # check that all revisions dictionary keys are integers
         if not isinstance(reform, dict):
