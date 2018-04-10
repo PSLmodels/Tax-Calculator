@@ -486,79 +486,58 @@ class Behavior(ParametersBase):
         param_names = set(self._vals.keys())
         for year in sorted(reform.keys()):
             for name in reform[year]:
-                if name.endswith('_cpi'):
-                    if isinstance(reform[year][name], bool):
-                        pname = name[:-4]  # root parameter name
-                        if pname not in param_names:
-                            msg = '{} {} unknown parameter name'
-                            self.parameter_errors += (
-                                'ERROR: ' + msg.format(year, name) + '\n'
-                            )
+                if name not in param_names:
+                    msg = '{} {} unknown parameter name'
+                    self.parameter_errors += (
+                        'ERROR: ' + msg.format(year, name) + '\n'
+                    )
+                else:
+                    # check parameter value type avoiding use of isinstance
+                    # because isinstance(True, (int,float)) is True, which
+                    # makes it impossible to check float parameters
+                    bool_param_type = self._vals[name]['boolean_value']
+                    int_param_type = self._vals[name]['integer_value']
+                    assert isinstance(reform[year][name], list)
+                    pvalue = reform[year][name][0]
+                    if isinstance(pvalue, list):
+                        scalar = False  # parameter value is a list
+                    else:
+                        scalar = True  # parameter value is a scalar
+                        pvalue = [pvalue]  # make scalar a single-item list
+                    # pylint: disable=consider-using-enumerate
+                    for idx in range(0, len(pvalue)):
+                        if scalar:
+                            pname = name
                         else:
-                            # check if root parameter is cpi inflatable
-                            if not self._vals[pname]['cpi_inflatable']:
-                                msg = '{} {} parameter is not cpi inflatable'
+                            pname = '{}_{}'.format(name, idx)
+                        pval = pvalue[idx]
+                        # pylint: disable=unidiomatic-typecheck
+                        pval_is_bool = type(pval) == bool
+                        pval_is_int = type(pval) == int
+                        pval_is_float = type(pval) == float
+                        if bool_param_type:
+                            if not pval_is_bool:
+                                msg = '{} {} value {} is not boolean'
                                 self.parameter_errors += (
-                                    'ERROR: ' + msg.format(year, pname) + '\n'
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
                                 )
-                    else:
-                        msg = '{} {} parameter is not true or false'
-                        self.parameter_errors += (
-                            'ERROR: ' + msg.format(year, name) + '\n'
-                        )
-                else:  # if name does not end with '_cpi'
-                    if name not in param_names:
-                        msg = '{} {} unknown parameter name'
-                        self.parameter_errors += (
-                            'ERROR: ' + msg.format(year, name) + '\n'
-                        )
-                    else:
-                        # check parameter value type avoiding use of isinstance
-                        # because isinstance(True, (int,float)) is True, which
-                        # makes it impossible to check float parameters
-                        bool_param_type = self._vals[name]['boolean_value']
-                        int_param_type = self._vals[name]['integer_value']
-                        assert isinstance(reform[year][name], list)
-                        pvalue = reform[year][name][0]
-                        if isinstance(pvalue, list):
-                            scalar = False  # parameter value is a list
-                        else:
-                            scalar = True  # parameter value is a scalar
-                            pvalue = [pvalue]  # make scalar a single-item list
-                        # pylint: disable=consider-using-enumerate
-                        for idx in range(0, len(pvalue)):
-                            if scalar:
-                                pname = name
-                            else:
-                                pname = '{}_{}'.format(name, idx)
-                            pval = pvalue[idx]
-                            # pylint: disable=unidiomatic-typecheck
-                            pval_is_bool = type(pval) == bool
-                            pval_is_int = type(pval) == int
-                            pval_is_float = type(pval) == float
-                            if bool_param_type:
-                                if not pval_is_bool:
-                                    msg = '{} {} value {} is not boolean'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname, pval) +
-                                        '\n'
-                                    )
-                            elif int_param_type:
-                                if not pval_is_int:
-                                    msg = '{} {} value {} is not integer'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname, pval) +
-                                        '\n'
-                                    )
-                            else:  # param is float type
-                                if not (pval_is_int or pval_is_float):
-                                    msg = '{} {} value {} is not a number'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname, pval) +
-                                        '\n'
+                        elif int_param_type:
+                            if not pval_is_int:
+                                msg = '{} {} value {} is not integer'
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
+                                )
+                        else:  # param is float type
+                            if not (pval_is_int or pval_is_float):
+                                msg = '{} {} value {} is not a number'
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
                                     )
         del param_names
 
@@ -576,8 +555,6 @@ class Behavior(ParametersBase):
         parameters = sorted(parameters_set)
         syr = Behavior.JSON_START_YEAR
         for pname in parameters:
-            if pname.endswith('_cpi'):
-                continue  # *_cpi parameter values validated elsewhere
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
                 vvalue = np.full(pvalue.shape, vval)
