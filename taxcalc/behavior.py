@@ -65,9 +65,6 @@ class Behavior(ParametersBase):
         self.parameter_errors = ''
         self._ignore_errors = False
 
-        # Policy() doesn't do this in the __init__, why should Behavior()?
-        # self._validate_parameter_values()
-
     def update_behavior(self, reform, raise_errors=True):
         # check that all revisions dictionary keys are integers
         if not isinstance(reform, dict):
