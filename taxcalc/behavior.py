@@ -68,27 +68,6 @@ class Behavior(ParametersBase):
         # Policy() doesn't do this in the __init__, why should Behavior()?
         # self._validate_parameter_values()
 
-    def update_behavior_old(self, revisions):
-        """
-        Update behavior for given revisions, a dictionary consisting
-        of one or more year:modification dictionaries.
-        For example: {2014: {'_BE_sub': [0.4, 0.3]}}
-        Also checks for valid elasticity values in revisions dictionary.
-
-        Note that this method uses the specified revisions to update the
-        default elasticity values, so use this method just once
-        rather than calling it sequentially in an attempt to update
-        elasticities in several steps.
-        """
-        precall_current_year = self.current_year
-        self.set_default_vals()
-        revision_years = sorted(list(revisions.keys()))
-        for year in revision_years:
-            self.set_year(year)
-            self._update({year: revisions[year]})
-        self.set_year(precall_current_year)
-        self._validate_parameter_values()
-
     def update_behavior(self, reform, raise_errors=True):
         # check that all revisions dictionary keys are integers
         if not isinstance(reform, dict):
@@ -415,66 +394,6 @@ class Behavior(ParametersBase):
         return calc2_behv
 
     # ----- begin private methods of Behavior class -----
-
-    def _validate_parameter_values_old(self):
-        """
-        Check that all behavioral-response parameters have valid values.
-        """
-        # pylint: disable=too-many-branches,too-many-locals
-        # check for presence of required parameters
-        expected_num_params = 5
-        num_params = 0
-        for param in self._vals:
-            if param == '_BE_sub':
-                num_params += 1
-            elif param == '_BE_inc':
-                num_params += 1
-            elif param == '_BE_subinc_wrt_earnings':
-                num_params += 1
-            elif param == '_BE_cg':
-                num_params += 1
-            elif param == '_BE_charity':
-                num_params += 1
-        if num_params != expected_num_params:
-            msg = 'num required Behavior parameters {} not expected number {}'
-            raise ValueError(msg.format(num_params, expected_num_params))
-        # check validity of parameter values
-        msg = '{} elasticity cannot be {} in year {}; value is {}'
-        pos = 'positive'
-        neg = 'negative'
-        nob = 'non-boolean'
-        for param in self._vals:
-            values = getattr(self, param)
-            for year in np.ndindex(values.shape):
-                val = values[year]
-                cyr = year[0] + self.start_year
-                if param == '_BE_sub':
-                    if val < 0.0:
-                        raise ValueError(msg.format(param, neg, cyr, val))
-                elif param == '_BE_inc':
-                    if val > 0.0:
-                        raise ValueError(msg.format(param, pos, cyr, val))
-                elif param == '_BE_subinc_wrt_earnings':
-                    if not (val == 0 or val == 1):
-                        raise ValueError(msg.format(param, nob, cyr, val))
-                elif param == '_BE_cg':
-                    if val > 0.0:
-                        raise ValueError(msg.format(param, pos, cyr, val))
-                elif param == '_BE_charity':
-                    if val > 0.0:
-                        raise ValueError(msg.format(param, neg, cyr, val))
-        # check consistency of earnings-related parameters
-        subinc_wrt_earnings = getattr(self, '_BE_subinc_wrt_earnings')
-        sub_elasticity = getattr(self, '_BE_sub')
-        inc_elasticity = getattr(self, '_BE_inc')
-        msg = ('_BE_subinc_wrt_earnings is True in year {} '
-               'when _BE_sub and _BE_inc are both zero')
-        for year in range(self.num_years):
-            if subinc_wrt_earnings[year]:
-                zero_sub = sub_elasticity[year] == 0.0
-                zero_inc = inc_elasticity[year] == 0.0
-                if zero_sub and zero_inc:
-                    raise ValueError(msg.format(year + self.start_year))
 
     def _validate_parameter_names_types(self, reform):
         """
