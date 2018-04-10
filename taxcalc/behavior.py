@@ -66,6 +66,17 @@ class Behavior(ParametersBase):
         self._ignore_errors = False
 
     def update_behavior(self, reform, raise_errors=True):
+        """
+        Update behavior for given revisions, a dictionary consisting
+        of one or more year:modification dictionaries.
+        For example: {2014: {'_BE_sub': [0.4, 0.3]}}
+        Also checks for valid elasticity values in revisions dictionary.
+
+        Note that this method uses the specified revisions to update the
+        default elasticity values, so use this method just once
+        rather than calling it sequentially in an attempt to update
+        elasticities in several steps.
+        """
         # check that all revisions dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
