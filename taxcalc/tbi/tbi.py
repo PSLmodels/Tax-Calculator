@@ -68,11 +68,13 @@ def reform_warnings_errors(user_mods):
         pol.implement_reform(user_mods['policy'],
                              print_warnings=False,
                              raise_errors=False)
-        rtn_dict['warnings'] = pol.parameter_warnings
-        rtn_dict['errors'] = pol.parameter_errors
+        rtn_dict['policy']['warnings'] = pol.parameter_warnings
+        rtn_dict['policy']['errors'] = pol.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['policy']['errors'] = valerr_msg.__str__()
-
+    # create Behavior object and implement revisions
+    # Note that Behavior does not have a `parameter_warnings`
+    # attribute.
     behv = Behavior()
     try:
         behv.update_behavior(user_mods['behavior'])
