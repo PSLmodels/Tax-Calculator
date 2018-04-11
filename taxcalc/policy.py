@@ -113,14 +113,16 @@ class Policy(ParametersBase):
             see Notes to Parameters _update method for info on MODS structure
 
         print_warnings: boolean
-            if True (the default), prints warnings when parameter_warnings exists;
-            if False, does not print warnings when parameter_warnings exists and
-                      leaves warning handling to caller of implement_reform.
+            if True (the default), prints warnings when parameter_warnings
+                    exists;
+            if False, does not print warnings when parameter_warnings exists
+                    and leaves warning handling to caller of implement_reform.
 
         raise_errors: boolean
-            if True (the default), raises ValueError when parameter_errors exists;
-            if False, does not raise ValueError when parameter_errors exists and
-                      leaves error handling to caller of implement_reform.
+            if True (the default), raises ValueError when parameter_errors
+                    exists;
+            if False, does not raise ValueError when parameter_errors exists
+                    and leaves error handling to caller of implement_reform.
 
         Raises
         ------

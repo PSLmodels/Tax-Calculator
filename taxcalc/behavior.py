@@ -75,9 +75,10 @@ class Behavior(ParametersBase):
             see Notes to Parameters _update method for info on MODS structure
 
         raise_errors: boolean
-            if True (the default), raises ValueError when parameter_errors exists;
-            if False, does not raise ValueError when parameter_errors exists and
-                      leaves error handling to caller of implement_reform.
+            if True (the default), raises ValueError when parameter_errors
+                    exists;
+            if False, does not raise ValueError when parameter_errors exists
+                    and leaves error handling to caller of implement_reform.
 
         Raises
         ------

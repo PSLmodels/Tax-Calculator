@@ -164,7 +164,6 @@ def test_incorrect_update_behavior():
         Behavior().update_behavior({'notayear': {'_BE_inc': [-0.2]}})
 
 
-
 def test_validate_param_names_types_errors():
     behv0 = Behavior()
     specs0 = {2020: {'_BE_bad': [-1.0]}}
