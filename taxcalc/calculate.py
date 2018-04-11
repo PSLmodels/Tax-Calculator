@@ -1471,15 +1471,15 @@ class Calculator(object):
         StdDed(self.__policy, self.__records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.array('standard'))
-        item = copy.deepcopy(self.array('c04470'))
-        item_no_limit = copy.deepcopy(self.array('c21060'))
-        item_phaseout = copy.deepcopy(self.array('c21040'))
+        std = self.array('standard').copy()
+        item = self.array('c04470').copy()
+        item_no_limit = self.array('c21060').copy()
+        item_phaseout = self.array('c21040').copy()
         self.zeroarray('c04470')
         self.zeroarray('c21060')
         self.zeroarray('c21040')
         self._taxinc_to_amt()
-        std_taxes = copy.deepcopy(self.array('c05800'))
+        std_taxes = self.array('c05800').copy()
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.zeroarray('standard')
@@ -1487,7 +1487,7 @@ class Calculator(object):
         self.array('c21040', item_phaseout)
         self.array('c04470', item)
         self._taxinc_to_amt()
-        item_taxes = copy.deepcopy(self.array('c05800'))
+        item_taxes = self.array('c05800').copy()
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.array('standard', np.where(item_taxes < std_taxes,
