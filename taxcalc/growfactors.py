@@ -187,19 +187,25 @@ class Growfactors(object):
 
     def __eq__(self, other):
         """
-        Method that implements == operator for Growfactors instance.
+        Method that implements == operator for Growfactors class.
         """
-        keys = self.__dict__.keys()
-        if isinstance(other, Growfactors) and keys == other.__dict__.keys():
-            for key in keys:
-                val = self.__dict__[key]
-                valo = other.__dict__[key]
-                if isinstance(val, pd.DataFrame):
-                    if not val.equals(valo):
-                        return False
-                else:
-                    if not val == valo:
-                        return False
-            return True
-        else:
+        if isinstance(other, Growfactors):
+            keys = sorted(self.__dict__.keys())
+            keys_other = sorted(other.__dict__.keys())
+            if keys == keys_other:
+                for key in keys:
+                    val = self.__dict__[key]
+                    valo = other.__dict__[key]
+                    if isinstance(val, pd.DataFrame):
+                        if not val.equals(valo):
+                            return False
+                    else:
+                        if not val == valo:
+                            return False
+                del keys
+                del keys_other
+                del val
+                del valo
+                return True
             return False
+        return False

@@ -105,5 +105,10 @@ def test_copy_ctor_and_eq():
     gf_copy.used = True
     assert not gf_copy.__eq__(gf_read)
     gf_copy.used = False
+    assert gf_copy.__eq__(gf_read)
     gf_copy.gfdf = gf_copy.gfdf + 1
+    assert not gf_copy.__eq__(gf_read)
+    gf_copy.gfdf = gf_read.gfdf.copy()
+    assert gf_copy.__eq__(gf_read)
+    gf_copy.__dict__['bogus'] = True
     assert not gf_copy.__eq__(gf_read)

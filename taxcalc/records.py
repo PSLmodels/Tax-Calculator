@@ -60,6 +60,10 @@ class Records(object):
         look at the test_Calculator_using_nonstd_input()
         function in the taxcalc/tests/test_calculate.py file.
 
+    copy_source: Records class instance
+        default value is None, which implies _init_read is called;
+        otherwise copy constructor logic in _init_copy is called.
+
     Raises
     ------
     ValueError:
@@ -108,6 +112,8 @@ class Records(object):
     VAR_INFO_FILENAME = 'records_variables.json'
     CPS_BENEFITS_FILENAME = 'cps_benefits.csv.gz'
 
+    # pylint: disable=attribute-defined-outside-init
+
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
@@ -115,72 +121,14 @@ class Records(object):
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  benefits=None,
-                 start_year=PUFCSV_YEAR):
-        # pylint: disable=too-many-arguments,too-many-locals
-        self.__data_year = start_year
-        # read specified data
-        self._read_data(data, exact_calculations)
-        # check that three sets of split-earnings variables have valid values
-        msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
-        tol = 0.020001  # handles "%.2f" rounding errors
-        if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
-                           rtol=0.0, atol=tol):
-            raise ValueError(msg.format('e00200'))
-        if not np.allclose(self.e00900, (self.e00900p + self.e00900s),
-                           rtol=0.0, atol=tol):
-            raise ValueError(msg.format('e00900'))
-        if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
-                           rtol=0.0, atol=tol):
-            raise ValueError(msg.format('e02100'))
-        # check that ordinary dividends are no less than qualified dividends
-        other_dividends = np.maximum(0., self.e00600 - self.e00650)
-        if not np.allclose(self.e00600, self.e00650 + other_dividends,
-                           rtol=0.0, atol=tol):
-            msg = 'expression "e00600 >= e00650" is not true for every record'
-            raise ValueError(msg)
-        del other_dividends
-        # check that total pension income is no less than taxable pension inc
-        nontaxable_pensions = np.maximum(0., self.e01500 - self.e01700)
-        if not np.allclose(self.e01500, self.e01700 + nontaxable_pensions,
-                           rtol=0.0, atol=tol):
-            msg = 'expression "e01500 >= e01700" is not true for every record'
-            raise ValueError(msg)
-        del nontaxable_pensions
-        # handle grow factors
-        is_correct_type = isinstance(gfactors, Growfactors)
-        if gfactors is not None and not is_correct_type:
-            msg = 'gfactors is neither None nor a Growfactors instance'
-            raise ValueError(msg)
-        self.gfactors = gfactors
-        # read sample weights
-        self.WT = None
-        self._read_weights(weights)
-        self.ADJ = None
-        self._read_ratios(adjust_ratios)
-        # read extrapolated benefit variables
-        self.BEN = None
-        self._read_benefits(benefits)
-        # weights must be same size as tax record data
-        if not self.WT.empty and self.array_length != len(self.WT):
-            # scale-up sub-sample weights by year-specific factor
-            sum_full_weights = self.WT.sum()
-            self.WT = self.WT.iloc[self.__index]
-            sum_sub_weights = self.WT.sum()
-            factor = sum_full_weights / sum_sub_weights
-            self.WT *= factor
-        # specify current_year and FLPDYR values
-        if isinstance(start_year, int):
-            self.__current_year = start_year
-            self.FLPDYR.fill(start_year)
+                 start_year=PUFCSV_YEAR,
+                 copy_source=None):
+        # pylint: disable=too-many-arguments
+        if copy_source is None:
+            self._init_read(data, exact_calculations, gfactors,
+                            weights, adjust_ratios, benefits, start_year)
         else:
-            msg = 'start_year is not an integer'
-            raise ValueError(msg)
-        # construct sample weights for current_year
-        wt_colname = 'WT{}'.format(self.current_year)
-        if wt_colname in self.WT.columns:
-            self.s006 = self.WT[wt_colname] * 0.01
-        # specify that variable values do not include behavioral responses
-        self.behavioral_responses_are_included = False
+            self._init_copy(copy_source)
 
     @staticmethod
     def cps_constructor(data=None,
@@ -303,6 +251,123 @@ class Records(object):
     INTEGER_VARS = None
 
     # ----- begin private methods of Records class -----
+
+    def _init_read(self, data, exact_calculations, gfactors,
+                   weights, adjust_ratios, benefits, start_year):
+        """
+        Initialize Records instance by reading from files.
+        """
+        # pylint: disable=too-many-arguments,too-many-locals
+        self.__data_year = start_year
+        # read specified data
+        self._read_data(data, exact_calculations)
+        # check that three sets of split-earnings variables have valid values
+        msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
+        tol = 0.020001  # handles "%.2f" rounding errors
+        if not np.allclose(self.e00200, (self.e00200p + self.e00200s),
+                           rtol=0.0, atol=tol):
+            raise ValueError(msg.format('e00200'))
+        if not np.allclose(self.e00900, (self.e00900p + self.e00900s),
+                           rtol=0.0, atol=tol):
+            raise ValueError(msg.format('e00900'))
+        if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
+                           rtol=0.0, atol=tol):
+            raise ValueError(msg.format('e02100'))
+        # check that ordinary dividends are no less than qualified dividends
+        other_dividends = np.maximum(0., self.e00600 - self.e00650)
+        if not np.allclose(self.e00600, self.e00650 + other_dividends,
+                           rtol=0.0, atol=tol):
+            msg = 'expression "e00600 >= e00650" is not true for every record'
+            raise ValueError(msg)
+        del other_dividends
+        # check that total pension income is no less than taxable pension inc
+        nontaxable_pensions = np.maximum(0., self.e01500 - self.e01700)
+        if not np.allclose(self.e01500, self.e01700 + nontaxable_pensions,
+                           rtol=0.0, atol=tol):
+            msg = 'expression "e01500 >= e01700" is not true for every record'
+            raise ValueError(msg)
+        del nontaxable_pensions
+        # handle grow factors
+        is_correct_type = isinstance(gfactors, Growfactors)
+        if gfactors is not None and not is_correct_type:
+            msg = 'gfactors is neither None nor a Growfactors instance'
+            raise ValueError(msg)
+        self.gfactors = gfactors
+        # read sample weights
+        self.WT = None
+        self._read_weights(weights)
+        self.ADJ = None
+        self._read_ratios(adjust_ratios)
+        # read extrapolated benefit variables
+        self.BEN = None
+        self._read_benefits(benefits)
+        # weights must be same size as tax record data
+        if not self.WT.empty and self.array_length != len(self.WT):
+            # scale-up sub-sample weights by year-specific factor
+            sum_full_weights = self.WT.sum()
+            self.WT = self.WT.iloc[self.__index]
+            sum_sub_weights = self.WT.sum()
+            factor = sum_full_weights / sum_sub_weights
+            self.WT *= factor
+        # specify current_year and FLPDYR values
+        if isinstance(start_year, int):
+            self.__current_year = start_year
+            self.FLPDYR.fill(start_year)
+        else:
+            msg = 'start_year is not an integer'
+            raise ValueError(msg)
+        # construct sample weights for current_year
+        wt_colname = 'WT{}'.format(self.current_year)
+        if wt_colname in self.WT.columns:
+            self.s006 = self.WT[wt_colname] * 0.01
+        # specify that variable values do not include behavioral responses
+        self.behavioral_responses_are_included = False
+
+    def _init_copy(self, source):
+        """
+        Initialize Records instance by copying from source.
+        """
+        # pylint: disable=protected-access
+        assert isinstance(source, Records)
+        for key in source.__dict__.keys():
+            val = source.__dict__[key]
+            if isinstance(val, (np.ndarray, pd.DataFrame, set)):
+                self.__dict__[key] = val.copy()
+            elif isinstance(val, (int, bool)):
+                self.__dict__[key] = val
+            elif isinstance(val, pd.RangeIndex):
+                self.__dict__[key] = pd.RangeIndex(val)
+            else:
+                assert isinstance(val, Growfactors)
+                self.__dict__[key] = Growfactors(copy_source=val)
+
+    def __eq__(self, other):
+        """
+        Method that implements == operator for Records class.
+        """
+        if isinstance(other, Records):
+            keys = sorted(self.__dict__.keys())
+            keys_other = sorted(other.__dict__.keys())
+            if keys == keys_other:
+                for key in keys:
+                    val = self.__dict__[key]
+                    valo = other.__dict__[key]
+                    if isinstance(val, np.ndarray):
+                        if not np.array_equal(val, valo):
+                            return False
+                    elif isinstance(val, (pd.DataFrame, pd.RangeIndex)):
+                        if not val.equals(valo):
+                            return False
+                    else:
+                        if not val == valo:
+                            return False
+                del keys
+                del keys_other
+                del val
+                del valo
+                return True
+            return False
+        return False
 
     def _blowup(self, year):
         """
