@@ -91,3 +91,24 @@ def test_growfactors_csv_values():
         for gfname in Growfactors.VALID_NAMES:
             val = gfo.factor_value(gfname, min_data_year)
             assert val == 1
+
+
+def test_copy_ctor_and_eq():
+    """
+    Test Growfactors copy constructor and its results as well as __eq__ method.
+    """
+    gf_read = Growfactors()
+    gf_copy = Growfactors(copy_source=gf_read)
+    assert gf_copy == gf_read
+    # check False returns by __eq__ method
+    assert not gf_copy.__eq__(list())
+    gf_copy.used = True
+    assert not gf_copy.__eq__(gf_read)
+    gf_copy.used = False
+    assert gf_copy.__eq__(gf_read)
+    gf_copy.gfdf = gf_copy.gfdf + 1
+    assert not gf_copy.__eq__(gf_read)
+    gf_copy.gfdf = gf_read.gfdf.copy()
+    assert gf_copy.__eq__(gf_read)
+    gf_copy.__dict__['bogus'] = True
+    assert not gf_copy.__eq__(gf_read)

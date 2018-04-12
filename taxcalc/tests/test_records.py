@@ -201,3 +201,30 @@ def test_csv_input_vars_md_contents(tests_path):
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)
         raise ValueError(msg)
+
+
+def test_copy_ctor_and_eq():
+    """
+    Test Records copy constructor and its results as well as __eq__ method.
+    """
+    recs_read = Records.cps_constructor()
+    recs_copy = Records(copy_source=recs_read)
+    assert recs_copy == recs_read
+    # check False returns by __eq__ method
+    assert not recs_copy.__eq__(list())
+    recs_copy.behavioral_responses_are_included = True
+    assert not recs_copy.__eq__(recs_read)
+    recs_copy.behavioral_responses_are_included = False
+    assert recs_copy.__eq__(recs_read)
+    recs_copy.WT = pd.DataFrame(np.zeros_like(recs_read.WT),
+                                index=recs_read.WT.index,
+                                columns=recs_read.WT.columns)
+    assert not recs_copy.__eq__(recs_read)
+    recs_copy.WT = recs_read.WT.copy()
+    assert recs_copy.__eq__(recs_read)
+    recs_copy.s006 += 1.
+    assert not recs_copy.__eq__(recs_read)
+    recs_copy.s006 = recs_read.s006.copy()
+    assert recs_copy.__eq__(recs_read)
+    recs_copy.__dict__['bogus'] = True
+    assert not recs_copy.__eq__(recs_read)
