@@ -22,6 +22,10 @@ class Growfactors(object):
         string is name of CSV file in which grow factors reside;
         default value is name of file containing baseline grow factors.
 
+    copy_source: Growfactors class instance
+        default value is None, which implies _init_read is called;
+        otherwise copy constructor logic in _init_copy is called.
+
     Raises
     ------
     ValueError:
@@ -33,7 +37,7 @@ class Growfactors(object):
 
     Notes
     -----
-    Typical usage is "gfactor = Growfactors()", which produces an object
+    Typical usage is "gfactor = Growfactors()", which produces an instance
     containing the default grow factors in the Growfactors.FILENAME file.
     """
 
@@ -47,37 +51,14 @@ class Growfactors(object):
                        'ASCHEI', 'ASCHEL', 'ASCHF',
                        'ASOCSEC', 'ATXPY', 'AUCOMP', 'AWAGE', 'ABENEFITS'])
 
-    def __init__(self, growfactors_filename=FILE_PATH):
-        # read grow factors from specified growfactors_filename
-        gfdf = pd.DataFrame()
-        if isinstance(growfactors_filename, six.string_types):
-            if os.path.isfile(growfactors_filename):
-                gfdf = pd.read_csv(growfactors_filename,
-                                   index_col='YEAR')
-            else:
-                # cannot call read_egg_ function in unit tests
-                gfdf = read_egg_csv(Growfactors.FILENAME,
-                                    index_col='YEAR')  # pragma: no cover
+    # pylint: disable=attribute-defined-outside-init
+
+    def __init__(self, growfactors_filename=FILE_PATH,
+                 copy_source=None):
+        if copy_source is None:
+            self._init_read(growfactors_filename)
         else:
-            raise ValueError('growfactors_filename is not a string')
-        assert isinstance(gfdf, pd.DataFrame)
-        # check validity of gfdf column names
-        gfdf_names = set(list(gfdf))
-        if gfdf_names != Growfactors.VALID_NAMES:
-            msg = ('missing names are: {} and invalid names are: {}')
-            missing = Growfactors.VALID_NAMES - gfdf_names
-            invalid = gfdf_names - Growfactors.VALID_NAMES
-            raise ValueError(msg.format(missing, invalid))
-        # determine first_year and last_year from gfdf
-        self._first_year = min(gfdf.index)
-        self._last_year = max(gfdf.index)
-        # set gfdf as attribute of class
-        self.gfdf = pd.DataFrame()
-        setattr(self, 'gfdf',
-                gfdf.astype(np.float64))  # pylint: disable=no-member
-        del gfdf
-        # specify factors as being unused (that is, not yet accessed)
-        self.used = False
+            self._init_copy(copy_source)
 
     @property
     def first_year(self):
@@ -155,3 +136,70 @@ class Growfactors(object):
             msg = 'cannot update growfactors after they have been used'
             raise ValueError(msg)
         self.gfdf[name][year] += diff
+
+    # ----- begin private methods of Growfactors class -----
+
+    def _init_read(self, growfactors_filename):
+        """
+        Initialize Growfactors instance by reading from files.
+        """
+        # read grow factors from specified growfactors_filename
+        gfdf = pd.DataFrame()
+        if isinstance(growfactors_filename, six.string_types):
+            if os.path.isfile(growfactors_filename):
+                gfdf = pd.read_csv(growfactors_filename,
+                                   index_col='YEAR')
+            else:
+                # cannot call read_egg_ function in unit tests
+                gfdf = read_egg_csv(Growfactors.FILENAME,
+                                    index_col='YEAR')  # pragma: no cover
+        else:
+            raise ValueError('growfactors_filename is not a string')
+        assert isinstance(gfdf, pd.DataFrame)
+        # check validity of gfdf column names
+        gfdf_names = set(list(gfdf))
+        if gfdf_names != Growfactors.VALID_NAMES:
+            msg = ('missing names are: {} and invalid names are: {}')
+            missing = Growfactors.VALID_NAMES - gfdf_names
+            invalid = gfdf_names - Growfactors.VALID_NAMES
+            raise ValueError(msg.format(missing, invalid))
+        # determine first_year and last_year from gfdf
+        self._first_year = min(gfdf.index)
+        self._last_year = max(gfdf.index)
+        # set gfdf as attribute of class
+        self.gfdf = pd.DataFrame()
+        setattr(self, 'gfdf',
+                gfdf.astype(np.float64))  # pylint: disable=no-member
+        del gfdf
+        # specify factors as being unused (that is, not yet accessed)
+        self.used = False
+
+    def _init_copy(self, source):
+        """
+        Initialize Growfactors instance by copying from source.
+        """
+        # pylint: disable=protected-access
+        assert isinstance(source, Growfactors)
+        self.gfdf = source.gfdf.copy()
+        self._first_year = source._first_year
+        self._last_year = source._last_year
+        self.used = source.used
+
+    def __eq__(self, other):
+        """
+        Method that implements == operator for Growfactors instance.
+        """
+        keys = self.__dict__.keys()
+        if isinstance(other, Growfactors) and keys == other.__dict__.keys():
+            for key in keys:
+                val = self.__dict__[key]
+                valo = other.__dict__[key]
+                if isinstance(val, pd.DataFrame):
+                    if not val.equals(valo):
+                        return False
+                else:
+                    if not val == valo:
+                        return False
+            return True
+        else:
+            return False
