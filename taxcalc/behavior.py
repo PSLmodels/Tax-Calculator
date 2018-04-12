@@ -65,26 +65,26 @@ class Behavior(ParametersBase):
         self.parameter_errors = ''
         self._ignore_errors = False
 
-    def update_behavior(self, reform, raise_errors=True):
+    def update_behavior(self, revision, raise_errors=True):
         """
-        Implement multi-year behavior reform and leave current_year unchanged.
+        Implement multi-year behavior revision and leave current_year unchanged.
 
         Parameters
         ----------
-        reform: dictionary of one or more YEAR:MODS pairs
+        revision: dictionary of one or more YEAR:MODS pairs
             see Notes to Parameters _update method for info on MODS structure
 
         raise_errors: boolean
             if True (the default), raises ValueError when parameter_errors
                     exists;
             if False, does not raise ValueError when parameter_errors exists
-                    and leaves error handling to caller of implement_reform.
+                    and leaves error handling to caller of update_behavior.
 
         Raises
         ------
         ValueError:
-            if reform is not a dictionary.
-            if each YEAR in reform is not an integer.
+            if revision is not a dictionary.
+            if each YEAR in revision is not an integer.
             if minimum YEAR in the YEAR:MODS pairs is less than start_year.
             if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
@@ -100,22 +100,22 @@ class Behavior(ParametersBase):
 
         Notes
         -----
-        Given a reform dictionary, typical usage of the Policy class
+        Given a revision dictionary, typical usage of the Policy class
         is as follows::
 
             behavior = Behavior()
-            behavior.update_behavior(reform)
+            behavior.update_behavior(revision)
 
         In the above statements, the Behavior() call instantiates a
         behavior object (behavior) containing behavior baseline parameters,
-        and the update_behavior(reform) call applies the (possibly
-        multi-year) reform specified in reform and then sets the
+        and the update_behavior(revision) call applies the (possibly
+        multi-year) revision specified in revision and then sets the
         current_year to the value of current_year when update_behavior
         was called with parameters set for that pre-call year.
 
-        An example of a multi-year, multi-parameter reform is as follows::
+        An example of a multi-year, multi-parameter revision is as follows::
 
-            reform = {
+            revision = {
                 2016: {
                     '_BE_inc': [-0.3]
                 },
@@ -128,53 +128,53 @@ class Behavior(ParametersBase):
         required by the private _update method, whose documentation
         provides several MODS dictionary examples.
 
-        IMPORTANT NOTICE: when specifying a reform dictionary always group
-        all reform provisions for a specified year into one YEAR:MODS pair.
+        IMPORTANT NOTICE: when specifying a revision dictionary always group
+        all revision provisions for a specified year into one YEAR:MODS pair.
         If you make the mistake of specifying two or more YEAR:MODS pairs
         with the same YEAR value, all but the last one will be overwritten,
-        and therefore, not part of the reform.  This is because Python
+        and therefore, not part of the revision.  This is because Python
         expects unique (not multiple) dictionary keys.  There is no way to
-        catch this error, so be careful to specify reform dictionaries
+        catch this error, so be careful to specify revision dictionaries
         correctly.
         """
         # check that all revisions dictionary keys are integers
-        if not isinstance(reform, dict):
-            raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
-        if not reform:
-            return  # no reform to implement
-        reform_years = sorted(list(reform.keys()))
-        for year in reform_years:
+        if not isinstance(revision, dict):
+            raise ValueError('ERROR: YYYY PARAM revision is not a dictionary')
+        if not revision:
+            return  # no revision to implement
+        revision_years = sorted(list(revision.keys()))
+        for year in revision_years:
             if not isinstance(year, int):
                 msg = 'ERROR: {} KEY {}'
-                details = 'KEY in reform is not an integer calendar year'
+                details = 'KEY in revision is not an integer calendar year'
                 raise ValueError(msg.format(year, details))
-        # check range of remaining reform_years
-        first_reform_year = min(reform_years)
-        if first_reform_year < self.start_year:
-            msg = 'ERROR: {} YEAR reform provision in YEAR < start_year={}'
-            raise ValueError(msg.format(first_reform_year, self.start_year))
-        if first_reform_year < self.current_year:
-            msg = 'ERROR: {} YEAR reform provision in YEAR < current_year={}'
-            raise ValueError(msg.format(first_reform_year, self.current_year))
-        last_reform_year = max(reform_years)
-        if last_reform_year > self.end_year:
-            msg = 'ERROR: {} YEAR reform provision in YEAR > end_year={}'
-            raise ValueError(msg.format(last_reform_year, self.end_year))
-        # validate reform parameter names and types
+        # check range of remaining revision_years
+        first_revision_year = min(revision_years)
+        if first_revision_year < self.start_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
+            raise ValueError(msg.format(first_revision_year, self.start_year))
+        if first_revision_year < self.current_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < current_year={}'
+            raise ValueError(msg.format(first_revision_year, self.current_year))
+        last_revision_year = max(revision_years)
+        if last_revision_year > self.end_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
+            raise ValueError(msg.format(last_revision_year, self.end_year))
+        # validate revision parameter names and types
         self.parameter_errors = ''
-        self._validate_parameter_names_types(reform)
+        self._validate_parameter_names_types(revision)
         if not self._ignore_errors and self.parameter_errors:
             raise ValueError(self.parameter_errors)
-        # implement the reform year by year
+        # implement the revision year by year
         precall_current_year = self.current_year
-        reform_parameters = set()
-        for year in reform_years:
+        revision_parameters = set()
+        for year in revision_years:
             self.set_year(year)
-            reform_parameters.update(reform[year].keys())
-            self._update({year: reform[year]})
+            revision_parameters.update(revision[year].keys())
+            self._update({year: revision[year]})
         self.set_year(precall_current_year)
-        # validate reform parameter values
-        self._validate_parameter_values(reform_parameters)
+        # validate revision parameter values
+        self._validate_parameter_values(revision_parameters)
         if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
 
@@ -449,16 +449,16 @@ class Behavior(ParametersBase):
 
     # ----- begin private methods of Behavior class -----
 
-    def _validate_parameter_names_types(self, reform):
+    def _validate_parameter_names_types(self, revision):
         """
         Check validity of parameter names and parameter types used
-        in the specified reform dictionary.
+        in the specified revision dictionary.
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
         # pylint: disable=too-many-locals
         param_names = set(self._vals.keys())
-        for year in sorted(reform.keys()):
-            for name in reform[year]:
+        for year in sorted(revision.keys()):
+            for name in revision[year]:
                 if name not in param_names:
                     msg = '{} {} unknown parameter name'
                     self.parameter_errors += (
@@ -470,8 +470,8 @@ class Behavior(ParametersBase):
                     # makes it impossible to check float parameters
                     bool_param_type = self._vals[name]['boolean_value']
                     int_param_type = self._vals[name]['integer_value']
-                    assert isinstance(reform[year][name], list)
-                    pvalue = reform[year][name][0]
+                    assert isinstance(revision[year][name], list)
+                    pvalue = revision[year][name][0]
                     if isinstance(pvalue, list):
                         scalar = False  # parameter value is a list
                     else:
