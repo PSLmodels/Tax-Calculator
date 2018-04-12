@@ -324,10 +324,11 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
-def test_create_parameters_from_file(policyfile):
-    with open(policyfile.name) as pfile:
-        policy = json.load(pfile)
-    ppo = Policy(parameter_dict=policy)
+def test_create_parameters_from_file(monkeypatch, policyfile):
+    # py.test monkeypatch sets the temporary file path as the default path.
+    # After the test completes, monkeypatch restores the default settings.
+    monkeypatch.setattr(Policy, 'DEFAULTS_FILENAME', policyfile.name)
+    ppo = Policy()
     inf_rates = ppo.inflation_rates()
     assert_allclose(ppo._almdep,
                     Policy._expand_array(
