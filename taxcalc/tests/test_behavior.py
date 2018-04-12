@@ -10,34 +10,9 @@ from taxcalc import Policy, Records, Calculator, Behavior
 
 def test_incorrect_behavior_instantiation():
     with pytest.raises(ValueError):
-        Behavior(behavior_dict=list())
-    bad_behv_dict = {
-        '_BE_bad': {'start_year': 2013, 'value': [0.0]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
-    with pytest.raises(ValueError):
         Behavior(num_years=0)
     with pytest.raises(FloatingPointError):
         np.divide(1., 0.)
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict={})
-    bad_behv_dict = {
-        '_BE_subinc_wrt_earnings': {'start_year': 2013, 'value': [True]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
-    bad_behv_dict = {
-        '_BE_subinc_wrt_earnings': {'start_year': 2013, 'value': [True]},
-        '_BE_sub': {'start_year': 2017, 'value': [0.25]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
-    bad_behv_dict = {
-        54321: {'start_year': 2013, 'value': [0.0]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
 
 
 def test_behavioral_response_calculator(cps_subsample):

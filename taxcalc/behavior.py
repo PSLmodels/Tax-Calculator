@@ -48,16 +48,14 @@ class Behavior(ParametersBase):
     DEFAULTS_FILENAME = 'behavior.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
 
-    def __init__(self, behavior_dict=None,
+    def __init__(self,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
         super(Behavior, self).__init__()
-        if behavior_dict is None:
-            self._vals = self._params_dict_from_json_file()
-        elif isinstance(behavior_dict, dict):
-            self._vals = behavior_dict
-        else:
-            raise ValueError('behavior_dict is not None or a dictionary')
+
+        # read default parameters
+        self._vals = self._params_dict_from_json_file()
+
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         self.initialize(start_year, num_years)

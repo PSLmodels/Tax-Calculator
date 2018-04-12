@@ -57,7 +57,6 @@ class Policy(ParametersBase):
 
     def __init__(self,
                  gfactors=None,
-                 parameter_dict=None,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
         super(Policy, self).__init__()
@@ -69,12 +68,8 @@ class Policy(ParametersBase):
         else:
             raise ValueError('gfactors is not None or a Growfactors instance')
 
-        if parameter_dict is None:  # read default parameters
-            self._vals = self._params_dict_from_json_file()
-        elif isinstance(parameter_dict, dict):
-            self._vals = parameter_dict
-        else:
-            raise ValueError('parameter_dict is not None or a dictionary')
+        # read default parameters
+        self._vals = self._params_dict_from_json_file()
 
         if num_years < 1:
             raise ValueError('num_years cannot be less than one')
@@ -240,7 +235,6 @@ class Policy(ParametersBase):
         startyear = self.start_year
         numyears = self.num_years
         clv = Policy(self._gfactors,
-                     parameter_dict=None,
                      start_year=startyear,
                      num_years=numyears)
         clv.set_year(self.current_year)
