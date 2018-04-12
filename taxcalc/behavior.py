@@ -65,7 +65,8 @@ class Behavior(ParametersBase):
 
     def update_behavior(self, revision, raise_errors=True):
         """
-        Implement multi-year behavior revision and leave current_year unchanged.
+        Implement multi-year behavior revision and leave current_year
+        unchanged.
 
         Parameters
         ----------
@@ -153,7 +154,9 @@ class Behavior(ParametersBase):
             raise ValueError(msg.format(first_revision_year, self.start_year))
         if first_revision_year < self.current_year:
             msg = 'ERROR: {} YEAR revision provision in YEAR < current_year={}'
-            raise ValueError(msg.format(first_revision_year, self.current_year))
+            raise ValueError(
+                msg.format(first_revision_year, self.current_year)
+            )
         last_revision_year = max(revision_years)
         if last_revision_year > self.end_year:
             msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
@@ -509,7 +512,7 @@ class Behavior(ParametersBase):
                                     'ERROR: ' +
                                     msg.format(year, pname, pval) +
                                     '\n'
-                                    )
+                                )
         del param_names
 
     def _validate_parameter_values(self, parameters_set):
