@@ -667,21 +667,21 @@ def create_diagnostic_table(vdf, year):
         agi = vdf['c00100']
         odict['AGI ($b)'] = (agi * wghts).sum() * in_billions
         # number of itemizers
-        num = (wghts[(vdf['c04470'] > 0.) & (agi > 0.)].sum())
+        num = (wghts[vdf['c04470'] > 0.].sum())
         odict['Itemizers (#m)'] = num * in_millions
         # itemized deduction
         ided1 = vdf['c04470'] * wghts
         val = ided1[vdf['c04470'] > 0.].sum()
         odict['Itemized Deduction ($b)'] = val * in_billions
         # number of standard deductions
-        num = wghts[(vdf['standard'] > 0.) & (agi > 0.)].sum()
+        num = wghts[vdf['standard'] > 0.].sum()
         odict['Standard Deduction Filers (#m)'] = num * in_millions
         # standard deduction
         sded1 = recs.standard * wghts
-        val = sded1[(vdf['standard'] > 0.) & (agi > 0.)].sum()
+        val = sded1[vdf['standard'] > 0.].sum()
         odict['Standard Deduction ($b)'] = val * in_billions
         # personal exemption
-        val = (vdf['c04600'] * wghts)[agi > 0.].sum()
+        val = (vdf['c04600'] * wghts).sum()
         odict['Personal Exemption ($b)'] = val * in_billions
         # taxable income
         val = (vdf['c04800'] * wghts).sum()
@@ -734,6 +734,7 @@ def create_diagnostic_table(vdf, year):
     pdf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
     pdf = pdf.transpose()
     pd.options.display.float_format = '{:8,.1f}'.format
+    del odict
     return pdf
 
 
