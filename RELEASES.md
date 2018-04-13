@@ -15,12 +15,20 @@ for a complete commit history.
   by Anderson Frailey and Martin Holmer based on bug reported by Max Ghenis]
 
 **New Features**
-- None
+- Add validity checking for revised values of behavioral response parameters
+  [[#1952](https://github.com/open-source-economics/Tax-Calculator/pull/1952)
+  by Hank Doupe]
 
 **Bug Fixes**
 - Fix loose checking of the data type of parameters in reform dictionaries passed to the Policy class `implement_reform` method
   [[#1960](https://github.com/open-source-economics/Tax-Calculator/pull/1960)
   by Martin Holmer based on bug reported by Hank Doupe]
+- Fix tables diagnostic and distribution tables so that itemizers plus standard-deduction takers equals total returns
+  [[#1964](https://github.com/open-source-economics/Tax-Calculator/pull/1964)
+  by Martin Holmer]
+- Fix confusing documentation of the datatype of parameters
+  [[#1970](https://github.com/open-source-economics/Tax-Calculator/pull/1970)
+  by Martin Holmer as suggested by Hank Doupe]
 
 
 2018-03-30 Release 0.18.0
