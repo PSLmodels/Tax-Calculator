@@ -97,7 +97,9 @@ class ParametersBase(object):
                 if not isinstance(name, six.string_types):
                     msg = 'parameter name {} is not a string'
                     raise ValueError(msg.format(name))
-                integer_values = data.get('integer_value', None)
+                intg_val = data.get('integer_value', None)
+                bool_val = data.get('bool_value', None)
+                integer_values = intg_val or bool_val
                 values = data.get('value', None)
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
@@ -360,7 +362,9 @@ class ParametersBase(object):
                 continue  # handle elsewhere in this method
             if name in self._vals:
                 vals_indexed = self._vals[name].get('cpi_inflated', False)
-                integer_values = self._vals[name].get('integer_value')
+                intg_val = self._vals[name].get('integer_value', None)
+                bool_val = self._vals[name].get('bool_value', None)
+                integer_values = intg_val or bool_val
             else:
                 msg = 'parameter name {} not in parameter values dictionary'
                 raise ValueError(msg.format(name))
@@ -396,7 +400,9 @@ class ParametersBase(object):
             pvalues = [cval[year - self.start_year]]
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            integer_values = self._vals[pname]['integer_value']
+            intg_val = self._vals[pname].get('integer_value', None)
+            bool_val = self._vals[pname].get('bool_value', None)
+            integer_values = intg_val or bool_val
             nval = self._expand_array(pvalues, integer_values,
                                       inflate=pindexed,
                                       inflation_rates=index_rates,
