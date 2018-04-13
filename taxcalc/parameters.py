@@ -94,9 +94,6 @@ class ParametersBase(object):
         """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                if not isinstance(name, six.string_types):
-                    msg = 'parameter name {} is not a string'
-                    raise ValueError(msg.format(name))
                 integer_values = data.get('integer_value', None)
                 values = data.get('value', None)
                 if values:
@@ -358,12 +355,8 @@ class ParametersBase(object):
             # determine indexing status of parameter with name for year
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
-            if name in self._vals:
-                vals_indexed = self._vals[name].get('cpi_inflated', False)
-                integer_values = self._vals[name].get('integer_value')
-            else:
-                msg = 'parameter name {} not in parameter values dictionary'
-                raise ValueError(msg.format(name))
+            vals_indexed = self._vals[name].get('cpi_inflated', False)
+            integer_values = self._vals[name].get('integer_value')
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
@@ -387,9 +380,6 @@ class ParametersBase(object):
         for name in unused_names:
             used_names.add(name)
             pname = name[:-4]  # root parameter name
-            if pname not in self._vals:
-                msg = 'root parameter name {} not in values dictionary'
-                raise ValueError(msg.format(pname))
             pindexed = year_mods[year][name]
             self._vals[pname]['cpi_inflated'] = pindexed  # remember status
             cval = getattr(self, pname, None)
