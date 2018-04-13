@@ -110,6 +110,8 @@ def test_correct_update_behavior():
 
 def test_incorrect_update_behavior():
     with pytest.raises(ValueError):
+        Behavior().update_behavior([])
+    with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_inc': [+0.2]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_sub': [-0.2]}})
