@@ -86,6 +86,8 @@ def test_json_file_contents(tests_path, fname):
     # check elements in each parameter sub-dictionary
     failures = ''
     for pname in allparams:
+        # all parameter names should be strings
+        assert isinstance(pname, six.string_types)
         param = allparams[pname]
         assert isinstance(param, dict)
         # check that param contains required keys
