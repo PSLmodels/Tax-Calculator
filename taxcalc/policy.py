@@ -14,7 +14,6 @@ from taxcalc.growdiff import Growdiff
 
 
 class Policy(ParametersBase):
-
     """
     Policy is a subclass of the abstract ParametersBase class, and
     therefore, inherits its methods (none of which are shown here).
@@ -127,8 +126,9 @@ class Policy(ParametersBase):
             if minimum YEAR in the YEAR:MODS pairs is less than start_year.
             if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
-            if Policy._validate_parameter_names_types generates error messages.
-            if Policy._validate_parameter_values generates error messages.
+            if raise_errors is True AND
+              _validate_parameter_names_types generates errors OR
+              _validate_parameter_values generates errors.
 
         Returns
         -------
@@ -204,7 +204,7 @@ class Policy(ParametersBase):
             msg = 'ERROR: {} YEAR reform provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # validate reform parameter names and types
-        self.paramter_warnings = ''
+        self.parameter_warnings = ''
         self.parameter_errors = ''
         self._validate_parameter_names_types(reform)
         if not self._ignore_errors and self.parameter_errors:

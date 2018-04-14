@@ -151,8 +151,8 @@ class Calculator(object):
         if verbose and sys.version_info.major == 2:  # running Python 2.7
             print('WARNING: Tax-Calculator packages for Python 2.7 will')
             print('         no longer be provided beginning in 2019')
-            print('         because Pandas is stopping development for 2.7.')
-            print('SOLUTION: upgrade to Python 3.6 now.')
+            print('         because Pandas is stopping development for 2.7')
+            print('SOLUTION: upgrade to Python 3.6 now')
         assert self.__policy.current_year == self.__records.current_year
         self.__stored_records = None
 

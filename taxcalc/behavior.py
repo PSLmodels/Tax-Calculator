@@ -7,7 +7,6 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 
 from __future__ import print_function
 import copy
-import six
 import numpy as np
 from taxcalc.policy import Policy
 from taxcalc.parameters import ParametersBase
@@ -87,11 +86,9 @@ class Behavior(ParametersBase):
             if minimum YEAR in the YEAR:MODS pairs is less than start_year.
             if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
-            If raise_errors is True AND:
-                if Behavior._validate_parameter_names_types generates error
-                messages.
-                if Behavior._validate_parameter_values generates error
-                messages.
+            if raise_errors is True AND
+              _validate_parameter_names_types generates error OR
+              _validate_parameter_values generates errors.
 
         Returns
         -------
@@ -178,13 +175,6 @@ class Behavior(ParametersBase):
         self._validate_parameter_values(revision_parameters)
         if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
-
-    def baseline_version(self):
-        startyear = self.start_year
-        numyears = self.num_years
-        blv = Behavior(start_year=startyear, num_years=numyears)
-        blv.set_year(self.current_year)
-        return blv
 
     def has_response(self):
         """
@@ -520,12 +510,6 @@ class Behavior(ParametersBase):
         Check values of parameters in specified parameter_set using
         range information from the current_law_policy.json file.
         """
-        # pylint: disable=too-many-locals
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-nested-blocks
-        rounding_error = 100.0
-        # above handles non-rounding of inflation-indexed parameter values
-        clp = self.baseline_version()
         parameters = sorted(parameters_set)
         syr = Behavior.JSON_START_YEAR
         for pname in parameters:
@@ -556,7 +540,6 @@ class Behavior(ParametersBase):
                                                    pvalue[idx],
                                                    vvalue[idx]) + '\n'
                         )
-        del clp
         del parameters
 
     @staticmethod
