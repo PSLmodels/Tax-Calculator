@@ -571,7 +571,7 @@ class Records(object):
                 b_path = os.path.basename(benefits_path)  # pragma: no cover
                 BEN_partial = read_egg_csv(b_path)  # pragma: no cover
         else:
-            msg = 'benefits is not Nont or a string or a Pandas DataFrame'
+            msg = 'benefits is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(BEN_partial, pd.DataFrame)
         # expand benefits DataFrame to include those who don't receive benefits

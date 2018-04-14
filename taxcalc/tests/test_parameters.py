@@ -88,9 +88,9 @@ def test_json_file_contents(tests_path, fname):
     for pname in allparams:
         # all parameter names should be strings
         assert isinstance(pname, six.string_types)
+        # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
-        # check that param contains required keys
         for key in reqkeys:
             assert key in param
         # check for non-empty long_name and description strings
