@@ -498,7 +498,7 @@ class Behavior(ParametersBase):
                                     '\n'
                                 )
                         elif int_param_type:
-                            if not pval_is_int: # pragma: no cover
+                            if not pval_is_int:  # pragma: no cover
                                 msg = '{} {} value {} is not integer'
                                 self.parameter_errors += (
                                     'ERROR: ' +
