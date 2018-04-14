@@ -359,7 +359,7 @@ class Calculator(object):
         """
         Calculator class embedded Policy object's reform_warnings.
         """
-        return self.__policy.reform_warnings
+        return self.__policy.parameter_warnings
 
     def policy_current_year(self, year=None):
         """
@@ -1383,14 +1383,14 @@ class Calculator(object):
             assert isinstance(policy_dicts, list)
             base = clp
             base.implement_reform(params['policy'])
-            assert not base.reform_errors
+            assert not base.parameter_errors
             for policy_dict in policy_dicts:
                 assert isinstance(policy_dict, dict)
                 doc += 'Policy Reform Parameter Values by Year:\n'
                 years = sorted(policy_dict.keys())
                 doc += param_doc(years, policy_dict, base)
                 base.implement_reform(policy_dict)
-                assert not base.reform_errors
+                assert not base.parameter_errors
         return doc
 
     def ce_aftertax_income(self, calc,

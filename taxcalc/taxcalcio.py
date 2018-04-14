@@ -289,7 +289,7 @@ class TaxCalcIO(object):
             base.implement_reform(basedict['policy'],
                                   print_warnings=False,
                                   raise_errors=False)
-            self.errmsg += base.reform_errors
+            self.errmsg += base.parameter_errors
         except ValueError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # ... the reform Policy object
@@ -300,7 +300,7 @@ class TaxCalcIO(object):
                     pol.implement_reform(poldict,
                                          print_warnings=False,
                                          raise_errors=False)
-                    self.errmsg += pol.reform_errors
+                    self.errmsg += pol.parameter_errors
                 except ValueError as valerr_msg:
                     self.errmsg += valerr_msg.__str__()
         else:

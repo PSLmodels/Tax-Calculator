@@ -260,8 +260,8 @@ def test_with_pufcsv(puf_fullsample):
 
 def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(USER_MODS)
-    assert len(msg_dict['warnings']) == 0
-    assert len(msg_dict['errors']) == 0
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) == 0
     bad1_mods = {
         'policy': {2020: {'_II_rt3': [1.4]}, 2021: {'_STD_Dep': [0]}},
         'consumption': {},
@@ -270,8 +270,8 @@ def test_reform_warnings_errors():
         'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad1_mods)
-    assert len(msg_dict['warnings']) > 0
-    assert len(msg_dict['errors']) > 0
+    assert len(msg_dict['policy']['warnings']) > 0
+    assert len(msg_dict['policy']['errors']) > 0
     bad2_mods = {
         'policy': {2020: {'_II_rt33': [0.4]}, 2021: {'_STD_Dep': [0]}},
         'consumption': {},
@@ -280,8 +280,14 @@ def test_reform_warnings_errors():
         'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad2_mods)
-    assert len(msg_dict['warnings']) == 0
-    assert len(msg_dict['errors']) > 0
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) > 0
+    bad3_mods = dict(USER_MODS, **{'behavior': {2017: {'_BE_inc': [0.8]}}})
+    msg_dict = reform_warnings_errors(bad3_mods)
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) == 0
+    assert len(msg_dict['behavior']['warnings']) == 0
+    assert len(msg_dict['behavior']['errors']) > 0
 
 
 @pytest.mark.pre_release
@@ -346,7 +352,7 @@ def test_behavioral_response(puf_subsample):
                 pol = Policy()
                 calc1 = Calculator(policy=pol, records=rec)
                 pol.implement_reform(params['policy'])
-                assert not pol.reform_errors
+                assert not pol.parameter_errors
                 beh = Behavior()
                 beh.update_behavior(params['behavior'])
                 calc2 = Calculator(policy=pol, records=rec, behavior=beh)

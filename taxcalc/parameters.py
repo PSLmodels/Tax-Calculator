@@ -391,9 +391,6 @@ class ParametersBase(object):
         for name in unused_names:
             used_names.add(name)
             pname = name[:-4]  # root parameter name
-            if pname not in self._vals:
-                msg = 'root parameter name {} not in values dictionary'
-                raise ValueError(msg.format(pname))
             pindexed = year_mods[year][name]
             self._vals[pname]['cpi_inflated'] = pindexed  # remember status
             cval = getattr(self, pname, None)

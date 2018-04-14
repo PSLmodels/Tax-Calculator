@@ -20,7 +20,7 @@ def test_reform_json_and_output(tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform method that
-    generates no reform_errors.
+    generates no parameter_errors.
     Then use each reform to generate static tax results for small set of
     filing units in a single tax_year and compare those results with
     expected results from a text file.
@@ -108,7 +108,7 @@ def test_reform_json_and_output(tests_path):
         if pre_tcja_baseline:
             pol.implement_reform(pre_tcja['policy'])
         pol.implement_reform(reform['policy'])
-        assert not pol.reform_errors
+        assert not pol.parameter_errors
         calc2 = Calculator(policy=pol, records=cases, verbose=False)
         calc2.advance_to_year(tax_year)
         calc2.calc_all()

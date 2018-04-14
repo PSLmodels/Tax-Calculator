@@ -808,8 +808,8 @@ def test_read_json_param_with_suffixes_and_errors():
     pol.ignore_reform_errors()
     pol.implement_reform(params['policy'],
                          print_warnings=False, raise_errors=False)
-    assert len(pol.reform_errors) > 0
-    assert len(pol.reform_warnings) > 0
+    assert len(pol.parameter_errors) > 0
+    assert len(pol.parameter_warnings) > 0
 
 
 def test_noreform_documentation():
@@ -896,7 +896,7 @@ def test_distribution_tables(cps_subsample):
                      '_UBI_1820': [1000],
                      '_UBI_21': [1000]}}
     pol.implement_reform(reform)
-    assert not pol.reform_errors
+    assert not pol.parameter_errors
     calc2 = Calculator(policy=pol, records=recs)
     calc2.calc_all()
     dt1, dt2 = calc1.distribution_tables(calc2)
@@ -911,7 +911,7 @@ def test_difference_table(cps_subsample):
     assert calc1.current_year == 2014
     reform = {2014: {'_SS_Earnings_c': [9e99]}}
     pol.implement_reform(reform)
-    assert not pol.reform_errors
+    assert not pol.parameter_errors
     calc2 = Calculator(policy=pol, records=recs)
     calc2.calc_all()
     diff = calc1.difference_table(calc2)
