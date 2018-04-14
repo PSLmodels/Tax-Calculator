@@ -94,7 +94,12 @@ class ParametersBase(object):
         """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                integer_values = data.get('integer_value', None)
+                if not isinstance(name, six.string_types):
+                    msg = 'parameter name {} is not a string'
+                    raise ValueError(msg.format(name))
+                intg_val = data.get('integer_value', None)
+                bool_val = data.get('bool_value', None)
+                integer_values = intg_val or bool_val
                 values = data.get('value', None)
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
@@ -355,8 +360,14 @@ class ParametersBase(object):
             # determine indexing status of parameter with name for year
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
-            vals_indexed = self._vals[name].get('cpi_inflated', False)
-            integer_values = self._vals[name].get('integer_value')
+            if name in self._vals:
+                vals_indexed = self._vals[name].get('cpi_inflated', False)
+                intg_val = self._vals[name].get('integer_value', None)
+                bool_val = self._vals[name].get('bool_value', None)
+                integer_values = intg_val or bool_val
+            else:
+                msg = 'parameter name {} not in parameter values dictionary'
+                raise ValueError(msg.format(name))
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
@@ -386,7 +397,9 @@ class ParametersBase(object):
             pvalues = [cval[year - self.start_year]]
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            integer_values = self._vals[pname]['integer_value']
+            intg_val = self._vals[pname].get('integer_value', None)
+            bool_val = self._vals[pname].get('bool_value', None)
+            integer_values = intg_val or bool_val
             nval = self._expand_array(pvalues, integer_values,
                                       inflate=pindexed,
                                       inflation_rates=index_rates,

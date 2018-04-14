@@ -51,7 +51,7 @@
         "col_var": "",
         "col_label": "",
         "boolean_value": true,
-        "integer_value": true,
+        "integer_value": false,
         "value": [false],
         "range": {"min": false, "max": true}
     },
