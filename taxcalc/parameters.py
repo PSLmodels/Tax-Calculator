@@ -94,9 +94,6 @@ class ParametersBase(object):
         """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                if not isinstance(name, six.string_types):
-                    msg = 'parameter name {} is not a string'
-                    raise ValueError(msg.format(name))
                 intg_val = data.get('integer_value', None)
                 bool_val = data.get('bool_value', None)
                 integer_values = intg_val or bool_val
@@ -360,14 +357,10 @@ class ParametersBase(object):
             # determine indexing status of parameter with name for year
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
-            if name in self._vals:
-                vals_indexed = self._vals[name].get('cpi_inflated', False)
-                intg_val = self._vals[name].get('integer_value', None)
-                bool_val = self._vals[name].get('bool_value', None)
-                integer_values = intg_val or bool_val
-            else:
-                msg = 'parameter name {} not in parameter values dictionary'
-                raise ValueError(msg.format(name))
+            vals_indexed = self._vals[name].get('cpi_inflated', False)
+            intg_val = self._vals[name].get('integer_value', None)
+            bool_val = self._vals[name].get('bool_value', None)
+            integer_values = intg_val or bool_val
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
