@@ -276,7 +276,11 @@ def test_create_tables(cps_subsample):
 
     # test creating various distribution tables
 
-    dist = create_distribution_table(calc2.distribution_table_dataframe(),
+    dvdf = calc2.distribution_table_dataframe()
+    dvdf = add_quantile_table_row_variable(dvdf, 'expanded_income',
+                                           num_quantiles=10,
+                                           decile_details=True)
+    dist = create_distribution_table(dvdf,
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -731,15 +735,20 @@ def test_add_income_trow_var_raises():
 
 def test_add_quantile_trow_var():
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
-    dfb = add_quantile_table_row_variable(dfx, 'expanded_income', 100,
+    dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
+                                          100, decile_details=False,
                                           weight_by_income_measure=False)
     bin_labels = dfb['table_row'].unique()
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
-    dfb = add_quantile_table_row_variable(dfx, 'expanded_income', 100,
+    dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
+                                          100, decile_details=False,
                                           weight_by_income_measure=True)
     assert 'table_row' in dfb
+    with pytest.raises(ValueError):
+        dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
+                                              100, decile_details=True)
 
 
 def test_dist_table_sum_row(cps_subsample):

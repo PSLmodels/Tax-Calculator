@@ -373,18 +373,16 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     if groupby == 'weighted_deciles':
         # compute top-decile row
         lenindex = len(dist_table.index)
-        if lenindex != 14:  # rows should be indexed from 0 to 13
-            msg = 'dist_table index length {} not equal to 14'
-            raise ValueError(msg.format(lenindex))
-        topdecile_row = get_sums(dist_table[11:lenindex])[dist_table.columns]
-        # move top-decile detail rows to make room for topdecile_row & sum_row
+        assert lenindex == 14  # rows should be indexed from 0 to 13
+        topdec_row = get_sums(dist_table[11:lenindex])[dist_table.columns]
+        # move top-decile detail rows to make room for topdec_row and sum_row
         dist_table = dist_table.reindex(range(0, lenindex + 2))
         dist_table.iloc[15] = dist_table.iloc[13]
         dist_table.iloc[14] = dist_table.iloc[12]
         dist_table.iloc[13] = dist_table.iloc[11]
         dist_table.iloc[12] = sum_row
-        dist_table.iloc[11] = topdecile_row
-        del topdecile_row
+        dist_table.iloc[11] = topdec_row
+        del topdec_row
     else:
         dist_table = dist_table.append(sum_row)
     del sum_row
