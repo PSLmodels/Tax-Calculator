@@ -180,7 +180,7 @@ def test_random_seed_from_subdict():
     assert seed1 == seed2
 
 
-def test_chooser_error():
+def test_chooser():
     dframe = pd.DataFrame(data=[[0, 1], [0, 2], [0, 3],
                                 [0, 4], [0, 5], [0, 6],
                                 [0, 7], [0, 8], [0, 9]],
@@ -188,8 +188,11 @@ def test_chooser_error():
     choices = chooser(dframe['positives'])
     assert isinstance(choices, list)
     assert len(choices) == dframe['positives'].size
-    with pytest.raises(ValueError):
-        chooser(dframe['zeros'])
+    assert choices.count(0) == 3
+    choices = chooser(dframe['zeros'])
+    assert isinstance(choices, list)
+    assert len(choices) == dframe['positives'].size
+    assert choices.count(0) == 0
 
 
 def test_create_dict_table():

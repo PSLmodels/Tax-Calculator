@@ -158,6 +158,7 @@ def weighted_sum(pdf, col_name):
 
 
 def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
+                                    decile_details=False,
                                     weight_by_income_measure=False):
     """
     Add a variable to specified Pandas DataFrame, pdf, that specifies the
@@ -165,8 +166,14 @@ def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
     filing units when weight_by_income_measure=False or equal number of
     income dollars when weight_by_income_measure=True.  Assumes that
     specified pdf contains columns for the specified income_measure and
-    for sample weights, s006.
+    for sample weights, s006.  When num_quantiles is 10 and decile_details
+    is True, the bottom decile is broken up into three subgroups (neg, zero,
+    and pos income_measure ) and the top decile is broken into three subgroups
+    (90-95, 95-99, and top 1%).
     """
+    if decile_details and num_quantiles != 10:
+        msg = 'decile_details is True when num_quantiles is {}'
+        raise ValueError(msg.format(num_quantiles))
     pdf.sort_values(by=income_measure, inplace=True)
     if weight_by_income_measure:
         pdf['cumsum_temp'] = np.cumsum(np.multiply(pdf[income_measure].values,
@@ -182,7 +189,15 @@ def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
                      np.arange(0, (num_quantiles + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
     bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
-    labels = range(1, (num_quantiles + 1))
+    num_bins = num_quantiles
+    if decile_details:
+        assert bin_edges[1] > 1e-9  # bin_edges[1] is top of bottom decile
+        bin_edges.insert(1, 1e-9)  # top of zeros
+        bin_edges.insert(1, -1e-9)  # top of negatives
+        bin_edges.insert(-1, bin_edges[-2] + 0.5 * bin_width)  # top of 90-95
+        bin_edges.insert(-1, bin_edges[-2] + 0.4 * bin_width)  # top of 95-99
+        num_bins += 4
+    labels = range(1, (num_bins + 1))
     pdf['table_row'] = pd.cut(pdf['cumsum_temp'],
                               bins=bin_edges, labels=labels)
     pdf.drop('cumsum_temp', axis=1, inplace=True)
@@ -303,7 +318,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
           positive (denoted by a 0-10p row label) values of the
           specified income_measure.
     """
-    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
+    # pylint: disable=too-many-statements,too-many-branches
     # nested function that returns calculated column statistics as a DataFrame
     def stat_dataframe(gpdf):
         """
@@ -334,54 +349,45 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # copy vdf and add variable columns
     res = copy.deepcopy(vdf)
     # sort the data given specified groupby and income_measure
-    if groupby == 'weighted_deciles':
-        pdf = add_quantile_table_row_variable(res, income_measure, 10)
-    elif groupby == 'standard_income_bins':
-        pdf = add_income_table_row_variable(res, income_measure,
-                                            bin_type='standard')
-    elif groupby == 'large_income_bins':
-        pdf = add_income_table_row_variable(res, income_measure,
-                                            bin_type='tpc')
-    elif groupby == 'small_income_bins':
-        pdf = add_income_table_row_variable(res, income_measure,
-                                            bin_type='soi')
-    # construct weighted_sum table
+    if 'table_row' in res.columns:
+        pdf = res
+    else:
+        if groupby == 'weighted_deciles':
+            pdf = add_quantile_table_row_variable(res, income_measure,
+                                                  10, decile_details=True)
+        elif groupby == 'standard_income_bins':
+            pdf = add_income_table_row_variable(res, income_measure,
+                                                bin_type='standard')
+        elif groupby == 'large_income_bins':
+            pdf = add_income_table_row_variable(res, income_measure,
+                                                bin_type='tpc')
+        elif groupby == 'small_income_bins':
+            pdf = add_income_table_row_variable(res, income_measure,
+                                                bin_type='soi')
+    # construct grouped DataFrame
     gpdf = pdf.groupby('table_row', as_index=False)
     dist_table = stat_dataframe(gpdf)
-    # append sum row
-    row = get_sums(dist_table)[dist_table.columns]
-    dist_table = dist_table.append(row)
-    del row
-    # replace bottom decile row with non-positive and positive rows
-    if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
-        del pdf
-        # bottom decile as its own DataFrame
-        pdf = copy.deepcopy(gpdf.get_group(1))
-        pdf['table_row'] = pd.cut(pdf[income_measure],
-                                  bins=[-9e99, -1e-9, 1e-9, 9e99],
-                                  labels=[1, 2, 3])
-        gpdfx = pdf.groupby('table_row', as_index=False)
-        rows = stat_dataframe(gpdfx)
-        dist_table = pd.concat([rows, dist_table.iloc[1:11]])
-        del rows
-        del gpdfx
-    # append top-decile-detail rows
+    # compute sum row
+    sum_row = get_sums(dist_table)[dist_table.columns]
+    # handle placement of sum_row in table
     if groupby == 'weighted_deciles':
-        del pdf
-        # top decile as its own DataFrame
-        pdf = copy.deepcopy(gpdf.get_group(10))
-        pdf = add_quantile_table_row_variable(pdf, income_measure, 10)
-        pdf['table_row'].replace(to_replace=[1, 2, 3, 4, 5],
-                                 value=[0, 0, 0, 0, 0], inplace=True)
-        pdf['table_row'].replace(to_replace=[6, 7, 8, 9],
-                                 value=[1, 1, 1, 1], inplace=True)
-        pdf['table_row'].replace(to_replace=[10],
-                                 value=[2], inplace=True)
-        gpdfx = pdf.groupby('table_row', as_index=False)
-        rows = stat_dataframe(gpdfx)
-        dist_table = dist_table.append(rows, ignore_index=True)
-        del rows
-        del gpdfx
+        # compute top-decile row
+        lenindex = len(dist_table.index)
+        if lenindex != 14:  # rows should be indexed from 0 to 13
+            msg = 'dist_table index length {} not equal to 14'
+            raise ValueError(msg.format(lenindex))
+        topdecile_row = get_sums(dist_table[11:lenindex])[dist_table.columns]
+        # move top-decile detail rows to make room for topdecile_row & sum_row
+        dist_table = dist_table.reindex(range(0, lenindex + 2))
+        dist_table.iloc[15] = dist_table.iloc[13]
+        dist_table.iloc[14] = dist_table.iloc[12]
+        dist_table.iloc[13] = dist_table.iloc[11]
+        dist_table.iloc[12] = sum_row
+        dist_table.iloc[11] = topdecile_row
+        del topdecile_row
+    else:
+        dist_table = dist_table.append(sum_row)
+    del sum_row
     # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
