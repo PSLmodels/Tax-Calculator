@@ -169,16 +169,13 @@ def test_create_tables(cps_subsample):
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
-        test_failure
+        test_failure = True
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
 
-    vdf1 = calc1.dataframe(DIFF_VARIABLES)
-    vdf2 = calc2.dataframe(DIFF_VARIABLES)
-    add_quantile_table_row_variable(vdf2, 'expanded_income',
-                                    10, decile_details=True)
-    diff = create_difference_table(vdf1, vdf2,
+    diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                   calc2.dataframe(DIFF_VARIABLES),
                                    groupby='weighted_deciles',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
