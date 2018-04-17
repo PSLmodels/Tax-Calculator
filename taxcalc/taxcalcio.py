@@ -606,6 +606,7 @@ class TaxCalcIO(object):
         Write to tfile the tkind decile table using dfx DataFrame.
         """
         dfx = add_quantile_table_row_variable(dfx, 'expanded_income', 10,
+                                              decile_details=False,
                                               weight_by_income_measure=False)
         gdfx = dfx.groupby('table_row', as_index=False)
         rtns_series = gdfx.apply(unweighted_sum, 's006')
