@@ -477,6 +477,7 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     # main logic of create_difference_table
     assert isinstance(vdf1, pd.DataFrame)
     assert isinstance(vdf2, pd.DataFrame)
+    assert np.allclose(vdf1['s006'], vdf2['s006'])  # check rows in same order
     assert (groupby == 'weighted_deciles' or
             groupby == 'standard_income_bins' or
             groupby == 'large_income_bins' or
@@ -495,21 +496,18 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     res2['atinc1'] = res1['aftertax_income']
     res2['atinc2'] = res2['aftertax_income']
     # add table_row column to res2 given specified groupby and income_measure
-    if 'table_row' in res2:
-        pdf = res2
-    else:
-        if groupby == 'weighted_deciles':
-            pdf = add_quantile_table_row_variable(res2, income_measure,
-                                                  10, decile_details=True)
-        elif groupby == 'standard_income_bins':
-            pdf = add_income_table_row_variable(res2, income_measure,
-                                                bin_type='standard')
-        elif groupby == 'large_income_bins':
-            pdf = add_income_table_row_variable(res2, income_measure,
-                                                bin_type='tpc')
-        elif groupby == 'small_income_bins':
-            pdf = add_income_table_row_variable(res2, income_measure,
-                                                bin_type='soi')
+    if groupby == 'weighted_deciles':
+        pdf = add_quantile_table_row_variable(res2, baseline_income_measure,
+                                              10, decile_details=True)
+    elif groupby == 'standard_income_bins':
+        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+                                            bin_type='standard')
+    elif groupby == 'large_income_bins':
+        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+                                            bin_type='tpc')
+    elif groupby == 'small_income_bins':
+        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+                                            bin_type='soi')
     # create grouped Pandas DataFrame
     gpdf = pdf.groupby('table_row', as_index=False)
     # create additive difference table statistics from gpdf
@@ -537,18 +535,24 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     del pdf
     # compute non-additive stats in each table cell
     count = diff_table['count']
-    diff_table['perc_cut'] = np.where(count > 0,
-                                      100 * diff_table['tax_cut'] / count, 0)
-    diff_table['perc_inc'] = np.where(count > 0,
-                                      100 * diff_table['tax_inc'] / count, 0)
-    diff_table['mean'] = np.where(count > 0,
-                                  diff_table['tot_change'] / count, 0)
+    diff_table['perc_cut'] = np.where(count > 0.,
+                                      100 * diff_table['tax_cut'] / count,
+                                      0.)
+    diff_table['perc_inc'] = np.where(count > 0.,
+                                      100 * diff_table['tax_inc'] / count,
+                                      0.)
+    diff_table['mean'] = np.where(count > 0.,
+                                  diff_table['tot_change'] / count,
+                                  0.)
     total_change = sum_row['tot_change']
-    diff_table['share_of_change'] = np.where(total_change == 0, np.nan,
+    diff_table['share_of_change'] = np.where(total_change == 0.,
+                                             np.nan,
                                              (100 * diff_table['tot_change'] /
                                               total_change))
-    diff_table['pc_aftertaxinc'] = (100 * (diff_table['atinc2'] /
-                                           diff_table['atinc1'] - 1))
+    diff_table['pc_aftertaxinc'] = np.where(diff_table['atinc1'] == 0.,
+                                            np.nan,
+                                            (100 * (diff_table['atinc2'] /
+                                                    diff_table['atinc1'] - 1)))
     # delete intermediate Pandas DataFrame objects
     del diff_table['atinc1']
     del diff_table['atinc2']

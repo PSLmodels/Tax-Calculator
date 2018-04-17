@@ -346,10 +346,12 @@ def create_results_columns(df1, df2, mask):
             df2 = add_quantile_table_row_variable(df2, imeasure,
                                                   10, decile_details=True)
             gdf2 = df2.groupby('table_row')
+            del df2['table_row']
         elif bin_type == 'bin':
             df2 = add_income_table_row_variable(df2, imeasure,
                                                 bins=STANDARD_INCOME_BINS)
             gdf2 = df2.groupby('table_row')
+            del df2['table_row']
         else:
             gdf2 = df2
         if do_fuzzing:
@@ -395,17 +397,22 @@ def summary(df1, df2, mask):
     # pylint: disable=too-many-statements,too-many-locals
 
     df2_xdec, df2_xbin, df2_aggr = create_results_columns(df1, df2, mask)
-    del df2
+    df1_xdec = add_quantile_table_row_variable(df1, 'expanded_income',
+                                               10, decile_details=True)
+    del df1_xdec['table_row']
+    df1_xbin = add_income_table_row_variable(df1, 'expanded_income',
+                                             bins=STANDARD_INCOME_BINS)
+    del df1_xbin['table_row']
 
     summ = dict()
 
     # tax difference totals between reform and baseline
     tdiff = df2_aggr['iitax_agg'] - df1['iitax']
-    aggr_itax_d = (tdiff * df1['s006']).sum()
+    aggr_itax_d = (tdiff * df2['s006']).sum()
     tdiff = df2_aggr['payrolltax_agg'] - df1['payrolltax']
-    aggr_ptax_d = (tdiff * df1['s006']).sum()
+    aggr_ptax_d = (tdiff * df2['s006']).sum()
     tdiff = df2_aggr['combined_agg'] - df1['combined']
-    aggr_comb_d = (tdiff * df1['s006']).sum()
+    aggr_comb_d = (tdiff * df2['s006']).sum()
     aggrd = [aggr_itax_d, aggr_ptax_d, aggr_comb_d]
     summ['aggr_d'] = pd.DataFrame(data=aggrd, index=AGGR_ROW_NAMES)
 
@@ -417,30 +424,33 @@ def summary(df1, df2, mask):
     summ['aggr_1'] = pd.DataFrame(data=aggr1, index=AGGR_ROW_NAMES)
 
     # totals for reform
-    aggr_itax_2 = (df2_aggr['iitax_agg'] * df1['s006']).sum()
-    aggr_ptax_2 = (df2_aggr['payrolltax_agg'] * df1['s006']).sum()
-    aggr_comb_2 = (df2_aggr['combined_agg'] * df1['s006']).sum()
+    aggr_itax_2 = (df2_aggr['iitax_agg'] * df2['s006']).sum()
+    aggr_ptax_2 = (df2_aggr['payrolltax_agg'] * df2['s006']).sum()
+    aggr_comb_2 = (df2_aggr['combined_agg'] * df2['s006']).sum()
     aggr2 = [aggr_itax_2, aggr_ptax_2, aggr_comb_2]
     summ['aggr_2'] = pd.DataFrame(data=aggr2, index=AGGR_ROW_NAMES)
+
+    del df1
+    del df2
 
     # create difference tables grouped by xdec
     df2_xdec['iitax'] = df2_xdec['iitax_xdec']
     summ['diff_itax_xdec'] = \
-        create_difference_table(df1, df2_xdec,
+        create_difference_table(df1_xdec, df2_xdec,
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
 
     df2_xdec['payrolltax'] = df2_xdec['payrolltax_xdec']
     summ['diff_ptax_xdec'] = \
-        create_difference_table(df1, df2_xdec,
+        create_difference_table(df1_xdec, df2_xdec,
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='payrolltax')
 
     df2_xdec['combined'] = df2_xdec['combined_xdec']
     summ['diff_comb_xdec'] = \
-        create_difference_table(df1, df2_xdec,
+        create_difference_table(df1_xdec, df2_xdec,
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='combined')
@@ -448,7 +458,7 @@ def summary(df1, df2, mask):
     # create difference tables grouped by xbin
     df2_xbin['iitax'] = df2_xbin['iitax_xbin']
     diff_itax_xbin = \
-        create_difference_table(df1, df2_xbin,
+        create_difference_table(df1_xdec, df2_xbin,
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
@@ -456,7 +466,7 @@ def summary(df1, df2, mask):
 
     df2_xbin['payrolltax'] = df2_xbin['payrolltax_xbin']
     diff_ptax_xbin = \
-        create_difference_table(df1, df2_xbin,
+        create_difference_table(df1_xbin, df2_xbin,
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='payrolltax')
@@ -464,7 +474,7 @@ def summary(df1, df2, mask):
 
     df2_xbin['combined'] = df2_xbin['combined_xbin']
     diff_comb_xbin = \
-        create_difference_table(df1, df2_xbin,
+        create_difference_table(df1_xbin, df2_xbin,
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='combined')
@@ -472,7 +482,7 @@ def summary(df1, df2, mask):
 
     # create distribution tables grouped by xdec
     summ['dist1_xdec'] = \
-        create_distribution_table(df1, groupby='weighted_deciles',
+        create_distribution_table(df1_xdec, groupby='weighted_deciles',
                                   income_measure='expanded_income',
                                   result_type='weighted_sum')
 
@@ -481,7 +491,7 @@ def summary(df1, df2, mask):
     for col in df2_cols_with_suffix:
         root_col_name = col.replace(suffix, '')
         df2_xdec[root_col_name] = df2_xdec[col]
-    df2_xdec['expanded_income_baseline'] = df1['expanded_income']
+    df2_xdec['expanded_income_baseline'] = df1_xdec['expanded_income']
     summ['dist2_xdec'] = \
         create_distribution_table(df2_xdec, groupby='weighted_deciles',
                                   income_measure='expanded_income_baseline',
@@ -489,7 +499,7 @@ def summary(df1, df2, mask):
 
     # create distribution tables grouped by xbin
     dist1_xbin = \
-        create_distribution_table(df1, groupby='standard_income_bins',
+        create_distribution_table(df1_xbin, groupby='standard_income_bins',
                                   income_measure='expanded_income',
                                   result_type='weighted_sum')
     summ['dist1_xbin'] = dist1_xbin
@@ -499,7 +509,7 @@ def summary(df1, df2, mask):
     for col in df2_cols_with_suffix:
         root_col_name = col.replace(suffix, '')
         df2_xbin[root_col_name] = df2_xbin[col]
-    df2_xbin['expanded_income_baseline'] = df1['expanded_income']
+    df2_xbin['expanded_income_baseline'] = df1_xbin['expanded_income']
     dist2_xbin = \
         create_distribution_table(df2_xbin, groupby='standard_income_bins',
                                   income_measure='expanded_income_baseline',
