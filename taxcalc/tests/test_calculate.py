@@ -905,14 +905,16 @@ def test_distribution_tables(cps_subsample):
 
 
 def test_difference_table(cps_subsample):
+    cyr = 2014
     pol = Policy()
     recs = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=recs)
-    assert calc1.current_year == 2014
-    reform = {2014: {'_SS_Earnings_c': [9e99]}}
+    assert calc1.current_year == cyr
+    reform = {cyr: {'_SS_Earnings_c': [9e99]}}
     pol.implement_reform(reform)
-    assert not pol.parameter_errors
     calc2 = Calculator(policy=pol, records=recs)
+    assert calc2.current_year == cyr
+    calc1.calc_all()
     calc2.calc_all()
     diff = calc1.difference_table(calc2)
     assert isinstance(diff, pd.DataFrame)

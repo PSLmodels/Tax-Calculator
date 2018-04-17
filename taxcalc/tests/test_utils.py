@@ -194,8 +194,8 @@ def test_create_tables(cps_subsample):
                 116996252,
                 102458801,
                 580961247,
-                62524760,
-                34296230,
+                63156380,
+                33664610,
                 5637811]
     tabcol = 'tot_change'
     if not np.allclose(diff[tabcol].values, expected,
@@ -217,8 +217,8 @@ def test_create_tables(cps_subsample):
                 20.14,
                 17.64,
                 100.00,
-                10.76,
-                5.90,
+                10.87,
+                5.79,
                 0.97]
     tabcol = 'share_of_change'
     if not np.allclose(diff[tabcol].values, expected,
