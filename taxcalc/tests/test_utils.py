@@ -26,7 +26,6 @@ from taxcalc.utils import (DIST_VARIABLES,
                            weighted_count, weighted_sum, weighted_mean,
                            wage_weighted, agi_weighted,
                            expanded_income_weighted,
-                           weighted_perc_inc, weighted_perc_cut,
                            add_income_table_row_variable,
                            add_quantile_table_row_variable,
                            mtr_graph_data, atr_graph_data, dec_graph_data,
@@ -170,13 +169,16 @@ def test_create_tables(cps_subsample):
     tabcol = 'pc_aftertaxinc'
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
-        test_failure = True
+        test_failure
         print('diff', tabcol)
         for val in diff[tabcol].values:
             print('{:.2f},'.format(val))
 
-    diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
-                                   calc2.dataframe(DIFF_VARIABLES),
+    vdf1 = calc1.dataframe(DIFF_VARIABLES)
+    vdf2 = calc2.dataframe(DIFF_VARIABLES)
+    add_quantile_table_row_variable(vdf2, 'expanded_income',
+                                    10, decile_details=True)
+    diff = create_difference_table(vdf1, vdf2,
                                    groupby='weighted_deciles',
                                    income_measure='expanded_income',
                                    tax_to_diff='combined')
@@ -633,24 +635,6 @@ def test_weighted_sum():
     grouped = dfx.groupby('label')
     diffs = grouped.apply(weighted_sum, 'tax_diff')
     exp = pd.Series(data=[16.0, 26.0], index=['a', 'b'])
-    exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
-
-
-def test_weighted_perc_inc():
-    dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
-    grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_perc_inc, 'tax_diff')
-    exp = pd.Series(data=[8. / 12., 1.0], index=['a', 'b'])
-    exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
-
-
-def test_weighted_perc_cut():
-    dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
-    grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_perc_cut, 'tax_diff')
-    exp = pd.Series(data=[4. / 12., 0.0], index=['a', 'b'])
     exp.index.name = 'label'
     pd.util.testing.assert_series_equal(exp, diffs)
 

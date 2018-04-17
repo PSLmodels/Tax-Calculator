@@ -23,9 +23,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count_gt_zero,
                                weighted_count, weighted_mean,
                                wage_weighted, agi_weighted,
-                               expanded_income_weighted,
-                               weighted_perc_cut,
-                               weighted_perc_inc)
+                               expanded_income_weighted)
 
 
 # Items in the DIST_TABLE_COLUMNS list below correspond to the items in the
