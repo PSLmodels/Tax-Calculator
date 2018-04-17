@@ -276,7 +276,11 @@ def test_create_tables(cps_subsample):
 
     # test creating various distribution tables
 
-    dist = create_distribution_table(calc2.distribution_table_dataframe(),
+    dvdf = calc2.distribution_table_dataframe()
+    dvdf = add_quantile_table_row_variable(dvdf, 'expanded_income',
+                                           num_quantiles=10,
+                                           decile_details=True)
+    dist = create_distribution_table(dvdf,
                                      groupby='weighted_deciles',
                                      income_measure='expanded_income',
                                      result_type='weighted_sum')
@@ -294,9 +298,9 @@ def test_create_tables(cps_subsample):
                 1731283600,
                 7090603505,
                 10783103907,
-                1619214423,
-                2229272486,
-                3242116596]
+                1638192777,
+                2213960052,
+                3238450675]
     tabcol = 'iitax'
     if not np.allclose(dist[tabcol].values, expected,
                        atol=0.5, rtol=0.0):
@@ -317,9 +321,9 @@ def test_create_tables(cps_subsample):
                 118523,
                 128886,
                 596211,
-                63290,
-                52259,
-                13337]
+                63986,
+                51634,
+                13266]
     tabcol = 'num_returns_ItemDed'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -340,9 +344,9 @@ def test_create_tables(cps_subsample):
                 19832126806,
                 44213000235,
                 118830346631,
-                14255710430,
-                16985739736,
-                12971550069]
+                14399218059,
+                16868648076,
+                12945134101]
     tabcol = 'expanded_income'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -363,9 +367,9 @@ def test_create_tables(cps_subsample):
                 16273592612,
                 33915377411,
                 98282178334,
-                11241322851,
-                13483478786,
-                9190575773]
+                11345456373,
+                13400757263,
+                9169163776]
     tabcol = 'aftertax_income'
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
@@ -731,15 +735,20 @@ def test_add_income_trow_var_raises():
 
 def test_add_quantile_trow_var():
     dfx = pd.DataFrame(data=DATA, columns=['expanded_income', 's006', 'label'])
-    dfb = add_quantile_table_row_variable(dfx, 'expanded_income', 100,
+    dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
+                                          100, decile_details=False,
                                           weight_by_income_measure=False)
     bin_labels = dfb['table_row'].unique()
     default_labels = set(range(1, 101))
     for lab in bin_labels:
         assert lab in default_labels
-    dfb = add_quantile_table_row_variable(dfx, 'expanded_income', 100,
+    dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
+                                          100, decile_details=False,
                                           weight_by_income_measure=True)
     assert 'table_row' in dfb
+    with pytest.raises(ValueError):
+        dfb = add_quantile_table_row_variable(dfx, 'expanded_income',
+                                              100, decile_details=True)
 
 
 def test_dist_table_sum_row(cps_subsample):
