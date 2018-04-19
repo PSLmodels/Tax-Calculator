@@ -34,7 +34,7 @@ diff $OUT index.res
 echo "*********************************************************************"
 
 # remind how to convert graph *.html files to *.png files
-echo "==> open cps-24-#-ref3-#-atr.html and save as atr.pnf"
+echo "==> open cps-24-#-ref3-#-atr.html and save as atr.png"
 echo "==> open cps-24-#-ref3-#-mtr.html and save as mtr.png"
 echo "==> open cps-24-#-ref3-#-pch.html and save as pch.png"
 
