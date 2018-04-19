@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-04-?? Release 0.19.0
+2018-04-19 Release 0.19.0
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#1977](https://github.com/open-source-economics/Tax-Calculator/pull/1977))
 
 **API Changes**
 - Improve data quality of several CPS age variables, which causes changes in CPS tax results
@@ -18,6 +18,11 @@ for a complete commit history.
 - Add validity checking for revised values of behavioral response parameters
   [[#1952](https://github.com/open-source-economics/Tax-Calculator/pull/1952)
   by Hank Doupe]
+- Strengthen logic that prevents disclosure of details of filing units in PUF
+  [[#1972](https://github.com/open-source-economics/Tax-Calculator/pull/1972)
+   [#1973](https://github.com/open-source-economics/Tax-Calculator/pull/1973)
+   [#1976](https://github.com/open-source-economics/Tax-Calculator/pull/1976)
+  by Martin Holmer]
 
 **Bug Fixes**
 - Fix loose checking of the data type of parameters in reform dictionaries passed to the Policy class `implement_reform` method
@@ -26,9 +31,12 @@ for a complete commit history.
 - Fix tables diagnostic and distribution tables so that itemizers plus standard-deduction takers equals total returns
   [[#1964](https://github.com/open-source-economics/Tax-Calculator/pull/1964)
   by Martin Holmer]
-- Fix confusing documentation of the datatype of parameters
+- Fix confusing documentation of the data type of parameters
   [[#1970](https://github.com/open-source-economics/Tax-Calculator/pull/1970)
   by Martin Holmer as suggested by Hank Doupe]
+- Fix bug in TCJA tax calculations for those with large business losses
+  [[#1977](https://github.com/open-source-economics/Tax-Calculator/pull/1977)
+  by Martin Holmer based on bug report by Ernie Tedeschi]
 
 
 2018-03-30 Release 0.18.0
