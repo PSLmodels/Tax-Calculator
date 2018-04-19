@@ -201,7 +201,7 @@ def fixture_tc_objs(request, reform_xx, puf_subsample, cps_subsample):
     """
     puftest = request.param
     p_xx = Policy()
-    p_xx.implement_reform(reform_xx)
+    p_xx.implement_reform(reform_xx, raise_errors=False)
     if puftest:
         rec_xx = Records(data=puf_subsample)
     else:
@@ -274,7 +274,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
         else:
             rec_yy = Records.cps_constructor(data=cps_subsample)
         p_yy = Policy()
-        p_yy.implement_reform(max_reform)
+        p_yy.implement_reform(max_reform, raise_errors=False)
         c_yy = Calculator(policy=p_yy, records=rec_yy, verbose=False)
         c_yy.advance_to_year(TEST_YEAR)
         c_yy.calc_all()
@@ -292,7 +292,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
         # assess whether min reform changes results, if max reform did not
         if max_reform_change == 0:
             p_yy = Policy()
-            p_yy.implement_reform(min_reform)
+            p_yy.implement_reform(min_reform, raise_errors=False)
             c_yy = Calculator(policy=p_yy, records=rec_xx)
             c_yy.advance_to_year(TEST_YEAR)
             c_yy.calc_all()

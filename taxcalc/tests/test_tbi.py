@@ -338,7 +338,7 @@ def test_behavioral_response(puf_subsample):
         'return_dict': False
     }
     # generate aggregate results two ways: using tbi and standard calls
-    num_years = 9
+    num_years = 8
     std_res = dict()
     tbi_res = dict()
     for using_tbi in [True, False]:
@@ -390,7 +390,7 @@ def test_behavioral_response(puf_subsample):
     # NOTE that the tbi results have been "fuzzed" for PUF privacy reasons,
     #      so there is no expectation that the results should be identical.
     no_diffs = True
-    reltol = 2.5e-3  # std and tbi differ if more than 0.25 percent different
+    reltol = 0.020  # std and tbi differ if more than 2.0 percent different
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
         col = '0_{}'.format(year)

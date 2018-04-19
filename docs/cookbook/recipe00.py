@@ -31,9 +31,6 @@ params = Calculator.read_json_param_objects(reform=reform_filename,
 
 # specify Calculator object for static analysis of reform policy
 pol.implement_reform(params['policy'])
-if pol.reform_errors:  # check for reform error messages
-    print(pol.reform_errors)
-    exit(1)
 calc2 = Calculator(policy=pol, records=recs)
 
 # calculate reform income tax liabilities for cyr
