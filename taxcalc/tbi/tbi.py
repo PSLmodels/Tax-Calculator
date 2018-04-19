@@ -15,7 +15,6 @@ tax results.
 # pylint --disable=locally-disabled tbi.py
 
 from __future__ import print_function
-import gc
 import time
 import numpy as np
 import pandas as pd
@@ -101,12 +100,12 @@ def run_nth_year_tax_calc_model(year_n, start_year,
 
     start_time = time.time()
 
-    # create calc1 and calc2 calculated for year_n and mask
+    # create calc1 and calc2 calculated for year_n
     check_years_return_first_year(year_n, start_year, use_puf_not_cps)
-    (calc1, calc2, mask) = calculate(year_n, start_year,
-                                     use_puf_not_cps, use_full_sample,
-                                     user_mods,
-                                     behavior_allowed=True)
+    (calc1, calc2) = calculate(year_n, start_year,
+                               use_puf_not_cps, use_full_sample,
+                               user_mods,
+                               behavior_allowed=True)
 
     # extract raw results from calc1 and calc2
     rawres1 = calc1.distribution_table_dataframe()
@@ -115,7 +114,6 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     # delete calc1 and calc2 now that raw results have been extracted
     del calc1
     del calc2
-    gc.collect()
 
     # seed random number generator with a seed value based on user_mods
     seed = random_seed(user_mods)
@@ -123,10 +121,9 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     np.random.seed(seed)  # pylint: disable=no-member
 
     # construct TaxBrain summary results from raw results
-    summ = summary(rawres1, rawres2, mask)
+    summ = summary(rawres1, rawres2, use_puf_not_cps)
     del rawres1
     del rawres2
-    gc.collect()
 
     def append_year(pdf):
         """
@@ -202,11 +199,11 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     fyear = check_years_return_first_year(year_n, start_year, use_puf_not_cps)
     if year_n > 0 and (start_year + year_n) > fyear:
         # create calc1 and calc2 calculated for year_n - 1
-        (calc1, calc2, _) = calculate((year_n - 1), start_year,
-                                      use_puf_not_cps,
-                                      use_full_sample,
-                                      user_mods,
-                                      behavior_allowed=False)
+        (calc1, calc2) = calculate((year_n - 1), start_year,
+                                   use_puf_not_cps,
+                                   use_full_sample,
+                                   user_mods,
+                                   behavior_allowed=False)
         # compute GDP effect given specified gdp_elasticity
         gdp_effect = proportional_change_in_gdp((start_year + year_n),
                                                 calc1, calc2, gdp_elasticity)
