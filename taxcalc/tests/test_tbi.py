@@ -292,7 +292,7 @@ def test_reform_warnings_errors():
     assert len(msg_dict['behavior']['warnings']) == 0
     assert len(msg_dict['behavior']['errors']) > 0
 
-@pytest.mark.one
+
 @pytest.mark.pre_release
 @pytest.mark.tbi_vs_std_behavior
 @pytest.mark.requires_pufcsv
