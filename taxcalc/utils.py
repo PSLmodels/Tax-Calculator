@@ -23,9 +23,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
                                weighted_count_gt_zero,
                                weighted_count, weighted_mean,
                                wage_weighted, agi_weighted,
-                               expanded_income_weighted,
-                               weighted_perc_inc, weighted_perc_cut,
-                               EPSILON)
+                               expanded_income_weighted)
 
 
 # Items in the DIST_TABLE_COLUMNS list below correspond to the items in the
@@ -158,6 +156,7 @@ def weighted_sum(pdf, col_name):
 
 
 def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
+                                    decile_details=False,
                                     weight_by_income_measure=False):
     """
     Add a variable to specified Pandas DataFrame, pdf, that specifies the
@@ -165,8 +164,14 @@ def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
     filing units when weight_by_income_measure=False or equal number of
     income dollars when weight_by_income_measure=True.  Assumes that
     specified pdf contains columns for the specified income_measure and
-    for sample weights, s006.
+    for sample weights, s006.  When num_quantiles is 10 and decile_details
+    is True, the bottom decile is broken up into three subgroups (neg, zero,
+    and pos income_measure ) and the top decile is broken into three subgroups
+    (90-95, 95-99, and top 1%).
     """
+    if decile_details and num_quantiles != 10:
+        msg = 'decile_details is True when num_quantiles is {}'
+        raise ValueError(msg.format(num_quantiles))
     pdf.sort_values(by=income_measure, inplace=True)
     if weight_by_income_measure:
         pdf['cumsum_temp'] = np.cumsum(np.multiply(pdf[income_measure].values,
@@ -182,7 +187,15 @@ def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
                      np.arange(0, (num_quantiles + 1)) * bin_width)
     bin_edges[-1] = 9e99  # raise top of last bin to include all observations
     bin_edges[0] = -9e99  # lower bottom of 1st bin to include all observations
-    labels = range(1, (num_quantiles + 1))
+    num_bins = num_quantiles
+    if decile_details:
+        assert bin_edges[1] > 1e-9  # bin_edges[1] is top of bottom decile
+        bin_edges.insert(1, 1e-9)  # top of zeros
+        bin_edges.insert(1, -1e-9)  # top of negatives
+        bin_edges.insert(-1, bin_edges[-2] + 0.5 * bin_width)  # top of 90-95
+        bin_edges.insert(-1, bin_edges[-2] + 0.4 * bin_width)  # top of 95-99
+        num_bins += 4
+    labels = range(1, (num_bins + 1))
     pdf['table_row'] = pd.cut(pdf['cumsum_temp'],
                               bins=bin_edges, labels=labels)
     pdf.drop('cumsum_temp', axis=1, inplace=True)
@@ -303,7 +316,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
           positive (denoted by a 0-10p row label) values of the
           specified income_measure.
     """
-    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
+    # pylint: disable=too-many-statements,too-many-branches
     # nested function that returns calculated column statistics as a DataFrame
     def stat_dataframe(gpdf):
         """
@@ -334,54 +347,43 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # copy vdf and add variable columns
     res = copy.deepcopy(vdf)
     # sort the data given specified groupby and income_measure
-    if groupby == 'weighted_deciles':
-        pdf = add_quantile_table_row_variable(res, income_measure, 10)
-    elif groupby == 'standard_income_bins':
-        pdf = add_income_table_row_variable(res, income_measure,
-                                            bin_type='standard')
-    elif groupby == 'large_income_bins':
-        pdf = add_income_table_row_variable(res, income_measure,
-                                            bin_type='tpc')
-    elif groupby == 'small_income_bins':
-        pdf = add_income_table_row_variable(res, income_measure,
-                                            bin_type='soi')
-    # construct weighted_sum table
+    if 'table_row' in res.columns:
+        pdf = res
+    else:
+        if groupby == 'weighted_deciles':
+            pdf = add_quantile_table_row_variable(res, income_measure,
+                                                  10, decile_details=True)
+        elif groupby == 'standard_income_bins':
+            pdf = add_income_table_row_variable(res, income_measure,
+                                                bin_type='standard')
+        elif groupby == 'large_income_bins':
+            pdf = add_income_table_row_variable(res, income_measure,
+                                                bin_type='tpc')
+        elif groupby == 'small_income_bins':
+            pdf = add_income_table_row_variable(res, income_measure,
+                                                bin_type='soi')
+    # construct grouped DataFrame
     gpdf = pdf.groupby('table_row', as_index=False)
     dist_table = stat_dataframe(gpdf)
-    # append sum row
-    row = get_sums(dist_table)[dist_table.columns]
-    dist_table = dist_table.append(row)
-    del row
-    # replace bottom decile row with non-positive and positive rows
-    if groupby == 'weighted_deciles' and pdf[income_measure].min() <= 0:
-        del pdf
-        # bottom decile as its own DataFrame
-        pdf = copy.deepcopy(gpdf.get_group(1))
-        pdf['table_row'] = pd.cut(pdf[income_measure],
-                                  bins=[-9e99, -1e-9, 1e-9, 9e99],
-                                  labels=[1, 2, 3])
-        gpdfx = pdf.groupby('table_row', as_index=False)
-        rows = stat_dataframe(gpdfx)
-        dist_table = pd.concat([rows, dist_table.iloc[1:11]])
-        del rows
-        del gpdfx
-    # append top-decile-detail rows
+    # compute sum row
+    sum_row = get_sums(dist_table)[dist_table.columns]
+    # handle placement of sum_row in table
     if groupby == 'weighted_deciles':
-        del pdf
-        # top decile as its own DataFrame
-        pdf = copy.deepcopy(gpdf.get_group(10))
-        pdf = add_quantile_table_row_variable(pdf, income_measure, 10)
-        pdf['table_row'].replace(to_replace=[1, 2, 3, 4, 5],
-                                 value=[0, 0, 0, 0, 0], inplace=True)
-        pdf['table_row'].replace(to_replace=[6, 7, 8, 9],
-                                 value=[1, 1, 1, 1], inplace=True)
-        pdf['table_row'].replace(to_replace=[10],
-                                 value=[2], inplace=True)
-        gpdfx = pdf.groupby('table_row', as_index=False)
-        rows = stat_dataframe(gpdfx)
-        dist_table = dist_table.append(rows, ignore_index=True)
-        del rows
-        del gpdfx
+        # compute top-decile row
+        lenindex = len(dist_table.index)
+        assert lenindex == 14  # rows should be indexed from 0 to 13
+        topdec_row = get_sums(dist_table[11:lenindex])[dist_table.columns]
+        # move top-decile detail rows to make room for topdec_row and sum_row
+        dist_table = dist_table.reindex(index=range(0, lenindex + 2))
+        dist_table.iloc[15] = dist_table.iloc[13]
+        dist_table.iloc[14] = dist_table.iloc[12]
+        dist_table.iloc[13] = dist_table.iloc[11]
+        dist_table.iloc[12] = sum_row
+        dist_table.iloc[11] = topdec_row
+        del topdec_row
+    else:
+        dist_table = dist_table.append(sum_row)
+    del sum_row
     # optionally construct weighted_avg table
     if result_type == 'weighted_avg':
         for col in DIST_TABLE_COLUMNS:
@@ -453,130 +455,29 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
           positive (denoted by a 0-10p row label) values of the
           specified income_measure.
     """
-    # pylint: disable=too-many-statements
-    # nested function that actually creates the difference table
-    def diff_table_stats(resd, groupby, income_measure):
+    # pylint: disable=too-many-statements,too-many-locals
+    # nested function that creates dataframe containing additive statistics
+    def additive_stats_dataframe(gpdf):
         """
-        Return new Pandas DataFrame containing difference table statistics
-        based on grouped values of specified col_name in the specified resd.
-
-        resd: reform difference results Pandas DataFrame
-        groupby: string naming type of table rows
-        income_measure: string naming column used to create resd table rows
+        Nested function that returns additive stats DataFrame derived from gpdf
         """
-        # pylint: disable=too-many-locals
-        def stat_dataframe(gpdf):
-            """
-            Nested function that returns statistics DataFrame derived from gpdf
-            """
-            def weighted_share_of_total(gpdf, colname, total):
-                """
-                Nested function that returns the ratio of the
-                weighted_sum(pdf, colname) and specified total
-                """
-                return weighted_sum(gpdf, colname) / (total + EPSILON)
-            # main logic of stat_dataframe function
-            # construct basic stat_dataframe columns
-            sdf = pd.DataFrame()
-            sdf['count'] = gpdf.apply(weighted_count)
-            sdf['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
-            sdf['perc_cut'] = gpdf.apply(weighted_perc_cut, 'tax_diff')
-            sdf['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
-            sdf['perc_inc'] = gpdf.apply(weighted_perc_inc, 'tax_diff')
-            sdf['mean'] = gpdf.apply(weighted_mean, 'tax_diff')
-            sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
-            wtotal = (resd['tax_diff'] * resd['s006']).sum()
-            sdf['share_of_change'] = gpdf.apply(weighted_share_of_total,
-                                                'tax_diff', wtotal)
-            sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
-            sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
-            sdf['ubi'] = gpdf.apply(weighted_sum, 'ubi')
-            sdf['benefit_cost_total'] = gpdf.apply(weighted_sum,
-                                                   'benefit_cost_total')
-            sdf['benefit_value_total'] = gpdf.apply(weighted_sum,
-                                                    'benefit_value_total')
-            return sdf
-
-        # main logic of diff_table_stats function
-        # calculate whole-sample perc_cut and perc_inc statistics
-        sums_perc_cut = weighted_perc_cut(resd, 'tax_diff')
-        sums_perc_inc = weighted_perc_inc(resd, 'tax_diff')
-        # add column to resd given specified groupby and income_measure
-        if groupby == 'weighted_deciles':
-            pdf = add_quantile_table_row_variable(resd, income_measure, 10)
-        elif groupby == 'standard_income_bins':
-            pdf = add_income_table_row_variable(resd, income_measure,
-                                                bin_type='standard')
-        elif groupby == 'large_income_bins':
-            pdf = add_income_table_row_variable(resd, income_measure,
-                                                bin_type='tpc')
-        elif groupby == 'small_income_bins':
-            pdf = add_income_table_row_variable(resd, income_measure,
-                                                bin_type='soi')
-        min_income_measure = pdf[income_measure].min()
-        # create grouped Pandas DataFrame
-        gpdf = pdf.groupby('table_row', as_index=False)
-        del pdf
-        # create difference table statistics from gpdf in a new DataFrame
-        diffs_without_sums = stat_dataframe(gpdf)
-        # calculate sums row
-        row = get_sums(diffs_without_sums)[diffs_without_sums.columns]
-        row['mean'] = 0
-        if row['count'] > 0:
-            row['mean'] = row['tot_change'] / row['count']
-        row['perc_cut'] = sums_perc_cut
-        row['perc_inc'] = sums_perc_inc
-        row['share_of_change'] = 1.0  # avoid rounding error
-        diffs = diffs_without_sums.append(row)
-        del row
-        # replace bottom decile row with non-positive and positive rows
-        if groupby == 'weighted_deciles' and min_income_measure <= 0:
-            # bottom decile as its own DataFrame
-            pdf = copy.deepcopy(gpdf.get_group(1))
-            pdf['table_row'] = pd.cut(pdf[income_measure],
-                                      bins=[-9e99, -1e-9, 1e-9, 9e99],
-                                      labels=[1, 2, 3])
-            gpdfx = pdf.groupby('table_row', as_index=False)
-            rows = stat_dataframe(gpdfx)
-            diffs = pd.concat([rows, diffs.iloc[1:11]])
-            del rows
-            del pdf
-            del gpdfx
-        # append top-decile-detail rows
-        if groupby == 'weighted_deciles':
-            # top decile as its own DataFrame
-            pdf = copy.deepcopy(gpdf.get_group(10))
-            pdf = add_quantile_table_row_variable(pdf, income_measure, 10)
-            # TODO: following statement generates this IGNORED error:
-            # ValueError: Buffer dtype mismatch,
-            #             expected 'Python object' but got 'long'
-            # Exception ValueError: "Buffer dtype mismatch,
-            #              expected 'Python object' but got 'long'"
-            #              in 'pandas._libs.lib.is_bool_array' ignored
-            #                                                  ^^^^^^^
-            # It is hoped that Pandas PR#18252, which is scheduled for
-            # inclusion in Pandas version 0.23.0 (Apr 2018), will fix this.
-            # See discussion at the following URL:
-            # https://github.com/pandas-dev/pandas/issues/19037
-            pdf['table_row'].replace(to_replace=[1, 2, 3, 4, 5],
-                                     value=[0, 0, 0, 0, 0], inplace=True)
-            pdf['table_row'].replace(to_replace=[6, 7, 8, 9],
-                                     value=[1, 1, 1, 1], inplace=True)
-            pdf['table_row'].replace(to_replace=[10],
-                                     value=[2], inplace=True)
-            gpdfx = pdf.groupby('table_row', as_index=False)
-            sdf = stat_dataframe(gpdfx)
-            diffs = diffs.append(sdf, ignore_index=True)
-            del sdf
-            del pdf
-            del gpdfx
-        # delete intermediate Pandas DataFrame objects
-        del gpdf
-        # return difference statistics
-        return diffs
+        sdf = pd.DataFrame()
+        sdf['count'] = gpdf.apply(weighted_count)
+        sdf['tax_cut'] = gpdf.apply(weighted_count_lt_zero, 'tax_diff')
+        sdf['tax_inc'] = gpdf.apply(weighted_count_gt_zero, 'tax_diff')
+        sdf['tot_change'] = gpdf.apply(weighted_sum, 'tax_diff')
+        sdf['ubi'] = gpdf.apply(weighted_sum, 'ubi')
+        sdf['benefit_cost_total'] = gpdf.apply(weighted_sum,
+                                               'benefit_cost_total')
+        sdf['benefit_value_total'] = gpdf.apply(weighted_sum,
+                                                'benefit_value_total')
+        sdf['atinc1'] = gpdf.apply(weighted_sum, 'atinc1')
+        sdf['atinc2'] = gpdf.apply(weighted_sum, 'atinc2')
+        return sdf
     # main logic of create_difference_table
     assert isinstance(vdf1, pd.DataFrame)
     assert isinstance(vdf2, pd.DataFrame)
+    assert np.allclose(vdf1['s006'], vdf2['s006'])  # check rows in same order
     assert (groupby == 'weighted_deciles' or
             groupby == 'standard_income_bins' or
             groupby == 'large_income_bins' or
@@ -594,23 +495,75 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
     res2['atinc1'] = res1['aftertax_income']
     res2['atinc2'] = res2['aftertax_income']
-    diffs = diff_table_stats(res2, groupby, baseline_income_measure)
-    diffs['pc_aftertaxinc'] = (diffs['atinc2'] / diffs['atinc1']) - 1.0
-    # delete intermediate atinc1 and atinc2 columns
-    del diffs['atinc1']
-    del diffs['atinc2']
+    # add table_row column to res2 given specified groupby and income_measure
+    if groupby == 'weighted_deciles':
+        pdf = add_quantile_table_row_variable(res2, baseline_income_measure,
+                                              10, decile_details=True)
+    elif groupby == 'standard_income_bins':
+        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+                                            bin_type='standard')
+    elif groupby == 'large_income_bins':
+        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+                                            bin_type='tpc')
+    elif groupby == 'small_income_bins':
+        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+                                            bin_type='soi')
+    # create grouped Pandas DataFrame
+    gpdf = pdf.groupby('table_row', as_index=False)
+    # create additive difference table statistics from gpdf
+    diff_table = additive_stats_dataframe(gpdf)
+    # calculate additive statistics on sums row
+    sum_row = get_sums(diff_table)[diff_table.columns]
+    # handle placement of sum_row in table
+    if groupby == 'weighted_deciles':
+        # compute top-decile row
+        lenindex = len(diff_table.index)
+        assert lenindex == 14  # rows should be indexed from 0 to 13
+        topdec_row = get_sums(diff_table[11:lenindex])[diff_table.columns]
+        # move top-decile detail rows to make room for topdec_row and sum_row
+        diff_table = diff_table.reindex(index=range(0, lenindex + 2))
+        diff_table.iloc[15] = diff_table.iloc[13]
+        diff_table.iloc[14] = diff_table.iloc[12]
+        diff_table.iloc[13] = diff_table.iloc[11]
+        diff_table.iloc[12] = sum_row
+        diff_table.iloc[11] = topdec_row
+        del topdec_row
+    else:
+        diff_table = diff_table.append(sum_row)
     # delete intermediate Pandas DataFrame objects
+    del gpdf
+    del pdf
+    # compute non-additive stats in each table cell
+    count = diff_table['count']
+    diff_table['perc_cut'] = np.where(count > 0.,
+                                      100 * diff_table['tax_cut'] / count,
+                                      0.)
+    diff_table['perc_inc'] = np.where(count > 0.,
+                                      100 * diff_table['tax_inc'] / count,
+                                      0.)
+    diff_table['mean'] = np.where(count > 0.,
+                                  diff_table['tot_change'] / count,
+                                  0.)
+    total_change = sum_row['tot_change']
+    diff_table['share_of_change'] = np.where(total_change == 0.,
+                                             np.nan,
+                                             (100 * diff_table['tot_change'] /
+                                              total_change))
+    diff_table['pc_aftertaxinc'] = np.where(diff_table['atinc1'] == 0.,
+                                            np.nan,
+                                            (100 * (diff_table['atinc2'] /
+                                                    diff_table['atinc1'] - 1)))
+    # delete intermediate Pandas DataFrame objects
+    del diff_table['atinc1']
+    del diff_table['atinc2']
+    del count
+    del sum_row
     del res1
     del res2
-    # convert some columns to percentages
-    percent_columns = ['perc_inc', 'perc_cut',
-                       'share_of_change', 'pc_aftertaxinc']
-    for col in percent_columns:
-        diffs[col] *= 100.0
     # set print display format for float table elements
     pd.options.display.float_format = '{:10,.2f}'.format
-    # ensure diffs columns are in correct order
-    assert diffs.columns.values.tolist() == DIFF_TABLE_COLUMNS
+    # put diff_table columns in correct order
+    diff_table = diff_table.reindex(columns=DIFF_TABLE_COLUMNS)
     # add row names to table if using weighted_deciles or standard_income_bins
     if groupby == 'weighted_deciles':
         rownames = DECILE_ROW_NAMES
@@ -619,11 +572,11 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     else:
         rownames = None
     if rownames:
-        assert len(diffs.index) == len(rownames)
-        diffs.index = rownames
+        assert len(diff_table.index) == len(rownames)
+        diff_table.index = rownames
         del rownames
     # return table as Pandas DataFrame
-    return diffs
+    return diff_table
 
 
 def create_diagnostic_table(vdf, year):
@@ -667,21 +620,21 @@ def create_diagnostic_table(vdf, year):
         agi = vdf['c00100']
         odict['AGI ($b)'] = (agi * wghts).sum() * in_billions
         # number of itemizers
-        num = (wghts[(vdf['c04470'] > 0.) & (agi > 0.)].sum())
+        num = (wghts[vdf['c04470'] > 0.].sum())
         odict['Itemizers (#m)'] = num * in_millions
         # itemized deduction
         ided1 = vdf['c04470'] * wghts
         val = ided1[vdf['c04470'] > 0.].sum()
         odict['Itemized Deduction ($b)'] = val * in_billions
         # number of standard deductions
-        num = wghts[(vdf['standard'] > 0.) & (agi > 0.)].sum()
+        num = wghts[vdf['standard'] > 0.].sum()
         odict['Standard Deduction Filers (#m)'] = num * in_millions
         # standard deduction
         sded1 = recs.standard * wghts
-        val = sded1[(vdf['standard'] > 0.) & (agi > 0.)].sum()
+        val = sded1[vdf['standard'] > 0.].sum()
         odict['Standard Deduction ($b)'] = val * in_billions
         # personal exemption
-        val = (vdf['c04600'] * wghts)[agi > 0.].sum()
+        val = (vdf['c04600'] * wghts).sum()
         odict['Personal Exemption ($b)'] = val * in_billions
         # taxable income
         val = (vdf['c04800'] * wghts).sum()
@@ -734,6 +687,7 @@ def create_diagnostic_table(vdf, year):
     pdf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
     pdf = pdf.transpose()
     pd.options.display.float_format = '{:8,.1f}'.format
+    del odict
     return pdf
 
 

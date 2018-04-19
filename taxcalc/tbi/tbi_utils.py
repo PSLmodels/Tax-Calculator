@@ -8,6 +8,7 @@ Private utility functions used only by public functions in the tbi.py file.
 from __future__ import print_function
 import os
 import time
+import copy
 import hashlib
 import numpy as np
 import pandas as pd
@@ -68,10 +69,9 @@ def calculate(year_n, start_year,
     """
     The calculate function assumes the specified user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
-    The function returns (calc1, calc2, mask) where
-      calc1 is pre-reform Calculator object calculated for year_n,
-      calc2 is post-reform Calculator object calculated for year_n, and
-      mask is boolean array marking records with reform-induced iitax diffs
+    The function returns (calc1, calc2) where
+      calc1 is pre-reform Calculator object calculated for year_n, and
+      calc2 is post-reform Calculator object calculated for year_n.
     Set behavior_allowed to False when generating static results or
       set behavior_allowed to True when generating dynamic results.
     """
@@ -148,41 +148,6 @@ def calculate(year_n, start_year,
     calc1.calc_all()
     assert calc1.current_year == start_year
 
-    # compute mask array
-    res1 = calc1.dataframe(DIST_VARIABLES)
-    if use_puf_not_cps:
-        # create pre-reform Calculator instance with extra income
-        recs1p = Records(data=sample, gfactors=growfactors_pre)
-        # add one dollar to the income of each filing unit to determine
-        # which filing units undergo a resulting change in tax liability
-        recs1p.e00200 += 1.0  # pylint: disable=no-member
-        recs1p.e00200p += 1.0  # pylint: disable=no-member
-        policy1p = Policy(gfactors=growfactors_pre)
-        # create Calculator with recs1p and calculate for start_year
-        calc1p = Calculator(policy=policy1p, records=recs1p,
-                            consumption=consump)
-        while calc1p.current_year < start_year:
-            calc1p.increment_year()
-        calc1p.calc_all()
-        assert calc1p.current_year == start_year
-        # compute mask showing which of the calc1 and calc1p results differ;
-        # mask is true if a filing unit's income tax liability changed after
-        # a dollar was added to the filing unit's wage and salary income
-        res1p = calc1p.dataframe(DIST_VARIABLES)
-        mask = np.logical_not(  # pylint: disable=no-member
-            np.isclose(res1.iitax, res1p.iitax, atol=0.001, rtol=0.0)
-        )
-        assert np.any(mask)
-        # delete intermediate objects
-        del recs1p
-        del policy1p
-        del calc1p
-        del res1p
-    else:  # if use_puf_not_cps is False
-        # indicate that fuzzing of reform results is not required
-        mask = np.full(res1.shape, False)
-    del res1
-
     # specify Behavior instance
     behv = Behavior()
     behavior_assumps = user_mods['behavior']
@@ -238,8 +203,8 @@ def calculate(year_n, start_year,
     else:
         calc2.calc_all()
 
-    # return calculated Calculator objects and mask
-    return (calc1, calc2, mask)
+    # return calculated Calculator objects
+    return (calc1, calc2)
 
 
 def random_seed(user_mods):
@@ -289,20 +254,16 @@ def chooser(agg):
     mask indices with the output for those NUM_TO_FUZZ indices being zero and
     the output for all the other indices being one.
     """
-    # select indices of records with change in tax liability after
-    # a one dollar increase in income
-    indices = np.where(agg)
-    if len(indices[0]) >= NUM_TO_FUZZ:
-        choices = np.random.choice(indices[0],  # pylint: disable=no-member
-                                   size=NUM_TO_FUZZ, replace=False)
-    else:
-        msg = ('Not enough differences in income tax when adding '
-               'one dollar for chunk with name: {}')
-        raise ValueError(msg.format(agg.name))
-    # mark the records chosen to be fuzzed (ans=0)
+    # mark the records chosen to be fuzzed (that is, have ans value of zero)
     ans = [1] * len(agg)
-    for idx in choices:
-        ans[idx] = 0
+    # select indices of records from agg
+    indices = np.where(agg)
+    num = min(len(indices[0]), NUM_TO_FUZZ)
+    if num > 0:
+        choices = np.random.choice(indices[0],  # pylint: disable=no-member
+                                   size=num, replace=False)
+        for idx in choices:
+            ans[idx] = 0
     return ans
 
 
@@ -346,13 +307,17 @@ def create_results_columns(df1, df2, mask):
         # pylint: disable=too-many-arguments
         assert bin_type == 'dec' or bin_type == 'bin' or bin_type == 'agg'
         if bin_type == 'dec':
-            df2 = add_quantile_table_row_variable(df2, imeasure, 10)
+            df2 = add_quantile_table_row_variable(df2, imeasure,
+                                                  10, decile_details=True)
+            gdf2 = df2.groupby('table_row')
+            del df2['table_row']
         elif bin_type == 'bin':
             df2 = add_income_table_row_variable(df2, imeasure,
                                                 bins=STANDARD_INCOME_BINS)
+            gdf2 = df2.groupby('table_row')
+            del df2['table_row']
         else:
-            df2 = add_quantile_table_row_variable(df2, imeasure, 1)
-        gdf2 = df2.groupby('table_row')
+            gdf2 = df2
         if do_fuzzing:
             df2['nofuzz'] = gdf2['mask'].transform(chooser)
         else:  # never do any results fuzzing
@@ -371,37 +336,57 @@ def create_results_columns(df1, df2, mask):
     if do_fuzzing:
         df2['mask'] = mask
     df2['expanded_income_baseline'] = df1['expanded_income']
-    create(df1, df2, 'dec', 'expanded_income_baseline', '_xdec',
+    create(df1, df2, 'dec', 'expanded_income_baseline', '',  # '_xdec',
            columns_to_create, do_fuzzing)
-    create(df1, df2, 'bin', 'expanded_income_baseline', '_xbin',
+    df2_xdec = copy.deepcopy(df2)
+    create(df1, df2, 'bin', 'expanded_income_baseline', '',  # '_xbin',
            columns_to_create, do_fuzzing)
-    create(df1, df2, 'agg', 'expanded_income_baseline', '_agg',
+    df2_xbin = copy.deepcopy(df2)
+    create(df1, df2, 'agg', 'expanded_income_baseline', '',  # '_agg',
            columns_to_create, do_fuzzing)
-    return df2
+    df2_aggr = copy.deepcopy(df2)
+    return (df2_xdec, df2_xbin, df2_aggr)
 
 
 AGGR_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
 
 
-def summary(df1, df2, mask):
+def summary(df1, df2, fuzzing):
     """
-    df1 contains raw results for baseline plan
-    df2 contains raw results for reform plan
-    mask is the boolean array specifying records with reform-induced tax diffs
-    returns dictionary of summary results DataFrames
+    df1 contains distribution-table variables for baseline.
+    df2 contains distribution-table variables for reform.
+    fuzzing indicates whether or not there is a need to fuzz df2 variables.
+    returns dictionary of summary-results DataFrames.
     """
     # pylint: disable=too-many-statements,too-many-locals
 
-    df2 = create_results_columns(df1, df2, mask)
+    if fuzzing:
+        reform_affected = np.logical_not(  # pylint: disable=no-member
+            np.isclose(df1['combined'], df2['combined'],
+                       atol=0.001, rtol=0.0))
+        df2_xdec, df2_xbin, df2_aggr = create_results_columns(df1, df2,
+                                                              reform_affected)
+        df1_xdec = add_quantile_table_row_variable(df1, 'expanded_income',
+                                                   10, decile_details=True)
+        del df1_xdec['table_row']
+        df1_xbin = add_income_table_row_variable(df1, 'expanded_income',
+                                                 bins=STANDARD_INCOME_BINS)
+        del df1_xbin['table_row']
+    else:
+        df2_aggr = copy.deepcopy(df2)
+        df2_xdec = copy.deepcopy(df2)
+        df2_xbin = copy.deepcopy(df2)
+        df1_xdec = copy.deepcopy(df1)
+        df1_xbin = copy.deepcopy(df1)
 
     summ = dict()
 
     # tax difference totals between reform and baseline
-    tdiff = df2['iitax_agg'] - df1['iitax']
+    tdiff = df2_aggr['iitax'] - df1['iitax']
     aggr_itax_d = (tdiff * df2['s006']).sum()
-    tdiff = df2['payrolltax_agg'] - df1['payrolltax']
+    tdiff = df2_aggr['payrolltax'] - df1['payrolltax']
     aggr_ptax_d = (tdiff * df2['s006']).sum()
-    tdiff = df2['combined_agg'] - df1['combined']
+    tdiff = df2_aggr['combined'] - df1['combined']
     aggr_comb_d = (tdiff * df2['s006']).sum()
     aggrd = [aggr_itax_d, aggr_ptax_d, aggr_comb_d]
     summ['aggr_d'] = pd.DataFrame(data=aggrd, index=AGGR_ROW_NAMES)
@@ -414,54 +399,51 @@ def summary(df1, df2, mask):
     summ['aggr_1'] = pd.DataFrame(data=aggr1, index=AGGR_ROW_NAMES)
 
     # totals for reform
-    aggr_itax_2 = (df2['iitax_agg'] * df2['s006']).sum()
-    aggr_ptax_2 = (df2['payrolltax_agg'] * df2['s006']).sum()
-    aggr_comb_2 = (df2['combined_agg'] * df2['s006']).sum()
+    aggr_itax_2 = (df2_aggr['iitax'] * df2['s006']).sum()
+    aggr_ptax_2 = (df2_aggr['payrolltax'] * df2['s006']).sum()
+    aggr_comb_2 = (df2_aggr['combined'] * df2['s006']).sum()
     aggr2 = [aggr_itax_2, aggr_ptax_2, aggr_comb_2]
     summ['aggr_2'] = pd.DataFrame(data=aggr2, index=AGGR_ROW_NAMES)
 
+    del df1
+    del df2
+
     # create difference tables grouped by xdec
-    df2['iitax'] = df2['iitax_xdec']
     summ['diff_itax_xdec'] = \
-        create_difference_table(df1, df2,
+        create_difference_table(df1_xdec, df2_xdec,
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
 
-    df2['payrolltax'] = df2['payrolltax_xdec']
     summ['diff_ptax_xdec'] = \
-        create_difference_table(df1, df2,
+        create_difference_table(df1_xdec, df2_xdec,
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='payrolltax')
 
-    df2['combined'] = df2['combined_xdec']
     summ['diff_comb_xdec'] = \
-        create_difference_table(df1, df2,
+        create_difference_table(df1_xdec, df2_xdec,
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='combined')
 
     # create difference tables grouped by xbin
-    df2['iitax'] = df2['iitax_xbin']
     diff_itax_xbin = \
-        create_difference_table(df1, df2,
+        create_difference_table(df1_xdec, df2_xbin,
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
     summ['diff_itax_xbin'] = diff_itax_xbin
 
-    df2['payrolltax'] = df2['payrolltax_xbin']
     diff_ptax_xbin = \
-        create_difference_table(df1, df2,
+        create_difference_table(df1_xbin, df2_xbin,
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='payrolltax')
     summ['diff_ptax_xbin'] = diff_ptax_xbin
 
-    df2['combined'] = df2['combined_xbin']
     diff_comb_xbin = \
-        create_difference_table(df1, df2,
+        create_difference_table(df1_xbin, df2_xbin,
                                 groupby='standard_income_bins',
                                 income_measure='expanded_income',
                                 tax_to_diff='combined')
@@ -469,36 +451,26 @@ def summary(df1, df2, mask):
 
     # create distribution tables grouped by xdec
     summ['dist1_xdec'] = \
-        create_distribution_table(df1, groupby='weighted_deciles',
+        create_distribution_table(df1_xdec, groupby='weighted_deciles',
                                   income_measure='expanded_income',
                                   result_type='weighted_sum')
 
-    suffix = '_xdec'
-    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
-    for col in df2_cols_with_suffix:
-        root_col_name = col.replace(suffix, '')
-        df2[root_col_name] = df2[col]
-    df2['expanded_income_baseline'] = df1['expanded_income']
+    df2_xdec['expanded_income_baseline'] = df1_xdec['expanded_income']
     summ['dist2_xdec'] = \
-        create_distribution_table(df2, groupby='weighted_deciles',
+        create_distribution_table(df2_xdec, groupby='weighted_deciles',
                                   income_measure='expanded_income_baseline',
                                   result_type='weighted_sum')
 
     # create distribution tables grouped by xbin
     dist1_xbin = \
-        create_distribution_table(df1, groupby='standard_income_bins',
+        create_distribution_table(df1_xbin, groupby='standard_income_bins',
                                   income_measure='expanded_income',
                                   result_type='weighted_sum')
     summ['dist1_xbin'] = dist1_xbin
 
-    suffix = '_xbin'
-    df2_cols_with_suffix = [c for c in list(df2) if c.endswith(suffix)]
-    for col in df2_cols_with_suffix:
-        root_col_name = col.replace(suffix, '')
-        df2[root_col_name] = df2[col]
-    df2['expanded_income_baseline'] = df1['expanded_income']
+    df2_xbin['expanded_income_baseline'] = df1_xbin['expanded_income']
     dist2_xbin = \
-        create_distribution_table(df2, groupby='standard_income_bins',
+        create_distribution_table(df2_xbin, groupby='standard_income_bins',
                                   income_measure='expanded_income_baseline',
                                   result_type='weighted_sum')
     summ['dist2_xbin'] = dist2_xbin

@@ -47,41 +47,134 @@ class Behavior(ParametersBase):
     DEFAULTS_FILENAME = 'behavior.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
 
-    def __init__(self, behavior_dict=None,
+    def __init__(self,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
         super(Behavior, self).__init__()
-        if behavior_dict is None:
-            self._vals = self._params_dict_from_json_file()
-        elif isinstance(behavior_dict, dict):
-            self._vals = behavior_dict
-        else:
-            raise ValueError('behavior_dict is not None or a dictionary')
+
+        # read default parameters
+        self._vals = self._params_dict_from_json_file()
+
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         self.initialize(start_year, num_years)
-        self._validate_parameter_values()
 
-    def update_behavior(self, revisions):
-        """
-        Update behavior for given revisions, a dictionary consisting
-        of one or more year:modification dictionaries.
-        For example: {2014: {'_BE_sub': [0.4, 0.3]}}
-        Also checks for valid elasticity values in revisions dictionary.
+        self.parameter_errors = ''
+        self._ignore_errors = False
 
-        Note that this method uses the specified revisions to update the
-        default elasticity values, so use this method just once
-        rather than calling it sequentially in an attempt to update
-        elasticities in several steps.
+    def update_behavior(self, revision, raise_errors=True):
         """
+        Implement multi-year behavior revision and leave current_year
+        unchanged.
+
+        Parameters
+        ----------
+        revision: dictionary of one or more YEAR:MODS pairs
+            see Notes to Parameters _update method for info on MODS structure
+
+        raise_errors: boolean
+            if True (the default), raises ValueError when parameter_errors
+                    exists;
+            if False, does not raise ValueError when parameter_errors exists
+                    and leaves error handling to caller of update_behavior.
+
+        Raises
+        ------
+        ValueError:
+            if revision is not a dictionary.
+            if each YEAR in revision is not an integer.
+            if minimum YEAR in the YEAR:MODS pairs is less than start_year.
+            if minimum YEAR in the YEAR:MODS pairs is less than current_year.
+            if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
+            if raise_errors is True AND
+              _validate_parameter_names_types generates error OR
+              _validate_parameter_values generates errors.
+
+        Returns
+        -------
+        nothing: void
+
+        Notes
+        -----
+        Given a revision dictionary, typical usage of the Policy class
+        is as follows::
+
+            behavior = Behavior()
+            behavior.update_behavior(revision)
+
+        In the above statements, the Behavior() call instantiates a
+        behavior object (behavior) containing behavior baseline parameters,
+        and the update_behavior(revision) call applies the (possibly
+        multi-year) revision specified in revision and then sets the
+        current_year to the value of current_year when update_behavior
+        was called with parameters set for that pre-call year.
+
+        An example of a multi-year, multi-parameter revision is as follows::
+
+            revision = {
+                2016: {
+                    '_BE_inc': [-0.3]
+                },
+                2017: {
+                    '_BE_sub': [0.2]
+                }
+            }
+
+        Notice that each of the four YEAR:MODS pairs is specified as
+        required by the private _update method, whose documentation
+        provides several MODS dictionary examples.
+
+        IMPORTANT NOTICE: when specifying a revision dictionary always group
+        all revision provisions for a specified year into one YEAR:MODS pair.
+        If you make the mistake of specifying two or more YEAR:MODS pairs
+        with the same YEAR value, all but the last one will be overwritten,
+        and therefore, not part of the revision.  This is because Python
+        expects unique (not multiple) dictionary keys.  There is no way to
+        catch this error, so be careful to specify revision dictionaries
+        correctly.
+        """
+        # check that all revisions dictionary keys are integers
+        if not isinstance(revision, dict):
+            raise ValueError('ERROR: YYYY PARAM revision is not a dictionary')
+        if not revision:
+            return  # no revision to implement
+        revision_years = sorted(list(revision.keys()))
+        for year in revision_years:
+            if not isinstance(year, int):
+                msg = 'ERROR: {} KEY {}'
+                details = 'KEY in revision is not an integer calendar year'
+                raise ValueError(msg.format(year, details))
+        # check range of remaining revision_years
+        first_revision_year = min(revision_years)
+        if first_revision_year < self.start_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
+            raise ValueError(msg.format(first_revision_year, self.start_year))
+        if first_revision_year < self.current_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < current_year={}'
+            raise ValueError(
+                msg.format(first_revision_year, self.current_year)
+            )
+        last_revision_year = max(revision_years)
+        if last_revision_year > self.end_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
+            raise ValueError(msg.format(last_revision_year, self.end_year))
+        # validate revision parameter names and types
+        self.parameter_errors = ''
+        self._validate_parameter_names_types(revision)
+        if not self._ignore_errors and self.parameter_errors:
+            raise ValueError(self.parameter_errors)
+        # implement the revision year by year
         precall_current_year = self.current_year
-        self.set_default_vals()
-        revision_years = sorted(list(revisions.keys()))
+        revision_parameters = set()
         for year in revision_years:
             self.set_year(year)
-            self._update({year: revisions[year]})
+            revision_parameters.update(revision[year].keys())
+            self._update({year: revision[year]})
         self.set_year(precall_current_year)
-        self._validate_parameter_values()
+        # validate revision parameter values
+        self._validate_parameter_values(revision_parameters)
+        if self.parameter_errors and raise_errors:
+            raise ValueError('\n' + self.parameter_errors)
 
     def has_response(self):
         """
@@ -347,65 +440,107 @@ class Behavior(ParametersBase):
 
     # ----- begin private methods of Behavior class -----
 
-    def _validate_parameter_values(self):
+    def _validate_parameter_names_types(self, revision):
         """
-        Check that all behavioral-response parameters have valid values.
+        Check validity of parameter names and parameter types used
+        in the specified revision dictionary.
         """
-        # pylint: disable=too-many-branches,too-many-locals
-        # check for presence of required parameters
-        expected_num_params = 5
-        num_params = 0
-        for param in self._vals:
-            if param == '_BE_sub':
-                num_params += 1
-            elif param == '_BE_inc':
-                num_params += 1
-            elif param == '_BE_subinc_wrt_earnings':
-                num_params += 1
-            elif param == '_BE_cg':
-                num_params += 1
-            elif param == '_BE_charity':
-                num_params += 1
-        if num_params != expected_num_params:
-            msg = 'num required Behavior parameters {} not expected number {}'
-            raise ValueError(msg.format(num_params, expected_num_params))
-        # check validity of parameter values
-        msg = '{} elasticity cannot be {} in year {}; value is {}'
-        pos = 'positive'
-        neg = 'negative'
-        nob = 'non-boolean'
-        for param in self._vals:
-            values = getattr(self, param)
-            for year in np.ndindex(values.shape):
-                val = values[year]
-                cyr = year[0] + self.start_year
-                if param == '_BE_sub':
-                    if val < 0.0:
-                        raise ValueError(msg.format(param, neg, cyr, val))
-                elif param == '_BE_inc':
-                    if val > 0.0:
-                        raise ValueError(msg.format(param, pos, cyr, val))
-                elif param == '_BE_subinc_wrt_earnings':
-                    if not (val == 0 or val == 1):
-                        raise ValueError(msg.format(param, nob, cyr, val))
-                elif param == '_BE_cg':
-                    if val > 0.0:
-                        raise ValueError(msg.format(param, pos, cyr, val))
-                elif param == '_BE_charity':
-                    if val > 0.0:
-                        raise ValueError(msg.format(param, neg, cyr, val))
-        # check consistency of earnings-related parameters
-        subinc_wrt_earnings = getattr(self, '_BE_subinc_wrt_earnings')
-        sub_elasticity = getattr(self, '_BE_sub')
-        inc_elasticity = getattr(self, '_BE_inc')
-        msg = ('_BE_subinc_wrt_earnings is True in year {} '
-               'when _BE_sub and _BE_inc are both zero')
-        for year in range(self.num_years):
-            if subinc_wrt_earnings[year]:
-                zero_sub = sub_elasticity[year] == 0.0
-                zero_inc = inc_elasticity[year] == 0.0
-                if zero_sub and zero_inc:
-                    raise ValueError(msg.format(year + self.start_year))
+        # pylint: disable=too-many-branches,too-many-nested-blocks
+        # pylint: disable=too-many-locals
+        param_names = set(self._vals.keys())
+        for year in sorted(revision.keys()):
+            for name in revision[year]:
+                if name not in param_names:
+                    msg = '{} {} unknown parameter name'
+                    self.parameter_errors += (
+                        'ERROR: ' + msg.format(year, name) + '\n'
+                    )
+                else:
+                    # check parameter value type avoiding use of isinstance
+                    # because isinstance(True, (int,float)) is True, which
+                    # makes it impossible to check float parameters
+                    bool_param_type = self._vals[name]['boolean_value']
+                    int_param_type = self._vals[name]['integer_value']
+                    assert isinstance(revision[year][name], list)
+                    pvalue = revision[year][name][0]
+                    if isinstance(pvalue, list):
+                        scalar = False  # parameter value is a list
+                    else:
+                        scalar = True  # parameter value is a scalar
+                        pvalue = [pvalue]  # make scalar a single-item list
+                    # pylint: disable=consider-using-enumerate
+                    for idx in range(0, len(pvalue)):
+                        if scalar:
+                            pname = name
+                        else:
+                            pname = '{}_{}'.format(name, idx)
+                        pval = pvalue[idx]
+                        # pylint: disable=unidiomatic-typecheck
+                        pval_is_bool = type(pval) == bool
+                        pval_is_int = type(pval) == int
+                        pval_is_float = type(pval) == float
+                        if bool_param_type:
+                            if not pval_is_bool:
+                                msg = '{} {} value {} is not boolean'
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
+                                )
+                        elif int_param_type:
+                            if not pval_is_int:  # pragma: no cover
+                                msg = '{} {} value {} is not integer'
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
+                                )
+                        else:  # param is float type
+                            if not (pval_is_int or pval_is_float):
+                                msg = '{} {} value {} is not a number'
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
+                                )
+        del param_names
+
+    def _validate_parameter_values(self, parameters_set):
+        """
+        Check values of parameters in specified parameter_set using
+        range information from the current_law_policy.json file.
+        """
+        parameters = sorted(parameters_set)
+        syr = Behavior.JSON_START_YEAR
+        for pname in parameters:
+            pvalue = getattr(self, pname)
+            for vop, vval in self._vals[pname]['range'].items():
+                vvalue = np.full(pvalue.shape, vval)
+                assert pvalue.shape == vvalue.shape
+                assert len(pvalue.shape) <= 2
+                if len(pvalue.shape) == 2:
+                    scalar = False  # parameter value is a list
+                else:
+                    scalar = True  # parameter value is a scalar
+                for idx in np.ndindex(pvalue.shape):
+                    out_of_range = False
+                    if vop == 'min' and pvalue[idx] < vvalue[idx]:
+                        out_of_range = True
+                        msg = '{} {} value {} < min value {}'
+                    if vop == 'max' and pvalue[idx] > vvalue[idx]:
+                        out_of_range = True
+                        msg = '{} {} value {} > max value {}'
+                    if out_of_range:
+                        if scalar:
+                            name = pname
+                        else:
+                            name = '{}_{}'.format(pname, idx[1])
+                        self.parameter_errors += (
+                            'ERROR: ' + msg.format(idx[0] + syr, name,
+                                                   pvalue[idx],
+                                                   vvalue[idx]) + '\n'
+                        )
+        del parameters
 
     @staticmethod
     def _update_earnings(change, calc):

@@ -151,8 +151,8 @@ class Calculator(object):
         if verbose and sys.version_info.major == 2:  # running Python 2.7
             print('WARNING: Tax-Calculator packages for Python 2.7 will')
             print('         no longer be provided beginning in 2019')
-            print('         because Pandas is stopping development for 2.7.')
-            print('SOLUTION: upgrade to Python 3.6 now.')
+            print('         because Pandas is stopping development for 2.7')
+            print('SOLUTION: upgrade to Python 3.6 now')
         assert self.__policy.current_year == self.__records.current_year
         self.__stored_records = None
 
@@ -225,17 +225,15 @@ class Calculator(object):
         from embedded Records object.
         """
         pdf = self.dataframe(DIST_VARIABLES)
-        # revise itemized deduction amount to include only those with AGI>0
-        pdf['c04470'][:] = pdf['c04470'].where(
-            ((pdf['c00100'] > 0.) & (pdf['c04470'] > pdf['standard'])), 0.)
-        # weighted count of itemizer returns among those with AGI>0
+        # weighted count of itemized-deduction returns
         pdf['num_returns_ItemDed'] = pdf['s006'].where(
-            ((pdf['c00100'] > 0.) & (pdf['c04470'] > 0.)), 0.)
-        # weighted count of standard-deduction returns among those with AGI>0
+            pdf['c04470'] > 0., 0.)
+        # weighted count of standard-deduction returns
         pdf['num_returns_StandardDed'] = pdf['s006'].where(
-            ((pdf['c00100'] > 0.) & (pdf['standard'] > 0.)), 0.)
+            pdf['standard'] > 0., 0.)
         # weight count of returns with positive Alternative Minimum Tax (AMT)
-        pdf['num_returns_AMT'] = pdf['s006'].where(pdf['c09600'] > 0., 0.)
+        pdf['num_returns_AMT'] = pdf['s006'].where(
+            pdf['c09600'] > 0., 0.)
         return pdf
 
     def array(self, variable_name, variable_value=None):
@@ -361,7 +359,7 @@ class Calculator(object):
         """
         Calculator class embedded Policy object's reform_warnings.
         """
-        return self.__policy.reform_warnings
+        return self.__policy.parameter_warnings
 
     def policy_current_year(self, year=None):
         """
@@ -1385,14 +1383,14 @@ class Calculator(object):
             assert isinstance(policy_dicts, list)
             base = clp
             base.implement_reform(params['policy'])
-            assert not base.reform_errors
+            assert not base.parameter_errors
             for policy_dict in policy_dicts:
                 assert isinstance(policy_dict, dict)
                 doc += 'Policy Reform Parameter Values by Year:\n'
                 years = sorted(policy_dict.keys())
                 doc += param_doc(years, policy_dict, base)
                 base.implement_reform(policy_dict)
-                assert not base.reform_errors
+                assert not base.parameter_errors
         return doc
 
     def ce_aftertax_income(self, calc,
@@ -1471,15 +1469,15 @@ class Calculator(object):
         StdDed(self.__policy, self.__records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.array('standard'))
-        item = copy.deepcopy(self.array('c04470'))
-        item_no_limit = copy.deepcopy(self.array('c21060'))
-        item_phaseout = copy.deepcopy(self.array('c21040'))
+        std = self.array('standard').copy()
+        item = self.array('c04470').copy()
+        item_no_limit = self.array('c21060').copy()
+        item_phaseout = self.array('c21040').copy()
         self.zeroarray('c04470')
         self.zeroarray('c21060')
         self.zeroarray('c21040')
         self._taxinc_to_amt()
-        std_taxes = copy.deepcopy(self.array('c05800'))
+        std_taxes = self.array('c05800').copy()
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.zeroarray('standard')
@@ -1487,7 +1485,7 @@ class Calculator(object):
         self.array('c21040', item_phaseout)
         self.array('c04470', item)
         self._taxinc_to_amt()
-        item_taxes = copy.deepcopy(self.array('c05800'))
+        item_taxes = self.array('c05800').copy()
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.array('standard', np.where(item_taxes < std_taxes,

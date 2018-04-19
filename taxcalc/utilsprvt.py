@@ -70,21 +70,3 @@ def expanded_income_weighted(pdf, col_name):
     expinc = 'expanded_income'
     return ((pdf[col_name] * pdf[swght] * pdf[expinc]).sum() /
             ((pdf[swght] * pdf[expinc]).sum() + EPSILON))
-
-
-def weighted_perc_inc(pdf, col_name):
-    """
-    Return weighted fraction (not percent) of positive values for the
-    variable with col_name in the specified Pandas DataFrame.
-    """
-    return (weighted_count_gt_zero(pdf, col_name) /
-            (weighted_count(pdf) + EPSILON))
-
-
-def weighted_perc_cut(pdf, col_name):
-    """
-    Return weighted fraction (not percent) of negative values for the
-    variable with col_name in the specified Pandas DataFrame.
-    """
-    return (weighted_count_lt_zero(pdf, col_name) /
-            (weighted_count(pdf) + EPSILON))

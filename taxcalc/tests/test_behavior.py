@@ -10,34 +10,9 @@ from taxcalc import Policy, Records, Calculator, Behavior
 
 def test_incorrect_behavior_instantiation():
     with pytest.raises(ValueError):
-        Behavior(behavior_dict=list())
-    bad_behv_dict = {
-        '_BE_bad': {'start_year': 2013, 'value': [0.0]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
-    with pytest.raises(ValueError):
         Behavior(num_years=0)
     with pytest.raises(FloatingPointError):
         np.divide(1., 0.)
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict={})
-    bad_behv_dict = {
-        '_BE_subinc_wrt_earnings': {'start_year': 2013, 'value': [True]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
-    bad_behv_dict = {
-        '_BE_subinc_wrt_earnings': {'start_year': 2013, 'value': [True]},
-        '_BE_sub': {'start_year': 2017, 'value': [0.25]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
-    bad_behv_dict = {
-        54321: {'start_year': 2013, 'value': [0.0]}
-    }
-    with pytest.raises(ValueError):
-        Behavior(behavior_dict=bad_behv_dict)
 
 
 def test_behavioral_response_calculator(cps_subsample):
@@ -135,13 +110,13 @@ def test_correct_update_behavior():
 
 def test_incorrect_update_behavior():
     with pytest.raises(ValueError):
+        Behavior().update_behavior([])
+    with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_inc': [+0.2]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_sub': [-0.2]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2017: {'_BE_subinc_wrt_earnings': [2]}})
-    with pytest.raises(ValueError):
-        Behavior().update_behavior({2020: {'_BE_subinc_wrt_earnings': [True]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_charity': [[0.2, -0.2, 0.2]]}})
     with pytest.raises(ValueError):
@@ -150,6 +125,64 @@ def test_incorrect_update_behavior():
         Behavior().update_behavior({2013: {'_BE_xx': [0.0]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_xx_cpi': [True]}})
+    # year in update must be greater than or equal start year
+    with pytest.raises(ValueError):
+        Behavior(start_year=2014).update_behavior({2013: {'_BE_inc': [-0.2]}})
+    # year in update must be greater than or equal to current year
+    with pytest.raises(ValueError):
+        behv = Behavior(start_year=2014)
+        behv.set_year(2015)
+        behv.update_behavior({2014: {'_BE_inc': [-0.2]}})
+    # start year greater than start_year + DEFAULT_NUM_YEARS
+    with pytest.raises(ValueError):
+        Behavior().update_behavior({2040: {'_BE_inc': [-0.2]}})
+    # invalid start year
+    with pytest.raises(ValueError):
+        Behavior().update_behavior({'notayear': {'_BE_inc': [-0.2]}})
+
+
+def test_validate_param_names_types_errors():
+    behv0 = Behavior()
+    specs0 = {2020: {'_BE_bad': [-1.0]}}
+    with pytest.raises(ValueError):
+        behv0.update_behavior(specs0)
+    behv1 = Behavior()
+    specs1 = {2019: {'_BE_inc': [True]}}
+    with pytest.raises(ValueError):
+        behv1.update_behavior(specs1)
+    behv2 = Behavior()
+    specs2 = {2020: {'_BE_charity': ['not-a-number']}}
+    with pytest.raises(ValueError):
+        behv2.update_behavior(specs2)
+    behv3 = Behavior()
+    specs3 = {2020: {'_BE_subinc_wrt_earnings': [0.3]}}
+    with pytest.raises(ValueError):
+        behv3.update_behavior(specs3)
+
+
+def test_validate_param_values_errors():
+    behv0 = Behavior()
+    specs0 = {2020: {'_BE_cg': [0.2]}}
+    behv0.update_behavior(specs0, raise_errors=False)
+    assert len(behv0.parameter_errors) > 0
+    behv1 = Behavior()
+    specs1 = {2022: {'_BE_sub': [-0.2]}}
+    behv1.update_behavior(specs1, raise_errors=False)
+    assert len(behv1.parameter_errors) > 0
+    behv2 = Behavior()
+    specs2 = {
+        2020: {
+            '_BE_subinc_wrt_earnings': [True],
+            '_BE_cg': [-0.2],
+            '_BE_sub': [0.3]
+        }
+    }
+    behv2.update_behavior(specs2, raise_errors=False)
+    assert len(behv2.parameter_errors) == 0
+    behv3 = Behavior()
+    specs3 = {2022: {'_BE_sub': [-0.2]}}
+    with pytest.raises(ValueError):
+        behv3.update_behavior(specs1, raise_errors=True)
 
 
 def test_future_update_behavior():

@@ -86,9 +86,11 @@ def test_json_file_contents(tests_path, fname):
     # check elements in each parameter sub-dictionary
     failures = ''
     for pname in allparams:
+        # all parameter names should be strings
+        assert isinstance(pname, six.string_types)
+        # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
-        # check that param contains required keys
         for key in reqkeys:
             assert key in param
         # check for non-empty long_name and description strings
@@ -322,18 +324,18 @@ def test_bool_int_value_info(tests_path, json_filename):
         pdict = json.load(pfile)
     maxint = np.iinfo(np.int8).max
     for param in sorted(pdict.keys()):
-        # check that boolean_value always implies integer_value
-        if pdict[param]['boolean_value'] and not pdict[param]['integer_value']:
-            msg = 'param,integer_value,boolean_value,= {} {} {}'
+        # check that boolean_value is never integer_value
+        if pdict[param]['boolean_value'] and pdict[param]['integer_value']:
+            msg = 'param,boolean_value,integer_value,= {} {} {}'
             msg = msg.format(str(param),
                              pdict[param]['boolean_value'],
                              pdict[param]['integer_value'])
-            assert msg == 'ERROR: boolean_value is not integer_value'
+            assert msg == 'ERROR: boolean_value is integer_value'
         # check that cpi_indexed param is not boolean or integer
         nonfloat_value = (pdict[param]['integer_value'] or
                           pdict[param]['boolean_value'])
         if pdict[param]['cpi_inflated'] and nonfloat_value:
-            msg = 'param,integer_value,boolean_value= {} {} {}'
+            msg = 'param,boolean_value,integer_value,= {} {} {}'
             msg = msg.format(str(param),
                              pdict[param]['boolean_value'],
                              pdict[param]['integer_value'])
@@ -344,7 +346,8 @@ def test_bool_int_value_info(tests_path, json_filename):
             val = val[0]
         valstr = str(val)
         val_is_boolean = bool(valstr == 'True' or valstr == 'False')
-        val_is_integer = not bool('.' in valstr or abs(val) > maxint)
+        val_is_integer = (not bool('.' in valstr or abs(val) > maxint) and
+                          not val_is_boolean)
         # check that val_is_integer is consistent with integer_value
         if val_is_integer != pdict[param]['integer_value']:
             msg = 'param,integer_value,valstr= {} {} {}'
