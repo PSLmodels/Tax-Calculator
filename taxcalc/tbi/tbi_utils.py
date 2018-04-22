@@ -246,6 +246,83 @@ def random_seed_from_subdict(subdict):
 NUM_TO_FUZZ = 3  # when using dropq algorithm on puf.csv results
 
 
+def fuzzed(df1, df2, reform_affected, table_row_type):
+    """
+    Create fuzzed df2 dataframe and corresponding unfuzzed df1 dataframe.
+
+    Parameters
+    ----------
+    df1: Pandas DataFrame
+        contains results variables for the baseline policy
+
+    df2: Pandas DataFrame
+        contains results variables for the reform policy
+
+    reform_affected: boolean numpy array
+        True for filing units with a reform-induced combined tax difference;
+        otherwise False
+
+    table_row_type: string
+        valid values are 'aggr', 'xbin', and 'xdec'
+
+    Returns
+    -------
+    df1, df2: Pandas DataFrames
+        where df2 has been fuzzed to maintain data privacy and
+        where df1 has same filing unit order as has the fuzzed df2
+    """
+    assert (table_row_type == 'aggr' or
+            table_row_type == 'xbin' or
+            table_row_type == 'xdec')
+    assert len(df1.index) == len(df2.index)
+    assert reform_affected.size == len(df1.index)
+    df1 = copy.deepcopy(df1)
+    df2 = copy.deepcopy(df2)
+    # add copy of reform_affected to df2
+    df2['reform_affected'] = copy.deepcopy(reform_affected)
+    # construct table rows, for which filing units in each row must be fuzzed
+    if table_row_type == 'xbin':
+        df1 = add_income_table_row_variable(df1, 'expanded_income',
+                                            bins=STANDARD_INCOME_BINS)
+        df2['expanded_income_baseline'] = df1['expanded_income']
+        df2 = add_income_table_row_variable(df2, 'expanded_income_baseline',
+                                            bins=STANDARD_INCOME_BINS)
+        del df2['expanded_income_baseline']
+    elif table_row_type == 'xdec':
+        df1 = add_quantile_table_row_variable(df1, 'expanded_income',
+                                              10, decile_details=True)
+        df2['expanded_income_baseline'] = df1['expanded_income']
+        df2 = add_quantile_table_row_variable(df2, 'expanded_income_baseline',
+                                              10, decile_details=True)
+        del df2['expanded_income_baseline']
+    elif table_row_type == 'aggr':
+        df1['table_row'] = np.ones(reform_affected.shape, dtype=int)
+        df2['table_row'] = df1['table_row']
+    gdf1 = df1.groupby('table_row')
+    gdf2 = df2.groupby('table_row')
+    del df1['table_row']
+    del df2['table_row']
+    # fuzz up to NUM_TO_FUZZ filing units randomly chosen in each group
+    # (or table row), where fuzz means to replace the reform (2) results
+    # with the baseline (1) results for each chosen filing unit
+    pd.options.mode.chained_assignment = None
+    group_list = list()
+    for name, group2 in gdf2:
+        indices = np.where(group2['reform_affected'])
+        num = min(len(indices[0]), NUM_TO_FUZZ)
+        if num > 0:
+            choices = np.random.choice(indices[0],  # pylint: disable=no-member
+                                       size=num, replace=False)
+            group1 = gdf1.get_group(name)
+            for idx in choices:
+                group2.iloc[idx] = group1.iloc[idx]
+        group_list.append(group2)
+    df2 = pd.concat(group_list)
+    pd.options.mode.chained_assignment = 'warn'
+    del df2['reform_affected']
+    return (df1, df2)
+
+
 def chooser(agg):
     """
     This is a transformation function that should be called on each group
