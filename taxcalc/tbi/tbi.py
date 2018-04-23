@@ -15,13 +15,17 @@ tax results.
 # pylint --disable=locally-disabled tbi.py
 
 from __future__ import print_function
+import copy
 import time
 import numpy as np
 import pandas as pd
 from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    calculate,
                                    random_seed,
-                                   summary,
+                                   fuzzed,
+                                   summary_aggregate,
+                                   summary_dist_xbin, summary_diff_xbin,
+                                   summary_dist_xdec, summary_diff_xdec,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
@@ -96,7 +100,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     Setting use_full_sample=False implies use sub-sample of input file;
       otherwsie, use the complete sample.
     """
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
 
     start_time = time.time()
 
@@ -107,9 +111,13 @@ def run_nth_year_tax_calc_model(year_n, start_year,
                                user_mods,
                                behavior_allowed=True)
 
-    # extract raw results from calc1 and calc2
-    rawres1 = calc1.distribution_table_dataframe()
-    rawres2 = calc2.distribution_table_dataframe()
+    # extract unfuzzed raw results from calc1 and calc2
+    agg1 = calc1.dataframe(['s006', 'iitax', 'payrolltax', 'combined'])
+    agg2 = calc2.dataframe(['s006', 'iitax', 'payrolltax', 'combined'])
+    dv1b = calc1.distribution_table_dataframe()
+    dv2b = calc2.distribution_table_dataframe()
+    dv1d = calc1.distribution_table_dataframe()
+    dv2d = calc2.distribution_table_dataframe()
 
     # delete calc1 and calc2 now that raw results have been extracted
     del calc1
@@ -120,11 +128,32 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     print('seed={}'.format(seed))
     np.random.seed(seed)  # pylint: disable=no-member
 
-    # construct TaxBrain summary results from raw results
-    summ = summary(rawres1, rawres2, use_puf_not_cps)
-    del rawres1
-    del rawres2
+    # construct fuzzed raw results if fuzzing
+    fuzzing = use_puf_not_cps
+    if fuzzing:
+        reform_affected = np.logical_not(  # pylint: disable=no-member
+            np.isclose(agg1['combined'], agg2['combined'], atol=0.01, rtol=0.0)
+        )
+        agg1, agg2 = fuzzed(agg1, agg2, reform_affected, 'aggr')
+        dv1b, dv2b = fuzzed(dv1b, dv2b, reform_affected, 'xbin')
+        dv1d, dv2d = fuzzed(dv1d, dv2d, reform_affected, 'xdec')
+        del reform_affected
 
+    # construct TaxBrain summary results from raw results
+    summ = dict()
+    summ = summary_aggregate(summ, agg1, agg2)
+    summ = summary_dist_xbin(summ, dv1b, dv2b)
+    summ = summary_diff_xbin(summ, dv1b, dv2b)
+    summ = summary_dist_xdec(summ, dv1d, dv2d)
+    summ = summary_diff_xdec(summ, dv1d, dv2d)
+    del agg1
+    del agg2
+    del dv1b
+    del dv2b
+    del dv1d
+    del dv2d
+
+    # nested function used below
     def append_year(pdf):
         """
         append_year embedded function revises all column names in pdf

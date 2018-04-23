@@ -83,7 +83,7 @@ def test_run_nth_year_value_errors():
                                      gdp_elasticity=0.36,
                                      return_dict=False)
 
-
+@pytest.mark.one
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('using_puf', [True, False])
 def test_run_tax_calc_model(using_puf, tests_path):
