@@ -125,7 +125,7 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         # seed random number generator with a seed value based on user_mods
         # (reform-specific seed is used to choose whose results are fuzzed)
         seed = random_seed(user_mods)
-        print('seed={}'.format(seed))
+        print('fuzzing_seed={}'.format(seed))
         np.random.seed(seed)  # pylint: disable=no-member
         # make bool array marking which filing units are affected by the reform
         reform_affected = np.logical_not(  # pylint: disable=no-member

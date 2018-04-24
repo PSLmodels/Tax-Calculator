@@ -351,7 +351,6 @@ def summary_aggregate(res, df1, df2):
     aggr1 = [aggr_itax_1, aggr_ptax_1, aggr_comb_1]
     res['aggr_1'] = pd.DataFrame(data=aggr1, index=AGGR_ROW_NAMES)
     del aggr1
-    del df1
     # tax totals for reform
     aggr_itax_2 = (df2['iitax'] * df2['s006']).sum()
     aggr_ptax_2 = (df2['payrolltax'] * df2['s006']).sum()
@@ -359,7 +358,6 @@ def summary_aggregate(res, df1, df2):
     aggr2 = [aggr_itax_2, aggr_ptax_2, aggr_comb_2]
     res['aggr_2'] = pd.DataFrame(data=aggr2, index=AGGR_ROW_NAMES)
     del aggr2
-    del df2
     # return res dictionary
     return res
 
@@ -450,13 +448,11 @@ def summary_diff_xdec(res, df1, df2):
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='iitax')
-
     res['diff_ptax_xdec'] = \
         create_difference_table(df1, df2,
                                 groupby='weighted_deciles',
                                 income_measure='expanded_income',
                                 tax_to_diff='payrolltax')
-
     res['diff_comb_xdec'] = \
         create_difference_table(df1, df2,
                                 groupby='weighted_deciles',

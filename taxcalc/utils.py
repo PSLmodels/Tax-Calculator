@@ -9,7 +9,6 @@ PUBLIC low-level utility functions for Tax-Calculator.
 
 import os
 import math
-import copy
 import json
 import collections
 import pkg_resources
@@ -273,7 +272,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     Parameters
     ----------
     vdf : Pandas DataFrame including columns named in DIST_TABLE_COLUMNS list
-        for example, object returned from the Calculator class
+        for example, an object returned from the Calculator class
         distribution_table_dataframe method
 
     groupby : String object
@@ -281,13 +280,13 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
                            'large_income_bins', 'small_income_bins';
         determines how the columns in the resulting Pandas DataFrame are sorted
 
-    result_type : String object
-        options for input: 'weighted_sum' or 'weighted_avg';
-        determines how the table statistices are computed
-
     income_measure : String object
         options for input: 'expanded_income', 'c00100'(AGI)
         specifies statistic used to place filing units in bins or deciles
+
+    result_type : String object
+        options for input: 'weighted_sum' or 'weighted_avg';
+        determines how the table statistices are computed
 
     Notes
     -----
@@ -344,27 +343,24 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
             income_measure == 'c00100' or
             income_measure == 'c00100_baseline')
     assert income_measure in vdf
-    # copy vdf and add variable columns
-    res = copy.deepcopy(vdf)
+    assert 'table_row' not in list(vdf.columns.values)
     # sort the data given specified groupby and income_measure
-    if 'table_row' in res.columns:
-        pdf = res
-    else:
-        if groupby == 'weighted_deciles':
-            pdf = add_quantile_table_row_variable(res, income_measure,
-                                                  10, decile_details=True)
-        elif groupby == 'standard_income_bins':
-            pdf = add_income_table_row_variable(res, income_measure,
-                                                bin_type='standard')
-        elif groupby == 'large_income_bins':
-            pdf = add_income_table_row_variable(res, income_measure,
-                                                bin_type='tpc')
-        elif groupby == 'small_income_bins':
-            pdf = add_income_table_row_variable(res, income_measure,
-                                                bin_type='soi')
+    if groupby == 'weighted_deciles':
+        pdf = add_quantile_table_row_variable(vdf, income_measure,
+                                              10, decile_details=True)
+    elif groupby == 'standard_income_bins':
+        pdf = add_income_table_row_variable(vdf, income_measure,
+                                            bin_type='standard')
+    elif groupby == 'large_income_bins':
+        pdf = add_income_table_row_variable(vdf, income_measure,
+                                            bin_type='tpc')
+    elif groupby == 'small_income_bins':
+        pdf = add_income_table_row_variable(vdf, income_measure,
+                                            bin_type='soi')
     # construct grouped DataFrame
     gpdf = pdf.groupby('table_row', as_index=False)
     dist_table = stat_dataframe(gpdf)
+    del pdf['table_row']
     # compute sum row
     sum_row = get_sums(dist_table)[dist_table.columns]
     # handle placement of sum_row in table
@@ -407,8 +403,8 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     # delete intermediate Pandas DataFrame objects
     del gpdf
     del pdf
-    del res
     # return table as Pandas DataFrame
+    vdf.sort_index(inplace=True)
     return dist_table
 
 
@@ -488,28 +484,29 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     assert (tax_to_diff == 'iitax' or
             tax_to_diff == 'payrolltax' or
             tax_to_diff == 'combined')
-    res1 = copy.deepcopy(vdf1)
-    res2 = copy.deepcopy(vdf2)
+    assert 'table_row' not in list(vdf1.columns.values)
+    assert 'table_row' not in list(vdf2.columns.values)
     baseline_income_measure = income_measure + '_baseline'
-    res2[baseline_income_measure] = res1[income_measure]
-    res2['tax_diff'] = res2[tax_to_diff] - res1[tax_to_diff]
-    res2['atinc1'] = res1['aftertax_income']
-    res2['atinc2'] = res2['aftertax_income']
-    # add table_row column to res2 given specified groupby and income_measure
+    vdf2[baseline_income_measure] = vdf1[income_measure]
+    vdf2['tax_diff'] = vdf2[tax_to_diff] - vdf1[tax_to_diff]
+    vdf2['atinc1'] = vdf1['aftertax_income']
+    vdf2['atinc2'] = vdf2['aftertax_income']
+    # add table_row column to vdf2 given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        pdf = add_quantile_table_row_variable(res2, baseline_income_measure,
+        pdf = add_quantile_table_row_variable(vdf2, baseline_income_measure,
                                               10, decile_details=True)
     elif groupby == 'standard_income_bins':
-        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+        pdf = add_income_table_row_variable(vdf2, baseline_income_measure,
                                             bin_type='standard')
     elif groupby == 'large_income_bins':
-        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+        pdf = add_income_table_row_variable(vdf2, baseline_income_measure,
                                             bin_type='tpc')
     elif groupby == 'small_income_bins':
-        pdf = add_income_table_row_variable(res2, baseline_income_measure,
+        pdf = add_income_table_row_variable(vdf2, baseline_income_measure,
                                             bin_type='soi')
     # create grouped Pandas DataFrame
     gpdf = pdf.groupby('table_row', as_index=False)
+    del pdf['table_row']
     # create additive difference table statistics from gpdf
     diff_table = additive_stats_dataframe(gpdf)
     # calculate additive statistics on sums row
@@ -558,8 +555,6 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     del diff_table['atinc2']
     del count
     del sum_row
-    del res1
-    del res2
     # set print display format for float table elements
     pd.options.display.float_format = '{:10,.2f}'.format
     # put diff_table columns in correct order
@@ -576,6 +571,8 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
         diff_table.index = rownames
         del rownames
     # return table as Pandas DataFrame
+    vdf1.sort_index(inplace=True)
+    vdf2.sort_index(inplace=True)
     return diff_table
 
 

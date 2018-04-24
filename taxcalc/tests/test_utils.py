@@ -275,14 +275,10 @@ def test_create_tables(cps_subsample):
 
     # test creating various distribution tables
 
-    dvdf = calc2.distribution_table_dataframe()
-    dvdf = add_quantile_table_row_variable(dvdf, 'expanded_income',
-                                           num_quantiles=10,
-                                           decile_details=True)
-    dist = create_distribution_table(dvdf,
-                                     groupby='weighted_deciles',
-                                     income_measure='expanded_income',
-                                     result_type='weighted_sum')
+    dist, _ = calc2.distribution_tables(None,
+                                        groupby='weighted_deciles',
+                                        income_measure='expanded_income',
+                                        result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [0,
                 0,
@@ -377,10 +373,10 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.0f},'.format(val))
 
-    dist = create_distribution_table(calc2.distribution_table_dataframe(),
-                                     groupby='standard_income_bins',
-                                     income_measure='expanded_income',
-                                     result_type='weighted_sum')
+    dist, _ = calc2.distribution_tables(None,
+                                        groupby='standard_income_bins',
+                                        income_measure='expanded_income',
+                                        result_type='weighted_sum')
     assert isinstance(dist, pd.DataFrame)
     expected = [0,
                 0,

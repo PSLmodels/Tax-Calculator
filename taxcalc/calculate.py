@@ -494,6 +494,9 @@ class Calculator(object):
                 income_measure == 'c00100')
         assert (result_type == 'weighted_sum' or
                 result_type == 'weighted_avg')
+        if calc is not None:
+            assert np.allclose(self.array('s006'),
+                               calc.array('s006'))  # check rows in same order
         var_dataframe = self.distribution_table_dataframe()
         dt1 = create_distribution_table(var_dataframe,
                                         groupby=groupby,
