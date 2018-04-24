@@ -252,12 +252,14 @@ def fuzzed(df1, df2, reform_affected, table_row_type):
     Parameters
     ----------
     df1: Pandas DataFrame
-        contains results variables for the baseline policy
+        contains results variables for the baseline policy, which are not
+        changed by this function
 
     df2: Pandas DataFrame
-        contains results variables for the reform policy
+        contains results variables for the reform policy, which are not
+        changed by this function
 
-    reform_affected: boolean numpy array
+    reform_affected: boolean numpy array (not changed by this function)
         True for filing units with a reform-induced combined tax difference;
         otherwise False
 
@@ -267,8 +269,8 @@ def fuzzed(df1, df2, reform_affected, table_row_type):
     Returns
     -------
     df1, df2: Pandas DataFrames
-        where df2 is fuzzed to maintain data privacy and
-        where df1 has same filing unit order as has the fuzzed df2
+        where copied df2 is fuzzed to maintain data privacy and
+        where copied df1 has same filing unit order as has the fuzzed df2
     """
     assert (table_row_type == 'aggr' or
             table_row_type == 'xbin' or
