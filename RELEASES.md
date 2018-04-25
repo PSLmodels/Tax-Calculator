@@ -4,6 +4,25 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-05-?? Release 0.20.0
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- None
+
+**New Features**
+- Streamline logic that prevents disclosure of details of PUF filing units
+  [[#1979](https://github.com/open-source-economics/Tax-Calculator/pull/1979)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Fix mishandling of boolean policy parameters
+  [[#1982](https://github.com/open-source-economics/Tax-Calculator/pull/1982)
+  by Hank Doupe]
+
+
 2018-04-19 Release 0.19.0
 -------------------------
 (last merged pull request is
