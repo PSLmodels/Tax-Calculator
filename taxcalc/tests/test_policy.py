@@ -145,7 +145,8 @@ def test_multi_year_reform():
                                   [503, 3359, 5548, 6242],
                                   [506, 3373, 5572, 6269],
                                   [510, 3400, 5616, 6318]],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=iratelist,
                         num_years=nyrs),
@@ -153,7 +154,8 @@ def test_multi_year_reform():
     assert_allclose(getattr(pol, '_STD_Dep'),
                     Policy._expand_array(
                         np.array([1000, 1000, 1050, 1050, 1050],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=iratelist,
                         num_years=nyrs),
@@ -162,7 +164,8 @@ def test_multi_year_reform():
                     Policy._expand_array(
                         np.array([1000] * 5 + [1400] * 4 +
                                  [1500] * 3 + [1600] + [1000],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=False,
                         inflation_rates=iratelist,
                         num_years=nyrs),
@@ -171,7 +174,8 @@ def test_multi_year_reform():
     assert_allclose(getattr(pol, '_SS_Earnings_c'),
                     Policy._expand_array(
                         np.array([113700, 117000, 118500, 118500, 127200],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=wratelist,
                         num_years=nyrs),
@@ -333,7 +337,8 @@ def test_create_parameters_from_file(monkeypatch, policyfile):
     assert_allclose(ppo._almdep,
                     Policy._expand_array(
                         np.array([7150, 7250, 7400],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
@@ -341,21 +346,24 @@ def test_create_parameters_from_file(monkeypatch, policyfile):
     assert_allclose(ppo._almsep,
                     Policy._expand_array(
                         np.array([40400, 41050],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt5,
                     Policy._expand_array(
-                        np.array([0.33]), False,
+                        np.array([0.33]),
+                        False, False,
                         inflate=False,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt7,
                     Policy._expand_array(
-                        np.array([0.396]), False,
+                        np.array([0.396]),
+                        False, False,
                         inflate=False,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
@@ -938,6 +946,14 @@ def test_validate_param_names_types_errors():
     ref9 = {2019: {'_AMT_KT_c_Age': [True]}}
     with pytest.raises(ValueError):
         pol9.implement_reform(ref9)
+    # test 10 was contributed by Hank Doupe in bug report #1980
+    json_reform = """
+    {"policy": {"_ID_BenefitSurtax_Switch_medical": {"2018": [true]}}}
+    """
+    pdict = Calculator.read_json_param_objects(json_reform, None)
+    pol = Policy()
+    pol.implement_reform(pdict["policy"], raise_errors=False)
+    assert pol.parameter_errors == ''
 
 
 def test_validate_param_values_warnings_errors():
