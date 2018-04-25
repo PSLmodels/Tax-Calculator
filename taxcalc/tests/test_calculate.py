@@ -886,10 +886,10 @@ def test_distribution_tables(cps_subsample):
     calc1 = Calculator(policy=pol, records=recs)
     assert calc1.current_year == 2014
     calc1.calc_all()
-    dt1, dt2 = calc1.distribution_tables(None)
+    dt1, dt2 = calc1.distribution_tables(None, 'weighted_deciles')
     assert isinstance(dt1, pd.DataFrame)
     assert dt2 is None
-    dt1, dt2 = calc1.distribution_tables(calc1)
+    dt1, dt2 = calc1.distribution_tables(calc1, 'weighted_deciles')
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
     reform = {2014: {'_UBI_u18': [1000],
@@ -899,7 +899,7 @@ def test_distribution_tables(cps_subsample):
     assert not pol.parameter_errors
     calc2 = Calculator(policy=pol, records=recs)
     calc2.calc_all()
-    dt1, dt2 = calc1.distribution_tables(calc2)
+    dt1, dt2 = calc1.distribution_tables(calc2, 'weighted_deciles')
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
 
@@ -916,7 +916,7 @@ def test_difference_table(cps_subsample):
     assert calc2.current_year == cyr
     calc1.calc_all()
     calc2.calc_all()
-    diff = calc1.difference_table(calc2)
+    diff = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
     assert isinstance(diff, pd.DataFrame)
 
 
