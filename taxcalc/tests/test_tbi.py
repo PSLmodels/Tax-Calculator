@@ -180,21 +180,6 @@ def test_random_seed_from_subdict():
     assert seed1 == seed2
 
 
-def test_chooser():
-    dframe = pd.DataFrame(data=[[0, 1], [0, 2], [0, 3],
-                                [0, 4], [0, 5], [0, 6],
-                                [0, 7], [0, 8], [0, 9]],
-                          columns=['zeros', 'positives'])
-    choices = chooser(dframe['positives'])
-    assert isinstance(choices, list)
-    assert len(choices) == dframe['positives'].size
-    assert choices.count(0) == 3
-    choices = chooser(dframe['zeros'])
-    assert isinstance(choices, list)
-    assert len(choices) == dframe['positives'].size
-    assert choices.count(0) == 0
-
-
 def test_create_dict_table():
     # test correct usage
     dframe = pd.DataFrame(data=[[1., 2, 3], [4, 5, 6], [7, 8, 9]],
@@ -338,7 +323,7 @@ def test_behavioral_response(puf_subsample):
         'return_dict': False
     }
     # generate aggregate results two ways: using tbi and standard calls
-    num_years = 8
+    num_years = 9
     std_res = dict()
     tbi_res = dict()
     for using_tbi in [True, False]:
@@ -390,7 +375,7 @@ def test_behavioral_response(puf_subsample):
     # NOTE that the tbi results have been "fuzzed" for PUF privacy reasons,
     #      so there is no expectation that the results should be identical.
     no_diffs = True
-    reltol = 0.020  # std and tbi differ if more than 2.0 percent different
+    reltol = 0.004  # std and tbi differ if more than 0.4 percent different
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
         col = '0_{}'.format(year)
