@@ -10,7 +10,9 @@ for a complete commit history.
 [#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
-- None
+- Simplify table-creation Calculator methods and related utility functions
+  [[#1984](https://github.com/open-source-economics/Tax-Calculator/pull/1984)
+  by Martin Holmer]
 
 **New Features**
 - Streamline logic that prevents disclosure of details of PUF filing units
