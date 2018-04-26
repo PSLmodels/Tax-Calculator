@@ -129,15 +129,11 @@ STANDARD_ROW_NAMES = ['<$0K', '=$0K', '$0-10K', '$10-20K', '$20-30K',
                       '$30-40K', '$40-50K', '$50-75K', '$75-100K',
                       '$100-200K', '$200-500K', '$500-1000K', '>$1000K', 'ALL']
 
-STANDARD_INCOME_BINS = [-9e99, -1e-9, 1e-9, 9999, 19999, 29999, 39999, 49999,
-                        74999, 99999, 199999, 499999, 1000000, 9e99]
+STANDARD_INCOME_BINS = [-9e99, -1e-9, 1e-9, 10e3, 20e3, 30e3, 40e3, 50e3,
+                        75e3, 100e3, 200e3, 500e3, 1e6, 9e99]
 
-LARGE_INCOME_BINS = [-9e99, -1e-9, 1e-9, 9999, 19999, 29999, 39999, 49999,
-                     74999, 99999, 200000, 9e99]
-
-SMALL_INCOME_BINS = [-9e99, -1e-9, 1e-9, 4999, 9999, 14999, 19999, 24999,
-                     29999, 39999, 49999, 74999, 99999, 199999, 499999, 999999,
-                     1499999, 1999999, 4999999, 9999999, 9e99]
+SOI_AGI_BINS = [-9e99, 1.0, 5e3, 10e3, 15e3, 20e3, 25e3, 30e3, 40e3, 50e3,
+                75e3, 100e3, 200e3, 500e3, 1e6, 1.5e6, 5e6, 10e6, 9e99]
 
 
 def unweighted_sum(pdf, col_name):
@@ -168,6 +164,8 @@ def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
     and pos income_measure ) and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
+    assert isinstance(pdf, pd.DataFrame)
+    assert income_measure in pdf
     if decile_details and num_quantiles != 10:
         msg = 'decile_details is True when num_quantiles is {}'
         raise ValueError(msg.format(num_quantiles))
@@ -195,18 +193,19 @@ def add_quantile_table_row_variable(pdf, income_measure, num_quantiles,
         bin_edges.insert(-1, bin_edges[-2] + 0.4 * bin_width)  # top of 95-99
         num_bins += 4
     labels = range(1, (num_bins + 1))
-    pdf['table_row'] = pd.cut(pdf['cumsum_temp'],
-                              bins=bin_edges, labels=labels)
+    pdf['table_row'] = pd.cut(pdf['cumsum_temp'], bin_edges,
+                              right=False, labels=labels)
     pdf.drop('cumsum_temp', axis=1, inplace=True)
     return pdf
 
 
-def add_income_table_row_variable(pdf, income_measure,
-                                  bin_type='soi', bins=None, right=True):
+def add_income_table_row_variable(pdf, income_measure, bin_edges):
     """
     Add a variable to specified Pandas DataFrame, pdf, that specifies the
     table row and is called 'table_row'.  The rows are defined by the
-    specified bin_type and optional bins function arguments.
+    specified bin_edges function argument.  Note that the bin groupings
+    are LEFT INCLUSIVE, which means that bin_edges=[1,2,3,4] implies these
+    three bin groupings: [1,2), [2,3), [3,4).
 
     Parameters
     ----------
@@ -216,36 +215,17 @@ def add_income_table_row_variable(pdf, income_measure,
     income_measure: String
         specifies income variable used to construct bins
 
-    bin_type: String, optional
-        options for input: 'standard', 'tpc', 'soi'
-        default: 'soi'
-
-    bins: iterable of scalars, optional income breakpoints
-        follows Pandas convention; the breakpoint is inclusive if
-        right=True; this argument overrides the compare_with argument
-
-    right : bool, optional
-        indicates whether the bins include the rightmost edge or not;
-        if right == True (the default), then bins=[1,2,3,4] implies
-        this bin grouping (1,2], (2,3], (3,4]
+    bin_edges: list of scalar bin edges
 
     Returns
     -------
     pdf: Pandas DataFrame
         the original input plus the added 'table_row' column
     """
-    if not bins:
-        if bin_type == 'standard':
-            bins = STANDARD_INCOME_BINS
-        elif bin_type == 'tpc':
-            bins = LARGE_INCOME_BINS
-        elif bin_type == 'soi':
-            bins = SMALL_INCOME_BINS
-        else:
-            msg = 'Unknown bin_type argument {}'.format(bin_type)
-            raise ValueError(msg)
-    pdf['table_row'] = pd.cut(pdf[income_measure],
-                              bins, right=right)
+    assert isinstance(pdf, pd.DataFrame)
+    assert income_measure in pdf
+    assert isinstance(bin_edges, list)
+    pdf['table_row'] = pd.cut(pdf[income_measure], bin_edges, right=False)
     return pdf
 
 
@@ -264,10 +244,10 @@ def get_sums(pdf):
     return pd.Series(sums, name='sums')
 
 
-def create_distribution_table(vdf, groupby, income_measure, result_type):
+def create_distribution_table(vdf, groupby, income_measure):
     """
-    Get results from vdf, sort them based on groupby using income_measure,
-    manipulate them based on result_type, and return them as a table.
+    Get results from vdf, sort them by expanded_income based on groupby,
+    and return them as a table.
 
     Parameters
     ----------
@@ -276,29 +256,13 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
         distribution_table_dataframe method
 
     groupby : String object
-        options for input: 'weighted_deciles', 'standard_income_bins',
-                           'large_income_bins', 'small_income_bins';
-        determines how the columns in the resulting Pandas DataFrame are sorted
+        options for input: 'weighted_deciles' or
+                           'standard_income_bins' or 'soi_agi_bins'
+        determines how the rows in the resulting Pandas DataFrame are sorted
 
-    income_measure : String object
-        options for input: 'expanded_income', 'c00100'(AGI)
-        specifies statistic used to place filing units in bins or deciles
-
-    result_type : String object
-        options for input: 'weighted_sum' or 'weighted_avg';
-        determines how the table statistices are computed
-
-    Notes
-    -----
-    Taxpayer Characteristics:
-
-        c04470 : Total itemized deductions
-
-        c00100 : AGI
-
-        c09600 : Alternative minimum tax
-
-        s006 : filing unit sample weight
+    income_measure: String object
+        options for input: 'expanded_income' or 'expanded_income_baseline'
+        determines which variable is used to sort rows
 
     Returns
     -------
@@ -335,13 +299,9 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     assert isinstance(vdf, pd.DataFrame)
     assert (groupby == 'weighted_deciles' or
             groupby == 'standard_income_bins' or
-            groupby == 'large_income_bins' or
-            groupby == 'small_income_bins')
-    assert result_type == 'weighted_sum' or result_type == 'weighted_avg'
+            groupby == 'soi_agi_bins')
     assert (income_measure == 'expanded_income' or
-            income_measure == 'expanded_income_baseline' or
-            income_measure == 'c00100' or
-            income_measure == 'c00100_baseline')
+            income_measure == 'expanded_income_baseline')
     assert income_measure in vdf
     assert 'table_row' not in list(vdf.columns.values)
     # sort the data given specified groupby and income_measure
@@ -350,13 +310,10 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
                                               10, decile_details=True)
     elif groupby == 'standard_income_bins':
         pdf = add_income_table_row_variable(vdf, income_measure,
-                                            bin_type='standard')
-    elif groupby == 'large_income_bins':
+                                            STANDARD_INCOME_BINS)
+    elif groupby == 'soi_agi_bins':
         pdf = add_income_table_row_variable(vdf, income_measure,
-                                            bin_type='tpc')
-    elif groupby == 'small_income_bins':
-        pdf = add_income_table_row_variable(vdf, income_measure,
-                                            bin_type='soi')
+                                            SOI_AGI_BINS)
     # construct grouped DataFrame
     gpdf = pdf.groupby('table_row', as_index=False)
     dist_table = stat_dataframe(gpdf)
@@ -380,11 +337,6 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     else:
         dist_table = dist_table.append(sum_row)
     del sum_row
-    # optionally construct weighted_avg table
-    if result_type == 'weighted_avg':
-        for col in DIST_TABLE_COLUMNS:
-            if col != 's006':
-                dist_table[col] /= dist_table['s006']
     # set print display format for float table elements
     pd.options.display.float_format = '{:8,.0f}'.format
     # ensure dist_table columns are in correct order
@@ -408,7 +360,7 @@ def create_distribution_table(vdf, groupby, income_measure, result_type):
     return dist_table
 
 
-def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
+def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     """
     Get results from two different vdf, construct tax difference results,
     and return the difference statistics as a table.
@@ -424,13 +376,9 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
            on the reform Calculator object
 
     groupby : String object
-        options for input: 'weighted_deciles', 'standard_income_bins',
-                           'large_income_bins', 'small_income_bins';
-        determines how the columns in the resulting Pandas DataFrame are sorted
-
-    income_measure : String object
-        options for input: 'expanded_income', 'c00100'(AGI)
-        specifies statistic used to place filing units in bins or deciles
+        options for input: 'weighted_deciles' or
+                           'standard_income_bins' or 'soi_agi_bins'
+        determines how the rows in the resulting Pandas DataFrame are sorted
 
     tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
@@ -476,34 +424,28 @@ def create_difference_table(vdf1, vdf2, groupby, income_measure, tax_to_diff):
     assert np.allclose(vdf1['s006'], vdf2['s006'])  # check rows in same order
     assert (groupby == 'weighted_deciles' or
             groupby == 'standard_income_bins' or
-            groupby == 'large_income_bins' or
-            groupby == 'small_income_bins')
-    assert (income_measure == 'expanded_income' or
-            income_measure == 'c00100')
-    assert income_measure in vdf1
+            groupby == 'soi_agi_bins')
+    assert 'expanded_income' in vdf1
     assert (tax_to_diff == 'iitax' or
             tax_to_diff == 'payrolltax' or
             tax_to_diff == 'combined')
     assert 'table_row' not in list(vdf1.columns.values)
     assert 'table_row' not in list(vdf2.columns.values)
-    baseline_income_measure = income_measure + '_baseline'
-    vdf2[baseline_income_measure] = vdf1[income_measure]
+    baseline_expanded_income = 'expanded_income_baseline'
+    vdf2[baseline_expanded_income] = vdf1['expanded_income']
     vdf2['tax_diff'] = vdf2[tax_to_diff] - vdf1[tax_to_diff]
     vdf2['atinc1'] = vdf1['aftertax_income']
     vdf2['atinc2'] = vdf2['aftertax_income']
     # add table_row column to vdf2 given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        pdf = add_quantile_table_row_variable(vdf2, baseline_income_measure,
+        pdf = add_quantile_table_row_variable(vdf2, baseline_expanded_income,
                                               10, decile_details=True)
     elif groupby == 'standard_income_bins':
-        pdf = add_income_table_row_variable(vdf2, baseline_income_measure,
-                                            bin_type='standard')
-    elif groupby == 'large_income_bins':
-        pdf = add_income_table_row_variable(vdf2, baseline_income_measure,
-                                            bin_type='tpc')
-    elif groupby == 'small_income_bins':
-        pdf = add_income_table_row_variable(vdf2, baseline_income_measure,
-                                            bin_type='soi')
+        pdf = add_income_table_row_variable(vdf2, baseline_expanded_income,
+                                            STANDARD_INCOME_BINS)
+    elif groupby == 'soi_agi_bins':
+        pdf = add_income_table_row_variable(vdf2, baseline_expanded_income,
+                                            SOI_AGI_BINS)
     # create grouped Pandas DataFrame
     gpdf = pdf.groupby('table_row', as_index=False)
     del pdf['table_row']

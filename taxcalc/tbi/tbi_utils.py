@@ -284,10 +284,10 @@ def fuzzed(df1, df2, reform_affected, table_row_type):
     # construct table rows, for which filing units in each row must be fuzzed
     if table_row_type == 'xbin':
         df1 = add_income_table_row_variable(df1, 'expanded_income',
-                                            bins=STANDARD_INCOME_BINS)
+                                            STANDARD_INCOME_BINS)
         df2['expanded_income_baseline'] = df1['expanded_income']
         df2 = add_income_table_row_variable(df2, 'expanded_income_baseline',
-                                            bins=STANDARD_INCOME_BINS)
+                                            STANDARD_INCOME_BINS)
         del df2['expanded_income_baseline']
     elif table_row_type == 'xdec':
         df1 = add_quantile_table_row_variable(df1, 'expanded_income',
@@ -371,16 +371,12 @@ def summary_dist_xbin(res, df1, df2):
     """
     # create distribution tables grouped by xbin
     res['dist1_xbin'] = \
-        create_distribution_table(df1,
-                                  groupby='standard_income_bins',
-                                  income_measure='expanded_income',
-                                  result_type='weighted_sum')
+        create_distribution_table(df1, 'standard_income_bins',
+                                  'expanded_income')
     df2['expanded_income_baseline'] = df1['expanded_income']
     res['dist2_xbin'] = \
-        create_distribution_table(df2,
-                                  groupby='standard_income_bins',
-                                  income_measure='expanded_income_baseline',
-                                  result_type='weighted_sum')
+        create_distribution_table(df2, 'standard_income_bins',
+                                  'expanded_income_baseline')
     del df2['expanded_income_baseline']
     # return res dictionary
     return res
@@ -395,20 +391,11 @@ def summary_diff_xbin(res, df1, df2):
     """
     # create difference tables grouped by xbin
     res['diff_itax_xbin'] = \
-        create_difference_table(df1, df2,
-                                groupby='standard_income_bins',
-                                income_measure='expanded_income',
-                                tax_to_diff='iitax')
+        create_difference_table(df1, df2, 'standard_income_bins', 'iitax')
     res['diff_ptax_xbin'] = \
-        create_difference_table(df1, df2,
-                                groupby='standard_income_bins',
-                                income_measure='expanded_income',
-                                tax_to_diff='payrolltax')
+        create_difference_table(df1, df2, 'standard_income_bins', 'payrolltax')
     res['diff_comb_xbin'] = \
-        create_difference_table(df1, df2,
-                                groupby='standard_income_bins',
-                                income_measure='expanded_income',
-                                tax_to_diff='combined')
+        create_difference_table(df1, df2, 'standard_income_bins', 'combined')
     # return res dictionary
     return res
 
@@ -422,14 +409,12 @@ def summary_dist_xdec(res, df1, df2):
     """
     # create distribution tables grouped by xdec
     res['dist1_xdec'] = \
-        create_distribution_table(df1, groupby='weighted_deciles',
-                                  income_measure='expanded_income',
-                                  result_type='weighted_sum')
+        create_distribution_table(df1, 'weighted_deciles',
+                                  'expanded_income')
     df2['expanded_income_baseline'] = df1['expanded_income']
     res['dist2_xdec'] = \
-        create_distribution_table(df2, groupby='weighted_deciles',
-                                  income_measure='expanded_income_baseline',
-                                  result_type='weighted_sum')
+        create_distribution_table(df2, 'weighted_deciles',
+                                  'expanded_income_baseline')
     del df2['expanded_income_baseline']
     # return res dictionary
     return res
@@ -444,20 +429,11 @@ def summary_diff_xdec(res, df1, df2):
     """
     # create difference tables grouped by xdec
     res['diff_itax_xdec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='expanded_income',
-                                tax_to_diff='iitax')
+        create_difference_table(df1, df2, 'weighted_deciles', 'iitax')
     res['diff_ptax_xdec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='expanded_income',
-                                tax_to_diff='payrolltax')
+        create_difference_table(df1, df2, 'weighted_deciles', 'payrolltax')
     res['diff_comb_xdec'] = \
-        create_difference_table(df1, df2,
-                                groupby='weighted_deciles',
-                                income_measure='expanded_income',
-                                tax_to_diff='combined')
+        create_difference_table(df1, df2, 'weighted_deciles', 'combined')
     # return res dictionary
     return res
 
