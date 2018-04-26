@@ -94,9 +94,9 @@ class ParametersBase(object):
         """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                intg_val = data.get('integer_value', None)
-                bool_val = data.get('boolean_value', None)
-                values = data.get('value', None)
+                intg_val = data.get('integer_value')
+                bool_val = data.get('boolean_value')
+                values = data.get('value')
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
                     if cpi_inflated:
@@ -357,8 +357,8 @@ class ParametersBase(object):
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
             vals_indexed = self._vals[name].get('cpi_inflated', False)
-            intg_val = self._vals[name].get('integer_value', None)
-            bool_val = self._vals[name].get('boolean_value', None)
+            intg_val = self._vals[name].get('integer_value')
+            bool_val = self._vals[name].get('boolean_value')
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
@@ -388,8 +388,8 @@ class ParametersBase(object):
             pvalues = [cval[year - self.start_year]]
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            intg_val = self._vals[pname].get('integer_value', None)
-            bool_val = self._vals[pname].get('boolean_value', None)
+            intg_val = self._vals[pname].get('integer_value')
+            bool_val = self._vals[pname].get('boolean_value')
             nval = self._expand_array(pvalues, intg_val, bool_val,
                                       inflate=pindexed,
                                       inflation_rates=index_rates,
