@@ -87,8 +87,7 @@ def test_create_tables(cps_subsample):
 
     diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                    calc2.dataframe(DIFF_VARIABLES),
-                                   groupby='standard_income_bins',
-                                   tax_to_diff='combined')
+                                   'standard_income_bins', 'combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [np.nan,
                 np.nan,
@@ -114,8 +113,7 @@ def test_create_tables(cps_subsample):
 
     diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                    calc2.dataframe(DIFF_VARIABLES),
-                                   groupby='standard_income_bins',
-                                   tax_to_diff='combined')
+                                   'standard_income_bins', 'combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [np.nan,
                 np.nan,
@@ -141,8 +139,7 @@ def test_create_tables(cps_subsample):
 
     diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                    calc2.dataframe(DIFF_VARIABLES),
-                                   groupby='standard_income_bins',
-                                   tax_to_diff='iitax')
+                                   'standard_income_bins', 'iitax')
     assert isinstance(diff, pd.DataFrame)
     expected = [np.nan,
                 np.nan,
@@ -168,8 +165,7 @@ def test_create_tables(cps_subsample):
 
     diff = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                    calc2.dataframe(DIFF_VARIABLES),
-                                   groupby='weighted_deciles',
-                                   tax_to_diff='combined')
+                                   'weighted_deciles', 'combined')
     assert isinstance(diff, pd.DataFrame)
     expected = [0,
                 0,
@@ -654,11 +650,9 @@ def test_dist_table_sum_row(cps_subsample):
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
     tb1 = create_distribution_table(calc.distribution_table_dataframe(),
-                                    groupby='standard_income_bins',
-                                    income_measure='expanded_income')
+                                    'standard_income_bins', 'expanded_income')
     tb2 = create_distribution_table(calc.distribution_table_dataframe(),
-                                    groupby='soi_agi_bins',
-                                    income_measure='expanded_income')
+                                    'soi_agi_bins', 'expanded_income')
     assert np.allclose(tb1[-1:], tb2[-1:])
 
 
@@ -676,12 +670,10 @@ def test_diff_table_sum_row(cps_subsample):
     # create two difference tables and compare their content
     tdiff1 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                      calc2.dataframe(DIFF_VARIABLES),
-                                     groupby='standard_income_bins',
-                                     tax_to_diff='iitax')
+                                     'standard_income_bins', 'iitax')
     tdiff2 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                      calc2.dataframe(DIFF_VARIABLES),
-                                     groupby='soi_agi_bins',
-                                     tax_to_diff='iitax')
+                                     'soi_agi_bins', 'iitax')
     non_digit_cols = ['perc_inc', 'perc_cut']
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
