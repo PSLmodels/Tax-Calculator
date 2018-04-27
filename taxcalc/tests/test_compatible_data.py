@@ -1,4 +1,3 @@
-
 """
 Tests of the compatible_data fields in the current_law_policy.json file.
 

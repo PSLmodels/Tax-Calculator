@@ -19,10 +19,10 @@ import json
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, Growfactors, nonsmall_diffs
+from taxcalc import Policy, Records, Calculator, nonsmall_diffs
+from taxcalc import run_nth_year_tax_calc_model
 
-import pytest
-@pytest.mark.one
+
 def test_agg(tests_path, cps_fullsample):
     """
     Test current-law aggregate taxes using cps.csv file.
@@ -35,12 +35,13 @@ def test_agg(tests_path, cps_fullsample):
     baseline_policy = Policy()
     baseline_policy.implement_reform(pre_tcja['policy'])
     # create a Records object (rec) containing all cps.csv input records
-    rec = Records.cps_constructor(data=cps_fullsample)
+    recs = Records.cps_constructor(data=cps_fullsample, no_benefits=True)
     # create a Calculator object using baseline policy and cps records
-    calc = Calculator(policy=baseline_policy, records=rec)
+    calc = Calculator(policy=baseline_policy, records=recs)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = calc.diagnostic_table(nyrs)
+    del calc
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt to a string with a trailing EOL character
     actual_results = adt.to_string() + '\n'
@@ -72,12 +73,13 @@ def test_agg(tests_path, cps_fullsample):
     rn_seed = 180  # to ensure sub-sample is always the same
     subfrac = 0.04  # sub-sample fraction
     subsample = cps_fullsample.sample(frac=subfrac, random_state=rn_seed)
-    rec_subsample = Records.cps_constructor(data=subsample)
+    rec_subsample = Records.cps_constructor(data=subsample, no_benefits=True)
     calc_subsample = Calculator(policy=baseline_policy, records=rec_subsample)
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
+    del calc_subsample
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
-    reltol = 0.005  # maximum allowed relative difference in tax liability
+    reltol = 0.003  # maximum allowed relative difference in tax liability
     if not np.allclose(taxes_subsample, taxes_fullsample,
                        atol=0.0, rtol=reltol):
         msg = 'CPSCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'
@@ -130,3 +132,60 @@ def test_ubi_n_variables(cps_path):
         print('number xtot < nsum is:', np.sum(xtot < nsum))
         print('number xtot > nsum is:', np.sum(xtot > nsum))
         assert 'XTOT' == '(nu18+n1820+n21)'
+
+
+def test_run_tax_calc_model(tests_path):
+    """
+    Test tbi.run_nth_year_tax_calc_model function using CPS data.
+    """
+    user_modifications = {
+        'policy': {
+            2016: {'_II_rt3': [0.33],
+                   '_PT_rt3': [0.33],
+                   '_II_rt4': [0.33],
+                   '_PT_rt4': [0.33]}
+        },
+        'consumption': {
+            2016: {'_MPC_e20400': [0.01]}
+        },
+        'behavior': {
+            2016: {'_BE_sub': [0.25]}
+        },
+        'growdiff_baseline': {
+        },
+        'growdiff_response': {
+        }
+    }
+    res = run_nth_year_tax_calc_model(year_n=2, start_year=2018,
+                                      use_puf_not_cps=False,
+                                      use_full_sample=False,
+                                      user_mods=user_modifications,
+                                      return_dict=True)
+    assert isinstance(res, dict)
+    # put actual results in a multiline string
+    actual_results = ''
+    for tbl in sorted(res.keys()):
+        actual_results += 'TABLE {} RESULTS:\n'.format(tbl)
+        actual_results += json.dumps(res[tbl], sort_keys=True,
+                                     indent=4, separators=(',', ': ')) + '\n'
+    # read expected results from file
+    expect_fname = 'tbi_cps_expect.txt'
+    expect_path = os.path.join(tests_path, expect_fname)
+    with open(expect_path, 'r') as expect_file:
+        expect_results = expect_file.read()
+    # ensure actual and expect results have no differences
+    diffs = nonsmall_diffs(actual_results.splitlines(True),
+                           expect_results.splitlines(True))
+    if diffs:
+        actual_fname = '{}{}'.format(expect_fname[:-10], 'actual.txt')
+        actual_path = os.path.join(tests_path, actual_fname)
+        with open(actual_path, 'w') as actual_file:
+            actual_file.write(actual_results)
+        msg = 'TBI RESULTS DIFFER\n'
+        msg += '----------------------------------------------\n'
+        msg += '--- NEW RESULTS IN {} FILE ---\n'
+        msg += '--- if new OK, copy {} to  ---\n'
+        msg += '---                 {}     ---\n'
+        msg += '---            and rerun test.             ---\n'
+        msg += '----------------------------------------------\n'
+        raise ValueError(msg.format(actual_fname, actual_fname, expect_fname))
