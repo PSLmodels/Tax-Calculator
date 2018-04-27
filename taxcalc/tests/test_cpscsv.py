@@ -21,8 +21,9 @@ import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, Growfactors, nonsmall_diffs
 
-
-def test_agg(tests_path):
+import pytest
+@pytest.mark.one
+def test_agg(tests_path, cps_fullsample):
     """
     Test current-law aggregate taxes using cps.csv file.
     """
@@ -34,7 +35,7 @@ def test_agg(tests_path):
     baseline_policy = Policy()
     baseline_policy.implement_reform(pre_tcja['policy'])
     # create a Records object (rec) containing all cps.csv input records
-    rec = Records.cps_constructor()
+    rec = Records.cps_constructor(data=cps_fullsample)
     # create a Calculator object using baseline policy and cps records
     calc = Calculator(policy=baseline_policy, records=rec)
     calc_start_year = calc.current_year
@@ -68,24 +69,15 @@ def test_agg(tests_path):
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
-    cps_filepath = os.path.join(tests_path, '..', 'cps.csv.gz')
-    fullsample = pd.read_csv(cps_filepath)
     rn_seed = 180  # to ensure sub-sample is always the same
-    subfrac = 0.03  # sub-sample fraction
-    subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
-    rec_subsample = Records(data=subsample,
-                            gfactors=Growfactors(),
-                            weights=Records.CPS_WEIGHTS_FILENAME,
-                            adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                            start_year=Records.CPSCSV_YEAR)
+    subfrac = 0.04  # sub-sample fraction
+    subsample = cps_fullsample.sample(frac=subfrac, random_state=rn_seed)
+    rec_subsample = Records.cps_constructor(data=subsample)
     calc_subsample = Calculator(policy=baseline_policy, records=rec_subsample)
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
-    reltol = 0.01049  # maximum allowed relative difference in tax liability
-    # TODO: skip first year because 2014 is missing in cps_weights.csv.gz file
-    taxes_subsample = taxes_subsample[1:]  # TODO: eliminate this code
-    taxes_fullsample = taxes_fullsample[1:]  # TODO: eliminate this code
+    reltol = 0.005  # maximum allowed relative difference in tax liability
     if not np.allclose(taxes_subsample, taxes_fullsample,
                        atol=0.0, rtol=reltol):
         msg = 'CPSCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'

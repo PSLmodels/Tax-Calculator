@@ -241,7 +241,7 @@ def get_sums(pdf):
     for col in pdf.columns.values.tolist():
         if col != 'table_row':
             sums[col] = pdf[col].sum()
-    return pd.Series(sums, name='sums')
+    return pd.Series(sums, name='ALL')
 
 
 def create_distribution_table(vdf, groupby, income_measure):
