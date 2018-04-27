@@ -99,7 +99,7 @@ def test_consumption_response(cps_subsample):
     with pytest.raises(ValueError):
         consump.response(list(), 1)
     # test correct call to response method
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     pre = copy.deepcopy(rec.e20400)
     consump.response(rec, 1.0)
     post = rec.e20400
@@ -107,7 +107,7 @@ def test_consumption_response(cps_subsample):
     expected_diff = np.ones(rec.array_length) * mpc
     assert np.allclose(actual_diff, expected_diff)
     # compute earnings mtr with no consumption response
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     ided0 = copy.deepcopy(rec.e20400)
     calc0 = Calculator(policy=Policy(), records=rec, consumption=None)
     (mtr0_ptax, mtr0_itax, _) = calc0.mtr(variable_str='e00200p',
