@@ -390,7 +390,7 @@ class Calculator(object):
     def diagnostic_table(self, num_years):
         """
         Generate multi-year diagnostic table containing aggregate statistics;
-        this method leaves the Calculator object unchanged.
+        this method leaves the Calculator object advanced num_years-1 years.
 
         Parameters
         ----------
@@ -407,7 +407,7 @@ class Calculator(object):
         max_num_years = self.__policy.end_year - self.__policy.current_year + 1
         assert num_years <= max_num_years
         diag_variables = DIST_VARIABLES + ['surtax']
-        calc = copy.deepcopy(self)
+        calc = self
         tlist = list()
         for iyr in range(1, num_years + 1):
             assert calc.behavior_has_response() is False

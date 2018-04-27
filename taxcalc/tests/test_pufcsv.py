@@ -24,6 +24,7 @@ import numpy as np
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
+from taxcalc import run_nth_year_tax_calc_model
 
 
 @pytest.mark.requires_pufcsv
@@ -40,9 +41,9 @@ def test_agg(tests_path, puf_fullsample):
     baseline_policy = Policy()
     baseline_policy.implement_reform(pre_tcja['policy'])
     # create a Records object (rec) containing all puf.csv input records
-    rec = Records(data=puf_fullsample)
+    recs = Records(data=puf_fullsample)
     # create a Calculator object using baseline policy and puf records
-    calc = Calculator(policy=baseline_policy, records=rec)
+    calc = Calculator(policy=baseline_policy, records=recs)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = calc.diagnostic_table(nyrs)
@@ -358,3 +359,61 @@ def test_ubi_n_variables(puf_path):
     if not np.sum(xtot > nsum) == 0:
         print('number xtot > nsum is:', np.sum(xtot > nsum))
         assert 'XTOT' <= '(nu18+n1820+n21)'
+
+
+@pytest.mark.requires_pufcsv
+def test_run_tax_calc_model(tests_path):
+    """
+    Test tbi.run_nth_year_tax_calc_model function using PUF data.
+    """
+    user_modifications = {
+        'policy': {
+            2016: {'_II_rt3': [0.33],
+                   '_PT_rt3': [0.33],
+                   '_II_rt4': [0.33],
+                   '_PT_rt4': [0.33]}
+        },
+        'consumption': {
+            2016: {'_MPC_e20400': [0.01]}
+        },
+        'behavior': {
+            2016: {'_BE_sub': [0.25]}
+        },
+        'growdiff_baseline': {
+        },
+        'growdiff_response': {
+        }
+    }
+    res = run_nth_year_tax_calc_model(year_n=2, start_year=2018,
+                                      use_puf_not_cps=True,
+                                      use_full_sample=False,
+                                      user_mods=user_modifications,
+                                      return_dict=True)
+    assert isinstance(res, dict)
+    # put actual results in a multiline string
+    actual_results = ''
+    for tbl in sorted(res.keys()):
+        actual_results += 'TABLE {} RESULTS:\n'.format(tbl)
+        actual_results += json.dumps(res[tbl], sort_keys=True,
+                                     indent=4, separators=(',', ': ')) + '\n'
+    # read expected results from file
+    expect_fname = 'tbi_puf_expect.txt'
+    expect_path = os.path.join(tests_path, expect_fname)
+    with open(expect_path, 'r') as expect_file:
+        expect_results = expect_file.read()
+    # ensure actual and expect results have no differences
+    diffs = nonsmall_diffs(actual_results.splitlines(True),
+                           expect_results.splitlines(True))
+    if diffs:
+        actual_fname = '{}{}'.format(expect_fname[:-10], 'actual.txt')
+        actual_path = os.path.join(tests_path, actual_fname)
+        with open(actual_path, 'w') as actual_file:
+            actual_file.write(actual_results)
+        msg = 'TBI RESULTS DIFFER\n'
+        msg += '----------------------------------------------\n'
+        msg += '--- NEW RESULTS IN {} FILE ---\n'
+        msg += '--- if new OK, copy {} to  ---\n'
+        msg += '---                 {}     ---\n'
+        msg += '---            and rerun test.             ---\n'
+        msg += '----------------------------------------------\n'
+        raise ValueError(msg.format(actual_fname, actual_fname, expect_fname))
