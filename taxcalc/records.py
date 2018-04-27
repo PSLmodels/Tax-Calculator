@@ -184,6 +184,7 @@ class Records(object):
 
     @staticmethod
     def cps_constructor(data=None,
+                        no_benefits=False,
                         exact_calculations=False,
                         gfactors=Growfactors()):
         """
@@ -198,12 +199,16 @@ class Records(object):
         """
         if data is None:
             data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
+        if no_benefits:
+            benefits_filename = None
+        else:
+            benefits_filename = Records.CPS_BENEFITS_FILENAME
         return Records(data=data,
                        exact_calculations=exact_calculations,
                        gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       benefits=Records.CPS_BENEFITS_FILENAME,
+                       benefits=benefits_filename,
                        start_year=Records.CPSCSV_YEAR)
 
     @property
