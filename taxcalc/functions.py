@@ -1688,9 +1688,14 @@ def ComputeBenefit(calc, ID_switch):
         no_ID_calc.policy_param('ID_InterestPaid_hc', 1.)
     if ID_switch[6]:
         no_ID_calc.policy_param('ID_Charity_hc', 1.)
-    no_ID_calc._calc_one_year()  # pylint: disable=protected-access
+    # pylint: disable=protected-access
+    no_ID_calc._calc_one_year(zero_out_calc_vars=True)
     diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
-    benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
+    pos_benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
+    benefit = pos_benefit.copy()
+    del no_ID_calc
+    del diff_iitax
+    del pos_benefit
     return benefit
 
 
@@ -1700,8 +1705,8 @@ def BenefitSurtax(calc):
     to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
-        benefit_surtax_switch = calc.policy_param('ID_BenefitSurtax_Switch')
-        ben = ComputeBenefit(calc, benefit_surtax_switch)
+        ben = ComputeBenefit(calc,
+                             calc.policy_param('ID_BenefitSurtax_Switch'))
         agi = calc.array('c00100')
         ben_deduct = calc.policy_param('ID_BenefitSurtax_crt') * agi
         ben_exempt_array = calc.policy_param('ID_BenefitSurtax_em')
