@@ -16,6 +16,7 @@ from __future__ import print_function
 import os
 import sys
 import json
+import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
@@ -134,6 +135,7 @@ def test_ubi_n_variables(cps_path):
         assert 'XTOT' == '(nu18+n1820+n21)'
 
 
+@pytest.mark.skip
 def test_run_tax_calc_model(tests_path):
     """
     Test tbi.run_nth_year_tax_calc_model function using CPS data.
