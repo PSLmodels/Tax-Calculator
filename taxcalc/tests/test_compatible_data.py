@@ -205,7 +205,8 @@ def fixture_tc_objs(request, reform_xx, puf_subsample, cps_subsample):
     if puftest:
         rec_xx = Records(data=puf_subsample)
     else:
-        rec_xx = Records.cps_constructor(data=cps_subsample)
+        rec_xx = Records.cps_constructor(data=cps_subsample,
+                                         no_benefits=True)
     c_xx = Calculator(policy=p_xx, records=rec_xx, verbose=False)
     c_xx.advance_to_year(TEST_YEAR)
     c_xx.calc_all()
@@ -272,7 +273,8 @@ def test_compatible_data(cps_subsample, puf_subsample,
         if puftest:
             rec_yy = Records(data=puf_subsample)
         else:
-            rec_yy = Records.cps_constructor(data=cps_subsample)
+            rec_yy = Records.cps_constructor(data=cps_subsample,
+                                             no_benefits=True)
         p_yy = Policy()
         p_yy.implement_reform(max_reform, raise_errors=False)
         c_yy = Calculator(policy=p_yy, records=rec_yy, verbose=False)

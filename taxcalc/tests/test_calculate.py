@@ -59,7 +59,7 @@ def test_make_calculator(cps_subsample):
     syr = 2014
     pol = Policy(start_year=syr, num_years=9)
     assert pol.current_year == syr
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     consump = Consumption()
     consump.update_consumption({syr: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == Consumption.JSON_START_YEAR
@@ -80,14 +80,14 @@ def test_make_calculator(cps_subsample):
 
 def test_make_calculator_deepcopy(cps_subsample):
     pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     calc1 = Calculator(policy=pol, records=rec)
     calc2 = copy.deepcopy(calc1)
     assert isinstance(calc2, Calculator)
 
 
 def test_make_calculator_with_policy_reform(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
@@ -111,7 +111,7 @@ def test_make_calculator_with_policy_reform(cps_subsample):
 
 
 def test_make_calculator_with_multiyear_reform(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
@@ -137,7 +137,7 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
 
 
 def test_calculator_advance_to_year(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     pol = Policy()
     calc = Calculator(policy=pol, records=rec)
     calc.advance_to_year(2016)
@@ -147,13 +147,13 @@ def test_calculator_advance_to_year(cps_subsample):
 
 
 def test_make_calculator_raises_on_no_policy(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     with pytest.raises(ValueError):
         Calculator(records=rec)
 
 
 def test_calculator_mtr(cps_subsample):
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     calcx = Calculator(policy=Policy(), records=rec)
     calcx.calc_all()
     combinedx = calcx.array('combined')
@@ -234,7 +234,7 @@ def test_make_calculator_increment_years_first(cps_subsample):
     reform[2016]['_II_em_cpi'] = False
     pol.implement_reform(reform)
     # create Calculator object with Policy object as modified by reform
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     calc = Calculator(policy=pol, records=rec)
     # compare expected policy parameter values with those embedded in calc
     irates = pol.inflation_rates()
@@ -259,7 +259,7 @@ def test_ID_HC_vs_BS(cps_subsample):
     Test that complete haircut of itemized deductions produces same
     results as a 100% benefit surtax with no benefit deduction.
     """
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     # specify complete-haircut reform policy and Calculator object
     hc_reform = {2013: {'_ID_Medical_hc': [1.0],
                         '_ID_StateLocalTax_hc': [1.0],
@@ -294,7 +294,7 @@ def test_ID_StateLocal_HC_vs_CRT(cps_subsample):
     of AGI is equivalent to a complete haircut on the same state/local tax
     deductions.
     """
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     # specify state/local complete haircut reform policy and Calculator object
     hc_reform = {2013: {'_ID_StateLocalTax_hc': [1.0]}}
     hc_policy = Policy()
@@ -320,7 +320,7 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
     at 0 percent of AGI is equivalent to a complete haircut on the same real
     estate tax deductions.
     """
-    rec = Records.cps_constructor(data=cps_subsample)
+    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     # specify real estate complete haircut reform policy and Calculator object
     hc_reform = {2013: {'_ID_RealEstate_hc': [1.0]}}
     hc_policy = Policy()
@@ -923,15 +923,15 @@ def test_difference_table(cps_subsample):
 
 
 def test_diagnostic_table(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample)
+    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
     calc = Calculator(policy=Policy(), records=recs)
     adt = calc.diagnostic_table(3)
     assert isinstance(adt, pd.DataFrame)
 
 
 def test_mtr_graph(cps_subsample):
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample))
+    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    calc = Calculator(policy=Policy(), records=recs)
     fig = calc.mtr_graph(calc,
                          mars=2,
                          income_measure='wages',
@@ -944,8 +944,8 @@ def test_mtr_graph(cps_subsample):
 
 
 def test_atr_graph(cps_subsample):
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample))
+    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    calc = Calculator(policy=Policy(), records=recs)
     fig = calc.atr_graph(calc, mars=2, atr_measure='itax')
     assert fig
     fig = calc.atr_graph(calc, atr_measure='ptax')
@@ -953,8 +953,8 @@ def test_atr_graph(cps_subsample):
 
 
 def test_privacy_of_embedded_objects(cps_subsample):
-    calc = Calculator(policy=Policy(),
-                      records=Records.cps_constructor(data=cps_subsample))
+    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    calc = Calculator(policy=Policy(), records=recs)
     with pytest.raises(AttributeError):
         cyr = calc.__policy.current_year
     with pytest.raises(AttributeError):
