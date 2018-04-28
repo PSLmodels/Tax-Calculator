@@ -18,6 +18,9 @@ for a complete commit history.
 - Streamline logic that prevents disclosure of details of PUF filing units
   [[#1979](https://github.com/open-source-economics/Tax-Calculator/pull/1979)
   by Martin Holmer]
+- Add option to not include benefits in a Records object that uses CPS data
+  [[#1985](https://github.com/open-source-economics/Tax-Calculator/pull/1985)
+  by Martin Holmer]
 
 **Bug Fixes**
 - Fix mishandling of boolean policy parameters
