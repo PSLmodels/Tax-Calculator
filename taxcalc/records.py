@@ -161,7 +161,7 @@ class Records(object):
         self.BEN = None
         self._read_benefits(benefits)
         # weights must be same size as tax record data
-        if not self.WT.empty and self.array_length != len(self.WT):
+        if self.WT.size > 0 and self.array_length != len(self.WT.index):
             # scale-up sub-sample weights by year-specific factor
             sum_full_weights = self.WT.sum()
             self.WT = self.WT.iloc[self.__index]
@@ -176,9 +176,10 @@ class Records(object):
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # construct sample weights for current_year
-        wt_colname = 'WT{}'.format(self.current_year)
-        if wt_colname in self.WT.columns:
-            self.s006 = self.WT[wt_colname] * 0.01
+        if self.WT.size > 0:
+            wt_colname = 'WT{}'.format(self.current_year)
+            if wt_colname in self.WT.columns:
+                self.s006 = self.WT[wt_colname] * 0.01
         # specify that variable values do not include behavioral responses
         self.behavioral_responses_are_included = False
 
@@ -247,10 +248,9 @@ class Records(object):
         # apply variable adjustment ratios
         self._adjust(self.__current_year)
         # specify current-year sample weights
-        if self.WT is not None:
+        if self.WT.size > 0:
             wt_colname = 'WT{}'.format(self.__current_year)
-            if wt_colname in self.WT.columns:
-                self.s006 = self.WT[wt_colname] * 0.01
+            self.s006 = self.WT[wt_colname] * 0.01
         # extrapolate benefit values
         if self.BEN.size > 0:
             self._extrapolate_benefits(self.current_year)
@@ -450,7 +450,7 @@ class Records(object):
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
-        self.__dim = len(taxdf)
+        self.__dim = len(taxdf.index)
         self.__index = taxdf.index
         # create class variables using taxdf column names
         READ_VARS = set()
@@ -489,6 +489,10 @@ class Records(object):
         # create variables derived from MARS, which is in MUST_READ_VARS
         self.num[:] = np.where(self.MARS == 2, 2, 1)
         self.sep[:] = np.where(self.MARS == 3, 2, 1)
+        # check for valid EIC values
+        if not np.all(np.logical_and(np.greater_equal(self.EIC, 0),
+                                     np.less_equal(self.EIC, 3))):
+            raise ValueError('not all EIC values in [0,3] range')
         # specify value of exact array
         self.exact[:] = np.where(exact_calcs is True, 1, 0)
 
@@ -585,7 +589,7 @@ class Records(object):
         full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
         # fill missing values
         full_df.fillna(0, inplace=True)
-        assert len(recid_df) == len(full_df)
+        assert len(recid_df.index) == len(full_df.index)
         self.BEN = pd.DataFrame()
         setattr(self, 'BEN', full_df.astype(np.float32))
         # delete intermediate DataFrame objects

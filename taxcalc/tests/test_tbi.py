@@ -85,47 +85,6 @@ def test_run_nth_year_value_errors():
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('using_puf', [True, False])
-def test_run_tax_calc_model(using_puf, tests_path):
-    res = run_nth_year_tax_calc_model(year_n=2, start_year=2018,
-                                      use_puf_not_cps=using_puf,
-                                      use_full_sample=False,
-                                      user_mods=USER_MODS,
-                                      return_dict=True)
-    assert isinstance(res, dict)
-    # put actual results in a multiline string
-    actual_results = ''
-    for tbl in sorted(res.keys()):
-        actual_results += 'TABLE {} RESULTS:\n'.format(tbl)
-        actual_results += json.dumps(res[tbl], sort_keys=True,
-                                     indent=4, separators=(',', ': ')) + '\n'
-    # read expected results from file
-    if using_puf:
-        expect_fname = 'tbi_puf_expect.txt'
-    else:
-        expect_fname = 'tbi_cps_expect.txt'
-    expect_path = os.path.join(tests_path, expect_fname)
-    with open(expect_path, 'r') as expect_file:
-        expect_results = expect_file.read()
-    # ensure actual and expect results have no differences
-    diffs = nonsmall_diffs(actual_results.splitlines(True),
-                           expect_results.splitlines(True))
-    if diffs:
-        actual_fname = '{}{}'.format(expect_fname[:-10], 'actual.txt')
-        actual_path = os.path.join(tests_path, actual_fname)
-        with open(actual_path, 'w') as actual_file:
-            actual_file.write(actual_results)
-        msg = 'TBI RESULTS DIFFER\n'
-        msg += '----------------------------------------------\n'
-        msg += '--- NEW RESULTS IN {} FILE ---\n'
-        msg += '--- if new OK, copy {} to  ---\n'
-        msg += '---                 {}     ---\n'
-        msg += '---            and rerun test.             ---\n'
-        msg += '----------------------------------------------\n'
-        raise ValueError(msg.format(actual_fname, actual_fname, expect_fname))
-
-
-@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resdict', [True, False])
 def test_run_gdp_elast_model_1(resdict):
     usermods = USER_MODS

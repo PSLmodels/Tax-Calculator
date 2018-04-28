@@ -81,6 +81,10 @@ def test_correct_Records_instantiation(cps_subsample):
         u'1,    6\n'
     ),
     (
+        u'RECID,MARS,EIC\n'
+        u'1,    5,   4\n'
+    ),
+    (
         u'RECID,MARS,e00600,e00650\n'
         u'1,    1,        8,     9\n'
     ),
