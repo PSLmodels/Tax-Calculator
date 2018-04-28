@@ -460,19 +460,20 @@ class TaxCalcIO(object):
                               self.calc.reform_warnings,
                               'CONTINUING WITH CALCULATIONS...'))
         calc_base_calculated = False
-        if output_dump or output_sqldb:
-            # might need marginal tax rates
-            (mtr_paytax, mtr_inctax,
-             _) = self.calc.mtr(wrt_full_compensation=False)
-        else:
-            # definitely do not need marginal tax rates
-            mtr_paytax = None
-            mtr_inctax = None
         if self.behavior_has_any_response:
             self.calc = Behavior.response(self.calc_base, self.calc)
             calc_base_calculated = True
         else:
             self.calc.calc_all()
+        if output_dump or output_sqldb:
+            # might need marginal tax rates
+            (mtr_paytax, mtr_inctax,
+             _) = self.calc.mtr(wrt_full_compensation=False,
+                                calc_all_already_called=True)
+        else:
+            # definitely do not need marginal tax rates
+            mtr_paytax = None
+            mtr_inctax = None
         # optionally conduct normative welfare analysis
         if output_ceeu:
             if self.behavior_has_any_response:

@@ -1700,8 +1700,8 @@ def BenefitSurtax(calc):
     to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
-        benefit_surtax_switch = calc.policy_param('ID_BenefitSurtax_Switch')
-        ben = ComputeBenefit(calc, benefit_surtax_switch)
+        ben = ComputeBenefit(calc,
+                             calc.policy_param('ID_BenefitSurtax_Switch'))
         agi = calc.array('c00100')
         ben_deduct = calc.policy_param('ID_BenefitSurtax_crt') * agi
         ben_exempt_array = calc.policy_param('ID_BenefitSurtax_em')
