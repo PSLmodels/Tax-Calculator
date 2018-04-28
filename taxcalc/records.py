@@ -489,6 +489,10 @@ class Records(object):
         # create variables derived from MARS, which is in MUST_READ_VARS
         self.num[:] = np.where(self.MARS == 2, 2, 1)
         self.sep[:] = np.where(self.MARS == 3, 2, 1)
+        # check for valid EIC values
+        if not np.all(np.logical_and(np.greater_equal(self.EIC, 0),
+                                     np.less_equal(self.EIC, 3))):
+            raise ValueError('not all EIC values in [0,3] range')
         # specify value of exact array
         self.exact[:] = np.where(exact_calcs is True, 1, 0)
 
