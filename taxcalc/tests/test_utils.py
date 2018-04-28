@@ -313,7 +313,7 @@ def test_create_tables(cps_subsample):
 
     dist, _ = calc2.distribution_tables(None, 'standard_income_bins')
     assert isinstance(dist, pd.DataFrame)
-    tabcol = 'iitax'    
+    tabcol = 'iitax'
     expected = [0,
                 0,
                 -42244205,
