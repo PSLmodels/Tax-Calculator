@@ -204,8 +204,7 @@ def fixture_tc_objs(request, reform_xx, puf_subsample, cps_subsample):
     if puftest:
         rec_xx = Records(data=puf_subsample)
     else:
-        rec_xx = Records.cps_constructor(data=cps_subsample,
-                                         no_benefits=True)
+        rec_xx = Records.cps_constructor(data=cps_subsample)
     c_xx = Calculator(policy=p_xx, records=rec_xx, verbose=False)
     c_xx.advance_to_year(TEST_YEAR)
     c_xx.calc_all()
@@ -236,7 +235,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
     exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt']
 
     # Loop through the parameters in allparams_batch
-    errmsg = 'ERROR: {} not {} for {}\n'
+    errmsg = 'ERROR: {} {}\n'
     errors = ''
     for pname in allparams_batch:
         param = allparams_batch[pname]
@@ -272,8 +271,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
         if puftest:
             rec_yy = Records(data=puf_subsample)
         else:
-            rec_yy = Records.cps_constructor(data=cps_subsample,
-                                             no_benefits=True)
+            rec_yy = Records.cps_constructor(data=cps_subsample)
         p_yy = Policy()
         p_yy.implement_reform(max_reform, raise_errors=False)
         c_yy = Calculator(policy=p_yy, records=rec_yy, verbose=False)
@@ -309,18 +307,18 @@ def test_compatible_data(cps_subsample, puf_subsample,
                 )
             if min_reform_change == 0 and pname not in exempt_from_testing:
                 if puftest:
-                    if param['compatible_data']['puf'] is not False:
-                        errors += errmsg.format(pname, 'False', 'puf')
+                    if param['compatible_data']['puf'] is True:
+                        errors += errmsg.format(pname, 'is not True for puf')
                 else:
-                    if param['compatible_data']['cps'] is not False:
-                        errors += errmsg.format(pname, 'False', 'cps')
+                    if param['compatible_data']['cps'] is True:
+                        errors += errmsg.format(pname, 'is not True for cps')
         if max_reform_change != 0 or min_reform_change != 0:
             if puftest:
-                if param['compatible_data']['puf'] is not True:
-                    errors += errmsg.format(pname, 'True', 'puf')
+                if param['compatible_data']['puf'] is False:
+                    errors += errmsg.format(pname, 'is not False for puf')
             else:
-                if param['compatible_data']['cps'] is not True:
-                    errors += errmsg.format(pname, 'True', 'cps')
+                if param['compatible_data']['cps'] is False:
+                    errors += errmsg.format(pname, 'is not False for cps')
     # test failure if any errors
     if errors:
         print(errors)
