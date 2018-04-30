@@ -6,4 +6,4 @@ set PYTHONFAULTHANDLER=1
 
 set PYTEST=py.test --capture=sys
 
-%PYTEST% -v -m "not requires_pufcsv and not pre_release and not local" --pep8
+%PYTEST% -v -m "not requires_pufcsv and not pre_release and not local"
