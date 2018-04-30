@@ -119,7 +119,7 @@ class Records(object):
         # pylint: disable=too-many-arguments,too-many-locals
         self.__data_year = start_year
         # read specified data
-        self._read_data(data, exact_calculations)
+        self._read_data(data, exact_calculations, (benefits is None))
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         tol = 0.020001  # handles "%.2f" rounding errors
@@ -430,12 +430,13 @@ class Records(object):
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
         self.other_ben *= self.gfactors.factor_value('ABENEFITS', year)
 
-    def _read_data(self, data, exact_calcs):
+    def _read_data(self, data, exact_calcs, no_benefits):
         """
         Read Records data from file or use specified DataFrame as data.
         Specifies exact array depending on boolean value of exact_calcs.
+        Set benefits to zero if no_benefits is True; otherwise do nothing.
         """
-        # pylint: disable=too-many-branches
+        # pylint: disable=too-many-statements,too-many-branches
         if Records.INTEGER_VARS is None:
             Records.read_var_info()
         # read specified data
@@ -495,6 +496,21 @@ class Records(object):
             raise ValueError('not all EIC values in [0,3] range')
         # specify value of exact array
         self.exact[:] = np.where(exact_calcs is True, 1, 0)
+        # optionally set benefits to zero
+        if no_benefits:
+            self.housing_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.ssi_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.snap_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.tanf_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.vet_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.wic_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.mcare_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.mcaid_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.other_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+        # delete intermediate variables
+        del READ_VARS
+        del UNREAD_VARS
+        del ZEROED_VARS
 
     def zero_out_changing_calculated_vars(self):
         """
