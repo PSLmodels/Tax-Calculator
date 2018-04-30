@@ -2,7 +2,7 @@
 Tests of proportional_change_in_gdp function.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_macro_elasticity.py
+# pycodestyle test_macro_elasticity.py
 # pylint --disable=locally-disabled test_macro_elasticity.py
 
 import pytest

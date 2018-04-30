@@ -2,7 +2,7 @@
 Tests for SimpleTaxIO class.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_simpletaxio.py
+# pycodestyle test_simpletaxio.py
 # pylint --disable=locally-disabled test_simpletaxio.py
 
 import os

@@ -2,7 +2,7 @@
 Private utility functions used only by public functions in the tbi.py file.
 """
 # CODING-STYLE CHECKS:
-# pep8 tbi_utils.py
+# pycodestyle tbi_utils.py
 # pylint --disable=locally-disabled tbi_utils.py
 
 from __future__ import print_function

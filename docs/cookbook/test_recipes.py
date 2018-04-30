@@ -3,7 +3,7 @@ Tests all recipes by executing each recipeNN.py script and comparing
 the script output with the expected output in the recipeNN.res file.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 test_recipes.py
+# pycodestyle --ignore=E402 test_recipes.py
 # pylint --disable=locally-disabled test_recipes.py
 
 from __future__ import print_function

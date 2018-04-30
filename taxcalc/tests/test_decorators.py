@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_decorators.py
+# pycodestyle test_decorators.py
 
 import sys
 import pytest

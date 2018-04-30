@@ -2,7 +2,7 @@
 Tax-Calculator elasticity-based behavioral-response Behavior class.
 """
 # CODING-STYLE CHECKS:
-# pep8 behavior.py
+# pycodestyle behavior.py
 # pylint --disable=locally-disabled behavior.py
 
 from __future__ import print_function

@@ -3,7 +3,7 @@ Reads skeletal index.htmx file and writes fleshed-out index.html file
 containing information from several JSON files.
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 make_index.py
+# pycodestyle --ignore=E402 make_index.py
 # pylint --disable=locally-disabled make_index.py
 
 import os

@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_behavior.py
+# pycodestyle test_behavior.py
 
 import os
 import json

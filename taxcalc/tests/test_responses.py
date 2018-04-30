@@ -2,7 +2,7 @@
 Test example JSON response assumption files in taxcalc/responses directory
 """
 # CODING-STYLE CHECKS:
-# pep8 est_responses.py
+# pycodestyle est_responses.py
 # pylint --disable=locally-disabled test_responses.py
 
 import os

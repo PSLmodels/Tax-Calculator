@@ -2,7 +2,7 @@
 Tax-Calculator tax-filing-unit Records class.
 """
 # CODING-STYLE CHECKS:
-# pep8 records.py
+# pycodestyle records.py
 # pylint --disable=locally-disabled records.py
 
 import os

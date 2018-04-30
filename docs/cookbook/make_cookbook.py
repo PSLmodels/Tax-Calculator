@@ -6,7 +6,7 @@ then, assuming all recipies PASS, execute this script as follows:
            python make_cookbook.py
 """
 # CODING-STYLE CHECKS:
-# pep8 --ignore=E402 make_cookbook.py
+# pycodestyle --ignore=E402 make_cookbook.py
 # pylint --disable=locally-disabled make_cookbook.py
 
 from __future__ import print_function

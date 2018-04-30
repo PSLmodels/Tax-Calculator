@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_calculate.py
+# pycodestyle test_calculate.py
 
 import os
 import json

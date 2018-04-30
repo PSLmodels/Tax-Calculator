@@ -2,7 +2,7 @@
 Tests of Tax-Calculator Growfactors class.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_growfactors.py
+# pycodestyle test_growfactors.py
 # pylint --disable=locally-disabled test_growfactors.py
 
 import os

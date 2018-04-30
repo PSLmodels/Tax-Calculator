@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_consumption.py
+# pycodestyle test_consumption.py
 
 import numpy as np
 import pytest

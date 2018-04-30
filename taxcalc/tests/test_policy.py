@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_policy.py
+# pycodestyle test_policy.py
 
 import os
 import sys
