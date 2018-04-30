@@ -37,6 +37,7 @@ def test_for_consistency(tests_path):
     dev_pkgs = set([
         'mock',
         'pep8',
+        'pycodestyle',
         'pylint',
         'coverage',
         'pytest-pep8',
