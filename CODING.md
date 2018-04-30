@@ -29,8 +29,8 @@ guidelines.
 There are two recommended tools that can help you develop seamless and
 correct code enhancements.
 
-pycodestype (formerly named pep8)
----------------------------------
+pycodestype (the program formerly known as pep8)
+------------------------------------------------
 
 One of these tools, `pycodestyle`, enforces coding styles that are required
 of all Python code in the repository, and therefore, all pull requests
