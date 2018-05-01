@@ -2,7 +2,7 @@
 Tax-Calculator abstract base parameters class.
 """
 # CODING-STYLE CHECKS:
-# pep8 parameters.py
+# pycodestyle parameters.py
 
 import os
 import json

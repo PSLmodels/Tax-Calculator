@@ -7,7 +7,7 @@ This means that the RECID variable must be in both files and RECID values
 must exactly match in the two files being compared.
 """
 # CODING-STYLE CHECKS:
-# pep8 csv_taxdiffs.py
+# pycodestyle csv_taxdiffs.py
 # pylint --disable=locally-disabled csv_taxdiffs.py
 
 import argparse

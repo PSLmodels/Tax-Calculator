@@ -2,7 +2,7 @@
 Test example JSON policy reform files in taxcalc/reforms directory
 """
 # CODING-STYLE CHECKS:
-# pep8 test_reforms.py
+# pycodestyle test_reforms.py
 # pylint --disable=locally-disabled test_reforms.py
 
 from __future__ import print_function

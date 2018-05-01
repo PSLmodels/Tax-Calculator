@@ -2,7 +2,7 @@
 Tests of Tax-Calculator utility functions.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_utils.py
+# pycodestyle test_utils.py
 # pylint --disable=locally-disabled test_utils.py
 #
 # pylint: disable=missing-docstring,no-member,protected-access,too-many-lines

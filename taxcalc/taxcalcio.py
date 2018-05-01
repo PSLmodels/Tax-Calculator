@@ -2,7 +2,7 @@
 Tax-Calculator Input-Output class.
 """
 # CODING-STYLE CHECKS:
-# pep8 taxcalcio.py
+# pycodestyle taxcalcio.py
 # pylint --disable=locally-disabled taxcalcio.py
 
 import os

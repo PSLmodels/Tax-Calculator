@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_notebooks.py
+# pycodestyle test_notebooks.py
 
 import os
 import json

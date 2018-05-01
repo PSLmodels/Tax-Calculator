@@ -2,7 +2,7 @@
 Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_tbi.py
+# pycodestyle test_tbi.py
 
 from __future__ import print_function
 import json

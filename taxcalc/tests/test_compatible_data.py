@@ -6,7 +6,7 @@ leans heavily on py.tests's `parametrization` method. Once you do so, the
 plug-in pytest-xdist is able to run all parametrized functions in parallel
 """
 # CODING-STYLE CHECKS:
-# pep8 test_compatible_data.py
+# pycodestyle test_compatible_data.py
 # pylint --disable=locally-disabled test_compatible_data.py
 
 from __future__ import print_function

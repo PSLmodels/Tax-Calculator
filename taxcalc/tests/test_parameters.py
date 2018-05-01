@@ -2,7 +2,7 @@
 Tests for Tax-Calculator ParametersBase class and JSON parameter files.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_parameters.py
+# pycodestyle test_parameters.py
 # pylint --disable=locally-disabled test_parameters.py
 
 import os

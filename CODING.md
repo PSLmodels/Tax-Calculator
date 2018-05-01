@@ -29,44 +29,44 @@ guidelines.
 There are two recommended tools that can help you develop seamless and
 correct code enhancements.
 
-pep8
-----
+pycodestype (the program formerly known as pep8)
+------------------------------------------------
 
-One of these tools, `pep8`, enforces coding styles that are required
+One of these tools, `pycodestyle`, enforces coding styles that are required
 of all Python code in the repository, and therefore, all pull requests
-are tested using the `pep8` tool.  Pull requests that fail these
-`pep8` tests need to be revised before they can be merged into the
+are tested using the `pycodestyle` tool.  Pull requests that fail these
+tests need to be revised before they can be merged into the
 repository.  The most efficient way to comply with this coding style
 requirement is to process each file containing revisions through
-`pep8` on your local computer before submitting your pull request.
+`pycodestyle` on your local computer before submitting your pull request.
 
-Make sure you have an up-to-date version of `pep8` installed on your
+Make sure you have an up-to-date version of `pycodestyle` installed on your
 computer by entering at the operating system command line:
 ```
-pep8 --version
+pycodestyle --version
 ```
-If you get a no-such-command error, install `pep8` as follows:
+If you get a no-such-command error, install `pycodestyle` as follows:
 ```
-conda install pep8
+conda install pycodestyle
 ```
-If you do have `pep8` installed, but the version is before 1.7.0,
+If you do have `pycodestyle` installed, but the version is before 2.4.0,
 then get a more recent version as follows:
 ```
-conda update pep8
+conda update pycodestyle
 ```
-Once you have a current version of `pep8` installed on your computer,
-use the `pep8` tool as follows:
+Once you have a current version of `pycodestyle` installed on your computer,
+use the `pycodestyle` tool as follows:
 ```
-pep8 --ignore=E402 records.py
+pycodestyle records.py
 ```
 where in the above example you want to check the coding style of your
 proposed revisions to the `records.py` file.
 
 In addition, if you are proposing revisions to one of the files in the
 taxcalc directory that has a `.json` extension, you should use the
-`pep8` tool as follows:
+`pycodestyle` tool as follows:
 ```
-pep8 --ignore=E501,E121 current_law_policy.json
+pycodestyle --ignore=E501,E121 current_law_policy.json
 ```
 where in the above example you want to check the coding style of your
 proposed revisions to the `current_law_policy.json` file.
@@ -75,18 +75,18 @@ Note that you can easily check **all** the Python files in the
 directory tree beginning with the `taxcalc` directory as follows:
 ```
 cd taxcalc
-pep8 .
+pycodestyle .
 ```
 or
 ```
-pep8 taxcalc
+pycodestyle taxcalc
 ```
 
 pylint
 ------
 
 The other of these tools, `pylint`, warns about deviations from a
-broader set coding styles than does `pep8`.  The use of `pylint`,
+broader set coding styles than does `pycodestyle`.  The use of `pylint`,
 while being the number one recommendation in the [Google Python Style
 Guide](https://google.github.io/styleguide/pyguide.html), is
 strictly-speaking optional for Tax-Calculator work.  But several
@@ -107,7 +107,7 @@ If you get a no-such-command error, install `pylint` as follows:
 ```
 conda install pylint
 ```
-If you do have `pylint` installed, but the version is before 1.5.4,
+If you do have `pylint` installed, but the version is before 1.8.4,
 then get a more recent version as follows:
 ```
 conda update pylint

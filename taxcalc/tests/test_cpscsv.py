@@ -9,7 +9,7 @@ available and are part of the Tax-Calculator repository.
 Read tax-calculator/TESTING.md for details.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_cpscsv.py
+# pycodestyle test_cpscsv.py
 # pylint --disable=locally-disabled test_cpscsv.py
 
 from __future__ import print_function

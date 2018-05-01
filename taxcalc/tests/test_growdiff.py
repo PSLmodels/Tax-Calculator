@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_growdiff.py
+# pycodestyle test_growdiff.py
 
 import os
 import json
