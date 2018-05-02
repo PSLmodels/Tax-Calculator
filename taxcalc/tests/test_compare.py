@@ -144,7 +144,7 @@ def differences(afilename, efilename):
     else:
         os.remove(afilename)
 
-@pytest.mark.one
+
 @pytest.mark.skipif(sys.version_info > (3, 0),
                     reason='remove skipif after migration to Python 3.6')
 @pytest.mark.pre_release
