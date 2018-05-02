@@ -27,10 +27,36 @@ Dollar IRS-SOI amounts are expressed in billions of dollars and rounded
 to the nearest one-tenth of a million dollars.
 """
 ITAX = {
-    '00:FCTC': {
+    '0:EITC': {
+        # Full earned income credit
+        # in 2015 using the IRS-SOI information described above.
+        # EITC is column (37) in the Table 3.3 spreadsheet,
+        # which is the sum of columns (47), (75) and (97).
+        'SOI': [0.2104,
+                1.1843,
+                7.1562,
+                16.5927,
+                15.8799,
+                11.1025,
+                7.5150,
+                7.4528,
+                1.3936,
+                0.0375,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000],
+        'TC': ['eitc']
+    },
+    '1:FCTC': {
         # Full (basic and additional, refundable and nonrefundable) child tax
         # credit in 2015 using the IRS-SOI information described above.
-        # FCTC is the sum of column (13) and column (39) in the spreadsheet.
+        # FCTC is sum of columns (13) and (39) in the Table 3.3 spreadsheet.
         'SOI': [0.1301,
                 0.0793,
                 1.4740,
@@ -44,12 +70,12 @@ ITAX = {
                 6.4075,
                 5.2222,
                 0.0018,
-                0.000,
-                0.000,
-                0.000,
-                0.000,
-                0.000,
-                0.000],
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000],
         'TC': ['c07220',  # FCTC that is nonrefundable
                'c11070']  # FCTC that isrefundable
     }
@@ -118,7 +144,7 @@ def differences(afilename, efilename):
     else:
         os.remove(afilename)
 
-
+@pytest.mark.one
 @pytest.mark.skipif(sys.version_info > (3, 0),
                     reason='remove skipif after migration to Python 3.6')
 @pytest.mark.pre_release
