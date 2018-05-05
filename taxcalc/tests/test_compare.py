@@ -53,6 +53,7 @@ ITAX = {
                 0.0000],
         'TC': ['eitc']
     },
+
     '1:FCTC': {
         # Full (basic and additional, refundable and nonrefundable) child tax
         # credit in 2015 using the IRS-SOI information described above.
@@ -79,6 +80,7 @@ ITAX = {
         'TC': ['c07220',  # FCTC that is nonrefundable
                'c11070']  # FCTC that isrefundable
     },
+
     '2:NIIT': {
         # Net investment income tax
         # in 2015 using the IRS-SOI information described above.
@@ -105,6 +107,7 @@ ITAX = {
                 8.2730],
         'TC': ['niit']
     },
+
     '3:ITAX': {
         # Total income tax liability
         # in 2015 using the IRS-SOI information described above.
@@ -130,8 +133,61 @@ ITAX = {
                 56.3344,
                 139.6113],
         'TC': ['iitax']
-    }
+    },
 
+    '4:SETAX': {
+        # Self-employment tax
+        # in 2015 using the IRS-SOI information described above.
+        # SETAX is column (59) in the Table 3.3 spreadsheet,
+        # which is not part of ITAX but is part of total payroll taxes.
+        'SOI': [0.6557,
+                0.5554,
+                1.8956,
+                3.5143,
+                2.8228,
+                1.9959,
+                1.8020,
+                3.3598,
+                2.8199,
+                5.9579,
+                5.2751,
+                12.1488,
+                9.6864,
+                3.4864,
+                1.1938,
+                0.6432,
+                1.2527,
+                0.4698,
+                0.6383],
+        'TC': ['setax']
+    },
+
+    '5:AMTAX': {
+        # Additional Medicare tax
+        # in 2015 using the IRS-SOI information described above.
+        # AMTAX is column (71) in the Table 3.3 spreadsheet,
+        # which is not part of ITAX but is part of total payroll taxes.
+        'SOI': [0.0225,
+                0.0003,
+                0.0000,
+                0.0002,
+                0.0002,
+                0.0004,
+                0.0002,
+                0.0041,
+                0.0071,
+                0.0057,
+                0.0026,
+                0.0372,
+                1.8356,
+                2.0214,
+                0.8602,
+                0.4898,
+                1.1730,
+                0.5805,
+                0.9787],
+        'TC': ['ptax_amc']
+    }
 }
 
 
