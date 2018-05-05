@@ -1590,8 +1590,9 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+            CTC_new_refund_limited_all_payroll, payrolltax,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
-            ctc_new, CTC_new_refund_limited_all_payroll, payrolltax):
+            ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
     """

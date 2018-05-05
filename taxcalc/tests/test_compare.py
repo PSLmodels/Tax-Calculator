@@ -104,7 +104,34 @@ ITAX = {
                 2.0949,
                 8.2730],
         'TC': ['niit']
+    },
+    '3:ITAX': {
+        # Total income tax liability
+        # in 2015 using the IRS-SOI information described above.
+        # ITAX is column (55) in the Table 3.3 spreadsheet,
+        # which includes NIIT and is after all credits.
+        'SOI': [0.2425,
+                0.0409,
+                0.3680,
+                1.3813,
+                3.5238,
+                6.1911,
+                8.7526,
+                25.1677,
+                32.5302,
+                99.7918,
+                105.9015,
+                316.3496,
+                299.8322,
+                154.3888,
+                66.3236,
+                39.6716,
+                101.4885,
+                56.3344,
+                139.6113],
+        'TC': ['iitax']
     }
+
 }
 
 
