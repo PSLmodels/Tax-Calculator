@@ -78,6 +78,32 @@ ITAX = {
                 0.0000],
         'TC': ['c07220',  # FCTC that is nonrefundable
                'c11070']  # FCTC that isrefundable
+    },
+    '2:NIIT': {
+        # Net investment income tax
+        # in 2015 using the IRS-SOI information described above.
+        # NIIT is column (53) in the Table 3.3 spreadsheet.
+        # NIIT is included in Tax-Calculator individual income tax liability.
+        'SOI': [0.0004,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0000,
+                0.0001,
+                0.0000,
+                0.0000,
+                0.0014,
+                0.0005,
+                0.0213,
+                2.6397,
+                3.1356,
+                1.6715,
+                1.0775,
+                3.1267,
+                2.0949,
+                8.2730],
+        'TC': ['niit']
     }
 }
 
@@ -144,7 +170,7 @@ def differences(afilename, efilename):
     else:
         os.remove(afilename)
 
-
+@pytest.mark.one
 @pytest.mark.skipif(sys.version_info > (3, 0),
                     reason='remove skipif after migration to Python 3.6')
 @pytest.mark.pre_release
