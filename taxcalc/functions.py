@@ -1133,14 +1133,17 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
 
 @jit(nopython=True)
 def EITCamount(phasein_rate, earnings, max_amount,
-               phaseout_start, c00100, phaseout_rate):
+               phaseout_start, agi, phaseout_rate):
     """
-    Returns EITC amount given specified parameters (c00100 is AGI)
+    Returns EITC amount given specified parameters.
+    English parameter names are used in this function because the
+    EITC formula is not available on IRS forms or in IRS instructions;
+    the extensive IRS EITC look-up table does not reveal the formula.
     """
     eitc = min(phasein_rate * earnings, max_amount)
-    if earnings > phaseout_start or c00100 > phaseout_start:
+    if earnings > phaseout_start or agi > phaseout_start:
         eitcx = max(0., (max_amount - phaseout_rate *
-                         max(0., max(earnings, c00100) - phaseout_start)))
+                         max(0., max(earnings, agi) - phaseout_start)))
         eitc = min(eitc, eitcx)
     return eitc
 
@@ -1590,8 +1593,9 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+            CTC_new_refund_limited_all_payroll, payrolltax,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
-            ctc_new, CTC_new_refund_limited_all_payroll, payrolltax):
+            ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
     """

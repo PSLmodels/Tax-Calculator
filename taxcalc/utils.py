@@ -133,7 +133,7 @@ STANDARD_INCOME_BINS = [-9e99, -1e-9, 1e-9, 10e3, 20e3, 30e3, 40e3, 50e3,
                         75e3, 100e3, 200e3, 500e3, 1e6, 9e99]
 
 SOI_AGI_BINS = [-9e99, 1.0, 5e3, 10e3, 15e3, 20e3, 25e3, 30e3, 40e3, 50e3,
-                75e3, 100e3, 200e3, 500e3, 1e6, 1.5e6, 5e6, 10e6, 9e99]
+                75e3, 100e3, 200e3, 500e3, 1e6, 1.5e6, 2e6, 5e6, 10e6, 9e99]
 
 
 def unweighted_sum(pdf, col_name):
