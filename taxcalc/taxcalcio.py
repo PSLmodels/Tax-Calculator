@@ -271,12 +271,6 @@ class TaxCalcIO(object):
             msg = 'TaxCalcIO.more_init: growdiff_response is neither None '
             msg += 'nor a Growdiff object'
             self.errmsg += 'ERROR: {}\n'.format(msg)
-        if gdiff_response is not None:
-            some_gdiff_response = gdiff_response.has_any_response()
-            if self.behavior_has_any_response and some_gdiff_response:
-                msg = 'ASSUMP file cannot specify any "behavior" when using '
-                msg += 'GrowModel or when ASSUMP file has "growdiff_response"'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Growfactors ref object that has both gdiff objects applied
         gfactors_ref = Growfactors()
         gdiff_baseline.apply_to(gfactors_ref)
