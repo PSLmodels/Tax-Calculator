@@ -85,7 +85,7 @@ class Consumption(ParametersBase):
                 msg = 'ERROR: {} KEY {}'
                 details = 'KEY in revision is not an integer calendar year'
                 raise ValueError(msg.format(year, details))
-        # check range of remaining revision_years
+        # check range of revision_years
         first_revision_year = min(revision_years)
         if first_revision_year < self.start_year:
             msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
