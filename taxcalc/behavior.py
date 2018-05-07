@@ -122,7 +122,7 @@ class Behavior(ParametersBase):
         """
         # check that all revisions dictionary keys are integers
         if not isinstance(revision, dict):
-            raise ValueError('ERROR: YYYY PARAM revision is not a dictionary')
+            raise ValueError('ERROR: revision is not a dictionary')
         if not revision:
             return  # no revision to implement
         revision_years = sorted(list(revision.keys()))
@@ -158,8 +158,7 @@ class Behavior(ParametersBase):
             self._update({year: revision[year]})
         self.set_year(precall_current_year)
         # validate revision parameter values
-        self._validate_assump_parameter_values(revision_parameters,
-                                               Behavior.JSON_START_YEAR)
+        self._validate_assump_parameter_values(revision_parameters)
         if self.parameter_errors:
             raise ValueError('\n' + self.parameter_errors)
 

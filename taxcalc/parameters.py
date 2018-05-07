@@ -244,13 +244,11 @@ class ParametersBase(object):
                                 )
         del param_names
 
-    def _validate_assump_parameter_values(self, parameters_set, start_year):
+    def _validate_assump_parameter_values(self, parameters_set):
         """
-        Check values of assumption parameters in specified parameter_set
-        beginning with specified start_year.
+        Check values of assumption parameters in specified parameter_set.
         """
         parameters = sorted(parameters_set)
-        syr = start_year
         for pname in parameters:
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
@@ -275,7 +273,8 @@ class ParametersBase(object):
                         else:
                             name = '{}_{}'.format(pname, idx[1])
                         self.parameter_errors += (
-                            'ERROR: ' + msg.format(idx[0] + syr, name,
+                            'ERROR: ' + msg.format(idx[0] + self.start_year,
+                                                   name,
                                                    pvalue[idx],
                                                    vvalue[idx]) + '\n'
                         )
