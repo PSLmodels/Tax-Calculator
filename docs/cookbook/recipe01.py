@@ -46,7 +46,7 @@ iitax_rev1 = calc1.weighted_total('iitax')
 iitax_rev2 = calc2.weighted_total('iitax')
 
 # construct reform2-vs-reform1 difference table with results for income deciles
-diff_table = calc1.difference_table(calc2, tax_to_diff='iitax')
+diff_table = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
 dif_colnames = ['count', 'tax_cut', 'tax_inc',

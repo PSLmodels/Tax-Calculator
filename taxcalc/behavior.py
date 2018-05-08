@@ -202,7 +202,7 @@ class Behavior(ParametersBase):
         return False
 
     @staticmethod
-    def response(calc1, calc2, mtr_cap=0.99, trace=False):
+    def response(calc1, calc2, trace=False):
         """
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
@@ -262,9 +262,7 @@ class Behavior(ParametersBase):
         # begin main logic of response
         assert calc1.array_len == calc2.array_len
         assert calc1.current_year == calc2.current_year
-        assert mtr_cap >= 0.95 and mtr_cap < 1.0
-        if trace:
-            print('*** TRACE *** mtr_cap={}'.format(mtr_cap))
+        mtr_cap = 0.99
         # calculate sum of substitution and income effects
         if calc2.behavior('BE_sub') == 0.0 and calc2.behavior('BE_inc') == 0.0:
             zero_sub_and_inc = True
