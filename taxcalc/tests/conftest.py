@@ -19,9 +19,14 @@ def cps_path(tests_path):
 
 
 @pytest.fixture(scope='session')
-def cps_subsample(cps_path):
-    fullsample = pandas.read_csv(cps_path)
-    return fullsample.sample(frac=0.01, random_state=123456789)
+def cps_fullsample(cps_path):
+    return pandas.read_csv(cps_path)
+
+
+@pytest.fixture(scope='session')
+def cps_subsample(cps_fullsample):
+    # draw smaller cps.csv subsample than in test_cpscsv.py
+    return cps_fullsample.sample(frac=0.01, random_state=123456789)
 
 
 @pytest.fixture(scope='session')

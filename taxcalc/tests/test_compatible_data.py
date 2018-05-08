@@ -1,4 +1,3 @@
-
 """
 Tests of the compatible_data fields in the current_law_policy.json file.
 
@@ -7,7 +6,7 @@ leans heavily on py.tests's `parametrization` method. Once you do so, the
 plug-in pytest-xdist is able to run all parametrized functions in parallel
 """
 # CODING-STYLE CHECKS:
-# pep8 test_compatible_data.py
+# pycodestyle test_compatible_data.py
 # pylint --disable=locally-disabled test_compatible_data.py
 
 from __future__ import print_function
@@ -64,6 +63,7 @@ def test_compatible_data_presence(allparams):
         for pname in problem_pnames:
             print(msg.format(pname))
         assert 'list of problem_pnames' == 'empty list'
+
 
 XX_YEAR = 2019
 TEST_YEAR = 2020
@@ -130,6 +130,7 @@ def fixture_sorted_param_names(allparams):
     Fixture for storing a sorted parameter list
     """
     return sorted(list(allparams.keys()))
+
 
 NPARAMS = len(Policy.default_data())
 BATCHSIZE = 10
@@ -199,7 +200,7 @@ def fixture_tc_objs(request, reform_xx, puf_subsample, cps_subsample):
     """
     puftest = request.param
     p_xx = Policy()
-    p_xx.implement_reform(reform_xx)
+    p_xx.implement_reform(reform_xx, raise_errors=False)
     if puftest:
         rec_xx = Records(data=puf_subsample)
     else:
@@ -234,7 +235,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
     exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt']
 
     # Loop through the parameters in allparams_batch
-    errmsg = 'ERROR: {} not {} for {}\n'
+    errmsg = 'ERROR: {} {}\n'
     errors = ''
     for pname in allparams_batch:
         param = allparams_batch[pname]
@@ -272,7 +273,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
         else:
             rec_yy = Records.cps_constructor(data=cps_subsample)
         p_yy = Policy()
-        p_yy.implement_reform(max_reform)
+        p_yy.implement_reform(max_reform, raise_errors=False)
         c_yy = Calculator(policy=p_yy, records=rec_yy, verbose=False)
         c_yy.advance_to_year(TEST_YEAR)
         c_yy.calc_all()
@@ -290,7 +291,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
         # assess whether min reform changes results, if max reform did not
         if max_reform_change == 0:
             p_yy = Policy()
-            p_yy.implement_reform(min_reform)
+            p_yy.implement_reform(min_reform, raise_errors=False)
             c_yy = Calculator(policy=p_yy, records=rec_xx)
             c_yy.advance_to_year(TEST_YEAR)
             c_yy.calc_all()
@@ -306,18 +307,18 @@ def test_compatible_data(cps_subsample, puf_subsample,
                 )
             if min_reform_change == 0 and pname not in exempt_from_testing:
                 if puftest:
-                    if param['compatible_data']['puf'] is not False:
-                        errors += errmsg.format(pname, 'False', 'puf')
+                    if param['compatible_data']['puf'] is True:
+                        errors += errmsg.format(pname, 'is not True for puf')
                 else:
-                    if param['compatible_data']['cps'] is not False:
-                        errors += errmsg.format(pname, 'False', 'cps')
+                    if param['compatible_data']['cps'] is True:
+                        errors += errmsg.format(pname, 'is not True for cps')
         if max_reform_change != 0 or min_reform_change != 0:
             if puftest:
-                if param['compatible_data']['puf'] is not True:
-                    errors += errmsg.format(pname, 'True', 'puf')
+                if param['compatible_data']['puf'] is False:
+                    errors += errmsg.format(pname, 'is not False for puf')
             else:
-                if param['compatible_data']['cps'] is not True:
-                    errors += errmsg.format(pname, 'True', 'cps')
+                if param['compatible_data']['cps'] is False:
+                    errors += errmsg.format(pname, 'is not False for cps')
     # test failure if any errors
     if errors:
         print(errors)

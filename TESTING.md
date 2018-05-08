@@ -18,24 +18,24 @@ GitHub.
 
 Currently there are three phases of testing.
 
-Testing with pep8
------------------
+Testing with pycodetest (the program formerly known as pep8)
+------------------------------------------------------------
 
 The first phase of testing checks the formatting of the Python code
-against the PEP8 standard.  Assuming you are in the top-level directory
-of the repository, do the PEP8 tests either of these two ways:
+against PEP8-like standard.  Assuming you are in the top-level directory
+of the repository, do these tests either of these two ways:
 
 ```
 cd taxcalc
-pep8 .
+pycodestyle .
 ```
 or
 ```
-pep8 taxcalc
+pycodestyle taxcalc
 ```
 
-No messages indicate the PEP8 tests pass.  Fix any errors.  When you
-pass all the PEP8 tests, proceed to the second phase of testing.
+No messages indicate the tests pass.  Fix any errors.  When you
+pass all these PEP8-like tests, proceed to the second phase of testing.
 
 Testing with py.test
 --------------------

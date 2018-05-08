@@ -11,22 +11,25 @@ post-reform tax results for the selected units with their pre-reform
 tax results.
 """
 # CODING-STYLE CHECKS:
-# pep8 tbi.py
+# pycodestyle tbi.py
 # pylint --disable=locally-disabled tbi.py
 
 from __future__ import print_function
-import gc
 import time
 import numpy as np
 import pandas as pd
 from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    calculate,
                                    random_seed,
-                                   summary,
+                                   fuzzed,
+                                   summary_aggregate,
+                                   summary_dist_xbin, summary_diff_xbin,
+                                   summary_dist_xdec, summary_diff_xdec,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
-from taxcalc import (DIST_VARIABLES, DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
-                     proportional_change_in_gdp, Growdiff, Growfactors, Policy)
+from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
+                     proportional_change_in_gdp,
+                     Growdiff, Growfactors, Policy, Behavior)
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
@@ -51,7 +54,8 @@ def reform_warnings_errors(user_mods):
     reform specified in user_mods, and therefore, no range-related
     warnings or errors will be returned in this case.
     """
-    rtn_dict = {'warnings': '', 'errors': ''}
+    rtn_dict = {'policy': {'warnings': '', 'errors': ''},
+                'behavior': {'warnings': '', 'errors': ''}}
     # create Growfactors object
     gdiff_baseline = Growdiff()
     gdiff_baseline.update_growdiff(user_mods['growdiff_baseline'])
@@ -63,11 +67,22 @@ def reform_warnings_errors(user_mods):
     # create Policy object and implement reform
     pol = Policy(gfactors=growfactors)
     try:
-        pol.implement_reform(user_mods['policy'])
-        rtn_dict['warnings'] = pol.reform_warnings
-        rtn_dict['errors'] = pol.reform_errors
+        pol.implement_reform(user_mods['policy'],
+                             print_warnings=False,
+                             raise_errors=False)
+        rtn_dict['policy']['warnings'] = pol.parameter_warnings
+        rtn_dict['policy']['errors'] = pol.parameter_errors
     except ValueError as valerr_msg:
-        rtn_dict['errors'] = valerr_msg.__str__()
+        rtn_dict['policy']['errors'] = valerr_msg.__str__()
+    # create Behavior object and implement revisions
+    # Note that Behavior does not have a `parameter_warnings`
+    # attribute.
+    behv = Behavior()
+    try:
+        behv.update_behavior(user_mods['behavior'])
+        rtn_dict['behavior']['errors'] = behv.parameter_errors
+    except ValueError as valerr_msg:
+        rtn_dict['behavior']['errors'] = valerr_msg.__str__()
     return rtn_dict
 
 
@@ -84,37 +99,61 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     Setting use_full_sample=False implies use sub-sample of input file;
       otherwsie, use the complete sample.
     """
-    # pylint: disable=too-many-arguments,too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
 
     start_time = time.time()
 
-    # create calc1 and calc2 calculated for year_n and mask
+    # create calc1 and calc2 calculated for year_n
     check_years_return_first_year(year_n, start_year, use_puf_not_cps)
-    (calc1, calc2, mask) = calculate(year_n, start_year,
-                                     use_puf_not_cps, use_full_sample,
-                                     user_mods,
-                                     behavior_allowed=True)
+    calc1, calc2 = calculate(year_n, start_year,
+                             use_puf_not_cps, use_full_sample,
+                             user_mods,
+                             behavior_allowed=True)
 
-    # extract raw results from calc1 and calc2
-    rawres1 = calc1.dataframe(DIST_VARIABLES)
-    rawres2 = calc2.dataframe(DIST_VARIABLES)
+    # extract unfuzzed raw results from calc1 and calc2
+    dv1 = calc1.distribution_table_dataframe()
+    dv2 = calc2.distribution_table_dataframe()
 
     # delete calc1 and calc2 now that raw results have been extracted
     del calc1
     del calc2
-    gc.collect()
-
-    # seed random number generator with a seed value based on user_mods
-    seed = random_seed(user_mods)
-    print('seed={}'.format(seed))
-    np.random.seed(seed)  # pylint: disable=no-member
 
     # construct TaxBrain summary results from raw results
-    summ = summary(rawres1, rawres2, mask)
-    del rawres1
-    del rawres2
-    gc.collect()
+    sres = dict()
+    fuzzing = use_puf_not_cps
+    if fuzzing:
+        # seed random number generator with a seed value based on user_mods
+        # (reform-specific seed is used to choose whose results are fuzzed)
+        seed = random_seed(user_mods)
+        print('fuzzing_seed={}'.format(seed))
+        np.random.seed(seed)  # pylint: disable=no-member
+        # make bool array marking which filing units are affected by the reform
+        reform_affected = np.logical_not(  # pylint: disable=no-member
+            np.isclose(dv1['combined'], dv2['combined'], atol=0.01, rtol=0.0)
+        )
+        agg1, agg2 = fuzzed(dv1, dv2, reform_affected, 'aggr')
+        sres = summary_aggregate(sres, agg1, agg2)
+        del agg1
+        del agg2
+        dv1b, dv2b = fuzzed(dv1, dv2, reform_affected, 'xbin')
+        sres = summary_dist_xbin(sres, dv1b, dv2b)
+        sres = summary_diff_xbin(sres, dv1b, dv2b)
+        del dv1b
+        del dv2b
+        dv1d, dv2d = fuzzed(dv1, dv2, reform_affected, 'xdec')
+        sres = summary_dist_xdec(sres, dv1d, dv2d)
+        sres = summary_diff_xdec(sres, dv1d, dv2d)
+        del dv1d
+        del dv2d
+        del reform_affected
+    else:
+        sres = summary_aggregate(sres, dv1, dv2)
+        sres = summary_dist_xbin(sres, dv1, dv2)
+        sres = summary_diff_xbin(sres, dv1, dv2)
+        sres = summary_dist_xdec(sres, dv1, dv2)
+        sres = summary_diff_xdec(sres, dv1, dv2)
 
+    # nested function used below
     def append_year(pdf):
         """
         append_year embedded function revises all column names in pdf
@@ -125,22 +164,22 @@ def run_nth_year_tax_calc_model(year_n, start_year,
     # optionally return non-JSON-like results
     if not return_dict:
         res = dict()
-        for tbl in summ:
-            res[tbl] = append_year(summ[tbl])
+        for tbl in sres:
+            res[tbl] = append_year(sres[tbl])
         elapsed_time = time.time() - start_time
         print('elapsed time for this run: {:.1f}'.format(elapsed_time))
         return res
 
     # optionally construct JSON-like results dictionaries for year n
-    dec_rownames = list(summ['diff_comb_xdec'].index.values)
+    dec_rownames = list(sres['diff_comb_xdec'].index.values)
     dec_row_names_n = [x + '_' + str(year_n) for x in dec_rownames]
-    bin_rownames = list(summ['diff_comb_xbin'].index.values)
+    bin_rownames = list(sres['diff_comb_xbin'].index.values)
     bin_row_names_n = [x + '_' + str(year_n) for x in bin_rownames]
     agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
     dist_column_types = [float] * len(DIST_TABLE_LABELS)
     diff_column_types = [float] * len(DIFF_TABLE_LABELS)
     info = dict()
-    for tbl in summ:
+    for tbl in sres:
         info[tbl] = {'row_names': [], 'col_types': []}
         if 'dec' in tbl:
             info[tbl]['row_names'] = dec_row_names_n
@@ -153,13 +192,13 @@ def run_nth_year_tax_calc_model(year_n, start_year,
         elif 'diff' in tbl:
             info[tbl]['col_types'] = diff_column_types
     res = dict()
-    for tbl in summ:
+    for tbl in sres:
         if 'aggr' in tbl:
-            res_table = create_dict_table(summ[tbl],
+            res_table = create_dict_table(sres[tbl],
                                           row_names=info[tbl]['row_names'])
             res[tbl] = dict((k, v[0]) for k, v in res_table.items())
         else:
-            res[tbl] = create_dict_table(summ[tbl],
+            res[tbl] = create_dict_table(sres[tbl],
                                          row_names=info[tbl]['row_names'],
                                          column_types=info[tbl]['col_types'])
 
@@ -189,11 +228,11 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     fyear = check_years_return_first_year(year_n, start_year, use_puf_not_cps)
     if year_n > 0 and (start_year + year_n) > fyear:
         # create calc1 and calc2 calculated for year_n - 1
-        (calc1, calc2, _) = calculate((year_n - 1), start_year,
-                                      use_puf_not_cps,
-                                      use_full_sample,
-                                      user_mods,
-                                      behavior_allowed=False)
+        (calc1, calc2) = calculate((year_n - 1), start_year,
+                                   use_puf_not_cps,
+                                   use_full_sample,
+                                   user_mods,
+                                   behavior_allowed=False)
         # compute GDP effect given specified gdp_elasticity
         gdp_effect = proportional_change_in_gdp((start_year + year_n),
                                                 calc1, calc2, gdp_elasticity)

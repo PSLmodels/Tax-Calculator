@@ -15,7 +15,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0],
-        "validations": {"min": 0.0}
+        "range": {"min": 0, "max": 9e99}
     },
 
     "_BE_inc": {
@@ -34,7 +34,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0],
-        "validations": {"max": 0.0}
+        "range": {"min": -9e99, "max": 0.0}
     },
 
     "_BE_subinc_wrt_earnings": {
@@ -51,9 +51,9 @@
         "col_var": "",
         "col_label": "",
         "boolean_value": true,
-        "integer_value": true,
+        "integer_value": false,
         "value": [false],
-        "validations": {"min": false, "max": true}
+        "range": {"min": false, "max": true}
     },
 
     "_BE_cg": {
@@ -72,7 +72,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.0],
-        "validations": {"max": 0.0}
+        "range": {"min": -9e99, "max": 0.0}
     },
 
     "_BE_charity": {
@@ -91,6 +91,6 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [[0.0, 0.0, 0.0]],
-        "validations": {"max": 0.0}
+        "range": {"min": -9e99, "max": 0.0}
     }
 }

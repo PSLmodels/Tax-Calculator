@@ -2,7 +2,7 @@
 Test example JSON policy reform files in taxcalc/reforms directory
 """
 # CODING-STYLE CHECKS:
-# pep8 test_reforms.py
+# pycodestyle test_reforms.py
 # pylint --disable=locally-disabled test_reforms.py
 
 from __future__ import print_function
@@ -20,7 +20,7 @@ def test_reform_json_and_output(tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
     that can then be passed to the Policy class implement_reform method that
-    generates no reform_errors.
+    generates no parameter_errors.
     Then use each reform to generate static tax results for small set of
     filing units in a single tax_year and compare those results with
     expected results from a text file.
@@ -49,7 +49,7 @@ def test_reform_json_and_output(tests_path):
         """
         Write abbreviated distribution table calc to file with resfilename.
         """
-        dist, _ = calc.distribution_tables(None, groupby='large_income_bins')
+        dist, _ = calc.distribution_tables(None, 'standard_income_bins')
         for stat in unused_dist_stats:
             del dist[stat]
         dist = dist[used_dist_stats]
@@ -108,7 +108,7 @@ def test_reform_json_and_output(tests_path):
         if pre_tcja_baseline:
             pol.implement_reform(pre_tcja['policy'])
         pol.implement_reform(reform['policy'])
-        assert not pol.reform_errors
+        assert not pol.parameter_errors
         calc2 = Calculator(policy=pol, records=cases, verbose=False)
         calc2.advance_to_year(tax_year)
         calc2.calc_all()

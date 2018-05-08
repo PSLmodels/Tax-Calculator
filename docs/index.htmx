@@ -40,6 +40,15 @@ ensure you are viewing the most recent version of this page rather
 than an older version that your browser has saved in its cache of
 previously visited pages.</i></p>
 
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-04-19-release-0190">Fix data and logic bugs</a>
+so that the Child Tax Credit for those with kids age 17 is now lower
+and so that the income tax liability for those with large business
+losses is now lower in Tax-Calculator release 0.19.0 and higher
+  
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-03-16-release-0170">UBI and benefits statistics</a>
+are included in the distribution and difference tables in
+Tax-Calculator release 0.17.0 and higher
+  
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-03-09-release-0162">New CPS data</a> include three
 additional benefits plus improved taxable-vs-nontaxable interest
 income, qualified dividends, and taxable pensions and annuities,
@@ -55,14 +64,6 @@ and higher
 
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/issues/1830#issue-288673028">FAQ on using Tax-Calculator when TCJA is current law</a> is
 now available
-
-<p><a href="#baseline">Baseline option</a> allows specification of a
-baseline policy that differs from current-law policy in Tax-Calculator
-release 0.15.2 and higher
-
-<p><a href="#compoundreform">Compound reform</a> capability allows tc
-users to analyze a reform that is specified in more than one JSON
-reform file in Tax-Calculator release 0.15.2 and higher
 
 <p>To upgrade to the newest version of the Tax-Calculator package,
 execute this command:<br><kbd>conda update -c ospc taxcalc</kbd></p>
@@ -690,32 +691,32 @@ cps-22-#-ref3-#-doc.text   cps-22-#-ref3-#-tab.text   cps-22-#-ref3-#.csv
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      91.8      -9.0      10.9       0.0       1.9
- 1    17.93     378.4     -19.1      29.9       0.0      10.8
- 2    17.93     563.7     -18.4      48.9       0.0      30.5
- 3    17.93     748.5      -9.3      66.6       0.0      57.3
- 4    17.93     965.9       1.9      89.1       0.0      91.0
- 5    17.93    1238.7      19.5     115.6       0.0     135.0
- 6    17.93    1597.8      48.0     149.8       0.0     197.8
- 7    17.93    2084.8      89.6     196.5       0.0     286.2
- 8    17.93    2860.1     171.4     271.7       0.0     443.0
- 9    17.93    6140.7     888.4     438.6       0.0    1327.0
- A   179.26   16670.3    1163.0    1417.5       0.0    2580.4
+ 0    17.93      91.0      -9.0      10.8       0.0       1.9
+ 1    17.93     376.8     -18.8      29.7       0.0      10.9
+ 2    17.93     561.9     -18.0      48.9       0.0      30.8
+ 3    17.92     746.3      -9.1      66.4       0.0      57.3
+ 4    17.93     963.2       2.2      88.7       0.0      91.0
+ 5    17.93    1235.4      20.0     115.4       0.0     135.3
+ 6    17.92    1593.9      48.7     150.0       0.0     198.7
+ 7    17.93    2080.4      90.4     196.4       0.0     286.8
+ 8    17.92    2854.7     172.3     272.1       0.0     444.4
+ 9    17.93    6133.3     889.9     439.2       0.0    1329.1
+ A   179.26   16637.0    1168.5    1417.5       0.0    2586.0
 
 Weighted Tax Differences by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
        (#m)      ($b)      ($b)      ($b)      ($b)      ($b)
- 0    17.93      91.8      -0.0       0.0       0.0      -0.0
- 1    17.93     378.4      -3.3       0.0       0.0      -3.3
- 2    17.93     563.7      -7.0       0.0       0.0      -7.0
- 3    17.93     748.5     -10.4       0.0       0.0     -10.4
- 4    17.93     965.9     -14.9       0.0       0.0     -14.9
- 5    17.93    1238.7     -24.3       0.0       0.0     -24.3
- 6    17.93    1597.8     -32.8       0.0       0.0     -32.8
- 7    17.93    2084.8     -40.3       0.0       0.0     -40.3
- 8    17.93    2860.1     -63.7       0.0       0.0     -63.7
- 9    17.93    6140.7     -70.3       0.0       0.0     -70.3
- A   179.26   16670.3    -266.9       0.0       0.0    -266.9
+ 0    17.93      91.0      -0.0       0.0       0.0      -0.0
+ 1    17.93     376.8      -3.2       0.0       0.0      -3.2
+ 2    17.93     561.9      -7.0       0.0       0.0      -7.0
+ 3    17.92     746.3     -10.3       0.0       0.0     -10.3
+ 4    17.93     963.2     -14.8       0.0       0.0     -14.8
+ 5    17.93    1235.4     -24.3       0.0       0.0     -24.3
+ 6    17.92    1593.9     -32.8       0.0       0.0     -32.8
+ 7    17.93    2080.4     -40.2       0.0       0.0     -40.2
+ 8    17.92    2854.7     -63.9       0.0       0.0     -63.9
+ 9    17.93    6133.3     -70.4       0.0       0.0     -70.4
+ A   179.26   16637.0    -267.0       0.0       0.0    -267.0
 </pre></p>
 
 <p>Example (7) produces 2022 static output for the filing units in the
@@ -854,7 +855,7 @@ $ tc cps.csv 2016 --sqldb
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2016.
 $ sqlite3 cps-16-#-#-#.db
-SQLite version 3.20.1 2017-08-24 16:21:36
+SQLite version 3.22.0 2018-01-22 18:45:57
 Enter ".help" for usage hints.
 sqlite> YOUR FIRST SQL COMMAND GOES HERE
 sqlite> YOUR SECOND SQL COMMAND GOES HERE
@@ -912,15 +913,15 @@ filing status (MARS) | weighted count of filing units
 2|68.234
 4|9.781
 weighted count of those with NEGATIVE MTR
-21.708
+21.474
 bin number | weighted count | mean NON-NEGATIVE MTR in bin
--1|30.993|0.0
-0|2.586|7.18
-1|58.614|14.14
-2|36.492|25.47
-3|14.089|32.21
+-1|31.186|0.0
+0|2.548|7.2
+1|58.678|14.14
+2|36.669|25.47
+3|13.927|32.23
 4|0.798|43.4
-5|0.102|55.2
+5|0.103|55.22
 6|0.017|66.73
 </pre>
 The <kbd>cat</kbd> command writes the contents of

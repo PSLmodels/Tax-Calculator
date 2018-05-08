@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_policy.py
+# pycodestyle test_policy.py
 
 import os
 import sys
@@ -35,8 +35,6 @@ def test_incorrect_Policy_instantiation():
     with pytest.raises(ValueError):
         p = Policy(gfactors=dict())
     with pytest.raises(ValueError):
-        p = Policy(parameter_dict=list())
-    with pytest.raises(ValueError):
         p = Policy(num_years=0)
 
 
@@ -51,6 +49,8 @@ def test_correct_Policy_instantiation():
     pol.set_year(2019)
     with pytest.raises(ValueError):
         pol.implement_reform({2018: {'_II_em': [99000]}})
+    with pytest.raises(ValueError):
+        pol.implement_reform({2020: {'_II_em': [-1000]}})
 
 
 def test_policy_json_content():
@@ -145,7 +145,8 @@ def test_multi_year_reform():
                                   [503, 3359, 5548, 6242],
                                   [506, 3373, 5572, 6269],
                                   [510, 3400, 5616, 6318]],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=iratelist,
                         num_years=nyrs),
@@ -153,7 +154,8 @@ def test_multi_year_reform():
     assert_allclose(getattr(pol, '_STD_Dep'),
                     Policy._expand_array(
                         np.array([1000, 1000, 1050, 1050, 1050],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=iratelist,
                         num_years=nyrs),
@@ -162,7 +164,8 @@ def test_multi_year_reform():
                     Policy._expand_array(
                         np.array([1000] * 5 + [1400] * 4 +
                                  [1500] * 3 + [1600] + [1000],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=False,
                         inflation_rates=iratelist,
                         num_years=nyrs),
@@ -171,7 +174,8 @@ def test_multi_year_reform():
     assert_allclose(getattr(pol, '_SS_Earnings_c'),
                     Policy._expand_array(
                         np.array([113700, 117000, 118500, 118500, 127200],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=wratelist,
                         num_years=nyrs),
@@ -324,15 +328,17 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
-def test_create_parameters_from_file(policyfile):
-    with open(policyfile.name) as pfile:
-        policy = json.load(pfile)
-    ppo = Policy(parameter_dict=policy)
+def test_create_parameters_from_file(monkeypatch, policyfile):
+    # py.test monkeypatch sets the temporary file path as the default path.
+    # After the test completes, monkeypatch restores the default settings.
+    monkeypatch.setattr(Policy, 'DEFAULTS_FILENAME', policyfile.name)
+    ppo = Policy()
     inf_rates = ppo.inflation_rates()
     assert_allclose(ppo._almdep,
                     Policy._expand_array(
                         np.array([7150, 7250, 7400],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
@@ -340,21 +346,24 @@ def test_create_parameters_from_file(policyfile):
     assert_allclose(ppo._almsep,
                     Policy._expand_array(
                         np.array([40400, 41050],
-                                 dtype=np.float64), False,
+                                 dtype=np.float64),
+                        False, False,
                         inflate=True,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt5,
                     Policy._expand_array(
-                        np.array([0.33]), False,
+                        np.array([0.33]),
+                        False, False,
                         inflate=False,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
                     atol=0.01, rtol=0.0)
     assert_allclose(ppo._rt7,
                     Policy._expand_array(
-                        np.array([0.396]), False,
+                        np.array([0.396]),
+                        False, False,
                         inflate=False,
                         inflation_rates=inf_rates,
                         num_years=ppo.num_years),
@@ -887,8 +896,8 @@ def test_range_infomation(tests_path):
     # check all current-law-policy parameters for range validity
     clp = Policy()
     clp._validate_parameter_values(parameters)
-    assert len(clp.reform_warnings) == 0
-    assert len(clp.reform_errors) == 0
+    assert len(clp.parameter_warnings) == 0
+    assert len(clp.parameter_errors) == 0
 
 
 def test_validate_param_names_types_errors():
@@ -916,7 +925,7 @@ def test_validate_param_names_types_errors():
     with pytest.raises(ValueError):
         pol4.implement_reform(ref4)
     pol5 = Policy()
-    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 2, 0, 1, 0]]}}
+    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     with pytest.raises(ValueError):
         pol5.implement_reform(ref5)
     pol6 = Policy()
@@ -927,6 +936,24 @@ def test_validate_param_names_types_errors():
     ref7 = {2019: {'_FICA_ss_trt_cpi': True}}
     with pytest.raises(ValueError):
         pol7.implement_reform(ref7)
+    # test 8 was contributed by Hank Doupe in bug report #1956
+    pol8 = Policy()
+    ref8 = {2019: {'_AMEDT_rt': [True]}}
+    with pytest.raises(ValueError):
+        pol8.implement_reform(ref8)
+    # test 9 extends test 8 to integer parameters
+    pol9 = Policy()
+    ref9 = {2019: {'_AMT_KT_c_Age': [True]}}
+    with pytest.raises(ValueError):
+        pol9.implement_reform(ref9)
+    # test 10 was contributed by Hank Doupe in bug report #1980
+    json_reform = """
+    {"policy": {"_ID_BenefitSurtax_Switch_medical": {"2018": [true]}}}
+    """
+    pdict = Calculator.read_json_param_objects(json_reform, None)
+    pol = Policy()
+    pol.implement_reform(pdict["policy"], raise_errors=False)
+    assert pol.parameter_errors == ''
 
 
 def test_validate_param_values_warnings_errors():
@@ -935,29 +962,30 @@ def test_validate_param_values_warnings_errors():
     """
     pol1 = Policy()
     ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
-    pol1.implement_reform(ref1)
-    assert len(pol1.reform_warnings) > 0
+    pol1.implement_reform(ref1, print_warnings=False, raise_errors=False)
+    assert len(pol1.parameter_warnings) > 0
     pol2 = Policy()
     ref2 = {2021: {'_ID_Charity_crt_all': [0.61]}}
-    pol2.implement_reform(ref2)
-    assert len(pol2.reform_warnings) > 0
+    pol2.implement_reform(ref2, print_warnings=False, raise_errors=False)
+    assert len(pol2.parameter_warnings) > 0
     pol3 = Policy()
     ref3 = {2024: {'_II_brk4': [[0, 0, 0, 0, 0]]}}
-    pol3.implement_reform(ref3)
-    assert len(pol3.reform_errors) > 0
+    pol3.implement_reform(ref3, print_warnings=False, raise_errors=False)
+    assert len(pol3.parameter_errors) > 0
     pol4 = Policy()
     ref4 = {2024: {'_II_brk4': [[0, 9e9, 0, 0, 0]]}}
-    pol4.implement_reform(ref4)
-    assert len(pol4.reform_errors) > 0
+    pol4.implement_reform(ref4, print_warnings=False, raise_errors=False)
+    assert len(pol4.parameter_errors) > 0
     pol5 = Policy()
+    pol5.ignore_reform_errors()
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
-    pol5.implement_reform(ref5)
-    assert len(pol5.reform_errors) == 0
+    pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
+    assert len(pol5.parameter_errors) > 0
     pol6 = Policy()
     ref6 = {2013: {'_STD': [[20000, 25000, 20000, 20000, 25000]]}}
-    pol6.implement_reform(ref6)
-    assert pol6.reform_errors == ''
-    assert pol6.reform_warnings == ''
+    pol6.implement_reform(ref6, print_warnings=False, raise_errors=False)
+    assert pol6.parameter_errors == ''
+    assert pol6.parameter_warnings == ''
 
 
 def test_indexing_rates_for_update():

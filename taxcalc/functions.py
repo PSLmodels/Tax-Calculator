@@ -9,7 +9,7 @@ parameters (as would be done in a reform that introduces chained-CPI
 indexing).
 """
 # CODING-STYLE CHECKS:
-# pep8 functions.py
+# pycodestyle functions.py
 # pylint --disable=locally-disabled functions.py
 #
 # pylint: disable=too-many-lines
@@ -313,9 +313,6 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
              max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
-    # compute business loss excluded from ymod1 but included in expanded_income
-    excluded_loss = min(e00900 + e02000 + ALD_BusinessLosses_c[MARS - 1], 0.)
-    c02900 += excluded_loss
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = max(0., e00650 + c01000)
@@ -327,7 +324,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ymod2 = e00400 + (0.50 * e02400) - c02900
     ymod3 = (1. - ALD_StudentLoan_hc) * e03210 + e03230 + e03240
     ymod = ymod1 + ymod2 + ymod3
-    return (c01000, c23650, ymod, ymod1, invinc_agi_ec, c02900)
+    return (c01000, c23650, ymod, ymod1, invinc_agi_ec)
 
 
 @iterate_jit(nopython=True)
@@ -1136,14 +1133,17 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
 
 @jit(nopython=True)
 def EITCamount(phasein_rate, earnings, max_amount,
-               phaseout_start, c00100, phaseout_rate):
+               phaseout_start, agi, phaseout_rate):
     """
-    Returns EITC amount given specified parameters (c00100 is AGI)
+    Returns EITC amount given specified parameters.
+    English parameter names are used in this function because the
+    EITC formula is not available on IRS forms or in IRS instructions;
+    the extensive IRS EITC look-up table does not reveal the formula.
     """
     eitc = min(phasein_rate * earnings, max_amount)
-    if earnings > phaseout_start or c00100 > phaseout_start:
+    if earnings > phaseout_start or agi > phaseout_start:
         eitcx = max(0., (max_amount - phaseout_rate *
-                         max(0., max(earnings, c00100) - phaseout_start)))
+                         max(0., max(earnings, agi) - phaseout_start)))
         eitc = min(eitc, eitcx)
     return eitc
 
@@ -1593,8 +1593,9 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
+            CTC_new_refund_limited_all_payroll, payrolltax,
             n24, nu05, c00100, MARS, ptax_oasdi, c09200,
-            ctc_new, CTC_new_refund_limited_all_payroll, payrolltax):
+            ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
     """
@@ -1703,8 +1704,8 @@ def BenefitSurtax(calc):
     to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
-        benefit_surtax_switch = calc.policy_param('ID_BenefitSurtax_Switch')
-        ben = ComputeBenefit(calc, benefit_surtax_switch)
+        ben = ComputeBenefit(calc,
+                             calc.policy_param('ID_BenefitSurtax_Switch'))
         agi = calc.array('c00100')
         ben_deduct = calc.policy_param('ID_BenefitSurtax_crt') * agi
         ben_exempt_array = calc.policy_param('ID_BenefitSurtax_em')

@@ -2,7 +2,7 @@
 Tests for Tax-Calculator docs.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_docs.py
+# pycodestyle test_docs.py
 # pylint --disable=locally-disabled test_docs.py
 
 import os

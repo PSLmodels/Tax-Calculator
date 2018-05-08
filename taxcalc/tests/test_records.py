@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pep8 test_records.py
+# pycodestyle test_records.py
 
 import os
 import json
@@ -79,6 +79,10 @@ def test_correct_Records_instantiation(cps_subsample):
     (
         u'RECID,MARS\n'
         u'1,    6\n'
+    ),
+    (
+        u'RECID,MARS,EIC\n'
+        u'1,    5,   4\n'
     ),
     (
         u'RECID,MARS,e00600,e00650\n'

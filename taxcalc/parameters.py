@@ -2,7 +2,7 @@
 Tax-Calculator abstract base parameters class.
 """
 # CODING-STYLE CHECKS:
-# pep8 parameters.py
+# pycodestyle parameters.py
 
 import os
 import json
@@ -94,11 +94,9 @@ class ParametersBase(object):
         """
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                if not isinstance(name, six.string_types):
-                    msg = 'parameter name {} is not a string'
-                    raise ValueError(msg.format(name))
-                integer_values = data.get('integer_value', None)
-                values = data.get('value', None)
+                intg_val = data.get('integer_value')
+                bool_val = data.get('boolean_value')
+                values = data.get('value')
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
                     if cpi_inflated:
@@ -108,7 +106,7 @@ class ParametersBase(object):
                     else:
                         index_rates = None
                     setattr(self, name,
-                            self._expand_array(values, integer_values,
+                            self._expand_array(values, intg_val, bool_val,
                                                inflate=cpi_inflated,
                                                inflation_rates=index_rates,
                                                num_years=self._num_years))
@@ -358,12 +356,9 @@ class ParametersBase(object):
             # determine indexing status of parameter with name for year
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
-            if name in self._vals:
-                vals_indexed = self._vals[name].get('cpi_inflated', False)
-                integer_values = self._vals[name].get('integer_value')
-            else:
-                msg = 'parameter name {} not in parameter values dictionary'
-                raise ValueError(msg.format(name))
+            vals_indexed = self._vals[name].get('cpi_inflated', False)
+            intg_val = self._vals[name].get('integer_value')
+            bool_val = self._vals[name].get('boolean_value')
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
@@ -376,7 +371,7 @@ class ParametersBase(object):
             cval = getattr(self, name, None)
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            nval = self._expand_array(values, integer_values,
+            nval = self._expand_array(values, intg_val, bool_val,
                                       inflate=indexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -387,17 +382,15 @@ class ParametersBase(object):
         for name in unused_names:
             used_names.add(name)
             pname = name[:-4]  # root parameter name
-            if pname not in self._vals:
-                msg = 'root parameter name {} not in values dictionary'
-                raise ValueError(msg.format(pname))
             pindexed = year_mods[year][name]
             self._vals[pname]['cpi_inflated'] = pindexed  # remember status
             cval = getattr(self, pname, None)
             pvalues = [cval[year - self.start_year]]
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            integer_values = self._vals[pname]['integer_value']
-            nval = self._expand_array(pvalues, integer_values,
+            intg_val = self._vals[pname].get('integer_value')
+            bool_val = self._vals[pname].get('boolean_value')
+            nval = self._expand_array(pvalues, intg_val, bool_val,
                                       inflate=pindexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -408,7 +401,7 @@ class ParametersBase(object):
         self.set_year(year)
 
     @staticmethod
-    def _expand_array(x, x_dtype_int, inflate, inflation_rates, num_years):
+    def _expand_array(x, x_int, x_bool, inflate, inflation_rates, num_years):
         """
         Private method called only within this abstract base class.
         Dispatch to either _expand_1D or _expand_2D given dimension of x.
@@ -419,8 +412,13 @@ class ParametersBase(object):
             x must be either a scalar list or a 1D numpy array, or
             x must be either a list of scalar lists or a 2D numpy array
 
-        x_dtype_int : boolean
-            True implies dtype=np.int8; False implies dtype=np.float64
+        x_int : boolean
+            True implies x has dtype=np.int8;
+            False implies x has dtype=np.float64 or dtype=np.bool_
+
+        x_bool : boolean
+            True implies x has dtype=np.bool_;
+            False implies x has dtype=np.float64 or dtype=np.int8
 
         inflate: boolean
             As we expand, inflate values if this is True, otherwise, just copy
@@ -435,12 +433,15 @@ class ParametersBase(object):
         -------
         expanded numpy array with specified dtype
         """
+        assert not (x_int and x_bool)
         if not isinstance(x, list) and not isinstance(x, np.ndarray):
             msg = '_expand_array expects x to be a list or numpy array'
             raise ValueError(msg)
         if isinstance(x, list):
-            if x_dtype_int:
+            if x_int:
                 x = np.array(x, np.int8)
+            elif x_bool:
+                x = np.array(x, np.bool_)
             else:
                 x = np.array(x, np.float64)
         if len(x.shape) == 1:

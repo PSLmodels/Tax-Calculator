@@ -2,7 +2,7 @@
 Tests for package existence and dependencies consistency.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_4package.py
+# pycodestyle test_4package.py
 # pylint --disable=locally-disabled test_4package.py
 
 import os
@@ -37,6 +37,7 @@ def test_for_consistency(tests_path):
     dev_pkgs = set([
         'mock',
         'pep8',
+        'pycodestyle',
         'pylint',
         'coverage',
         'pytest-pep8',

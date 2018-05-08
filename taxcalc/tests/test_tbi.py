@@ -2,7 +2,7 @@
 Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_tbi.py
+# pycodestyle test_tbi.py
 
 from __future__ import print_function
 import json
@@ -85,47 +85,6 @@ def test_run_nth_year_value_errors():
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('using_puf', [True, False])
-def test_run_tax_calc_model(using_puf, tests_path):
-    res = run_nth_year_tax_calc_model(year_n=2, start_year=2018,
-                                      use_puf_not_cps=using_puf,
-                                      use_full_sample=False,
-                                      user_mods=USER_MODS,
-                                      return_dict=True)
-    assert isinstance(res, dict)
-    # put actual results in a multiline string
-    actual_results = ''
-    for tbl in sorted(res.keys()):
-        actual_results += 'TABLE {} RESULTS:\n'.format(tbl)
-        actual_results += json.dumps(res[tbl], sort_keys=True,
-                                     indent=4, separators=(',', ': ')) + '\n'
-    # read expected results from file
-    if using_puf:
-        expect_fname = 'tbi_puf_expect.txt'
-    else:
-        expect_fname = 'tbi_cps_expect.txt'
-    expect_path = os.path.join(tests_path, expect_fname)
-    with open(expect_path, 'r') as expect_file:
-        expect_results = expect_file.read()
-    # ensure actual and expect results have no differences
-    diffs = nonsmall_diffs(actual_results.splitlines(True),
-                           expect_results.splitlines(True))
-    if diffs:
-        actual_fname = '{}{}'.format(expect_fname[:-10], 'actual.txt')
-        actual_path = os.path.join(tests_path, actual_fname)
-        with open(actual_path, 'w') as actual_file:
-            actual_file.write(actual_results)
-        msg = 'TBI RESULTS DIFFER\n'
-        msg += '----------------------------------------------\n'
-        msg += '--- NEW RESULTS IN {} FILE ---\n'
-        msg += '--- if new OK, copy {} to  ---\n'
-        msg += '---                 {}     ---\n'
-        msg += '---            and rerun test.             ---\n'
-        msg += '----------------------------------------------\n'
-        raise ValueError(msg.format(actual_fname, actual_fname, expect_fname))
-
-
-@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('resdict', [True, False])
 def test_run_gdp_elast_model_1(resdict):
     usermods = USER_MODS
@@ -178,18 +137,6 @@ def test_random_seed_from_subdict():
     dct[2016] = {'param1': 0.13}
     seed2 = random_seed_from_subdict(dct)
     assert seed1 == seed2
-
-
-def test_chooser_error():
-    dframe = pd.DataFrame(data=[[0, 1], [0, 2], [0, 3],
-                                [0, 4], [0, 5], [0, 6],
-                                [0, 7], [0, 8], [0, 9]],
-                          columns=['zeros', 'positives'])
-    choices = chooser(dframe['positives'])
-    assert isinstance(choices, list)
-    assert len(choices) == dframe['positives'].size
-    with pytest.raises(ValueError):
-        chooser(dframe['zeros'])
 
 
 def test_create_dict_table():
@@ -260,8 +207,8 @@ def test_with_pufcsv(puf_fullsample):
 
 def test_reform_warnings_errors():
     msg_dict = reform_warnings_errors(USER_MODS)
-    assert len(msg_dict['warnings']) == 0
-    assert len(msg_dict['errors']) == 0
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) == 0
     bad1_mods = {
         'policy': {2020: {'_II_rt3': [1.4]}, 2021: {'_STD_Dep': [0]}},
         'consumption': {},
@@ -270,8 +217,8 @@ def test_reform_warnings_errors():
         'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad1_mods)
-    assert len(msg_dict['warnings']) > 0
-    assert len(msg_dict['errors']) > 0
+    assert len(msg_dict['policy']['warnings']) > 0
+    assert len(msg_dict['policy']['errors']) > 0
     bad2_mods = {
         'policy': {2020: {'_II_rt33': [0.4]}, 2021: {'_STD_Dep': [0]}},
         'consumption': {},
@@ -280,8 +227,14 @@ def test_reform_warnings_errors():
         'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad2_mods)
-    assert len(msg_dict['warnings']) == 0
-    assert len(msg_dict['errors']) > 0
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) > 0
+    bad3_mods = dict(USER_MODS, **{'behavior': {2017: {'_BE_inc': [0.8]}}})
+    msg_dict = reform_warnings_errors(bad3_mods)
+    assert len(msg_dict['policy']['warnings']) == 0
+    assert len(msg_dict['policy']['errors']) == 0
+    assert len(msg_dict['behavior']['warnings']) == 0
+    assert len(msg_dict['behavior']['errors']) > 0
 
 
 @pytest.mark.pre_release
@@ -346,7 +299,7 @@ def test_behavioral_response(puf_subsample):
                 pol = Policy()
                 calc1 = Calculator(policy=pol, records=rec)
                 pol.implement_reform(params['policy'])
-                assert not pol.reform_errors
+                assert not pol.parameter_errors
                 beh = Behavior()
                 beh.update_behavior(params['behavior'])
                 calc2 = Calculator(policy=pol, records=rec, behavior=beh)
@@ -381,7 +334,7 @@ def test_behavioral_response(puf_subsample):
     # NOTE that the tbi results have been "fuzzed" for PUF privacy reasons,
     #      so there is no expectation that the results should be identical.
     no_diffs = True
-    reltol = 2.5e-3  # std and tbi differ if more than 0.25 percent different
+    reltol = 0.004  # std and tbi differ if more than 0.4 percent different
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
         col = '0_{}'.format(year)

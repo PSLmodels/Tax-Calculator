@@ -2,7 +2,7 @@
 Tests for Tax-Calculator ParametersBase class and JSON parameter files.
 """
 # CODING-STYLE CHECKS:
-# pep8 test_parameters.py
+# pycodestyle test_parameters.py
 # pylint --disable=locally-disabled test_parameters.py
 
 import os
@@ -41,10 +41,10 @@ def test_instantiation_and_usage():
         pbase._update({syr: []})
     # pylint: disable=no-member
     with pytest.raises(ValueError):
-        ParametersBase._expand_array({}, True, True, [0.02], 1)
-    threedarray = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
+        ParametersBase._expand_array({}, False, False, True, [0.02], 1)
+    arr3d = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
     with pytest.raises(ValueError):
-        ParametersBase._expand_array(threedarray, True, True, [0.02, 0.02], 2)
+        ParametersBase._expand_array(arr3d, False, False, True, [0.02], 1)
 
 
 @pytest.mark.parametrize("fname",
@@ -86,9 +86,11 @@ def test_json_file_contents(tests_path, fname):
     # check elements in each parameter sub-dictionary
     failures = ''
     for pname in allparams:
+        # all parameter names should be strings
+        assert isinstance(pname, six.string_types)
+        # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
-        # check that param contains required keys
         for key in reqkeys:
             assert key in param
         # check for non-empty long_name and description strings
@@ -111,9 +113,10 @@ def test_json_file_contents(tests_path, fname):
         rowlabel = param['row_label']
         assert isinstance(rowlabel, list)
         # check all row_label values
-        for idx in range(0, len(rowlabel)):
-            cyr = first_year + idx
-            assert int(rowlabel[idx]) == cyr
+        cyr = first_year
+        for rlabel in rowlabel:
+            assert int(rlabel) == cyr
+            cyr += 1
         # check type and dimension of value
         value = param['value']
         assert isinstance(value, list)
@@ -321,18 +324,18 @@ def test_bool_int_value_info(tests_path, json_filename):
         pdict = json.load(pfile)
     maxint = np.iinfo(np.int8).max
     for param in sorted(pdict.keys()):
-        # check that boolean_value always implies integer_value
-        if pdict[param]['boolean_value'] and not pdict[param]['integer_value']:
-            msg = 'param,integer_value,boolean_value,= {} {} {}'
+        # check that boolean_value is never integer_value
+        if pdict[param]['boolean_value'] and pdict[param]['integer_value']:
+            msg = 'param,boolean_value,integer_value,= {} {} {}'
             msg = msg.format(str(param),
                              pdict[param]['boolean_value'],
                              pdict[param]['integer_value'])
-            assert msg == 'ERROR: boolean_value is not integer_value'
+            assert msg == 'ERROR: boolean_value is integer_value'
         # check that cpi_indexed param is not boolean or integer
         nonfloat_value = (pdict[param]['integer_value'] or
                           pdict[param]['boolean_value'])
         if pdict[param]['cpi_inflated'] and nonfloat_value:
-            msg = 'param,integer_value,boolean_value= {} {} {}'
+            msg = 'param,boolean_value,integer_value,= {} {} {}'
             msg = msg.format(str(param),
                              pdict[param]['boolean_value'],
                              pdict[param]['integer_value'])
@@ -343,7 +346,8 @@ def test_bool_int_value_info(tests_path, json_filename):
             val = val[0]
         valstr = str(val)
         val_is_boolean = bool(valstr == 'True' or valstr == 'False')
-        val_is_integer = not bool('.' in valstr or abs(val) > maxint)
+        val_is_integer = (not bool('.' in valstr or abs(val) > maxint) and
+                          not val_is_boolean)
         # check that val_is_integer is consistent with integer_value
         if val_is_integer != pdict[param]['integer_value']:
             msg = 'param,integer_value,valstr= {} {} {}'

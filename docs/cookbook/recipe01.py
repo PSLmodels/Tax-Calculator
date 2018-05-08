@@ -22,26 +22,14 @@ reform2_text = url_lib.urlopen(BASE_URL + reform2_name).read()
 # specify Policy object for static analysis of reform1 relative to pre-TCJA
 reform1 = Calculator.read_json_param_objects(reform1_text, None)
 policy1 = Policy()
-policy1.implement_reform(baseline['policy'])
-if policy1.reform_errors:
-    print(policy1.reform_errors)
-    exit(1)
-policy1.implement_reform(reform1['policy'])
-if policy1.reform_errors:
-    print(policy1.reform_errors)
-    exit(1)
+policy1.implement_reform(baseline['policy'], print_warnings=False)
+policy1.implement_reform(reform1['policy'], print_warnings=False)
 
 # specify Policy object for static analysis of reform2 relative to pre-TCJA
 reform2 = Calculator.read_json_param_objects(reform2_text, None)
 policy2 = Policy()
-policy1.implement_reform(baseline['policy'])
-if policy1.reform_errors:
-    print(policy1.reform_errors)
-    exit(1)
-policy2.implement_reform(reform2['policy'])
-if policy2.reform_errors:
-    print(policy2.reform_errors)
-    exit(1)
+policy1.implement_reform(baseline['policy'], print_warnings=False)
+policy2.implement_reform(reform2['policy'], print_warnings=False)
 
 cyr = 2018
 

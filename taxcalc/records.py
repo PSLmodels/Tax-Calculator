@@ -2,7 +2,7 @@
 Tax-Calculator tax-filing-unit Records class.
 """
 # CODING-STYLE CHECKS:
-# pep8 records.py
+# pycodestyle records.py
 # pylint --disable=locally-disabled records.py
 
 import os
@@ -119,7 +119,7 @@ class Records(object):
         # pylint: disable=too-many-arguments,too-many-locals
         self.__data_year = start_year
         # read specified data
-        self._read_data(data, exact_calculations)
+        self._read_data(data, exact_calculations, (benefits is None))
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         tol = 0.020001  # handles "%.2f" rounding errors
@@ -161,7 +161,7 @@ class Records(object):
         self.BEN = None
         self._read_benefits(benefits)
         # weights must be same size as tax record data
-        if not self.WT.empty and self.array_length != len(self.WT):
+        if self.WT.size > 0 and self.array_length != len(self.WT.index):
             # scale-up sub-sample weights by year-specific factor
             sum_full_weights = self.WT.sum()
             self.WT = self.WT.iloc[self.__index]
@@ -176,14 +176,16 @@ class Records(object):
             msg = 'start_year is not an integer'
             raise ValueError(msg)
         # construct sample weights for current_year
-        wt_colname = 'WT{}'.format(self.current_year)
-        if wt_colname in self.WT.columns:
-            self.s006 = self.WT[wt_colname] * 0.01
+        if self.WT.size > 0:
+            wt_colname = 'WT{}'.format(self.current_year)
+            if wt_colname in self.WT.columns:
+                self.s006 = self.WT[wt_colname] * 0.01
         # specify that variable values do not include behavioral responses
         self.behavioral_responses_are_included = False
 
     @staticmethod
     def cps_constructor(data=None,
+                        no_benefits=False,
                         exact_calculations=False,
                         gfactors=Growfactors()):
         """
@@ -198,12 +200,16 @@ class Records(object):
         """
         if data is None:
             data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
+        if no_benefits:
+            benefits_filename = None
+        else:
+            benefits_filename = Records.CPS_BENEFITS_FILENAME
         return Records(data=data,
                        exact_calculations=exact_calculations,
                        gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       benefits=Records.CPS_BENEFITS_FILENAME,
+                       benefits=benefits_filename,
                        start_year=Records.CPSCSV_YEAR)
 
     @property
@@ -242,10 +248,9 @@ class Records(object):
         # apply variable adjustment ratios
         self._adjust(self.__current_year)
         # specify current-year sample weights
-        if self.WT is not None:
+        if self.WT.size > 0:
             wt_colname = 'WT{}'.format(self.__current_year)
-            if wt_colname in self.WT.columns:
-                self.s006 = self.WT[wt_colname] * 0.01
+            self.s006 = self.WT[wt_colname] * 0.01
         # extrapolate benefit values
         if self.BEN.size > 0:
             self._extrapolate_benefits(self.current_year)
@@ -425,12 +430,13 @@ class Records(object):
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
         self.other_ben *= self.gfactors.factor_value('ABENEFITS', year)
 
-    def _read_data(self, data, exact_calcs):
+    def _read_data(self, data, exact_calcs, no_benefits):
         """
         Read Records data from file or use specified DataFrame as data.
         Specifies exact array depending on boolean value of exact_calcs.
+        Set benefits to zero if no_benefits is True; otherwise do nothing.
         """
-        # pylint: disable=too-many-branches
+        # pylint: disable=too-many-statements,too-many-branches
         if Records.INTEGER_VARS is None:
             Records.read_var_info()
         # read specified data
@@ -445,7 +451,7 @@ class Records(object):
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
             raise ValueError(msg)
-        self.__dim = len(taxdf)
+        self.__dim = len(taxdf.index)
         self.__index = taxdf.index
         # create class variables using taxdf column names
         READ_VARS = set()
@@ -484,8 +490,27 @@ class Records(object):
         # create variables derived from MARS, which is in MUST_READ_VARS
         self.num[:] = np.where(self.MARS == 2, 2, 1)
         self.sep[:] = np.where(self.MARS == 3, 2, 1)
+        # check for valid EIC values
+        if not np.all(np.logical_and(np.greater_equal(self.EIC, 0),
+                                     np.less_equal(self.EIC, 3))):
+            raise ValueError('not all EIC values in [0,3] range')
         # specify value of exact array
         self.exact[:] = np.where(exact_calcs is True, 1, 0)
+        # optionally set benefits to zero
+        if no_benefits:
+            self.housing_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.ssi_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.snap_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.tanf_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.vet_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.wic_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.mcare_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.mcaid_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+            self.other_ben[:] = np.zeros(self.array_length, dtype=np.float64)
+        # delete intermediate variables
+        del READ_VARS
+        del UNREAD_VARS
+        del ZEROED_VARS
 
     def zero_out_changing_calculated_vars(self):
         """
@@ -571,7 +596,7 @@ class Records(object):
                 b_path = os.path.basename(benefits_path)  # pragma: no cover
                 BEN_partial = read_egg_csv(b_path)  # pragma: no cover
         else:
-            msg = 'benefits is not Nont or a string or a Pandas DataFrame'
+            msg = 'benefits is not None or a string or a Pandas DataFrame'
             raise ValueError(msg)
         assert isinstance(BEN_partial, pd.DataFrame)
         # expand benefits DataFrame to include those who don't receive benefits
@@ -580,7 +605,7 @@ class Records(object):
         full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
         # fill missing values
         full_df.fillna(0, inplace=True)
-        assert len(recid_df) == len(full_df)
+        assert len(recid_df.index) == len(full_df.index)
         self.BEN = pd.DataFrame()
         setattr(self, 'BEN', full_df.astype(np.float32))
         # delete intermediate DataFrame objects

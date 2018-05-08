@@ -3,7 +3,7 @@ Command-line interface (CLI) to Tax-Calculator,
 which can be accessed as 'tc' from an installed taxcalc conda package.
 """
 # CODING-STYLE CHECKS:
-# pep8 tc.py
+# pycodestyle tc.py
 # pylint --disable=locally-disabled tc.py
 
 import os

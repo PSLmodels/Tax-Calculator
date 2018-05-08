@@ -2,7 +2,7 @@
 Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
-# pep8 calculate.py
+# pycodestyle calculate.py
 # pylint --disable=locally-disabled calculate.py
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
@@ -151,8 +151,8 @@ class Calculator(object):
         if verbose and sys.version_info.major == 2:  # running Python 2.7
             print('WARNING: Tax-Calculator packages for Python 2.7 will')
             print('         no longer be provided beginning in 2019')
-            print('         because Pandas is stopping development for 2.7.')
-            print('SOLUTION: upgrade to Python 3.6 now.')
+            print('         because Pandas is stopping development for 2.7')
+            print('SOLUTION: upgrade to Python 3.6 now')
         assert self.__policy.current_year == self.__records.current_year
         self.__stored_records = None
 
@@ -219,18 +219,36 @@ class Calculator(object):
         del arys
         return pdf
 
+    def distribution_table_dataframe(self):
+        """
+        Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables
+        from embedded Records object.
+        """
+        pdf = self.dataframe(DIST_VARIABLES)
+        # weighted count of itemized-deduction returns
+        pdf['num_returns_ItemDed'] = pdf['s006'].where(
+            pdf['c04470'] > 0., 0.)
+        # weighted count of standard-deduction returns
+        pdf['num_returns_StandardDed'] = pdf['s006'].where(
+            pdf['standard'] > 0., 0.)
+        # weight count of returns with positive Alternative Minimum Tax (AMT)
+        pdf['num_returns_AMT'] = pdf['s006'].where(
+            pdf['c09600'] > 0., 0.)
+        return pdf
+
     def array(self, variable_name, variable_value=None):
         """
         If variable_value is None, return numpy ndarray containing the
          named variable in embedded Records object.
         If variable_value is not None, set named variable in embedded Records
-         object to specified variable_value.
+         object to specified variable_value and return None (which can be
+         ignored).
         """
         if variable_value is None:
             return getattr(self.__records, variable_name)
-        else:
-            assert isinstance(variable_value, np.ndarray)
-            setattr(self.__records, variable_name, variable_value)
+        assert isinstance(variable_value, np.ndarray)
+        setattr(self.__records, variable_name, variable_value)
+        return None
 
     def incarray(self, variable_name, variable_add):
         """
@@ -268,13 +286,14 @@ class Calculator(object):
     def records_current_year(self, year=None):
         """
         If year is None, return current_year of embedded Records object.
-        If year is not None, set embedded Records current_year to year.
+        If year is not None, set embedded Records current_year to year and
+         return None (which can be ignored).
         """
         if year is None:
             return self.__records.current_year
-        else:
-            assert isinstance(year, int)
-            self.__records.set_current_year(year)
+        assert isinstance(year, int)
+        self.__records.set_current_year(year)
+        return None
 
     @property
     def array_len(self):
@@ -288,12 +307,13 @@ class Calculator(object):
         If param_value is None, return named parameter in
          embedded Policy object.
         If param_value is not None, set named parameter in
-         embedded Policy object to specified param_value.
+         embedded Policy object to specified param_value and
+         return None (which can be ignored).
         """
         if param_value is None:
             return getattr(self.__policy, param_name)
-        else:
-            setattr(self.__policy, param_name, param_value)
+        setattr(self.__policy, param_name, param_value)
+        return None
 
     def consump_param(self, param_name):
         """
@@ -320,12 +340,13 @@ class Calculator(object):
         If param_value is None, return named parameter in
          embedded Behavior object.
         If param_value is not None, set named parameter in
-         embedded Behavior object to specified param_value.
+         embedded Behavior object to specified param_value and
+         return None (which can be ignored).
         """
         if param_value is None:
             return getattr(self.__behavior, param_name)
-        else:
-            setattr(self.__behavior, param_name, param_value)
+        setattr(self.__behavior, param_name, param_value)
+        return None
 
     def records_include_behavioral_responses(self):
         """
@@ -338,18 +359,19 @@ class Calculator(object):
         """
         Calculator class embedded Policy object's reform_warnings.
         """
-        return self.__policy.reform_warnings
+        return self.__policy.parameter_warnings
 
     def policy_current_year(self, year=None):
         """
         If year is None, return current_year of embedded Policy object.
-        If year is not None, set embedded Policy current_year to year.
+        If year is not None, set embedded Policy current_year to year and
+         return None (which can be ignored).
         """
         if year is None:
             return self.__policy.current_year
-        else:
-            assert isinstance(year, int)
-            self.__policy.set_year(year)
+        assert isinstance(year, int)
+        self.__policy.set_year(year)
+        return None
 
     @property
     def current_year(self):
@@ -384,32 +406,31 @@ class Calculator(object):
         assert num_years >= 1
         max_num_years = self.__policy.end_year - self.__policy.current_year + 1
         assert num_years <= max_num_years
+        diag_variables = DIST_VARIABLES + ['surtax']
         calc = copy.deepcopy(self)
         tlist = list()
         for iyr in range(1, num_years + 1):
             assert calc.behavior_has_response() is False
             calc.calc_all()
-            diag = create_diagnostic_table(calc.dataframe(DIST_VARIABLES),
+            diag = create_diagnostic_table(calc.dataframe(diag_variables),
                                            calc.current_year)
             tlist.append(diag)
             if iyr < num_years:
                 calc.increment_year()
+        del diag_variables
         del calc
         del diag
         return pd.concat(tlist, axis=1)
 
-    def distribution_tables(self, calc,
-                            groupby='weighted_deciles',
-                            income_measure='expanded_income',
-                            result_type='weighted_sum'):
+    def distribution_tables(self, calc, groupby):
         """
-        Get results from self and calc, sort them based on groupby using
-        income_measure, compute grouped statistics based on result_type,
-        and return tables as a pair of Pandas dataframes.
+        Get results from self and calc, sort them by expanded_income into
+        table rows defined by groupby, compute grouped statistics, and
+        return tables as a pair of Pandas dataframes.
         This method leaves the Calculator object(s) unchanged.
         Note that the returned tables have consistent income groups (based
-        on the self income_measure) even though the baseline income_measure
-        in self and the income_measure in calc are different.
+        on the self expanded_income) even though the baseline expanded_income
+        in self and the reform expanded_income in calc are different.
 
         Parameters
         ----------
@@ -418,23 +439,14 @@ class Calculator(object):
             if calc is None, the second returned table is None
 
         groupby : String object
-            options for input: 'weighted_deciles', 'standard_income_bins',
-                               'large_income_bins', 'small_income_bins';
+            options for input: 'weighted_deciles', 'standard_income_bins'
             determines how the columns in resulting Pandas DataFrame are sorted
-
-        income_measure : String object
-            options for input: 'expanded_income' or 'c00100'(AGI)
-            specifies statistic used to place filing units in bins or deciles
-
-        result_type : String object
-            options for input: 'weighted_sum' or 'weighted_avg';
-            determines how the table statistices are computed
 
         Return and typical usage
         ------------------------
-        dist1, dist2 = calc1.distribution_tables(calc2)
+        dist1, dist2 = calc1.distribution_tables(calc2, 'weighted_deciles')
         OR
-        dist1, _ = calc1.distribution_tables(None)
+        dist1, _ = calc1.distribution_tables(None, 'weighted_deciles')
         (where calc1 is a baseline Calculator object
         and calc2 is a reform Calculator object).
         Each of the dist1 and optional dist2 is a distribution table as a
@@ -451,65 +463,52 @@ class Calculator(object):
               specified income_measure.
         """
         # nested function used only by this method
-        def have_same_income_measure(calc1, calc2, income_measure):
+        def have_same_income_measure(calc1, calc2):
             """
-            Return true if calc1 and calc2 contain the same income_measure;
+            Return true if calc1 and calc2 contain the same expanded_income;
             otherwise, return false.  (Note that "same" means nobody's
-            income_measure differs by more than one cent.)
+            expanded_income differs by more than one cent.)
             """
-            im1 = calc1.array(income_measure)
-            im2 = calc2.array(income_measure)
+            im1 = calc1.array('expanded_income')
+            im2 = calc2.array('expanded_income')
             return np.allclose(im1, im2, rtol=0.0, atol=0.01)
         # main logic of method
         assert calc is None or isinstance(calc, Calculator)
         assert (groupby == 'weighted_deciles' or
-                groupby == 'standard_income_bins' or
-                groupby == 'large_income_bins' or
-                groupby == 'small_income_bins')
-        assert (income_measure == 'expanded_income' or
-                income_measure == 'c00100')
-        assert (result_type == 'weighted_sum' or
-                result_type == 'weighted_avg')
-        var_dataframe = self.dataframe(DIST_VARIABLES)
-        dt1 = create_distribution_table(var_dataframe,
-                                        groupby=groupby,
-                                        income_measure=income_measure,
-                                        result_type=result_type)
+                groupby == 'standard_income_bins')
+        if calc is not None:
+            assert np.allclose(self.array('s006'),
+                               calc.array('s006'))  # check rows in same order
+        var_dataframe = self.distribution_table_dataframe()
+        imeasure = 'expanded_income'
+        dt1 = create_distribution_table(var_dataframe, groupby, imeasure)
         del var_dataframe
         if calc is None:
             dt2 = None
         else:
             assert calc.current_year == self.current_year
             assert calc.array_len == self.array_len
-            if income_measure == 'expanded_income':
-                assert np.allclose(self.consump_benval_params(),
-                                   calc.consump_benval_params())
-            var_dataframe = calc.dataframe(DIST_VARIABLES)
-            if have_same_income_measure(self, calc, income_measure):
-                imeasure = income_measure
+            assert np.allclose(self.consump_benval_params(),
+                               calc.consump_benval_params())
+            var_dataframe = calc.distribution_table_dataframe()
+            if have_same_income_measure(self, calc):
+                imeasure = 'expanded_income'
             else:
-                imeasure = income_measure + '_baseline'
-                var_dataframe[imeasure] = self.array(income_measure)
-            dt2 = create_distribution_table(var_dataframe,
-                                            groupby=groupby,
-                                            income_measure=imeasure,
-                                            result_type=result_type)
+                imeasure = 'expanded_income_baseline'
+                var_dataframe[imeasure] = self.array('expanded_income')
+            dt2 = create_distribution_table(var_dataframe, groupby, imeasure)
             del var_dataframe
-        return dt1, dt2
+        return (dt1, dt2)
 
-    def difference_table(self, calc,
-                         groupby='weighted_deciles',
-                         income_measure='expanded_income',
-                         tax_to_diff='combined'):
+    def difference_table(self, calc, groupby, tax_to_diff):
         """
-        Get results from self and calc, sort them based on groupby using
-        income_measure, and return tax-difference table as a Pandas dataframe.
+        Get results from self and calc, sort them by expanded_income into
+        table rows defined by groupby, compute grouped statistics, and
+        return tax-difference table as a Pandas dataframe.
         This method leaves the Calculator objects unchanged.
         Note that the returned tables have consistent income groups (based
-        on the self income_measure) even though the baseline income_measure
-        in self and the income_measure in calc are different.
-        Note that filing units are put into groupby categories using the
-        specified income_measure in the baseline (self) situation.
+        on the self expanded_income) even though the baseline expanded_income
+        in self and the reform expanded_income in calc are different.
 
         Parameters
         ----------
@@ -517,13 +516,8 @@ class Calculator(object):
             calc represents the reform while self represents the baseline
 
         groupby : String object
-            options for input: 'weighted_deciles', 'standard_income_bins',
-                               'large_income_bins', 'small_income_bins';
+            options for input: 'weighted_deciles', 'standard_income_bins'
             determines how the columns in resulting Pandas DataFrame are sorted
-
-        income_measure : String object
-            options for input: 'expanded_income' or 'c00100'(AGI)
-            specifies statistic used to place filing units in bins or deciles
 
         tax_to_diff : String object
             options for input: 'iitax', 'payrolltax', 'combined'
@@ -531,7 +525,7 @@ class Calculator(object):
 
         Returns and typical usage
         -------------------------
-        diff = calc1.difference_table(calc2)
+        diff = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
         (where calc1 is a baseline Calculator object
         and calc2 is a reform Calculator object).
         The returned diff is a difference table as a Pandas DataFrame
@@ -550,16 +544,13 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
-        if income_measure == 'expanded_income':
-            assert np.allclose(self.consump_benval_params(),
-                               calc.consump_benval_params())
+        assert np.allclose(self.consump_benval_params(),
+                           calc.consump_benval_params())
         self_var_dataframe = self.dataframe(DIFF_VARIABLES)
         calc_var_dataframe = calc.dataframe(DIFF_VARIABLES)
         diff = create_difference_table(self_var_dataframe,
                                        calc_var_dataframe,
-                                       groupby=groupby,
-                                       income_measure=income_measure,
-                                       tax_to_diff=tax_to_diff)
+                                       groupby, tax_to_diff)
         del self_var_dataframe
         del calc_var_dataframe
         return diff
@@ -1103,10 +1094,7 @@ class Calculator(object):
         assert isinstance(calc, Calculator)
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
-        dt1, dt2 = self.distribution_tables(calc,
-                                            groupby='weighted_deciles',
-                                            income_measure='expanded_income',
-                                            result_type='weighted_sum')
+        dt1, dt2 = self.distribution_tables(calc, 'weighted_deciles')
         # construct data for graph
         data = dec_graph_data(
             dt1, dt2, year=self.current_year,
@@ -1375,14 +1363,14 @@ class Calculator(object):
             assert isinstance(policy_dicts, list)
             base = clp
             base.implement_reform(params['policy'])
-            assert not base.reform_errors
+            assert not base.parameter_errors
             for policy_dict in policy_dicts:
                 assert isinstance(policy_dict, dict)
                 doc += 'Policy Reform Parameter Values by Year:\n'
                 years = sorted(policy_dict.keys())
                 doc += param_doc(years, policy_dict, base)
                 base.implement_reform(policy_dict)
-                assert not base.reform_errors
+                assert not base.parameter_errors
         return doc
 
     def ce_aftertax_income(self, calc,
@@ -1461,15 +1449,15 @@ class Calculator(object):
         StdDed(self.__policy, self.__records)
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
-        std = copy.deepcopy(self.array('standard'))
-        item = copy.deepcopy(self.array('c04470'))
-        item_no_limit = copy.deepcopy(self.array('c21060'))
-        item_phaseout = copy.deepcopy(self.array('c21040'))
+        std = self.array('standard').copy()
+        item = self.array('c04470').copy()
+        item_no_limit = self.array('c21060').copy()
+        item_phaseout = self.array('c21040').copy()
         self.zeroarray('c04470')
         self.zeroarray('c21060')
         self.zeroarray('c21040')
         self._taxinc_to_amt()
-        std_taxes = copy.deepcopy(self.array('c05800'))
+        std_taxes = self.array('c05800').copy()
         # Set standard deduction to zero, calculate taxes w/o
         # standard deduction, and store AMT + Regular Tax
         self.zeroarray('standard')
@@ -1477,7 +1465,7 @@ class Calculator(object):
         self.array('c21040', item_phaseout)
         self.array('c04470', item)
         self._taxinc_to_amt()
-        item_taxes = copy.deepcopy(self.array('c05800'))
+        item_taxes = self.array('c05800').copy()
         # Replace standard deduction with zero where the taxpayer
         # would be better off itemizing
         self.array('standard', np.where(item_taxes < std_taxes,
