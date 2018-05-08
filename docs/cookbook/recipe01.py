@@ -34,10 +34,11 @@ policy2.implement_reform(reform2['policy'], print_warnings=False)
 cyr = 2018
 
 # specify Calculator objects using policy1 and policy2 and calculate for cyr
-calc1 = Calculator(policy=policy1, records=Records.cps_constructor())
+recs = Records.cps_constructor()
+calc1 = Calculator(policy=policy1, records=recs)
 calc1.advance_to_year(cyr)
 calc1.calc_all()
-calc2 = Calculator(policy=policy2, records=Records.cps_constructor())
+calc2 = Calculator(policy=policy2, records=recs)
 calc2.advance_to_year(cyr)
 calc2.calc_all()
 
