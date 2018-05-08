@@ -1,50 +1,23 @@
-//Parameters for economic responses to tax policy
-//This json serves as a baseline for the implementation of the economic responses of individuals and the overall economy to tax reforms.
-//User documentation can be found at http://open-source-economics.github.io/Tax-Calculator/#params
-//More specific definitions and details on implementations can be found in *.json and *.py files.
-//  consumption
-//    Description: The marginal propensity to consume tax-deductible goods.
-//    Source file: consumption.json
-//    Implemented in Consumption.response()
-//    Applies to:
-//      - e17500, Sch A: Medical and dental expenses
-//      - e18400, Sch A: State and local income/sales taxes
-//      - e19800, Sch A: Gifts to charity: cash/check contributions
-//      - e20400, Sch A: Miscellaneous deductions subject to 2% AGI limitation
-//  behavior
-//    Description: The behavioral response to tax rates. Used in partial equilibrium dynamic analysis.
-//    Source file: behavior.json
-//    Implemented in Behavior.response()
-//    Applies to:
-//      - _BE_inc, Income elasticity of taxable income (response of taxable income to changes in after-tax income)
-//      - _BE_sub, Substitution elasticity of taxable income (response of taxable income to changes in marginal tax rates)
-//      - _BE_cg, Elasticity of long-term capital gains (response of long-term gains to changes in marginal tax rates on capital gains)
-//      - _BE_charity, Elasticity of charitable contributions (response by AGI level to the marginal subsidy on charitable giving)
-//  growdiff
-//    Description: Additive difference from growth rate projection to each parameter type.
-//        Can be applied to both baseline and reform (growdiff_baseline) or just to the reform (growdiff_reform)
-//    Source file: growdiff.json
-//    Implemented in Growdiff.apply_to()
-//    Applies to:
-//      - ABOOK, foreign tax credit and general business credit
-//      - ACGNS, capital gains and losses
-//      - ACPIM, medical expenses and contributions
-//      - ACPIU, consumer price index
-//      - ADIVS, dividends
-//      - AINTS, interest income
-//      - AIPD, interest paid
-//      - ASCHCI, profit from sole proprietorship
-//      - ASCHCL, loss from sole proprietorship
-//      - ASCHEI, Sch. E profit
-//      - ASCHEL, Sch. E loss
-//      - ASCHF, farm net income/loss
-//      - ASOCSEC, Social Security benefits
-//      - ATXPY, all miscellaneous categories
-//      - AUCOMP, Unemployment compensation
-//      - AWAGE, wage and salary income
-
+// Parameters used to specify economic responses to tax policy.
+//
+// This JSON file serves as a template for implementating the economic
+// responses of individuals and of the overall economy to a tax reform.
+//
+// Detailed documentation on these parameters can be found at
+// <http://open-source-economics.github.io/Tax-Calculator/#params>.
+//
+// NOTE that behavior responses are incompatible with growdiff_response,
+// and therefore, both should never be specified in the same run.
 {
     "consumption": {
+        "_BEN_housing_value": {"2017": [1.0]},
+        "_BEN_snap_value": {"2017": [1.0]},
+        "_BEN_tanf_value": {"2017": [1.0]},
+        "_BEN_vet_value": {"2017": [1.0]},
+        "_BEN_wic_value": {"2017": [1.0]},
+        "_BEN_mcare_value": {"2017": [1.0]},
+        "_BEN_mcaid_value": {"2017": [1.0]},
+        "_BEN_other_value": {"2017": [1.0]},
         "_MPC_e17500": {"2017": [0.0]},
         "_MPC_e18400": {"2017": [0.0]},
         "_MPC_e19800": {"2017": [0.0]},
