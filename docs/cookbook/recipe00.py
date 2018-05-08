@@ -55,7 +55,7 @@ clp_diagnostic_table = calc1.diagnostic_table(1)
 ref_diagnostic_table = calc2.diagnostic_table(1)
 
 # income-tax distribution for cyr with CLP and REF results side-by-side
-dist_table1, dist_table2 = calc1.distribution_tables(calc2)
+dist_table1, dist_table2 = calc1.distribution_tables(calc2, 'weighted_deciles')
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
 dist_extract = pd.DataFrame()
@@ -66,7 +66,7 @@ dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income'] * 1e-9
 dist_extract['aftertax_inc2($b)'] = dist_table2['aftertax_income'] * 1e-9
 
 # income-tax difference table by expanded-income decile for cyr
-diff_table = calc1.difference_table(calc2, tax_to_diff='iitax')
+diff_table = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
 dif_colnames = ['count', 'tot_change', 'mean',

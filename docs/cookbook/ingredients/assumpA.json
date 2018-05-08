@@ -1,0 +1,15 @@
+// NEVER SPECIFY BOTH behavior AND growdiff_response IN SAME RUN
+{
+    "consumption": {
+    },
+    "behavior": {
+	// specify non-zero substitution elasticity of taxable income,
+        // which is response of taxable income to change in marginal tax rate
+	"_BE_sub": {"2013": [0.25]}
+    },
+    "growdiff_baseline": {
+    },
+    "growdiff_response": {
+        // MUST BE EMPTY BECAUSE ASSUMING BEHAVIORAL RESPONSE
+    }
+}
