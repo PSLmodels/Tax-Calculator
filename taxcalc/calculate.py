@@ -1177,7 +1177,7 @@ class Calculator(object):
         # raise error if specifying both behavior and growdiff_response
         if behv_dict and gdiff_resp_dict:
             msg = 'both behavior and growdiff_response are specified'
-            raise ValueError(msg)
+            raise ValueError('ERROR: ' + msg + '\n')
         # finally construct and return single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict

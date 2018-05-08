@@ -298,9 +298,8 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', Growdiff()),
     (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', Growdiff())
 ])
-def test_ctor_init_errors(reformfile0, reformfilex1, reformfilex2,
-                          errorreformfile, assumpfile0,
-                          year, base, ref, asm, gdr):
+def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
+                     assumpfile0, year, base, ref, asm, gdr):
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
