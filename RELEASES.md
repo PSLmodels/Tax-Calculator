@@ -13,6 +13,9 @@ for a complete commit history.
 - Simplify table-creation Calculator methods and related utility functions
   [[#1984](https://github.com/open-source-economics/Tax-Calculator/pull/1984)
   by Martin Holmer]
+- Add validity checking for non-behavior assumption parameters
+  [[#1992](https://github.com/open-source-economics/Tax-Calculator/pull/1992)
+  by Martin Holmer]
 
 **New Features**
 - Streamline logic that prevents disclosure of details of PUF filing units
@@ -25,6 +28,9 @@ for a complete commit history.
   by Martin Holmer]
 - Update CODING and TESTING documentation to reflect recommended usage of `pycodestyle` in place of `pep8`
   [[#1989](https://github.com/open-source-economics/Tax-Calculator/pull/1989)
+  by Martin Holmer]
+- Add Tax-Calculator Cookbook recipe using Behavior class and its static `response` method
+  [[#1993](https://github.com/open-source-economics/Tax-Calculator/pull/1993)
   by Martin Holmer]
 
 **Bug Fixes**
