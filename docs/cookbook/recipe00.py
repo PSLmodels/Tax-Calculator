@@ -1,7 +1,7 @@
 from __future__ import print_function  # necessary only if using Python 2.7
 from taxcalc import *
 
-# use publicly-available CPS input file
+# use publicly-available CPS input file including benefits
 recs = Records.cps_constructor()
 # NOTE: if you have access to the restricted-use IRS-SOI PUF-based input file
 #       and you have that file (named 'puf.csv') located in the directory
