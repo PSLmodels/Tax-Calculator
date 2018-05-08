@@ -294,6 +294,7 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     (2000, 'reformfile0', 'reformfile0', None, list()),
     (2099, 'reformfile0', 'reformfile0', None, Growdiff()),
     (2020, 'errorreformfile', 'errorreformfile', None, Growdiff()),
+    (2020, 'reformfile0', 'reformfile0', 'assumpfile0', 'has_gdiff_response'),
     (2020, 'reformfile0', 'reformfile0', 'assumpfile0', Growdiff()),
     (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', Growdiff()),
     (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', Growdiff())
@@ -327,6 +328,11 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
         assump = assumpfile0.name
     else:
         assump = asm
+    if gdr == 'has_gdiff_response':
+        gdiff_resp = Growdiff()
+        gdiff_resp.update_growdiff({2015: {"_ABOOK": [-0.01]}})
+    else:
+        gdiff_resp = gdr
     tcio = TaxCalcIO(input_data=recdf,
                      tax_year=year,
                      baseline=baseline,
@@ -334,10 +340,10 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
                      assump=assump)
     assert not tcio.errmsg
     # test TaxCalcIO.init method
-    if asm is None:
+    if asm is None or gdr == 'has_gdiff_response':
         tcio.init(input_data=recdf, tax_year=year,
                   baseline=baseline, reform=reform, assump=assump,
-                  growdiff_response=gdr,
+                  growdiff_response=gdiff_resp,
                   aging_input_data=False,
                   exact_calculations=True)
         assert tcio.errmsg
