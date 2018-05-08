@@ -4,6 +4,35 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-05-?? Release 0.20.0
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Simplify table-creation Calculator methods and related utility functions
+  [[#1984](https://github.com/open-source-economics/Tax-Calculator/pull/1984)
+  by Martin Holmer]
+
+**New Features**
+- Streamline logic that prevents disclosure of details of PUF filing units
+  [[#1979](https://github.com/open-source-economics/Tax-Calculator/pull/1979)
+  by Martin Holmer]
+- Add option to not include benefits in a Records object that uses CPS data
+  [[#1985](https://github.com/open-source-economics/Tax-Calculator/pull/1985)
+  and
+  [[#1988](https://github.com/open-source-economics/Tax-Calculator/pull/1988)
+  by Martin Holmer]
+- Update CODING and TESTING documentation to reflect recommended usage of `pycodestyle` in place of `pep8`
+  [[#1989](https://github.com/open-source-economics/Tax-Calculator/pull/1989)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Fix mishandling of boolean policy parameters
+  [[#1982](https://github.com/open-source-economics/Tax-Calculator/pull/1982)
+  by Hank Doupe]
+
+
 2018-04-19 Release 0.19.0
 -------------------------
 (last merged pull request is
