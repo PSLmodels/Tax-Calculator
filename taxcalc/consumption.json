@@ -14,7 +14,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_MPC_e18400": {
@@ -33,7 +34,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_MPC_e19800": {
@@ -52,7 +54,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_MPC_e20400": {
@@ -71,7 +74,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [0.0]
+        "value": [0.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_housing_value": {
@@ -89,7 +93,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_snap_value": {
@@ -107,7 +112,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_tanf_value": {
@@ -125,7 +131,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_vet_value": {
@@ -143,7 +150,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_wic_value": {
@@ -161,7 +169,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_mcare_value": {
@@ -179,7 +188,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_mcaid_value": {
@@ -197,7 +207,8 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     },
 
     "_BEN_other_value": {
@@ -215,6 +226,7 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [1.0]
+        "value": [1.0],
+        "range": {"min": 0, "max": 1}
     }
 }

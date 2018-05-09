@@ -59,26 +59,56 @@ class Consumption(ParametersBase):
         if num_years < 1:
             raise ValueError('num_years < 1 in Consumption ctor')
         self.initialize(start_year, num_years)
+        self.parameter_errors = ''
 
-    def update_consumption(self, revisions):
+    def update_consumption(self, revision):
         """
-        Update consumption for given revisions, a dictionary consisting
+        Update consumption for given revision, a dictionary consisting
         of one or more year:modification dictionaries.
         For example: {2014: {'_MPC_xxx': [0.2, 0.1]}}
 
-        Note that this method uses the specified revisions to update the
+        Note that this method uses the specified revision to update the
         default MPC parameter values and the default BEN parameter values,
         so use this method just once rather than calling it sequentially
         in an attempt to update the parameters in several steps.
         """
+        if not isinstance(revision, dict):
+            raise ValueError('ERROR: revision is not a dictionary')
+        if not revision:
+            return  # no revision to update
         precall_current_year = self.current_year
         self.set_default_vals()
-        # specify revisions ordered by year
-        revision_years = sorted(list(revisions.keys()))
+        # check that revisions keys are integers
+        revision_years = sorted(list(revision.keys()))
+        for year in revision_years:
+            if not isinstance(year, int):
+                msg = 'ERROR: {} KEY {}'
+                details = 'KEY in revision is not an integer calendar year'
+                raise ValueError(msg.format(year, details))
+        # check range of revision_years
+        first_revision_year = min(revision_years)
+        if first_revision_year < self.start_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
+            raise ValueError(msg.format(first_revision_year, self.start_year))
+        last_revision_year = max(revision_years)
+        if last_revision_year > self.end_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
+            raise ValueError(msg.format(last_revision_year, self.end_year))
+        # validate revision parameter names and types
+        self._validate_assump_parameter_names_types(revision)
+        if self.parameter_errors:
+            raise ValueError(self.parameter_errors)
+        # implement the revision year by year
+        revision_parameters = set()
         for year in revision_years:
             self.set_year(year)
-            self._update({year: revisions[year]})
+            revision_parameters.update(revision[year].keys())
+            self._update({year: revision[year]})
         self.set_year(precall_current_year)
+        # validate revision parameter values
+        self._validate_assump_parameter_values(revision_parameters)
+        if self.parameter_errors:
+            raise ValueError('\n' + self.parameter_errors)
 
     RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
     BENEFIT_VARS = set(['housing', 'snap', 'tanf', 'vet', 'wic',

@@ -50,6 +50,21 @@ def test_update_and_apply_growdiff():
     assert_allclose(wgr_pst, expected_wgr_pst, atol=1.0e-9, rtol=0.0)
 
 
+def test_incorrect_update_growdiff():
+    with pytest.raises(ValueError):
+        Growdiff().update_growdiff([])
+    with pytest.raises(ValueError):
+        Growdiff().update_growdiff({'xyz': {'_ABOOK': [0.02]}})
+    with pytest.raises(ValueError):
+        Growdiff().update_growdiff({2012: {'_ABOOK': [0.02]}})
+    with pytest.raises(ValueError):
+        Growdiff().update_growdiff({2052: {'_ABOOK': [0.02]}})
+    with pytest.raises(ValueError):
+        Growdiff().update_growdiff({2014: {'_MPC_exxxxx': [0.02]}})
+    with pytest.raises(ValueError):
+        Growdiff().update_growdiff({2014: {'_ABOOK': [-1.1]}})
+
+
 def test_has_any_response():
     syr = 2014
     gdiff = Growdiff(start_year=syr)
