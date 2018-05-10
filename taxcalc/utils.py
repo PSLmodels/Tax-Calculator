@@ -1670,10 +1670,12 @@ def charitable_giving_response(quantity,
     aftertax_price1: numpy array
         marginal aftertax price of charitable giving under baseline policy
         (function forces price to be in [0.01, 1.0] range)
+        (note this is NOT an array of marginal tax rates)
 
     aftertax_price2: numpy array
         marginal aftertax price of charitable giving under reform policy
         (function forces price to be in [0.01, 1.0] range)
+        (note this is NOT an array of marginal tax rates)
 
     income_elasticity: float
         coefficient of the percentage change in aftertax income in the
