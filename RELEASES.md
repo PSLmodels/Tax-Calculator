@@ -16,6 +16,9 @@ for a complete commit history.
 - Add validity checking for non-behavior assumption parameters
   [[#1992](https://github.com/open-source-economics/Tax-Calculator/pull/1992)
   by Martin Holmer]
+- Add `charitable_giving_response` utility function and remove obsolete charity logic from Behavior class
+  [[#1995](https://github.com/open-source-economics/Tax-Calculator/pull/1995)
+  by Martin Holmer]
 
 **New Features**
 - Streamline logic that prevents disclosure of details of PUF filing units
@@ -31,6 +34,9 @@ for a complete commit history.
   by Martin Holmer]
 - Add Tax-Calculator Cookbook recipe using Behavior class and its static `response` method
   [[#1993](https://github.com/open-source-economics/Tax-Calculator/pull/1993)
+  by Martin Holmer]
+- Add Tax-Calculator Cookbook recipe showing how to create a custom table
+  [[#1994](https://github.com/open-source-economics/Tax-Calculator/pull/1994)
   by Martin Holmer]
 
 **Bug Fixes**
