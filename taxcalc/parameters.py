@@ -202,17 +202,11 @@ class ParametersBase(object):
                     int_param_type = self._vals[name]['integer_value']
                     assert isinstance(revision[year][name], list)
                     pvalue = revision[year][name][0]
-                    if isinstance(pvalue, list):
-                        scalar = False  # parameter value is a list
-                    else:
-                        scalar = True  # parameter value is a scalar
-                        pvalue = [pvalue]  # make scalar a single-item list
+                    assert not isinstance(pvalue, list)
+                    pvalue = [pvalue]  # make scalar a single-item list
                     # pylint: disable=consider-using-enumerate
                     for idx in range(0, len(pvalue)):
-                        if scalar:
-                            pname = name
-                        else:
-                            pname = '{}_{}'.format(name, idx)
+                        pname = name
                         pval = pvalue[idx]
                         # pylint: disable=unidiomatic-typecheck
                         pval_is_bool = type(pval) == bool
@@ -254,11 +248,7 @@ class ParametersBase(object):
             for vop, vval in self._vals[pname]['range'].items():
                 vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
-                assert len(pvalue.shape) <= 2
-                if len(pvalue.shape) == 2:
-                    scalar = False  # parameter value is a list
-                else:
-                    scalar = True  # parameter value is a scalar
+                assert len(pvalue.shape) == 1  # parameter value is a scalar
                 for idx in np.ndindex(pvalue.shape):
                     out_of_range = False
                     if vop == 'min' and pvalue[idx] < vvalue[idx]:
@@ -268,10 +258,7 @@ class ParametersBase(object):
                         out_of_range = True
                         msg = '{} {} value {} > max value {}'
                     if out_of_range:
-                        if scalar:
-                            name = pname
-                        else:
-                            name = '{}_{}'.format(pname, idx[1])
+                        name = pname
                         self.parameter_errors += (
                             'ERROR: ' + msg.format(idx[0] + self.start_year,
                                                    name,

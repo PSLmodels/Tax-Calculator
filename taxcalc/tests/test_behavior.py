@@ -35,8 +35,7 @@ def test_behavioral_response_calculator(cps_subsample):
         Behavior._mtr12(calc1, calc2, mtr_of='e00200p', tax_type='nonsense')
     # vary substitution and income effects in Behavior object
     behavior0 = {year: {'_BE_sub': [0.0],
-                        '_BE_cg': [0.0],
-                        '_BE_charity': [[0.0, 0.0, 0.0]]}}
+                        '_BE_cg': [0.0]}}
     behv0 = Behavior()
     behv0.update_behavior(behavior0)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv0)
@@ -73,27 +72,19 @@ def test_behavioral_response_calculator(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec, behavior=behv4)
     assert calc2.behavior_has_response() is True
     calc2_behv4 = Behavior.response(calc1, calc2)
-    behavior5 = {year: {'_BE_charity': [[-0.5, -0.5, -0.5]]}}
-    behv5 = Behavior()
-    behv5.update_behavior(behavior5)
-    calc2 = Calculator(policy=pol, records=rec, behavior=behv5)
-    assert calc2.behavior_has_response() is True
-    calc2_behv5 = Behavior.response(calc1, calc2)
     # check that total income tax liability differs across the
-    # six sets of behavioral-response elasticities
+    # five sets of behavioral-response elasticities
     assert (calc2_behv0.weighted_total('iitax') !=
             calc2_behv1.weighted_total('iitax') !=
             calc2_behv2.weighted_total('iitax') !=
             calc2_behv3.weighted_total('iitax') !=
-            calc2_behv4.weighted_total('iitax') !=
-            calc2_behv5.weighted_total('iitax'))
+            calc2_behv4.weighted_total('iitax'))
 
 
 def test_correct_update_behavior():
     beh = Behavior(start_year=2013)
     beh.update_behavior({2014: {'_BE_sub': [0.5]},
-                         2015: {'_BE_cg': [-1.2]},
-                         2016: {'_BE_charity': [[-0.5, -0.5, -0.5]]}})
+                         2015: {'_BE_cg': [-1.2]}})
     should_be = np.full((Behavior.DEFAULT_NUM_YEARS,), 0.5)
     should_be[0] = 0.0
     assert np.allclose(beh._BE_sub, should_be, rtol=0.0)
@@ -105,7 +96,6 @@ def test_correct_update_behavior():
     assert beh.BE_sub == 0.5
     assert beh.BE_inc == 0.0
     assert beh.BE_cg == -1.2
-    assert beh.BE_charity.tolist() == [-0.5, -0.5, -0.5]
 
 
 def test_incorrect_update_behavior():
@@ -117,8 +107,6 @@ def test_incorrect_update_behavior():
         Behavior().update_behavior({2013: {'_BE_sub': [-0.2]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2017: {'_BE_subinc_wrt_earnings': [2]}})
-    with pytest.raises(ValueError):
-        Behavior().update_behavior({2013: {'_BE_charity': [[0.2, -0.2, 0.2]]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_cg': [+0.8]}})
     with pytest.raises(ValueError):
@@ -151,13 +139,9 @@ def test_validate_param_names_types_errors():
     with pytest.raises(ValueError):
         behv1.update_behavior(specs1)
     behv2 = Behavior()
-    specs2 = {2020: {'_BE_charity': ['not-a-number']}}
+    specs2 = {2020: {'_BE_subinc_wrt_earnings': [0.3]}}
     with pytest.raises(ValueError):
         behv2.update_behavior(specs2)
-    behv3 = Behavior()
-    specs3 = {2020: {'_BE_subinc_wrt_earnings': [0.3]}}
-    with pytest.raises(ValueError):
-        behv3.update_behavior(specs3)
 
 
 def test_validate_param_values_errors():

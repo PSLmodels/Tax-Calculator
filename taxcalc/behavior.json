@@ -73,24 +73,5 @@
         "integer_value": false,
         "value": [0.0],
         "range": {"min": -9e99, "max": 0.0}
-    },
-
-    "_BE_charity": {
-        "long_name": "Elasticity of charitable contributions",
-        "description": "Defined as proportional change in cash and non-cash charitable contributions divided by proportional change in the after-tax price of charitable contributions caused by the reform. Must be zero or negative.",
-        "section_1": "",
-        "section_2": "",
-        "notes": "",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "start_year": 2013,
-        "cpi_inflatable": false,
-        "cpi_inflated": false,
-        "col_var": "c00100",
-        "col_label": ["AGI < 50k", "50k <= AGI < 100k", "100k <= AGI"],
-        "boolean_value": false,
-        "integer_value": false,
-        "value": [[0.0, 0.0, 0.0]],
-        "range": {"min": -9e99, "max": 0.0}
     }
 }
