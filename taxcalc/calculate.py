@@ -1116,41 +1116,28 @@ class Calculator(object):
     def read_json_param_objects(reform, assump):
         """
         Read JSON reform and assump objects and
-        return a single dictionary containing six key:value pairs:
-        'policy':value, 'consumption':value, 'behavior':value,
-        'growdiff_baseline':value, 'growdiff_response':value, and
-        'growmodel':value.  The value of the first five keys is a
-        dictionary; the value of the sixth key None if the growmodel
-        is not active and a dictionary if the growmodel is active.
+        return a single dictionary containing six key:dict pairs:
+        'policy':dict, 'consumption':dict, 'behavior':dict,
+        'growdiff_baseline':dict, 'growdiff_response':dict, and
+        'growmod':dict.
 
-        Note that either of the first two function parameters may be None.
+        Note that either of the two function arguments can be None.
         If reform is None, the dict in the 'policy':dict pair is empty.
-        If assump is None, the dict in the 'consumption':dict pair,
-        in the 'behavior':dict pair, in the 'growdiff_baseline':dict pair,
-        and in the 'growdiff_response':dict pair, are all empty, and the
-        sixth pair is 'growmodel':None.
+        If assump is None, the dict in the all the key:dict pairs is empty.
 
-        Also note that either of the first two parameters can be strings
+        Also note that either of the two function arguments can be strings
         containing a valid JSON string (rather than a filename),
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
 
         The reform file contents or JSON string must be like this:
         {"policy": {...}}
-        and the assump file contents or JSON string must be like this
-        when the growmodel is inactive:
-        {"consumption": {...},
-         "behavior": {...},
-         "growdiff_baseline": {...},
-         "growdiff_response": {...}
-        }
-        or like this when the growmodel is active:
+        and the assump file contents or JSON string must be like this:
         {"consumption": {...},
          "behavior": {...},
          "growdiff_baseline": {...},
          "growdiff_response": {...},
-         "growmodel": {...}
-        }
+         "growmod": {...}}
 
         The returned dictionary contains parameter lists (not arrays).
         """
@@ -1160,7 +1147,7 @@ class Calculator(object):
             behv_dict = dict()
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
-            growmodel_dict = None
+            growmod_dict = dict()
         elif isinstance(assump, six.string_types):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
@@ -1170,7 +1157,7 @@ class Calculator(object):
              behv_dict,
              gdiff_base_dict,
              gdiff_resp_dict,
-             growmodel_dict) = Calculator._read_json_econ_assump_text(txt)
+             growmod_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
             raise ValueError('assump is neither None nor string')
         # next process first reform parameter
@@ -1188,6 +1175,10 @@ class Calculator(object):
             )
         else:
             raise ValueError('reform is neither None nor string')
+        # raise error if specifying both behavior and growdiff_response
+        if behv_dict and gdiff_resp_dict:
+            msg = 'both behavior and growdiff_response are specified'
+            raise ValueError('ERROR: ' + msg + '\n')
         # finally construct and return single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict
@@ -1195,13 +1186,13 @@ class Calculator(object):
         param_dict['behavior'] = behv_dict
         param_dict['growdiff_baseline'] = gdiff_base_dict
         param_dict['growdiff_response'] = gdiff_resp_dict
-        param_dict['growmodel'] = growmodel_dict
+        param_dict['growmod'] = growmod_dict
         return param_dict
 
     REQUIRED_REFORM_KEYS = set(['policy'])
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
-                                'growdiff_baseline', 'growdiff_response'])
-    OPTIONAL_ASSUMP_KEYS = set(['growmodel'])
+                                'growdiff_baseline', 'growdiff_response',
+                                'growmod'])
 
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
@@ -1541,8 +1532,7 @@ class Calculator(object):
                 msg = 'key "{}" is not in policy reform file'
                 raise ValueError(msg.format(rkey))
         for rkey in actual_keys:
-            if rkey in (Calculator.REQUIRED_ASSUMP_KEYS |
-                        Calculator.OPTIONAL_ASSUMP_KEYS):
+            if rkey in Calculator.REQUIRED_ASSUMP_KEYS:
                 msg = 'key "{}" should be in economic assumption file'
                 raise ValueError(msg.format(rkey))
         # convert raw_dict['policy'] dictionary into prdict
@@ -1555,16 +1545,14 @@ class Calculator(object):
     @staticmethod
     def _read_json_econ_assump_text(text_string):
         """
-        Strip //-comments from text_string and return 4 dict based on the JSON.
+        Strip //-comments from text_string and return 5 dict based on the JSON.
 
-        Specified text is JSON with at least 4 high-level string:value pairs:
+        Specified text is JSON with at least 5 high-level string:value pairs:
         a "consumption": {...} pair,
         a "behavior": {...} pair,
-        a "growdiff_baseline": {...} pair, and
-        a "growdiff_response": {...} pair.
-        Specifying an optional fifth "growmodel": {...} pair indicates that
-        the growmodel is active; omitting this fifth pair indicates that the
-        growmodel is inactive.
+        a "growdiff_baseline": {...} pair,
+        a "growdiff_response": {...} pair, and
+        a "growmod": {...} pair.
 
         Other high-level pairs will be ignored by this method, except that
         a "policy" key will raise a ValueError.
@@ -1576,17 +1564,17 @@ class Calculator(object):
         that can be read by this method.
 
         Note that an example is shown in the ASSUMP_CONTENTS string in
-          tests/test_calculate.py file.
+        the tests/test_calculate.py file.
 
         Returned dictionaries (cons_dict, behv_dict, gdiff_baseline_dict,
-        gdiff_respose_dict, growmodel_dict) have integer years as primary
+        gdiff_respose_dict, growmod_dict) have integer years as primary
         keys and string parameters as secondary keys.
 
         These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the Behavior.update_behavior(behv_dict) method, or
         the Growdiff.update_growdiff(gdiff_dict) method, or
-        the GrowModel.update_growmodel(growmodel_dict) method.
+        the Growmod.update_growmod(growmod_dict) method.
         """
         # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
@@ -1627,13 +1615,10 @@ class Calculator(object):
         gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_response'
         gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        if 'growmodel' in actual_keys:
-            key = 'growmodel'
-            growmodel_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        else:
-            growmodel_dict = None
+        key = 'growmod'
+        growmod_dict = Calculator._convert_parameter_dict(raw_dict[key])
         return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict,
-                growmodel_dict)
+                growmod_dict)
 
     @staticmethod
     def _convert_parameter_dict(param_key_dict):
@@ -1644,7 +1629,7 @@ class Calculator(object):
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or
         the Growdiff.update_growdiff() method, or
-        the GrowModel.update_growmodel() method.
+        the Growmod.update_growmod() method.
 
         Specified input dictionary has string parameter primary keys and
         string years as secondary keys.

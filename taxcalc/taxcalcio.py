@@ -250,22 +250,23 @@ class TaxCalcIO(object):
         # remember parameters for reform documentation
         self.param_dict = paramdict
         self.policy_dicts = policydicts
-        # determine whether using growmodel
-        using_growmodel = paramdict['growmodel'] is not None
-        if using_growmodel:
+        # determine whether using growth model
+        using_growth_model = (paramdict['growmod'] and
+                              paramdict['growmod']['active'])
+        if using_growth_model:
             gd_response = Growdiff()
             gd_response.update_growdiff(paramdict['growdiff_response'])
             if gd_response.has_any_response():
                 msg = 'ASSUMP file cannot specify any "growdiff_response" '
-                msg += 'when ASSUMP file specifies use of "growmodel"'
+                msg += 'when ASSUMP file activates growth model via "growmod"'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Behavior object
         beh = Behavior()
         beh.update_behavior(paramdict['behavior'])
         self.behavior_has_any_response = beh.has_any_response()
-        if using_growmodel and self.behavior_has_any_response:
+        if using_growth_model and self.behavior_has_any_response:
             msg = 'ASSUMP file cannot specify any "behavior" '
-            msg += 'when ASSUMP file specifies use of "growmodel"'
+            msg += 'when ASSUMP file activates growth model via "growmod"'
             self.errmsg += 'ERROR: {}\n'.format(msg)
         # create gdiff_baseline object
         gdiff_baseline = Growdiff()
@@ -820,22 +821,11 @@ class TaxCalcIO(object):
         -------
         is_using: boolean
         """
-        # pylint: disable=no-else-return
-        if assump is None:
-            return False
-        elif isinstance(assump, six.string_types):
-            if os.path.isfile(assump):
-                with open(assump) as afile:
-                    assump_text = afile.read()
-                if '"growmodel"' in assump_text:
-                    pdict = Calculator.read_json_param_objects(None, assump)
-                    return bool(pdict['growmodel'] is not None)
-                else:
-                    return False
-            else:
-                return False
-        else:
-            return False
+        if assump is not None:
+            pdict = Calculator.read_json_param_objects(None, assump)
+            if pdict['growmod'] and pdict['growmod']['active']:
+                return True
+        return False
 
     @staticmethod
     def growmodel_analysis(input_data, tax_year, baseline, reform, assump,

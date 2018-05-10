@@ -57,20 +57,51 @@ class Growdiff(ParametersBase):
         if num_years < 1:
             raise ValueError('num_years < 1 in Growdiff ctor')
         self.initialize(start_year, num_years)
+        self.parameter_errors = ''
 
-    def update_growdiff(self, revisions):
+    def update_growdiff(self, revision):
         """
-        Update growdiff default values using specified revisions, which is
+        Update growdiff default values using specified revision, which is
         a dictionary containing one or more year:modification dictionaries.
         For example: {2014: {'_AWAGE': [0.01]}}.
         """
+        if not isinstance(revision, dict):
+            raise ValueError('ERROR: revision is not a dictionary')
+        if not revision:
+            return  # no revision to update
         precall_current_year = self.current_year
         self.set_default_vals()
-        revision_years = sorted(list(revisions.keys()))
+        # check that revisions keys are integers
+        revision_years = sorted(list(revision.keys()))
+        for year in revision_years:
+            if not isinstance(year, int):
+                msg = 'ERROR: {} KEY {}'
+                details = 'KEY in revision is not an integer calendar year'
+                raise ValueError(msg.format(year, details))
+        # check range of revision_years
+        first_revision_year = min(revision_years)
+        if first_revision_year < self.start_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
+            raise ValueError(msg.format(first_revision_year, self.start_year))
+        last_revision_year = max(revision_years)
+        if last_revision_year > self.end_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
+            raise ValueError(msg.format(last_revision_year, self.end_year))
+        # validate revision parameter names and types
+        self._validate_assump_parameter_names_types(revision)
+        if self.parameter_errors:
+            raise ValueError(self.parameter_errors)
+        # implement the revision year by year
+        revision_parameters = set()
         for year in revision_years:
             self.set_year(year)
-            self._update({year: revisions[year]})
+            revision_parameters.update(revision[year].keys())
+            self._update({year: revision[year]})
         self.set_year(precall_current_year)
+        # validate revision parameter values
+        self._validate_assump_parameter_values(revision_parameters)
+        if self.parameter_errors:
+            raise ValueError('\n' + self.parameter_errors)
 
     def has_any_response(self):
         """

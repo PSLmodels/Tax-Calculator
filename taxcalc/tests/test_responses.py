@@ -26,11 +26,12 @@ def test_response_json(tests_path):
         response_file = ('"consumption"' in jpf_text and
                          '"behavior"' in jpf_text and
                          '"growdiff_baseline"' in jpf_text and
-                         '"growdiff_response"' in jpf_text)
+                         '"growdiff_response"' in jpf_text and
+                         '"growmod"' in jpf_text)
         if response_file:
             # pylint: disable=protected-access
             (con, beh, gdiff_base, gdiff_resp,
-             growmod) = Calculator._read_json_econ_assump_text(jpf_text)
+             grow_mod) = Calculator._read_json_econ_assump_text(jpf_text)
             cons = Consumption()
             cons.update_consumption(con)
             behv = Behavior()
@@ -41,9 +42,8 @@ def test_response_json(tests_path):
             growdiff_response.update_growdiff(gdiff_resp)
             # TODO: activate commented-out code below
             """
-            if growmod is not None:
-                growmodel = GrowModel()
-                growmodel.update_growmodel(growmod)
+            growmod = Growmod()
+            growmod.update_growmod(grow_mod)
             """
         else:  # jpf_text is not a valid JSON response assumption file
             print('test-failing-filename: ' +
@@ -51,10 +51,10 @@ def test_response_json(tests_path):
             assert False
 
 
-def test_growmodel_json():
+def test_growmod_json():
     """
     Check dictionaries returned by Calculator._read_json_econ_assump_text(txt)
-    when txt includes a "growmodel":value pair.
+    when txt includes a "growmod":value pair.
     """
     txt = """
     {
@@ -62,7 +62,7 @@ def test_growmodel_json():
     "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
-    "growmodel": {}
+    "growmod": {}
     }
     """
     # pylint: disable=protected-access

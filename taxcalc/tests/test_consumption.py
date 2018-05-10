@@ -28,6 +28,7 @@ def test_validity_of_consumption_vars_set():
 
 def test_update_consumption():
     consump = Consumption(start_year=2013)
+    consump.update_consumption({})
     consump.update_consumption({2014: {'_MPC_e20400': [0.05],
                                        '_BEN_mcare_value': [0.75]},
                                 2015: {'_MPC_e20400': [0.06],
@@ -56,6 +57,21 @@ def test_update_consumption():
     assert consump.MPC_e17500 == 0.0
     assert consump.BEN_mcare_value == 0.80
     assert consump.BEN_snap_value == 1.0
+
+
+def test_incorrect_update_consumption():
+    with pytest.raises(ValueError):
+        Consumption().update_consumption([])
+    with pytest.raises(ValueError):
+        Consumption().update_consumption({'xyz': {'_MPC_e17500': [0.2]}})
+    with pytest.raises(ValueError):
+        Consumption().update_consumption({2012: {'_MPC_e17500': [0.2]}})
+    with pytest.raises(ValueError):
+        Consumption().update_consumption({2052: {'_MPC_e17500': [0.2]}})
+    with pytest.raises(ValueError):
+        Consumption().update_consumption({2014: {'_MPC_exxxxx': [0.2]}})
+    with pytest.raises(ValueError):
+        Consumption().update_consumption({2014: {'_MPC_e17500': [-0.1]}})
 
 
 def test_future_update_consumption():

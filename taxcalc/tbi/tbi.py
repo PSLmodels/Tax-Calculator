@@ -29,7 +29,7 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      proportional_change_in_gdp,
-                     Growdiff, Growfactors, Policy, Behavior)
+                     Growdiff, Growfactors, Policy, Behavior, Consumption)
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
@@ -41,30 +41,34 @@ def reform_warnings_errors(user_mods):
     The reform_warnings_errors function assumes user_mods is a dictionary
     returned by the Calculator.read_json_param_objects() function.
 
-    This function returns a dictionary containing two STR:STR pairs:
-    {'warnings': '<empty-or-message(s)>', 'errors': '<empty-or-message(s)>'}
-    In each pair the second string is empty if there are no messages.
-    Any returned messages are generated using current_law_policy.json
-    information on known policy parameter names and parameter value ranges.
-
-    Note that this function will return one or more error messages if
-    the user_mods['policy'] dictionary contains any unknown policy
-    parameter names or if any *_cpi parameters have values other than
-    True or False.  These situations prevent implementing the policy
-    reform specified in user_mods, and therefore, no range-related
-    warnings or errors will be returned in this case.
+    This function returns a dictionary containing five STR:STR subdictionaries,
+    where the dictionary keys are: 'policy', 'behavior', consumption',
+    'growdiff_baseline' and 'growdiff_response'; and the subdictionaries are:
+    {'warnings': '<empty-or-message(s)>', 'errors': '<empty-or-message(s)>'}.
+    Note that non-policy parameters have no warnings, so the 'warnings'
+    string for the non-policy parameters is always empty.
     """
     rtn_dict = {'policy': {'warnings': '', 'errors': ''},
-                'behavior': {'warnings': '', 'errors': ''}}
-    # create Growfactors object
+                'behavior': {'warnings': '', 'errors': ''},
+                'consumption': {'warnings': '', 'errors': ''},
+                'growdiff_baseline': {'warnings': '', 'errors': ''},
+                'growdiff_response': {'warnings': '', 'errors': ''}}
+    # create Growdiff objects
     gdiff_baseline = Growdiff()
-    gdiff_baseline.update_growdiff(user_mods['growdiff_baseline'])
+    try:
+        gdiff_baseline.update_growdiff(user_mods['growdiff_baseline'])
+    except ValueError as valerr_msg:
+        rtn_dict['growdiff_baseline']['errors'] = valerr_msg.__str__()
     gdiff_response = Growdiff()
-    gdiff_response.update_growdiff(user_mods['growdiff_response'])
+    try:
+        gdiff_response.update_growdiff(user_mods['growdiff_response'])
+    except ValueError as valerr_msg:
+        rtn_dict['growdiff_response']['errors'] = valerr_msg.__str__()
+    # create Growfactors object
     growfactors = Growfactors()
     gdiff_baseline.apply_to(growfactors)
     gdiff_response.apply_to(growfactors)
-    # create Policy object and implement reform
+    # create Policy object
     pol = Policy(gfactors=growfactors)
     try:
         pol.implement_reform(user_mods['policy'],
@@ -74,15 +78,19 @@ def reform_warnings_errors(user_mods):
         rtn_dict['policy']['errors'] = pol.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['policy']['errors'] = valerr_msg.__str__()
-    # create Behavior object and implement revisions
-    # Note that Behavior does not have a `parameter_warnings`
-    # attribute.
+    # create Behavior object
     behv = Behavior()
     try:
         behv.update_behavior(user_mods['behavior'])
-        rtn_dict['behavior']['errors'] = behv.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['behavior']['errors'] = valerr_msg.__str__()
+    # create Consumption object
+    consump = Consumption()
+    try:
+        consump.update_consumption(user_mods['consumption'])
+    except ValueError as valerr_msg:
+        rtn_dict['consumption']['errors'] = valerr_msg.__str__()
+    # return composite dictionary of warnings/errors
     return rtn_dict
 
 

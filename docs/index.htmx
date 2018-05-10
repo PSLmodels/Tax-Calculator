@@ -1205,7 +1205,8 @@ output variables that Tax-Calculator is programmed to calculate.</p>
 
 <p>This section contains documentation of several sets of parameters
 that characterize responses to a tax reform.  Consumption
-parameters are used to compute marginal tax rates.  Behavior
+parameters are used to compute marginal tax rates and to compute the
+consumption value of in-kind benefits.  Behavior
 parameters are used to compute changes in input variables caused by a
 tax reform in a partial-equilibrium setting.  Growdiff parameters are
 used to specify baseline differences and/or reform responses in the
@@ -1216,11 +1217,19 @@ those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
 dynamic response parameters control advanced features of
 Tax-Calculator, so understanding the
 <a href="https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc">source
-code</a> that uses them is essential.  Each default parameter value is
-zero and is projected into the future at that value, which implies no
+code</a> that uses them is essential.  Default response parameter values are
+zero and are projected into the future at that value, which implies no
 response to the reform.  Using the default no-reform-response
 assumption for all the response parameters generates a static analysis
-of the tax reform.</p>
+of the tax reform.  The benefit value consumption parameters have a
+default value of one, which implies the consumption value of the
+in-kind benefits is equal to the government cost of providing the
+benefits.</p>
+
+<p>Note that some of the response parameters are incompatible with
+each other, and therefore, cannot be used together.  The behavior
+parameters can not have non-zero values with specifying non-zero
+growdiff response parameters.</p>
 
 
 <h3>Section Contents</h3>
