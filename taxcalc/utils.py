@@ -1646,3 +1646,72 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
                 else:
                     return True
         return False
+
+
+def charitable_giving_response(quantity,
+                               price_elasticity,
+                               aftertax_price1,
+                               aftertax_price2,
+                               income_elasticity,
+                               aftertax_income1,
+                               aftertax_income2):
+    """
+    Calculate dollar change in quantity using a log-log response equation.
+
+    Parameters
+    ----------
+    quantity: numpy array
+        pre-response charitable giving
+
+    price_elasticity: float
+        coefficient of the percentage change in aftertax price of
+        charitable giving in the log-log response equation
+
+    aftertax_price1: numpy array
+        marginal aftertax price of charitable giving under baseline policy
+        (function forces price to be in [0.01, 1.0] range)
+        (note this is NOT an array of marginal tax rates)
+
+    aftertax_price2: numpy array
+        marginal aftertax price of charitable giving under reform policy
+        (function forces price to be in [0.01, 1.0] range)
+        (note this is NOT an array of marginal tax rates)
+
+    income_elasticity: float
+        coefficient of the percentage change in aftertax income in the
+        log-log response equation
+
+    aftertax_income1: numpy array
+        aftertax income under baseline policy
+        (function forces income to be in [1, inf] range)
+
+    aftertax_income2: numpy array
+        aftertax income under reform policy
+        (function forces income to be in [1, inf] range)
+
+    Returns
+    -------
+    response: numpy array
+        change in quantity calculated from log-log response equation
+    """
+    # pylint: disable=too-many-arguments
+    # compute price term in log-log response equation
+    if price_elasticity == 0.:
+        pch_price = np.zeros(quantity.shape)
+    else:
+        atp1 = np.where(aftertax_price1 < 0.01, 0.01,
+                        np.where(aftertax_price1 > 1.0, 1.0, aftertax_price1))
+        atp2 = np.where(aftertax_price2 < 0.01, 0.01,
+                        np.where(aftertax_price2 > 1.0, 1.0, aftertax_price2))
+        pch_price = atp2 / atp1 - 1.
+    # compute income term in log-log response equation
+    if income_elasticity == 0.:
+        pch_income = np.zeros(quantity.shape)
+    else:
+        ati1 = np.where(aftertax_income1 < 1.0, 1.0, aftertax_income1)
+        ati2 = np.where(aftertax_income2 < 1.0, 1.0, aftertax_income2)
+        pch_income = ati2 / ati1 - 1.
+    # compute response
+    pch_q = price_elasticity * pch_price + income_elasticity * pch_income
+    response = pch_q * quantity
+    return response
