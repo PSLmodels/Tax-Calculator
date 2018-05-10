@@ -885,8 +885,8 @@ def test_charitable_giving_response():
     quantity = np.array([1.0] * 10)
     res = charitable_giving_response(quantity,
                                      price_elasticity=0,
-                                     aftertax_price1=None, 
-                                     aftertax_price2=None, 
+                                     aftertax_price1=None,
+                                     aftertax_price2=None,
                                      income_elasticity=0,
                                      aftertax_income1=None,
                                      aftertax_income2=None)
@@ -894,8 +894,8 @@ def test_charitable_giving_response():
     one = np.ones(quantity.shape)
     res = charitable_giving_response(quantity,
                                      price_elasticity=-0.2,
-                                     aftertax_price1=one, 
-                                     aftertax_price2=one, 
+                                     aftertax_price1=one,
+                                     aftertax_price2=one,
                                      income_elasticity=0.1,
                                      aftertax_income1=one,
                                      aftertax_income2=(one + one))
