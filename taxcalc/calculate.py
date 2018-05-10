@@ -1120,7 +1120,7 @@ class Calculator(object):
         'policy':dict, 'consumption':dict, 'behavior':dict,
         'growdiff_baseline':dict and 'growdiff_response':dict.
 
-        Note that either of the first two parameters may be None.
+        Note that either of the two parameters may be None.
         If reform is None, the dict in the 'policy':dict pair is empty.
         If assump is None, the dict in the 'consumption':dict pair,
         in the 'behavior':dict pair, in the 'growdiff_baseline':dict pair,
@@ -1174,6 +1174,10 @@ class Calculator(object):
             )
         else:
             raise ValueError('reform is neither None nor string')
+        # raise error if specifying both behavior and growdiff_response
+        if behv_dict and gdiff_resp_dict:
+            msg = 'both behavior and growdiff_response are specified'
+            raise ValueError('ERROR: ' + msg + '\n')
         # finally construct and return single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict

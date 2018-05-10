@@ -51,32 +51,20 @@ class Behavior(ParametersBase):
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
         super(Behavior, self).__init__()
-
-        # read default parameters
         self._vals = self._params_dict_from_json_file()
-
         if num_years < 1:
             raise ValueError('num_years < 1 in Behavior ctor')
         self.initialize(start_year, num_years)
-
         self.parameter_errors = ''
-        self._ignore_errors = False
 
-    def update_behavior(self, revision, raise_errors=True):
+    def update_behavior(self, revision):
         """
-        Implement multi-year behavior revision and leave current_year
-        unchanged.
+        Implement multi-year behavior revision leaving current_year unchanged.
 
         Parameters
         ----------
         revision: dictionary of one or more YEAR:MODS pairs
             see Notes to Parameters _update method for info on MODS structure
-
-        raise_errors: boolean
-            if True (the default), raises ValueError when parameter_errors
-                    exists;
-            if False, does not raise ValueError when parameter_errors exists
-                    and leaves error handling to caller of update_behavior.
 
         Raises
         ------
@@ -86,9 +74,8 @@ class Behavior(ParametersBase):
             if minimum YEAR in the YEAR:MODS pairs is less than start_year.
             if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
-            if raise_errors is True AND
-              _validate_parameter_names_types generates error OR
-              _validate_parameter_values generates errors.
+            if _validate_assump_parameter_names_types generates errors.
+            if _validate_assump_parameter_values generates errors.
 
         Returns
         -------
@@ -135,7 +122,7 @@ class Behavior(ParametersBase):
         """
         # check that all revisions dictionary keys are integers
         if not isinstance(revision, dict):
-            raise ValueError('ERROR: YYYY PARAM revision is not a dictionary')
+            raise ValueError('ERROR: revision is not a dictionary')
         if not revision:
             return  # no revision to implement
         revision_years = sorted(list(revision.keys()))
@@ -159,9 +146,8 @@ class Behavior(ParametersBase):
             msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_revision_year, self.end_year))
         # validate revision parameter names and types
-        self.parameter_errors = ''
-        self._validate_parameter_names_types(revision)
-        if not self._ignore_errors and self.parameter_errors:
+        self._validate_assump_parameter_names_types(revision)
+        if self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # implement the revision year by year
         precall_current_year = self.current_year
@@ -172,8 +158,8 @@ class Behavior(ParametersBase):
             self._update({year: revision[year]})
         self.set_year(precall_current_year)
         # validate revision parameter values
-        self._validate_parameter_values(revision_parameters)
-        if self.parameter_errors and raise_errors:
+        self._validate_assump_parameter_values(revision_parameters)
+        if self.parameter_errors:
             raise ValueError('\n' + self.parameter_errors)
 
     def has_response(self):
@@ -184,8 +170,7 @@ class Behavior(ParametersBase):
         # pylint: disable=no-member
         all_zero = (self.BE_sub == 0.0 and
                     self.BE_inc == 0.0 and
-                    self.BE_cg == 0.0 and
-                    self.BE_charity.tolist() == [0.0, 0.0, 0.0])
+                    self.BE_cg == 0.0)
         return not all_zero
 
     def has_any_response(self):
@@ -202,7 +187,7 @@ class Behavior(ParametersBase):
         return False
 
     @staticmethod
-    def response(calc1, calc2, mtr_cap=0.99, trace=False):
+    def response(calc1, calc2, trace=False):
         """
         Implements TaxBrain "Partial Equilibrium Simulation" dynamic analysis.
 
@@ -262,9 +247,7 @@ class Behavior(ParametersBase):
         # begin main logic of response
         assert calc1.array_len == calc2.array_len
         assert calc1.current_year == calc2.current_year
-        assert mtr_cap >= 0.95 and mtr_cap < 1.0
-        if trace:
-            print('*** TRACE *** mtr_cap={}'.format(mtr_cap))
+        mtr_cap = 0.99
         # calculate sum of substitution and income effects
         if calc2.behavior('BE_sub') == 0.0 and calc2.behavior('BE_inc') == 0.0:
             zero_sub_and_inc = True
@@ -347,79 +330,6 @@ class Behavior(ParametersBase):
             exp_term = np.exp(calc2.behavior('BE_cg') * rch)
             new_ltcg = calc1.array('p23250') * exp_term
             ltcg_chg = new_ltcg - calc1.array('p23250')
-        # calculate charitable giving effect
-        no_charity_response = (calc2.behavior('BE_charity').tolist() ==
-                               [0.0, 0.0, 0.0])
-        if no_charity_response:
-            c_charity_chg = np.zeros(calc1.array_len)
-            nc_charity_chg = np.zeros(calc1.array_len)
-        else:
-            # calculate marginal tax rate on charitable contributions
-            #  e19800 is filing units' cash charitable contributions and
-            #  e20100 is filing units' non-cash charitable contributions.
-            # cash:
-            c_charity_mtr1, c_charity_mtr2 = Behavior._mtr12(
-                calc1, calc2, mtr_of='e19800', tax_type='combined')
-            c_charity_mtr1 = np.where(c_charity_mtr1 > mtr_cap,
-                                      mtr_cap, c_charity_mtr1)
-            c_charity_mtr2 = np.where(c_charity_mtr2 > mtr_cap,
-                                      mtr_cap, c_charity_mtr2)
-            c_charity_price_pch = (((1. + c_charity_mtr2) /
-                                    (1. + c_charity_mtr1)) - 1.)
-            # non-cash:
-            nc_charity_mtr1, nc_charity_mtr2 = Behavior._mtr12(
-                calc1, calc2, mtr_of='e20100', tax_type='combined')
-            nc_charity_mtr1 = np.where(nc_charity_mtr1 > mtr_cap,
-                                       mtr_cap, nc_charity_mtr1)
-            nc_charity_mtr2 = np.where(nc_charity_mtr2 > mtr_cap,
-                                       mtr_cap, nc_charity_mtr2)
-            nc_charity_price_pch = (((1. + nc_charity_mtr2) /
-                                     (1. + nc_charity_mtr1)) - 1.)
-            # identify income bin based on baseline income
-            agi = calc1.array('c00100')
-            low_income = (agi < 50000)
-            mid_income = ((agi >= 50000) & (agi < 100000))
-            high_income = (agi >= 100000)
-            # calculate change in cash contributions
-            c_charity_chg = np.zeros(calc1.array_len)
-            # AGI < 50000
-            c_charity_chg = np.where(low_income,
-                                     (calc2.behavior('BE_charity')[0] *
-                                      c_charity_price_pch *
-                                      calc1.array('e19800')),
-                                     c_charity_chg)
-            # 50000 <= AGI < 1000000
-            c_charity_chg = np.where(mid_income,
-                                     (calc2.behavior('BE_charity')[1] *
-                                      c_charity_price_pch *
-                                      calc1.array('e19800')),
-                                     c_charity_chg)
-            # 1000000 < AGI
-            c_charity_chg = np.where(high_income,
-                                     (calc2.behavior('BE_charity')[2] *
-                                      c_charity_price_pch *
-                                      calc1.array('e19800')),
-                                     c_charity_chg)
-            # calculate change in non-cash contributions
-            nc_charity_chg = np.zeros(calc1.array_len)
-            # AGI < 50000
-            nc_charity_chg = np.where(low_income,
-                                      (calc2.behavior('BE_charity')[0] *
-                                       nc_charity_price_pch *
-                                       calc1.array('e20100')),
-                                      nc_charity_chg)
-            # 50000 <= AGI < 1000000
-            nc_charity_chg = np.where(mid_income,
-                                      (calc2.behavior('BE_charity')[1] *
-                                       nc_charity_price_pch *
-                                       calc1.array('e20100')),
-                                      nc_charity_chg)
-            # 1000000 < AGI
-            nc_charity_chg = np.where(high_income,
-                                      (calc2.behavior('BE_charity')[2] *
-                                       nc_charity_price_pch *
-                                       calc1.array('e20100')),
-                                      nc_charity_chg)
         # Add behavioral-response changes to income sources
         calc2_behv = copy.deepcopy(calc2)
         if not zero_sub_and_inc:
@@ -431,116 +341,12 @@ class Behavior(ParametersBase):
                                                               calc2_behv)
         calc2_behv = Behavior._update_cap_gain_income(ltcg_chg,
                                                       calc2_behv)
-        calc2_behv = Behavior._update_charity(c_charity_chg, nc_charity_chg,
-                                              calc2_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
         calc2_behv.calc_all()
         calc2_behv.records_include_behavioral_responses()
         return calc2_behv
 
     # ----- begin private methods of Behavior class -----
-
-    def _validate_parameter_names_types(self, revision):
-        """
-        Check validity of parameter names and parameter types used
-        in the specified revision dictionary.
-        """
-        # pylint: disable=too-many-branches,too-many-nested-blocks
-        # pylint: disable=too-many-locals
-        param_names = set(self._vals.keys())
-        for year in sorted(revision.keys()):
-            for name in revision[year]:
-                if name not in param_names:
-                    msg = '{} {} unknown parameter name'
-                    self.parameter_errors += (
-                        'ERROR: ' + msg.format(year, name) + '\n'
-                    )
-                else:
-                    # check parameter value type avoiding use of isinstance
-                    # because isinstance(True, (int,float)) is True, which
-                    # makes it impossible to check float parameters
-                    bool_param_type = self._vals[name]['boolean_value']
-                    int_param_type = self._vals[name]['integer_value']
-                    assert isinstance(revision[year][name], list)
-                    pvalue = revision[year][name][0]
-                    if isinstance(pvalue, list):
-                        scalar = False  # parameter value is a list
-                    else:
-                        scalar = True  # parameter value is a scalar
-                        pvalue = [pvalue]  # make scalar a single-item list
-                    # pylint: disable=consider-using-enumerate
-                    for idx in range(0, len(pvalue)):
-                        if scalar:
-                            pname = name
-                        else:
-                            pname = '{}_{}'.format(name, idx)
-                        pval = pvalue[idx]
-                        # pylint: disable=unidiomatic-typecheck
-                        pval_is_bool = type(pval) == bool
-                        pval_is_int = type(pval) == int
-                        pval_is_float = type(pval) == float
-                        if bool_param_type:
-                            if not pval_is_bool:
-                                msg = '{} {} value {} is not boolean'
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname, pval) +
-                                    '\n'
-                                )
-                        elif int_param_type:
-                            if not pval_is_int:  # pragma: no cover
-                                msg = '{} {} value {} is not integer'
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname, pval) +
-                                    '\n'
-                                )
-                        else:  # param is float type
-                            if not (pval_is_int or pval_is_float):
-                                msg = '{} {} value {} is not a number'
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname, pval) +
-                                    '\n'
-                                )
-        del param_names
-
-    def _validate_parameter_values(self, parameters_set):
-        """
-        Check values of parameters in specified parameter_set using
-        range information from the current_law_policy.json file.
-        """
-        parameters = sorted(parameters_set)
-        syr = Behavior.JSON_START_YEAR
-        for pname in parameters:
-            pvalue = getattr(self, pname)
-            for vop, vval in self._vals[pname]['range'].items():
-                vvalue = np.full(pvalue.shape, vval)
-                assert pvalue.shape == vvalue.shape
-                assert len(pvalue.shape) <= 2
-                if len(pvalue.shape) == 2:
-                    scalar = False  # parameter value is a list
-                else:
-                    scalar = True  # parameter value is a scalar
-                for idx in np.ndindex(pvalue.shape):
-                    out_of_range = False
-                    if vop == 'min' and pvalue[idx] < vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} {} value {} < min value {}'
-                    if vop == 'max' and pvalue[idx] > vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} {} value {} > max value {}'
-                    if out_of_range:
-                        if scalar:
-                            name = pname
-                        else:
-                            name = '{}_{}'.format(pname, idx[1])
-                        self.parameter_errors += (
-                            'ERROR: ' + msg.format(idx[0] + syr, name,
-                                                   pvalue[idx],
-                                                   vvalue[idx]) + '\n'
-                        )
-        del parameters
 
     @staticmethod
     def _update_earnings(change, calc):
@@ -588,16 +394,6 @@ class Behavior(ParametersBase):
         Implement capital gain change induced by behavioral responses.
         """
         calc.incarray('p23250', cap_gain_change)
-        return calc
-
-    @staticmethod
-    def _update_charity(cash_charity_change, non_cash_charity_change, calc):
-        """
-        Implement cash charitable contribution change induced
-        by behavioral responses.
-        """
-        calc.incarray('e19800', cash_charity_change)
-        calc.incarray('e20100', non_cash_charity_change)
         return calc
 
     @staticmethod

@@ -639,14 +639,36 @@ def fixture_bad3assumpfile():
     os.remove(f.name)
 
 
+@pytest.fixture(scope='module', name='bad4assumpfile')
+def fixture_bad4assumpfile():
+    # specify JSON text for assump
+    txt = """
+    {
+      "consumption": {},
+      "behavior": {},
+      "behavior": {"_BE_sub": {"2014": [0.25]}},
+      "growdiff_baseline": {},
+      "growdiff_response": {"_ABOOK": {"2022": [0.01]}}
+    }
+    """
+    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    f.write(txt + '\n')
+    f.close()
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
 def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
-                                   bad3assumpfile):
+                                   bad3assumpfile, bad4assumpfile):
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, bad1assumpfile.name)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, bad2assumpfile.name)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, bad3assumpfile.name)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects(None, bad4assumpfile.name)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
