@@ -8,7 +8,7 @@ from numpy.testing import assert_array_equal
 import pandas as pd
 import pytest
 from io import StringIO
-from taxcalc import Growfactors, Policy, Records, Calculator
+from taxcalc import GrowFactors, Policy, Records, Calculator
 
 
 def test_incorrect_Records_instantiation(cps_subsample):
@@ -45,7 +45,7 @@ def test_correct_Records_instantiation(cps_subsample):
     benefit_df = pd.read_csv(benefit_path)
     rec2 = Records(data=cps_subsample,
                    exact_calculations=False,
-                   gfactors=Growfactors(),
+                   gfactors=GrowFactors(),
                    weights=wghts_df,
                    adjust_ratios=None,
                    benefits=benefit_df,

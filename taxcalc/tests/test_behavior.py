@@ -10,6 +10,8 @@ from taxcalc import Policy, Records, Calculator, Behavior
 
 def test_incorrect_behavior_instantiation():
     with pytest.raises(ValueError):
+        Behavior(start_year=2000)
+    with pytest.raises(ValueError):
         Behavior(num_years=0)
     with pytest.raises(FloatingPointError):
         np.divide(1., 0.)

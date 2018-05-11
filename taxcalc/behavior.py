@@ -21,10 +21,6 @@ class Behavior(ParametersBase):
 
     Parameters
     ----------
-    behavior_dict: dictionary of PARAM:DESCRIPTION pairs
-        dictionary of behavioral-response elasticities; if None, default
-        elasticities are read from the behavior.json file.
-
     start_year: integer
         first calendar year for behavioral-response elasticities.
 
@@ -35,7 +31,7 @@ class Behavior(ParametersBase):
     Raises
     ------
     ValueError:
-        if behavior_dict is neither None nor a dictionary.
+        if start_year is less than Policy.JSON_START_YEAR
         if num_years is less than one.
 
     Returns
@@ -52,8 +48,10 @@ class Behavior(ParametersBase):
                  num_years=DEFAULT_NUM_YEARS):
         super(Behavior, self).__init__()
         self._vals = self._params_dict_from_json_file()
+        if start_year < Policy.JSON_START_YEAR:
+            raise ValueError('start_year < Policy.JSON_START_YEAR')
         if num_years < 1:
-            raise ValueError('num_years < 1 in Behavior ctor')
+            raise ValueError('num_years < 1')
         self.initialize(start_year, num_years)
         self.parameter_errors = ''
 
