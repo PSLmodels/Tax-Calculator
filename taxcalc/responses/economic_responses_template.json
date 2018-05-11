@@ -26,7 +26,6 @@
     "behavior": {
         "_BE_inc": {"2017": [0.0]},
         "_BE_sub": {"2017": [0.0]},
-        "_BE_subinc_wrt_earnings": {"2017": [false]},
         "_BE_cg": {"2017": [0.0]}
     },
     "growdiff_baseline": {

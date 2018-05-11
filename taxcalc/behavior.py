@@ -266,55 +266,40 @@ class Behavior(ParametersBase):
                 mtr1 = np.where(wage_mtr1 > mtr_cap, mtr_cap, wage_mtr1)
                 mtr2 = np.where(wage_mtr2 > mtr_cap, mtr_cap, wage_mtr2)
                 pch = ((1. - mtr2) / (1. - mtr1)) - 1.
-                if calc2.behavior('BE_subinc_wrt_earnings'):
-                    # Note: e00200 is filing unit's wages+salaries
-                    sub = (calc2.behavior('BE_sub') *
-                           pch * calc1.array('e00200'))
-                else:
-                    # Note: c04800 is filing unit's taxable income
-                    sub = (calc2.behavior('BE_sub') *
-                           pch * calc1.array('c04800'))
-                    if trace:
-                        trace_output('wmtr1', wage_mtr1,
-                                     [-9e99, 0.00, 0.25, 0.50, 0.60,
-                                      0.70, 0.80, 0.90, 0.999999, 1.1,
-                                      1.2, 1.3, 9e99],
-                                     calc1.array('s006'),
-                                     np.zeros(calc1.array_len))
-                        print('high wage_mtr1:',
-                              wage_mtr1[wage_mtr1 > 0.999999])
-                        print('wage_mtr2 them:',
-                              wage_mtr2[wage_mtr1 > 0.999999])
-                        trace_output('pch', pch,
-                                     [-9e99, -1.00, -0.50, -0.20, -0.10,
-                                      -0.00001, 0.00001,
-                                      0.10, 0.20, 0.50, 1.00, 9e99],
-                                     calc1.array('s006'),
-                                     calc1.array('c04800'))
-                        trace_output('sub', sub,
-                                     [-9e99, -1e3,
-                                      -0.1, 0.1,
-                                      1e3, 1e4, 1e5, 1e6, 9e99],
-                                     calc1.array('s006'),
-                                     np.zeros(calc1.array_len))
+                # Note: c04800 is filing unit's taxable income
+                sub = (calc2.behavior('BE_sub') *
+                       pch * calc1.array('c04800'))
+                if trace:
+                    trace_output('wmtr1', wage_mtr1,
+                                 [-9e99, 0.00, 0.25, 0.50, 0.60,
+                                  0.70, 0.80, 0.90, 0.999999, 1.1,
+                                  1.2, 1.3, 9e99],
+                                 calc1.array('s006'),
+                                 np.zeros(calc1.array_len))
+                    print('high wage_mtr1:',
+                          wage_mtr1[wage_mtr1 > 0.999999])
+                    print('wage_mtr2 them:',
+                          wage_mtr2[wage_mtr1 > 0.999999])
+                    trace_output('pch', pch,
+                                 [-9e99, -1.00, -0.50, -0.20, -0.10,
+                                  -0.00001, 0.00001,
+                                  0.10, 0.20, 0.50, 1.00, 9e99],
+                                 calc1.array('s006'),
+                                 calc1.array('c04800'))
+                    trace_output('sub', sub,
+                                 [-9e99, -1e3,
+                                  -0.1, 0.1,
+                                  1e3, 1e4, 1e5, 1e6, 9e99],
+                                 calc1.array('s006'),
+                                 np.zeros(calc1.array_len))
             # calculate magnitude of income effect
             if calc2.behavior('BE_inc') == 0.0:
                 inc = np.zeros(calc1.array_len)
             else:
-                if calc2.behavior('BE_subinc_wrt_earnings'):
-                    # proportional change in after-tax income
-                    with np.errstate(invalid='ignore'):
-                        pch = np.where(calc1.array('aftertax_income') > 0.,
-                                       (calc2.array('aftertax_income') /
-                                        calc1.array('aftertax_income')) - 1.,
-                                       0.)
-                    inc = (calc2.behavior('BE_inc') *
-                           pch * calc1.array('e00200'))
-                else:
-                    # dollar change in after-tax income
-                    # Note: combined is f.unit's income+payroll tax liability
-                    dch = calc1.array('combined') - calc2.array('combined')
-                    inc = calc2.behavior('BE_inc') * dch
+                # dollar change in after-tax income
+                # Note: combined is f.unit's income+payroll tax liability
+                dch = calc1.array('combined') - calc2.array('combined')
+                inc = calc2.behavior('BE_inc') * dch
             # calculate sum of substitution and income effects
             si_chg = sub + inc
         # calculate long-term capital-gains effect
@@ -333,12 +318,8 @@ class Behavior(ParametersBase):
         # Add behavioral-response changes to income sources
         calc2_behv = copy.deepcopy(calc2)
         if not zero_sub_and_inc:
-            if calc2_behv.behavior('BE_subinc_wrt_earnings'):
-                calc2_behv = Behavior._update_earnings(si_chg,
-                                                       calc2_behv)
-            else:
-                calc2_behv = Behavior._update_ordinary_income(si_chg,
-                                                              calc2_behv)
+            calc2_behv = Behavior._update_ordinary_income(si_chg,
+                                                          calc2_behv)
         calc2_behv = Behavior._update_cap_gain_income(ltcg_chg,
                                                       calc2_behv)
         # Recalculate post-reform taxes incorporating behavioral responses
@@ -347,15 +328,6 @@ class Behavior(ParametersBase):
         return calc2_behv
 
     # ----- begin private methods of Behavior class -----
-
-    @staticmethod
-    def _update_earnings(change, calc):
-        """
-        Implement earnings change induced by earnings response.
-        """
-        calc.incarray('e00200', change)
-        calc.incarray('e00200p', change)
-        return calc
 
     @staticmethod
     def _update_ordinary_income(taxinc_change, calc):

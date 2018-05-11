@@ -1648,34 +1648,44 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
         return False
 
 
-def charitable_giving_response(quantity,
-                               price_elasticity,
-                               aftertax_price1,
-                               aftertax_price2,
-                               income_elasticity,
-                               aftertax_income1,
-                               aftertax_income2):
+def quantity_response(quantity,
+                      price_elasticity,
+                      aftertax_price1,
+                      aftertax_price2,
+                      income_elasticity,
+                      aftertax_income1,
+                      aftertax_income2):
     """
-    Calculate dollar change in quantity using a log-log response equation.
+    Calculate dollar change in quantity using a log-log response equation,
+    which assumes that the proportional change in the quantity is equal to
+    the sum of two terms:
+    (1) the proportional change in the quanitity's marginal aftertax price
+        times an assumed price elasticity, and
+    (2) the proportional change in aftertax income
+        times an assumed income elasticity.
 
     Parameters
     ----------
     quantity: numpy array
-        pre-response charitable giving
+        pre-response quantity whose response is being calculated
 
     price_elasticity: float
         coefficient of the percentage change in aftertax price of
-        charitable giving in the log-log response equation
+        the quantity in the log-log response equation
 
     aftertax_price1: numpy array
-        marginal aftertax price of charitable giving under baseline policy
-        (function forces price to be in [0.01, 1.0] range)
-        (note this is NOT an array of marginal tax rates)
+        marginal aftertax price of the quanitity under baseline policy
+          Note that this function forces prices to be in [0.01, 1.0] range.
+          Note this is NOT an array of marginal tax rates (MTR), but rather
+            usually 1-MTR (or in the case of quantities, like charitable
+            giving, whose MTR values are non-positive, 1+MTR).
 
     aftertax_price2: numpy array
-        marginal aftertax price of charitable giving under reform policy
-        (function forces price to be in [0.01, 1.0] range)
-        (note this is NOT an array of marginal tax rates)
+        marginal aftertax price of the quantity under reform policy
+          Note that this function forces prices to be in [0.01, 1.0] range.
+          Note this is NOT an array of marginal tax rates (MTR), but rather
+            usually 1-MTR (or in the case of quantities, like charitable
+            giving, whose MTR values are non-positive, 1+MTR).
 
     income_elasticity: float
         coefficient of the percentage change in aftertax income in the
@@ -1683,16 +1693,22 @@ def charitable_giving_response(quantity,
 
     aftertax_income1: numpy array
         aftertax income under baseline policy
-        (function forces income to be in [1, inf] range)
+          Note that this function forces income to be in [1, inf] range,
+          but the caller of this function may want to constrain negative
+          or small incomes to be somewhat larger in order to avoid extreme
+          proportional changes in aftertax income.
 
     aftertax_income2: numpy array
         aftertax income under reform policy
-        (function forces income to be in [1, inf] range)
+          Note that this function forces income to be in [1, inf] range,
+          but the caller of this function may want to constrain negative
+          or small incomes to be somewhat larger in order to avoid extreme
+          proportional changes in aftertax income.
 
     Returns
     -------
     response: numpy array
-        change in quantity calculated from log-log response equation
+        dollar change in quantity calculated from log-log response equation
     """
     # pylint: disable=too-many-arguments
     # compute price term in log-log response equation
