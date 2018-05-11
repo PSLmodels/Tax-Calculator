@@ -200,7 +200,7 @@ def cli_tc_main():
     inputfn = args.INPUT
     taxyear = args.TAXYEAR
     aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
-    if TaxCalcIO.using_growmodel(args.assump):
+    if TaxCalcIO.using_growth_model(args.assump):
         TaxCalcIO.growmodel_analysis(input_data=inputfn,
                                      tax_year=taxyear,
                                      baseline=args.baseline,

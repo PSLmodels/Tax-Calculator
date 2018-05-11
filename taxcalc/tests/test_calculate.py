@@ -443,7 +443,7 @@ ASSUMP_CONTENTS = """
   "behavior": {},
   "growdiff_baseline": {},
   "growdiff_response": {},
-  "growmod": {}
+  "growmodel": {}
 }
 """
 
@@ -849,7 +849,7 @@ def test_noreform_documentation():
     "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
@@ -894,7 +894,7 @@ def test_reform_documentation():
     // (has no effect on known policy parameter values)
     "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
     "growdiff_response": {},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)

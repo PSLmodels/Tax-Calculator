@@ -1119,7 +1119,7 @@ class Calculator(object):
         return a single dictionary containing six key:dict pairs:
         'policy':dict, 'consumption':dict, 'behavior':dict,
         'growdiff_baseline':dict, 'growdiff_response':dict, and
-        'growmod':dict.
+        'growmodel':dict.
 
         Note that either of the two function arguments can be None.
         If reform is None, the dict in the 'policy':dict pair is empty.
@@ -1137,7 +1137,7 @@ class Calculator(object):
          "behavior": {...},
          "growdiff_baseline": {...},
          "growdiff_response": {...},
-         "growmod": {...}}
+         "growmodel": {...}}
 
         The returned dictionary contains parameter lists (not arrays).
         """
@@ -1147,7 +1147,7 @@ class Calculator(object):
             behv_dict = dict()
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
-            growmod_dict = dict()
+            growmodel_dict = dict()
         elif isinstance(assump, six.string_types):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
@@ -1157,7 +1157,7 @@ class Calculator(object):
              behv_dict,
              gdiff_base_dict,
              gdiff_resp_dict,
-             growmod_dict) = Calculator._read_json_econ_assump_text(txt)
+             growmodel_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
             raise ValueError('assump is neither None nor string')
         # next process first reform parameter
@@ -1186,13 +1186,13 @@ class Calculator(object):
         param_dict['behavior'] = behv_dict
         param_dict['growdiff_baseline'] = gdiff_base_dict
         param_dict['growdiff_response'] = gdiff_resp_dict
-        param_dict['growmod'] = growmod_dict
+        param_dict['growmodel'] = growmodel_dict
         return param_dict
 
     REQUIRED_REFORM_KEYS = set(['policy'])
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
                                 'growdiff_baseline', 'growdiff_response',
-                                'growmod'])
+                                'growmodel'])
 
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
@@ -1552,7 +1552,7 @@ class Calculator(object):
         a "behavior": {...} pair,
         a "growdiff_baseline": {...} pair,
         a "growdiff_response": {...} pair, and
-        a "growmod": {...} pair.
+        a "growmodel": {...} pair.
 
         Other high-level pairs will be ignored by this method, except that
         a "policy" key will raise a ValueError.
@@ -1567,14 +1567,14 @@ class Calculator(object):
         the tests/test_calculate.py file.
 
         Returned dictionaries (cons_dict, behv_dict, gdiff_baseline_dict,
-        gdiff_respose_dict, growmod_dict) have integer years as primary
+        gdiff_respose_dict, growmodel_dict) have integer years as primary
         keys and string parameters as secondary keys.
 
         These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the Behavior.update_behavior(behv_dict) method, or
         the Growdiff.update_growdiff(gdiff_dict) method, or
-        the Growmod.update_growmod(growmod_dict) method.
+        the GrowModel.update_growmod(growmodel_dict) method.
         """
         # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
@@ -1615,10 +1615,10 @@ class Calculator(object):
         gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_response'
         gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        key = 'growmod'
-        growmod_dict = Calculator._convert_parameter_dict(raw_dict[key])
+        key = 'growmodel'
+        growmodel_dict = Calculator._convert_parameter_dict(raw_dict[key])
         return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict,
-                growmod_dict)
+                growmodel_dict)
 
     @staticmethod
     def _convert_parameter_dict(param_key_dict):
@@ -1629,7 +1629,7 @@ class Calculator(object):
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or
         the Growdiff.update_growdiff() method, or
-        the Growmod.update_growmod() method.
+        the GrowModel.update_growmodel() method.
 
         Specified input dictionary has string parameter primary keys and
         string years as secondary keys.

@@ -31,6 +31,8 @@ USER_MODS = {
     },
     'growdiff_response': {
     },
+    'growmodel': {
+    }
 }
 
 
@@ -171,6 +173,7 @@ def test_with_pufcsv(puf_fullsample):
     usermods['behavior'] = {}
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
+    usermods['growmodel'] = {}
     seed = random_seed(usermods)
     assert seed == 1574318062
     # create a Policy object (pol) containing reform policy parameters
@@ -214,7 +217,8 @@ def test_reform_warnings_errors():
         'consumption': {},
         'behavior': {},
         'growdiff_baseline': {},
-        'growdiff_response': {}
+        'growdiff_response': {},
+        'growmodel': {}
     }
     msg_dict = reform_warnings_errors(bad1_mods)
     assert len(msg_dict['policy']['warnings']) > 0
@@ -224,7 +228,8 @@ def test_reform_warnings_errors():
         'consumption': {},
         'behavior': {},
         'growdiff_baseline': {},
-        'growdiff_response': {}
+        'growdiff_response': {},
+        'growmodel': {}
     }
     msg_dict = reform_warnings_errors(bad2_mods)
     assert len(msg_dict['policy']['warnings']) == 0
@@ -262,7 +267,8 @@ def test_behavioral_response(puf_subsample):
     {"behavior": {"_BE_sub": {"2013": [0.25]}},
      "growdiff_baseline": {},
      "growdiff_response": {},
-     "consumption": {}
+     "consumption": {},
+     "growmodel": {}
     }
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
@@ -278,6 +284,7 @@ def test_behavioral_response(puf_subsample):
             'growdiff_baseline': params['growdiff_baseline'],
             'growdiff_response': params['growdiff_response'],
             'consumption': params['consumption']
+            'growmodel': params['growmodel']
         },
         'return_dict': False
     }

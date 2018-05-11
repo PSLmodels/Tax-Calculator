@@ -27,7 +27,7 @@ def test_response_json(tests_path):
                          '"behavior"' in jpf_text and
                          '"growdiff_baseline"' in jpf_text and
                          '"growdiff_response"' in jpf_text and
-                         '"growmod"' in jpf_text)
+                         '"growmodel"' in jpf_text)
         if response_file:
             # pylint: disable=protected-access
             (con, beh, gdiff_base, gdiff_resp,
@@ -51,10 +51,10 @@ def test_response_json(tests_path):
             assert False
 
 
-def test_growmod_json():
+def test_growmodel_json():
     """
     Check dictionaries returned by Calculator._read_json_econ_assump_text(txt)
-    when txt includes a "growmod":value pair.
+    when txt includes a "growmodel":value pair.
     """
     txt = """
     {
@@ -62,7 +62,7 @@ def test_growmod_json():
     "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     # pylint: disable=protected-access

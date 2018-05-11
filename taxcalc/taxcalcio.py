@@ -251,8 +251,7 @@ class TaxCalcIO(object):
         self.param_dict = paramdict
         self.policy_dicts = policydicts
         # determine whether using growth model
-        using_growth_model = (paramdict['growmod'] and
-                              paramdict['growmod']['active'])
+        using_growth_model = self.using_growth_model()
         if using_growth_model:
             gd_response = Growdiff()
             gd_response.update_growdiff(paramdict['growdiff_response'])
@@ -806,25 +805,24 @@ class TaxCalcIO(object):
         odf['FLPDYR'] = self.tax_year()
         return odf
 
+    def using_growmodel(self):
+        """
+        Return true if using the GrowModel class; otherwise, return false.
+        """
+        assert self.param_dict is not None
+        pdict = self.param_dict
+        if pdict['growmodel'] and np.any(pdict['growmodel']['_active']):
+            return True
+        return False
+
     @staticmethod
-    def using_growmodel(assump):
+    def using_growth_model(assump):
         """
-        Determines if assump implies using the GrowModel class.
-
-        Parameters
-        ----------
-        assump: None or string
-            None implies economic assumptions are standard assumptions,
-            or string is name of optional ASSUMP file.
-
-        Returns
-        -------
-        is_using: boolean
+        Return true if using the GrowModel class; otherwise, return false.
         """
-        if assump is not None:
-            pdict = Calculator.read_json_param_objects(None, assump)
-            if pdict['growmod'] and pdict['growmod']['active']:
-                return True
+        pdict = Calculator.read_json_param_objects(None, assump)
+        if pdict['growmodel'] and np.any(pdict['growmodel']['_active']):
+            return True
         return False
 
     @staticmethod

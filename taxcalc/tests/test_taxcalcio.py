@@ -75,7 +75,7 @@ def fixture_assumpfile0():
     "behavior": {"_BE_sub": {"2020": [0.05]}},
     "growdiff_baseline": {"_ABOOK": {"2015": [-0.01]}},
     "growdiff_response": {},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     afile.write(contents)
@@ -217,7 +217,7 @@ def fixture_assumpfile1():
     "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     afile.write(contents)
@@ -261,7 +261,7 @@ def fixture_assumpfile2():
     "behavior": {"_BE_sub": {"2020": [0.05]}},
     "growdiff_baseline": {},
     "growdiff_response": {},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     afile.write(assump2_contents)
@@ -287,7 +287,7 @@ def fixture_assumpfile3():
     "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {"_ABxxK": {"2015": [-0.01]}},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     afile.write(contents)
@@ -896,7 +896,7 @@ def fixture_assumpfile9():
     "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
-    "growmod": {}
+    "growmodel": {}
     }
     """
     afile.write(contents)
@@ -908,14 +908,6 @@ def fixture_assumpfile9():
             os.remove(afile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
-
-
-def test_using_growmodel_is_false(assumpfile0):
-    """
-    Test TaxCalcIO.using_growmodel function calls that return False.
-    """
-    assert TaxCalcIO.using_growmodel(None) is False
-    assert TaxCalcIO.using_growmodel(assumpfile0.name) is False
 
 
 def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
@@ -985,7 +977,7 @@ def test_growmodel_analysis(reformfile9, assumpfile9):
     """
     Test TaxCalcIO.growmodel_analysis function with no output.
     """
-    if TaxCalcIO.using_growmodel(assumpfile9.name):
+    if TaxCalcIO.using_growth_model(assumpfile9.name):
         TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                      tax_year=2015,
                                      baseline=None,
