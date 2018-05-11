@@ -10,7 +10,7 @@ import json
 import six
 import numpy as np
 import pandas as pd
-from taxcalc.growfactors import Growfactors
+from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import read_egg_csv, read_egg_json
 
 
@@ -33,7 +33,7 @@ class Records(object):
         any smoothing of "stair-step" provisions in income tax law;
         default value is false.
 
-    gfactors: Growfactors class instance or None
+    gfactors: GrowFactors class instance or None
         containing record data extrapolation (or "blowup") factors.
         NOTE: the constructor should never call the _blowup() method.
 
@@ -66,7 +66,7 @@ class Records(object):
         if data is not the appropriate type.
         if taxpayer and spouse variables do not add up to filing-unit total.
         if dividends is less than qualified dividends.
-        if gfactors is not None or a Growfactors class instance.
+        if gfactors is not None or a GrowFactors class instance.
         if start_year is not an integer.
         if files cannot be found.
 
@@ -111,7 +111,7 @@ class Records(object):
     def __init__(self,
                  data='puf.csv',
                  exact_calculations=False,
-                 gfactors=Growfactors(),
+                 gfactors=GrowFactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  benefits=None,
@@ -147,9 +147,9 @@ class Records(object):
             raise ValueError(msg)
         del nontaxable_pensions
         # handle grow factors
-        is_correct_type = isinstance(gfactors, Growfactors)
+        is_correct_type = isinstance(gfactors, GrowFactors)
         if gfactors is not None and not is_correct_type:
-            msg = 'gfactors is neither None nor a Growfactors instance'
+            msg = 'gfactors is neither None nor a GrowFactors instance'
             raise ValueError(msg)
         self.gfactors = gfactors
         # read sample weights
@@ -187,7 +187,7 @@ class Records(object):
     def cps_constructor(data=None,
                         no_benefits=False,
                         exact_calculations=False,
-                        gfactors=Growfactors()):
+                        gfactors=GrowFactors()):
         """
         Static method returns a Records object instantiated with CPS
         input data.  This works in a analogous way to Records(), which

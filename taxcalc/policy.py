@@ -9,8 +9,8 @@ from __future__ import print_function
 import six
 import numpy as np
 from taxcalc.parameters import ParametersBase
-from taxcalc.growfactors import Growfactors
-from taxcalc.growdiff import Growdiff
+from taxcalc.growfactors import GrowFactors
+from taxcalc.growdiff import GrowDiff
 
 
 class Policy(ParametersBase):
@@ -22,12 +22,8 @@ class Policy(ParametersBase):
 
     Parameters
     ----------
-    gfactors: Growfactors class instance
+    gfactors: GrowFactors class instance
         containing price inflation rates and wage growth rates
-
-    parameter_dict: dictionary of PARAM:DESCRIPTION pairs
-        dictionary of policy parameters; if None, default policy
-        parameters are read from the current_law_policy.json file.
 
     start_year: integer
         first calendar year for historical policy parameters.
@@ -39,8 +35,8 @@ class Policy(ParametersBase):
     Raises
     ------
     ValueError:
-        if gfactors is not a Growfactors class instance.
-        if parameter_dict is neither None nor a dictionary.
+        if gfactors is not a GrowFactors class instance.
+        if start_year is less than JSON_START_YEAR.
         if num_years is less than one.
 
     Returns
@@ -61,15 +57,17 @@ class Policy(ParametersBase):
         super(Policy, self).__init__()
 
         if gfactors is None:
-            self._gfactors = Growfactors()
-        elif isinstance(gfactors, Growfactors):
+            self._gfactors = GrowFactors()
+        elif isinstance(gfactors, GrowFactors):
             self._gfactors = gfactors
         else:
-            raise ValueError('gfactors is not None or a Growfactors instance')
+            raise ValueError('gfactors is not None or a GrowFactors instance')
 
         # read default parameters
         self._vals = self._params_dict_from_json_file()
 
+        if start_year < Policy.JSON_START_YEAR:
+            raise ValueError('start_year cannot be less than JSON_START_YEAR')
         if num_years < 1:
             raise ValueError('num_years cannot be less than one')
 
@@ -314,11 +312,11 @@ class Policy(ParametersBase):
             Return param_base:year dictionary having only suffix parameters.
             """
             if bool(growdiff_baseline_dict) or bool(growdiff_response_dict):
-                gdiff_baseline = Growdiff()
+                gdiff_baseline = GrowDiff()
                 gdiff_baseline.update_growdiff(growdiff_baseline_dict)
-                gdiff_response = Growdiff()
+                gdiff_response = GrowDiff()
                 gdiff_response.update_growdiff(growdiff_response_dict)
-                growfactors = Growfactors()
+                growfactors = GrowFactors()
                 gdiff_baseline.apply_to(growfactors)
                 gdiff_response.apply_to(growfactors)
             else:

@@ -16,8 +16,8 @@ from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
-from taxcalc.growdiff import Growdiff
-from taxcalc.growfactors import Growfactors
+from taxcalc.growdiff import GrowDiff
+from taxcalc.growfactors import GrowFactors
 from taxcalc.calculate import Calculator
 from taxcalc.utils import (delete_file, write_graph_file,
                            add_quantile_table_row_variable,
@@ -217,8 +217,8 @@ class TaxCalcIO(object):
         First five are same as the first five of the TaxCalcIO constructor:
             input_data, tax_year, baseline, reform, assump.
 
-        growdiff_response: Growdiff object or None
-            growdiff_response Growdiff object is used only by the
+        growdiff_response: GrowDiff object or None
+            growdiff_response GrowDiff object is used only by the
             TaxCalcIO.growmodel_analysis method;
             must be None in all other cases.
 
@@ -255,21 +255,21 @@ class TaxCalcIO(object):
         beh.update_behavior(paramdict['behavior'])
         self.behavior_has_any_response = beh.has_any_response()
         # create gdiff_baseline object
-        gdiff_baseline = Growdiff()
+        gdiff_baseline = GrowDiff()
         gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
-        # create Growfactors base object that incorporates gdiff_baseline
-        gfactors_base = Growfactors()
+        # create GrowFactors base object that incorporates gdiff_baseline
+        gfactors_base = GrowFactors()
         gdiff_baseline.apply_to(gfactors_base)
         # specify gdiff_response object
         if growdiff_response is None:
-            gdiff_response = Growdiff()
+            gdiff_response = GrowDiff()
             gdiff_response.update_growdiff(paramdict['growdiff_response'])
-        elif isinstance(growdiff_response, Growdiff):
+        elif isinstance(growdiff_response, GrowDiff):
             gdiff_response = growdiff_response
         else:
             gdiff_response = None
             msg = 'TaxCalcIO.more_init: growdiff_response is neither None '
-            msg += 'nor a Growdiff object'
+            msg += 'nor a GrowDiff object'
             self.errmsg += 'ERROR: {}\n'.format(msg)
         if gdiff_response is not None:
             some_gdiff_response = gdiff_response.has_any_response()
@@ -277,8 +277,8 @@ class TaxCalcIO(object):
                 msg = 'ASSUMP file cannot specify any "behavior" when using '
                 msg += 'GrowModel or when ASSUMP file has "growdiff_response"'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
-        # create Growfactors ref object that has both gdiff objects applied
-        gfactors_ref = Growfactors()
+        # create GrowFactors ref object that has both gdiff objects applied
+        gfactors_ref = GrowFactors()
         gdiff_baseline.apply_to(gfactors_ref)
         if gdiff_response is not None:
             gdiff_response.apply_to(gfactors_ref)
@@ -825,7 +825,7 @@ class TaxCalcIO(object):
         for year in range(Policy.JSON_START_YEAR, tax_year + 1):
             print(progress.format(year))  # pylint: disable=superfluous-parens
             # specify growdiff_response using gdiff_dict
-            growdiff_response = Growdiff()
+            growdiff_response = GrowDiff()
             growdiff_response.update_growdiff(gdiff_dict)
             gd_dict = TaxCalcIO.annual_analysis(input_data, tax_year,
                                                 baseline, reform, assump,
@@ -865,7 +865,7 @@ class TaxCalcIO(object):
 
         Returns
         -------
-        gd_dict: Growdiff sub-dictionary for year+1
+        gd_dict: GrowDiff sub-dictionary for year+1
         """
         # pylint: disable=too-many-arguments,too-many-locals
         # instantiate TaxCalcIO object for specified year and growdiff_response

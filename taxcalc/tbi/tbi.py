@@ -29,7 +29,7 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      proportional_change_in_gdp,
-                     Growdiff, Growfactors, Policy, Behavior, Consumption)
+                     GrowDiff, GrowFactors, Policy, Behavior, Consumption)
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
@@ -53,19 +53,19 @@ def reform_warnings_errors(user_mods):
                 'consumption': {'warnings': '', 'errors': ''},
                 'growdiff_baseline': {'warnings': '', 'errors': ''},
                 'growdiff_response': {'warnings': '', 'errors': ''}}
-    # create Growdiff objects
-    gdiff_baseline = Growdiff()
+    # create GrowDiff objects
+    gdiff_baseline = GrowDiff()
     try:
         gdiff_baseline.update_growdiff(user_mods['growdiff_baseline'])
     except ValueError as valerr_msg:
         rtn_dict['growdiff_baseline']['errors'] = valerr_msg.__str__()
-    gdiff_response = Growdiff()
+    gdiff_response = GrowDiff()
     try:
         gdiff_response.update_growdiff(user_mods['growdiff_response'])
     except ValueError as valerr_msg:
         rtn_dict['growdiff_response']['errors'] = valerr_msg.__str__()
     # create Growfactors object
-    growfactors = Growfactors()
+    growfactors = GrowFactors()
     gdiff_baseline.apply_to(growfactors)
     gdiff_response.apply_to(growfactors)
     # create Policy object

@@ -9,14 +9,9 @@ from taxcalc import Policy, Records, Calculator, Consumption
 
 def test_incorrect_Consumption_instantiation():
     with pytest.raises(ValueError):
-        consump = Consumption(consumption_dict=list())
+        consump = Consumption(start_year=2000)
     with pytest.raises(ValueError):
         consump = Consumption(num_years=0)
-
-
-def test_correct_but_not_recommended_Consumption_instantiation():
-    consump = Consumption(consumption_dict={})
-    assert consump
 
 
 def test_validity_of_consumption_vars_set():
