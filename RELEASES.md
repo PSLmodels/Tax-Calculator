@@ -16,11 +16,11 @@ for a complete commit history.
 - Add validity checking for non-behavior assumption parameters
   [[#1992](https://github.com/open-source-economics/Tax-Calculator/pull/1992)
   by Martin Holmer]
-- Add `charitable_giving_response` utility function and remove obsolete charity logic from Behavior class
-  [[#1995](https://github.com/open-source-economics/Tax-Calculator/pull/1995)
-  by Martin Holmer]
 - Rename `Growfactors` class as `GrowFactors` and rename `Growdiff` class as `GrowDiff`
   [[#1996](https://github.com/open-source-economics/Tax-Calculator/pull/1996)
+  by Martin Holmer]
+- Add `quantity_response` utility function and remove obsolete charity and earnings response logic from Behavior class
+  [[#1997](https://github.com/open-source-economics/Tax-Calculator/pull/1997)
   by Martin Holmer]
 
 **New Features**
