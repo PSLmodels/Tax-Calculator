@@ -22,6 +22,9 @@ for a complete commit history.
 - Add `quantity_response` utility function and remove obsolete charity and earnings response logic from Behavior class
   [[#1997](https://github.com/open-source-economics/Tax-Calculator/pull/1997)
   by Martin Holmer]
+- Add empty shell of `GrowModel` class that will eventually contain a simple macroeconomic growth model with annual feedback to the microeconomic simulation
+  [[#1998](https://github.com/open-source-economics/Tax-Calculator/pull/1998)
+  by Martin Holmer]
 
 **New Features**
 - Streamline logic that prevents disclosure of details of PUF filing units
