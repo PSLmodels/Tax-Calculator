@@ -25,9 +25,9 @@ def test_correct_update_growmodel():
     active_cyr = 2018
     gmod.update_growmodel({active_cyr: {'_active': [True]}})
     for cyr in range(start_cyr, active_cyr):
-      assert not gmod._active[cyr - start_cyr]
+        assert not gmod._active[cyr - start_cyr]
     for cyr in range(active_cyr, gmod.end_year + 1):
-      assert gmod._active[cyr - start_cyr]
+        assert gmod._active[cyr - start_cyr]
     assert gmod.is_ever_active()
     gmod.set_year(active_cyr - 1)
     assert not gmod.is_active()
@@ -57,6 +57,7 @@ def test_incorrect_update_growmodel():
     # invalid start year
     with pytest.raises(ValueError):
         GrowModel().update_growmodel({'notayear': {'_active': [True]}})
+
 
 """
 def test_validate_param_values_errors():

@@ -13,7 +13,7 @@ import hashlib
 import numpy as np
 import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
-                     Consumption, Behavior, Growfactors, Growdiff)
+                     Consumption, Behavior, GrowFactors, GrowDiff)
 from taxcalc.utils import (add_income_table_row_variable,
                            add_quantile_table_row_variable,
                            create_difference_table, create_distribution_table,
@@ -52,7 +52,8 @@ def check_user_mods(user_mods):
         raise ValueError('user_mods is not a dictionary')
     actual_keys = set(list(user_mods.keys()))
     expected_keys = set(['policy', 'consumption', 'behavior',
-                         'growdiff_baseline', 'growdiff_response'])
+                         'growdiff_baseline', 'growdiff_response',
+                         'growmodel'])
     if actual_keys != expected_keys:
         msg = 'actual user_mod keys not equal to expected keys\n'
         msg += '  actual: {}\n'.format(actual_keys)
@@ -85,17 +86,17 @@ def calculate(year_n, start_year,
     consump.update_consumption(consump_assumptions)
 
     # specify growdiff_baseline and growdiff_response
-    growdiff_baseline = Growdiff()
-    growdiff_response = Growdiff()
+    growdiff_baseline = GrowDiff()
+    growdiff_response = GrowDiff()
     growdiff_base_assumps = user_mods['growdiff_baseline']
     growdiff_resp_assumps = user_mods['growdiff_response']
     growdiff_baseline.update_growdiff(growdiff_base_assumps)
     growdiff_response.update_growdiff(growdiff_resp_assumps)
 
-    # create pre-reform and post-reform Growfactors instances
-    growfactors_pre = Growfactors()
+    # create pre-reform and post-reform GrowFactors instances
+    growfactors_pre = GrowFactors()
     growdiff_baseline.apply_to(growfactors_pre)
-    growfactors_post = Growfactors()
+    growfactors_post = GrowFactors()
     growdiff_baseline.apply_to(growfactors_post)
     growdiff_response.apply_to(growfactors_post)
 

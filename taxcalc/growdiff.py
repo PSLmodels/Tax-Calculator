@@ -1,5 +1,5 @@
 """
-Tax-Calculator Growdiff class that is used to modify Growfactors parameters.
+Tax-Calculator GrowDiff class that is used to modify GrowFactors.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle growdiff.py
@@ -9,19 +9,15 @@ import numpy as np
 from taxcalc.parameters import ParametersBase
 
 
-class Growdiff(ParametersBase):
+class GrowDiff(ParametersBase):
     """
-    Growdiff is a subclass of the abstract ParametersBase class, and
+    GrowDiff is a subclass of the abstract ParametersBase class, and
     therefore, inherits its methods (none of which are shown here).
 
     Constructor for Growdiff class.
 
     Parameters
     ----------
-    growdiff_dict: dictionary of PARAM:DESCRIPTION pairs
-        dictionary of growth difference parameters; if None, default
-        parameters are read from the growdiff.json file.
-
     start_year: integer
         first calendar year for growth difference parameters.
 
@@ -32,30 +28,27 @@ class Growdiff(ParametersBase):
     Raises
     ------
     ValueError:
-        if growdiff_dict is neither None nor a dictionary.
+        if start_year is less than 2013
         if num_years is less than one.
 
     Returns
     -------
-    class instance: Growdiff
+    class instance: GrowDiff
     """
 
     JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
     DEFAULTS_FILENAME = 'growdiff.json'
     DEFAULT_NUM_YEARS = 15  # must be same as Policy.DEFAULT_NUM_YEARS
 
-    def __init__(self, growdiff_dict=None,
+    def __init__(self,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
-        super(Growdiff, self).__init__()
-        if growdiff_dict is None:
-            self._vals = self._params_dict_from_json_file()
-        elif isinstance(growdiff_dict, dict):
-            self._vals = growdiff_dict
-        else:
-            raise ValueError('growdiff_dict is neither None nor a dictionary')
+        super(GrowDiff, self).__init__()
+        self._vals = self._params_dict_from_json_file()
+        if start_year < GrowDiff.JSON_START_YEAR:
+            raise ValueError('start_year < GrowDiff.JSON_START_YEAR')
         if num_years < 1:
-            raise ValueError('num_years < 1 in Growdiff ctor')
+            raise ValueError('num_years < 1')
         self.initialize(start_year, num_years)
         self.parameter_errors = ''
 
@@ -122,7 +115,7 @@ class Growdiff(ParametersBase):
         """
         # pylint: disable=no-member
         for i in range(0, self.num_years):
-            cyr = i + Growdiff.JSON_START_YEAR
+            cyr = i + self.start_year
             growfactors.update('ABOOK', cyr, self._ABOOK[i])
             growfactors.update('ACGNS', cyr, self._ACGNS[i])
             growfactors.update('ACPIM', cyr, self._ACPIM[i])

@@ -200,25 +200,25 @@ def cli_tc_main():
     inputfn = args.INPUT
     taxyear = args.TAXYEAR
     aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
-    if TaxCalcIO.using_growth_model(args.assump):
-        TaxCalcIO.growmodel_analysis(input_data=inputfn,
-                                     tax_year=taxyear,
-                                     baseline=args.baseline,
-                                     reform=args.reform,
-                                     assump=args.assump,
-                                     aging_input_data=aging,
-                                     exact_calculations=args.exact,
-                                     writing_output_file=True,
-                                     output_tables=args.tables,
-                                     output_graphs=args.graphs,
-                                     output_ceeu=args.ceeu,
-                                     output_dump=args.dump,
-                                     output_sqldb=args.sqldb)
+    if tc.TaxCalcIO.using_growmodel(args.assump):
+        tc.TaxCalcIO.growmodel_analysis(input_data=inputfn,
+                                        tax_year=taxyear,
+                                        baseline=args.baseline,
+                                        reform=args.reform,
+                                        assump=args.assump,
+                                        aging_input_data=aging,
+                                        exact_calculations=args.exact,
+                                        writing_output_file=True,
+                                        output_tables=args.tables,
+                                        output_graphs=args.graphs,
+                                        output_ceeu=args.ceeu,
+                                        output_dump=args.dump,
+                                        output_sqldb=args.sqldb)
     else:
-        tcio = TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                         baseline=args.baseline,
-                         reform=args.reform,
-                         assump=args.assump)
+        tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
+                            baseline=args.baseline,
+                            reform=args.reform,
+                            assump=args.assump)
         if tcio.errmsg:
             sys.stderr.write(tcio.errmsg)
             sys.stderr.write('USAGE: tc --help\n')

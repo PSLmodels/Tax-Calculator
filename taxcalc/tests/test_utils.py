@@ -35,7 +35,7 @@ from taxcalc.utils import (DIST_VARIABLES,
                            certainty_equivalent,
                            ce_aftertax_expanded_income,
                            nonsmall_diffs,
-                           charitable_giving_response)
+                           quantity_response)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -881,22 +881,22 @@ def test_nonsmall_diffs():
     assert nonsmall_diffs(['12.3'], ['AAA'])
 
 
-def test_charitable_giving_response():
+def test_quantity_response():
     quantity = np.array([1.0] * 10)
-    res = charitable_giving_response(quantity,
-                                     price_elasticity=0,
-                                     aftertax_price1=None,
-                                     aftertax_price2=None,
-                                     income_elasticity=0,
-                                     aftertax_income1=None,
-                                     aftertax_income2=None)
+    res = quantity_response(quantity,
+                            price_elasticity=0,
+                            aftertax_price1=None,
+                            aftertax_price2=None,
+                            income_elasticity=0,
+                            aftertax_income1=None,
+                            aftertax_income2=None)
     assert np.allclose(res, np.zeros(quantity.shape))
     one = np.ones(quantity.shape)
-    res = charitable_giving_response(quantity,
-                                     price_elasticity=-0.2,
-                                     aftertax_price1=one,
-                                     aftertax_price2=one,
-                                     income_elasticity=0.1,
-                                     aftertax_income1=one,
-                                     aftertax_income2=(one + one))
+    res = quantity_response(quantity,
+                            price_elasticity=-0.2,
+                            aftertax_price1=one,
+                            aftertax_price2=one,
+                            income_elasticity=0.1,
+                            aftertax_income1=one,
+                            aftertax_income2=(one + one))
     assert not np.allclose(res, np.zeros(quantity.shape))

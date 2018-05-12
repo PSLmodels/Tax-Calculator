@@ -32,8 +32,8 @@ from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
-from taxcalc.growdiff import Growdiff
-from taxcalc.growfactors import Growfactors
+from taxcalc.growdiff import GrowDiff
+from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            DIFF_VARIABLES, create_difference_table,
                            create_diagnostic_table,
@@ -1329,10 +1329,10 @@ class Calculator(object):
         # begin main logic of reform_documentation
         # create Policy object with pre-reform (i.e., baseline) values
         # ... create gdiff_baseline object
-        gdb = Growdiff()
+        gdb = GrowDiff()
         gdb.update_growdiff(params['growdiff_baseline'])
         # ... create Growfactors clp object that incorporates gdiff_baseline
-        gfactors_clp = Growfactors()
+        gfactors_clp = GrowFactors()
         gdb.apply_to(gfactors_clp)
         # ... create Policy object containing pre-reform parameter values
         clp = Policy(gfactors=gfactors_clp)

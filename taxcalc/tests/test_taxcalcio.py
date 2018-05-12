@@ -11,7 +11,7 @@ import os
 import tempfile
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO, Growdiff  # pylint: disable=import-error
+from taxcalc import TaxCalcIO, GrowDiff  # pylint: disable=import-error
 
 
 @pytest.fixture(scope='module', name='rawinputfile')
@@ -286,8 +286,8 @@ def fixture_assumpfile3():
     "consumption": {},
     "behavior": {},
     "growdiff_baseline": {},
-    "growdiff_response": {"_ABxxK": {"2015": [-0.01]}},
-    "growmodel": {}
+    "growdiff_response": {"_ABOOK": {"2018": [0.01]}},
+    "growmodel": {"_active": {"2018": [true]}}
     }
     """
     afile.write(contents)
@@ -320,12 +320,12 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
 
 @pytest.mark.parametrize('year, base, ref, asm, gdr', [
     (2000, 'reformfile0', 'reformfile0', None, list()),
-    (2099, 'reformfile0', 'reformfile0', None, Growdiff()),
-    (2020, 'errorreformfile', 'errorreformfile', None, Growdiff()),
+    (2099, 'reformfile0', 'reformfile0', None, GrowDiff()),
+    (2020, 'errorreformfile', 'errorreformfile', None, GrowDiff()),
     (2020, 'reformfile0', 'reformfile0', 'assumpfile0', 'has_gdiff_response'),
-    (2020, 'reformfile0', 'reformfile0', 'assumpfile0', Growdiff()),
-    (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', Growdiff()),
-    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', Growdiff())
+    (2020, 'reformfile0', 'reformfile0', 'assumpfile0', GrowDiff()),
+    (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', GrowDiff()),
+    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', GrowDiff())
 ])
 def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
                      assumpfile0, year, base, ref, asm, gdr):
@@ -357,7 +357,7 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
     else:
         assump = asm
     if gdr == 'has_gdiff_response':
-        gdiff_resp = Growdiff()
+        gdiff_resp = GrowDiff()
         gdiff_resp.update_growdiff({2015: {"_ABOOK": [-0.01]}})
     else:
         gdiff_resp = gdr
@@ -393,7 +393,7 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=reformfile0.name,
               assump=None,
-              growdiff_response=Growdiff(),
+              growdiff_response=GrowDiff(),
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -959,8 +959,6 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           aging_input_data=True,
                                           exact_calculations=False)
     assert errmsg
-    # TODO: activate following test code when can read growmod parameters
-    """
     # bad assump value
     errmsg = TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                           tax_year=2020,
@@ -970,14 +968,13 @@ def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
                                           aging_input_data=True,
                                           exact_calculations=False)
     assert errmsg
-    """
 
 
 def test_growmodel_analysis(reformfile9, assumpfile9):
     """
     Test TaxCalcIO.growmodel_analysis function with no output.
     """
-    if TaxCalcIO.using_growth_model(assumpfile9.name):
+    if TaxCalcIO.using_growmodel(assumpfile9.name):
         TaxCalcIO.growmodel_analysis(input_data='cps.csv',
                                      tax_year=2015,
                                      baseline=None,

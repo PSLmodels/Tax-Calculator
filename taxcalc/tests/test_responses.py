@@ -7,9 +7,9 @@ Test example JSON response assumption files in taxcalc/responses directory
 
 import os
 import glob
-import pytest
+import pytest  # pylint: disable=unused-import
 # pylint: disable=import-error
-from taxcalc import Calculator, Consumption, Behavior, Growdiff
+from taxcalc import Calculator, Consumption, Behavior, GrowDiff, GrowModel
 
 
 def test_response_json(tests_path):
@@ -17,6 +17,7 @@ def test_response_json(tests_path):
     Check that each JSON file can be converted into dictionaries that
     can be used to construct objects needed for a Calculator object.
     """
+    # pylint: disable=too-many-locals
     responses_path = os.path.join(tests_path, '..', 'responses', '*.json')
     for jpf in glob.glob(responses_path):
         # read contents of jpf (JSON parameter filename)
@@ -31,20 +32,17 @@ def test_response_json(tests_path):
         if response_file:
             # pylint: disable=protected-access
             (con, beh, gdiff_base, gdiff_resp,
-             grow_mod) = Calculator._read_json_econ_assump_text(jpf_text)
+             grow_model) = Calculator._read_json_econ_assump_text(jpf_text)
             cons = Consumption()
             cons.update_consumption(con)
             behv = Behavior()
             behv.update_behavior(beh)
-            growdiff_baseline = Growdiff()
+            growdiff_baseline = GrowDiff()
             growdiff_baseline.update_growdiff(gdiff_base)
-            growdiff_response = Growdiff()
+            growdiff_response = GrowDiff()
             growdiff_response.update_growdiff(gdiff_resp)
-            # TODO: activate commented-out code below
-            """
-            growmod = Growmod()
-            growmod.update_growmod(grow_mod)
-            """
+            growmodel = GrowModel()
+            growmodel.update_growmodel(grow_model)
         else:  # jpf_text is not a valid JSON response assumption file
             print('test-failing-filename: ' +
                   jpf)
