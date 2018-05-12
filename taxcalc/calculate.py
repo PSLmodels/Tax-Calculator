@@ -1117,7 +1117,8 @@ class Calculator(object):
                                 'growdiff_baseline', 'growdiff_response',
                                 'growmodel'])
     INCOMPATIBLE_ASSUMPTIONS = [
-        ('growdiff_response', 'behavior'),
+        ('behavior', 'growdiff_baseline'),
+        ('behavior', 'growdiff_response'),
         ('growmodel', 'behavior'),
         ('growmodel', 'growdiff_baseline'),
         ('growmodel', 'growdiff_response')
