@@ -1241,7 +1241,7 @@ class Calculator(object):
             ----------
             years: list of change years
             change: dictionary of parameter changes
-            base: Policy or Growdiff object with baseline values
+            base: Policy or GrowDiff object with baseline values
             syear: parameter start calendar year
 
             Returns
@@ -1337,8 +1337,8 @@ class Calculator(object):
                             elif basevals[param]['boolean_value']:
                                 bval = bool(bval)
                         doc += '  baseline_value: {}\n'.format(bval)
-                    else:  # if basex is Growdiff object
-                        # all Growdiff parameters have zero as default value
+                    else:  # if basex is GrowDiff object
+                        # all GrowDiff parameters have zero as default value
                         doc += '  baseline_value: 0.0\n'
             return doc
 
@@ -1347,7 +1347,7 @@ class Calculator(object):
         # ... create gdiff_baseline object
         gdb = GrowDiff()
         gdb.update_growdiff(params['growdiff_baseline'])
-        # ... create Growfactors clp object that incorporates gdiff_baseline
+        # ... create GrowFactors object that will incorporate gdiff_baseline
         gfactors_clp = GrowFactors()
         gdb.apply_to(gfactors_clp)
         # ... create Policy object containing pre-reform parameter values
@@ -1589,7 +1589,7 @@ class Calculator(object):
         These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the Behavior.update_behavior(behv_dict) method, or
-        the Growdiff.update_growdiff(gdiff_dict) method, or
+        the GrowDiff.update_growdiff(gdiff_dict) method, or
         the GrowModel.update_growmodel(growmodel_dict) method.
         """
         # pylint: disable=too-many-locals
@@ -1644,7 +1644,7 @@ class Calculator(object):
         the Policy.implement_reform() method, or
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or
-        the Growdiff.update_growdiff() method, or
+        the GrowDiff.update_growdiff() method, or
         the GrowModel.update_growmodel() method.
 
         Specified input dictionary has string parameter primary keys and
