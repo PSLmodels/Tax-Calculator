@@ -355,8 +355,7 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
         assump = assumpfile0.name
     else:
         assump = asm
-
-
+    # call TaxCalcIO constructor
     tcio = TaxCalcIO(input_data=recdf,
                      tax_year=year,
                      baseline=baseline,
