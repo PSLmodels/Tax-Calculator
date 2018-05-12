@@ -233,7 +233,6 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
-        using_growmodel = TaxCalcIO.using_growmodel(assump)
         # get parameter dictionary from --baseline file
         basedict = Calculator.read_json_param_objects(baseline, None)
         # get parameter dictionaries from --reform file(s) and --assump file
@@ -251,22 +250,10 @@ class TaxCalcIO(object):
         # remember parameters for reform documentation
         self.param_dict = paramdict
         self.policy_dicts = policydicts
-        # determine whether using GrowModel
-        if using_growmodel:
-            gd_response = GrowDiff()
-            gd_response.update_growdiff(paramdict['growdiff_response'])
-            if gd_response.has_any_response():
-                msg = 'ASSUMP file cannot specify any "growdiff_response" '
-                msg += 'when ASSUMP file activates growth model via "growmod"'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Behavior object
         beh = Behavior()
         beh.update_behavior(paramdict['behavior'])
         self.behavior_has_any_response = beh.has_any_response()
-        if using_growmodel and self.behavior_has_any_response:
-            msg = 'ASSUMP file cannot specify any "behavior" '
-            msg += 'when ASSUMP file activates growth model via "growmod"'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
         # create gdiff_baseline object
         gdiff_baseline = GrowDiff()
         gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
@@ -283,12 +270,6 @@ class TaxCalcIO(object):
             gdiff_response = None
             msg = 'growdiff_response is neither None nor a GrowDiff object'
             self.errmsg += 'ERROR: {}\n'.format(msg)
-        if gdiff_response is not None:
-            some_gdiff_response = gdiff_response.has_any_response()
-            if self.behavior_has_any_response and some_gdiff_response:
-                msg = 'ASSUMP file cannot specify any "behavior" when '
-                msg += 'ASSUMP file specifies any "growdiff_response"'
-                self.errmsg += 'ERROR: {}\n'.format(msg)
         # create GrowFactors ref object that has both gdiff objects applied
         gfactors_ref = GrowFactors()
         gdiff_baseline.apply_to(gfactors_ref)
@@ -804,170 +785,3 @@ class TaxCalcIO(object):
         # specify tax calculation year
         odf['FLPDYR'] = self.tax_year()
         return odf
-
-    @staticmethod
-    def using_growmodel(assump):
-        """
-        Return true if using the GrowModel class; otherwise, return false;
-        using assump, which is argument of Calculator.read_json_param_objects
-        """
-        paramdict = Calculator.read_json_param_objects(None, assump)
-        gmdict = paramdict['growmodel']
-        for cyr in gmdict.keys():
-            for parm in gmdict[cyr].keys():
-                if parm == '_active' and np.any(gmdict[cyr][parm]):
-                    return True
-        return False
-
-    @staticmethod
-    def growmodel_analysis(input_data, tax_year, baseline, reform, assump,
-                           aging_input_data, exact_calculations,
-                           # first six parameters above
-                           # last six parameters below
-                           writing_output_file=False,
-                           output_tables=False,
-                           output_graphs=False,
-                           output_ceeu=False,
-                           dump_varset=None,
-                           output_dump=False,
-                           output_sqldb=False):
-        """
-        High-level logic for dynamic analysis using GrowModel class.
-
-        Parameters
-        ----------
-        First five parameters are same as the first five parameters of
-        the TaxCalcIO.init method.
-
-        Last seven parameters are same as the first seven parameters of
-        the TaxCalcIO.analyze method.
-
-        Returns
-        -------
-        errmsg: string
-        """
-        # pylint: disable=too-many-arguments,too-many-locals
-        errmsg = ''
-        # check for illegal parameters
-        data_year = 9999
-        if isinstance(input_data, six.string_types):
-            if input_data.endswith('puf.csv'):
-                data_year = Records.PUFCSV_YEAR
-            elif input_data.endswith('cps.csv'):
-                data_year = Records.CPSCSV_YEAR
-            else:
-                msg = 'input_data is neither "puf.csv" nor "cps.csv"'
-                errmsg += 'ERROR: {}\n'.format(msg)
-        else:
-            msg = 'input_data is not a string'
-            errmsg += 'ERROR: {}\n'.format(msg)
-        start_year = max(data_year, Policy.JSON_START_YEAR)
-        if tax_year < start_year:
-            msg = 'tax_year={} < start_year={}'.format(tax_year, start_year)
-            errmsg += 'ERROR: {}\n'.format(msg)
-        if not aging_input_data:
-            msg = 'aging_input_data=False'
-            errmsg += 'ERROR: {}\n'.format(msg)
-        if not errmsg:
-            gdiff_dict = {start_year: {}}
-            progress = 'STARTING GROWMODEL ANALYSIS FOR YEAR {}'
-            for year in range(start_year, tax_year + 1):
-                print(
-                    progress.format(year)
-                )
-                # specify growdiff_response using gdiff_dict
-                growdiff_response = GrowDiff()
-                growdiff_response.update_growdiff(gdiff_dict)
-                (gd_dict,
-                 emsg) = TaxCalcIO.annual_analysis(input_data, tax_year,
-                                                   baseline, reform, assump,
-                                                   growdiff_response,
-                                                   aging_input_data,
-                                                   exact_calculations,
-                                                   # first seven are above
-                                                   year,
-                                                   # last six are below
-                                                   writing_output_file,
-                                                   output_tables,
-                                                   output_graphs,
-                                                   output_ceeu,
-                                                   dump_varset,
-                                                   output_dump,
-                                                   output_sqldb)
-                errmsg += emsg
-                if errmsg:
-                    break  # out of year loop
-                gdiff_dict[year + 1] = gd_dict
-        return errmsg
-
-    @staticmethod
-    def annual_analysis(input_data, tax_year, baseline, reform, assump,
-                        growdiff_response,
-                        aging_input_data, exact_calculations,
-                        # first seven parameters above
-                        year,
-                        # last six parameters below
-                        writing_output_file,
-                        output_tables,
-                        output_graphs,
-                        output_ceeu,
-                        dump_varset,
-                        output_dump,
-                        output_sqldb):
-        """
-        Conduct static analysis for specifed year and growdiff_response.
-
-        Parameters
-        ----------
-        First five parameters are same as the first five parameters of
-        the TaxCalcIO.init method.
-
-        Last seven parameters are same as the first seven parameters of
-        the TaxCalcIO.analyze method.
-
-        Returns
-        -------
-        gd_dict: GrowDiff sub-dictionary for year+1
-        errmsg: string
-        """
-        # pylint: disable=too-many-arguments,too-many-locals
-        # instantiate TaxCalcIO object for specified year and growdiff_response
-        tcio = TaxCalcIO(input_data=input_data,
-                         tax_year=year,
-                         baseline=baseline,
-                         reform=reform,
-                         assump=assump)
-        if tcio.errmsg:
-            return (None, tcio.errmsg)
-        tcio.init(input_data=input_data,
-                  tax_year=year,
-                  baseline=baseline,
-                  reform=reform,
-                  assump=assump,
-                  growdiff_response=growdiff_response,
-                  aging_input_data=aging_input_data,
-                  exact_calculations=exact_calculations)
-        if tcio.errmsg:
-            return (None, tcio.errmsg)
-        if year == tax_year:
-            # conduct final tax analysis for year equal to tax_year
-            tcio.analyze(writing_output_file=writing_output_file,
-                         output_tables=output_tables,
-                         output_graphs=output_graphs,
-                         output_ceeu=output_ceeu,
-                         dump_varset=dump_varset,
-                         output_dump=output_dump,
-                         output_sqldb=output_sqldb)
-            gd_dict = {}
-        else:
-            # conduct intermediate tax analysis for year less than tax_year
-            tcio.analyze()
-            # build dict in gdiff_dict key:dict pair for key equal to next year
-            # ... extract tcio results for year needed by GrowModel class
-            # >>>>> add logic here <<<<<
-            # ... use extracted results to advance GrowModel to next year
-            # >>>>> add logic here <<<<<
-            # ... extract next year GrowModel results for next year gdiff_dict
-            # >>>>> add logic here <<<<<
-            gd_dict = {}  # TODO: temporary code
-        return (gd_dict, '')

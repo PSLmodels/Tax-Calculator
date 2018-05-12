@@ -322,7 +322,6 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     (2000, 'reformfile0', 'reformfile0', None, list()),
     (2099, 'reformfile0', 'reformfile0', None, GrowDiff()),
     (2020, 'errorreformfile', 'errorreformfile', None, GrowDiff()),
-    (2020, 'reformfile0', 'reformfile0', 'assumpfile0', 'has_gdiff_response'),
     (2020, 'reformfile0', 'reformfile0', 'assumpfile0', GrowDiff()),
     (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', GrowDiff()),
     (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', GrowDiff())
@@ -356,11 +355,8 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
         assump = assumpfile0.name
     else:
         assump = asm
-    if gdr == 'has_gdiff_response':
-        gdiff_resp = GrowDiff()
-        gdiff_resp.update_growdiff({2015: {"_ABOOK": [-0.01]}})
-    else:
-        gdiff_resp = gdr
+
+
     tcio = TaxCalcIO(input_data=recdf,
                      tax_year=year,
                      baseline=baseline,
@@ -368,10 +364,10 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
                      assump=assump)
     assert not tcio.errmsg
     # test TaxCalcIO.init method
-    if asm is None or gdr == 'has_gdiff_response':
+    if asm is None:
         tcio.init(input_data=recdf, tax_year=year,
                   baseline=baseline, reform=reform, assump=assump,
-                  growdiff_response=gdiff_resp,
+                  growdiff_response=gdr,
                   aging_input_data=False,
                   exact_calculations=True)
         assert tcio.errmsg
@@ -908,77 +904,3 @@ def fixture_assumpfile9():
             os.remove(afile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
-
-
-def test_bad_growmodel_analysis(reformfile9, assumpfile9, assumpfile3):
-    """
-    Test incorrect TaxCalcIO.growmodel_analysis function calls.
-    """
-    # bad input_data type
-    errmsg = TaxCalcIO.growmodel_analysis(input_data=list(),
-                                          tax_year=2020,
-                                          baseline=None,
-                                          reform=reformfile9.name,
-                                          assump=assumpfile9.name,
-                                          aging_input_data=True,
-                                          exact_calculations=False)
-    assert errmsg
-    # bad aging_input_data value
-    errmsg = TaxCalcIO.growmodel_analysis(input_data='puf.csv',
-                                          tax_year=2020,
-                                          baseline=None,
-                                          reform=reformfile9.name,
-                                          assump=assumpfile9.name,
-                                          aging_input_data=False,
-                                          exact_calculations=False)
-    assert errmsg
-    # bad input_data value
-    errmsg = TaxCalcIO.growmodel_analysis(input_data='bad.csv',
-                                          tax_year=2020,
-                                          baseline=None,
-                                          reform=reformfile9.name,
-                                          assump=assumpfile9.name,
-                                          aging_input_data=True,
-                                          exact_calculations=False)
-    assert errmsg
-    # bad tax_year (because is before first data year)
-    errmsg = TaxCalcIO.growmodel_analysis(input_data='cps.csv',
-                                          tax_year=2013,
-                                          baseline=None,
-                                          reform=reformfile9.name,
-                                          assump=assumpfile9.name,
-                                          aging_input_data=True,
-                                          exact_calculations=False)
-    assert errmsg
-    # bad reform file name
-    errmsg = TaxCalcIO.growmodel_analysis(input_data='cps.csv',
-                                          tax_year=2020,
-                                          baseline=None,
-                                          reform='reform.bad',
-                                          assump=assumpfile9.name,
-                                          aging_input_data=True,
-                                          exact_calculations=False)
-    assert errmsg
-    # bad assump value
-    errmsg = TaxCalcIO.growmodel_analysis(input_data='cps.csv',
-                                          tax_year=2020,
-                                          baseline=None,
-                                          reform=reformfile9.name,
-                                          assump=assumpfile3.name,
-                                          aging_input_data=True,
-                                          exact_calculations=False)
-    assert errmsg
-
-
-def test_growmodel_analysis(reformfile9, assumpfile9):
-    """
-    Test TaxCalcIO.growmodel_analysis function with no output.
-    """
-    if TaxCalcIO.using_growmodel(assumpfile9.name):
-        TaxCalcIO.growmodel_analysis(input_data='cps.csv',
-                                     tax_year=2015,
-                                     baseline=None,
-                                     reform=reformfile9.name,
-                                     assump=assumpfile9.name,
-                                     aging_input_data=True,
-                                     exact_calculations=False)

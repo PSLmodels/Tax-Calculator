@@ -1112,6 +1112,17 @@ class Calculator(object):
         del dt2
         return fig
 
+    REQUIRED_REFORM_KEYS = set(['policy'])
+    REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
+                                'growdiff_baseline', 'growdiff_response',
+                                'growmodel'])
+    INCOMPATIBLE_ASSUMPTIONS = [
+        ('growdiff_response', 'behavior'),
+        ('growmodel', 'behavior'),
+        ('growmodel', 'growdiff_baseline'),
+        ('growmodel', 'growdiff_response')
+    ]
+
     @staticmethod
     def read_json_param_objects(reform, assump):
         """
@@ -1138,9 +1149,14 @@ class Calculator(object):
          "growdiff_baseline": {...},
          "growdiff_response": {...},
          "growmodel": {...}}
+        The {...} should be empty like this {} if not specifying a policy
+        reform or if not specifying any economic assumptions of that type.
 
         The returned dictionary contains parameter lists (not arrays).
+
+        Note that specifying INCOMPATIBLE_ASSSUMPTIONS raise a ValueError.
         """
+        # pylint: disable=too-many-branches
         # first process second assump parameter
         if assump is None:
             cons_dict = dict()
@@ -1175,11 +1191,7 @@ class Calculator(object):
             )
         else:
             raise ValueError('reform is neither None nor string')
-        # raise error if specifying both behavior and growdiff_response
-        if behv_dict and gdiff_resp_dict:
-            msg = 'both behavior and growdiff_response are specified'
-            raise ValueError('ERROR: ' + msg + '\n')
-        # finally construct and return single composite dictionary
+        # construct single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict
         param_dict['consumption'] = cons_dict
@@ -1187,12 +1199,16 @@ class Calculator(object):
         param_dict['growdiff_baseline'] = gdiff_base_dict
         param_dict['growdiff_response'] = gdiff_resp_dict
         param_dict['growmodel'] = growmodel_dict
+        # raise error if specifying incompatible assumptions
+        emsg = ''
+        for asm in Calculator.INCOMPATIBLE_ASSUMPTIONS:
+            if param_dict[asm[0]] and param_dict[asm[1]]:
+                emsg += 'ERROR: both {} and {} are specified\n'.format(asm[0],
+                                                                       asm[1])
+        if emsg:
+            raise ValueError(emsg)
+        # return the composite dictionary
         return param_dict
-
-    REQUIRED_REFORM_KEYS = set(['policy'])
-    REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
-                                'growdiff_baseline', 'growdiff_response',
-                                'growmodel'])
 
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
@@ -1526,15 +1542,15 @@ class Calculator(object):
             msg += bline + '\n'
             raise ValueError(msg)
         # check key contents of dictionary
-        actual_keys = raw_dict.keys()
-        for rkey in Calculator.REQUIRED_REFORM_KEYS:
-            if rkey not in actual_keys:
-                msg = 'key "{}" is not in policy reform file'
-                raise ValueError(msg.format(rkey))
-        for rkey in actual_keys:
-            if rkey in Calculator.REQUIRED_ASSUMP_KEYS:
-                msg = 'key "{}" should be in economic assumption file'
-                raise ValueError(msg.format(rkey))
+        actual_keys = set(raw_dict.keys())
+        missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
+        if missing_keys:
+            msg = 'required key(s) "{}" missing from policy reform file'
+            raise ValueError(msg.format(missing_keys))
+        illegal_keys = actual_keys - Calculator.REQUIRED_REFORM_KEYS
+        if illegal_keys:
+            msg = 'illegal key(s) "{}" in policy reform file'
+            raise ValueError(msg.format(illegal_keys))
         # convert raw_dict['policy'] dictionary into prdict
         tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'],
                                                       growdiff_baseline_dict,
@@ -1574,7 +1590,7 @@ class Calculator(object):
         the Consumption.update_consumption(cons_dict) method, or
         the Behavior.update_behavior(behv_dict) method, or
         the Growdiff.update_growdiff(gdiff_dict) method, or
-        the GrowModel.update_growmod(growmodel_dict) method.
+        the GrowModel.update_growmodel(growmodel_dict) method.
         """
         # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
@@ -1597,15 +1613,15 @@ class Calculator(object):
             msg += bline + '\n'
             raise ValueError(msg)
         # check key contents of dictionary
-        actual_keys = raw_dict.keys()
-        for rkey in Calculator.REQUIRED_ASSUMP_KEYS:
-            if rkey not in actual_keys:
-                msg = 'key "{}" is not in economic assumption file'
-                raise ValueError(msg.format(rkey))
-        for rkey in actual_keys:
-            if rkey in Calculator.REQUIRED_REFORM_KEYS:
-                msg = 'key "{}" should be in policy reform file'
-                raise ValueError(msg.format(rkey))
+        actual_keys = set(raw_dict.keys())
+        missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys
+        if missing_keys:
+            msg = 'required key(s) "{}" missing from economic assumption file'
+            raise ValueError(msg.format(missing_keys))
+        illegal_keys = actual_keys - Calculator.REQUIRED_ASSUMP_KEYS
+        if illegal_keys:
+            msg = 'illegal key(s) "{}" in economic assumption file'
+            raise ValueError(msg.format(illegal_keys))
         # convert the assumption dictionaries in raw_dict
         key = 'consumption'
         cons_dict = Calculator._convert_parameter_dict(raw_dict[key])
