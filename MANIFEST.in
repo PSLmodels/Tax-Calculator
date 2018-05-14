@@ -6,7 +6,7 @@ include taxcalc/puf_weights.csv.gz
 include taxcalc/puf_ratios.csv
 include taxcalc/current_law_policy.json
 include taxcalc/behavior.json
-include taxcalc/growth.json
+include taxcalc/growmodel.json
 include taxcalc/consumption.json
 include taxcalc/records_variables.json
 include taxcalc/cps.csv.gz

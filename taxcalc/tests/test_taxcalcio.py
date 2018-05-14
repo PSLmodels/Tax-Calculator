@@ -11,7 +11,7 @@ import os
 import tempfile
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO, GrowDiff  # pylint: disable=import-error
+from taxcalc import TaxCalcIO  # pylint: disable=import-error
 
 
 @pytest.fixture(scope='module', name='rawinputfile')
@@ -318,16 +318,16 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     assert tcio.errmsg
 
 
-@pytest.mark.parametrize('year, base, ref, asm, gdr', [
-    (2000, 'reformfile0', 'reformfile0', None, list()),
-    (2099, 'reformfile0', 'reformfile0', None, GrowDiff()),
-    (2020, 'errorreformfile', 'errorreformfile', None, GrowDiff()),
-    (2020, 'reformfile0', 'reformfile0', 'assumpfile0', GrowDiff()),
-    (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', GrowDiff()),
-    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', GrowDiff())
+@pytest.mark.parametrize('year, base, ref, asm', [
+    (2000, 'reformfile0', 'reformfile0', None),
+    (2099, 'reformfile0', 'reformfile0', None),
+    (2020, 'errorreformfile', 'errorreformfile', None),
+    (2020, 'reformfile0', 'reformfile0', 'assumpfile0'),
+    (2020, 'reformfile0', 'reformfilex1', 'assumpfile0'),
+    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0')
 ])
 def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
-                     assumpfile0, year, base, ref, asm, gdr):
+                     assumpfile0, year, base, ref, asm):
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
@@ -366,7 +366,8 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
     if asm is None:
         tcio.init(input_data=recdf, tax_year=year,
                   baseline=baseline, reform=reform, assump=assump,
-                  growdiff_response=gdr,
+                  using_growmodel=False,
+                  growdiff_growmodel=None,
                   aging_input_data=False,
                   exact_calculations=True)
         assert tcio.errmsg
@@ -388,7 +389,8 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=reformfile0.name,
               assump=None,
-              growdiff_response=GrowDiff(),
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -405,7 +407,8 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=None,
               assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -420,7 +423,8 @@ def test_ctor_init_with_cps_files():
     txyr = 2020
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -429,7 +433,8 @@ def test_ctor_init_with_cps_files():
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert tcio.errmsg
@@ -461,7 +466,8 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
     assert not tcio.errmsg
     tcio.init(input_data=recdf, tax_year=year,
               baseline=None, reform=None, assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -489,7 +495,8 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -552,7 +559,8 @@ def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=compound_reform,
               assump=assumpfile1.name,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -579,7 +587,8 @@ def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -626,7 +635,8 @@ def test_no_tables_or_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -675,7 +685,8 @@ def test_tables(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -713,7 +724,8 @@ def test_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -749,7 +761,8 @@ def test_ceeu_output1(lumpsumreformfile):
               baseline=None,
               reform=lumpsumreformfile.name,
               assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -775,7 +788,8 @@ def test_ceeu_output2():
               baseline=None,
               reform=None,
               assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -801,7 +815,8 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
               baseline=None,
               reform=lumpsumreformfile.name,
               assump=assumpfile2.name,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -845,7 +860,8 @@ def test_analyze_warnings_print(warnreformfile):
               baseline=None,
               reform=warnreformfile.name,
               assump=None,
-              growdiff_response=None,
+              using_growmodel=False,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
