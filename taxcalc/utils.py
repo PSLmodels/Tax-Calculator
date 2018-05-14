@@ -1726,7 +1726,7 @@ def quantity_response(quantity,
     else:
         ati1 = np.where(aftertax_income1 < 1.0, 1.0, aftertax_income1)
         ati2 = np.where(aftertax_income2 < 1.0, 1.0, aftertax_income2)
-        pch_income = ati2 / ati1 - 1.
+        pch_income = np.where(aftertax_income1 > 0, ati2 / ati1 - 1, 0)
     # compute response
     pch_q = price_elasticity * pch_price + income_elasticity * pch_income
     response = pch_q * quantity
