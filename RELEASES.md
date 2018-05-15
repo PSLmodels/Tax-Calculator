@@ -13,9 +13,6 @@ for a complete commit history.
 - Simplify table-creation Calculator methods and related utility functions
   [[#1984](https://github.com/open-source-economics/Tax-Calculator/pull/1984)
   by Martin Holmer]
-- Add validity checking for non-behavior assumption parameters
-  [[#1992](https://github.com/open-source-economics/Tax-Calculator/pull/1992)
-  by Martin Holmer]
 - Rename `Growfactors` class as `GrowFactors` and rename `Growdiff` class as `GrowDiff`
   [[#1996](https://github.com/open-source-economics/Tax-Calculator/pull/1996)
   by Martin Holmer]
@@ -38,7 +35,10 @@ for a complete commit history.
 - Update CODING and TESTING documentation to reflect recommended usage of `pycodestyle` in place of `pep8`
   [[#1989](https://github.com/open-source-economics/Tax-Calculator/pull/1989)
   by Martin Holmer]
-- Add Tax-Calculator Cookbook recipe using Behavior class and its static `response` method
+- Add validity checking for non-behavior assumption parameters
+  [[#1992](https://github.com/open-source-economics/Tax-Calculator/pull/1992)
+  by Martin Holmer]
+- Add Tax-Calculator Cookbook recipe using Behavior class and its `response` method
   [[#1993](https://github.com/open-source-economics/Tax-Calculator/pull/1993)
   by Martin Holmer]
 - Add Tax-Calculator Cookbook recipe showing how to create a custom table
