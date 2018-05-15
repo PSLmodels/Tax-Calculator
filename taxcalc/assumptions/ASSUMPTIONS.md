@@ -1,4 +1,4 @@
-# HOW TO SPECIFY ECONOMIC ASSUMPTIONS IN AN JSON ASSUMPTION FILE
+# HOW TO SPECIFY ECONOMIC ASSUMPTIONS IN A JSON ASSUMPTION FILE
 
 There is a way to specify in a text file the collection of economic
 assumptions about how individuals and the overall economy respond to a
