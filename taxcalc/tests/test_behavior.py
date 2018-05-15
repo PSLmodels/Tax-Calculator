@@ -10,6 +10,8 @@ from taxcalc import Policy, Records, Calculator, Behavior
 
 def test_incorrect_behavior_instantiation():
     with pytest.raises(ValueError):
+        Behavior(start_year=2000)
+    with pytest.raises(ValueError):
         Behavior(num_years=0)
     with pytest.raises(FloatingPointError):
         np.divide(1., 0.)
@@ -41,8 +43,7 @@ def test_behavioral_response_calculator(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec, behavior=behv0)
     assert calc2.behavior_has_response() is False
     calc2_behv0 = Behavior.response(calc1, calc2)
-    behavior1 = {year: {'_BE_sub': [0.3], '_BE_inc': [-0.1], '_BE_cg': [0.0],
-                        '_BE_subinc_wrt_earnings': [True]}}
+    behavior1 = {year: {'_BE_sub': [0.3], '_BE_inc': [-0.1], '_BE_cg': [0.0]}}
     behv1 = Behavior()
     behv1.update_behavior(behavior1)
     calc2 = Calculator(policy=pol, records=rec, behavior=behv1)
@@ -106,8 +107,6 @@ def test_incorrect_update_behavior():
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_sub': [-0.2]}})
     with pytest.raises(ValueError):
-        Behavior().update_behavior({2017: {'_BE_subinc_wrt_earnings': [2]}})
-    with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_cg': [+0.8]}})
     with pytest.raises(ValueError):
         Behavior().update_behavior({2013: {'_BE_xx': [0.0]}})
@@ -138,10 +137,6 @@ def test_validate_param_names_types_errors():
     specs1 = {2019: {'_BE_inc': [True]}}
     with pytest.raises(ValueError):
         behv1.update_behavior(specs1)
-    behv2 = Behavior()
-    specs2 = {2020: {'_BE_subinc_wrt_earnings': [0.3]}}
-    with pytest.raises(ValueError):
-        behv2.update_behavior(specs2)
 
 
 def test_validate_param_values_errors():
@@ -156,7 +151,6 @@ def test_validate_param_values_errors():
     behv2 = Behavior()
     specs2 = {
         2020: {
-            '_BE_subinc_wrt_earnings': [True],
             '_BE_cg': [-0.2],
             '_BE_sub': [0.3]
         }

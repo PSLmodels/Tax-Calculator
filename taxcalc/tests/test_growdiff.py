@@ -5,42 +5,37 @@ import os
 import json
 from numpy.testing import assert_allclose
 import pytest
-from taxcalc import Growdiff, Growfactors, Policy
+from taxcalc import GrowDiff, GrowFactors, Policy
 
 
 def test_year_consistency():
-    assert Growdiff.JSON_START_YEAR == Policy.JSON_START_YEAR
-    assert Growdiff.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
+    assert GrowDiff.JSON_START_YEAR == Policy.JSON_START_YEAR
+    assert GrowDiff.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
 
 
 def test_incorrect_growdiff_ctor():
     with pytest.raises(ValueError):
-        gdiff = Growdiff(growdiff_dict=list())
+        gdiff = GrowDiff(start_year=2000)
     with pytest.raises(ValueError):
-        gdiff = Growdiff(num_years=0)
-
-
-def test_correct_but_not_useful_growdiff_ctor():
-    gdiff = Growdiff(growdiff_dict={})
-    assert gdiff
+        gdiff = GrowDiff(num_years=0)
 
 
 def test_update_and_apply_growdiff():
     syr = 2013
     nyrs = 5
     lyr = syr + nyrs - 1
-    gdiff = Growdiff(start_year=syr, num_years=nyrs)
-    # update Growdiff instance
+    gdiff = GrowDiff(start_year=syr, num_years=nyrs)
+    # update GrowDiff instance
     diffs = {2014: {'_AWAGE': [0.01]},
              2016: {'_AWAGE': [0.02]}}
     gdiff.update_growdiff(diffs)
     expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02]
     assert_allclose(gdiff._AWAGE, expected_wage_diffs, atol=0.0, rtol=0.0)
-    # apply growdiff to Growfactors instance
-    gf = Growfactors()
+    # apply growdiff to GrowFactors instance
+    gf = GrowFactors()
     pir_pre = gf.price_inflation_rates(syr, lyr)
     wgr_pre = gf.wage_growth_rates(syr, lyr)
-    gfactors = Growfactors()
+    gfactors = GrowFactors()
     gdiff.apply_to(gfactors)
     pir_pst = gfactors.price_inflation_rates(syr, lyr)
     wgr_pst = gfactors.wage_growth_rates(syr, lyr)
@@ -52,22 +47,22 @@ def test_update_and_apply_growdiff():
 
 def test_incorrect_update_growdiff():
     with pytest.raises(ValueError):
-        Growdiff().update_growdiff([])
+        GrowDiff().update_growdiff([])
     with pytest.raises(ValueError):
-        Growdiff().update_growdiff({'xyz': {'_ABOOK': [0.02]}})
+        GrowDiff().update_growdiff({'xyz': {'_ABOOK': [0.02]}})
     with pytest.raises(ValueError):
-        Growdiff().update_growdiff({2012: {'_ABOOK': [0.02]}})
+        GrowDiff().update_growdiff({2012: {'_ABOOK': [0.02]}})
     with pytest.raises(ValueError):
-        Growdiff().update_growdiff({2052: {'_ABOOK': [0.02]}})
+        GrowDiff().update_growdiff({2052: {'_ABOOK': [0.02]}})
     with pytest.raises(ValueError):
-        Growdiff().update_growdiff({2014: {'_MPC_exxxxx': [0.02]}})
+        GrowDiff().update_growdiff({2014: {'_MPC_exxxxx': [0.02]}})
     with pytest.raises(ValueError):
-        Growdiff().update_growdiff({2014: {'_ABOOK': [-1.1]}})
+        GrowDiff().update_growdiff({2014: {'_ABOOK': [-1.1]}})
 
 
 def test_has_any_response():
     syr = 2014
-    gdiff = Growdiff(start_year=syr)
+    gdiff = GrowDiff(start_year=syr)
     assert gdiff.has_any_response() is False
     gdiff.update_growdiff({2020: {'_AWAGE': [0.01]}})
     assert gdiff.current_year == syr

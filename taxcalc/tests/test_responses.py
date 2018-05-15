@@ -8,7 +8,7 @@ Test example JSON response assumption files in taxcalc/responses directory
 import os
 import glob
 # pylint: disable=import-error
-from taxcalc import Calculator, Consumption, Behavior, Growdiff
+from taxcalc import Calculator, Consumption, Behavior, GrowDiff
 
 
 def test_response_json(tests_path):
@@ -34,9 +34,9 @@ def test_response_json(tests_path):
             cons.update_consumption(con)
             behv = Behavior()
             behv.update_behavior(beh)
-            growdiff_baseline = Growdiff()
+            growdiff_baseline = GrowDiff()
             growdiff_baseline.update_growdiff(gdiff_base)
-            growdiff_response = Growdiff()
+            growdiff_response = GrowDiff()
             growdiff_response.update_growdiff(gdiff_resp)
         else:  # jpf_text is not a valid JSON response assumption file
             print('test-failing-filename: ' +

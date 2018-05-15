@@ -1,5 +1,5 @@
 """
-Tax-Calculator Growfactors class.
+Tax-Calculator GrowFactors class.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle growfactors.py
@@ -12,9 +12,9 @@ import pandas as pd
 from taxcalc.utils import read_egg_csv
 
 
-class Growfactors(object):
+class GrowFactors(object):
     """
-    Constructor for the Growfactors class.
+    Constructor for the GrowFactors class.
 
     Parameters
     ----------
@@ -29,12 +29,12 @@ class Growfactors(object):
 
     Returns
     -------
-    class instance: Growfactors
+    class instance: GrowFactors
 
     Notes
     -----
-    Typical usage is "gfactor = Growfactors()", which produces an object
-    containing the default grow factors in the Growfactors.FILENAME file.
+    Typical usage is "gfactor = GrowFactors()", which produces an object
+    containing the default grow factors in the GrowFactors.FILENAME file.
     """
 
     CUR_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -56,17 +56,17 @@ class Growfactors(object):
                                    index_col='YEAR')
             else:
                 # cannot call read_egg_ function in unit tests
-                gfdf = read_egg_csv(Growfactors.FILENAME,
+                gfdf = read_egg_csv(GrowFactors.FILENAME,
                                     index_col='YEAR')  # pragma: no cover
         else:
             raise ValueError('growfactors_filename is not a string')
         assert isinstance(gfdf, pd.DataFrame)
         # check validity of gfdf column names
         gfdf_names = set(list(gfdf))
-        if gfdf_names != Growfactors.VALID_NAMES:
+        if gfdf_names != GrowFactors.VALID_NAMES:
             msg = ('missing names are: {} and invalid names are: {}')
-            missing = Growfactors.VALID_NAMES - gfdf_names
-            invalid = gfdf_names - Growfactors.VALID_NAMES
+            missing = GrowFactors.VALID_NAMES - gfdf_names
+            invalid = gfdf_names - GrowFactors.VALID_NAMES
             raise ValueError(msg.format(missing, invalid))
         # determine first_year and last_year from gfdf
         self._first_year = min(gfdf.index)
@@ -82,14 +82,14 @@ class Growfactors(object):
     @property
     def first_year(self):
         """
-        Growfactors class start_year property.
+        GrowFactors class start_year property.
         """
         return self._first_year
 
     @property
     def last_year(self):
         """
-        Growfactors class last_year property.
+        GrowFactors class last_year property.
         """
         return self._last_year
 
@@ -102,10 +102,10 @@ class Growfactors(object):
             msg = 'first_year={} > last_year={}'
             raise ValueError(msg.format(firstyear, lastyear))
         if firstyear < self.first_year:
-            msg = 'firstyear={} < Growfactors.first_year={}'
+            msg = 'firstyear={} < GrowFactors.first_year={}'
             raise ValueError(msg.format(firstyear, self.first_year))
         if lastyear > self.last_year:
-            msg = 'last_year={} > Growfactors.last_year={}'
+            msg = 'last_year={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(lastyear, self.last_year))
         # pylint: disable=no-member
         rates = [round((self.gfdf['ACPIU'][cyr] - 1.0), 4)
@@ -121,10 +121,10 @@ class Growfactors(object):
             msg = 'firstyear={} > lastyear={}'
             raise ValueError(msg.format(firstyear, lastyear))
         if firstyear < self.first_year:
-            msg = 'firstyear={} < Growfactors.first_year={}'
+            msg = 'firstyear={} < GrowFactors.first_year={}'
             raise ValueError(msg.format(firstyear, self.first_year))
         if lastyear > self.last_year:
-            msg = 'lastyear={} > Growfactors.last_year={}'
+            msg = 'lastyear={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(lastyear, self.last_year))
         # pylint: disable=no-member
         rates = [round((self.gfdf['AWAGE'][cyr] - 1.0), 4)
@@ -136,14 +136,14 @@ class Growfactors(object):
         Return value of factor with specified name for specified year.
         """
         self.used = True
-        if name not in Growfactors.VALID_NAMES:
-            msg = 'name={} not in Growfactors.VALID_NAMES'
+        if name not in GrowFactors.VALID_NAMES:
+            msg = 'name={} not in GrowFactors.VALID_NAMES'
             raise ValueError(msg.format(year, name))
         if year < self.first_year:
-            msg = 'year={} < Growfactors.first_year={}'
+            msg = 'year={} < GrowFactors.first_year={}'
             raise ValueError(msg.format(year, self.first_year))
         if year > self.last_year:
-            msg = 'year={} > Growfactors.last_year={}'
+            msg = 'year={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(year, self.last_year))
         return self.gfdf[name][year]
 

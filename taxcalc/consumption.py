@@ -19,11 +19,6 @@ class Consumption(ParametersBase):
 
     Parameters
     ----------
-    consumption_dict: dictionary of PARAM:DESCRIPTION pairs
-        dictionary of marginal propensity to consume (MPC) parameters and
-        benefit (BEN) value-of-in-kind-benefit parameters;
-        if None, all parameters are read from DEFAULTS_FILENAME file.
-
     start_year: integer
         first calendar year for consumption parameters.
 
@@ -34,7 +29,7 @@ class Consumption(ParametersBase):
     Raises
     ------
     ValueError:
-        if consumption_dict is neither None nor a dictionary.
+        if start_year is less than Policy.JSON_START_YEAR.
         if num_years is less than one.
 
     Returns
@@ -46,18 +41,15 @@ class Consumption(ParametersBase):
     DEFAULTS_FILENAME = 'consumption.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
 
-    def __init__(self, consumption_dict=None,
+    def __init__(self,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
         super(Consumption, self).__init__()
-        if consumption_dict is None:
-            self._vals = self._params_dict_from_json_file()
-        elif isinstance(consumption_dict, dict):
-            self._vals = consumption_dict
-        else:
-            raise ValueError('consumption_dict is not None or a dictionary')
+        self._vals = self._params_dict_from_json_file()
+        if start_year < Policy.JSON_START_YEAR:
+            raise ValueError('start_year < Policy.JSON_START_YEAR')
         if num_years < 1:
-            raise ValueError('num_years < 1 in Consumption ctor')
+            raise ValueError('num_years < 1')
         self.initialize(start_year, num_years)
         self.parameter_errors = ''
 

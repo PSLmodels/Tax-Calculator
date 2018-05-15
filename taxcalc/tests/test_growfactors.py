@@ -1,5 +1,5 @@
 """
-Tests of Tax-Calculator Growfactors class.
+Tests of Tax-Calculator GrowFactors class.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_growfactors.py
@@ -9,7 +9,7 @@ import os
 import tempfile
 import pytest
 # pylint: disable=import-error
-from taxcalc import Growfactors, Records, Policy
+from taxcalc import GrowFactors, Records, Policy
 
 
 @pytest.fixture(scope='module', name='bad_gf_file')
@@ -29,13 +29,13 @@ def fixture_bad_gf_file():
 
 def test_improper_usage(bad_gf_file):
     """
-    Tests of improper usage of Growfactors object.
+    Tests of improper usage of GrowFactors object.
     """
     with pytest.raises(ValueError):
-        gfo = Growfactors(dict())
+        gfo = GrowFactors(dict())
     with pytest.raises(ValueError):
-        gfo = Growfactors(bad_gf_file.name)
-    gfo = Growfactors()
+        gfo = GrowFactors(bad_gf_file.name)
+    gfo = GrowFactors()
     fyr = gfo.first_year
     lyr = gfo.last_year
     with pytest.raises(ValueError):
@@ -60,9 +60,9 @@ def test_improper_usage(bad_gf_file):
 
 def test_update_after_use():
     """
-    Test of improper update after Growfactors object has been used.
+    Test of improper update after GrowFactors object has been used.
     """
-    gfo = Growfactors()
+    gfo = GrowFactors()
     gfo.price_inflation_rates(gfo.first_year, gfo.last_year)
     with pytest.raises(ValueError):
         gfo.update('AWAGE', 2013, 0.01)
@@ -70,9 +70,9 @@ def test_update_after_use():
 
 def test_proper_usage():
     """
-    Test proper usage of Growfactors object.
+    Test proper usage of GrowFactors object.
     """
-    gfo = Growfactors()
+    gfo = GrowFactors()
     pir = gfo.price_inflation_rates(2013, 2020)
     assert len(pir) == 8
     wgr = gfo.wage_growth_rates(2013, 2021)
@@ -85,9 +85,9 @@ def test_growfactors_csv_values():
     """
     Test numerical contents of growfactors.csv file.
     """
-    gfo = Growfactors()
+    gfo = GrowFactors()
     min_data_year = min(Records.PUFCSV_YEAR, Records.CPSCSV_YEAR)
     if min_data_year < Policy.JSON_START_YEAR:
-        for gfname in Growfactors.VALID_NAMES:
+        for gfname in GrowFactors.VALID_NAMES:
             val = gfo.factor_value(gfname, min_data_year)
             assert val == 1
