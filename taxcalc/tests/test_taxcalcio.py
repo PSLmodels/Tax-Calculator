@@ -366,7 +366,6 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
     if asm is None:
         tcio.init(input_data=recdf, tax_year=year,
                   baseline=baseline, reform=reform, assump=assump,
-                  using_growmodel=False,
                   growdiff_growmodel=None,
                   aging_input_data=False,
                   exact_calculations=True)
@@ -389,7 +388,6 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=reformfile0.name,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
@@ -407,7 +405,6 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=None,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
@@ -423,7 +420,6 @@ def test_ctor_init_with_cps_files():
     txyr = 2020
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
@@ -433,7 +429,6 @@ def test_ctor_init_with_cps_files():
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
@@ -466,7 +461,6 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
     assert not tcio.errmsg
     tcio.init(input_data=recdf, tax_year=year,
               baseline=None, reform=None, assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -495,7 +489,6 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -559,7 +552,6 @@ def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=compound_reform,
               assump=assumpfile1.name,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -587,7 +579,6 @@ def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -635,7 +626,6 @@ def test_no_tables_or_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -685,7 +675,6 @@ def test_tables(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -724,7 +713,6 @@ def test_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -761,7 +749,6 @@ def test_ceeu_output1(lumpsumreformfile):
               baseline=None,
               reform=lumpsumreformfile.name,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -788,7 +775,6 @@ def test_ceeu_output2():
               baseline=None,
               reform=None,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -815,7 +801,6 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
               baseline=None,
               reform=lumpsumreformfile.name,
               assump=assumpfile2.name,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
@@ -860,7 +845,6 @@ def test_analyze_warnings_print(warnreformfile):
               baseline=None,
               reform=warnreformfile.name,
               assump=None,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)

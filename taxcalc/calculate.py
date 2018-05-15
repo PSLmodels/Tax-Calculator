@@ -1117,11 +1117,8 @@ class Calculator(object):
                                 'growdiff_baseline', 'growdiff_response',
                                 'growmodel'])
     INCOMPATIBLE_ASSUMPTIONS = [
-        ('behavior', 'growdiff_baseline'),
         ('behavior', 'growdiff_response'),
-        ('growmodel', 'behavior'),
-        ('growmodel', 'growdiff_baseline'),
-        ('growmodel', 'growdiff_response')
+        ('behavior', 'growmodel'),
     ]
 
     @staticmethod
@@ -1506,12 +1503,11 @@ class Calculator(object):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
 
-        Specified text is JSON with at least 1 high-level string:object pair:
+        Specified text is JSON with at least 1 high-level key:object pair:
         a "policy": {...} pair.
 
-        Other high-level pairs will be ignored by this method, except
-        that a "consumption", "behavior", "growdiff_baseline" or
-        "growdiff_response" key will raise a ValueError.
+        Other keys such as "consumption", "behavior", "growdiff_baseline",
+        "growdiff_response" or "growmodel" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
         may contain one or more pairs with parameter string primary keys
@@ -1564,15 +1560,14 @@ class Calculator(object):
         """
         Strip //-comments from text_string and return 5 dict based on the JSON.
 
-        Specified text is JSON with at least 5 high-level string:value pairs:
+        Specified text is JSON with at least 5 high-level key:value pairs:
         a "consumption": {...} pair,
         a "behavior": {...} pair,
         a "growdiff_baseline": {...} pair,
         a "growdiff_response": {...} pair, and
         a "growmodel": {...} pair.
 
-        Other high-level pairs will be ignored by this method, except that
-        a "policy" key will raise a ValueError.
+        Other keys such as "policy" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
         may contain one or more pairs with parameter string primary keys

@@ -163,7 +163,6 @@ def cli_tc_main():
     tcio.init(input_data=inputfn, tax_year=taxyear,
               baseline=args.baseline,
               reform=args.reform, assump=args.assump,
-              using_growmodel=False,
               growdiff_growmodel=None,
               aging_input_data=aging,
               exact_calculations=args.exact)
@@ -187,7 +186,7 @@ def cli_tc_main():
             sys.stderr.write('USAGE: tc --help\n')
             return 1
     # conduct tax analysis
-    if tcio.growmodel_is_ever_active:
+    if tcio.growmodel.is_ever_active():
         del tcio
         tc.TaxCalcIO.growmodel_analysis(input_data=inputfn,
                                         tax_year=taxyear,
@@ -204,18 +203,6 @@ def cli_tc_main():
                                         output_dump=args.dump,
                                         output_sqldb=args.sqldb)
     else:
-        tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
-                            baseline=args.baseline,
-                            reform=args.reform,
-                            assump=args.assump)
-        tcio.init(input_data=inputfn, tax_year=taxyear,
-                  baseline=args.baseline,
-                  reform=args.reform,
-                  assump=args.assump,
-                  using_growmodel=False,
-                  growdiff_growmodel=None,
-                  aging_input_data=aging,
-                  exact_calculations=args.exact)
         tcio.analyze(writing_output_file=True,
                      output_tables=args.tables,
                      output_graphs=args.graphs,

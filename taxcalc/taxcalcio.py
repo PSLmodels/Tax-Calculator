@@ -5,6 +5,7 @@ Tax-Calculator Input-Output class.
 # pycodestyle taxcalcio.py
 # pylint --disable=locally-disabled taxcalcio.py
 
+from __future__ import print_function
 import os
 import gc
 import copy
@@ -200,15 +201,14 @@ class TaxCalcIO(object):
             delete_file(self._output_filename.replace('.csv', '-mtr.html'))
             delete_file(self._output_filename.replace('.csv', '-pch.html'))
         # initialize variables whose values are set in init method
-        self.growmodel_is_ever_active = False
         self.behavior_has_any_response = False
         self.calc = None
         self.calc_base = None
+        self.growmodel = None
         self.param_dict = None
         self.policy_dicts = list()
 
     def init(self, input_data, tax_year, baseline, reform, assump,
-             using_growmodel,
              growdiff_growmodel,
              aging_input_data,
              exact_calculations):
@@ -220,13 +220,9 @@ class TaxCalcIO(object):
         First five are same as the first five of the TaxCalcIO constructor:
             input_data, tax_year, baseline, reform, assump.
 
-        using_growmodel; boolean
-            whether or not init() call is part of growmodel_analysis
-
-        growdiff_growmodel: GrowDiff object
-            growdiff_growmodel GrowDiff object is used only by the
-            TaxCalcIO.growmodel_analysis method; used only if
-            using_growmodel is True.
+        growdiff_growmodel: GrowDiff object or None
+            growdiff_growmodel GrowDiff object is used only in the
+            TaxCalcIO.growmodel_analysis method.
 
         aging_input_data: boolean
             whether or not to extrapolate Records data from data year to
@@ -253,34 +249,36 @@ class TaxCalcIO(object):
         else:
             paramdict = Calculator.read_json_param_objects(reform, assump)
             policydicts = [paramdict['policy']]
-        # create GrowModel object
-        growmodel = GrowModel()
-        growmodel.update_growmodel(paramdict['growmodel'])
-        # see if growmodel is ever active when using_growmodel is False
-        if not using_growmodel and growmodel.is_ever_active():
-            self.growmodel_is_ever_active = True
-            return
         # remember parameters for reform documentation
         self.param_dict = paramdict
         self.policy_dicts = policydicts
         # create Behavior object
         beh = Behavior()
-        beh.update_behavior(paramdict['behavior'])
+        try:
+            beh.update_behavior(paramdict['behavior'])
+        except ValueError as valerr_msg:
+            self.errmsg += valerr_msg.__str__()
         self.behavior_has_any_response = beh.has_any_response()
         # create gdiff_baseline object
         gdiff_baseline = GrowDiff()
-        gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
+        try:
+            gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
+        except ValueError as valerr_msg:
+            self.errmsg += valerr_msg.__str__()
         # create GrowFactors base object that incorporates gdiff_baseline
         gfactors_base = GrowFactors()
         gdiff_baseline.apply_to(gfactors_base)
         # specify gdiff_response object
         gdiff_response = GrowDiff()
-        gdiff_response.update_growdiff(paramdict['growdiff_response'])
+        try:
+            gdiff_response.update_growdiff(paramdict['growdiff_response'])
+        except ValueError as valerr_msg:
+            self.errmsg += valerr_msg.__str__()
         # create GrowFactors ref object that has all gdiff objects applied
         gfactors_ref = GrowFactors()
         gdiff_baseline.apply_to(gfactors_ref)
         gdiff_response.apply_to(gfactors_ref)
-        if using_growmodel:
+        if growdiff_growmodel:
             growdiff_growmodel.apply_to(gfactors_ref)
         # create Policy objects:
         # ... the baseline Policy object
@@ -305,6 +303,21 @@ class TaxCalcIO(object):
                     self.errmsg += valerr_msg.__str__()
         else:
             pol = Policy(gfactors=gfactors_base)
+        # create Consumption object
+        con = Consumption()
+        try:
+            con.update_consumption(paramdict['consumption'])
+        except ValueError as valerr_msg:
+            self.errmsg += valerr_msg.__str__()
+        # create GrowModel object
+        self.growmodel = GrowModel()
+        try:
+            self.growmodel.update_growmodel(paramdict['growmodel'])
+        except ValueError as valerr_msg:
+            self.errmsg += valerr_msg.__str__()
+        if self.growmodel.is_ever_active() and not aging_input_data:
+            msg = 'GrowModel active when not aging_input_data'
+            self.errmsg += 'ERROR: {}\n'.format(msg)
         # check for valid tax_year value
         if tax_year < pol.start_year:
             msg = 'tax_year {} less than policy.start_year {}'
@@ -355,8 +368,6 @@ class TaxCalcIO(object):
             msg = msg.format(tax_year, recs.data_year)
             self.errmsg += 'ERROR: {}\n'.format(msg)
         # create Calculator objects
-        con = Consumption()
-        con.update_consumption(paramdict['consumption'])
         self.calc = Calculator(policy=pol, records=recs,
                                verbose=True,
                                consumption=con,
@@ -453,7 +464,6 @@ class TaxCalcIO(object):
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-branches
-        # in order to use print(), pylint: disable=superfluous-parens
         if self.calc.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'
             print(warn.format('(read documentation for each parameter)',
@@ -823,7 +833,7 @@ class TaxCalcIO(object):
         progress = 'STARTING ANALYSIS FOR YEAR {}'
         gdiff_dict = {Policy.JSON_START_YEAR: {}}
         for year in range(Policy.JSON_START_YEAR, tax_year + 1):
-            print(progress.format(year))  # pylint: disable=superfluous-parens
+            print(progress.format(year))
             # specify growdiff_growmodel using gdiff_dict
             growdiff_growmodel = GrowDiff()
             growdiff_growmodel.update_growdiff(gdiff_dict)
@@ -879,7 +889,6 @@ class TaxCalcIO(object):
                   baseline=baseline,
                   reform=reform,
                   assump=assump,
-                  using_growmodel=True,
                   growdiff_growmodel=growdiff_growmodel,
                   aging_input_data=aging_input_data,
                   exact_calculations=exact_calculations)
@@ -903,5 +912,5 @@ class TaxCalcIO(object):
             # >>>>> add logic here <<<<<
             # ... extract next year GrowModel results for next year gdiff_dict
             # >>>>> add logic here <<<<<
-            gd_dict = {}  # TEMPORARY CODE
+            gd_dict = {}  # TODO: remove temporary code after GrowModel working
         return gd_dict
