@@ -151,42 +151,6 @@ def fixture_baselinebad():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='reformfilex1')
-def fixture_reformfilex1():
-    """
-    Temporary reform file with .json extension.
-    """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{"policy": {"_AMT_brk1": {"2015": [-1]}}}'
-    rfile.write(contents)
-    rfile.close()
-    # must close and then yield for Windows platform
-    yield rfile
-    if os.path.isfile(rfile.name):
-        try:
-            os.remove(rfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-@pytest.fixture(scope='module', name='reformfilex2')
-def fixture_reformfilex2():
-    """
-    Temporary reform file with .json extension.
-    """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{"policy": {"_AMT_bxk1": {"2015": [0]}}}'
-    rfile.write(contents)
-    rfile.close()
-    # must close and then yield for Windows platform
-    yield rfile
-    if os.path.isfile(rfile.name):
-        try:
-            os.remove(rfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
 @pytest.fixture(scope='module', name='errorreformfile')
 def fixture_errorreformfile():
     """
@@ -322,13 +286,10 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     (2000, 'reformfile0', 'reformfile0', None),
     (2099, 'reformfile0', 'reformfile0', None),
     (2020, 'reformfile0', 'reformfile0', 'errorassumpfile'),
-    (2020, 'errorreformfile', 'errorreformfile', None),
-    (2020, 'reformfile0', 'reformfile0', 'assumpfile0'),
-    (2020, 'reformfile0', 'reformfilex1', 'assumpfile0'),
-    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0')
+    (2020, 'errorreformfile', 'errorreformfile', None)
 ])
-def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
-                     assumpfile0, errorassumpfile, year, base, ref, asm):
+def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
+                     year, base, ref, asm):
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
@@ -344,17 +305,11 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
         baseline = base
     if ref == 'reformfile0':
         reform = reformfile0.name
-    elif ref == 'reformfilex1':
-        reform = reformfilex1.name
-    elif ref == 'reformfilex2':  # specify compound reform
-        reform = '{}+{}'.format(reformfilex1.name, reformfilex2.name)
     elif ref == 'errorreformfile':
         reform = errorreformfile.name
     else:
         reform = ref
-    if asm == 'assumpfile0':
-        assump = assumpfile0.name
-    elif asm == 'errorassumpfile':
+    if asm == 'errorassumpfile':
         assump = errorassumpfile.name
     else:
         assump = asm
@@ -366,13 +321,12 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
                      assump=assump)
     assert not tcio.errmsg
     # test TaxCalcIO.init method
-    if asm is None or asm == 'errorassumpfile':
-        tcio.init(input_data=recdf, tax_year=year,
-                  baseline=baseline, reform=reform, assump=assump,
-                  growdiff_growmodel=None,
-                  aging_input_data=False,
-                  exact_calculations=True)
-        assert tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=year,
+              baseline=baseline, reform=reform, assump=assump,
+              growdiff_growmodel=None,
+              aging_input_data=False,
+              exact_calculations=True)
+    assert tcio.errmsg
 
 
 def test_creation_with_aging(rawinputfile, reformfile0):

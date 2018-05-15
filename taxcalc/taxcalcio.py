@@ -241,14 +241,13 @@ class TaxCalcIO(object):
         # get policy parameter dictionary from --baseline file
         basedict = Calculator.read_json_param_objects(baseline, None)
         # get policy parameter dictionaries from --reform file(s)
+        policydicts = list()
         if self.specified_reform:
-            policydicts = list()
             reforms = reform.split('+')
             for ref in reforms:
                 pdict = Calculator.read_json_param_objects(ref, None)
                 policydicts.append(pdict['policy'])
-        else:
-            policydicts = list(paramdict['policy'])
+            paramdict['policy'] = policydicts[0]
         # remember parameters for reform documentation
         self.param_dict = paramdict
         self.policy_dicts = policydicts
@@ -550,7 +549,6 @@ class TaxCalcIO(object):
         """
         Write reform documentation to text file.
         """
-        self.param_dict['policy'] = self.policy_dicts[0]
         if len(self.policy_dicts) <= 1:
             doc = Calculator.reform_documentation(self.param_dict)
         else:
