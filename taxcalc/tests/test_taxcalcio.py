@@ -205,6 +205,32 @@ def fixture_errorreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
+@pytest.fixture(scope='module', name='errorassumpfile')
+def fixture_errorassumpfile():
+    """
+    Temporary assumption file with .json extension.
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = """
+    {
+    "consumption": {"_MPC_e18400": {"2018": [-9]}},
+    "behavior": {"_BE_inc": {"2018": [0.4]}},
+    "growdiff_baseline": {"_ABOOKxx": {"2017": [0.02]}},
+    "growdiff_response": {"_ABOOKxx": {"2017": [0.02]}},
+    "growmodel": {"_activexx": {"2018": [true]}}
+    }
+    """
+    rfile.write(contents)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
 @pytest.fixture(scope='module', name='assumpfile1')
 def fixture_assumpfile1():
     """
@@ -275,32 +301,6 @@ def fixture_assumpfile2():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile3')
-def fixture_assumpfile3():
-    """
-    Temporary assumption file with .json extension.
-    """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = """
-    {
-    "consumption": {},
-    "behavior": {},
-    "growdiff_baseline": {},
-    "growdiff_response": {"_ABOOK": {"2018": [0.01]}},
-    "growmodel": {"_active": {"2018": [true]}}
-    }
-    """
-    afile.write(contents)
-    afile.close()
-    # must close and then yield for Windows platform
-    yield afile
-    if os.path.isfile(afile.name):
-        try:
-            os.remove(afile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
 @pytest.mark.parametrize('input_data, baseline, reform, assump, outdir', [
     ('no-dot-csv-filename', 'no-dot-json-filename',
      'no-dot-json-filename',
@@ -321,13 +321,14 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
 @pytest.mark.parametrize('year, base, ref, asm', [
     (2000, 'reformfile0', 'reformfile0', None),
     (2099, 'reformfile0', 'reformfile0', None),
+    (2020, 'reformfile0', 'reformfile0', 'errorassumpfile'),
     (2020, 'errorreformfile', 'errorreformfile', None),
     (2020, 'reformfile0', 'reformfile0', 'assumpfile0'),
     (2020, 'reformfile0', 'reformfilex1', 'assumpfile0'),
     (2020, 'reformfile0', 'reformfilex2', 'assumpfile0')
 ])
 def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
-                     assumpfile0, year, base, ref, asm):
+                     assumpfile0, errorassumpfile, year, base, ref, asm):
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
@@ -353,6 +354,8 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
         reform = ref
     if asm == 'assumpfile0':
         assump = assumpfile0.name
+    elif asm == 'errorassumpfile':
+        assump = errorassumpfile.name
     else:
         assump = asm
     # call TaxCalcIO constructor
@@ -363,7 +366,7 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
                      assump=assump)
     assert not tcio.errmsg
     # test TaxCalcIO.init method
-    if asm is None:
+    if asm is None or asm == 'errorassumpfile':
         tcio.init(input_data=recdf, tax_year=year,
                   baseline=baseline, reform=reform, assump=assump,
                   growdiff_growmodel=None,
@@ -879,8 +882,8 @@ def fixture_reformfile9():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='assumpfile9')
-def fixture_assumpfile9():
+@pytest.fixture(scope='module', name='assumpfile3')
+def fixture_assumpfile3():
     """
     Temporary assumption file with .json extension.
     """
@@ -891,7 +894,7 @@ def fixture_assumpfile9():
     "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
-    "growmodel": {}
+    "growmodel": {"_active": {"2019": [true]}}
     }
     """
     afile.write(contents)
@@ -903,3 +906,25 @@ def fixture_assumpfile9():
             os.remove(afile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
+
+
+def test_growmodel_analysis(reformfile9, assumpfile3):
+    """
+    Test TaxCalcIO.growmodel_analysis logic.
+    """
+    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
+    recdf = pd.DataFrame(data=recdict, index=[0])
+    TaxCalcIO.growmodel_analysis(input_data=recdf,
+                                 tax_year=2019,
+                                 baseline=None,
+                                 reform=reformfile9.name,
+                                 assump=assumpfile3.name,
+                                 aging_input_data=True,
+                                 exact_calculations=False,
+                                 writing_output_file=False,
+                                 output_tables=False,
+                                 output_graphs=False,
+                                 output_ceeu=False,
+                                 dump_varset=None,
+                                 output_dump=False,
+                                 output_sqldb=False)

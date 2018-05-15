@@ -74,6 +74,7 @@ class TaxCalcIO(object):
         self.errmsg = ''
         # check name and existence of INPUT file
         inp = 'x'
+        self.cps_input_data = False
         if isinstance(input_data, six.string_types):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
@@ -235,20 +236,19 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
-        # get parameter dictionary from --baseline file
+        # get assumption sub-dictionaries
+        paramdict = Calculator.read_json_param_objects(None, assump)
+        # get policy parameter dictionary from --baseline file
         basedict = Calculator.read_json_param_objects(baseline, None)
-        # get parameter dictionaries from --reform file(s) and --assump file
+        # get policy parameter dictionaries from --reform file(s)
         if self.specified_reform:
+            policydicts = list()
             reforms = reform.split('+')
-            paramdict = Calculator.read_json_param_objects(reforms[0], assump)
-            policydicts = [paramdict['policy']]
-            if len(reforms) > 1:  # simulating a compound reform
-                for ref in reforms[1:]:
-                    pdict = Calculator.read_json_param_objects(ref, None)
-                    policydicts.append(pdict['policy'])
+            for ref in reforms:
+                pdict = Calculator.read_json_param_objects(ref, None)
+                policydicts.append(pdict['policy'])
         else:
-            paramdict = Calculator.read_json_param_objects(reform, assump)
-            policydicts = [paramdict['policy']]
+            policydicts = list(paramdict['policy'])
         # remember parameters for reform documentation
         self.param_dict = paramdict
         self.policy_dicts = policydicts
@@ -315,9 +315,6 @@ class TaxCalcIO(object):
             self.growmodel.update_growmodel(paramdict['growmodel'])
         except ValueError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
-        if self.growmodel.is_ever_active() and not aging_input_data:
-            msg = 'GrowModel active when not aging_input_data'
-            self.errmsg += 'ERROR: {}\n'.format(msg)
         # check for valid tax_year value
         if tax_year < pol.start_year:
             msg = 'tax_year {} less than policy.start_year {}'
@@ -336,12 +333,15 @@ class TaxCalcIO(object):
         # read input file contents into Records objects
         if aging_input_data:
             if self.cps_input_data:
+                nobenefits = self.growmodel.is_ever_active()
                 recs = Records.cps_constructor(
                     gfactors=gfactors_ref,
+                    no_benefits=nobenefits,
                     exact_calculations=exact_calculations
                 )
                 recs_base = Records.cps_constructor(
                     gfactors=gfactors_base,
+                    no_benefits=nobenefits,
                     exact_calculations=exact_calculations
                 )
             else:  # if not cps_input_data but aging_input_data
@@ -550,6 +550,7 @@ class TaxCalcIO(object):
         """
         Write reform documentation to text file.
         """
+        self.param_dict['policy'] = self.policy_dicts[0]
         if len(self.policy_dicts) <= 1:
             doc = Calculator.reform_documentation(self.param_dict)
         else:
@@ -912,5 +913,5 @@ class TaxCalcIO(object):
             # >>>>> add logic here <<<<<
             # ... extract next year GrowModel results for next year gdiff_dict
             # >>>>> add logic here <<<<<
-            gd_dict = {}  # TODO: remove temporary code after GrowModel working
+            gd_dict = {}  # remove temporary code after GrowModel working
         return gd_dict

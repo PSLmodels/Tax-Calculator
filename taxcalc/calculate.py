@@ -1116,10 +1116,6 @@ class Calculator(object):
     REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
                                 'growdiff_baseline', 'growdiff_response',
                                 'growmodel'])
-    INCOMPATIBLE_ASSUMPTIONS = [
-        ('behavior', 'growdiff_response'),
-        ('behavior', 'growmodel'),
-    ]
 
     @staticmethod
     def read_json_param_objects(reform, assump):
@@ -1151,8 +1147,6 @@ class Calculator(object):
         reform or if not specifying any economic assumptions of that type.
 
         The returned dictionary contains parameter lists (not arrays).
-
-        Note that specifying INCOMPATIBLE_ASSSUMPTIONS raise a ValueError.
         """
         # pylint: disable=too-many-branches
         # first process second assump parameter
@@ -1197,14 +1191,6 @@ class Calculator(object):
         param_dict['growdiff_baseline'] = gdiff_base_dict
         param_dict['growdiff_response'] = gdiff_resp_dict
         param_dict['growmodel'] = growmodel_dict
-        # raise error if specifying incompatible assumptions
-        emsg = ''
-        for asm in Calculator.INCOMPATIBLE_ASSUMPTIONS:
-            if param_dict[asm[0]] and param_dict[asm[1]]:
-                emsg += 'ERROR: both {} and {} are specified\n'.format(asm[0],
-                                                                       asm[1])
-        if emsg:
-            raise ValueError(emsg)
         # return the composite dictionary
         return param_dict
 
@@ -1221,7 +1207,7 @@ class Calculator(object):
 
         policy_dicts : list of dict or None
             each dictionary in list is a params['policy'] dictionary
-            representing second or subsequent elements of a compound
+            representing second and subsequent elements of a compound
             reform; None implies no compound reform with the simple
             reform characterized in the params['policy'] dictionary
 
