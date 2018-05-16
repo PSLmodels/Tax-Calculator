@@ -236,10 +236,10 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-statements,too-many-branches
         self.errmsg = ''
-        # get assumption sub-dictionaries
-        paramdict = Calculator.read_json_param_objects(None, assump)
         # get policy parameter dictionary from --baseline file
         basedict = Calculator.read_json_param_objects(baseline, None)
+        # get assumption sub-dictionaries
+        paramdict = Calculator.read_json_param_objects(None, assump)
         # get policy parameter dictionaries from --reform file(s)
         policydicts = list()
         if self.specified_reform:
