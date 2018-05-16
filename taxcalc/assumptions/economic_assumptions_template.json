@@ -1,7 +1,7 @@
-// Parameters used to specify economic responses to tax policy.
+// Parameters used to specify economic assumptions used in tax policy analysis.
 //
-// This JSON file serves as a template for implementating the economic
-// responses of individuals and of the overall economy to a tax reform.
+// This JSON file serves as a template for specifying economic assumptions
+// about how individuals and the overall economy respond to a tax reform.
 //
 // Detailed documentation on these parameters can be found at
 // <http://open-source-economics.github.io/Tax-Calculator/#params>.
