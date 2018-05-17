@@ -53,7 +53,7 @@ gbydf = vdf.groupby('table_row', as_index=False)
 # (note elasticity values are just an example based on no empirical results)
 price_elasticity = [-0.1, -0.4]
 income_elasticity = [0.1, 0.1]
-print('Percentage Response in Charitable Giving by Earnings Group')
+print('\nResponse in Charitable Giving by Earnings Group')
 results = '{:18s}\t{:8.3f}\t{:8.3f}\t{:8.2f}'
 colhead = '{:18s}\t{:>8s}\t{:>8s}\t{:>8s}'
 print(colhead.format('Earnings Group', 'Num(#M)', 'Resp($B)', 'Resp(%)'))
