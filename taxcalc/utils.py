@@ -1675,14 +1675,20 @@ def quantity_response(quantity,
 
     aftertax_price1: numpy array
         marginal aftertax price of the quanitity under baseline policy
-          Note that this function forces prices to be in [0.01, 1.0] range.
+          Note that this function forces prices to be in [0.01, inf] range,
+          but the caller of this function may want to constrain negative
+          or very small prices to be somewhat larger in order to avoid extreme
+          proportional changes in price.
           Note this is NOT an array of marginal tax rates (MTR), but rather
             usually 1-MTR (or in the case of quantities, like charitable
             giving, whose MTR values are non-positive, 1+MTR).
 
     aftertax_price2: numpy array
         marginal aftertax price of the quantity under reform policy
-          Note that this function forces prices to be in [0.01, 1.0] range.
+          Note that this function forces prices to be in [0.01, inf] range,
+          but the caller of this function may want to constrain negative
+          or very small prices to be somewhat larger in order to avoid extreme
+          proportional changes in price.
           Note this is NOT an array of marginal tax rates (MTR), but rather
             usually 1-MTR (or in the case of quantities, like charitable
             giving, whose MTR values are non-positive, 1+MTR).
@@ -1715,10 +1721,8 @@ def quantity_response(quantity,
     if price_elasticity == 0.:
         pch_price = np.zeros(quantity.shape)
     else:
-        atp1 = np.where(aftertax_price1 < 0.01, 0.01,
-                        np.where(aftertax_price1 > 1.0, 1.0, aftertax_price1))
-        atp2 = np.where(aftertax_price2 < 0.01, 0.01,
-                        np.where(aftertax_price2 > 1.0, 1.0, aftertax_price2))
+        atp1 = np.where(aftertax_price1 < 0.01, 0.01, aftertax_price1)
+        atp2 = np.where(aftertax_price2 < 0.01, 0.01, aftertax_price2)
         pch_price = atp2 / atp1 - 1.
     # compute income term in log-log response equation
     if income_elasticity == 0.:
