@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-05-?? Release 0.20.0
+2018-05-18 Release 0.20.0
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#2003](https://github.com/open-source-economics/Tax-Calculator/pull/2003))
 
 **API Changes**
 - Simplify table-creation Calculator methods and related utility functions
@@ -43,6 +43,9 @@ for a complete commit history.
   by Martin Holmer]
 - Add Tax-Calculator Cookbook recipe showing how to create a custom table
   [[#1994](https://github.com/open-source-economics/Tax-Calculator/pull/1994)
+  by Martin Holmer]
+- Add Tax-Calculator Cookbook recipe showing how to use new `quantity_response` utility function
+  [[#2002](https://github.com/open-source-economics/Tax-Calculator/pull/2002)
   by Martin Holmer]
 
 **Bug Fixes**
