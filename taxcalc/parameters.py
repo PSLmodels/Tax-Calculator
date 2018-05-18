@@ -15,7 +15,7 @@ from taxcalc.utils import read_egg_json
 
 class ParametersBase(object):
     """
-    Inherit from this class for Policy, Behavior, Consumption, Growdiff, and
+    Inherit from this class for Policy, Behavior, Consumption, GrowDiff, and
     other groups of parameters that need to have a set_year method.
     Override this __init__ method and DEFAULTS_FILENAME.
     """
