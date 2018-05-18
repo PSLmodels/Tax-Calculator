@@ -227,9 +227,10 @@ situations, in which case other contributors are here to help.
 Simple Usage
 ------------
 
-For examples of Tax-Calculator usage (without changing tax parameter
-values and without adding a new tax parameter), you can view our code
-sample notebook: `10 Minutes To Tax-Calculator`_.
+For examples of Tax-Calculator usage, see the `Cookbook of Tested
+Recipes for Python Programming with Tax-Calculator`_, which contains
+Python scripts that can be executed by the Python command-line
+interpreter or imported into a Python notebook for interactive execution.
 
 
 .. [1] The dollar sign is the end of the command prompt on a Mac.  If
@@ -273,14 +274,6 @@ sample notebook: `10 Minutes To Tax-Calculator`_.
 .. _`Github Flow`:
    https://guides.github.com/introduction/flow/
 
-.. _`10 Minutes To Tax-Calculator`:
-   http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
-   blob/master/read-the-docs/notebooks/10_Minutes_to_Tax-Calculator.ipynb
-
-.. _`Behavior Example`:
-   http://nbviewer.ipython.org/github/open-source-economics/Tax-Calculator/
-   blob/master/read-the-docs/notebooks/Behavioral_example.ipynb
-
 .. _`Continuum Analytics`:
    http://www.continuum.io/downloads
 
@@ -313,3 +306,6 @@ sample notebook: `10 Minutes To Tax-Calculator`_.
 
 .. _`open a pull request`:
    https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request
+
+.. _`Cookbook of Tested Recipes for Python Programming with Tax-Calculator`:
+   https://github.com/open-source-economics/Tax-Calculator/blob/master/docs/cookbook.html
