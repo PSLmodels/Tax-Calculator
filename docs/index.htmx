@@ -40,6 +40,10 @@ ensure you are viewing the most recent version of this page rather
 than an older version that your browser has saved in its cache of
 previously visited pages.</i></p>
 
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-05-18-release-0200">Flexible <kbd>quantity_response</kbd>
+utility function</a> is available in Tax-Calculator release 0.20.0 and
+higher, and there is a new Cookbook recipe to illustrate its use
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-04-19-release-0190">Fix data and logic bugs</a>
 so that the Child Tax Credit for those with kids age 17 is now lower
 and so that the income tax liability for those with large business
