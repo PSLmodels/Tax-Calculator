@@ -52,7 +52,8 @@ def check_user_mods(user_mods):
         raise ValueError('user_mods is not a dictionary')
     actual_keys = set(list(user_mods.keys()))
     expected_keys = set(['policy', 'consumption', 'behavior',
-                         'growdiff_baseline', 'growdiff_response'])
+                         'growdiff_baseline', 'growdiff_response',
+                         'growmodel'])
     if actual_keys != expected_keys:
         msg = 'actual user_mod keys not equal to expected keys\n'
         msg += '  actual: {}\n'.format(actual_keys)

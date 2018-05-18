@@ -263,9 +263,13 @@ def test_itax_compare(tests_path, using_puf, puf_fullsample, cps_fullsample):
     """
     Conduct income tax comparisons using ITAX data.
     """
+    using_puf_adjust_ratios = True
     # generate 2015 estimates by AGI category using Tax-Calculator
     if using_puf:
-        recs = Records(data=puf_fullsample)
+        if using_puf_adjust_ratios:
+            recs = Records(data=puf_fullsample)
+        else:
+            recs = Records(data=puf_fullsample, adjust_ratios=None)
     else:
         recs = Records.cps_constructor(data=cps_fullsample, no_benefits=True)
     calc = Calculator(policy=Policy(), records=recs, verbose=False)

@@ -21,10 +21,10 @@ vardf = add_income_table_row_variable(vardf, 'c00100', SOI_AGI_BINS)
 gbydf = vardf.groupby('table_row', as_index=False)
 
 # print AGI table with ALL row at bottom
-print('Filing Units Receiving EITC and Average Positive EITC by AGI category')
+print('Filing Units Receiving EITC and Average Positive EITC by AGI Category')
 results = '{:23s}\t{:8.3f}\t{:8.3f}'
 colhead = '{:23s}\t{:>8s}\t{:>8s}'
-print(colhead.format('AGI category', 'Num(#M)', 'Avg($K)'))
+print(colhead.format('AGI Category', 'Num(#M)', 'Avg($K)'))
 tot_recips = 0.
 tot_amount = 0.
 idx = 0
