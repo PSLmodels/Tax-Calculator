@@ -4,8 +4,8 @@ WARNING: Tax-Calculator packages for Python 2.7 will
          no longer be provided beginning in 2019
          because Pandas is stopping development for 2.7
 SOLUTION: upgrade to Python 3.6 now
-Filing Units Receiving EITC and Average Positive EITC by AGI category
-AGI category           	 Num(#M)	 Avg($K)
+Filing Units Receiving EITC and Average Positive EITC by AGI Category
+AGI Category           	 Num(#M)	 Avg($K)
 [-9e+99, 1.0)          	   0.059	   1.340
 [1.0, 5000.0)          	   1.772	   0.711
 [5000.0, 10000.0)      	   3.672	   1.638

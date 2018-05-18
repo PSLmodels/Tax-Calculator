@@ -4,6 +4,56 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-05-18 Release 0.20.0
+-------------------------
+(last merged pull request is
+[#2003](https://github.com/open-source-economics/Tax-Calculator/pull/2003))
+
+**API Changes**
+- Simplify table-creation Calculator methods and related utility functions
+  [[#1984](https://github.com/open-source-economics/Tax-Calculator/pull/1984)
+  by Martin Holmer]
+- Rename `Growfactors` class as `GrowFactors` and rename `Growdiff` class as `GrowDiff`
+  [[#1996](https://github.com/open-source-economics/Tax-Calculator/pull/1996)
+  by Martin Holmer]
+- Add `quantity_response` utility function and remove obsolete charity and earnings response logic from Behavior class
+  [[#1997](https://github.com/open-source-economics/Tax-Calculator/pull/1997)
+  by Martin Holmer]
+- Add empty shell of `GrowModel` class that will eventually contain a simple macroeconomic growth model with annual feedback to the microeconomic simulation
+  [[#1998](https://github.com/open-source-economics/Tax-Calculator/pull/1998)
+  by Martin Holmer]
+
+**New Features**
+- Streamline logic that prevents disclosure of details of PUF filing units
+  [[#1979](https://github.com/open-source-economics/Tax-Calculator/pull/1979)
+  by Martin Holmer]
+- Add option to not include benefits in a Records object that uses CPS data
+  [[#1985](https://github.com/open-source-economics/Tax-Calculator/pull/1985)
+  and
+  [[#1988](https://github.com/open-source-economics/Tax-Calculator/pull/1988)
+  by Martin Holmer]
+- Update CODING and TESTING documentation to reflect recommended usage of `pycodestyle` in place of `pep8`
+  [[#1989](https://github.com/open-source-economics/Tax-Calculator/pull/1989)
+  by Martin Holmer]
+- Add validity checking for non-behavior assumption parameters
+  [[#1992](https://github.com/open-source-economics/Tax-Calculator/pull/1992)
+  by Martin Holmer]
+- Add Tax-Calculator Cookbook recipe using Behavior class and its `response` method
+  [[#1993](https://github.com/open-source-economics/Tax-Calculator/pull/1993)
+  by Martin Holmer]
+- Add Tax-Calculator Cookbook recipe showing how to create a custom table
+  [[#1994](https://github.com/open-source-economics/Tax-Calculator/pull/1994)
+  by Martin Holmer]
+- Add Tax-Calculator Cookbook recipe showing how to use new `quantity_response` utility function
+  [[#2002](https://github.com/open-source-economics/Tax-Calculator/pull/2002)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Fix mishandling of boolean policy parameters
+  [[#1982](https://github.com/open-source-economics/Tax-Calculator/pull/1982)
+  by Hank Doupe]
+
+
 2018-04-19 Release 0.19.0
 -------------------------
 (last merged pull request is
