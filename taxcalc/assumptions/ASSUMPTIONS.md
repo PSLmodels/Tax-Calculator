@@ -1,24 +1,24 @@
-# HOW TO SPECIFY ECONOMIC RESPONSES IN A RESPONSE ASSUMPTION FILE
+# HOW TO SPECIFY ECONOMIC ASSUMPTIONS IN A JSON ASSUMPTION FILE
 
-There is a way to specify in a text file the collection of response
-assumptions that specify the nature of the non-static reform analysis
-being assumed.  When stored on your local computer, such response
-assumption files can be used in non-static analysis of a tax reform
+There is a way to specify in a text file the collection of economic
+assumptions about how individuals and the overall economy respond to a
+tax reform.  When stored on your local computer, such economic
+assumption files can be used in the analysis of a tax reform
 either by uploading to the [TaxBrain
 webapp](http://www.ospc.org/taxbrain/file/) or by using the `--assump`
 option of the [tc
 CLI](http://open-source-economics.github.io/Tax-Calculator/index.html#cli)
 (command-line interface) to Tax-Calculator.
 
-Here we provide links to examples of response assumption files, and
+Here we provide a link to an economic assumptions template file, and
 then provide a more general explanation of the structure and syntax of
 assumption files.
 
-## Examples of Response Assumption Files
+## Example of an Economic Assumption File
 
-The following examples have been specified in response assumption files:
+The following example serves as a template:
 
-- [Response Template](economic_responses_template.json)
+- [Economic Assumptions Template](economic_assumptions_template.json)
 
 ## Structure and Syntax of Assumption Files
 
@@ -27,9 +27,9 @@ JavaScript Object Notation, is an easy way to specify structured
 information that is widely used.  Below we provide an abstract example
 of a JSON assumption file with some explanation.
 
-Here is an abstract example of a response assumption file that
-consists of several response parameters.  The structure of this file
-is as follows:
+Here is an abstract example of an economic assumption file that
+consists of several parameters.  The structure of this file is as
+follows:
 
 ```
 {
@@ -48,20 +48,23 @@ is as follows:
   },
   "growdiff_response": {
      <parameter_name>: {<calyear>: <parameter-value>}
+  },
+  "growmodels": {
+     <parameter_name>: {<calyear>: <parameter-value>}
   }
 }
 ```
 
-Notice that an assumption file must always contain these top-level
-keys: consumption, behavior, growdiff_baseline and growdiff_response.
-But any key can have an empty value like the growdiff_baseline key
-above.  Empty values mean no responses, so an assumption file with
-empty values for all top-level keys implies no responses of any type,
-which implies static analysis of a tax reform.
+Notice that an assumption file must always contain these top-level keys:
+consumption, behavior, growdiff_baseline, growdiff_response and growmodel.
+Any key can have an empty value like the growdiff_baseline key above.
+Empty values mean that the default assumption parameter values are
+used.
 
 The rules about structuring a non-empty value for a top-level key are
 the same as for policy reform files, which are described
-[here](../reforms/REFORMS.md).  The response parameter names
-recognized by Tax-Calculator are listed in [this
+[here](../reforms/REFORMS.md).  The assumption parameter names
+recognized by Tax-Calculator, and there default values, are listed in
+[this
 section](http://open-source-economics.github.io/Tax-Calculator/index.html#params)
 of the user documentation.
