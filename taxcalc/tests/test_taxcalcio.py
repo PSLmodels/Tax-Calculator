@@ -4,12 +4,14 @@ Tests for Tax-Calculator TaxCalcIO class.
 # CODING-STYLE CHECKS:
 # pycodestyle test_taxcalcio.py
 # pylint --disable=locally-disabled test_taxcalcio.py
+#
+# pylint: disable=too-many-lines
 
 import os
 import tempfile
 import pytest
 import pandas as pd
-from taxcalc import TaxCalcIO, GrowDiff  # pylint: disable=import-error
+from taxcalc import TaxCalcIO  # pylint: disable=import-error
 
 
 @pytest.fixture(scope='module', name='rawinputfile')
@@ -72,7 +74,8 @@ def fixture_assumpfile0():
     "consumption": {},
     "behavior": {"_BE_sub": {"2020": [0.05]}},
     "growdiff_baseline": {"_ABOOK": {"2015": [-0.01]}},
-    "growdiff_response": {}
+    "growdiff_response": {},
+    "growmodel": {}
     }
     """
     afile.write(contents)
@@ -93,7 +96,7 @@ def fixture_reformfile1():
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
-    { "policy": {
+    {"policy": {
         "_AMT_brk1": { // top of first AMT tax bracket
           "2015": [200000],
           "2017": [300000]},
@@ -148,42 +151,6 @@ def fixture_baselinebad():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='reformfilex1')
-def fixture_reformfilex1():
-    """
-    Temporary reform file with .json extension.
-    """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{ "policy": {"_AMT_brk1": {"2015": [-1]}}}'
-    rfile.write(contents)
-    rfile.close()
-    # must close and then yield for Windows platform
-    yield rfile
-    if os.path.isfile(rfile.name):
-        try:
-            os.remove(rfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-@pytest.fixture(scope='module', name='reformfilex2')
-def fixture_reformfilex2():
-    """
-    Temporary reform file with .json extension.
-    """
-    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{ "policy": {"_AMT_bxk1": {"2015": [0]}}}'
-    rfile.write(contents)
-    rfile.close()
-    # must close and then yield for Windows platform
-    yield rfile
-    if os.path.isfile(rfile.name):
-        try:
-            os.remove(rfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
 @pytest.fixture(scope='module', name='errorreformfile')
 def fixture_errorreformfile():
     """
@@ -202,6 +169,32 @@ def fixture_errorreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
+@pytest.fixture(scope='module', name='errorassumpfile')
+def fixture_errorassumpfile():
+    """
+    Temporary assumption file with .json extension.
+    """
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = """
+    {
+    "consumption": {"_MPC_e18400": {"2018": [-9]}},
+    "behavior": {"_BE_inc": {"2018": [0.4]}},
+    "growdiff_baseline": {"_ABOOKxx": {"2017": [0.02]}},
+    "growdiff_response": {"_ABOOKxx": {"2017": [0.02]}},
+    "growmodel": {"_activexx": {"2018": [true]}}
+    }
+    """
+    rfile.write(contents)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
 @pytest.fixture(scope='module', name='assumpfile1')
 def fixture_assumpfile1():
     """
@@ -209,10 +202,12 @@ def fixture_assumpfile1():
     """
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
-    { "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-      "behavior": {},
-      "growdiff_baseline": {},
-      "growdiff_response": {}
+    {
+    "consumption": { "_MPC_e18400": {"2018": [0.05]} },
+    "behavior": {},
+    "growdiff_baseline": {},
+    "growdiff_response": {},
+    "growmodel": {}
     }
     """
     afile.write(contents)
@@ -232,11 +227,7 @@ def fixture_lumpsumreformfile():
     Temporary reform file without .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    lumpsum_reform_contents = """
-    {
-      "policy": {"_LST": {"2013": [200]}}
-    }
-    """
+    lumpsum_reform_contents = '{"policy": {"_LST": {"2013": [200]}}}'
     rfile.write(lumpsum_reform_contents)
     rfile.close()
     # must close and then yield for Windows platform
@@ -259,7 +250,8 @@ def fixture_assumpfile2():
     "consumption": {},
     "behavior": {"_BE_sub": {"2020": [0.05]}},
     "growdiff_baseline": {},
-    "growdiff_response": {}
+    "growdiff_response": {},
+    "growmodel": {}
     }
     """
     afile.write(assump2_contents)
@@ -290,17 +282,14 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     assert tcio.errmsg
 
 
-@pytest.mark.parametrize('year, base, ref, asm, gdr', [
-    (2000, 'reformfile0', 'reformfile0', None, list()),
-    (2099, 'reformfile0', 'reformfile0', None, GrowDiff()),
-    (2020, 'errorreformfile', 'errorreformfile', None, GrowDiff()),
-    (2020, 'reformfile0', 'reformfile0', 'assumpfile0', 'has_gdiff_response'),
-    (2020, 'reformfile0', 'reformfile0', 'assumpfile0', GrowDiff()),
-    (2020, 'reformfile0', 'reformfilex1', 'assumpfile0', GrowDiff()),
-    (2020, 'reformfile0', 'reformfilex2', 'assumpfile0', GrowDiff())
+@pytest.mark.parametrize('year, base, ref, asm', [
+    (2000, 'reformfile0', 'reformfile0', None),
+    (2099, 'reformfile0', 'reformfile0', None),
+    (2020, 'reformfile0', 'reformfile0', 'errorassumpfile'),
+    (2020, 'errorreformfile', 'errorreformfile', None)
 ])
-def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
-                     assumpfile0, year, base, ref, asm, gdr):
+def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
+                     year, base, ref, asm):
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
@@ -316,23 +305,15 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
         baseline = base
     if ref == 'reformfile0':
         reform = reformfile0.name
-    elif ref == 'reformfilex1':
-        reform = reformfilex1.name
-    elif ref == 'reformfilex2':  # specify compound reform
-        reform = '{}+{}'.format(reformfilex1.name, reformfilex2.name)
     elif ref == 'errorreformfile':
         reform = errorreformfile.name
     else:
         reform = ref
-    if asm == 'assumpfile0':
-        assump = assumpfile0.name
+    if asm == 'errorassumpfile':
+        assump = errorassumpfile.name
     else:
         assump = asm
-    if gdr == 'has_gdiff_response':
-        gdiff_resp = GrowDiff()
-        gdiff_resp.update_growdiff({2015: {"_ABOOK": [-0.01]}})
-    else:
-        gdiff_resp = gdr
+    # call TaxCalcIO constructor
     tcio = TaxCalcIO(input_data=recdf,
                      tax_year=year,
                      baseline=baseline,
@@ -340,13 +321,12 @@ def test_init_errors(reformfile0, reformfilex1, reformfilex2, errorreformfile,
                      assump=assump)
     assert not tcio.errmsg
     # test TaxCalcIO.init method
-    if asm is None or gdr == 'has_gdiff_response':
-        tcio.init(input_data=recdf, tax_year=year,
-                  baseline=baseline, reform=reform, assump=assump,
-                  growdiff_response=gdiff_resp,
-                  aging_input_data=False,
-                  exact_calculations=True)
-        assert tcio.errmsg
+    tcio.init(input_data=recdf, tax_year=year,
+              baseline=baseline, reform=reform, assump=assump,
+              growdiff_growmodel=None,
+              aging_input_data=False,
+              exact_calculations=True)
+    assert tcio.errmsg
 
 
 def test_creation_with_aging(rawinputfile, reformfile0):
@@ -365,7 +345,7 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=reformfile0.name,
               assump=None,
-              growdiff_response=GrowDiff(),
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -382,7 +362,7 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=None,
               assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -397,7 +377,7 @@ def test_ctor_init_with_cps_files():
     txyr = 2020
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -406,13 +386,13 @@ def test_ctor_init_with_cps_files():
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert tcio.errmsg
 
 
-@pytest.mark.parametrize('dumpvar_str, str_valid, num_vars', [
+@pytest.mark.parametrize("dumpvar_str, str_valid, num_vars", [
     ("""
     MARS;iitax	payrolltax|combined,
     c00100
@@ -438,7 +418,7 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
     assert not tcio.errmsg
     tcio.init(input_data=recdf, tax_year=year,
               baseline=None, reform=None, assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -466,7 +446,7 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -529,7 +509,7 @@ def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=compound_reform,
               assump=assumpfile1.name,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -556,7 +536,7 @@ def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -603,7 +583,7 @@ def test_no_tables_or_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -652,7 +632,7 @@ def test_tables(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -690,7 +670,7 @@ def test_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -726,7 +706,7 @@ def test_ceeu_output1(lumpsumreformfile):
               baseline=None,
               reform=lumpsumreformfile.name,
               assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -752,7 +732,7 @@ def test_ceeu_output2():
               baseline=None,
               reform=None,
               assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -778,7 +758,7 @@ def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
               baseline=None,
               reform=lumpsumreformfile.name,
               assump=assumpfile2.name,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -792,7 +772,7 @@ def fixture_warnreformfile():
     Temporary reform file with .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{ "policy": {"_STD_Dep": {"2015": [0]}}}'
+    contents = '{"policy": {"_STD_Dep": {"2015": [0]}}}'
     rfile.write(contents)
     rfile.close()
     # must close and then yield for Windows platform
@@ -822,7 +802,7 @@ def test_analyze_warnings_print(warnreformfile):
               baseline=None,
               reform=warnreformfile.name,
               assump=None,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -830,21 +810,75 @@ def test_analyze_warnings_print(warnreformfile):
     assert tcio.tax_year() == taxyear
 
 
-def test_growmodel_analysis(reformfile1, assumpfile1):
+@pytest.fixture(scope='module', name='reformfile9')
+def fixture_reformfile9():
     """
-    Test TaxCalcIO.growmodel_analysis method with no output.
+    Temporary reform file with .json extension.
     """
-    taxyear = 2015
+    rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = """
+    { "policy": {
+        "_SS_Earnings_c": {
+          "2014": [300000],
+          "2015": [500000],
+          "2016": [700000]}
+      }
+    }
+    """
+    rfile.write(contents)
+    rfile.close()
+    # must close and then yield for Windows platform
+    yield rfile
+    if os.path.isfile(rfile.name):
+        try:
+            os.remove(rfile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+@pytest.fixture(scope='module', name='assumpfile3')
+def fixture_assumpfile3():
+    """
+    Temporary assumption file with .json extension.
+    """
+    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
+    contents = """
+    {
+    "consumption": {},
+    "behavior": {},
+    "growdiff_baseline": {},
+    "growdiff_response": {},
+    "growmodel": {"_active": {"2019": [true]}}
+    }
+    """
+    afile.write(contents)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_growmodel_analysis(reformfile9, assumpfile3):
+    """
+    Test TaxCalcIO.growmodel_analysis logic.
+    """
     recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
     recdf = pd.DataFrame(data=recdict, index=[0])
-    # test growmodel_analysis with legal assumptions
-    try:
-        TaxCalcIO.growmodel_analysis(input_data=recdf,
-                                     tax_year=taxyear,
-                                     baseline=None,
-                                     reform=reformfile1.name,
-                                     assump=assumpfile1.name,
-                                     aging_input_data=False,
-                                     exact_calculations=False)
-    except Exception:  # pylint: disable=broad-except
-        assert 'TaxCalcIO.growmodel_analysis_ok' == 'no'
+    TaxCalcIO.growmodel_analysis(input_data=recdf,
+                                 tax_year=2019,
+                                 baseline=None,
+                                 reform=reformfile9.name,
+                                 assump=assumpfile3.name,
+                                 aging_input_data=True,
+                                 exact_calculations=False,
+                                 writing_output_file=False,
+                                 output_tables=False,
+                                 output_graphs=False,
+                                 output_ceeu=False,
+                                 dump_varset=None,
+                                 output_dump=False,
+                                 output_sqldb=False)

@@ -1,5 +1,5 @@
 """
-The public API of the TaxBrain Interface (tbi).
+The public API of the TaxBrain Interface (tbi) to Tax-Calculator.
 
 The tbi functions are used by TaxBrain to call Tax-Calculator in order
 to do distributed processing of TaxBrain runs and in order to maintain
@@ -94,13 +94,13 @@ def reform_warnings_errors(user_mods):
     return rtn_dict
 
 
-def run_nth_year_tax_calc_model(year_n, start_year,
-                                use_puf_not_cps,
-                                use_full_sample,
-                                user_mods,
-                                return_dict=True):
+def run_nth_year_taxcalc_model(year_n, start_year,
+                               use_puf_not_cps,
+                               use_full_sample,
+                               user_mods,
+                               return_dict=True):
     """
-    The run_nth_year_tax_calc_model function assumes user_mods is a dictionary
+    The run_nth_year_taxcalc_model function assumes user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
     Setting use_puf_not_cps=True implies use puf.csv input file;
       otherwise, use cps.csv input file.

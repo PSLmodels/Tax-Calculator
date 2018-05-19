@@ -1,5 +1,5 @@
 """
-Tax-Calculator GrowDiff class.
+Tax-Calculator GrowDiff class that is used to modify GrowFactors.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle growdiff.py
@@ -14,7 +14,7 @@ class GrowDiff(ParametersBase):
     GrowDiff is a subclass of the abstract ParametersBase class, and
     therefore, inherits its methods (none of which are shown here).
 
-    Constructor for growth difference class.
+    Constructor for GrowDiff class.
 
     Parameters
     ----------
@@ -111,7 +111,7 @@ class GrowDiff(ParametersBase):
 
     def apply_to(self, growfactors):
         """
-        Apply updated growdiff values to specified Growfactors instance.
+        Apply updated GrowDiff values to specified GrowFactors instance.
         """
         # pylint: disable=no-member
         for i in range(0, self.num_years):

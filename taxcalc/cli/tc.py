@@ -21,7 +21,8 @@ def cli_tc_main():
     """
     Contains command-line interface (CLI) to Tax-Calculator TaxCalcIO class.
     """
-    # pylint: disable=too-many-statements
+    # pylint: disable=too-many-statements,too-many-branches
+    # pylint: disable=too-many-return-statements
     # parse command-line arguments:
     usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}{}{}'.format(
         '[--baseline BASELINE]\n',
@@ -137,7 +138,7 @@ def cli_tc_main():
                         default=False,
                         action="store_true")
     args = parser.parse_args()
-    # show Tsx-Calculator version and quit if --version option specified
+    # show Tax-Calculator version and quit if --version option specified
     if args.version:
         sys.stdout.write('Tax-Calculator {}\n'.format(tc.__version__))
         return 0
@@ -149,7 +150,7 @@ def cli_tc_main():
     else:
         inputfn = args.INPUT
         taxyear = args.TAXYEAR
-    # instantiate taxcalcio object and do tax analysis
+    # instantiate TaxCalcIO object and do tax analysis
     tcio = tc.TaxCalcIO(input_data=inputfn, tax_year=taxyear,
                         baseline=args.baseline,
                         reform=args.reform, assump=args.assump,
@@ -162,7 +163,7 @@ def cli_tc_main():
     tcio.init(input_data=inputfn, tax_year=taxyear,
               baseline=args.baseline,
               reform=args.reform, assump=args.assump,
-              growdiff_response=None,
+              growdiff_growmodel=None,
               aging_input_data=aging,
               exact_calculations=args.exact)
     if tcio.errmsg:
@@ -184,20 +185,36 @@ def cli_tc_main():
             sys.stderr.write(msg.format(args.dvars))
             sys.stderr.write('USAGE: tc --help\n')
             return 1
-    tcio.analyze(writing_output_file=True,
-                 output_tables=args.tables,
-                 output_graphs=args.graphs,
-                 output_ceeu=args.ceeu,
-                 dump_varset=dumpvar_set,
-                 output_dump=args.dump,
-                 output_sqldb=args.sqldb)
+    # conduct tax analysis
+    if tcio.growmodel.is_ever_active():
+        del tcio
+        tc.TaxCalcIO.growmodel_analysis(input_data=inputfn,
+                                        tax_year=taxyear,
+                                        baseline=args.baseline,
+                                        reform=args.reform,
+                                        assump=args.assump,
+                                        aging_input_data=aging,
+                                        exact_calculations=args.exact,
+                                        writing_output_file=True,
+                                        output_tables=args.tables,
+                                        output_graphs=args.graphs,
+                                        output_ceeu=args.ceeu,
+                                        dump_varset=dumpvar_set,
+                                        output_dump=args.dump,
+                                        output_sqldb=args.sqldb)
+    else:
+        tcio.analyze(writing_output_file=True,
+                     output_tables=args.tables,
+                     output_graphs=args.graphs,
+                     output_ceeu=args.ceeu,
+                     dump_varset=dumpvar_set,
+                     output_dump=args.dump,
+                     output_sqldb=args.sqldb)
     # compare test output with expected test output if --test option specified
     if args.test:
         retcode = _compare_test_output_files()
-    else:
-        retcode = 0
-    # return exit code
-    return retcode
+        return retcode
+    return 0
 # end of cli_tc_main function code
 
 

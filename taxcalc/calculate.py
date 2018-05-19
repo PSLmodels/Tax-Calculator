@@ -1113,42 +1113,50 @@ class Calculator(object):
         del dt2
         return fig
 
+    REQUIRED_REFORM_KEYS = set(['policy'])
+    REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
+                                'growdiff_baseline', 'growdiff_response',
+                                'growmodel'])
+
     @staticmethod
     def read_json_param_objects(reform, assump):
         """
         Read JSON reform and assump objects and
-        return a single dictionary containing five key:dict pairs:
+        return a single dictionary containing six key:dict pairs:
         'policy':dict, 'consumption':dict, 'behavior':dict,
-        'growdiff_baseline':dict and 'growdiff_response':dict.
+        'growdiff_baseline':dict, 'growdiff_response':dict, and
+        'growmodel':dict.
 
-        Note that either of the two parameters may be None.
+        Note that either of the two function arguments can be None.
         If reform is None, the dict in the 'policy':dict pair is empty.
-        If assump is None, the dict in the 'consumption':dict pair,
-        in the 'behavior':dict pair, in the 'growdiff_baseline':dict pair,
-        and in the 'growdiff_response':dict pair, are all empty.
+        If assump is None, the dict in the all the key:dict pairs is empty.
 
-        Also note that either of the first two parameters can be strings
+        Also note that either of the two function arguments can be strings
         containing a valid JSON string (rather than a filename),
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
 
         The reform file contents or JSON string must be like this:
         {"policy": {...}}
-        and the assump file contents or JSON string must be like:
+        and the assump file contents or JSON string must be like this:
         {"consumption": {...},
          "behavior": {...},
          "growdiff_baseline": {...},
-         "growdiff_response": {...}
-        }
+         "growdiff_response": {...},
+         "growmodel": {...}}
+        The {...} should be empty like this {} if not specifying a policy
+        reform or if not specifying any economic assumptions of that type.
 
         The returned dictionary contains parameter lists (not arrays).
         """
+        # pylint: disable=too-many-branches
         # first process second assump parameter
         if assump is None:
             cons_dict = dict()
             behv_dict = dict()
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
+            growmodel_dict = dict()
         elif isinstance(assump, six.string_types):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
@@ -1157,7 +1165,8 @@ class Calculator(object):
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
-             gdiff_resp_dict) = Calculator._read_json_econ_assump_text(txt)
+             gdiff_resp_dict,
+             growmodel_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
             raise ValueError('assump is neither None nor string')
         # next process first reform parameter
@@ -1175,22 +1184,16 @@ class Calculator(object):
             )
         else:
             raise ValueError('reform is neither None nor string')
-        # raise error if specifying both behavior and growdiff_response
-        if behv_dict and gdiff_resp_dict:
-            msg = 'both behavior and growdiff_response are specified'
-            raise ValueError('ERROR: ' + msg + '\n')
-        # finally construct and return single composite dictionary
+        # construct single composite dictionary
         param_dict = dict()
         param_dict['policy'] = rpol_dict
         param_dict['consumption'] = cons_dict
         param_dict['behavior'] = behv_dict
         param_dict['growdiff_baseline'] = gdiff_base_dict
         param_dict['growdiff_response'] = gdiff_resp_dict
+        param_dict['growmodel'] = growmodel_dict
+        # return the composite dictionary
         return param_dict
-
-    REQUIRED_REFORM_KEYS = set(['policy'])
-    REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
-                                'growdiff_baseline', 'growdiff_response'])
 
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
@@ -1205,7 +1208,7 @@ class Calculator(object):
 
         policy_dicts : list of dict or None
             each dictionary in list is a params['policy'] dictionary
-            representing second or subsequent elements of a compound
+            representing second and subsequent elements of a compound
             reform; None implies no compound reform with the simple
             reform characterized in the params['policy'] dictionary
 
@@ -1223,7 +1226,7 @@ class Calculator(object):
             ----------
             years: list of change years
             change: dictionary of parameter changes
-            base: Policy or Growdiff object with baseline values
+            base: Policy or GrowDiff object with baseline values
             syear: parameter start calendar year
 
             Returns
@@ -1319,8 +1322,8 @@ class Calculator(object):
                             elif basevals[param]['boolean_value']:
                                 bval = bool(bval)
                         doc += '  baseline_value: {}\n'.format(bval)
-                    else:  # if basex is Growdiff object
-                        # all Growdiff parameters have zero as default value
+                    else:  # if basex is GrowDiff object
+                        # all GrowDiff parameters have zero as default value
                         doc += '  baseline_value: 0.0\n'
             return doc
 
@@ -1329,7 +1332,7 @@ class Calculator(object):
         # ... create gdiff_baseline object
         gdb = GrowDiff()
         gdb.update_growdiff(params['growdiff_baseline'])
-        # ... create Growfactors clp object that incorporates gdiff_baseline
+        # ... create GrowFactors object that will incorporate gdiff_baseline
         gfactors_clp = GrowFactors()
         gdb.apply_to(gfactors_clp)
         # ... create Policy object containing pre-reform parameter values
@@ -1488,12 +1491,11 @@ class Calculator(object):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
 
-        Specified text is JSON with at least 1 high-level string:object pair:
+        Specified text is JSON with at least 1 high-level key:object pair:
         a "policy": {...} pair.
 
-        Other high-level pairs will be ignored by this method, except
-        that a "consumption", "behavior", "growdiff_baseline" or
-        "growdiff_response" key will raise a ValueError.
+        Other keys such as "consumption", "behavior", "growdiff_baseline",
+        "growdiff_response" or "growmodel" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
         may contain one or more pairs with parameter string primary keys
@@ -1525,15 +1527,15 @@ class Calculator(object):
             msg += bline + '\n'
             raise ValueError(msg)
         # check key contents of dictionary
-        actual_keys = raw_dict.keys()
-        for rkey in Calculator.REQUIRED_REFORM_KEYS:
-            if rkey not in actual_keys:
-                msg = 'key "{}" is not in policy reform file'
-                raise ValueError(msg.format(rkey))
-        for rkey in actual_keys:
-            if rkey in Calculator.REQUIRED_ASSUMP_KEYS:
-                msg = 'key "{}" should be in economic assumption file'
-                raise ValueError(msg.format(rkey))
+        actual_keys = set(raw_dict.keys())
+        missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
+        if missing_keys:
+            msg = 'required key(s) "{}" missing from policy reform file'
+            raise ValueError(msg.format(missing_keys))
+        illegal_keys = actual_keys - Calculator.REQUIRED_REFORM_KEYS
+        if illegal_keys:
+            msg = 'illegal key(s) "{}" in policy reform file'
+            raise ValueError(msg.format(illegal_keys))
         # convert raw_dict['policy'] dictionary into prdict
         tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'],
                                                       growdiff_baseline_dict,
@@ -1544,16 +1546,16 @@ class Calculator(object):
     @staticmethod
     def _read_json_econ_assump_text(text_string):
         """
-        Strip //-comments from text_string and return 4 dict based on the JSON.
+        Strip //-comments from text_string and return 5 dict based on the JSON.
 
-        Specified text is JSON with at least 4 high-level string:object pairs:
+        Specified text is JSON with at least 5 high-level key:value pairs:
         a "consumption": {...} pair,
         a "behavior": {...} pair,
-        a "growdiff_baseline": {...} pair, and
-        a "growdiff_response": {...} pair.
+        a "growdiff_baseline": {...} pair,
+        a "growdiff_response": {...} pair, and
+        a "growmodel": {...} pair.
 
-        Other high-level pairs will be ignored by this method, except that
-        a "policy" key will raise a ValueError.
+        Other keys such as "policy" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
         may contain one or more pairs with parameter string primary keys
@@ -1562,16 +1564,17 @@ class Calculator(object):
         that can be read by this method.
 
         Note that an example is shown in the ASSUMP_CONTENTS string in
-          tests/test_calculate.py file.
+        the tests/test_calculate.py file.
 
         Returned dictionaries (cons_dict, behv_dict, gdiff_baseline_dict,
-        gdiff_respose_dict) have integer years as primary keys and
-        string parameters as secondary keys.
+        gdiff_respose_dict, growmodel_dict) have integer years as primary
+        keys and string parameters as secondary keys.
 
         These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the Behavior.update_behavior(behv_dict) method, or
-        the Growdiff.update_growdiff(gdiff_dict) method.
+        the GrowDiff.update_growdiff(gdiff_dict) method, or
+        the GrowModel.update_growmodel(growmodel_dict) method.
         """
         # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
@@ -1594,15 +1597,15 @@ class Calculator(object):
             msg += bline + '\n'
             raise ValueError(msg)
         # check key contents of dictionary
-        actual_keys = raw_dict.keys()
-        for rkey in Calculator.REQUIRED_ASSUMP_KEYS:
-            if rkey not in actual_keys:
-                msg = 'key "{}" is not in economic assumption file'
-                raise ValueError(msg.format(rkey))
-        for rkey in actual_keys:
-            if rkey in Calculator.REQUIRED_REFORM_KEYS:
-                msg = 'key "{}" should be in policy reform file'
-                raise ValueError(msg.format(rkey))
+        actual_keys = set(raw_dict.keys())
+        missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys
+        if missing_keys:
+            msg = 'required key(s) "{}" missing from economic assumption file'
+            raise ValueError(msg.format(missing_keys))
+        illegal_keys = actual_keys - Calculator.REQUIRED_ASSUMP_KEYS
+        if illegal_keys:
+            msg = 'illegal key(s) "{}" in economic assumption file'
+            raise ValueError(msg.format(illegal_keys))
         # convert the assumption dictionaries in raw_dict
         key = 'consumption'
         cons_dict = Calculator._convert_parameter_dict(raw_dict[key])
@@ -1612,7 +1615,10 @@ class Calculator(object):
         gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_response'
         gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict)
+        key = 'growmodel'
+        growmodel_dict = Calculator._convert_parameter_dict(raw_dict[key])
+        return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict,
+                growmodel_dict)
 
     @staticmethod
     def _convert_parameter_dict(param_key_dict):
@@ -1622,7 +1628,8 @@ class Calculator(object):
         the Policy.implement_reform() method, or
         the Consumption.update_consumption() method, or
         the Behavior.update_behavior() method, or
-        the Growdiff.update_growdiff() method.
+        the GrowDiff.update_growdiff() method, or
+        the GrowModel.update_growmodel() method.
 
         Specified input dictionary has string parameter primary keys and
         string years as secondary keys.

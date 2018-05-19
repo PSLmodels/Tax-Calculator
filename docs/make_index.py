@@ -28,6 +28,7 @@ IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
 BEHAVIOR_PATH = os.path.join(TAXCALC_PATH, 'behavior.json')
 GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
+GROWMODEL_PATH = os.path.join(TAXCALC_PATH, 'growmodel.json')
 OUTPUT_PATH = os.path.join(CURDIR_PATH, OUTPUT_FILENAME)
 
 
@@ -49,9 +50,10 @@ def main():
     text = policy_params(POLICY_PATH, text)
     text = io_variables('read', IOVARS_PATH, text)
     text = io_variables('calc', IOVARS_PATH, text)
-    text = response_params('consumption', CONSUMPTION_PATH, text)
-    text = response_params('behavior', BEHAVIOR_PATH, text)
-    text = response_params('growdiff', GROWDIFF_PATH, text)
+    text = assumption_params('consumption', CONSUMPTION_PATH, text)
+    text = assumption_params('behavior', BEHAVIOR_PATH, text)
+    text = assumption_params('growdiff', GROWDIFF_PATH, text)
+    text = assumption_params('growmodel', GROWMODEL_PATH, text)
 
     # write text variable to OUTPUT file
     with open(OUTPUT_PATH, 'w') as ofile:
@@ -222,7 +224,7 @@ def io_variables(iotype, path, text):
     return text
 
 
-def response_param_text(pname, ptype, param):
+def assumption_param_text(pname, ptype, param):
     """
     Extract info from param for pname of ptype and return as HTML string.
     """
@@ -231,7 +233,7 @@ def response_param_text(pname, ptype, param):
     if len(sec1) > 0:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
     else:
-        txt = '<p><b>{} &mdash; {}</b>'.format('Response Parameter',
+        txt = '<p><b>{} &mdash; {}</b>'.format('Assumption Parameter',
                                                ptype.capitalize())
     txt += '<br><i>tc Name:</i> {}'.format(pname)
     if len(sec1) > 0:
@@ -251,9 +253,9 @@ def response_param_text(pname, ptype, param):
     return txt
 
 
-def response_params(ptype, path, text):
+def assumption_params(ptype, path, text):
     """
-    Read response parameters of ptype from path, integrate them into text,
+    Read assumption parameters of ptype from path, integrate them into text,
     and return the integrated text.
     """
     with open(path) as pfile:
@@ -263,7 +265,7 @@ def response_params(ptype, path, text):
     ptext = ''
     for pname in params:
         param = params[pname]
-        ptext += response_param_text(pname, ptype, param)
+        ptext += assumption_param_text(pname, ptype, param)
     # integrate parameter text into text
     old = '<!-- {}@parameters -->'.format(ptype)
     text = text.replace(old, ptext)
