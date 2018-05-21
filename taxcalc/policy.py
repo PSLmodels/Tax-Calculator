@@ -95,7 +95,8 @@ class Policy(ParametersBase):
         """
         return self._wage_growth_rates
 
-    def implement_reform(self, reform, print_warnings=True, raise_errors=True):
+    def implement_reform(self, reform,
+                         print_warnings=False, raise_errors=True):
         """
         Implement multi-year policy reform and leave current_year unchanged.
 
@@ -105,14 +106,12 @@ class Policy(ParametersBase):
             see Notes to Parameters _update method for info on MODS structure
 
         print_warnings: boolean
-            if True (the default), prints warnings when parameter_warnings
-                    exists;
+            if True, prints warnings when parameter_warnings exists;
             if False, does not print warnings when parameter_warnings exists
                     and leaves warning handling to caller of implement_reform.
 
         raise_errors: boolean
-            if True (the default), raises ValueError when parameter_errors
-                    exists;
+            if True, raises ValueError when parameter_errors exists;
             if False, does not raise ValueError when parameter_errors exists
                     and leaves error handling to caller of implement_reform.
 
@@ -225,18 +224,6 @@ class Policy(ParametersBase):
             print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
-
-    def current_law_version(self):
-        """
-        Return Policy object same as self except with current-law policy.
-        """
-        startyear = self.start_year
-        numyears = self.num_years
-        clv = Policy(self._gfactors,
-                     start_year=startyear,
-                     num_years=numyears)
-        clv.set_year(self.current_year)
-        return clv
 
     JSON_REFORM_SUFFIXES = {
         # MARS-indexed suffixes and list index numbers
@@ -520,7 +507,6 @@ class Policy(ParametersBase):
         # pylint: disable=too-many-nested-blocks
         rounding_error = 100.0
         # above handles non-rounding of inflation-indexed parameter values
-        clp = self.current_law_version()
         parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
         for pname in parameters:
@@ -530,7 +516,7 @@ class Policy(ParametersBase):
             for vop, vval in self._vals[pname]['range'].items():
                 if isinstance(vval, six.string_types):
                     if vval == 'default':
-                        vvalue = getattr(clp, pname)
+                        vvalue = Policy._default_value(pname)
                         if vop == 'min':
                             vvalue -= rounding_error
                         # the follow branch can never be reached, so it
@@ -582,5 +568,31 @@ class Policy(ParametersBase):
                                                        pvalue[idx],
                                                        vvalue[idx]) + '\n'
                             )
-        del clp
         del parameters
+
+    @staticmethod
+    def _default_value(pname):
+        """
+        Return "default" values for specified parameter's warning logic.
+        """
+        assert pname == '_STD' or pname == '_STD_Dep'
+        clp = Policy()
+        irates = clp.inflation_rates()
+        if pname == '_STD':
+            dval = getattr(clp, '_STD')[0]
+        elif pname == '_STD_Dep':
+            dval = getattr(clp, '_STD_Dep')[0]
+        dvalues = list()
+        dvalues.append(dval.round())
+        for year in range(clp.start_year, clp.end_year):
+            inflation_factor = 1.0 + irates[year - clp.start_year]
+            dval *= inflation_factor  # value for year+1
+            dvalues.append(dval.round())
+        if pname == '_STD':
+            np_dvalues = np.vstack(dvalues)
+        elif pname == '_STD_Dep':
+            np_dvalues = np.asarray(dvalues)
+        del clp
+        del irates
+        del dvalues
+        return np_dvalues
