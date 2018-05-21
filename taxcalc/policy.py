@@ -574,6 +574,14 @@ class Policy(ParametersBase):
     def _default_value(pname):
         """
         Return "default" values for specified parameter's warning logic.
+
+        The "default" values are indexed 2013 values for each year 2013+.
+        Only if users of PUF data try to specify a lower value than these
+        "default" values will they get a warning message.  This is all
+        necessary because, at the moment, PUF data do not contain positive
+        itemizable expense amounts for non-itemizers, which means lowering
+        the standard deduction parameters below their indexed 2013 value
+        will produce unexpected results.
         """
         assert pname == '_STD' or pname == '_STD_Dep'
         clp = Policy()
