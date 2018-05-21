@@ -90,9 +90,9 @@ print('')
 
 title = 'Extract of {} distribution table by baseline expanded-income decile:'
 print(title.format(cyr))
-print(dist_extract)
+print(dist_extract.to_string())
 print('')
 
 title = 'Extract of {} income-tax difference table by expanded-income decile:'
 print(title.format(cyr))
-print(diff_extract)
+print(diff_extract.to_string())
