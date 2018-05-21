@@ -354,6 +354,13 @@ class Calculator(object):
         """
         self.__records.behavioral_responses_are_included = True
 
+    @property
+    def reform_warnings(self):
+        """
+        Calculator class embedded Policy object's reform_warnings.
+        """
+        return self.__policy.parameter_warnings
+
     def policy_current_year(self, year=None):
         """
         If year is None, return current_year of embedded Policy object.
