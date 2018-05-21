@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
-from taxcalc import run_nth_year_tax_calc_model
+from taxcalc import run_nth_year_taxcalc_model
 
 
 def test_agg(tests_path, cps_fullsample):
@@ -135,9 +135,9 @@ def test_ubi_n_variables(cps_path):
         assert 'XTOT' == '(nu18+n1820+n21)'
 
 
-def test_run_tax_calc_model(tests_path):
+def test_run_taxcalc_model(tests_path):
     """
-    Test tbi.run_nth_year_tax_calc_model function using CPS data.
+    Test tbi.run_nth_year_taxcalc_model function using CPS data.
     """
     user_modifications = {
         'policy': {
@@ -155,13 +155,15 @@ def test_run_tax_calc_model(tests_path):
         'growdiff_baseline': {
         },
         'growdiff_response': {
+        },
+        'growmodel': {
         }
     }
-    res = run_nth_year_tax_calc_model(year_n=2, start_year=2018,
-                                      use_puf_not_cps=False,
-                                      use_full_sample=False,
-                                      user_mods=user_modifications,
-                                      return_dict=True)
+    res = run_nth_year_taxcalc_model(year_n=2, start_year=2018,
+                                     use_puf_not_cps=False,
+                                     use_full_sample=False,
+                                     user_mods=user_modifications,
+                                     return_dict=True)
     assert isinstance(res, dict)
     # put actual results in a multiline string
     actual_results = ''

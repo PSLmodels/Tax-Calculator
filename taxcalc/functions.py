@@ -1444,6 +1444,15 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
     c07230 = c87680 * (1. - CR_Education_hc)
     return c07230
 
+@iterate_jit(nopython=True)
+def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
+                  CR_Charity_frt, MARS):
+    total_charity = e19800 + e20100
+    floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
+    charity_cr_floored = max(total_charity - floor, 0)
+    charity_credit = CR_Charity_rt * (charity_cr_floored)
+    return charity_credit
+
 
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
@@ -1451,10 +1460,10 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          personal_nonrefundable_credit,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
-                         CR_MinimumTax_hc, CR_OtherCredits_hc, CR_Charity_rt,
-                         CR_Charity_f, c07180, c07200, c07220, c07230, c07240,
+                         CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit,
+                         c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000,
-                         DependentCredit_before_CTC, MARS):
+                         DependentCredit_before_CTC):
     """
     NonRefundableCredits function sequentially limits credits to tax liability.
 
@@ -1466,7 +1475,6 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     CR_GeneralBusiness_hc: General business credit haircut
     CR_MinimumTax_hc: Minimum tax credit haircut
     CR_OtherCredits_hc: Other credits haircut
-    CR_Charity_rt: Rate at which charity is refunded
     """
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
@@ -1508,8 +1516,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Other credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
-    charity_cr_floored = max(e19800 + e20100 - CR_Charity_f[MARS - 1], 0)
-    charity_credit = min(CR_Charity_rt * (charity_cr_floored), avail)
+    charity_credit = min(charity_credit, avail)
     avail = avail - charity_credit
     # Personal nonrefundable credit
     personal_nonrefundable_credit = min(personal_nonrefundable_credit, avail)

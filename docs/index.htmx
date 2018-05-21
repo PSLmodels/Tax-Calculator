@@ -40,6 +40,10 @@ ensure you are viewing the most recent version of this page rather
 than an older version that your browser has saved in its cache of
 previously visited pages.</i></p>
 
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-05-18-release-0200">Flexible <kbd>quantity_response</kbd>
+utility function</a> is available in Tax-Calculator release 0.20.0 and
+higher, and there is a new Cookbook recipe to illustrate its use
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-04-19-release-0190">Fix data and logic bugs</a>
 so that the Child Tax Credit for those with kids age 17 is now lower
 and so that the income tax liability for those with large business
@@ -78,7 +82,8 @@ via the command line</p>
 <p><a href="#pol">Policy Parameters</a> that specify tax reforms</p>
 <p><a href="#input">Input Variables</a> that specify tax filing units</p>
 <p><a href="#output">Output Variables</a> that describe tax results</p>
-<p><a href="#params">Response Parameters</a> that specify reform responses</p>
+<p><a href="#params">Assumption Parameters</a> that specify economic
+assumptions</p>
 
 
 <h2 id="gui">TaxBrain GUI</h2>
@@ -197,8 +202,8 @@ relationship between tax policy and the macro economy to predict the
 effect of tax reforms on economic growth.</i></p>
 
 Clicking on one of these choices will allow you to specify some
-addition economic response parameters and initiate the dynamic
-analysis using your response parameter assumptions.
+additional economic assumption parameters and initiate the dynamic
+analysis using your economic assumptions.
 
 <p><a href="#gui">Back to Section Contents</a>&nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a></p>
@@ -334,26 +339,26 @@ part.</p>
 
 <h3 id="cli-spec-assump">Specify Analysis Assumptions</h3>
 
-<p>This part explains how to specify response assumption files used in
+<p>This part explains how to specify economic assumption files used in
 non-static tax analysis.  If you want to start out doing static
 analysis, you can skip this part now and come back to read it whenever
 you want to go beyond static analysis.
 The <a href="#cli-spec-funits">next part</a> of this section discusses
 filing-unit input files.</p>
 
-<p>The details of economic response assumptions are contained in a
+<p>The details of economic assumptions are contained in a
 text file that you write with a text editor.  The assumptions are
-expressed by specifying which response parameters are changed from
+expressed by specifying which parameters are changed from
 their default values, all of which are zero.  The timing and magnitude of
-these response parameter changes are written in JSON, a simple and
+these parameter changes are written in JSON, a simple and
 widely-used data-specification language.</p>
 
-<p>For examples of response assumption files and the general rules for
+<p>For examples of economic assumption files and the general rules for
 writing JSON assumption files, go
-to <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/responses/ASSUMPTIONS.md">this
+to <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/assumptions/ASSUMPTIONS.md">this
 page</a>.</p>
 
-<p>If you want to upload policy reform and response assumption files
+<p>If you want to upload policy reform and economic assumption files
 to TaxBrain, you can go directly to this
 section's <a href="#cli-taxbrain-upload">last part</a>, which
 discusses uploading files to TaxBrain.  If you want to analyze your
@@ -407,7 +412,7 @@ analyzing reforms that change the tax treatment of high-income filers.</p>
 
 <p><b>Third</b>, when you want to estimate how your reform affects
 total tax liabilities and/or the distribution of tax liabilities, you
-can always upload your policy reform and response assumption files
+can always upload your policy reform and economic assumption files
 to TaxBrain.  Combining this option with the first option provides a
 complete tax analysis capability.
 The <a href="#cli-taxbrain-upload">last part</a> of this section
@@ -490,7 +495,7 @@ using its own set of three age-count input variables.
 one or more filing units.  A baseline file is optional; no baseline
 file implies the policy baseline is current-law policy.  A policy
 reform file is optional; no reform file implies no reform (that is,
-you want to analyze current-law policy).  A response assumption file
+you want to analyze current-law policy).  An economic assumption file
 is also optional; no assumption file implies you want to conduct
 static analysis.  The output files written by tc are built-up from
 the name of the input file, baseline file, reform file, and
@@ -516,7 +521,7 @@ projected to 2020.  The name of the CSV-formatted output file is
 <kbd>test-20-#-#-#.csv</kbd>.  The first <kbd>#</kbd> symbol indicates
 we did not specify a baseline file and the second <kbd>#</kbd> symbol
 indicates we did not specify a policy reform file and the
-third <kbd>#</kbd> symbol indicates we did not specify a response
+third <kbd>#</kbd> symbol indicates we did not specify an economic
 assumption file.
 The variables included in the minimal output file include:
 <kbd>RECID</kbd> (of filing unit in the input file),
@@ -640,7 +645,7 @@ The above command generates an output file named
 
 <p>Example (6) produces 2021 output for the filing units in the 
 <kbd>test.csv</kbd> file using the policy reform specified in
-the <kbd>ref3.json</kbd> file and the response assumptions
+the <kbd>ref3.json</kbd> file and the economic assumptions
 specified in the <kbd>res1.json</kbd> file.  The output results
 produced by this non-static analysis are written to the 
 <kbd>test-21-#-ref3-res1.csv</kbd> file.</p>
@@ -947,7 +952,7 @@ available in your SQLite tabulation session.</p>
 
 <h3 id="cli-taxbrain-upload">Upload Files to TaxBrain</h3>
 
-<p>Any policy reform or response assumption files you can use with tc
+<p>Any policy reform or economic assumption files you can use with tc
 can be uploaded to trigger a TaxBrain run.  As mentioned above the
 main advantages of doing this is getting access to the proprietary
 <kbd>puf.csv</kbd> input file, getting fast execution of both reform
@@ -1201,7 +1206,7 @@ output variables that Tax-Calculator is programmed to calculate.</p>
 <a href="#doc">Back to Document Contents</a></p>
 
 
-<h2 id="params">Response Parameters</h2>
+<h2 id="params">Assumption Parameters</h2>
 
 <p>This section contains documentation of several sets of parameters
 that characterize responses to a tax reform.  Consumption
@@ -1212,31 +1217,26 @@ tax reform in a partial-equilibrium setting.  Growdiff parameters are
 used to specify baseline differences and/or reform responses in the
 annual rate of growth in economic variables.</p>
 
-<p>All the response parameters can be used by the tc CLI, but only
+<p>All the assumption parameters can be used by the tc CLI, but only
 those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
-dynamic response parameters control advanced features of
-Tax-Calculator, so understanding the
+assumption parameters control advanced features of Tax-Calculator, so
+understanding the
 <a href="https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc">source
-code</a> that uses them is essential.  Default response parameter values are
-zero and are projected into the future at that value, which implies no
-response to the reform.  Using the default no-reform-response
-assumption for all the response parameters generates a static analysis
-of the tax reform.  The benefit value consumption parameters have a
-default value of one, which implies the consumption value of the
-in-kind benefits is equal to the government cost of providing the
-benefits.</p>
-
-<p>Note that some of the response parameters are incompatible with
-each other, and therefore, cannot be used together.  The behavior
-parameters can not have non-zero values with specifying non-zero
-growdiff response parameters.</p>
-
+code</a> that uses them is essential.  Default values of most
+assumption parameters are zero and are projected into the future at
+that value, which implies no response to the reform.  Using the
+default no-reform-response assumption for all the response parameters
+generates a static analysis of the tax reform.  The benefit value 
+consumption parameters have a default value of one, which implies the
+consumption value of the in-kind benefits is equal to the government
+cost of providing the benefits.</p>
 
 <h3>Section Contents</h3>
 
 <p><a href="#params-consump">Consumption Parameters</a></p>
 <p><a href="#params-behavior">Behavior Parameters</a></p>
 <p><a href="#params-growdiff">Growdiff Parameters</a></p>
+<p><a href="#params-growmodel">Growmodel Parameters</a></p>
 
 
 <h3 id="params-consump">Consumption Parameters</h3>
@@ -1256,6 +1256,11 @@ growdiff response parameters.</p>
 <h3 id="params-growdiff">Growdiff Parameters</h3>
 
 <!-- growdiff@parameters -->
+
+
+<h3 id="params-growdiff">Growmodel Parameters</h3>
+
+<!-- growmodel@parameters -->
 
 <p><a href="#params">Back to Section Contents</a>&nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a></p>
