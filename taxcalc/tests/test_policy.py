@@ -943,7 +943,7 @@ def test_validate_param_values_warnings_errors():
     """
     pol1 = Policy()
     ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
-    pol1.implement_reform(ref1, print_warnings=False, raise_errors=False)
+    pol1.implement_reform(ref1, print_warnings=True, raise_errors=False)
     assert len(pol1.parameter_warnings) > 0
     pol2 = Policy()
     ref2 = {2021: {'_ID_Charity_crt_all': [0.61]}}
