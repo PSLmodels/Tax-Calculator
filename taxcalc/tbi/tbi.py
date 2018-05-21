@@ -36,7 +36,7 @@ AGG_ROW_NAMES = AGGR_ROW_NAMES
 GDP_ELAST_ROW_NAMES = ['gdp_proportional_change']
 
 
-def reform_warnings_errors(user_mods):
+def reform_warnings_errors(user_mods, using_puf):
     """
     The reform_warnings_errors function assumes user_mods is a dictionary
     returned by the Calculator.read_json_param_objects() function.
@@ -74,7 +74,8 @@ def reform_warnings_errors(user_mods):
         pol.implement_reform(user_mods['policy'],
                              print_warnings=False,
                              raise_errors=False)
-        rtn_dict['policy']['warnings'] = pol.parameter_warnings
+        if using_puf:
+            rtn_dict['policy']['warnings'] = pol.parameter_warnings
         rtn_dict['policy']['errors'] = pol.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['policy']['errors'] = valerr_msg.__str__()

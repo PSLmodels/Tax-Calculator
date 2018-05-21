@@ -74,6 +74,7 @@ class TaxCalcIO(object):
         self.errmsg = ''
         # check name and existence of INPUT file
         inp = 'x'
+        self.puf_input_data = False
         self.cps_input_data = False
         if isinstance(input_data, six.string_types):
             # remove any leading directory path from INPUT filename
@@ -85,6 +86,7 @@ class TaxCalcIO(object):
                 msg = 'INPUT file name does not end in .csv'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
             # check existence of INPUT file
+            self.puf_input_data = input_data.endswith('puf.csv')
             self.cps_input_data = input_data.endswith('cps.csv')
             if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
@@ -463,11 +465,13 @@ class TaxCalcIO(object):
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-branches
-        if self.calc.reform_warnings:
-            warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'
-            print(warn.format('(read documentation for each parameter)',
-                              self.calc.reform_warnings,
-                              'CONTINUING WITH CALCULATIONS...'))
+        if self.puf_input_data and self.calc.reform_warnings:
+            warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'  # pragma: no cover
+            print(  # pragma: no cover
+                warn.format('(read documentation for each parameter)',
+                            self.calc.reform_warnings,
+                            'CONTINUING WITH CALCULATIONS...')
+            )
         calc_base_calculated = False
         if self.behavior_has_any_response:
             self.calc = Behavior.response(self.calc_base, self.calc)
