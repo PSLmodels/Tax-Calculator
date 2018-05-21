@@ -467,10 +467,10 @@ class TaxCalcIO(object):
         # pylint: disable=too-many-arguments,too-many-branches
         if self.puf_input_data and self.calc.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'  # pragma: no cover
-            print(warn.format(  # pragma: no cover
-                '(read documentation for each parameter)',
-                self.calc.reform_warnings,
-                'CONTINUING WITH CALCULATIONS...')
+            print(  # pragma: no cover
+                warn.format('(read documentation for each parameter)',
+                            self.calc.reform_warnings,
+                            'CONTINUING WITH CALCULATIONS...')
             )
         calc_base_calculated = False
         if self.behavior_has_any_response:
