@@ -343,7 +343,7 @@
     },
     "e17500": {
       "type": "float",
-      "desc": "Itemizable medical and dental expenses.  WARNING: this variable is already capped in PUF data.",
+      "desc": "Itemizable medical and dental expenses.  WARNING: this variable is zero below the floor in PUF data.",
       "form": {"2013-2016": "1040 Sch A line 1"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -379,7 +379,7 @@
     },
     "e20400": {
       "type": "float",
-      "desc": "Itemizable miscellaneous deductions.  WARNING: this variable is already capped in PUF data.",
+      "desc": "Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.",
       "form": {"2013-2016": "1040 Sch A line 24"},
       "availability": "taxdata_puf, taxdata_cps"
     },

@@ -1276,12 +1276,12 @@
     },
 
     "_ID_Medical_frt": {
-        "long_name": "Deduction for medical expenses; floor as a decimal fraction of AGI",
-        "description": "Taxpayers are eligible to deduct the portion of their medical expense exceeding this fraction of AGI.",
+        "long_name": "Floor (as a decimal fraction of AGI) for deductible medical expenses.",
+        "description": "Taxpayers are eligible to deduct the portion of their medical expenses exceeding this fraction of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
-        "notes": "When using PUF data, changing this parameter value may produce unexpected results because PUF e17500 variable is already capped and not available for non-itemizers.",
+        "notes": "When using PUF data, lowering this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor for itemizers and not available for non-itemizers.",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
@@ -1312,12 +1312,12 @@
     },
 
     "_ID_Medical_frt_add4aged": {
-        "long_name": "Addon to the deduction for medical expenses floor rate for elderly filing units; addon as a decimal fraction of AGI",
-        "description": "Elderly taxpayers have this fraction added to the value of the deduction for medical expenses floor rate.  This fraction was -0.025 from 2013 to 2016, but that was temporary and it changed to zero beginning in 2017.",
+        "long_name": "Addon floor (as a decimal fraction of AGI) for deductible medical expenses for elderly filing units.",
+        "description": "Elderly taxpayers have this fraction added to the value of the regular floor rate for deductible medical expenses.  This fraction was -0.025 from 2013 to 2016, but that was temporary and it changed to zero beginning in 2017.",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "irs_ref": "Form 1040 Schedule A, line 3, in-line. ",
-        "notes": "When using PUF data, changing this parameter value may produce unexpected results because PUF e17500 variable is already capped and is not available for non-itemizers.",
+        "notes": "When using PUF data, changing this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor for itemizers and not available for non-itemizers.",
         "row_var": "FLPDYR",
         "row_label": ["2013",
                       "2014",
@@ -1349,7 +1349,7 @@
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "irs_ref": "",
-        "notes": "This parameter is currently used to eliminate this part of itemized deduction. ",
+        "notes": "This parameter is currently used to eliminate this part of itemized deduction.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -1740,7 +1740,7 @@
     },
 
     "_ID_Charity_frt": {
-        "long_name": "Deduction for charitable contributions; floor as a decimal fraction of AGI",
+        "long_name": "Floor (as a decimal fraction of AGI) for deductible charitable contributions.",
         "description": "Taxpayers are eligible to deduct the portion of their charitable expense exceeding this fraction of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
@@ -1820,7 +1820,7 @@
     },
 
     "_ID_Casualty_frt": {
-        "long_name": "Deduction for casualty loss; floor as a decimal fraction of AGI",
+        "long_name": "Floor (as a decimal fraction of AGI) for deductible casualty loss.",
         "description": "Taxpayers are eligible to deduct the portion of their gross casualty losses exceeding this fraction of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Casualty",
@@ -1926,12 +1926,12 @@
     },
 
     "_ID_Miscellaneous_frt": {
-        "long_name": "Deduction for miscellaneous expenses; floor as a decimal fraction of AGI",
+        "long_name": "Floor (as a decimal fraction of AGI) for deductible miscellaneous expenses.",
         "description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.",
         "section_1": "Itemized Deductions",
         "section_2": "Miscellaneous",
         "irs_ref": "Form 1040 Schedule A, line 28, instructions. ",
-        "notes": "When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variable e20400 is already capped.",
+        "notes": "When using PUF data, lowering this parameter value may produce unexpected results because in PUF data the variable e20400 is zero below the floor.",
         "row_var": "FLPDYR",
         "row_label": ["2013"],
         "start_year": 2013,
@@ -1942,7 +1942,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [0.02],
-        "range": {"min": 0.0, "max": 0.02},
+        "range": {"min": 0.02, "max": 1.00},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "warn",
@@ -2064,7 +2064,7 @@
     },
 
     "_ID_prt": {
-        "long_name": "Itemized deduction phaseout rate (Pease)",
+        "long_name": "Itemized deduction phaseout rate (Pease provision)",
         "description": "Taxpayers will not be eligible to deduct the full amount of itemized deduction if their AGI is above the phaseout start. The deductible portion would be decreased at this rate for each dollar exceeding the start.",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
@@ -2114,7 +2114,7 @@
     },
 
     "_ID_crt": {
-        "long_name": "Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease)",
+        "long_name": "Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease provision)",
         "description": "The phaseout amount is capped at this fraction of the original total deduction.",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
