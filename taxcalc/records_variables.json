@@ -343,49 +343,49 @@
     },
     "e17500": {
       "type": "float",
-      "desc": "Sch A: Medical and dental expenses",
+      "desc": "Itemizable medical and dental expenses.  WARNING: this variable is zero below the floor in PUF data.",
       "form": {"2013-2016": "1040 Sch A line 1"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e18400": {
       "type": "float",
-      "desc": "Sch A: State and local income/sales taxes",
+      "desc": "Itemizable state and local income/sales taxes",
       "form": {"2013-2016": "1040 Sch A line 5"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e18500": {
       "type": "float",
-      "desc": "Sch A: Real-estate taxes paid",
+      "desc": "Itemizable real-estate taxes paid",
       "form": {"2013-2016": "1040 Sch A line 6"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e19200": {
       "type": "float",
-      "desc": "Sch A: Interest paid",
+      "desc": "Itemizable interest paid",
       "form": {"2013-2016": "1040 Sch A line 15"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e19800": {
       "type": "float",
-      "desc": "Sch A: Gifts to charity: cash/check contributions",
+      "desc": "Itemizable charitable giving: cash/check contributions.  WARNING: this variable is already capped in PUF data.",
       "form": {"2013-2016": "1040 Sch A line 16"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e20100": {
       "type": "float",
-      "desc": "Sch A: Gifts to charity: other than cash/check contributions",
+      "desc": "Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.",
       "form": {"2013-2016": "1040 Sch A line 17"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e20400": {
       "type": "float",
-      "desc": "Sch A: Miscellaneous deductions subject to 2% AGI limitation",
+      "desc": "Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.",
       "form": {"2013-2016": "1040 Sch A line 24"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "g20500": {
       "type": "float",
-      "desc": "Sch A: Gross (before 10% AGI disregard) casualty or theft loss",
+      "desc": "Itemizable gross (before 10% AGI disregard) casualty or theft loss",
       "form": {"2013-2016": "1040 Sch A line 20 before disregard subtracted"},
       "availability": "taxdata_puf"
     },

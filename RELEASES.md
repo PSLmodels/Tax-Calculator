@@ -4,6 +4,23 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-05-21 Release 0.20.1
+-------------------------
+(last merged pull request is
+[#2005](https://github.com/open-source-economics/Tax-Calculator/pull/2005))
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Fix warning logic to exclude CPS data and to fix handling of changes in standard deduction amounts
+  [[#2005](https://github.com/open-source-economics/Tax-Calculator/pull/2005)
+  by Martin Holmer]
+
+
 2018-05-18 Release 0.20.0
 -------------------------
 (last merged pull request is

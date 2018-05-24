@@ -617,27 +617,6 @@ def test_misspecified_reforms():
     assert not reform1 == reform2
 
 
-def test_current_law_version():
-    syr = 2013
-    nyrs = 8
-    pol = Policy(start_year=syr, num_years=nyrs)
-    mte = pol._SS_Earnings_c
-    clp_mte_2015 = mte[2015 - syr]
-    clp_mte_2016 = mte[2016 - syr]
-    reform = {2016: {'_SS_Earnings_c': [500000]}}
-    pol.implement_reform(reform)
-    mte = pol._SS_Earnings_c
-    ref_mte_2015 = mte[2015 - syr]
-    ref_mte_2016 = mte[2016 - syr]
-    clv = pol.current_law_version()
-    mte = clv._SS_Earnings_c
-    clv_mte_2015 = mte[2015 - syr]
-    clv_mte_2016 = mte[2016 - syr]
-    assert clp_mte_2015 == ref_mte_2015 == clv_mte_2015
-    assert clp_mte_2016 != ref_mte_2016
-    assert clp_mte_2016 == clv_mte_2016
-
-
 def test_section_titles(tests_path):
     """
     Check section titles in current_law_policy.json and index.htmx files.
@@ -964,7 +943,7 @@ def test_validate_param_values_warnings_errors():
     """
     pol1 = Policy()
     ref1 = {2020: {'_ID_Medical_frt': [0.05]}}
-    pol1.implement_reform(ref1, print_warnings=False, raise_errors=False)
+    pol1.implement_reform(ref1, print_warnings=True, raise_errors=False)
     assert len(pol1.parameter_warnings) > 0
     pol2 = Policy()
     ref2 = {2021: {'_ID_Charity_crt_all': [0.61]}}

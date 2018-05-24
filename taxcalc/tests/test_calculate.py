@@ -686,7 +686,7 @@ def test_calc_all(reform_file, rawinputfile):
     calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == cyr
-    calc.calc_all()
+    assert calc.reform_warnings == ''
 
 
 def test_translate_json_reform_suffixes_mars_non_indexed():

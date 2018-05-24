@@ -47,13 +47,13 @@ e09700,Recapture of Investment Credit,       0,       0,       0,       0,      
 e09800,Unreported payroll taxes from Form 4137 or 8919,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 e09900,Penalty tax on qualified retirement plans,      39,      41,      42,      43,      44,      45,      46,      47,      48,      49,      49,      51,      52,      53,      55
 e11200,Excess payroll (FICA/RRTA) tax withheld,      11,      12,      12,      13,      13,      13,      14,      14,      14,      15,      15,      16,      16,      17,      17
-e17500,Sch A: Medical and dental expenses,     893,     873,     888,     905,     933,     948,     968,     989,    1009,    1031,    1053,    1073,    1096,    1118,    1139
-e18400,Sch A: State and local income/sales taxes,    1870,    1983,    2058,    2096,    2144,    2202,    2264,    2330,    2402,    2478,    2554,    2632,    2711,    2796,    2881
-e18500,Sch A: Real-estate taxes paid,    1172,    1226,    1275,    1299,    1331,    1371,    1414,    1458,    1506,    1556,    1606,    1659,    1713,    1769,    1826
-e19200,Sch A: Interest paid,    1996,    1955,    2045,    2100,    2168,    2249,    2333,    2420,    2515,    2613,    2715,    2820,    2927,    3042,    3158
-e19800,Sch A: Gifts to charity: cash/check contributions,     915,     959,     997,    1018,    1042,    1072,    1100,    1133,    1169,    1206,    1244,    1284,    1325,    1367,    1411
-e20100,Sch A: Gifts to charity: other than cash/check contributions,     233,     245,     253,     258,     264,     269,     274,     283,     292,     301,     310,     319,     328,     338,     349
-e20400,Sch A: Miscellaneous deductions subject to 2% AGI limitation,     799,     832,     864,     880,     901,     926,     954,     982,    1014,    1046,    1078,    1112,    1147,    1182,    1218
+e17500,Itemizable medical and dental expenses.  WARNING: this variable is zero below the floor in PUF data.,     893,     873,     888,     905,     933,     948,     968,     989,    1009,    1031,    1053,    1073,    1096,    1118,    1139
+e18400,Itemizable state and local income/sales taxes,    1870,    1983,    2058,    2096,    2144,    2202,    2264,    2330,    2402,    2478,    2554,    2632,    2711,    2796,    2881
+e18500,Itemizable real-estate taxes paid,    1172,    1226,    1275,    1299,    1331,    1371,    1414,    1458,    1506,    1556,    1606,    1659,    1713,    1769,    1826
+e19200,Itemizable interest paid,    1996,    1955,    2045,    2100,    2168,    2249,    2333,    2420,    2515,    2613,    2715,    2820,    2927,    3042,    3158
+e19800,Itemizable charitable giving: cash/check contributions.  WARNING: this variable is already capped in PUF data.,     915,     959,     997,    1018,    1042,    1072,    1100,    1133,    1169,    1206,    1244,    1284,    1325,    1367,    1411
+e20100,Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.,     233,     245,     253,     258,     264,     269,     274,     283,     292,     301,     310,     319,     328,     338,     349
+e20400,Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.,     799,     832,     864,     880,     901,     926,     954,     982,    1014,    1046,    1078,    1112,    1147,    1182,    1218
 e24515,Sch D: Un-Recaptured Section 1250 Gain,      89,     125,     159,     141,     155,     159,     158,     162,     165,     168,     171,     176,     181,     187,     192
 e24518,Sch D: 28% Rate Gain or Loss,      28,      39,      49,      44,      48,      50,      49,      49,      49,      50,      51,      51,      52,      54,      55
 e26270,Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000),    3066,    3319,    3288,    3220,    3166,    3115,    3090,    3088,    3109,    3150,    3218,    3293,    3367,    3456,    3543
@@ -65,7 +65,7 @@ e87521,Total tentative AmOppCredit amount for all students,     192,     197,   
 e87530,Adjusted qualified lifetime learning expenses for all students,     104,     104,     108,     110,     112,     115,     118,     121,     125,     128,     132,     137,     141,     145,     149
 eitc,Federal EITC,     413,     410,     406,     398,     390,     392,     396,     401,     405,     410,     414,     419,     423,     427,     432
 elderly_dependent,1 if filing unit has a dependent age 65+; otherwise 0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
-g20500,Sch A: Gross (before 10% AGI disregard) casualty or theft loss,      32,      33,      34,      34,      35,      36,      38,      40,      41,      43,      44,      46,      47,      49,      51
+g20500,Itemizable gross (before 10% AGI disregard) casualty or theft loss,      32,      33,      34,      34,      35,      36,      38,      40,      41,      43,      44,      46,      47,      49,      51
 iitax,Federal income tax liability,    7361,    8413,    9075,    9184,    9620,    9897,   10114,   10353,   10629,   10958,   11326,   11707,   12102,   12519,   12957
 k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -245,    -272,    -271,    -269,    -264,    -260,    -258,    -261,    -264,    -273,    -285,    -296,    -307,    -318,    -329
 k1bx14s,Partner self-employment earnings/loss for spouse (included in e26270 total),     -10,     -10,     -10,      -9,      -8,      -8,      -7,      -7,      -7,      -7,      -6,      -7,      -8,      -8,      -8

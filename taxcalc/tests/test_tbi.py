@@ -209,7 +209,7 @@ def test_with_pufcsv(puf_fullsample):
 
 
 def test_reform_warnings_errors():
-    msg_dict = reform_warnings_errors(USER_MODS)
+    msg_dict = reform_warnings_errors(USER_MODS, using_puf=True)
     assert len(msg_dict['policy']['warnings']) == 0
     assert len(msg_dict['policy']['errors']) == 0
     bad1_mods = {
@@ -220,7 +220,7 @@ def test_reform_warnings_errors():
         'growdiff_response': {},
         'growmodel': {}
     }
-    msg_dict = reform_warnings_errors(bad1_mods)
+    msg_dict = reform_warnings_errors(bad1_mods, using_puf=True)
     assert len(msg_dict['policy']['warnings']) > 0
     assert len(msg_dict['policy']['errors']) > 0
     bad2_mods = {
@@ -231,11 +231,11 @@ def test_reform_warnings_errors():
         'growdiff_response': {},
         'growmodel': {}
     }
-    msg_dict = reform_warnings_errors(bad2_mods)
+    msg_dict = reform_warnings_errors(bad2_mods, using_puf=True)
     assert len(msg_dict['policy']['warnings']) == 0
     assert len(msg_dict['policy']['errors']) > 0
     bad3_mods = dict(USER_MODS, **{'behavior': {2017: {'_BE_inc': [0.8]}}})
-    msg_dict = reform_warnings_errors(bad3_mods)
+    msg_dict = reform_warnings_errors(bad3_mods, using_puf=True)
     assert len(msg_dict['policy']['warnings']) == 0
     assert len(msg_dict['policy']['errors']) == 0
     assert len(msg_dict['behavior']['warnings']) == 0
