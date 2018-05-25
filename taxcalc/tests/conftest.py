@@ -42,4 +42,4 @@ def puf_fullsample(puf_path):
 @pytest.fixture(scope='session')
 def puf_subsample(puf_fullsample):
     # draw same puf.csv subsample as in test_pufcsv.py
-    return puf_fullsample.sample(frac=0.05, random_state=180)
+    return puf_fullsample.sample(frac=0.05, random_state=2222)
