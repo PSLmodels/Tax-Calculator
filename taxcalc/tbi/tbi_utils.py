@@ -110,7 +110,7 @@ def calculate(year_n, start_year,
             # otherwise try local Tax-Calculator deployment path
             input_path = os.path.join(tbi_path, '..', '..', 'puf.csv')
         sampling_frac = 0.05
-        sampling_seed = 180
+        sampling_seed = 2222
     else:  # if using cps input not puf input
         # first try Tax-Calculator code path
         input_path = os.path.join(tbi_path, '..', 'cps.csv.gz')

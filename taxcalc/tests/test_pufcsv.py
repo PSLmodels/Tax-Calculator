@@ -77,7 +77,7 @@ def test_agg(tests_path, puf_fullsample):
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
     fullsample = puf_fullsample
-    rn_seed = 180  # to ensure sub-sample is always the same
+    rn_seed = 2222  # to ensure sub-sample is always the same
     subfrac = 0.05  # sub-sample fraction
     subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
     rec_subsample = Records(data=subsample)
