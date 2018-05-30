@@ -16,6 +16,7 @@ from __future__ import print_function
 import os
 import sys
 import json
+import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
@@ -135,6 +136,8 @@ def test_ubi_n_variables(cps_path):
         assert 'XTOT' == '(nu18+n1820+n21)'
 
 
+@pytest.mark.skipif(sys.version_info > (3, 0),
+                    reason='remove skipif after migration to Python 3.6')
 def test_run_taxcalc_model(tests_path):
     """
     Test tbi.run_nth_year_taxcalc_model function using CPS data.
@@ -177,12 +180,8 @@ def test_run_taxcalc_model(tests_path):
     with open(expect_path, 'r') as expect_file:
         expect_results = expect_file.read()
     # ensure actual and expect results have no differences
-    if sys.version_info.major == 2:
-        small = 0.0  # tighter test for Python 2.7
-    else:
-        small = 1e6  # looser test for Python 3.6
     diffs = nonsmall_diffs(actual_results.splitlines(True),
-                           expect_results.splitlines(True), small)
+                           expect_results.splitlines(True))
     if diffs:
         actual_fname = '{}{}'.format(expect_fname[:-10], 'actual.txt')
         actual_path = os.path.join(tests_path, actual_fname)
