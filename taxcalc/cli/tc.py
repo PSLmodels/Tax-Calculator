@@ -235,7 +235,7 @@ def _write_expected_test_output():
         ifile.write(input_data)
     expected_output_data = (
         'RECID,YEAR,WEIGHT,INCTAX,LSTAX,PAYTAX\n'
-        '1,2018,0.00,123.51,0.00,6120.00\n'
+        '1,2018,0.00,122.78,0.00,6120.00\n'
         '2,2018,0.00,28879.00,0.00,22167.43\n'
     )
     with open(EXPECTED_TEST_OUTPUT_FILENAME, 'w') as ofile:
