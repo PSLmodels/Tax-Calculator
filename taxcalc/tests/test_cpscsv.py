@@ -180,7 +180,7 @@ def test_run_taxcalc_model(tests_path):
     if sys.version_info.major == 2:
         small = 0.0  # tighter test for Python 2.7
     else:
-        small = 1000.0  # looser test for Python 3.6
+        small = 1e6  # looser test for Python 3.6
     diffs = nonsmall_diffs(actual_results.splitlines(True),
                            expect_results.splitlines(True), small)
     if diffs:
