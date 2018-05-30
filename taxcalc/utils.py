@@ -1621,7 +1621,7 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
     assert isinstance(linelist2, list)
     if len(linelist1) != len(linelist2):
         return True
-    assert small >= 0.0 and small <= 1.0
+    assert small >= 0.0 and small <= 1e6
     epsilon = 1e-6
     smallamt = small + epsilon
     for line1, line2 in zip(linelist1, linelist2):
