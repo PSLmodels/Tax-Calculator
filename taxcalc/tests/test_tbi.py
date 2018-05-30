@@ -11,7 +11,7 @@ import pandas as pd
 import pytest
 from taxcalc.tbi.tbi_utils import *
 from taxcalc.tbi import *
-from taxcalc import Policy, Records, Calculator, nonsmall_diffs
+from taxcalc import Policy, Records, Calculator
 
 
 USER_MODS = {
