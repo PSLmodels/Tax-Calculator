@@ -19,9 +19,9 @@ for a complete commit history.
   input file with this information:
   * Byte size: 52733999
   * MD5 checksum: d4110187d61c5f2c7b06db90f44a1559
-- Incorporate new CPS input data
-  [[#20xx](https://github.com/open-source-economics/Tax-Calculator/pull/20xx)
-  by Martin Holmer and Anderson Frailey]
+- Incorporate even more new PUF input data
+  [[#2011](https://github.com/open-source-economics/Tax-Calculator/pull/2011)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None
