@@ -177,8 +177,12 @@ def test_run_taxcalc_model(tests_path):
     with open(expect_path, 'r') as expect_file:
         expect_results = expect_file.read()
     # ensure actual and expect results have no differences
+    if sys.version_info.major == 2:
+        small = 0.0  # tighter test for Python 2.7
+    else:
+        small = 1.0  # looser test for Python 3.6
     diffs = nonsmall_diffs(actual_results.splitlines(True),
-                           expect_results.splitlines(True))
+                           expect_results.splitlines(True), small)
     if diffs:
         actual_fname = '{}{}'.format(expect_fname[:-10], 'actual.txt')
         actual_path = os.path.join(tests_path, actual_fname)
