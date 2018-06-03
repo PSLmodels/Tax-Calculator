@@ -1,9 +1,12 @@
-# GNU Makefile that documents and automates common Tax-Calculator operations.
-# USAGE: tax-calculator$ make <TARGET>
+# GNU Makefile that documents and automates common Tax-Calculator operations
+#     using the GNU make tool (version >= 3.81)
+# USAGE: tax-calculator$ make [TARGET]
 
 .PHONY=help
 help:
-	@echo "HELP MSG"
+	@echo "USAGE: make [TARGET]"
+	@echo "TARGETS:"
+	@echo "  help : help description "
 
 .PHONY=clean-pyc
 clean-pyc:
