@@ -129,7 +129,7 @@
       "name": "Increase personal and dependent exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-33.3,-32.6,-35.6,-36.9"
+      "expected": "Tax-Calculator,-33.3,-32.5,-35.6,-36.9"
   },
 
   "14": {
@@ -368,7 +368,7 @@
       "name": "Increase top four rates by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [11, 12, 14, 15]},
-      "expected": "Tax-Calculator,12.8,13.1,13.8,14.3"
+      "expected": "Tax-Calculator,12.8,13.1,13.7,14.3"
   },
 
   "34": {
@@ -401,7 +401,7 @@
       "name": "Increase AMT exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-1.1,-0.8,-1.3,-1.4"
+      "expected": "Tax-Calculator,-1.1,-0.8,-1.3,-1.3"
   },
 
   "36": {
@@ -521,7 +521,7 @@
       "name": "Increase maximum EITC amount by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.1,-1.9,-2.4,-2.5"
+      "expected": "Tax-Calculator,-2.1,-1.9,-2.4,-2.4"
   },
 
   "48": {
@@ -639,7 +639,7 @@
       "name": "Repeal TCJA chained CPI indexing",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.0,-31.8,-34.5,-37.0"
+      "expected": "Tax-Calculator,0.0,-31.9,-34.6,-37.1"
   }, 
 
   "59": {
@@ -650,7 +650,7 @@
       "name": "Top pass through rate at 0.35 AND 70% of active business inc eligible for lower rate",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-12.4,-12.4,-12.4,-12.5"
+      "expected": "Tax-Calculator,-12.4,-12.4,-12.5,-12.5"
   },
 
   "60": {
