@@ -17,8 +17,8 @@ help:
 	@echo "             pytest -m ''"
 	@echo "tctest     : generate report for and cleanup after"
 	@echo "             tc --test"
-	@echo "cstest     : generate coding-style reports using"
-	@echo "             pycodestyle and pylint tools"
+	@echo "cstest     : generate coding-style errors using the"
+	@echo "             pycodestyle (nee pep8) and pylint tools"
 
 .PHONY=clean
 clean:
