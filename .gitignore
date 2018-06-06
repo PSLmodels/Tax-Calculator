@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 
 # Unit test / coverage reports
-*.pytest_cache/
+.pytest_cache/
 htmlcov/
 .coverage
 
