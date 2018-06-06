@@ -19,6 +19,8 @@ help:
 	@echo "             tc --test"
 	@echo "cstest     : generate coding-style errors using the"
 	@echo "             pycodestyle (nee pep8) and pylint tools"
+	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
+	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
 
 .PHONY=clean
 clean:
@@ -69,60 +71,20 @@ tctest: package
 	@$(tctest-cleanup)
 	@echo "validation tests using tc will be added in the future"
 
-# TAXCALC_JSONFILES list is constructed using the following command:
-# tax-calculator$ ls -l ./taxcalc/*json | awk '{print $9}'
-TAXCALC_JSONFILES = ./taxcalc/behavior.json \
-	./taxcalc/consumption.json \
-	./taxcalc/current_law_policy.json \
-	./taxcalc/growdiff.json \
-	./taxcalc/growmodel.json \
-	./taxcalc/records_variables.json
-
-# PYLINT_FILES list is constructed using the following command:
-# tax-calculator$ grep -rl --include="*py" disable=locally-disabled .
-PYLINT_FILES = ./docs/cookbook/make_cookbook.py \
-	./docs/cookbook/test_recipes.py \
-	./docs/make_index.py \
-	./puf_fuzz.py \
-	./simtax.py \
-	./taxcalc/behavior.py \
-	./taxcalc/calculate.py \
-	./taxcalc/cli/tc.py \
-	./taxcalc/consumption.py \
-	./taxcalc/decorators.py \
-	./taxcalc/functions.py \
-	./taxcalc/growdiff.py \
-	./taxcalc/growfactors.py \
-	./taxcalc/growmodel.py \
-	./taxcalc/macro_elasticity.py \
-	./taxcalc/policy.py \
-	./taxcalc/records.py \
-	./taxcalc/simpletaxio.py \
-	./taxcalc/taxcalcio.py \
-	./taxcalc/tbi/tbi.py \
-	./taxcalc/tbi/tbi_utils.py \
-	./taxcalc/tests/test_4package.py \
-	./taxcalc/tests/test_compare.py \
-	./taxcalc/tests/test_compatible_data.py \
-	./taxcalc/tests/test_cpscsv.py \
-	./taxcalc/tests/test_docs.py \
-	./taxcalc/tests/test_functions.py \
-	./taxcalc/tests/test_growfactors.py \
-	./taxcalc/tests/test_macro_elasticity.py \
-	./taxcalc/tests/test_parameters.py \
-	./taxcalc/tests/test_puf_var_stats.py \
-	./taxcalc/tests/test_pufcsv.py \
-	./taxcalc/tests/test_reforms.py \
-	./taxcalc/tests/test_responses.py \
-	./taxcalc/tests/test_simpletaxio.py \
-	./taxcalc/tests/test_taxcalcio.py \
-	./taxcalc/tests/test_utils.py \
-	./taxcalc/utils.py \
-	./taxcalc/utilsprvt.py \
-	./taxcalc/validation/csv_taxdiffs.py
+TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
+PYLINT_FILES := $(shell grep -rl --include="*py" disable=locally-disabled .)
 
 .PHONY=cstest
 cstest:
 	pycodestyle taxcalc
-	@pycodestyle --ignore=E501,E121 $(TAXCALC_JSONFILES)
+	pycodestyle docs/cookbook
+	@pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@pylint --disable=locally-disabled --score=no --jobs=4 $(PYLINT_FILES)
+
+.PHONY=git-sync
+git-sync:
+	@./gitsync
+
+.PHONY=git-pr
+git-pr:
+	@./gitpr $(N)
