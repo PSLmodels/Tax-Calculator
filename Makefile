@@ -1,5 +1,8 @@
 # GNU Makefile that documents and automates common development operations
 #              using the GNU make tool (version >= 3.81)
+# Development is typically conducted on Linux or Max OS X (with the Xcode
+#              command-line tools installed), so this Makefile is designed
+#              to work in that environment (and not on Windows).
 # USAGE: tax-calculator$ make [TARGET]
 
 .PHONY=help
