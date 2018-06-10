@@ -22,6 +22,7 @@ help:
 	@echo "             tc --test"
 	@echo "cstest     : generate coding-style errors using the"
 	@echo "             pycodestyle (nee pep8) and pylint tools"
+	@echo "coverage   : generate test coverage report"
 	@echo "git-sync   : synchronize local, origin, and upstream Git repos"
 	@echo "git-pr N=n : create local pr-n branch containing upstream PR"
 
@@ -83,6 +84,26 @@ cstest:
 	pycodestyle docs/cookbook
 	@pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@pylint --disable=locally-disabled --score=no --jobs=4 $(PYLINT_FILES)
+
+define coverage-cleanup
+rm -f .coverage htmlcov/*
+endef
+
+COVMARK = "not requires_pufcsv and not pre_release"
+
+OS := $(shell uname -s)
+
+.PHONY=coverage
+coverage:
+	@$(coverage-cleanup)
+	@coverage run -m pytest -v -m $(COVMARK) > /dev/null
+	@coverage html --ignore-errors
+ifeq ($(OS), Darwin) # if on Mac OS X
+	@open htmlcov/index.html
+else # if on Linux
+	@xdg-open htmlcov/index.html
+endif
+	@$(pytest-cleanup)
 
 .PHONY=git-sync
 git-sync:
