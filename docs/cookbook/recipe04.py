@@ -47,7 +47,7 @@ vdf['atinc2'] = calc2.array('aftertax_income')
 # (note earnings groups are just an example based on no empirical results)
 earnings_bins = [-9e99, 50e3, 9e99]  # two groups: below and above $50,000
 vdf = add_income_table_row_variable(vdf, 'e00200', earnings_bins)
-gbydf = vdf.groupby('table_row', as_index=False) 
+gbydf = vdf.groupby('table_row', as_index=False)
 
 # compute percentage response in charitable giving
 # (note elasticity values are just an example based on no empirical results)

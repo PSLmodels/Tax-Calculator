@@ -53,15 +53,15 @@ conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
 # clean-up after package build
 echo "CLEAN-UP..."
 conda build purge
-cd ..
-rm -fr build/*
+topdir=$(git rev-parse --show-toplevel)
+pushd $topdir > /dev/null
+rm -rf build/*
 rmdir build/
-rm -fr dist/*
+rm -rf dist/*
 rmdir dist/
-rm -fr taxcalc.egg-info/*
+rm -rf taxcalc.egg-info/*
 rmdir taxcalc.egg-info/
-
-echo "Execute 'conda uninstall taxcalc --yes' after using taxcalc package"
+popd > /dev/null
 
 echo "FINISHED : `date`"
 exit 0
