@@ -98,10 +98,10 @@ coverage:
 	@$(coverage-cleanup)
 	@coverage run -m pytest -v -m $(COVMARK) > /dev/null
 	@coverage html --ignore-errors
-ifeq ($(OS), Darwin) # if on Mac OS X
+ifeq ($(OS), Darwin) # on Mac OS X
 	@open htmlcov/index.html
-else # if on Linux
-	@xdg-open htmlcov/index.html
+else
+	@echo "Open htmlcov/index.html in browser to view report"
 endif
 	@$(pytest-cleanup)
 
