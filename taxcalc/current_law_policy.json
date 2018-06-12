@@ -5046,7 +5046,7 @@
 
     "_CTC_ps": {
         "long_name": "Child tax credit phaseout MAGI start",
-        "description": "Child tax credit begins to decrease when MAGI is above this level.",
+        "description": "Child tax credit begins to decrease when MAGI is above this level; read descriptions of the dependent credit amounts for how they phase out when MAGI is above this level.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "Form 1040, line 52, instruction (Worksheet, line 3).",
@@ -5095,8 +5095,8 @@
     },
 
     "_CTC_prt": {
-        "long_name": "Child tax credit phaseout rate",
-        "description": "The amount of credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start.",
+        "long_name": "Child and dependent tax credit phaseout rate",
+        "description": "The amount of the credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "Form 1040, line 52, instruction (child tax credit worksheet, line 5)",
