@@ -95,7 +95,7 @@ for a complete commit history.
 - Fix loose checking of the data type of parameters in reform dictionaries passed to the Policy class `implement_reform` method
   [[#1960](https://github.com/open-source-economics/Tax-Calculator/pull/1960)
   by Martin Holmer based on bug reported by Hank Doupe]
-- Fix tables diagnostic and distribution tables so that itemizers plus standard-deduction takers equals total returns
+- Fix diagnostic and distribution tables so that itemizers plus standard-deduction takers equals total returns
   [[#1964](https://github.com/open-source-economics/Tax-Calculator/pull/1964)
   by Martin Holmer]
 - Fix confusing documentation of the data type of parameters
