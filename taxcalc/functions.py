@@ -1,4 +1,3 @@
-
 """
 Tax-Calculator functions that calculate payroll and individual income taxes.
 
