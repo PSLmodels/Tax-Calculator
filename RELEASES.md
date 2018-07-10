@@ -4,7 +4,7 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-06-?? Release 0.20.2
+2018-07-?? Release 0.20.2
 -------------------------
 (last merged pull request is
 [#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
@@ -15,16 +15,18 @@ for a complete commit history.
 **New Features**
 - Incorporate new PUF input data
   [[#2008](https://github.com/open-source-economics/Tax-Calculator/pull/2008)
-  by Martin Holmer and Anderson Frailey], which requires new `puf.csv`
+  by Martin Holmer and Anderson Frailey], which requires a new `puf.csv`
   input file with this information:
   * Byte size: 52733999
   * MD5 checksum: d4110187d61c5f2c7b06db90f44a1559
-- Incorporate even more new PUF input data
+- Incorporate even more new PUF-related input data
   [[#2011](https://github.com/open-source-economics/Tax-Calculator/pull/2011)
   by Martin Holmer]
 
 **Bug Fixes**
-- None
+- Fix incorrect aging of `e00900` variable
+  [[#2027](https://github.com/open-source-economics/Tax-Calculator/pull/2027)
+  by Martin Holmer with bug reported by Max Ghenis]
 
 
 2018-05-21 Release 0.20.1
