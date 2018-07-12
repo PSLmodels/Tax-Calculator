@@ -338,15 +338,13 @@ class Records(object):
         self.e00650 *= ADIVS
         self.e00700 *= ATXPY
         self.e00800 *= ATXPY
-        self.e00900[:] = np.where(self.e00900 >= 0,
-                                  self.e00900 * ASCHCI,
-                                  self.e00900 * ASCHCL)
         self.e00900s[:] = np.where(self.e00900s >= 0,
                                    self.e00900s * ASCHCI,
                                    self.e00900s * ASCHCL)
         self.e00900p[:] = np.where(self.e00900p >= 0,
                                    self.e00900p * ASCHCI,
                                    self.e00900p * ASCHCL)
+        self.e00900[:] = self.e00900p + self.e00900s
         self.e01100 *= ACGNS
         self.e01200 *= ACGNS
         self.e01400 *= ATXPY
