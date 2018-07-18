@@ -99,7 +99,7 @@ def run_nth_year_taxcalc_model(year_n, start_year,
                                use_puf_not_cps,
                                use_full_sample,
                                user_mods,
-                               return_dict=True):
+                               return_html=True):
     """
     The run_nth_year_taxcalc_model function assumes user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
@@ -171,51 +171,26 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         return pdf
 
     # optionally return non-JSON-like results
-    if not return_dict:
-        res = dict()
-        for tbl in sres:
-            res[tbl] = append_year(sres[tbl])
+    # it would be nice to allow the user to download the full CSV instead
+    # of a CSV for each year
+    # what if we allowed an aggregate format call?
+    #  - presents project with all data proeduced in a run?
+
+    res = dict()
+    for tbl in sres:
+        res[tbl] = append_year(sres[tbl])
+    if return_html:
+        formatted = {'download_only': {}, 'renderable': {}}
+        for tbl in res:
+            formatted['download_only'][tbl] = res[tbl].to_csv()
+            formatted['renderable'][tbl] = res[tbl].to_html()
+        elapsed_time = time.time() - start_time
+        print('elapsed time for this run: {:.1f}'.format(elapsed_time))
+        return formatted
+    else:
         elapsed_time = time.time() - start_time
         print('elapsed time for this run: {:.1f}'.format(elapsed_time))
         return res
-
-    # optionally construct JSON-like results dictionaries for year n
-    dec_rownames = list(sres['diff_comb_xdec'].index.values)
-    dec_row_names_n = [x + '_' + str(year_n) for x in dec_rownames]
-    bin_rownames = list(sres['diff_comb_xbin'].index.values)
-    bin_row_names_n = [x + '_' + str(year_n) for x in bin_rownames]
-    agg_row_names_n = [x + '_' + str(year_n) for x in AGG_ROW_NAMES]
-    dist_column_types = [float] * len(DIST_TABLE_LABELS)
-    diff_column_types = [float] * len(DIFF_TABLE_LABELS)
-    info = dict()
-    for tbl in sres:
-        info[tbl] = {'row_names': [], 'col_types': []}
-        if 'dec' in tbl:
-            info[tbl]['row_names'] = dec_row_names_n
-        elif 'bin' in tbl:
-            info[tbl]['row_names'] = bin_row_names_n
-        else:
-            info[tbl]['row_names'] = agg_row_names_n
-        if 'dist' in tbl:
-            info[tbl]['col_types'] = dist_column_types
-        elif 'diff' in tbl:
-            info[tbl]['col_types'] = diff_column_types
-    res = dict()
-    for tbl in sres:
-        if 'aggr' in tbl:
-            res_table = create_dict_table(sres[tbl],
-                                          row_names=info[tbl]['row_names'])
-            res[tbl] = dict((k, v[0]) for k, v in res_table.items())
-        else:
-            res[tbl] = create_dict_table(sres[tbl],
-                                         row_names=info[tbl]['row_names'],
-                                         column_types=info[tbl]['col_types'])
-
-    elapsed_time = time.time() - start_time
-    print('elapsed time for this run: {:.1f}'.format(elapsed_time))
-
-    return res
-
 
 def run_nth_year_gdp_elast_model(year_n, start_year,
                                  use_puf_not_cps,
