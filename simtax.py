@@ -7,10 +7,6 @@ SIMple input-output capabilities for TAX-calculator used in validation work
 
 import argparse
 import sys
-import os
-import re
-import six
-import pandas as pd
 from taxcalc import SimpleTaxIO
 
 

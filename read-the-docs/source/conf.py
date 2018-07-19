@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Tax-Calculator'
-copyright = u'2017, Open Source Policy Center'
+copyright = u'2016-, Open Source Policy Center'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

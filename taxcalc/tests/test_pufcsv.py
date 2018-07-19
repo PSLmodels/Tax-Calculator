@@ -346,22 +346,6 @@ def test_puf_availability(tests_path, puf_path):
 
 
 @pytest.mark.requires_pufcsv
-@pytest.mark.xfail
-def test_ubi_n_variables(puf_path):
-    """
-    Ensure that the three UBI n* variables add up to XTOT variable,
-    recognizing that XTOT values are often capped in the IRS-SOI PUF,
-    so that XTOT < NSUM might not indicate any data inconsistency.
-    """
-    pufdf = pd.read_csv(puf_path)
-    xtot = pufdf['XTOT']
-    nsum = pufdf['nu18'] + pufdf['n1820'] + pufdf['n21']
-    if not np.sum(xtot > nsum) == 0:
-        print('number xtot > nsum is:', np.sum(xtot > nsum))
-        assert 'XTOT' <= '(nu18+n1820+n21)'
-
-
-@pytest.mark.requires_pufcsv
 def test_run_taxcalc_model(tests_path):
     """
     Test tbi.run_nth_year_taxcalc_model function using PUF data.

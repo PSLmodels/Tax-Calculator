@@ -471,7 +471,6 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
-
     # --dump output with partial dump
     try:
         tcio.analyze(writing_output_file=True,
@@ -484,12 +483,12 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
         assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
-    # if tries were successful, remove output file and doc file
-    if os.path.isfile(outfilepath):
-        os.remove(outfilepath)
+    # if tries were successful, remove doc file and output file
     docfilepath = outfilepath.replace('.csv', '-doc.text')
     if os.path.isfile(docfilepath):
         os.remove(docfilepath)
+    if os.path.isfile(outfilepath):
+        os.remove(outfilepath)
 
 
 def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):

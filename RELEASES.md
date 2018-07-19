@@ -4,6 +4,29 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-06-?? Release 0.20.2
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- None
+
+**New Features**
+- Incorporate new PUF input data
+  [[#2008](https://github.com/open-source-economics/Tax-Calculator/pull/2008)
+  by Martin Holmer and Anderson Frailey], which requires new `puf.csv`
+  input file with this information:
+  * Byte size: 52733999
+  * MD5 checksum: d4110187d61c5f2c7b06db90f44a1559
+- Incorporate even more new PUF input data
+  [[#2011](https://github.com/open-source-economics/Tax-Calculator/pull/2011)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+
 2018-05-21 Release 0.20.1
 -------------------------
 (last merged pull request is
@@ -95,7 +118,7 @@ for a complete commit history.
 - Fix loose checking of the data type of parameters in reform dictionaries passed to the Policy class `implement_reform` method
   [[#1960](https://github.com/open-source-economics/Tax-Calculator/pull/1960)
   by Martin Holmer based on bug reported by Hank Doupe]
-- Fix tables diagnostic and distribution tables so that itemizers plus standard-deduction takers equals total returns
+- Fix diagnostic and distribution tables so that itemizers plus standard-deduction takers equals total returns
   [[#1964](https://github.com/open-source-economics/Tax-Calculator/pull/1964)
   by Martin Holmer]
 - Fix confusing documentation of the data type of parameters
