@@ -258,9 +258,9 @@ class Calculator(object):
         individuals age 65+ in each filing unit.
         """
         vdf = self.dataframe(['age_head', 'age_spouse', 'elderly_dependents'])
-        return ((vdf.age_head >= 65).astype(int) +
-                (vdf.age_spouse >= 65).astype(int) +
-                vdf.elderly_dependents)
+        return ((vdf['age_head'] >= 65).astype(int) +
+                (vdf['age_spouse'] >= 65).astype(int) +
+                vdf['elderly_dependents'])
 
     def incarray(self, variable_name, variable_add):
         """
