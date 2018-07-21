@@ -233,7 +233,8 @@ def test_compatible_data(cps_subsample, puf_subsample,
     # These parameters are exempt because they are not active under
     # current law and activating them would deactivate other parameters,
     # or if it is difficult to devise a test for them.
-    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt', '_STD_Dep']
+    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt', '_STD_Dep',
+                           '_ACTC_ChildNum']
 
     # Loop through the parameters in allparams_batch
     errmsg = 'ERROR: {} {}\n'
