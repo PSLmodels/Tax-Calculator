@@ -846,7 +846,6 @@ def test_dec_graph_plots(cps_subsample):
         year: {
             '_SS_Earnings_c': [9e99],  # OASDI FICA tax on all earnings
             '_FICA_ss_trt': [0.107484]  # lower rate to keep revenue unchanged
-
         }
     }
     pol.implement_reform(reform)

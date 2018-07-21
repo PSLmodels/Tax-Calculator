@@ -40,6 +40,10 @@ ensure you are viewing the most recent version of this page rather
 than an older version that your browser has saved in its cache of
 previously visited pages.</i></p>
 
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-07-23-release-0202"><kbd>Better CPS weights</kbd> and other
+data improvements</a> are available in Tax-Calculator release 0.20.2 and
+higher.
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-05-18-release-0200">Flexible <kbd>quantity_response</kbd>
 utility function</a> is available in Tax-Calculator release 0.20.0 and
 higher, and there is a new Cookbook recipe to illustrate its use
