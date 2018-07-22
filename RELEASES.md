@@ -4,10 +4,10 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-07-23 Release 0.20.2
+2018-07-?? Release 0.20.2
 -------------------------
 (last merged pull request is
-[#2031](https://github.com/open-source-economics/Tax-Calculator/pull/2031))
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
 
 **API Changes**
 - None
@@ -17,11 +17,8 @@ for a complete commit history.
   [[#2029](https://github.com/open-source-economics/Tax-Calculator/pull/2029)
   by Martin Holmer at request of Max Ghenis]
 - Incorporate new CPS and PUF input data
-  [[#2031](https://github.com/open-source-economics/Tax-Calculator/pull/2031)
-  by Martin Holmer and Anderson Frailey], which requires a new `puf.csv`
-  input file with this information:
-  * Byte size: 52465409
-  * MD5 checksum: f36aa079d73a3d331ae5e7cd54ba7968
+  [[#2032](https://github.com/open-source-economics/Tax-Calculator/pull/2032)
+  by Martin Holmer and Anderson Frailey]
 
 **Bug Fixes**
 - Fix incorrect aging of `e00900` variable
