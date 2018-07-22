@@ -973,3 +973,9 @@ def test_privacy_of_embedded_objects(cps_subsample):
         cyr = calc.__consumption.current_year
     with pytest.raises(AttributeError):
         cyr = calc.__behavior.current_year
+
+
+def test_n65(cps_subsample):
+    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    calc = Calculator(policy=Policy(), records=recs)
+    assert calc.n65().sum() > 1500

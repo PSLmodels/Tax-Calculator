@@ -141,7 +141,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
 
 
 @iterate_jit(nopython=True)
-def DependentCare(nu13, elderly_dependent, earned,
+def DependentCare(nu13, elderly_dependents, earned,
                   MARS, ALD_Dependents_thd, ALD_Dependents_hc,
                   ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
                   care_deduction):
@@ -151,7 +151,7 @@ def DependentCare(nu13, elderly_dependent, earned,
     Parameters
     ----------
     nu13: Number of dependents under 13 years old
-    elderly_dependent: 1 if unit has an elderly dependent; 0 otherwise
+    elderly_dependents: number of elderly dependents
     earned: Form 2441 earned income amount
     MARS: Marital Status
     ALD_Dependents_thd: Maximum income to qualify for deduction
@@ -167,7 +167,7 @@ def DependentCare(nu13, elderly_dependent, earned,
     if earned <= ALD_Dependents_thd[MARS - 1]:
         care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
                            ALD_Dependents_Child_c) +
-                          ((1. - ALD_Dependents_hc) * elderly_dependent *
+                          ((1. - ALD_Dependents_hc) * elderly_dependents *
                            ALD_Dependents_Elder_c))
     else:
         care_deduction = 0.
