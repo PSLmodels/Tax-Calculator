@@ -252,6 +252,16 @@ class Calculator(object):
         setattr(self.__records, variable_name, variable_value)
         return None
 
+    def n65(self):
+        """
+        Return numpy ndarray containing the number of
+        individuals age 65+ in each filing unit.
+        """
+        vdf = self.dataframe(['age_head', 'age_spouse', 'elderly_dependents'])
+        return ((vdf['age_head'] >= 65).astype(int) +
+                (vdf['age_spouse'] >= 65).astype(int) +
+                vdf['elderly_dependents'])
+
     def incarray(self, variable_name, variable_add):
         """
         Add variable_add to named variable in embedded Records object.
