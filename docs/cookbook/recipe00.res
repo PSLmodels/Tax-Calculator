@@ -55,93 +55,93 @@ Policy Reform Parameter Values by Year:
         and above tax bracket 6.
   baseline_value: 0.37
 
-2020_CLP_itax_rev($B)= 1278.60
-2020_REF_itax_rev($B)= 1269.52
+2020_CLP_itax_rev($B)= 1413.43
+2020_REF_itax_rev($B)= 1410.78
 
 CLP diagnostic table:
                                      2020
-Returns (#m)                       174.51
-AGI ($b)                        11,615.39
-Itemizers (#m)                      30.84
-Itemized Deduction ($b)            869.46
-Standard Deduction Filers (#m)     143.68
-Standard Deduction ($b)          2,541.12
+Returns (#m)                       167.51
+AGI ($b)                        11,946.47
+Itemizers (#m)                      31.03
+Itemized Deduction ($b)            872.79
+Standard Deduction Filers (#m)     136.48
+Standard Deduction ($b)          2,438.38
 Personal Exemption ($b)              0.00
-Taxable Income ($b)              8,774.69
-Regular Tax ($b)                 1,462.26
-AMT Income ($b)                 11,003.84
-AMT Liability ($b)                   1.87
-AMT Filers (#m)                      0.46
-Tax before Credits ($b)          1,464.14
-Refundable Credits ($b)             95.30
-Nonrefundable Credits ($b)          99.39
+Taxable Income ($b)              9,126.24
+Regular Tax ($b)                 1,574.26
+AMT Income ($b)                 11,332.09
+AMT Liability ($b)                   1.83
+AMT Filers (#m)                      0.42
+Tax before Credits ($b)          1,576.08
+Refundable Credits ($b)             78.60
+Nonrefundable Credits ($b)          93.69
 Reform Surtaxes ($b)                 0.00
-Other Taxes ($b)                     9.16
-Ind Income Tax ($b)              1,278.60
-Payroll Taxes ($b)               1,300.24
-Combined Liability ($b)          2,578.84
-With Income Tax <= 0 (#m)           70.84
-With Combined Tax <= 0 (#m)         45.82
+Other Taxes ($b)                     9.63
+Ind Income Tax ($b)              1,413.43
+Payroll Taxes ($b)               1,316.61
+Combined Liability ($b)          2,730.03
+With Income Tax <= 0 (#m)           60.37
+With Combined Tax <= 0 (#m)         39.23
 
 REF diagnostic table:
                                      2020
-Returns (#m)                       174.51
-AGI ($b)                        11,615.39
-Itemizers (#m)                      30.76
-Itemized Deduction ($b)            867.24
-Standard Deduction Filers (#m)     143.75
-Standard Deduction ($b)          2,542.50
-Personal Exemption ($b)            332.32
-Taxable Income ($b)              8,530.67
-Regular Tax ($b)                 1,450.95
-AMT Income ($b)                 11,005.72
-AMT Liability ($b)                   1.85
-AMT Filers (#m)                      0.47
-Tax before Credits ($b)          1,452.80
-Refundable Credits ($b)             98.06
-Nonrefundable Credits ($b)          94.38
+Returns (#m)                       167.51
+AGI ($b)                        11,946.47
+Itemizers (#m)                      30.95
+Itemized Deduction ($b)            870.48
+Standard Deduction Filers (#m)     136.56
+Standard Deduction ($b)          2,439.80
+Personal Exemption ($b)            327.45
+Taxable Income ($b)              8,879.74
+Regular Tax ($b)                 1,569.19
+AMT Income ($b)                 11,334.04
+AMT Liability ($b)                   1.79
+AMT Filers (#m)                      0.42
+Tax before Credits ($b)          1,570.97
+Refundable Credits ($b)             81.35
+Nonrefundable Credits ($b)          88.47
 Reform Surtaxes ($b)                 0.00
-Other Taxes ($b)                     9.16
-Ind Income Tax ($b)              1,269.52
-Payroll Taxes ($b)               1,300.24
-Combined Liability ($b)          2,569.76
-With Income Tax <= 0 (#m)           72.98
-With Combined Tax <= 0 (#m)         46.16
+Other Taxes ($b)                     9.63
+Ind Income Tax ($b)              1,410.78
+Payroll Taxes ($b)               1,316.61
+Combined Liability ($b)          2,727.39
+With Income Tax <= 0 (#m)           62.57
+With Combined Tax <= 0 (#m)         39.56
 
 Extract of 2020 distribution table by baseline expanded-income decile:
         funits(#m)  itax1($b)  itax2($b)  aftertax_inc1($b)  aftertax_inc2($b)
 0-10n         0.00       0.00       0.00               0.00               0.00
 0-10z         0.00       0.00       0.00               0.00               0.00
-0-10p        17.45      -8.25      -8.25              81.84              81.84
-10-20        17.45     -14.67     -15.27             333.11             333.71
-20-30        17.45     -10.85     -11.96             481.06             482.16
-30-40        17.45      -0.12      -1.71             622.71             624.29
-40-50        17.45      14.34      12.05             786.21             788.50
-50-60        17.45      38.77      35.19             986.85             990.43
-60-70        17.45      72.37      68.06           1,250.69           1,255.00
-70-80        17.45     117.59     112.21           1,606.34           1,611.72
-80-90        17.45     212.27     203.95           2,151.71           2,160.03
-90-100       17.45     857.16     875.26           4,312.54           4,294.44
-ALL         174.51   1,278.60   1,269.52          12,613.05          12,622.13
-90-95         8.73     191.26     186.84           1,458.27           1,462.69
-95-99         6.98     287.47     285.75           1,695.68           1,697.41
-Top 1%        1.75     378.42     402.67           1,158.58           1,134.33
+0-10p        16.75      -4.79      -4.99             140.04             140.24
+10-20        16.75      -6.96      -7.84             366.66             367.53
+20-30        16.75      -3.79      -5.08             497.38             498.67
+30-40        16.75       5.75       3.98             628.28             630.06
+40-50        16.75      19.17      16.74             781.19             783.63
+50-60        16.75      42.27      38.73             973.59             977.13
+60-70        16.75      73.58      69.33           1,235.28           1,239.53
+70-80        16.75     119.16     113.69           1,591.17           1,596.64
+80-90        16.75     220.09     212.11           2,180.02           2,188.00
+90-100       16.75     948.94     974.11           4,467.12           4,441.96
+ALL         167.51   1,413.43   1,410.78          12,860.73          12,863.38
+90-95         8.38     212.56     208.76           1,499.54           1,503.34
+95-99         6.70     311.41     310.71           1,747.48           1,748.17
+Top 1%        1.68     424.97     454.63           1,220.10           1,190.45
 
 Extract of 2020 income-tax difference table by expanded-income decile:
         funits(#m)  agg_diff($b)  mean_diff($)  aftertaxinc_diff(%)
 0-10n         0.00          0.00          0.00                  nan
 0-10z         0.00          0.00          0.00                  nan
-0-10p        17.45         -0.00         -0.16                 0.00
-10-20        17.45         -0.60        -34.39                 0.18
-20-30        17.45         -1.10        -63.26                 0.23
-30-40        17.45         -1.59        -90.90                 0.25
-40-50        17.45         -2.29       -131.35                 0.29
-50-60        17.45         -3.58       -205.32                 0.36
-60-70        17.45         -4.31       -247.10                 0.34
-70-80        17.45         -5.38       -308.16                 0.33
-80-90        17.45         -8.32       -476.80                 0.39
-90-100       17.45         18.10      1,037.21                -0.42
-ALL         174.51         -9.08        -52.02                 0.07
-90-95         8.73         -4.42       -506.75                 0.30
-95-99         6.98         -1.72       -247.10                 0.10
-Top 1%        1.75         24.25     13,885.76                -2.09
+0-10p        16.75         -0.20        -11.99                 0.14
+10-20        16.75         -0.87        -52.02                 0.24
+20-30        16.75         -1.29        -77.20                 0.26
+30-40        16.75         -1.77       -105.71                 0.28
+40-50        16.75         -2.44       -145.49                 0.31
+50-60        16.75         -3.54       -211.25                 0.36
+60-70        16.75         -4.24       -253.25                 0.34
+70-80        16.75         -5.47       -326.60                 0.34
+80-90        16.75         -7.98       -476.42                 0.37
+90-100       16.75         25.16      1,502.02                -0.56
+ALL         167.51         -2.65        -15.79                 0.02
+90-95         8.38         -3.80       -453.95                 0.25
+95-99         6.70         -0.69       -103.08                 0.04
+Top 1%        1.68         29.65     17,702.19                -2.43

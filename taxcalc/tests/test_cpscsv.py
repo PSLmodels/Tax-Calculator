@@ -78,27 +78,24 @@ def test_agg(tests_path, cps_fullsample):
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
-    reltol = 0.006  # maximum allowed relative difference in tax liability
-    taxes_subsample = taxes_subsample[1:]  # skip year 0 (2014) because its rel
-    taxes_fullsample = taxes_fullsample[1:]  # diff is about 0.014 (not <0.006)
-    if not np.allclose(taxes_subsample, taxes_fullsample,
-                       atol=0.0, rtol=reltol):
-        msg = 'CPSCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'
-        msg += 'WHEN subfrac={:.3f}, rtol={:.4f}, seed={}\n'.format(subfrac,
-                                                                    reltol,
-                                                                    rn_seed)
-        it_sub = np.nditer(taxes_subsample, flags=['f_index'])
-        it_all = np.nditer(taxes_fullsample, flags=['f_index'])
-        while not it_sub.finished:
-            cyr = it_sub.index + calc_start_year
-            tax_sub = float(it_sub[0])
-            tax_all = float(it_all[0])
-            reldiff = abs(tax_sub - tax_all) / abs(tax_all)
-            if reldiff > reltol:
-                msgstr = ' year,sub,full,reldiff= {}\t{:.2f}\t{:.2f}\t{:.4f}\n'
-                msg += msgstr.format(cyr, tax_sub, tax_all, reldiff)
-            it_sub.iternext()
-            it_all.iternext()
+    msg = ''
+    for cyr in range(calc_start_year, calc_start_year + nyrs):
+        if cyr == calc_start_year:
+            reltol = 0.014
+        else:
+            reltol = 0.006
+        if not np.allclose(taxes_subsample[cyr], taxes_fullsample[cyr],
+                           atol=0.0, rtol=reltol):
+            reldiff = (taxes_subsample[cyr] / taxes_fullsample[cyr]) - 1.
+            line1 = '\nCPSCSV AGG SUB-vs-FULL RESULTS DIFFER IN {}'
+            line2 = '\n  when subfrac={:.3f}, rtol={:.4f}, seed={}'
+            line3 = '\n  with sub={:.3f}, full={:.3f}, rdiff={:.4f}'
+            msg += line1.format(cyr)
+            msg += line2.format(subfrac, reltol, rn_seed)
+            msg += line3.format(taxes_subsample[cyr],
+                                taxes_fullsample[cyr],
+                                reldiff)
+    if msg:
         raise ValueError(msg)
 
 
