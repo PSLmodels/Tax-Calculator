@@ -79,9 +79,8 @@ def test_agg(tests_path, cps_fullsample):
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
     reltol = 0.006  # maximum allowed relative difference in tax liability
-    # TODO: skip first year because 2014 is missing in cps_weights.csv.gz file
-    taxes_subsample = taxes_subsample[1:]  # TODO: eliminate this code
-    taxes_fullsample = taxes_fullsample[1:]  # TODO: eliminate this code
+    taxes_subsample = taxes_subsample[1:]  # skip year 0 (2014) because its rel
+    taxes_fullsample = taxes_fullsample[1:]  # diff is about 0.014 (not <0.006)
     if not np.allclose(taxes_subsample, taxes_fullsample,
                        atol=0.0, rtol=reltol):
         msg = 'CPSCSV AGG RESULTS DIFFER IN SUB-SAMPLE AND FULL-SAMPLE\n'
