@@ -233,7 +233,19 @@ def test_compatible_data(cps_subsample, puf_subsample,
     # These parameters are exempt because they are not active under
     # current law and activating them would deactivate other parameters,
     # or if it is difficult to devise a test for them.
-    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt', '_STD_Dep']
+    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt']
+    """
+    # TODO: see if can remove this comment
+    exempt_from_testing.append('_ACTC_ChildNum')
+    # above statement added in PR#203? to silence the following FALSE error:
+    #    ERROR: _ACTC_ChildNum is not True for cps
+    """
+    """
+    # TODO: remove this comment after puf.csv is fixed to include DSI=1 funits
+    exempt_from_testing.append('_STD_Dep')
+    # above added in PR#2008 to silence this false error:
+    #    ERROR: _STD_Dep is not True for puf
+    """
 
     # Loop through the parameters in allparams_batch
     errmsg = 'ERROR: {} {}\n'
