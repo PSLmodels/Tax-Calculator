@@ -34,7 +34,7 @@ if DEBUG:
     DROP_VARS = set(['filer'])
 else:
     DROP_VARS = set(['filer', 's006', 'cmbtp',
-                     'nu05', 'nu13', 'elderly_dependent',
+                     'nu05', 'nu13', 'elderly_dependents',
                      'e09700', 'e09800', 'e09900', 'e11200'])
 
 # specify set of variables whose values are not to be randomized

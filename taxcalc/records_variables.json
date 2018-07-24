@@ -437,9 +437,9 @@
       "form": {"2013-2016": "8863 Part I line 10 and 8863 Part III line 31"},
       "availability": "taxdata_puf"
     },
-    "elderly_dependent": {
+    "elderly_dependents": {
       "type": "int",
-      "desc": "1 if filing unit has a dependent age 65+; otherwise 0",
+      "desc": "number of dependents age 65+ in filing unit excluding taxpayer and spouse",
       "form": {"2013-2016": "imputed from CPS data; not used in tax law"},
       "availability": "taxdata_puf, taxdata_cps"
     },
