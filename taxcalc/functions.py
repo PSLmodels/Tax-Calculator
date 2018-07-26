@@ -641,7 +641,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
     # Charity
     lim30 = min(ID_Charity_crt_noncash * posagi, e20100_capped)
     c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
-    charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])  # floor is zero in present law
+    # charity floor is zero in present law
+    charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
