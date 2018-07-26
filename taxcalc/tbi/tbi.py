@@ -28,6 +28,7 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    create_dict_table,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
+                     DIST_TABLE_COLUMNS, DIFF_TABLE_COLUMNS,
                      proportional_change_in_gdp,
                      GrowDiff, GrowFactors, Policy, Behavior, Consumption)
 
@@ -162,12 +163,19 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         sres = summary_dist_xdec(sres, dv1, dv2)
         sres = summary_diff_xdec(sres, dv1, dv2)
 
+    labels = {x: DIFF_TABLE_LABELS[i]
+              for i, x in enumerate(DIFF_TABLE_COLUMNS[:-2])}
+    labels.update({x: DIST_TABLE_LABELS[i]
+                   for i, x in enumerate(DIST_TABLE_COLUMNS)})
+
     # nested function used below
     def append_year(pdf):
         """
         append_year embedded function revises all column names in pdf
         """
-        pdf.columns = [str(col) + '_{}'.format(year_n) for col in pdf.columns]
+        pdf.columns = [(labels[str(col)] if str(col) in labels else str(col)) +
+                       '_{}'.format(year_n)
+                       for col in pdf.columns]
         return pdf
 
     # optionally return non-JSON-like results
@@ -180,10 +188,10 @@ def run_nth_year_taxcalc_model(year_n, start_year,
     for tbl in sres:
         res[tbl] = append_year(sres[tbl])
     if return_html:
-        formatted = {'download_only': {}, 'renderable': {}}
+        formatted = {'download_only': [], 'renderable': []}
         for tbl in res:
-            formatted['download_only'][tbl] = res[tbl].to_csv()
-            formatted['renderable'][tbl] = res[tbl].to_html()
+            formatted['download_only'].append(res[tbl].to_csv())
+            formatted['renderable'].append(res[tbl].to_html())
         elapsed_time = time.time() - start_time
         print('elapsed time for this run: {:.1f}'.format(elapsed_time))
         return formatted
