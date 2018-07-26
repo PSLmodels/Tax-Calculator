@@ -1445,7 +1445,7 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
 
 @iterate_jit(nopython=True)
 def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
-                  CR_Charity_frt, MARS):
+                  CR_Charity_frt, MARS, charity_credit):
     total_charity = e19800 + e20100
     floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
     charity_cr_floored = max(total_charity - floor, 0)
@@ -1455,7 +1455,7 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
 
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
-                         e07600, e19800, e20100, p08000, prectc, dep_credit,
+                         e07600, p08000, prectc, dep_credit,
                          personal_nonrefundable_credit,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
