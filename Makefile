@@ -44,24 +44,18 @@ endef
 
 .PHONY=pytest-cps
 pytest-cps:
-	@cd taxcalc
-	@pytest -n4 -m "not requires_pufcsv and not pre_release"
+	@cd taxcalc ; pytest -n4 -m "not requires_pufcsv and not pre_release"
 	@$(pytest-cleanup)
-	@cd ..
 
 .PHONY=pytest
 pytest:
-	@cd taxcalc
-	@pytest -n4 -m "not pre_release"
+	@cd taxcalc ; pytest -n4 -m "not pre_release"
 	@$(pytest-cleanup)
-	@cd ..
 
 .PHONY=pytest-all
 pytest-all:
-	@cd taxcalc
-	@pytest -n4 -m ""
+	@cd taxcalc ; pytest -n4 -m ""
 	@$(pytest-cleanup)
-	@cd ..
 
 define tctest-cleanup
 rm -f test.csv
