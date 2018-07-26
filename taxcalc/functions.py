@@ -1444,6 +1444,7 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
     c07230 = c87680 * (1. - CR_Education_hc)
     return c07230
 
+
 @iterate_jit(nopython=True)
 def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
                   CR_Charity_frt, MARS, charity_credit):
