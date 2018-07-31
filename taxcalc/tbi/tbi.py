@@ -29,7 +29,7 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      DIST_TABLE_COLUMNS, DIFF_TABLE_COLUMNS,
-                     proportional_change_in_gdp,
+                     RESULTS_TABLE_LABELS, proportional_change_in_gdp,
                      GrowDiff, GrowFactors, Policy, Behavior, Consumption)
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
@@ -169,12 +169,11 @@ def run_nth_year_taxcalc_model(year_n, start_year,
                    for i, x in enumerate(DIST_TABLE_COLUMNS)})
 
     # nested function used below
-    def append_year(pdf):
+    def label_columns(pdf):
         """
-        append_year embedded function revises all column names in pdf
+        label_columns embedded function revises all column names in pdf
         """
-        pdf.columns = [(labels[str(col)] if str(col) in labels else str(col)) +
-                       '_{}'.format(year_n)
+        pdf.columns = [(labels[str(col)] if str(col) in labels else str(col))
                        for col in pdf.columns]
         return pdf
 
@@ -184,14 +183,47 @@ def run_nth_year_taxcalc_model(year_n, start_year,
     # what if we allowed an aggregate format call?
     #  - presents project with all data proeduced in a run?
 
+    def get_tags(tbl):
+        tags = {}
+        if tbl.startswith('dist'):
+            tags['table_type'] = 'dist'
+            if tbl.startswith('dist1'):
+                tags['law'] = 'current'
+            else:
+                tags['law'] = 'reform'
+        else:
+            tags['table_type'] = 'diff'
+            if 'ptax' in tbl:
+                tags['tax_type'] = 'payroll'
+            elif 'itax' in tbl:
+                tags['tax_type'] = 'ind_income'
+            else:
+                tags['tax_type'] = 'combined'
+        if tbl.endswith('xbin'):
+            tags['grouping'] = 'bins'
+        else:
+            tags['grouping'] = 'deciles'
+        return tags
+
     res = dict()
     for tbl in sres:
-        res[tbl] = append_year(sres[tbl])
+        res[tbl] = label_columns(sres[tbl])
     if return_html:
-        formatted = {'download_only': [], 'renderable': []}
+        formatted = {'outputs': []}
         for tbl in res:
-            formatted['download_only'].append(res[tbl].to_csv())
-            formatted['renderable'].append(res[tbl].to_html())
+            year = str(start_year + year_n)
+            formatted['outputs'].append({
+                'tags': get_tags(tbl),
+                'year': year,
+                'title': '{} ({})'.format(
+                    (RESULTS_TABLE_LABELS[tbl]
+                     if tbl in RESULTS_TABLE_LABELS else tbl),
+                    year),
+                'download_only': res[tbl].to_csv(),
+                'renderable': (res[tbl].to_html()
+                               .replace(' border=1', '')
+                               .replace(' style="text-align: right;"', ''))
+            })
         elapsed_time = time.time() - start_time
         print('elapsed time for this run: {:.1f}'.format(elapsed_time))
         return formatted

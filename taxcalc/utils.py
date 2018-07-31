@@ -136,6 +136,30 @@ SOI_AGI_BINS = [-9e99, 1.0, 5e3, 10e3, 15e3, 20e3, 25e3, 30e3, 40e3, 50e3,
                 75e3, 100e3, 200e3, 500e3, 1e6, 1.5e6, 2e6, 5e6, 10e6, 9e99]
 
 
+RESULTS_TABLE_LABELS = {
+    'diff_comb_xbin': ('Combined Payroll and Individual Income Tax: Difference'
+                       ' between Base and User plans by expanded income bin'),
+    'diff_comb_xdec': ('Combined Payroll and Individual Income Tax: Difference'
+                       'between Base and User plans by expanded income '
+                       'decile'),
+    'diff_itax_xbin': ('Individual Income Tax: Difference between Base and '
+                       'User plans by expanded income bin'),
+    'diff_itax_xdec': ('Individual Income Tax: Difference between Base and '
+                       'User plans by expanded income decile'),
+    'diff_ptax_xbin': ('Payroll Tax: Difference between Base and User plans '
+                       'by expanded income bin'),
+    'diff_ptax_xdec': ('Payroll Tax: Difference between Base and User plans '
+                       'by expanded income decile'),
+    'dist1_xbin': 'Base plan tax vars, weighted total by expanded income bin',
+    'dist1_xdec': ('Base plan tax vars, weighted total by expanded income '
+                   'decile'),
+    'dist2_xbin': 'User plan tax vars, weighted total by expanded income bin',
+    'dist2_xdec': ('User plan tax vars, weighted total by expanded income '
+                   'decile'),
+    'aggr_1': 'Total Liabilities Baseline by Calendar Year',
+    'aggr_d': 'Total Liabilities Change by Calendar Year',
+    'aggr_2': 'Total Liabilities Reform by Calendar Year'}
+
 def unweighted_sum(pdf, col_name):
     """
     Return unweighted sum of Pandas DataFrame col_name items.
