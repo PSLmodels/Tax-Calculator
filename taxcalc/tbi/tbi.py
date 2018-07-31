@@ -29,8 +29,9 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      DIST_TABLE_COLUMNS, DIFF_TABLE_COLUMNS,
-                     RESULTS_TABLE_LABELS, proportional_change_in_gdp,
-                     GrowDiff, GrowFactors, Policy, Behavior, Consumption)
+                     RESULTS_TABLE_LABELS, RESULTS_TABLE_TAGS,
+                     proportional_change_in_gdp, GrowDiff, GrowFactors,
+                     Policy, Behavior, Consumption)
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
@@ -183,28 +184,6 @@ def run_nth_year_taxcalc_model(year_n, start_year,
     # what if we allowed an aggregate format call?
     #  - presents project with all data proeduced in a run?
 
-    def get_tags(tbl):
-        tags = {}
-        if tbl.startswith('dist'):
-            tags['table_type'] = 'dist'
-            if tbl.startswith('dist1'):
-                tags['law'] = 'current'
-            else:
-                tags['law'] = 'reform'
-        else:
-            tags['table_type'] = 'diff'
-            if 'ptax' in tbl:
-                tags['tax_type'] = 'payroll'
-            elif 'itax' in tbl:
-                tags['tax_type'] = 'ind_income'
-            else:
-                tags['tax_type'] = 'combined'
-        if tbl.endswith('xbin'):
-            tags['grouping'] = 'bins'
-        else:
-            tags['grouping'] = 'deciles'
-        return tags
-
     res = dict()
     for tbl in sres:
         res[tbl] = label_columns(sres[tbl])
@@ -213,7 +192,7 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         for tbl in res:
             year = str(start_year + year_n)
             formatted['outputs'].append({
-                'tags': get_tags(tbl),
+                'tags': RESULTS_TABLE_TAGS[tbl],
                 'year': year,
                 'title': '{} ({})'.format(
                     (RESULTS_TABLE_LABELS[tbl]

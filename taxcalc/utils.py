@@ -160,6 +160,34 @@ RESULTS_TABLE_LABELS = {
     'aggr_d': 'Total Liabilities Change by Calendar Year',
     'aggr_2': 'Total Liabilities Reform by Calendar Year'}
 
+
+RESULTS_TABLE_TAGS = {
+    'diff_comb_xbin': {'table_type': 'diff', 'tax_type': 'combined',
+                       'grouping': 'bins'},
+    'diff_comb_xdec': {'table_type': 'diff', 'tax_type': 'combined',
+                       'grouping': 'deciles'},
+    'diff_itax_xbin': {'table_type': 'diff', 'tax_type': 'ind_income',
+                       'grouping': 'bins'},
+    'diff_itax_xdec': {'table_type': 'diff', 'tax_type': 'ind_income',
+                       'grouping': 'deciles'},
+    'diff_ptax_xbin': {'table_type': 'diff', 'tax_type': 'payroll',
+                       'grouping': 'bins'},
+    'diff_ptax_xdec': {'table_type': 'diff', 'tax_type': 'payroll',
+                       'grouping': 'deciles'},
+    'dist1_xbin': {'table_type': 'dist', 'law': 'current',
+                   'grouping': 'bins'},
+    'dist1_xdec': {'table_type': 'dist', 'law': 'current',
+                   'grouping': 'deciles'},
+    'dist2_xbin': {'table_type': 'dist', 'law': 'reform',
+                   'grouping': 'bins'},
+    'dist2_xdec': {'table_type': 'dist', 'law': 'reform',
+                   'grouping': 'deciles'},
+    'aggr_1': {},
+    'aggr_d': {},
+    'aggr_2': {}
+}
+
+
 def unweighted_sum(pdf, col_name):
     """
     Return unweighted sum of Pandas DataFrame col_name items.
