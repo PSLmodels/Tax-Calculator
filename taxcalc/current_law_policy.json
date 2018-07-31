@@ -6599,7 +6599,7 @@
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
         "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": false}
+        "compatible_data": {"puf": true, "cps": true}
     },
 
     "_CR_Charity_f": {

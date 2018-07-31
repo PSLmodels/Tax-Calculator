@@ -70,7 +70,7 @@
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [8.7, 10.0, 11.4, 16.2]},
       "expected": "Tax-Calculator,7.0,7.3,7.3,7.5"
-                                  
+
   },
 
   "8": {
@@ -641,7 +641,7 @@
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,0.0,-31.5,-34.4,-37.2"
-  }, 
+  },
 
   "59": {
       "baseline": "2017_law.json",
@@ -691,5 +691,17 @@
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,-66.3,-66.6,-66.7,-67.0"
+  },
+
+  "63": {
+      "baseline": "2017_law.json",
+      "start_year": 2013,
+      "value": {"_ID_Charity_hc": [1],
+                "_CR_Charity_rt": [0.3],
+                "_CR_Charity_frt": [0.005]},
+      "name": "Replace charitable deduction with 30% credit, subject to 0.5% AGI floor",
+      "output_type": "iitax",
+      "compare_with": {},
+      "expected": "Tax-Calculator,-1.8,-1.3,-0.9,-0.7"
   }
 }
