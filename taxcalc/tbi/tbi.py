@@ -221,7 +221,7 @@ def run_nth_year_taxcalc_model(year_n, start_year,
                     year),
                 'download_only': res[tbl].to_csv(),
                 'renderable': (res[tbl].to_html()
-                               .replace(' border=1', '')
+                               .replace(' border="1"', '')
                                .replace(' style="text-align: right;"', ''))
             })
         elapsed_time = time.time() - start_time
