@@ -1448,6 +1448,10 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
 @iterate_jit(nopython=True)
 def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
                   CR_Charity_frt, MARS, charity_credit):
+    """
+    Computes nonrefundable charity credit, charity_credit.
+    This credit is not part of current-law policy.
+    """
     total_charity = e19800 + e20100
     floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
     charity_cr_floored = max(total_charity - floor, 0)

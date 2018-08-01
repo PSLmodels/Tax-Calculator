@@ -694,13 +694,13 @@
 
   "63": {
       "baseline": "2017_law.json",
-      "start_year": 2013,
+      "start_year": 2017,
       "value": {"_ID_Charity_hc": [1],
                 "_CR_Charity_rt": [0.3],
                 "_CR_Charity_frt": [0.005]},
       "name": "Replace charitable deduction with 30% credit, subject to 0.5% AGI floor",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.8,-2.5,-2.4,-2.2"
+      "expected": "Tax-Calculator,-2.0,-2.0,-2.0,-2.0"
   }
 }
