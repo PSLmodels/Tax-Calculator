@@ -19,6 +19,9 @@ for a complete commit history.
 - Incorporate new CPS and PUF input data
   [[#2032](https://github.com/open-source-economics/Tax-Calculator/pull/2032)
   by Martin Holmer and Anderson Frailey]
+- Add policy parameters that allow many changes in tax treatment of charitable giving
+  [[#2037](https://github.com/open-source-economics/Tax-Calculator/pull/2037)
+  by Derrick Choe]
 
 **Bug Fixes**
 - Fix incorrect aging of `e00900` variable
