@@ -979,6 +979,11 @@
       "desc": "Personal nonrefundable credit",
       "form": {"2013-20??": "calculated variable"}
     },
+    "charity_credit": {
+      "type": "float",
+      "desc": "Credit for charitable giving",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "dwks10": {
       "type": "float",
       "desc": "search taxcalc/functions.py for how calculated and used",

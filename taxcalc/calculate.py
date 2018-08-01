@@ -24,6 +24,7 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                ChildDepTaxCredit, AdditionalCTC, CTC_new,
                                PersonalTaxCredit, SchR,
                                AmOppCreditParts, EducationTaxCredit,
+                               CharityCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
                                FairShareTax, LumpSumTax, BenefitPrograms,
@@ -1488,6 +1489,7 @@ class Calculator(object):
         AmOppCreditParts(self.__policy, self.__records)
         SchR(self.__policy, self.__records)
         EducationTaxCredit(self.__policy, self.__records)
+        CharityCredit(self.__policy, self.__records)
         NonrefundableCredits(self.__policy, self.__records)
         AdditionalCTC(self.__policy, self.__records)
         C1040(self.__policy, self.__records)
