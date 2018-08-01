@@ -140,7 +140,7 @@ RESULTS_TABLE_LABELS = {
     'diff_comb_xbin': ('Combined Payroll and Individual Income Tax: Difference'
                        ' between Base and User plans by expanded income bin'),
     'diff_comb_xdec': ('Combined Payroll and Individual Income Tax: Difference'
-                       'between Base and User plans by expanded income '
+                       ' between Base and User plans by expanded income '
                        'decile'),
     'diff_itax_xbin': ('Individual Income Tax: Difference between Base and '
                        'User plans by expanded income bin'),
@@ -182,9 +182,9 @@ RESULTS_TABLE_TAGS = {
                    'grouping': 'bins'},
     'dist2_xdec': {'table_type': 'dist', 'law': 'reform',
                    'grouping': 'deciles'},
-    'aggr_1': {},
-    'aggr_d': {},
-    'aggr_2': {}
+    'aggr_1': {'law': 'current'},
+    'aggr_d': {'law': 'change'},
+    'aggr_2': {'law': 'reform'}
 }
 
 

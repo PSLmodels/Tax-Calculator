@@ -32,6 +32,7 @@ from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      RESULTS_TABLE_LABELS, RESULTS_TABLE_TAGS,
                      proportional_change_in_gdp, GrowDiff, GrowFactors,
                      Policy, Behavior, Consumption)
+from operator import itemgetter
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
 
@@ -187,7 +188,8 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         """
         append_year embedded function revises all column names in pdf
         """
-        pdf.columns = [str(col) + '_{}'.format(year_n) for col in pdf.columns]
+        pdf.columns = ['{}_{}'.format(col, year_n + start_year)
+                       for col in pdf.columns]
         return pdf
 
     # optionally return non-JSON-like results
@@ -202,17 +204,15 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         for id in sres:
             if id.startswith('aggr'):
                 tbl = append_year(sres[id])
-                pdfs_to_aggregate['id'] = [tbl]
+                pdfs_to_aggregate[id] = year_n, tbl.to_json()
             else:
                 tbl = label_columns(sres[id])
                 year = str(start_year + year_n)
                 formatted['outputs'].append({
-                    'tags': RESULTS_TABLE_TAGS[tbl],
+                    'tags': RESULTS_TABLE_TAGS[id],
                     'year': year,
-                    'title': '{} ({})'.format(
-                        (RESULTS_TABLE_LABELS[id]
-                         if id in RESULTS_TABLE_LABELS else id),
-                        year),
+                    'title': '{} ({})'.format(RESULTS_TABLE_LABELS[id],
+                                              year),
                     'download_only': tbl.to_csv(),
                     'renderable': pdf_to_clean_html(tbl)
                 })
@@ -225,17 +225,24 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         return sres
 
 
-def run_taxcalc_years_aggregation(pdfs):
-    """Takes a dictionary matching keys of table IDs with lists of Pandas
-       dataframes and aggregates the contained results into HTML and CSV"""
-    for key in ('aggr_d', 'aggr_1', 'aggr_2'):
-        tbl = pd.concat(pdfs[key])
+def run_taxcalc_years_aggregation(pdfs_to_aggregate):
+    """Takes a dictionary matching keys of table IDs with lists of tuples of
+       a year and a JSON representation of a Pandas dataframe, and
+       aggregates the contained results into HTML and CSV"""
+    formatted = {'aggr_outputs': []}
+    year_getter = itemgetter(0)
+    for id in ('aggr_d', 'aggr_1', 'aggr_2'):
+        pdfs = pdfs_to_aggregate[id]
+        pdfs.sort(key=year_getter)
+        tbl = pd.concat((pd.read_json(i[1]) for i in pdfs),
+                        axis='columns')
         formatted['aggr_outputs'].append({
-            'tags': {'aggr_law': key},
-            'title': RESULTS_TABLE_LABELS[key],
+            'tags': RESULTS_TABLE_TAGS[id],
+            'title': RESULTS_TABLE_LABELS[id],
             'download_only': tbl.to_csv(),
             'renderable': pdf_to_clean_html(tbl)
         })
+    return formatted
 
 
 def run_nth_year_gdp_elast_model(year_n, start_year,
