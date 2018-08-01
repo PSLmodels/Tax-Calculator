@@ -532,7 +532,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
             ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
             ID_Miscellaneous_c, ID_AllTaxes_c, ID_StateLocalTax_crt,
-            ID_RealEstate_crt):
+            ID_RealEstate_crt, ID_Charity_f):
     """
     Calculates itemized deductions, Form 1040, Schedule A.
 
@@ -581,6 +581,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
         ID_InterestPaid_c : Ceiling on interest paid deduction
 
         ID_Charity_c : Ceiling on charity expense deduction
+
+        ID_Charity_f: Floor on charity expense deduction
 
         ID_Casualty_c : Ceiling on casuality expense deduction
 
@@ -639,7 +641,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
     # Charity
     lim30 = min(ID_Charity_crt_noncash * posagi, e20100_capped)
     c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
-    charity_floor = ID_Charity_frt * posagi  # floor is zero in present law
+    # charity floor is zero in present law
+    charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
     c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
     c19700 = min(c19700, ID_Charity_c[MARS - 1])
     # Casualty
@@ -1443,12 +1446,26 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
 
 
 @iterate_jit(nopython=True)
+def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
+                  CR_Charity_frt, MARS, charity_credit):
+    """
+    Computes nonrefundable charity credit, charity_credit.
+    This credit is not part of current-law policy.
+    """
+    total_charity = e19800 + e20100
+    floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
+    charity_cr_floored = max(total_charity - floor, 0)
+    charity_credit = CR_Charity_rt * (charity_cr_floored)
+    return charity_credit
+
+
+@iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, prectc, dep_credit,
                          personal_nonrefundable_credit,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
-                         CR_MinimumTax_hc, CR_OtherCredits_hc,
+                         CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit,
                          c07180, c07200, c07220, c07230, c07240,
                          c07260, c07300, c07400, c07600, c08000,
                          DependentCredit_before_CTC):
@@ -1504,11 +1521,13 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Other credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
+    charity_credit = min(charity_credit, avail)
+    avail = avail - charity_credit
     # Personal nonrefundable credit
     personal_nonrefundable_credit = min(personal_nonrefundable_credit, avail)
     avail = avail - personal_nonrefundable_credit
     return (c07180, c07200, c07220, c07230, c07240, dep_credit,
-            c07260, c07300, c07400, c07600, c08000,
+            c07260, c07300, c07400, c07600, c08000, charity_credit,
             personal_nonrefundable_credit)
 
 
@@ -1571,14 +1590,15 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
-          c07100, c09200, dep_credit, personal_nonrefundable_credit):
+          c07100, c09200, dep_credit, charity_credit,
+          personal_nonrefundable_credit):
     """
     Computes total used nonrefundable credits, c07100, othertaxes, and
     income tax before refundable credits, c09200.
     """
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
-              c07230 + c07240 + c07260 + dep_credit +
+              c07230 + c07240 + c07260 + dep_credit + charity_credit +
               personal_nonrefundable_credit)
     # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)
