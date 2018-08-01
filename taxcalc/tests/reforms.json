@@ -70,7 +70,6 @@
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [8.7, 10.0, 11.4, 16.2]},
       "expected": "Tax-Calculator,7.0,7.3,7.3,7.5"
-                                  
   },
 
   "8": {
@@ -641,7 +640,7 @@
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,0.0,-31.5,-34.4,-37.2"
-  }, 
+  },
 
   "59": {
       "baseline": "2017_law.json",
