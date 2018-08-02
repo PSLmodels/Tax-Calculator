@@ -20,7 +20,7 @@ import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 
-@pytest.mark.one
+
 @pytest.mark.pre_release
 def test_benefits(tests_path, cps_fullsample):
     """
