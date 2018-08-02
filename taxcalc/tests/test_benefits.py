@@ -21,7 +21,7 @@ import pandas as pd
 from taxcalc import Policy, Records, Calculator
 
 
-@pytest.mark.pre_release
+@pytest.mark.benefits
 def test_benefits(tests_path, cps_fullsample):
     """
     Test CPS benefits.
