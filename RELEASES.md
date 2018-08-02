@@ -4,28 +4,6 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-??-?? Release 0.20.2
--------------------------
-(last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
-
-**API Changes**
-- None
-
-**New Features**
-- Add Calculator.n65() method that uses new 'elderly_dependents` input variable
-  [[#2029](https://github.com/open-source-economics/Tax-Calculator/pull/2029)
-  by Martin Holmer at request of Max Ghenis]
-- Incorporate new CPS and PUF input data
-  [[#2032](https://github.com/open-source-economics/Tax-Calculator/pull/2032)
-  by Martin Holmer and Anderson Frailey]
-
-**Bug Fixes**
-- Fix incorrect aging of `e00900` variable
-  [[#2027](https://github.com/open-source-economics/Tax-Calculator/pull/2027)
-  by Martin Holmer with bug reported by Max Ghenis]
-
-
 2018-05-21 Release 0.20.1
 -------------------------
 (last merged pull request is
