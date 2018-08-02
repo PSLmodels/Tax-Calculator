@@ -18,7 +18,7 @@ import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, nonsmall_diffs
+from taxcalc import Policy, Records, Calculator
 
 
 @pytest.mark.pre_release
