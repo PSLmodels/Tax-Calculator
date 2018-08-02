@@ -208,12 +208,14 @@ def run_nth_year_taxcalc_model(year_n, start_year,
             else:
                 tbl = label_columns(sres[id])
                 year = str(start_year + year_n)
+                title = '{} ({})'.format(RESULTS_TABLE_LABELS[id],
+                                         year)
                 formatted['outputs'].append({
                     'tags': RESULTS_TABLE_TAGS[id],
                     'year': year,
-                    'title': '{} ({})'.format(RESULTS_TABLE_LABELS[id],
-                                              year),
-                    'download_only': tbl.to_csv(),
+                    'title': title,
+                    'downloadable': [{'filename': title + '.csv',
+                                      'text': tbl.to_csv()}],
                     'renderable': pdf_to_clean_html(tbl)
                 })
         elapsed_time = time.time() - start_time
@@ -236,10 +238,12 @@ def run_taxcalc_years_aggregation(pdfs_to_aggregate):
         pdfs.sort(key=year_getter)
         tbl = pd.concat((pd.read_json(i[1]) for i in pdfs),
                         axis='columns')
+        title = RESULTS_TABLE_LABELS[id]
         formatted['aggr_outputs'].append({
             'tags': RESULTS_TABLE_TAGS[id],
-            'title': RESULTS_TABLE_LABELS[id],
-            'download_only': tbl.to_csv(),
+            'title': title,
+            'downloadable': [{'filename': title + '.csv',
+                              'text': tbl.to_csv()}],
             'renderable': pdf_to_clean_html(tbl)
         })
     return formatted
