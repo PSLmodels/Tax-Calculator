@@ -2,11 +2,11 @@
 Tests of Tax-Calculator using cps.csv input.
 
 Note that the CPS-related files that are required to run this program
-have been constructed by the Tax-Calculator development from publicly
+have been constructed by the Tax-Calculator development team from publicly
 available Census data files.  Hence, the CPS-related files are freely
 available and are part of the Tax-Calculator repository.
 
-Read tax-calculator/TESTING.md for details.
+Read Tax-Calculator/TESTING.md for details.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_cpscsv.py
