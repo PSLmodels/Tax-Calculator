@@ -426,7 +426,7 @@ class Records(object):
         setattr(self, 'wic_ben', self.BEN['wic_{}'.format(year)])
         setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
-        self.other_ben *= self.gfactors.factor_value('ABENEFITS', year)
+        self.other_ben *= self.gfactors.factor_value('ABENOTHER', year)
 
     def _read_data(self, data, exact_calcs, no_benefits):
         """
