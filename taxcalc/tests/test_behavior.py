@@ -19,7 +19,7 @@ def test_incorrect_behavior_instantiation():
 
 def test_behavioral_response_calculator(cps_subsample):
     # create Records object
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     year = rec.current_year
     # create Policy object
     pol = Policy()

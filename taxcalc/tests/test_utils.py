@@ -639,7 +639,7 @@ def test_diff_table_sum_row(cps_subsample):
 
 
 def test_mtr_graph_data(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     year = calc.current_year,
     with pytest.raises(ValueError):
@@ -672,7 +672,7 @@ def test_mtr_graph_data(cps_subsample):
 
 def test_atr_graph_data(cps_subsample):
     pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=pol, records=rec)
     year = calc.current_year
     with pytest.raises(ValueError):
@@ -695,7 +695,7 @@ def test_atr_graph_data(cps_subsample):
 
 
 def test_xtr_graph_plot(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs, behavior=Behavior())
     mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
     vdf = calc.dataframe(['s006', 'MARS', 'c00100'])
@@ -722,7 +722,7 @@ def temporary_filename(suffix=''):
 
 
 def test_write_graph_file(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
     vdf = calc.dataframe(['s006', 'e00200', 'c00100'])
@@ -763,7 +763,7 @@ def test_ce_aftertax_income(cps_subsample):
     cmin = 1000
     assert con == round(certainty_equivalent(con, 0, cmin), 6)
     # test with require_no_agg_tax_change equal to False
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     cyr = 2020
     # specify calc1 and calc_all() for cyr
     pol = Policy()
@@ -838,7 +838,7 @@ def test_table_columns_labels():
 
 def test_dec_graph_plots(cps_subsample):
     pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=rec)
     year = 2020
     calc1.advance_to_year(year)
