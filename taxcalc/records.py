@@ -404,6 +404,16 @@ class Records(object):
         self.e87530 *= ATXPY
         self.e87521 *= ATXPY
         self.cmbtp *= ATXPY
+        # BENEFITS
+        self.other_ben *= self.gfactors.factor_value('ABENOTHER', year)
+        self.mcare_ben *= self.gfactors.factor_value('ABENMCARE', year)
+        self.mcaid_ben *= self.gfactors.factor_value('ABENMCAID', year)
+        self.ssi_ben *= self.gfactors.factor_value('ABENSSI', year)
+        self.snap_ben *= self.gfactors.factor_value('ABENSNAP', year)
+        self.wic_ben *= self.gfactors.factor_value('ABENWIC', year)
+        self.housing_ben *= self.gfactors.factor_value('ABENHOUSING', year)
+        self.tanf_ben *= self.gfactors.factor_value('ABENTANF', year)
+        self.vet_ben *= self.gfactors.factor_value('ABENVET', year)
 
     def _adjust(self, year):
         """
@@ -428,15 +438,6 @@ class Records(object):
         setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
         setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
         """
-        self.other_ben *= self.gfactors.factor_value('ABENOTHER', year)
-        self.mcare_ben *= self.gfactors.factor_value('ABENMCARE', year)
-        self.mcaid_ben *= self.gfactors.factor_value('ABENMCAID', year)
-        self.ssi_ben *= self.gfactors.factor_value('ABENSSI', year)
-        self.snap_ben *= self.gfactors.factor_value('ABENSNAP', year)
-        self.wic_ben *= self.gfactors.factor_value('ABENWIC', year)
-        self.housing_ben *= self.gfactors.factor_value('ABENHOUSING', year)
-        self.tanf_ben *= self.gfactors.factor_value('ABENTANF', year)
-        self.vet_ben *= self.gfactors.factor_value('ABENVET', year)
 
     def _read_data(self, data, exact_calcs, no_benefits):
         """
