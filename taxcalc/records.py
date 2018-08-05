@@ -251,9 +251,6 @@ class Records(object):
         if self.WT.size > 0:
             wt_colname = 'WT{}'.format(self.__current_year)
             self.s006 = self.WT[wt_colname] * 0.01
-        # extrapolate benefit values
-        if self.BEN.size > 0:
-            self._extrapolate_benefits(self.current_year)
 
     def set_current_year(self, new_current_year):
         """
@@ -423,21 +420,6 @@ class Records(object):
         if self.ADJ.size > 0:
             # Interest income
             self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values
-
-    def _extrapolate_benefits(self, year):
-        """
-        Extrapolate benefit variables
-        """
-        """
-        setattr(self, 'housing_ben', self.BEN['housing_{}'.format(year)])
-        setattr(self, 'ssi_ben', self.BEN['ssi_{}'.format(year)])
-        setattr(self, 'snap_ben', self.BEN['snap_{}'.format(year)])
-        setattr(self, 'tanf_ben', self.BEN['tanf_{}'.format(year)])
-        setattr(self, 'vet_ben', self.BEN['vet_{}'.format(year)])
-        setattr(self, 'wic_ben', self.BEN['wic_{}'.format(year)])
-        setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
-        setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
-        """
 
     def _read_data(self, data, exact_calcs, no_benefits):
         """
