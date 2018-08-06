@@ -29,7 +29,7 @@ from taxcalc.tbi.tbi_utils import (check_years_return_first_year,
                                    AGGR_ROW_NAMES)
 from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      DIST_TABLE_COLUMNS, DIFF_TABLE_COLUMNS,
-                     RESULTS_TABLE_LABELS, RESULTS_TABLE_TAGS,
+                     RESULTS_TABLE_TITLES, RESULTS_TABLE_TAGS,
                      proportional_change_in_gdp, GrowDiff, GrowFactors,
                      Policy, Behavior, Consumption,
                      RESULTS_TOTAL_ROW_KEY_LABELS)
@@ -174,6 +174,29 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         sres = summary_dist_xdec(sres, dv1, dv2)
         sres = summary_diff_xdec(sres, dv1, dv2)
 
+    # optionally return non-JSON-like results
+    # it would be nice to allow the user to download the full CSV instead
+    # of a CSV for each year
+    # what if we allowed an aggregate format call?
+    #  - presents project with all data proeduced in a run?
+
+    if return_html:
+        res = {}
+        for id in sres:
+            res[id] = [{
+                'year': str(start_year + year_n),
+                'raw': sres[id].to_json()
+            }]
+        elapsed_time = time.time() - start_time
+        print('elapsed time for this run: {:.1f}'.format(elapsed_time))
+        return res
+    else:
+        elapsed_time = time.time() - start_time
+        print('elapsed time for this run: {:.1f}'.format(elapsed_time))
+        return sres
+
+
+def postprocess(data_to_process):
     labels = {x: DIFF_TABLE_LABELS[i]
               for i, x in enumerate(DIFF_TABLE_COLUMNS[:-2])}
     labels.update({x: DIST_TABLE_LABELS[i]
@@ -185,69 +208,44 @@ def run_nth_year_taxcalc_model(year_n, start_year,
                        for col in pdf.columns]
         return pdf
 
-    def append_year(pdf):
+    def append_year(pdf, year):
         """
         append_year embedded function revises all column names in pdf
         """
-        pdf.columns = ['{}_{}'.format(col, year_n + start_year)
+        pdf.columns = ['{}_{}'.format(col, year)
                        for col in pdf.columns]
         return pdf
 
-    # optionally return non-JSON-like results
-    # it would be nice to allow the user to download the full CSV instead
-    # of a CSV for each year
-    # what if we allowed an aggregate format call?
-    #  - presents project with all data proeduced in a run?
-
-    if return_html:
-        formatted = {'outputs': []}
-        pdfs_to_aggregate = {}
-        for id in sres:
-            if id.startswith('aggr'):
-                tbl = append_year(sres[id])
-                pdfs_to_aggregate[id] = year_n, tbl.to_json()
-            else:
-                tbl = label_columns(sres[id])
-                year = str(start_year + year_n)
-                title = '{} ({})'.format(RESULTS_TABLE_LABELS[id],
-                                         year)
+    formatted = {'outputs': [], 'aggr_outputs': []}
+    year_getter = itemgetter('year')
+    for id, pdfs in data_to_process.items():
+        if id.startswith('aggr'):
+            pdfs.sort(key=year_getter)
+            tbl = pd.concat((append_year(pd.read_json(i['raw']), i['year'])
+                             for i in pdfs), axis='columns')
+            tbl.index = pd.Index(RESULTS_TOTAL_ROW_KEY_LABELS[i]
+                                 for i in tbl.index)
+            title = RESULTS_TABLE_TITLES[id]
+            formatted['aggr_outputs'].append({
+                'tags': RESULTS_TABLE_TAGS[id],
+                'title': title,
+                'downloadable': [{'filename': title + '.csv',
+                                  'text': tbl.to_csv()}],
+                'renderable': pdf_to_clean_html(tbl)
+            })
+        else:
+            for i in pdfs:
+                tbl = label_columns(pd.read_json(i['raw']))
+                title = '{} ({})'.format(RESULTS_TABLE_TITLES[id],
+                                         i['year'])
                 formatted['outputs'].append({
                     'tags': RESULTS_TABLE_TAGS[id],
-                    'year': year,
+                    'year': i['year'],
                     'title': title,
                     'downloadable': [{'filename': title + '.csv',
                                       'text': tbl.to_csv()}],
                     'renderable': pdf_to_clean_html(tbl)
                 })
-        elapsed_time = time.time() - start_time
-        print('elapsed time for this run: {:.1f}'.format(elapsed_time))
-        return formatted, pdfs_to_aggregate
-    else:
-        elapsed_time = time.time() - start_time
-        print('elapsed time for this run: {:.1f}'.format(elapsed_time))
-        return sres
-
-
-def run_taxcalc_years_aggregation(pdfs_to_aggregate):
-    """Takes a dictionary matching keys of table IDs with lists of tuples of
-       a year and a JSON representation of a Pandas dataframe, and
-       aggregates the contained results into HTML and CSV"""
-    formatted = {'aggr_outputs': []}
-    year_getter = itemgetter(0)
-    for id in ('aggr_d', 'aggr_1', 'aggr_2'):
-        pdfs = pdfs_to_aggregate[id]
-        pdfs.sort(key=year_getter)
-        tbl = pd.concat((pd.read_json(i[1]) for i in pdfs),
-                        axis='columns')
-        tbl = tbl.reindex(RESULTS_TOTAL_ROW_KEY_LABELS[i] for i in tbl.index)
-        title = RESULTS_TABLE_LABELS[id]
-        formatted['aggr_outputs'].append({
-            'tags': RESULTS_TABLE_TAGS[id],
-            'title': title,
-            'downloadable': [{'filename': title + '.csv',
-                              'text': tbl.to_csv()}],
-            'renderable': pdf_to_clean_html(tbl)
-        })
     return formatted
 
 
