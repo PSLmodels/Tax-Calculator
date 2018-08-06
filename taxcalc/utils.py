@@ -187,6 +187,13 @@ RESULTS_TABLE_TAGS = {
     'aggr_2': {'law': 'reform'}
 }
 
+RESULTS_TOTAL_ROW_KEY_LABELS = {
+    'ind_tax': 'Individual Income Tax Liability Change',
+    'payroll_tax': 'Payroll Tax Liability Change',
+    'combined_tax': ('Combined Payroll and Individual Income Tax Liability '
+                     'Change'),
+}
+
 
 def unweighted_sum(pdf, col_name):
     """

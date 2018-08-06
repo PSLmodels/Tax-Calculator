@@ -31,7 +31,8 @@ from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      DIST_TABLE_COLUMNS, DIFF_TABLE_COLUMNS,
                      RESULTS_TABLE_LABELS, RESULTS_TABLE_TAGS,
                      proportional_change_in_gdp, GrowDiff, GrowFactors,
-                     Policy, Behavior, Consumption)
+                     Policy, Behavior, Consumption,
+                     RESULTS_TOTAL_ROW_KEY_LABELS)
 from operator import itemgetter
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
@@ -238,6 +239,7 @@ def run_taxcalc_years_aggregation(pdfs_to_aggregate):
         pdfs.sort(key=year_getter)
         tbl = pd.concat((pd.read_json(i[1]) for i in pdfs),
                         axis='columns')
+        tbl = tbl.reindex(RESULTS_TOTAL_ROW_KEY_LABELS[i] for i in tbl.index)
         title = RESULTS_TABLE_LABELS[id]
         formatted['aggr_outputs'].append({
             'tags': RESULTS_TABLE_TAGS[id],
