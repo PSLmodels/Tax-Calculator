@@ -9,7 +9,7 @@ acquired from IRS the most recent SOI PUF file and want to execute
 this program, contact the Tax-Calculator development team to discuss
 your options.
 
-Read tax-calculator/TESTING.md for details.
+Read Tax-Calculator/TESTING.md for details.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_pufcsv.py
