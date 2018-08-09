@@ -22,6 +22,9 @@ for a complete commit history.
 - Add policy parameters that allow many changes in tax treatment of charitable giving
   [[#2037](https://github.com/open-source-economics/Tax-Calculator/pull/2037)
   by Derrick Choe]
+- Extrapolate CPS benefit variables in the same way as other dollar variables are extrapolated to future years
+  [[#2041](https://github.com/open-source-economics/Tax-Calculator/pull/2041)
+  by Martin Holmer]
 - Incorporate most recent CPS and PUF input data
   [[#204?](https://github.com/open-source-economics/Tax-Calculator/pull/204?)
   by Martin Holmer and Anderson Frailey]
