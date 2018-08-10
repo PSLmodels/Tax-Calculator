@@ -151,7 +151,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "range": {"min": 0, "max": 2}
     },
 
     "_BEN_wic_value": {
@@ -189,7 +189,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "range": {"min": 0, "max": 2}
     },
 
     "_BEN_mcaid_value": {
@@ -208,7 +208,7 @@
         "boolean_value": false,
         "integer_value": false,
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "range": {"min": 0, "max": 2}
     },
 
     "_BEN_other_value": {
