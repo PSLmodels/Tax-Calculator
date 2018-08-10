@@ -271,7 +271,7 @@ def test_itax_compare(tests_path, using_puf, puf_fullsample, cps_fullsample):
         else:
             recs = Records(data=puf_fullsample, adjust_ratios=None)
     else:
-        recs = Records.cps_constructor(data=cps_fullsample, no_benefits=True)
+        recs = Records.cps_constructor(data=cps_fullsample)
     calc = Calculator(policy=Policy(), records=recs, verbose=False)
     calc.advance_to_year(2015)
     calc.calc_all()

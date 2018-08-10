@@ -106,7 +106,6 @@ class Records(object):
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
     VAR_INFO_FILENAME = 'records_variables.json'
-    CPS_BENEFITS_FILENAME = 'cps_benefits.csv.gz'
 
     def __init__(self,
                  data='puf.csv',
@@ -114,12 +113,11 @@ class Records(object):
                  gfactors=GrowFactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
-                 benefits=None,
                  start_year=PUFCSV_YEAR):
         # pylint: disable=too-many-arguments,too-many-locals
         self.__data_year = start_year
         # read specified data
-        self._read_data(data, exact_calculations, (benefits is None))
+        self._read_data(data, exact_calculations)
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         tol = 0.020001  # handles "%.2f" rounding errors
@@ -157,9 +155,6 @@ class Records(object):
         self._read_weights(weights)
         self.ADJ = None
         self._read_ratios(adjust_ratios)
-        # read extrapolated benefit variables
-        self.BEN = None
-        self._read_benefits(benefits)
         # weights must be same size as tax record data
         if self.WT.size > 0 and self.array_length != len(self.WT.index):
             # scale-up sub-sample weights by year-specific factor
@@ -185,7 +180,6 @@ class Records(object):
 
     @staticmethod
     def cps_constructor(data=None,
-                        no_benefits=False,
                         exact_calculations=False,
                         gfactors=GrowFactors()):
         """
@@ -200,16 +194,11 @@ class Records(object):
         """
         if data is None:
             data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
-        if no_benefits:
-            benefits_filename = None
-        else:
-            benefits_filename = Records.CPS_BENEFITS_FILENAME
         return Records(data=data,
                        exact_calculations=exact_calculations,
                        gfactors=gfactors,
                        weights=Records.CPS_WEIGHTS_FILENAME,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       benefits=benefits_filename,
                        start_year=Records.CPSCSV_YEAR)
 
     @property
@@ -251,9 +240,6 @@ class Records(object):
         if self.WT.size > 0:
             wt_colname = 'WT{}'.format(self.__current_year)
             self.s006 = self.WT[wt_colname] * 0.01
-        # extrapolate benefit values
-        if self.BEN.size > 0:
-            self._extrapolate_benefits(self.current_year)
 
     def set_current_year(self, new_current_year):
         """
@@ -404,6 +390,16 @@ class Records(object):
         self.e87530 *= ATXPY
         self.e87521 *= ATXPY
         self.cmbtp *= ATXPY
+        # BENEFITS
+        self.other_ben *= self.gfactors.factor_value('ABENOTHER', year)
+        self.mcare_ben *= self.gfactors.factor_value('ABENMCARE', year)
+        self.mcaid_ben *= self.gfactors.factor_value('ABENMCAID', year)
+        self.ssi_ben *= self.gfactors.factor_value('ABENSSI', year)
+        self.snap_ben *= self.gfactors.factor_value('ABENSNAP', year)
+        self.wic_ben *= self.gfactors.factor_value('ABENWIC', year)
+        self.housing_ben *= self.gfactors.factor_value('ABENHOUSING', year)
+        self.tanf_ben *= self.gfactors.factor_value('ABENTANF', year)
+        self.vet_ben *= self.gfactors.factor_value('ABENVET', year)
 
     def _adjust(self, year):
         """
@@ -414,25 +410,10 @@ class Records(object):
             # Interest income
             self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values
 
-    def _extrapolate_benefits(self, year):
-        """
-        Extrapolate benefit variables
-        """
-        setattr(self, 'housing_ben', self.BEN['housing_{}'.format(year)])
-        setattr(self, 'ssi_ben', self.BEN['ssi_{}'.format(year)])
-        setattr(self, 'snap_ben', self.BEN['snap_{}'.format(year)])
-        setattr(self, 'tanf_ben', self.BEN['tanf_{}'.format(year)])
-        setattr(self, 'vet_ben', self.BEN['vet_{}'.format(year)])
-        setattr(self, 'wic_ben', self.BEN['wic_{}'.format(year)])
-        setattr(self, 'mcare_ben', self.BEN['mcare_{}'.format(year)])
-        setattr(self, 'mcaid_ben', self.BEN['mcaid_{}'.format(year)])
-        self.other_ben *= self.gfactors.factor_value('ABENEFITS', year)
-
-    def _read_data(self, data, exact_calcs, no_benefits):
+    def _read_data(self, data, exact_calcs):
         """
         Read Records data from file or use specified DataFrame as data.
         Specifies exact array depending on boolean value of exact_calcs.
-        Set benefits to zero if no_benefits is True; otherwise do nothing.
         """
         # pylint: disable=too-many-statements,too-many-branches
         if Records.INTEGER_VARS is None:
@@ -494,17 +475,6 @@ class Records(object):
             raise ValueError('not all EIC values in [0,3] range')
         # specify value of exact array
         self.exact[:] = np.where(exact_calcs is True, 1, 0)
-        # optionally set benefits to zero
-        if no_benefits:
-            self.housing_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.ssi_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.snap_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.tanf_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.vet_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.wic_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.mcare_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.mcaid_ben[:] = np.zeros(self.array_length, dtype=np.float64)
-            self.other_ben[:] = np.zeros(self.array_length, dtype=np.float64)
         # delete intermediate variables
         del READ_VARS
         del UNREAD_VARS
@@ -573,40 +543,3 @@ class Records(object):
         self.ADJ = pd.DataFrame()
         setattr(self, 'ADJ', ADJ.astype(np.float32))
         del ADJ
-
-    def _read_benefits(self, benefits):
-        """
-        Read Records extrapolated benefits from a file or uses a specified
-        DataFrame or creates an empty DataFrame if None. Should only be
-        used with the cps.csv file
-        """
-        if benefits is None:
-            setattr(self, 'BEN', pd.DataFrame({'Nothing': []}))
-            return
-        if isinstance(benefits, pd.DataFrame):
-            BEN_partial = benefits
-        elif isinstance(benefits, six.string_types):
-            benefits_path = os.path.join(Records.CUR_PATH, benefits)
-            if os.path.isfile(benefits_path):
-                BEN_partial = pd.read_csv(benefits_path)
-            else:
-                # cannot call read_egg_ function in unit tests
-                b_path = os.path.basename(benefits_path)  # pragma: no cover
-                BEN_partial = read_egg_csv(b_path)  # pragma: no cover
-        else:
-            msg = 'benefits is not None or a string or a Pandas DataFrame'
-            raise ValueError(msg)
-        assert isinstance(BEN_partial, pd.DataFrame)
-        # expand benefits DataFrame to include those who don't receive benefits
-        recid_df = pd.DataFrame({'RECID': self.RECID})
-        # merge benefits with DataFrame of RECID
-        full_df = recid_df.merge(BEN_partial, on='RECID', how='left')
-        # fill missing values
-        full_df.fillna(0, inplace=True)
-        assert len(recid_df.index) == len(full_df.index)
-        self.BEN = pd.DataFrame()
-        setattr(self, 'BEN', full_df.astype(np.float32))
-        # delete intermediate DataFrame objects
-        del full_df
-        del recid_df
-        del BEN_partial

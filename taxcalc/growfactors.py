@@ -45,7 +45,10 @@ class GrowFactors(object):
                        'ADIVS', 'AINTS',
                        'AIPD', 'ASCHCI', 'ASCHCL',
                        'ASCHEI', 'ASCHEL', 'ASCHF',
-                       'ASOCSEC', 'ATXPY', 'AUCOMP', 'AWAGE', 'ABENEFITS'])
+                       'ASOCSEC', 'ATXPY', 'AUCOMP', 'AWAGE',
+                       'ABENOTHER', 'ABENMCARE', 'ABENMCAID',
+                       'ABENSSI', 'ABENSNAP', 'ABENWIC',
+                       'ABENHOUSING', 'ABENTANF', 'ABENVET'])
 
     def __init__(self, growfactors_filename=FILE_PATH):
         # read grow factors from specified growfactors_filename

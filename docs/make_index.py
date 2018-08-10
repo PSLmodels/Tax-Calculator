@@ -249,6 +249,10 @@ def assumption_param_text(pname, ptype, param):
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
     for cyr, val in zip(param['row_label'], param['value']):
         txt += '<br>{}: {}'.format(cyr, val)
+    txt += '<br><i>Valid Range:</i>'
+    minval = param['range']['min']
+    maxval = param['range']['max']
+    txt += ' min = {} and max = {}'.format(minval, maxval)
     txt += '</p>'
     return txt
 
