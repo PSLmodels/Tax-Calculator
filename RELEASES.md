@@ -25,8 +25,14 @@ for a complete commit history.
 - Extrapolate CPS benefit variables in the same way as other dollar variables are extrapolated to future years
   [[#2041](https://github.com/open-source-economics/Tax-Calculator/pull/2041)
   by Martin Holmer]
-- Incorporate most recent CPS and PUF input data
-  [[#204?](https://github.com/open-source-economics/Tax-Calculator/pull/204?)
+- Incorporate most recent PUF input data fixing problem in [#2032](https://github.com/open-source-economics/Tax-Calculator/pull/2032)
+  [[#2047](https://github.com/open-source-economics/Tax-Calculator/pull/2047)
+  by Martin Holmer and Anderson Frailey], which requires new `puf.csv`
+  input file with this information:
+  * Byte size: 54341028
+  * MD5 checksum: b64b90884406dfcff85f2ac9ba79f9bf
+- Incorporate most recent CPS input data containing actuarial value of health insurance benefits
+  [[#2048](https://github.com/open-source-economics/Tax-Calculator/pull/2048)
   by Martin Holmer and Anderson Frailey]
 
 **Bug Fixes**
