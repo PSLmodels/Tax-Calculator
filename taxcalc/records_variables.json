@@ -499,13 +499,13 @@
     },
     "mcaid_ben": {
       "type": "float",
-      "desc": "Imputed Medicaid benefits",
+      "desc": "Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance",
       "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
     "mcare_ben": {
       "type": "float",
-      "desc": "Imputed Medicare benefits",
+      "desc": "Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance",
       "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
