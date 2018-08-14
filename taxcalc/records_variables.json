@@ -469,7 +469,7 @@
     },
     "filer": {
       "type": "int",
-      "desc": "1 if unit files an income tax return; 0 if not (not used in tax-calculation logic)",
+      "desc": "1 if unit files an income tax return; 0 if not (not used in tax-calculation logic); in the puf.csv file a value of 1 indicates record is from IRS/SOI PUF and 0 indicates record is from CPS",
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_puf, taxdata_cps"
     },
