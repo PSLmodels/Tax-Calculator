@@ -1,15 +1,15 @@
 ,description,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027
 c00100,Federal AGI,   57146,   61275,   64523,   65145,   67057,   68776,   70290,   71917,   73743,   75809,   77989,   80311,   82644,   85126,   87699
 c02500,OASDI benefits in AGI,    1449,    1558,    1670,    1715,    1778,    1880,    2017,    2168,    2323,    2490,    2671,    2861,    3057,    3264,    3487
-c04470,Post-phase-out itemized deduction,    6609,    6694,    6977,    7185,    7334,    7570,    7821,    8078,    8358,    8656,    8946,    9250,    9544,    9870,   10199
+c04470,Post-phase-out itemized deduction,    6617,    6701,    6986,    7198,    7353,    7593,    7849,    8115,    8414,    8733,    9052,    9374,    9680,   10022,   10369
 c04600,Post-phase-out personal exemption,    7299,    7322,    7370,    7419,    7370,    7497,    7633,    7780,    7936,    8105,    8272,    8444,    8616,    8793,    8973
-c04800,Federal regular taxable income,   40085,   44148,   47041,   47418,   49183,   50468,   51512,   52652,   53956,   55472,   57108,   58860,   60633,   62510,   64469
-c05200,Regular tax on taxable income,    8600,    9809,   10623,   10617,   11076,   11350,   11548,   11783,   12063,   12400,   12771,   13171,   13578,   14010,   14461
+c04800,Federal regular taxable income,   40091,   44154,   47047,   47423,   49188,   50473,   51517,   52656,   53959,   55475,   57110,   58860,   60632,   62507,   64463
+c05200,Regular tax on taxable income,    8601,    9811,   10624,   10618,   11077,   11352,   11549,   11784,   12064,   12401,   12772,   13171,   13579,   14010,   14461
 c07180,Child care credit,      18,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19
-c07220,Child tax credit (adjusted),     175,     170,     167,     163,     160,     154,     149,     145,     140,     136,     132,     128,     125,     121,     117
-c09600,Federal AMT liability,     244,     259,     275,     284,     294,     306,     317,     329,     341,     353,     365,     378,     391,     406,     421
+c07220,Child tax credit (adjusted),     175,     170,     167,     163,     160,     154,     149,     144,     140,     136,     132,     128,     124,     121,     117
+c09600,Federal AMT liability,     242,     258,     273,     282,     292,     304,     315,     327,     339,     351,     363,     376,     389,     404,     419
 c11070,Extra child tax credit (refunded),     164,     158,     153,     149,     143,     140,     137,     135,     133,     131,     129,     127,     125,     123,     121
-c21040,Itemized deduction that is phased out,     227,     271,     298,     294,     307,     314,     318,     324,     332,     341,     352,     363,     375,     388,     401
+c21040,Itemized deduction that is phased out,     227,     271,     298,     294,     308,     314,     318,     325,     332,     341,     352,     364,     376,     389,     402
 cmbtp,Estimate of income on (AMT) Form 6251 but not in AGI,     414,     432,     452,     463,     475,     493,     510,     529,     547,     564,     584,     603,     622,     646,     670
 e00200,"Wages, salaries, and tips for filing unit",   39911,   41868,   43390,   44520,   45742,   47002,   48110,   49150,   50295,   51606,   52974,   54424,   55876,   57402,   58981
 e00300,Taxable interest income,     601,     558,     551,     547,     559,     574,     607,     653,     708,     756,     797,     832,     861,     892,     923
@@ -47,13 +47,13 @@ e09700,Recapture of Investment Credit,       0,       0,       0,       0,      
 e09800,Unreported payroll taxes from Form 4137 or 8919,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 e09900,Penalty tax on qualified retirement plans,      40,      41,      43,      43,      44,      45,      46,      47,      48,      49,      50,      51,      52,      53,      54
 e11200,Excess payroll (FICA/RRTA) tax withheld,      11,      12,      12,      13,      13,      13,      14,      14,      14,      15,      15,      16,      16,      17,      17
-e17500,Itemizable medical and dental expenses.  WARNING: this variable is zero below the floor in PUF data.,     895,     877,     890,     909,     936,     952,     970,     991,    1011,    1032,    1054,    1075,    1098,    1120,    1143
-e18400,Itemizable state and local income/sales taxes,    1871,    1984,    2059,    2098,    2144,    2204,    2269,    2334,    2406,    2482,    2557,    2636,    2715,    2800,    2887
-e18500,Itemizable real-estate taxes paid,    1172,    1226,    1275,    1304,    1336,    1377,    1420,    1464,    1511,    1562,    1612,    1667,    1718,    1777,    1834
-e19200,Itemizable interest paid,    1996,    1956,    2048,    2108,    2173,    2253,    2339,    2424,    2520,    2621,    2720,    2831,    2935,    3052,    3169
-e19800,Itemizable charitable giving: cash/check contributions.  WARNING: this variable is already capped in PUF data.,     915,     959,     996,    1014,    1040,    1070,    1099,    1133,    1169,    1210,    1249,    1289,    1329,    1374,    1419
-e20100,Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.,     234,     244,     251,     257,     262,     268,     275,     283,     291,     302,     311,     322,     332,     343,     354
-e20400,Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.,     798,     829,     861,     877,     899,     925,     952,     980,    1010,    1047,    1080,    1113,    1147,    1184,    1222
+e17500,Itemizable medical and dental expenses.  WARNING: this variable is zero below the floor in PUF data.,    1024,    1001,    1016,    1037,    1068,    1087,    1108,    1131,    1154,    1178,    1202,    1226,    1252,    1277,    1302
+e18400,Itemizable state and local income/sales taxes,    2680,    2808,    2920,    2983,    3061,    3156,    3256,    3357,    3466,    3580,    3694,    3813,    3934,    4063,    4196
+e18500,Itemizable real-estate taxes paid,    1462,    1519,    1581,    1618,    1662,    1716,    1772,    1827,    1888,    1953,    2017,    2087,    2153,    2228,    2302
+e19200,Itemizable interest paid,    2272,    2220,    2325,    2393,    2469,    2561,    2660,    2757,    2867,    2984,    3098,    3223,    3343,    3477,    3612
+e19800,Itemizable charitable giving: cash/check contributions.  WARNING: this variable is already capped in PUF data.,    1089,    1135,    1181,    1204,    1237,    1275,    1312,    1354,    1399,    1447,    1496,    1545,    1594,    1649,    1704
+e20100,Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.,     332,     344,     356,     364,     374,     384,     395,     407,     420,     435,     449,     465,     479,     496,     512
+e20400,Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.,     912,     946,     983,    1003,    1030,    1061,    1093,    1126,    1161,    1204,    1242,    1281,    1321,    1364,    1409
 e24515,Sch D: Un-Recaptured Section 1250 Gain,      88,     124,     158,     140,     154,     158,     156,     159,     163,     166,     172,     176,     181,     186,     192
 e24518,Sch D: 28% Rate Gain or Loss,      27,      38,      49,      43,      48,      48,      48,      48,      49,      50,      51,      52,      54,      56,      57
 e26270,Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000),    3071,    3327,    3299,    3237,    3176,    3120,    3099,    3097,    3114,    3152,    3218,    3296,    3372,    3465,    3556
@@ -66,7 +66,7 @@ e87530,Adjusted qualified lifetime learning expenses for all students,     104, 
 eitc,Federal EITC,     412,     408,     405,     395,     387,     390,     393,     398,     403,     408,     412,     417,     422,     427,     432
 elderly_dependents,number of dependents age 65+ in filing unit excluding taxpayer and spouse,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 g20500,Itemizable gross (before 10% AGI disregard) casualty or theft loss,      31,      32,      34,      35,      36,      38,      39,      40,      41,      43,      44,      45,      47,      48,      49
-iitax,Federal income tax liability,    7365,    8417,    9085,    9196,    9625,    9903,   10121,   10360,   10638,   10968,   11334,   11723,   12121,   12543,   12983
+iitax,Federal income tax liability,    7365,    8416,    9085,    9195,    9625,    9902,   10120,   10359,   10637,   10968,   11333,   11721,   12120,   12541,   12981
 k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -243,    -269,    -269,    -256,    -256,    -249,    -247,    -249,    -253,    -259,    -270,    -278,    -290,    -297,    -308
 k1bx14s,Partner self-employment earnings/loss for spouse (included in e26270 total),      -9,      -9,      -9,      -7,      -7,      -6,      -5,      -5,      -5,      -5,      -6,      -5,      -6,      -6,      -6
 nu05,Number of dependents under 5 years old,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
