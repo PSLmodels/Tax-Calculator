@@ -213,7 +213,8 @@ def test_reform_warnings_errors():
     assert len(msg_dict['policy']['warnings']) == 0
     assert len(msg_dict['policy']['errors']) == 0
     bad1_mods = {
-        'policy': {2020: {'_II_rt3': [1.4]}, 2021: {'_STD_Dep': [0]}},
+        'policy': {2020: {'_II_rt3': [1.4]},
+                   2021: {'_ID_Charity_crt_all': [0.7]}},
         'consumption': {},
         'behavior': {},
         'growdiff_baseline': {},
@@ -224,7 +225,7 @@ def test_reform_warnings_errors():
     assert len(msg_dict['policy']['warnings']) > 0
     assert len(msg_dict['policy']['errors']) > 0
     bad2_mods = {
-        'policy': {2020: {'_II_rt33': [0.4]}, 2021: {'_STD_Dep': [0]}},
+        'policy': {2020: {'_II_rt33': [0.4]}},
         'consumption': {},
         'behavior': {},
         'growdiff_baseline': {},
