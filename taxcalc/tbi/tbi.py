@@ -32,7 +32,9 @@ from taxcalc import (DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      RESULTS_TABLE_TITLES, RESULTS_TABLE_TAGS,
                      proportional_change_in_gdp, GrowDiff, GrowFactors,
                      Policy, Behavior, Consumption,
-                     RESULTS_TOTAL_ROW_KEY_LABELS)
+                     RESULTS_TOTAL_ROW_KEY_LABELS,
+                     RESULTS_TOTAL_ELAST_ROW_KEY_LABELS,
+                     RESULTS_TABLE_ELAST_TITLES)
 from operator import itemgetter
 
 AGG_ROW_NAMES = AGGR_ROW_NAMES
@@ -249,6 +251,34 @@ def postprocess(data_to_process):
     return formatted
 
 
+def postprocess_elast(data_to_process):
+    def append_year(pdf, year):
+        """
+        append_year embedded function revises all column names in pdf
+        """
+        pdf.columns = [str(year)]
+        return pdf
+
+    formatted = {'outputs': [], 'aggr_outputs': []}
+    year_getter = itemgetter('year')
+    for id, pdfs in data_to_process.items():
+        print(id, pdfs)
+        pdfs.sort(key=year_getter)
+        print(pdfs)
+        tbl = pd.concat((append_year(pd.read_json(i['raw']), i['year'])
+                         for i in pdfs), axis='columns')
+        tbl.index = pd.Index([RESULTS_TOTAL_ELAST_ROW_KEY_LABELS[id]])
+        title = RESULTS_TABLE_ELAST_TITLES[id]
+        formatted['aggr_outputs'].append({
+            'tags': RESULTS_TABLE_TAGS[id],
+            'title': title,
+            'downloadable': [{'filename': title + '.csv',
+                              'text': tbl.to_csv()}],
+            'renderable': pdf_to_clean_html(tbl)
+        })
+    return formatted
+
+
 def run_nth_year_gdp_elast_model(year_n, start_year,
                                  use_puf_not_cps,
                                  use_full_sample,
@@ -282,12 +312,8 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
 
     # return gdp_effect results
     if return_dict:
-        gdp_df = pd.DataFrame(data=[gdp_effect], columns=['col0'])
-        gdp_elast_names_n = [x + '_' + str(year_n)
-                             for x in GDP_ELAST_ROW_NAMES]
-        gdp_elast_total = create_dict_table(gdp_df,
-                                            row_names=gdp_elast_names_n,
-                                            num_decimals=5)
-        gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
-        return gdp_elast_total
+        df = pd.DataFrame({'gdp_effect': [gdp_effect]})
+        return {'gdp_effect': [{'year': str(start_year + year_n),
+                                'raw': df.to_json()}]}
+
     return gdp_effect

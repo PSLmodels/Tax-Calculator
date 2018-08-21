@@ -162,6 +162,7 @@ RESULTS_TABLE_TITLES = {
 
 
 RESULTS_TABLE_TAGS = {
+    # diff tables
     'diff_comb_xbin': {'table_type': 'diff', 'tax_type': 'combined',
                        'grouping': 'bins'},
     'diff_comb_xdec': {'table_type': 'diff', 'tax_type': 'combined',
@@ -174,6 +175,7 @@ RESULTS_TABLE_TAGS = {
                        'grouping': 'bins'},
     'diff_ptax_xdec': {'table_type': 'diff', 'tax_type': 'payroll',
                        'grouping': 'deciles'},
+    # dist tables
     'dist1_xbin': {'table_type': 'dist', 'law': 'current',
                    'grouping': 'bins'},
     'dist1_xdec': {'table_type': 'dist', 'law': 'current',
@@ -182,9 +184,13 @@ RESULTS_TABLE_TAGS = {
                    'grouping': 'bins'},
     'dist2_xdec': {'table_type': 'dist', 'law': 'reform',
                    'grouping': 'deciles'},
+    # aggr tables
     'aggr_1': {'law': 'current'},
     'aggr_d': {'law': 'change'},
-    'aggr_2': {'law': 'reform'}
+    'aggr_2': {'law': 'reform'},
+
+    # gdp elaticity model table
+    'gdp_effect': {'default': 'gdp_elast'}
 }
 
 RESULTS_TOTAL_ROW_KEY_LABELS = {
@@ -194,6 +200,12 @@ RESULTS_TOTAL_ROW_KEY_LABELS = {
                      'Change'),
 }
 
+RESULTS_TABLE_ELAST_TITLES = {
+    'gdp_effect': 'Percentage Change in GDP'
+}
+RESULTS_TOTAL_ELAST_ROW_KEY_LABELS = {
+    'gdp_effect': '% Difference in GDP'
+}
 
 def unweighted_sum(pdf, col_name):
     """
