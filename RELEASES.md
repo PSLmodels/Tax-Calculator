@@ -13,7 +13,7 @@ for a complete commit history.
 - None
 
 **New Features**
-- Incorporate new PUF input data that includes imputed values of itemized expenses for non-itemizers
+- Incorporate new PUF input data that include imputed values of itemized expenses for non-itemizers
   [[#2052](https://github.com/open-source-economics/Tax-Calculator/pull/2052)
   by Martin Holmer], which requires new `puf.csv` input file with this information:
   * Byte size: 55104059
