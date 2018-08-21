@@ -199,6 +199,10 @@ def run_nth_year_taxcalc_model(year_n, start_year,
 
 
 def postprocess(data_to_process):
+    """
+    Receives results from run_nth_year_taxcalc_model over N years,
+    formats the results, and combines the aggregate results
+    """
     labels = {x: DIFF_TABLE_LABELS[i]
               for i, x in enumerate(DIFF_TABLE_COLUMNS[:-2])}
     labels.update({x: DIST_TABLE_LABELS[i]
@@ -252,6 +256,10 @@ def postprocess(data_to_process):
 
 
 def postprocess_elast(data_to_process):
+    """
+    Receives results from run_nth_year_gdp_elast_model over N years,
+    formats the results, and combines the aggregate results
+    """
     def append_year(pdf, year):
         """
         append_year embedded function revises all column names in pdf
