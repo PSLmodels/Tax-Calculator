@@ -14,7 +14,7 @@ def test_proportional_change_in_gdp(cps_subsample):
     """
     Test correct and incorrect calls to proportional_change_in_gdp function.
     """
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     calc1 = Calculator(policy=pol, records=rec)
     reform = {2015: {'_II_em': [0.0]}}  # reform increases taxes and MTRs
@@ -31,7 +31,7 @@ def test_proportional_change_in_gdp(cps_subsample):
     assert calc1.current_year == 2015
     gdp_pchg = 100.0 * proportional_change_in_gdp(2016, calc1, calc2,
                                                   elasticity=0.36)
-    exp_pchg = -0.54  # higher MTRs imply negative expected GDP percent change
+    exp_pchg = -0.49  # higher MTRs imply negative expected GDP percent change
     abs_diff_pchg = abs(gdp_pchg - exp_pchg)
     if abs_diff_pchg > 0.01:
         msg = 'year,gdp_pchg,exp_pchg= {} {:.3f} {:.3f}'.format(2016,

@@ -4,27 +4,41 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-06-?? Release 0.20.2
+2018-08-10 Release 0.20.2
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#2048](https://github.com/open-source-economics/Tax-Calculator/pull/2048))
 
 **API Changes**
 - None
 
 **New Features**
-- Incorporate new PUF input data
-  [[#2008](https://github.com/open-source-economics/Tax-Calculator/pull/2008)
+- Add Calculator.n65() method that uses new `elderly_dependents` input variable
+  [[#2029](https://github.com/open-source-economics/Tax-Calculator/pull/2029)
+  by Martin Holmer at request of Max Ghenis]
+- Incorporate updated CPS and PUF input data
+  [[#2032](https://github.com/open-source-economics/Tax-Calculator/pull/2032)
+  by Martin Holmer and Anderson Frailey]
+- Add policy parameters that allow many changes in tax treatment of charitable giving
+  [[#2037](https://github.com/open-source-economics/Tax-Calculator/pull/2037)
+  by Derrick Choe]
+- Extrapolate CPS benefit variables in the same way as other dollar variables are extrapolated to future years
+  [[#2041](https://github.com/open-source-economics/Tax-Calculator/pull/2041)
+  by Martin Holmer]
+- Incorporate most recent PUF input data fixing problem mentioned in [#2032](https://github.com/open-source-economics/Tax-Calculator/pull/2032)
+  [[#2047](https://github.com/open-source-economics/Tax-Calculator/pull/2047)
   by Martin Holmer and Anderson Frailey], which requires new `puf.csv`
   input file with this information:
-  * Byte size: 52733999
-  * MD5 checksum: d4110187d61c5f2c7b06db90f44a1559
-- Incorporate even more new PUF input data
-  [[#2011](https://github.com/open-source-economics/Tax-Calculator/pull/2011)
-  by Martin Holmer]
+  * Byte size: 54341028
+  * MD5 checksum: b64b90884406dfcff85f2ac9ba79f9bf
+- Incorporate most recent CPS input data containing actuarial value of health insurance benefits
+  [[#2048](https://github.com/open-source-economics/Tax-Calculator/pull/2048)
+  by Martin Holmer and Anderson Frailey]
 
 **Bug Fixes**
-- None
+- Fix incorrect aging of `e00900` variable
+  [[#2027](https://github.com/open-source-economics/Tax-Calculator/pull/2027)
+  by Martin Holmer with bug reported by Max Ghenis]
 
 
 2018-05-21 Release 0.20.1

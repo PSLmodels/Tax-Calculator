@@ -1,8 +1,8 @@
 from __future__ import print_function  # necessary only if using Python 2.7
 from taxcalc import *
 
-# use publicly-available CPS input file without including benefits
-recs = Records.cps_constructor(no_benefits=True)
+# use publicly-available CPS input file
+recs = Records.cps_constructor()
 
 # specify Calculator object representing current-law policy
 pol = Policy()

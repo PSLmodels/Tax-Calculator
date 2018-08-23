@@ -437,9 +437,9 @@
       "form": {"2013-2016": "8863 Part I line 10 and 8863 Part III line 31"},
       "availability": "taxdata_puf"
     },
-    "elderly_dependent": {
+    "elderly_dependents": {
       "type": "int",
-      "desc": "1 if filing unit has a dependent age 65+; otherwise 0",
+      "desc": "number of dependents age 65+ in filing unit excluding taxpayer and spouse",
       "form": {"2013-2016": "imputed from CPS data; not used in tax law"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -469,7 +469,7 @@
     },
     "filer": {
       "type": "int",
-      "desc": "1 if unit files an income tax return; 0 if not (not used in tax-calculation logic)",
+      "desc": "1 if unit files an income tax return; 0 if not (not used in tax-calculation logic); in the puf.csv file a value of 1 indicates record is from IRS/SOI PUF and 0 indicates record is from CPS",
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -499,13 +499,13 @@
     },
     "mcaid_ben": {
       "type": "float",
-      "desc": "Imputed Medicaid benefits",
+      "desc": "Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance",
       "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
     "mcare_ben": {
       "type": "float",
-      "desc": "Imputed Medicare benefits",
+      "desc": "Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance",
       "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
     },
@@ -977,6 +977,11 @@
     "personal_nonrefundable_credit": {
       "type": "float",
       "desc": "Personal nonrefundable credit",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "charity_credit": {
+      "type": "float",
+      "desc": "Credit for charitable giving",
       "form": {"2013-20??": "calculated variable"}
     },
     "dwks10": {

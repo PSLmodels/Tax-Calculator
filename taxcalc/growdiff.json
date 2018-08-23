@@ -301,5 +301,183 @@
         "integer_value": false,
         "value": [0.0],
         "range": {"min": -1, "max": 1}
+    },
+
+    "_ABENOTHER": {
+        "long_name": "ABENOTHER additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENOTHER extrapolates input variable other_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+    "_ABENMCARE": {
+        "long_name": "ABENMCARE additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENMCARE extrapolates input variable mcare_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+
+    "_ABENMCAID": {
+        "long_name": "ABENMCAID additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENMCAID extrapolates input variable mcaid_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+
+    "_ABENSSI": {
+        "long_name": "ABENSSI additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENSSI extrapolates input variable ssi_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+
+    "_ABENSNAP": {
+        "long_name": "ABENSNAP additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENSNAP extrapolates input variable snap_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+
+    "_ABENWIC": {
+        "long_name": "ABENWIC additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENWIC extrapolates input variable wic_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+
+    "_ABENHOUSING": {
+        "long_name": "ABENHOUSING additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENHOUSING extrapolates input variable housing_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+
+    "_ABENTANF": {
+        "long_name": "ABENTANF additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENTANF extrapolates input variable tanf_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
+    },
+
+    "_ABENVET": {
+        "long_name": "ABENVET additive difference from default projection",
+        "description": "Default projection is in growfactors.csv file.  ABENVET extrapolates input variable vet_ben.",
+        "section_1": "",
+        "section_2": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": -1, "max": 1}
     }
+
 }

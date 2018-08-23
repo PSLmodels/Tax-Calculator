@@ -44,24 +44,18 @@ endef
 
 .PHONY=pytest-cps
 pytest-cps:
-	@cd taxcalc
-	@pytest -n4 -m "not requires_pufcsv and not pre_release"
+	@cd taxcalc ; pytest -n4 -m "not requires_pufcsv and not pre_release"
 	@$(pytest-cleanup)
-	@cd ..
 
 .PHONY=pytest
 pytest:
-	@cd taxcalc
-	@pytest -n4 -m "not pre_release"
+	@cd taxcalc ; pytest -n4 -m "not pre_release"
 	@$(pytest-cleanup)
-	@cd ..
 
 .PHONY=pytest-all
 pytest-all:
-	@cd taxcalc
-	@pytest -n4 -m ""
+	@cd taxcalc ; pytest -n4 -m ""
 	@$(pytest-cleanup)
-	@cd ..
 
 define tctest-cleanup
 rm -f test.csv
@@ -76,6 +70,7 @@ tctest: package
 	@echo "validation tests using tc will be added in the future"
 
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
+TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
 PYLINT_FILES := $(shell grep -rl --include="*py" disable=locally-disabled .)
 
 .PHONY=cstest
@@ -83,6 +78,7 @@ cstest:
 	pycodestyle taxcalc
 	pycodestyle docs/cookbook
 	@pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
+	@pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
 	@pylint --disable=locally-disabled --score=no --jobs=4 $(PYLINT_FILES)
 
 define coverage-cleanup

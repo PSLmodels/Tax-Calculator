@@ -334,15 +334,12 @@ class TaxCalcIO(object):
         # read input file contents into Records objects
         if aging_input_data:
             if self.cps_input_data:
-                nobenefits = self.growmodel.is_ever_active()
                 recs = Records.cps_constructor(
                     gfactors=gfactors_ref,
-                    no_benefits=nobenefits,
                     exact_calculations=exact_calculations
                 )
                 recs_base = Records.cps_constructor(
                     gfactors=gfactors_base,
-                    no_benefits=nobenefits,
                     exact_calculations=exact_calculations
                 )
             else:  # if not cps_input_data but aging_input_data

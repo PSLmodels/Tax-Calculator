@@ -93,18 +93,18 @@ def test_create_tables(cps_subsample):
     tabcol = 'pc_aftertaxinc'
     expected = [np.nan,
                 np.nan,
-                -0.16,
-                -0.57,
-                -0.72,
-                -0.69,
-                -0.82,
+                -0.22,
+                -0.77,
                 -0.80,
-                -0.75,
-                -0.65,
-                -0.23,
-                -0.09,
+                -0.56,
+                -0.77,
+                -0.69,
+                -0.71,
+                -0.67,
+                -0.27,
+                -0.11,
                 -0.06,
-                -0.59]
+                -0.58]
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -119,20 +119,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'tot_change'
     expected = [0,
                 0,
-                1219678,
-                15503037,
-                25922077,
-                35000592,
-                48336897,
-                62637728,
-                79750078,
-                93136108,
-                116996252,
-                102458801,
-                580961247,
-                63156380,
-                33664610,
-                5637811]
+                241418460,
+                2474292614,
+                2770584237,
+                2535721686,
+                4444363117,
+                5111483934,
+                6321945100,
+                8225913647,
+                10597074824,
+                10234573879,
+                52957371499,
+                6137031947,
+                3513242382,
+                584299551]
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.51, rtol=0.0):
         test_failure = True
@@ -143,20 +143,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'share_of_change'
     expected = [0.00,
                 0.00,
-                0.21,
-                2.67,
-                4.46,
-                6.02,
-                8.32,
-                10.78,
-                13.73,
-                16.03,
-                20.14,
-                17.64,
+                0.46,
+                4.67,
+                5.23,
+                4.79,
+                8.39,
+                9.65,
+                11.94,
+                15.53,
+                20.01,
+                19.33,
                 100.00,
-                10.87,
-                5.79,
-                0.97]
+                11.59,
+                6.63,
+                1.10]
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0):
         test_failure = True
@@ -167,20 +167,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'pc_aftertaxinc'
     expected = [np.nan,
                 np.nan,
-                -0.15,
-                -0.62,
-                -0.70,
-                -0.73,
-                -0.78,
-                -0.80,
-                -0.80,
-                -0.74,
-                -0.71,
-                -0.30,
-                -0.59,
-                -0.55,
                 -0.25,
-                -0.06]
+                -0.95,
+                -0.73,
+                -0.53,
+                -0.75,
+                -0.71,
+                -0.68,
+                -0.72,
+                -0.71,
+                -0.34,
+                -0.58,
+                -0.61,
+                -0.30,
+                -0.07]
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -191,20 +191,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'pc_aftertaxinc'
     expected = [np.nan,
                 np.nan,
-                -0.15,
-                -0.62,
-                -0.70,
-                -0.73,
-                -0.78,
-                -0.80,
-                -0.80,
-                -0.74,
-                -0.71,
-                -0.30,
-                -0.59,
-                -0.55,
                 -0.25,
-                -0.06]
+                -0.95,
+                -0.73,
+                -0.53,
+                -0.75,
+                -0.71,
+                -0.68,
+                -0.72,
+                -0.71,
+                -0.34,
+                -0.58,
+                -0.61,
+                -0.30,
+                -0.07]
     if not np.allclose(diff[tabcol].values, expected,
                        atol=0.005, rtol=0.0, equal_nan=True):
         test_failure = True
@@ -219,20 +219,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'iitax'
     expected = [0,
                 0,
-                -53644343,
-                -65258622,
-                -57617119,
-                37391333,
-                200879230,
-                329784586,
-                553827330,
-                1015854407,
-                1731283600,
-                7090603505,
-                10783103907,
-                1638192777,
-                2213960052,
-                3238450675]
+                -1962728575,
+                1725493747,
+                4396953820,
+                6605728718,
+                16774691083,
+                23860454276,
+                38350836962,
+                83963523110,
+                150930070726,
+                732859528574,
+                1057504552440,
+                151607017873,
+                234865455600,
+                346387055100]
     if not np.allclose(dist[tabcol].values, expected,
                        atol=0.5, rtol=0.0):
         test_failure = True
@@ -243,20 +243,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'num_returns_ItemDed'
     expected = [0,
                 0,
-                2561,
-                12610,
-                21936,
-                29172,
-                50890,
-                61563,
-                78247,
-                91823,
-                118523,
-                128886,
-                596211,
-                63986,
-                51634,
-                13266]
+                357019,
+                1448655,
+                2559613,
+                2513429,
+                4419624,
+                5275374,
+                6222375,
+                7880642,
+                11147728,
+                13023015,
+                54847474,
+                6118072,
+                5478575,
+                1426368]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
         test_failure = True
@@ -267,20 +267,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'expanded_income'
     expected = [0,
                 0,
-                835224673,
-                2639667638,
-                3940559051,
-                5286856071,
-                6972849344,
-                8881099529,
-                11467767759,
-                14761195525,
-                19832126806,
-                44213000235,
-                118830346631,
-                14399218059,
-                16868648076,
-                12945134101]
+                105133510325,
+                290616204980,
+                413576297349,
+                517828725223,
+                659857915773,
+                803218163892,
+                1042123266101,
+                1326558509787,
+                1805622773921,
+                4048576203396,
+                11013111570748,
+                1281956155093,
+                1515893182747,
+                1250726865556]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
         test_failure = True
@@ -291,20 +291,20 @@ def test_create_tables(cps_subsample):
     tabcol = 'aftertax_income'
     expected = [0,
                 0,
-                818813684,
-                2466000535,
-                3671150517,
-                4790979126,
-                6173998985,
-                7754183496,
-                9907604744,
-                12510477225,
-                16273592612,
-                33915377411,
-                98282178334,
-                11345456373,
-                13400757263,
-                9169163776]
+                97194414402,
+                259232286042,
+                375389146785,
+                475719938941,
+                588002960320,
+                710495874184,
+                921012587826,
+                1129166044052,
+                1488817328688,
+                2998268537784,
+                9043299119027,
+                999335257953,
+                1151930187406,
+                847003092425]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
         test_failure = True
@@ -317,18 +317,18 @@ def test_create_tables(cps_subsample):
     tabcol = 'iitax'
     expected = [0,
                 0,
-                -42244205,
-                -76727831,
-                -62581860,
-                53797887,
-                217016689,
-                723516183,
-                1108097059,
-                3272479928,
-                2818979541,
-                950296405,
-                1820474110,
-                10783103907]
+                -544908512,
+                -27720182,
+                2473153905,
+                9469043966,
+                17806661306,
+                56292468689,
+                88558244888,
+                298427035609,
+                290639143539,
+                99528466942,
+                194882962290,
+                1057504552440]
     if not np.allclose(dist[tabcol], expected,
                        atol=0.5, rtol=0.0):
         test_failure = True
@@ -339,18 +339,18 @@ def test_create_tables(cps_subsample):
     tabcol = 'num_returns_ItemDed'
     expected = [0,
                 0,
-                1202,
-                13614,
-                27272,
-                34407,
-                48265,
-                117225,
-                103319,
-                181885,
-                61014,
-                5126,
-                2882,
-                596211]
+                60455,
+                1161281,
+                2323042,
+                3613216,
+                4759193,
+                10006287,
+                8785946,
+                17093586,
+                6199555,
+                532925,
+                311987,
+                54847474]
     if not np.allclose(dist[tabcol].tolist(), expected,
                        atol=0.5, rtol=0.0):
         test_failure = True
@@ -634,12 +634,12 @@ def test_diff_table_sum_row(cps_subsample):
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
     assert np.allclose(tdiff1[digit_cols][-1:],
                        tdiff2[digit_cols][-1:])
-    np.testing.assert_array_equal(tdiff1[non_digit_cols][-1:],
-                                  tdiff2[non_digit_cols][-1:])
+    np.allclose(tdiff1[non_digit_cols][-1:],
+                tdiff2[non_digit_cols][-1:])
 
 
 def test_mtr_graph_data(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     year = calc.current_year,
     with pytest.raises(ValueError):
@@ -672,7 +672,7 @@ def test_mtr_graph_data(cps_subsample):
 
 def test_atr_graph_data(cps_subsample):
     pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=pol, records=rec)
     year = calc.current_year
     with pytest.raises(ValueError):
@@ -695,7 +695,7 @@ def test_atr_graph_data(cps_subsample):
 
 
 def test_xtr_graph_plot(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs, behavior=Behavior())
     mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
     vdf = calc.dataframe(['s006', 'MARS', 'c00100'])
@@ -722,7 +722,7 @@ def temporary_filename(suffix=''):
 
 
 def test_write_graph_file(cps_subsample):
-    recs = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
     vdf = calc.dataframe(['s006', 'e00200', 'c00100'])
@@ -763,7 +763,7 @@ def test_ce_aftertax_income(cps_subsample):
     cmin = 1000
     assert con == round(certainty_equivalent(con, 0, cmin), 6)
     # test with require_no_agg_tax_change equal to False
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     cyr = 2020
     # specify calc1 and calc_all() for cyr
     pol = Policy()
@@ -838,7 +838,7 @@ def test_table_columns_labels():
 
 def test_dec_graph_plots(cps_subsample):
     pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample, no_benefits=True)
+    rec = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=rec)
     year = 2020
     calc1.advance_to_year(year)

@@ -95,6 +95,7 @@ def fixture_reform_xx():
             '_CTC_new_prt': [0.1],
             '_CTC_new_refund_limited': [True],
             '_CTC_new_refund_limit_payroll_rt': [1],
+            '_ACTC_ChildNum': [1],
             '_ID_BenefitSurtax_trt': [0.1],
             '_ID_BenefitSurtax_crt': [0.1],
             '_UBI_u18': [1000],
@@ -113,12 +114,16 @@ def fixture_reform_xx():
             '_ID_AmountCap_rt': [0.9],
             '_II_brk7': [[1000000, 1000000, 1000000, 1000000, 1000000]],
             '_ID_BenefitCap_rt': [0.3],
-            '_PT_rt7': [.35],
+            '_PT_rt7': [0.35],
             '_II_em': [1000],
-            '_ID_Casualty_hc': [.1],
-            '_ID_Miscellaneous_hc': [.1],
+            '_ID_Casualty_hc': [0.1],
+            '_ID_Miscellaneous_hc': [0.1],
             '_ID_prt': [0.03],
-            '_ID_crt': [0.8]
+            '_ID_crt': [0.8],
+            '_CR_Charity_rt': [0.4],
+            '_CR_Charity_f': [[5000, 5000, 5000, 5000, 5000]],
+            '_CR_Charity_frt': [0.5],
+            '_CR_SchR_hc': [0.5]
         }
     }
     return _reform_xx
@@ -233,7 +238,8 @@ def test_compatible_data(cps_subsample, puf_subsample,
     # These parameters are exempt because they are not active under
     # current law and activating them would deactivate other parameters,
     # or if it is difficult to devise a test for them.
-    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt', '_STD_Dep']
+    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt',
+                           '_ACTC_ChildNum', '_CR_SchR_hc']
 
     # Loop through the parameters in allparams_batch
     errmsg = 'ERROR: {} {}\n'

@@ -24,6 +24,7 @@ from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                ChildDepTaxCredit, AdditionalCTC, CTC_new,
                                PersonalTaxCredit, SchR,
                                AmOppCreditParts, EducationTaxCredit,
+                               CharityCredit,
                                NonrefundableCredits, C1040, IITAX,
                                BenefitSurtax, BenefitLimitation,
                                FairShareTax, LumpSumTax, BenefitPrograms,
@@ -251,6 +252,16 @@ class Calculator(object):
         assert isinstance(variable_value, np.ndarray)
         setattr(self.__records, variable_name, variable_value)
         return None
+
+    def n65(self):
+        """
+        Return numpy ndarray containing the number of
+        individuals age 65+ in each filing unit.
+        """
+        vdf = self.dataframe(['age_head', 'age_spouse', 'elderly_dependents'])
+        return ((vdf['age_head'] >= 65).astype(int) +
+                (vdf['age_spouse'] >= 65).astype(int) +
+                vdf['elderly_dependents'])
 
     def incarray(self, variable_name, variable_add):
         """
@@ -1478,6 +1489,7 @@ class Calculator(object):
         AmOppCreditParts(self.__policy, self.__records)
         SchR(self.__policy, self.__records)
         EducationTaxCredit(self.__policy, self.__records)
+        CharityCredit(self.__policy, self.__records)
         NonrefundableCredits(self.__policy, self.__records)
         AdditionalCTC(self.__policy, self.__records)
         C1040(self.__policy, self.__records)

@@ -24,9 +24,6 @@ def test_incorrect_Records_instantiation(cps_subsample):
     with pytest.raises(ValueError):
         recs = Records(data=cps_subsample, gfactors=None, weights=None,
                        adjust_ratios=list())
-    with pytest.raises(ValueError):
-        recs = Records(data=cps_subsample, gfactors=None, weights=None,
-                       adjust_ratios=None, benefits=list())
 
 
 def test_correct_Records_instantiation(cps_subsample):
@@ -40,15 +37,11 @@ def test_correct_Records_instantiation(cps_subsample):
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
     wghts_path = os.path.join(Records.CUR_PATH, Records.CPS_WEIGHTS_FILENAME)
     wghts_df = pd.read_csv(wghts_path)
-    benefit_path = os.path.join(Records.CUR_PATH,
-                                Records.CPS_BENEFITS_FILENAME)
-    benefit_df = pd.read_csv(benefit_path)
     rec2 = Records(data=cps_subsample,
                    exact_calculations=False,
                    gfactors=GrowFactors(),
                    weights=wghts_df,
                    adjust_ratios=None,
-                   benefits=benefit_df,
                    start_year=Records.CPSCSV_YEAR)
     assert rec2
     assert np.all(rec2.MARS != 0)
