@@ -222,12 +222,16 @@ def postprocess(data_to_process):
                        for col in pdf.columns]
         return pdf
 
+    def year_columns(pdf, year):
+        pdf.columns = [str(year)]
+        return pdf
+
     formatted = {'outputs': [], 'aggr_outputs': []}
     year_getter = itemgetter('year')
     for id, pdfs in data_to_process.items():
         if id.startswith('aggr'):
             pdfs.sort(key=year_getter)
-            tbl = pd.concat((append_year(pd.read_json(i['raw']), i['year'])
+            tbl = pd.concat((year_columns(pd.read_json(i['raw']), i['year'])
                              for i in pdfs), axis='columns')
             tbl.index = pd.Index(RESULTS_TOTAL_ROW_KEY_LABELS[i]
                                  for i in tbl.index)
