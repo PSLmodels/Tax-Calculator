@@ -59,7 +59,7 @@
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [39.3, 41.5, 44.1, 46.8],
                        "Budget Options": [35, 37, 38, 40]},
-      "expected": "Tax-Calculator,39.8,40.8,41.9,43.4"
+      "expected": "Tax-Calculator,39.8,40.8,41.8,43.4"
   },
 
   "7": {
@@ -119,7 +119,7 @@
       "name": "Eliminate adjustment for forfeited interest penalty",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.1,0.1,0.1,0.1"
+      "expected": "Tax-Calculator,0.0,0.1,0.1,0.1"
   },
 
   "13": {
@@ -189,7 +189,7 @@
       "name": "Eliminate interest-paid itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]},
-      "expected": "Tax-Calculator,66.2,70.6,75.6,80.5"
+      "expected": "Tax-Calculator,66.3,70.7,75.6,80.5"
   },
 
   "20": {
@@ -200,7 +200,7 @@
       "name": "Eliminate both real-estate and state-local-tax itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]},
-      "expected": "Tax-Calculator,99.8,105.4,111.1,116.9"
+      "expected": "Tax-Calculator,99.8,105.4,111.2,116.9"
   },
 
   "21": {
@@ -220,7 +220,7 @@
       "name": "Eliminate medical itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [11.0, 12.4, 12.7, 13.9]},
-      "expected": "Tax-Calculator,6.6,7.1,6.2,6.3"
+      "expected": "Tax-Calculator,6.7,7.1,6.2,6.3"
   },
 
   "23": {
@@ -240,7 +240,7 @@
       "name": "Eliminate charity itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [45.6, 47.0, 48.5, 50.1]},
-      "expected": "Tax-Calculator,46.9,49.3,51.6,54.4"
+      "expected": "Tax-Calculator,47.0,49.4,51.6,54.4"
   },
 
   "25": {
@@ -431,7 +431,7 @@
       "name": "Increase AMT rate under the surtax threshold by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,28.2,29.7,31.5,33.0"
+      "expected": "Tax-Calculator,28.2,29.6,31.4,32.8"
   },
 
   "39": {
@@ -441,7 +441,7 @@
       "name": "Increase AMT rate above the surtax threshold by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,8.8,9.2,9.8,10.2"
+      "expected": "Tax-Calculator,8.8,9.1,9.8,10.2"
   },
 
   "40": {
@@ -608,7 +608,7 @@
       "name": "Limit amount of S&L deduction to 2% AGI",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [44.1, 86.6, 87.1, 91.2]},
-      "expected": "Tax-Calculator,87.2,91.6,96.1,100.5"
+      "expected": "Tax-Calculator,87.2,91.6,96.1,100.6"
   },
 
   "56": {
@@ -639,7 +639,7 @@
       "name": "Repeal TCJA chained CPI indexing",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.0,-30.4,-33.7,-38.0"
+      "expected": "Tax-Calculator,0.0,-30.6,-34.0,-38.3"
   },
 
   "59": {
@@ -701,6 +701,6 @@
       "name": "Replace charitable deduction with 30% credit, subject to 0.5% AGI floor",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,0.3,0.4,0.5,0.6"
+      "expected": "Tax-Calculator,-5.0,-5.3,-5.6,-5.9"
   }
 }
