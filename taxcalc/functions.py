@@ -135,10 +135,10 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
     c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
-    earned = max(0., gross_was_p + gross_was_s + sey - c03260)
-    earned_p = max(0., (gross_was_p + sey_p -
+    earned = max(0., e00200p + e00200s + sey - c03260)
+    earned_p = max(0., (e00200p + sey_p -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
-    earned_s = max(0., (gross_was_s + sey_s -
+    earned_s = max(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
             earned, earned_p, earned_s)

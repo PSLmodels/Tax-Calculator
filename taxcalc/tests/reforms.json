@@ -129,7 +129,7 @@
       "name": "Increase personal and dependent exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-32.9,-32.2,-35.2,-36.6"
+      "expected": "Tax-Calculator,-32.9,-32.1,-35.2,-36.6"
   },
 
   "14": {
@@ -461,7 +461,7 @@
       "name": "Eliminate child tax credit",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [57.3, 57.0, 57.1, 56.8]},
-      "expected": "Tax-Calculator,51.7,51.1,50.6,50.1"
+      "expected": "Tax-Calculator,51.6,51.0,50.6,50.1"
   },
 
   "42": {
@@ -491,7 +491,7 @@
       "name": "Total EITC cost",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [70.4, 71.1, 72.2, 69.9]},
-      "expected": "Tax-Calculator,63.7,63.1,63.3,64.8"
+      "expected": "Tax-Calculator,64.5,63.9,64.1,65.6"
   },
 
   "45": {
@@ -501,7 +501,7 @@
       "name": "Increase EITC phaseout rate by 1 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,1.1,1.2,1.2,1.2"
+      "expected": "Tax-Calculator,1.2,1.2,1.2,1.2"
   },
 
   "46": {
@@ -511,7 +511,7 @@
       "name": "Increase EITC phaseout starting AGI by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-2.1,-2.0,-2.3,-2.3"
+      "expected": "Tax-Calculator,-2.1,-2.1,-2.3,-2.3"
   },
 
   "47": {
@@ -521,7 +521,7 @@
       "name": "Increase maximum EITC amount by $100",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-1.9,-1.7,-2.1,-2.1"
+      "expected": "Tax-Calculator,-2.0,-1.7,-2.1,-2.2"
   },
 
   "48": {
@@ -531,7 +531,7 @@
       "name": "Increase additional child tax credit rate by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-0.7,-0.7,-0.6,-0.6"
+      "expected": "Tax-Calculator,-0.7,-0.7,-0.7,-0.6"
   },
 
   "49": {
