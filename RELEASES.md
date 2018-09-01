@@ -18,6 +18,14 @@ for a complete commit history.
   by Martin Holmer], which requires new `puf.csv` input file with this information:
   * Byte size: 55104059
   * MD5 checksum: 9929a03b2d93a628d5057cc17d032e52
+- Incorporate new CPS input data that include different `other_ben` values
+  [[#2055](https://github.com/open-source-economics/Tax-Calculator/pull/2055)
+  by Martin Holmer]
+- Incorporate new PUF input data that include imputed values of pension contributions
+  [[#2056](https://github.com/open-source-economics/Tax-Calculator/pull/2056)
+  by Martin Holmer], which requires new `puf.csv` input file with this information:
+  * Byte size: 56415698
+  * MD5 checksum: a10091a770472254c50f8985d8839162
 
 **Bug Fixes**
 - None
