@@ -6,7 +6,7 @@
       "name": "Increase OASDI payroll tax rate by 1 pts",
       "output_type": "payrolltax",
       "compare_with": {},
-      "expected": "Tax-Calculator,61.9,64.1,67.5,70.6"
+      "expected": "Tax-Calculator,63.5,65.6,69.2,72.3"
   },
 
   "2": {
@@ -16,7 +16,7 @@
       "name": "Increase OASDI maximum taxable earnings to $177,500",
       "output_type": "payrolltax",
       "compare_with": {"Budget Options": [40, 46, 49, 51]},
-      "expected": "Tax-Calculator,48.3,56.5,52.9,55.1"
+      "expected": "Tax-Calculator,54.2,63.3,59.3,61.7"
   },
 
   "3": {
@@ -26,7 +26,7 @@
       "name": "Increase HI payroll tax rate by 1 pts",
       "output_type": "payrolltax",
       "compare_with": {"Budget Options": [73, 77, 82, 87]},
-      "expected": "Tax-Calculator,73.8,76.9,80.4,84.1"
+      "expected": "Tax-Calculator,76.3,79.5,83.1,86.9"
   },
 
   "4": {
@@ -89,7 +89,7 @@
       "name": "Eliminate adjustment for self-employment tax",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,4.0,4.2,4.6,4.8"
+      "expected": "Tax-Calculator,3.9,4.2,4.6,4.8"
   },
 
   "10": {
@@ -431,7 +431,7 @@
       "name": "Increase AMT rate under the surtax threshold by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,28.2,29.6,31.4,32.8"
+      "expected": "Tax-Calculator,28.2,29.6,31.4,32.9"
   },
 
   "39": {
@@ -491,7 +491,7 @@
       "name": "Total EITC cost",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [70.4, 71.1, 72.2, 69.9]},
-      "expected": "Tax-Calculator,64.6,63.9,64.1,65.6"
+      "expected": "Tax-Calculator,64.5,63.9,64.1,65.6"
   },
 
   "45": {
@@ -596,7 +596,7 @@
       "output_type": "iitax",
       "compare_with": {"Tax Foundation": [321, "ten-year(2016-25)",
                                           "static", "estimate"]},
-      "expected": "Tax-Calculator,31.6,32.6,32.8,33.8"
+      "expected": "Tax-Calculator,31.5,32.5,32.8,33.8"
   },
 
   "55": {
@@ -675,7 +675,7 @@
       "name": "CTC new with 15.3% phase in and refund limit to OASDI",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-64.8,-65.2,-65.5,-65.6"
+      "expected": "Tax-Calculator,-64.9,-65.2,-65.6,-65.7"
   },
 
   "62": {

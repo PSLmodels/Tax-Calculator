@@ -85,7 +85,7 @@ def BenefitPrograms(calc):
 
 
 @iterate_jit(nopython=True)
-def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
+def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
                   payrolltax, ptax_was, setax, c03260, ptax_oasdi,
@@ -98,18 +98,22 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     sey_s = e00900s + e02100s + k1bx14s
     sey = sey_p + sey_s  # total self-employment income for filing unit
 
-    # compute taxable earnings for OASDI FICA ('was' denotes 'wage and salary')
+    # compute gross wage and salary income ('was' denotes 'wage and salary')
+    gross_was_p = e00200p + pencon_p
+    gross_was_s = e00200s + pencon_s
+
+    # compute taxable earnings for OASDI FICA
     sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
-    txearn_was_p = min(SS_Earnings_c, e00200p)
-    txearn_was_s = min(SS_Earnings_c, e00200s)
+    txearn_was_p = min(SS_Earnings_c, gross_was_p)
+    txearn_was_s = min(SS_Earnings_c, gross_was_s)
     txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
     txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
-    # compute OASDI and HI payroll taxes on wage-and-salary income
+    # compute OASDI and HI payroll taxes on gross wage-and-salary income
     ptax_ss_was_p = FICA_ss_trt * txearn_was_p
     ptax_ss_was_s = FICA_ss_trt * txearn_was_s
-    ptax_mc_was_p = FICA_mc_trt * e00200p
-    ptax_mc_was_s = FICA_mc_trt * e00200s
+    ptax_mc_was_p = FICA_mc_trt * gross_was_p
+    ptax_mc_was_s = FICA_mc_trt * gross_was_s
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
     # compute self-employment tax on taxable self-employment income
@@ -131,7 +135,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200, e00200p, e00200s,
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
     c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
-    earned = max(0., e00200 + sey - c03260)
+    earned = max(0., e00200p + e00200s + sey - c03260)
     earned_p = max(0., (e00200p + sey_p -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
     earned_s = max(0., (e00200s + sey_s -
@@ -1838,8 +1842,8 @@ def LumpSumTax(DSI, num, XTOT,
 
 
 @iterate_jit(nopython=True)
-def ExpandIncome(e00200, e00300, e00400, e00600, e00700, e00800, e00900,
-                 e01100, e01200, e01400, e01500,
+def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
+                 e00700, e00800, e00900, e01100, e01200, e01400, e01500,
                  e02000, e02100, p22250, p23250,
                  cmbtp, ptax_was, benefit_value_total, ubi,
                  expanded_income):
@@ -1847,7 +1851,9 @@ def ExpandIncome(e00200, e00300, e00400, e00600, e00700, e00800, e00900,
     Calculates expanded_income from component income types.
     """
     expanded_income = (
-        e00200 +  # wage and salary income
+        e00200 +  # wage and salary income net of DC pension contributions
+        pencon_p +  # DC pension contributions for taxpayer
+        pencon_s +  # DC pension contributions for spouse
         e00300 +  # taxable interest income
         e00400 +  # non-taxable interest income
         e00600 +  # dividends

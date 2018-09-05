@@ -1,17 +1,17 @@
 ,description,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027
-c00100,Federal AGI,   57146,   61275,   64523,   65145,   67057,   68776,   70290,   71917,   73743,   75809,   77989,   80311,   82644,   85126,   87699
-c02500,OASDI benefits in AGI,    1449,    1558,    1670,    1715,    1778,    1880,    2017,    2168,    2323,    2490,    2671,    2861,    3057,    3264,    3487
+c00100,Federal AGI,   57146,   61275,   64523,   65146,   67058,   68776,   70290,   71918,   73744,   75810,   77989,   80311,   82644,   85127,   87699
+c02500,OASDI benefits in AGI,    1449,    1558,    1670,    1715,    1778,    1880,    2017,    2167,    2323,    2490,    2671,    2861,    3057,    3264,    3487
 c04470,Post-phase-out itemized deduction,    6617,    6701,    6986,    7198,    7353,    7593,    7849,    8115,    8414,    8733,    9052,    9374,    9680,   10022,   10369
 c04600,Post-phase-out personal exemption,    7299,    7322,    7370,    7419,    7370,    7497,    7633,    7780,    7936,    8105,    8272,    8444,    8616,    8793,    8973
-c04800,Federal regular taxable income,   40091,   44154,   47047,   47423,   49188,   50473,   51517,   52656,   53959,   55475,   57110,   58860,   60632,   62507,   64463
-c05200,Regular tax on taxable income,    8601,    9811,   10624,   10618,   11077,   11352,   11549,   11784,   12064,   12401,   12772,   13171,   13579,   14010,   14461
+c04800,Federal regular taxable income,   40092,   44154,   47047,   47423,   49188,   50474,   51517,   52656,   53960,   55476,   57111,   58861,   60632,   62507,   64463
+c05200,Regular tax on taxable income,    8602,    9811,   10624,   10618,   11077,   11352,   11549,   11784,   12064,   12401,   12772,   13171,   13579,   14010,   14461
 c07180,Child care credit,      18,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19
 c07220,Child tax credit (adjusted),     175,     170,     167,     163,     160,     154,     149,     144,     140,     136,     132,     128,     124,     121,     117
 c09600,Federal AMT liability,     242,     258,     273,     282,     292,     304,     315,     327,     339,     351,     363,     376,     389,     404,     419
 c11070,Extra child tax credit (refunded),     164,     158,     153,     149,     143,     140,     137,     135,     133,     131,     129,     127,     125,     123,     121
-c21040,Itemized deduction that is phased out,     227,     271,     298,     294,     308,     314,     318,     325,     332,     341,     352,     364,     376,     389,     402
+c21040,Itemized deduction that is phased out,     227,     272,     298,     294,     308,     314,     318,     325,     332,     341,     352,     364,     376,     389,     402
 cmbtp,Estimate of income on (AMT) Form 6251 but not in AGI,     414,     432,     452,     463,     475,     493,     510,     529,     547,     564,     584,     603,     622,     646,     670
-e00200,"Wages, salaries, and tips for filing unit",   39911,   41868,   43390,   44520,   45742,   47002,   48110,   49150,   50295,   51606,   52974,   54424,   55876,   57402,   58981
+e00200,"Wages, salaries, and tips for filing unit net of pension contributions",   39911,   41868,   43390,   44519,   45742,   47002,   48110,   49150,   50295,   51606,   52974,   54424,   55876,   57402,   58981
 e00300,Taxable interest income,     601,     558,     551,     547,     559,     574,     607,     653,     708,     756,     797,     832,     861,     892,     923
 e00400,Tax-exempt interest income,     382,     362,     360,     359,     370,     383,     408,     442,     485,     521,     553,     581,     605,     630,     656
 e00600,Ordinary dividends included in AGI,    1325,    1572,    1808,    1775,    1778,    1841,    1892,    1928,    1956,    1985,    2014,    2053,    2095,    2145,    2201
@@ -66,7 +66,7 @@ e87530,Adjusted qualified lifetime learning expenses for all students,     104, 
 eitc,Federal EITC,     412,     408,     405,     395,     387,     390,     393,     398,     403,     408,     412,     417,     422,     427,     432
 elderly_dependents,number of dependents age 65+ in filing unit excluding taxpayer and spouse,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 g20500,Itemizable gross (before 10% AGI disregard) casualty or theft loss,      31,      32,      34,      35,      36,      38,      39,      40,      41,      43,      44,      45,      47,      48,      49
-iitax,Federal income tax liability,    7365,    8416,    9085,    9195,    9625,    9902,   10120,   10359,   10637,   10968,   11333,   11721,   12120,   12541,   12981
+iitax,Federal income tax liability,    7365,    8416,    9085,    9195,    9625,    9902,   10121,   10359,   10637,   10968,   11333,   11722,   12120,   12541,   12981
 k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -243,    -269,    -269,    -256,    -256,    -249,    -247,    -249,    -253,    -259,    -270,    -278,    -290,    -297,    -308
 k1bx14s,Partner self-employment earnings/loss for spouse (included in e26270 total),      -9,      -9,      -9,      -7,      -7,      -6,      -5,      -5,      -5,      -5,      -6,      -5,      -6,      -6,      -6
 nu05,Number of dependents under 5 years old,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
@@ -74,4 +74,6 @@ nu13,Number of dependents under 13 years old,       0,       0,       0,       0
 p08000,Other tax credits (but not including Sch R credit),       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1
 p22250,Sch D: Net short-term capital gains/losses,    -135,    -193,    -248,    -227,    -249,    -261,    -262,    -273,    -279,    -292,    -302,    -311,    -323,    -336,    -352
 p23250,Sch D: Net long-term capital gains/losses,    2567,    3591,    4523,    3990,    4345,    4416,    4352,    4404,    4480,    4580,    4684,    4800,    4920,    5050,    5186
-payrolltax,Payroll taxes (ee+er) for OASDI+HI,    5685,    5898,    6085,    6213,    6420,    6597,    6760,    6909,    7069,    7252,    7445,    7650,    7856,    8073,    8297
+payrolltax,Payroll taxes (ee+er) for OASDI+HI,    5842,    6060,    6250,    6378,    6593,    6776,    6943,    7097,    7261,    7449,    7647,    7858,    8069,    8292,    8522
+pencon_p,Contributions to defined-contribution pension plans for taxpayer,     976,    1025,    1063,    1093,    1122,    1153,    1181,    1207,    1236,    1270,    1304,    1339,    1376,    1415,    1455
+pencon_s,Contributions to defined-contribution pension plans for spouse,     430,     448,     464,     475,     489,     503,     514,     524,     536,     549,     563,     579,     594,     609,     625

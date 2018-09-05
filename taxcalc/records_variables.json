@@ -82,20 +82,32 @@
     },
     "e00200": {
       "type": "float",
-      "desc": "Wages, salaries, and tips for filing unit",
+      "desc": "Wages, salaries, and tips for filing unit net of pension contributions",
       "form": {"2013-2016": "1040 line 7"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e00200p": {
       "type": "float",
-      "desc": "Wages, salaries, and tips for taxpayer",
+      "desc": "Wages, salaries, and tips for taxpayer net of pension contributions (pencon_p)",
       "form": {"2013-2016": "1040 line 7 component"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e00200s": {
       "type": "float",
-      "desc": "Wages, salaries, and tips for spouse",
+      "desc": "Wages, salaries, and tips for spouse net of pension contributions (pencon_s)",
       "form": {"2013-2016": "1040 line 7 component"},
+      "availability": "taxdata_puf, taxdata_cps"
+    },
+    "pencon_p": {
+      "type": "float",
+      "desc": "Contributions to defined-contribution pension plans for taxpayer",
+      "form": {"2013-2016": "Imputed using IRS tabulations of Form W-2 sample"},
+      "availability": "taxdata_puf, taxdata_cps"
+    },
+    "pencon_s": {
+      "type": "float",
+      "desc": "Contributions to defined-contribution pension plans for spouse",
+      "form": {"2013-2016": "Imputed using IRS tabulations of Form W-2 sample"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "e00300": {
