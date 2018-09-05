@@ -102,13 +102,13 @@
       "type": "float",
       "desc": "Contributions to defined-contribution pension plans for taxpayer",
       "form": {"2013-2016": "Imputed using IRS tabulations of Form W-2 sample"},
-      "availability": "taxdata_puf"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "pencon_s": {
       "type": "float",
       "desc": "Contributions to defined-contribution pension plans for spouse",
       "form": {"2013-2016": "Imputed using IRS tabulations of Form W-2 sample"},
-      "availability": "taxdata_puf"
+      "availability": "taxdata_puf, taxdata_cps"
     },
     "e00300": {
       "type": "float",
