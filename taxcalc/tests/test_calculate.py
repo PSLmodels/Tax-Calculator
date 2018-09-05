@@ -807,6 +807,7 @@ def test_read_json_param_with_suffixes_and_errors():
             u'_FICA_ss_trt': {u'2017': [-1.0], u'2019': [0.1]},
             u'_II_brk4_headhousehold': {u'2017': [500.0]},
             u'_STD_headhousehold': {u'2017': [10000.0], u'2020': [150.0]},
+            u'_ID_Medical_frt': {u'2019': [0.06]},
             u'_II_brk4_joint': {u'2017': [500.0]},
             u'_ID_BenefitSurtax_Switch_medical': {u'2017': [True]}
         }

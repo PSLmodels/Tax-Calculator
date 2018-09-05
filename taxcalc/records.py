@@ -318,6 +318,8 @@ class Records(object):
         self.e00200 *= AWAGE
         self.e00200p *= AWAGE
         self.e00200s *= AWAGE
+        self.pencon_p *= AWAGE
+        self.pencon_s *= AWAGE
         self.e00300 *= AINTS
         self.e00400 *= AINTS
         self.e00600 *= ADIVS

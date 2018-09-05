@@ -505,8 +505,6 @@ class Policy(ParametersBase):
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches
         # pylint: disable=too-many-nested-blocks
-        rounding_error = 100.0
-        # above handles non-rounding of inflation-indexed parameter values
         parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
         for pname in parameters:
@@ -515,17 +513,7 @@ class Policy(ParametersBase):
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
                 if isinstance(vval, six.string_types):
-                    if vval == 'default':
-                        vvalue = Policy._default_value(pname)
-                        if vop == 'min':
-                            vvalue -= rounding_error
-                        # the follow branch can never be reached, so it
-                        # is commented out because it can never be tested
-                        # (see test_range_infomation in test_policy.py)
-                        # --> elif vop == 'max':
-                        # -->    vvalue += rounding_error
-                    else:
-                        vvalue = getattr(self, vval)
+                    vvalue = getattr(self, vval)
                 else:
                     vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
@@ -569,38 +557,3 @@ class Policy(ParametersBase):
                                                        vvalue[idx]) + '\n'
                             )
         del parameters
-
-    @staticmethod
-    def _default_value(pname):
-        """
-        Return "default" values for specified parameter's warning logic.
-
-        The "default" values are indexed 2013 values for each year 2013+.
-        Only if users of PUF data try to specify a lower value than these
-        "default" values will they get a warning message.  This is all
-        necessary because, at the moment, PUF data do not contain positive
-        itemizable expense amounts for non-itemizers, which means lowering
-        the standard deduction parameters below their indexed 2013 value
-        will produce unexpected results.
-        """
-        assert pname == '_STD' or pname == '_STD_Dep'
-        clp = Policy()
-        irates = clp.inflation_rates()
-        if pname == '_STD':
-            dval = getattr(clp, '_STD')[0]
-        elif pname == '_STD_Dep':
-            dval = getattr(clp, '_STD_Dep')[0]
-        dvalues = list()
-        dvalues.append(dval.round())
-        for year in range(clp.start_year, clp.end_year):
-            inflation_factor = 1.0 + irates[year - clp.start_year]
-            dval *= inflation_factor  # value for year+1
-            dvalues.append(dval.round())
-        if pname == '_STD':
-            np_dvalues = np.vstack(dvalues)
-        elif pname == '_STD_Dep':
-            np_dvalues = np.asarray(dvalues)
-        del clp
-        del irates
-        del dvalues
-        return np_dvalues
