@@ -4,6 +4,33 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-09-06 Release 0.20.3
+-------------------------
+(last merged pull request is
+[#2056](https://github.com/open-source-economics/Tax-Calculator/pull/2056))
+
+**API Changes**
+- None
+
+**New Features**
+- Incorporate new PUF input data that include imputed values of itemizeable expenses for non-itemizers
+  [[#2052](https://github.com/open-source-economics/Tax-Calculator/pull/2052)
+  by Martin Holmer], which requires new `puf.csv` input file with this information:
+  * Byte size: 55104059
+  * MD5 checksum: 9929a03b2d93a628d5057cc17d032e52
+- Incorporate new CPS input data that include different `other_ben` values
+  [[#2055](https://github.com/open-source-economics/Tax-Calculator/pull/2055)
+  by Martin Holmer]
+- Incorporate new PUF input data that include imputed values of pension contributions
+  [[#2056](https://github.com/open-source-economics/Tax-Calculator/pull/2056)
+  by Martin Holmer], which requires new `puf.csv` input file with this information:
+  * Byte size: 56415698
+  * MD5 checksum: a10091a770472254c50f8985d8839162
+
+**Bug Fixes**
+- None
+
+
 2018-08-10 Release 0.20.2
 -------------------------
 (last merged pull request is
