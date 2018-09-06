@@ -4,16 +4,16 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-??-?? Release 0.20.3
+2018-09-07 Release 0.20.3
 -------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#2056](https://github.com/open-source-economics/Tax-Calculator/pull/2056))
 
 **API Changes**
 - None
 
 **New Features**
-- Incorporate new PUF input data that include imputed values of itemized expenses for non-itemizers
+- Incorporate new PUF input data that include imputed values of itemizeable expenses for non-itemizers
   [[#2052](https://github.com/open-source-economics/Tax-Calculator/pull/2052)
   by Martin Holmer], which requires new `puf.csv` input file with this information:
   * Byte size: 55104059
