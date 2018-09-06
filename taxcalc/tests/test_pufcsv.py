@@ -58,11 +58,7 @@ def test_agg(tests_path, puf_fullsample):
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     expect = expected_results.splitlines(True)
     # ensure actual and expect lines have differences no more than small value
-    if sys.version_info.major == 2:
-        small = 0.0  # tighter test for Python 2.7
-    else:
-        small = 0.1  # looser test for Python 3.6
-    diffs = nonsmall_diffs(actual, expect, small)
+    diffs = nonsmall_diffs(actual, expect)
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
