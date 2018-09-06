@@ -254,8 +254,6 @@ def differences(afilename, efilename):
         os.remove(afilename)
 
 
-@pytest.mark.skipif(sys.version_info > (3, 0),
-                    reason='remove skipif after migration to Python 3.6')
 @pytest.mark.pre_release
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('using_puf', [True, False])

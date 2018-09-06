@@ -118,8 +118,6 @@ def test_cps_availability(tests_path, cps_path):
     assert (recvars - cpsvars) == set()
 
 
-@pytest.mark.skipif(sys.version_info > (3, 0),
-                    reason='remove skipif after migration to Python 3.6')
 def test_run_taxcalc_model(tests_path):
     """
     Test tbi.run_nth_year_taxcalc_model function using CPS data.
