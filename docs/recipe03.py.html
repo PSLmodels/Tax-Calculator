@@ -1,5 +1,4 @@
 <title>recipe03.py</title><pre>
-from __future__ import print_function  # necessary only if using Python 2.7
 from taxcalc import *
 
 # use publicly-available CPS input file
@@ -38,7 +37,8 @@ for gname, grp in gbydf:
         avg = amount / recips
     else:
         avg = np.nan
-    print(results.format(gname, recips, avg))
+    glabel = '[{:.8g}, {:.8g})'.format(gname.left, gname.right)
+    print(results.format(glabel, recips, avg))
     idx += 1
 avg = tot_amount / tot_recips
 print(results.format('ALL', tot_recips, avg))
