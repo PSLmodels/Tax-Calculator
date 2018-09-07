@@ -9,7 +9,6 @@ plug-in pytest-xdist is able to run all parametrized functions in parallel
 # pycodestyle test_compatible_data.py
 # pylint --disable=locally-disabled test_compatible_data.py
 
-from __future__ import print_function
 import copy
 import pytest
 import numpy as np

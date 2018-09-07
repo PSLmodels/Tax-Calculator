@@ -10,7 +10,6 @@ from __future__ import print_function
 from datetime import datetime
 import os
 import glob
-import string
 import subprocess
 import difflib
 
@@ -23,7 +22,7 @@ RECIPES = glob.glob('./recipe[0-9][0-9].py')
 
 # execute each recipe in RECIPES list and compare output with expected output
 for recipe in RECIPES:
-    out_filename = string.replace(recipe, '.py', '.out')
+    out_filename = recipe.replace('.py', '.out')
     if os.path.isfile(out_filename):
         os.remove(out_filename)
     try:
@@ -31,7 +30,7 @@ for recipe in RECIPES:
     except subprocess.CalledProcessError as err:
         print('{} FAIL with error rtncode={}'.format(recipe, err.returncode))
         continue  # to next recipe
-    with open(string.replace(recipe, '.py', '.res'), 'r') as resfile:
+    with open(recipe.replace('.py', '.res'), 'r') as resfile:
         exp = resfile.read()
     # check for differences between out and exp results
     actual = out.splitlines(True)
@@ -44,7 +43,7 @@ for recipe in RECIPES:
     # write actual output to file if any differences; else report PASS
     if diff_lines:
         print('{} FAIL with output differences'.format(recipe))
-        outfilename = string.replace(recipe, '.py', '.out')
+        outfilename = recipe.replace('.py', '.out')
         with open(outfilename, 'w') as outfile:
             outfile.write(out)
     else:

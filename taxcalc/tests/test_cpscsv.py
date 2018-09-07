@@ -12,7 +12,6 @@ Read Tax-Calculator/TESTING.md for details.
 # pycodestyle test_cpscsv.py
 # pylint --disable=locally-disabled test_cpscsv.py
 
-from __future__ import print_function
 import os
 import json
 import numpy as np

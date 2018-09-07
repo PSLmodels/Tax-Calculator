@@ -7,7 +7,6 @@ Tax-Calculator federal tax Calculator class.
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
-from __future__ import print_function
 import os
 import sys
 import json

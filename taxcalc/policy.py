@@ -5,7 +5,6 @@ Tax-Calculator federal tax policy Policy class.
 # pycodestyle policy.py
 # pylint --disable=locally-disabled policy.py
 
-from __future__ import print_function
 import six
 import numpy as np
 from taxcalc.parameters import ParametersBase

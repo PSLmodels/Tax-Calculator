@@ -12,7 +12,6 @@ then, assuming all recipies PASS, execute this script as follows:
 from __future__ import print_function
 import os
 import glob
-import string
 import shutil
 
 
@@ -22,7 +21,7 @@ def write_html_file(filename):
     """
     with open(filename, 'r') as ifile:
         txt = ifile.read()
-    fname = string.replace(filename, 'ingredients/', '')
+    fname = filename.replace('ingredients/', '')
     html = '<title>{}</title><pre>\n{}</pre>\n'.format(fname, txt)
     ofilename = '../{}.html'.format(fname)
     with open(ofilename, 'w') as ofile:
@@ -34,7 +33,7 @@ RECIPES = glob.glob('recipe[0-9][0-9].py')
 
 # construct HTML files for each recipe in RECIPES list
 for recipe in RECIPES:
-    recipe_root = string.replace(recipe, '.py', '')
+    recipe_root = recipe.replace('.py', '')
     write_html_file('{}.{}'.format(recipe_root, 'py'))
     write_html_file('{}.{}'.format(recipe_root, 'res'))
     graph = '{}.graph.html'.format(recipe_root)

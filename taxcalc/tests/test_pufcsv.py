@@ -15,7 +15,6 @@ Read Tax-Calculator/TESTING.md for details.
 # pycodestyle test_pufcsv.py
 # pylint --disable=locally-disabled test_pufcsv.py
 
-from __future__ import print_function
 import os
 import json
 import pytest

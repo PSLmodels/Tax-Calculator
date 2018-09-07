@@ -5,12 +5,9 @@ Compares Tax-Calculator PUF and CPS results with historical information.
 # pycodestyle test_compare.py
 # pylint --disable=locally-disabled test_compare.py
 
-from __future__ import print_function
 import os
-import sys
 import pytest
 import numpy as np
-import pandas as pd
 # pylint: disable=import-error,pointless-string-statement
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 from taxcalc import add_income_table_row_variable, SOI_AGI_BINS

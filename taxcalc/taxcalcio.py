@@ -5,7 +5,6 @@ Tax-Calculator Input-Output class.
 # pycodestyle taxcalcio.py
 # pylint --disable=locally-disabled taxcalcio.py
 
-from __future__ import print_function
 import os
 import gc
 import copy

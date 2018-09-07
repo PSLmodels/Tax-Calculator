@@ -328,6 +328,7 @@ def create_distribution_table(vdf, groupby, income_measure):
         topdec_row = get_sums(dist_table[11:lenindex])[dist_table.columns]
         # move top-decile detail rows to make room for topdec_row and sum_row
         dist_table = dist_table.reindex(index=range(0, lenindex + 2))
+        # pylint: disable=no-member
         dist_table.iloc[15] = dist_table.iloc[13]
         dist_table.iloc[14] = dist_table.iloc[12]
         dist_table.iloc[13] = dist_table.iloc[11]
@@ -461,6 +462,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
         topdec_row = get_sums(diff_table[11:lenindex])[diff_table.columns]
         # move top-decile detail rows to make room for topdec_row and sum_row
         diff_table = diff_table.reindex(index=range(0, lenindex + 2))
+        # pylint: disable=no-member
         diff_table.iloc[15] = diff_table.iloc[13]
         diff_table.iloc[14] = diff_table.iloc[12]
         diff_table.iloc[13] = diff_table.iloc[11]
