@@ -10,6 +10,7 @@ import os
 import sys
 import pytest
 import numpy as np
+import pandas as pd
 # pylint: disable=import-error,pointless-string-statement
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 from taxcalc import add_income_table_row_variable, SOI_AGI_BINS
@@ -223,7 +224,8 @@ def comparison(cname, calc, cmpdata, ofile):
             pct_diff = 100. * ((txc / soi) - 1.)
         else:
             pct_diff = np.nan
-        ofile.write(results.format(gname, txc, soi, pct_diff))
+        grplabel = '[{:.8g}, {:.8g})'.format(gname.left, gname.right)
+        ofile.write(results.format(grplabel, txc, soi, pct_diff))
         idx += 1
     pct_diff = 100. * ((txc_tot / soi_tot) - 1.)
     ofile.write(results.format('ALL', txc_tot, soi_tot, pct_diff))
