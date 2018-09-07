@@ -147,6 +147,7 @@ class SimpleTaxIO(object):
             empty string if OUTPUT lines are written to a file;
             otherwise output_lines contain all OUTPUT lines
         """
+        # pylint: disable=too-many-locals
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
         for calcyr in self._year_set:

@@ -14,9 +14,7 @@ Read Tax-Calculator/TESTING.md for details.
 
 from __future__ import print_function
 import os
-import sys
 import json
-import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error

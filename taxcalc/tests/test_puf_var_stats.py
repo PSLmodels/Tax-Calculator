@@ -6,7 +6,6 @@ Test generates statistics for puf.csv variables.
 # pylint --disable=locally-disabled test_puf_var_stats.py
 
 import os
-import sys
 import json
 import copy
 import numpy as np

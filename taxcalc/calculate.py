@@ -1519,6 +1519,7 @@ class Calculator(object):
         string parameters as secondary keys.  This returned dictionary is
         suitable as the argument to the Policy implement_reform(prdict) method.
         """
+        # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
