@@ -1,15 +1,7 @@
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2014.
-WARNING: Tax-Calculator packages for Python 2.7 will
-         no longer be provided beginning in 2019
-         because Pandas is stopping development for 2.7
-SOLUTION: upgrade to Python 3.6 now
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2014.
-WARNING: Tax-Calculator packages for Python 2.7 will
-         no longer be provided beginning in 2019
-         because Pandas is stopping development for 2.7
-SOLUTION: upgrade to Python 3.6 now
 
 REFORM DOCUMENTATION
 Baseline Growth-Difference Assumption Values by Year:
