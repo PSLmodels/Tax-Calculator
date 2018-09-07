@@ -7,10 +7,10 @@ the functions.py module.
 # pylint --disable=locally-disabled decorators.py
 
 import sys
+import io
 import ast
 import inspect
 import toolz
-from six import StringIO
 from taxcalc.policy import Policy
 
 
@@ -84,7 +84,7 @@ def create_apply_function_string(sigout, sigin, parameters):
     -------
     a String representing the function
     """
-    fstr = StringIO()
+    fstr = io.StringIO()
     total_len = len(sigout) + len(sigin)
     out_args = ["x_" + str(i) for i in range(0, len(sigout))]
     in_args = ["x_" + str(i) for i in range(len(sigout), total_len)]
@@ -122,7 +122,7 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     -------
     a String representing the function
     """
-    fstr = StringIO()
+    fstr = io.StringIO()
     fstr.write("def hl_func(pm, pf")
     fstr.write("):\n")
     fstr.write("    from pandas import DataFrame\n")

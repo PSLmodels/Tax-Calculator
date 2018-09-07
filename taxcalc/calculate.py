@@ -12,7 +12,7 @@ import sys
 import json
 import re
 import copy
-import six
+
 import numpy as np
 import pandas as pd
 from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
@@ -1133,7 +1133,7 @@ class Calculator(object):
     def read_json_param_objects(reform, assump):
         """
         Read JSON reform and assump objects and
-        return a single dictionary containing six key:dict pairs:
+        return a single dictionary containing 6 key:dict pairs:
         'policy':dict, 'consumption':dict, 'behavior':dict,
         'growdiff_baseline':dict, 'growdiff_response':dict, and
         'growmodel':dict.
@@ -1168,7 +1168,7 @@ class Calculator(object):
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
             growmodel_dict = dict()
-        elif isinstance(assump, six.string_types):
+        elif isinstance(assump, str):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
             else:
@@ -1183,7 +1183,7 @@ class Calculator(object):
         # next process first reform parameter
         if reform is None:
             rpol_dict = dict()
-        elif isinstance(reform, six.string_types):
+        elif isinstance(reform, str):
             if os.path.isfile(reform):
                 txt = open(reform, 'r').read()
             else:
@@ -1653,7 +1653,7 @@ class Calculator(object):
         # optionally convert lists into np.arrays
         year_param = dict()
         for pkey, sdict in param_key_dict.items():
-            if not isinstance(pkey, six.string_types):
+            if not isinstance(pkey, str):
                 msg = 'pkey {} in reform is not a string'
                 raise ValueError(msg.format(pkey))
             rdict = dict()
@@ -1661,7 +1661,7 @@ class Calculator(object):
                 msg = 'pkey {} in reform is not paired with a dict'
                 raise ValueError(msg.format(pkey))
             for skey, val in sdict.items():
-                if not isinstance(skey, six.string_types):
+                if not isinstance(skey, str):
                     msg = 'skey {} in reform is not a string'
                     raise ValueError(msg.format(skey))
                 else:

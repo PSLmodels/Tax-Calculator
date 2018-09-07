@@ -8,7 +8,6 @@ Tests for Tax-Calculator functions.py logic.
 import os
 import re
 import ast
-import six
 from taxcalc import Records  # pylint: disable=import-error
 
 
@@ -35,10 +34,7 @@ class GetFuncDefs(ast.NodeVisitor):
         self.fnames.append(self.fname)
         self.fargs[self.fname] = list()
         for anode in ast.iter_child_nodes(node.args):
-            if six.PY3:
-                self.fargs[self.fname].append(anode.arg)
-            else:  # in Python 2 anode is a Name node
-                self.fargs[self.fname].append(anode.id)
+            self.fargs[self.fname].append(anode.arg)
         self.cvars[self.fname] = list()
         for bodynode in node.body:
             if isinstance(bodynode, ast.Return):

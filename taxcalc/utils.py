@@ -12,7 +12,6 @@ import math
 import json
 import collections
 import pkg_resources
-import six
 import numpy as np
 import pandas as pd
 import bokeh.io as bio
@@ -735,7 +734,7 @@ def mtr_graph_data(vdf, year,
                '"wages", "agi", nor "expanded_income"')
         raise ValueError(msg.format(income_measure))
     # . . check mars value
-    if isinstance(mars, six.string_types):
+    if isinstance(mars, str):
         if mars != 'ALL':
             msg = 'string value of mars="{}" is not "ALL"'
             raise ValueError(msg.format(mars))
@@ -843,7 +842,7 @@ def atr_graph_data(vdf, year,
     # pylint: disable=too-many-locals,too-many-statements
     # check validity of function arguments
     # . . check mars value
-    if isinstance(mars, six.string_types):
+    if isinstance(mars, str):
         if mars != 'ALL':
             msg = 'string value of mars="{}" is not "ALL"'
             raise ValueError(msg.format(mars))

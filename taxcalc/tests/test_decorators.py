@@ -3,7 +3,7 @@
 
 import sys
 import pytest
-from six.moves import reload_module
+import importlib
 import numpy as np
 from pandas import DataFrame
 from taxcalc.decorators import *
@@ -317,7 +317,7 @@ def test_force_no_numba():
     nmba = sys.modules.get('numba', None)
     sys.modules.update([('numba', mck)])
     # Reload the decorators with faked out numba
-    reload_module(taxcalc.decorators)
+    importlib.reload(taxcalc.decorators)
     # Get access to iterate_jit and force to jit
     ij = taxcalc.decorators.iterate_jit
     taxcalc.decorators.DO_JIT = True

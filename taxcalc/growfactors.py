@@ -6,7 +6,6 @@ Tax-Calculator GrowFactors class.
 # pylint --disable=locally-disabled growfactors.py
 
 import os
-import six
 import numpy as np
 import pandas as pd
 from taxcalc.utils import read_egg_csv
@@ -53,7 +52,7 @@ class GrowFactors(object):
     def __init__(self, growfactors_filename=FILE_PATH):
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
-        if isinstance(growfactors_filename, six.string_types):
+        if isinstance(growfactors_filename, str):
             if os.path.isfile(growfactors_filename):
                 gfdf = pd.read_csv(growfactors_filename,
                                    index_col='YEAR')
