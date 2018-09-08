@@ -6,7 +6,6 @@ the functions.py module.
 # pycodestyle decorators.py
 # pylint --disable=locally-disabled decorators.py
 
-import sys
 import io
 import ast
 import inspect
@@ -206,11 +205,7 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
         """
         make_wrapper function nested in apply_jit function.
         """
-        if sys.version_info[0] < 3:
-            # pylint: disable=deprecated-method
-            theargs = inspect.getargspec(func).args
-        else:
-            theargs = inspect.getfullargspec(func).args
+        theargs = inspect.getfullargspec(func).args
         jitted_apply = make_apply_function(func, dtype_sig_out,
                                            dtype_sig_in, parameters, **kwargs)
 
@@ -253,17 +248,9 @@ def iterate_jit(parameters=None, **kwargs):
         wraps specified func using apply_jit.
         """
         # Get the input arguments from the function
-        if sys.version_info[0] < 3:
-            # pylint: disable=deprecated-method
-            in_args = inspect.getargspec(func).args
-        else:
-            in_args = inspect.getfullargspec(func).args
+        in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
-        if sys.version_info[0] < 3:
-            # pylint: disable=deprecated-method
-            jit_args = inspect.getargspec(jit).args + ['nopython']
-        else:
-            jit_args = inspect.getfullargspec(jit).args + ['nopython']
+        jit_args = inspect.getfullargspec(jit).args + ['nopython']
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
         # Any name that is a parameter
