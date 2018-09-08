@@ -4,8 +4,25 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-09-06 Release 0.20.3
--------------------------
+2018-09-?? Release 0.21.0 : FIRST RELEASE COMPATIBLE ONLY WITH PYTHON 3.6
+-------------------------------------------------------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Require Python 3.6 to run Tax-Calculator source code or conda package
+  [[#2058](https://github.com/open-source-economics/Tax-Calculator/pull/2058)
+  by Martin Holmer]
+
+**New Features**
+- None
+
+**Bug Fixes**
+- None
+
+
+2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7
+-------------------------------------------------------------------
 (last merged pull request is
 [#2056](https://github.com/open-source-economics/Tax-Calculator/pull/2056))
 
