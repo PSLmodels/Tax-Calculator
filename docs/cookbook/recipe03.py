@@ -27,7 +27,7 @@ print(colhead.format('AGI Category', 'Num(#M)', 'Avg($K)'))
 tot_recips = 0.
 tot_amount = 0.
 idx = 0
-for gname, grp in gbydf:
+for grp_interval, grp in gbydf:
     recips = grp[grp['eitc'] > 0]['s006'].sum() * 1e-6
     tot_recips += recips
     amount = (grp['eitc'] * grp['s006']).sum() * 1e-9
@@ -36,7 +36,7 @@ for gname, grp in gbydf:
         avg = amount / recips
     else:
         avg = np.nan
-    glabel = '[{:.8g}, {:.8g})'.format(gname.left, gname.right)
+    glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left, grp_interval.right)
     print(results.format(glabel, recips, avg))
     idx += 1
 avg = tot_amount / tot_recips

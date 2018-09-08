@@ -212,7 +212,7 @@ def comparison(cname, calc, cmpdata, ofile):
     txc_tot = 0.
     soi_tot = 0.
     idx = 0
-    for gname, grp in gbydf:
+    for grp_interval, grp in gbydf:
         txc = (grp['cvar'] * grp['s006']).sum() * 1e-9
         soi = cmpdata[cname]['SOI'][idx]
         txc_tot += txc
@@ -221,8 +221,9 @@ def comparison(cname, calc, cmpdata, ofile):
             pct_diff = 100. * ((txc / soi) - 1.)
         else:
             pct_diff = np.nan
-        grplabel = '[{:.8g}, {:.8g})'.format(gname.left, gname.right)
-        ofile.write(results.format(grplabel, txc, soi, pct_diff))
+        glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left,
+                                           grp_interval.right)
+        ofile.write(results.format(glabel, txc, soi, pct_diff))
         idx += 1
     pct_diff = 100. * ((txc_tot / soi_tot) - 1.)
     ofile.write(results.format('ALL', txc_tot, soi_tot, pct_diff))
