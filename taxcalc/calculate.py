@@ -11,7 +11,6 @@ import os
 import json
 import re
 import copy
-
 import numpy as np
 import pandas as pd
 from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
