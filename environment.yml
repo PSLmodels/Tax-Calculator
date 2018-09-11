@@ -6,10 +6,10 @@ dependencies:
 - bokeh >=0.12.3
 - numba
 - toolz
+- pytest
+- pytest-pep8
+- pytest-xdist
 - mock
-- pep8
 - pycodestyle
 - pylint
 - coverage
-- pytest-pep8
-- pytest-xdist
