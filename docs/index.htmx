@@ -40,6 +40,11 @@ ensure you are viewing the most recent version of this page rather
 than an older version that your browser has saved in its cache of
 previously visited pages.</i></p>
 
+<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-09-11-release-0210">Code changes so works only with
+Python 3.6 plus minor PUF data change</a> are available in Tax-Calculator
+release 0.21.0 and higher.  <b>Note that release 0.21.0 is the first
+release that is compatible with only Python 3.6.</b>
+
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-09-06-release-0203">Both CPS and PUF data improvements</a>
 are available in Tax-Calculator release 0.20.3 and higher.
 <b>Note that release 0.20.3 is the last release that will be compatible
