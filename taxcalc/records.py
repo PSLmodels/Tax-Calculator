@@ -7,7 +7,6 @@ Tax-Calculator tax-filing-unit Records class.
 
 import os
 import json
-import six
 import numpy as np
 import pandas as pd
 from taxcalc.growfactors import GrowFactors
@@ -423,7 +422,7 @@ class Records(object):
         # read specified data
         if isinstance(data, pd.DataFrame):
             taxdf = data
-        elif isinstance(data, six.string_types):
+        elif isinstance(data, str):
             if os.path.isfile(data):
                 taxdf = pd.read_csv(data)
             else:
@@ -503,7 +502,7 @@ class Records(object):
             return
         if isinstance(weights, pd.DataFrame):
             WT = weights
-        elif isinstance(weights, six.string_types):
+        elif isinstance(weights, str):
             weights_path = os.path.join(Records.CUR_PATH, weights)
             if os.path.isfile(weights_path):
                 WT = pd.read_csv(weights_path)
@@ -526,7 +525,7 @@ class Records(object):
         if ratios is None:
             setattr(self, 'ADJ', pd.DataFrame({'nothing': []}))
             return
-        if isinstance(ratios, six.string_types):
+        if isinstance(ratios, str):
             ratios_path = os.path.join(Records.CUR_PATH, ratios)
             if os.path.isfile(ratios_path):
                 ADJ = pd.read_csv(ratios_path,

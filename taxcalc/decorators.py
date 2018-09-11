@@ -6,10 +6,10 @@ the functions.py module.
 # pycodestyle decorators.py
 # pylint --disable=locally-disabled decorators.py
 
+import io
 import ast
 import inspect
 import toolz
-from six import StringIO
 from taxcalc.policy import Policy
 
 
@@ -83,7 +83,7 @@ def create_apply_function_string(sigout, sigin, parameters):
     -------
     a String representing the function
     """
-    fstr = StringIO()
+    fstr = io.StringIO()
     total_len = len(sigout) + len(sigin)
     out_args = ["x_" + str(i) for i in range(0, len(sigout))]
     in_args = ["x_" + str(i) for i in range(len(sigout), total_len)]
@@ -121,7 +121,7 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     -------
     a String representing the function
     """
-    fstr = StringIO()
+    fstr = io.StringIO()
     fstr.write("def hl_func(pm, pf")
     fstr.write("):\n")
     fstr.write("    from pandas import DataFrame\n")
@@ -205,7 +205,7 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
         """
         make_wrapper function nested in apply_jit function.
         """
-        theargs = inspect.getargspec(func).args
+        theargs = inspect.getfullargspec(func).args
         jitted_apply = make_apply_function(func, dtype_sig_out,
                                            dtype_sig_in, parameters, **kwargs)
 
@@ -248,9 +248,9 @@ def iterate_jit(parameters=None, **kwargs):
         wraps specified func using apply_jit.
         """
         # Get the input arguments from the function
-        in_args = inspect.getargspec(func).args
+        in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
-        jit_args = inspect.getargspec(jit).args + ['nopython']
+        jit_args = inspect.getfullargspec(jit).args + ['nopython']
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
         # Any name that is a parameter

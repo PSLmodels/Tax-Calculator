@@ -14,7 +14,6 @@ tax results.
 # pycodestyle tbi.py
 # pylint --disable=locally-disabled tbi.py
 
-from __future__ import print_function
 import time
 import numpy as np
 import pandas as pd

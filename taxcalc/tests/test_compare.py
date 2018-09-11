@@ -5,9 +5,7 @@ Compares Tax-Calculator PUF and CPS results with historical information.
 # pycodestyle test_compare.py
 # pylint --disable=locally-disabled test_compare.py
 
-from __future__ import print_function
 import os
-import sys
 import pytest
 import numpy as np
 # pylint: disable=import-error,pointless-string-statement
@@ -214,7 +212,7 @@ def comparison(cname, calc, cmpdata, ofile):
     txc_tot = 0.
     soi_tot = 0.
     idx = 0
-    for gname, grp in gbydf:
+    for grp_interval, grp in gbydf:
         txc = (grp['cvar'] * grp['s006']).sum() * 1e-9
         soi = cmpdata[cname]['SOI'][idx]
         txc_tot += txc
@@ -223,7 +221,9 @@ def comparison(cname, calc, cmpdata, ofile):
             pct_diff = 100. * ((txc / soi) - 1.)
         else:
             pct_diff = np.nan
-        ofile.write(results.format(gname, txc, soi, pct_diff))
+        glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left,
+                                           grp_interval.right)
+        ofile.write(results.format(glabel, txc, soi, pct_diff))
         idx += 1
     pct_diff = 100. * ((txc_tot / soi_tot) - 1.)
     ofile.write(results.format('ALL', txc_tot, soi_tot, pct_diff))
@@ -254,8 +254,6 @@ def differences(afilename, efilename):
         os.remove(afilename)
 
 
-@pytest.mark.skipif(sys.version_info > (3, 0),
-                    reason='remove skipif after migration to Python 3.6')
 @pytest.mark.pre_release
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('using_puf', [True, False])

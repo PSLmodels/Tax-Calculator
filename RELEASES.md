@@ -4,15 +4,17 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-09-?? Release 0.21.0 : FIRST RELEASE COMPATIBLE ONLY WITH PYTHON 3.6
+2018-09-11 Release 0.21.0 : FIRST RELEASE COMPATIBLE ONLY WITH PYTHON 3.6
 -------------------------------------------------------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#2058](https://github.com/open-source-economics/Tax-Calculator/pull/2058))
 
 **API Changes**
 - Require Python 3.6 to run Tax-Calculator source code or conda package
   [[#2058](https://github.com/open-source-economics/Tax-Calculator/pull/2058)
-  by Martin Holmer]
+  by Martin Holmer], which requires new `puf.csv` input file (see [taxdata pull request 283](https://github.com/open-source-economics/taxdata/pull/283) for details) with this information:
+  * Byte size: 56415698  
+  * MD5 checksum: 3f1c7c2b16b6394a9148779db992bed1
 
 **New Features**
 - None

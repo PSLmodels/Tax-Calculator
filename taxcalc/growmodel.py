@@ -5,7 +5,6 @@ Simple macroeconomic growth model embedded in Tax-Calculator.
 # pycodestyle growmodel.py
 # pylint --disable=locally-disabled growmodel.py
 
-from __future__ import print_function
 import numpy as np
 from taxcalc.policy import Policy
 from taxcalc.parameters import ParametersBase

@@ -4,7 +4,6 @@ Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
 # CODING-STYLE CHECKS:
 # pycodestyle test_tbi.py
 
-from __future__ import print_function
 import json
 import numpy as np
 import pandas as pd

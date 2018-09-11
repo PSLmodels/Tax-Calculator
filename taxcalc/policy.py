@@ -5,8 +5,6 @@ Tax-Calculator federal tax policy Policy class.
 # pycodestyle policy.py
 # pylint --disable=locally-disabled policy.py
 
-from __future__ import print_function
-import six
 import numpy as np
 from taxcalc.parameters import ParametersBase
 from taxcalc.growfactors import GrowFactors
@@ -512,7 +510,7 @@ class Policy(ParametersBase):
                 continue  # *_cpi parameter values validated elsewhere
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
-                if isinstance(vval, six.string_types):
+                if isinstance(vval, str):
                     vvalue = getattr(self, vval)
                 else:
                     vvalue = np.full(pvalue.shape, vval)

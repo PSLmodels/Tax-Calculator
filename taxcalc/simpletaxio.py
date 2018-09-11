@@ -8,7 +8,6 @@ Tax-Calculator simple tax input-output class used in TAXSIM validation work.
 import os
 import sys
 import re
-import six
 import pandas as pd
 from taxcalc.policy import Policy
 from taxcalc.records import Records
@@ -67,7 +66,7 @@ class SimpleTaxIO(object):
         """
         # pylint: disable=too-many-arguments
         # check that input_filename is a string
-        if not isinstance(input_filename, six.string_types):
+        if not isinstance(input_filename, str):
             msg = 'SimpleTaxIO.ctor input_filename is not a string'
             raise ValueError(msg)
         # construct output_filename and delete old output file if it exists
@@ -76,7 +75,7 @@ class SimpleTaxIO(object):
             ref = ''
             self._using_reform_file = True
         else:  # if reform is not None
-            if isinstance(reform, six.string_types):
+            if isinstance(reform, str):
                 if reform.endswith('.json'):
                     ref = '-{}'.format(reform[:-5])
                 else:
@@ -147,6 +146,7 @@ class SimpleTaxIO(object):
             empty string if OUTPUT lines are written to a file;
             otherwise output_lines contain all OUTPUT lines
         """
+        # pylint: disable=too-many-locals
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
         for calcyr in self._year_set:

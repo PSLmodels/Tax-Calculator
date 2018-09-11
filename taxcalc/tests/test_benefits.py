@@ -12,7 +12,6 @@ Read Tax-Calculator/TESTING.md for details.
 # pycodestyle test_benefits.py
 # pylint --disable=locally-disabled test_benefits.py
 
-from __future__ import print_function
 import os
 import pytest
 import numpy as np

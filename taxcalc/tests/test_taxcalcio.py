@@ -397,7 +397,7 @@ def test_ctor_init_with_cps_files():
     MARS;iitax	payrolltax|combined,
     c00100
     surtax
-    """, True, 8),  # these six plus added RECID and FLPDYR
+    """, True, 8),  # these 6 parameters plus added RECID and FLPDYR
 
     ("""
     MARS;iitax	payrolltax|kombined,c00100

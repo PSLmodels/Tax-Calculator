@@ -12,11 +12,8 @@ Read Tax-Calculator/TESTING.md for details.
 # pycodestyle test_cpscsv.py
 # pylint --disable=locally-disabled test_cpscsv.py
 
-from __future__ import print_function
 import os
-import sys
 import json
-import pytest
 import numpy as np
 import pandas as pd
 # pylint: disable=import-error
@@ -51,12 +48,8 @@ def test_agg(tests_path, cps_fullsample):
         txt = expected_file.read()
     expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
     # ensure actual and expected results have no nonsmall differences
-    if sys.version_info.major == 2:
-        small = 0.0  # tighter test for Python 2.7
-    else:
-        small = 0.1  # looser test for Python 3.6
     diffs = nonsmall_diffs(actual_results.splitlines(True),
-                           expected_results.splitlines(True), small)
+                           expected_results.splitlines(True))
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
         with open(new_filename, 'w') as new_file:
@@ -118,8 +111,6 @@ def test_cps_availability(tests_path, cps_path):
     assert (recvars - cpsvars) == set()
 
 
-@pytest.mark.skipif(sys.version_info > (3, 0),
-                    reason='remove skipif after migration to Python 3.6')
 def test_run_taxcalc_model(tests_path):
     """
     Test tbi.run_nth_year_taxcalc_model function using CPS data.

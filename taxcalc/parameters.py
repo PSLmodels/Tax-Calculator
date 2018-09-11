@@ -6,7 +6,6 @@ Tax-Calculator abstract base parameters class.
 
 import os
 import json
-import six
 import abc
 import collections as collect
 import numpy as np
@@ -173,7 +172,7 @@ class ParametersBase(object):
         year_zero_indexed = year - self._start_year
         if hasattr(self, '_vals'):
             for name in self._vals:
-                if isinstance(name, six.string_types):
+                if isinstance(name, str):
                     arr = getattr(self, name)
                     setattr(self, name[1:], arr[year_zero_indexed])
 

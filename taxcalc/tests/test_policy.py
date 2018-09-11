@@ -3,7 +3,6 @@
 
 import os
 import sys
-import six
 import json
 import tempfile
 import numpy as np
@@ -847,7 +846,7 @@ def test_range_infomation(tests_path):
             assert len(range_items) == 2
             for vop, vval in range_items:
                 assert vop in min_max_list
-                if isinstance(vval, six.string_types):
+                if isinstance(vval, str):
                     if vval == 'default':
                         if vop != 'min' or oor_action != 'warn':
                             msg = 'USES DEFAULT FOR min OR FOR error'
