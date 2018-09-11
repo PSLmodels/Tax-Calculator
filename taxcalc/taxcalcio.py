@@ -5,12 +5,10 @@ Tax-Calculator Input-Output class.
 # pycodestyle taxcalcio.py
 # pylint --disable=locally-disabled taxcalcio.py
 
-from __future__ import print_function
 import os
 import gc
 import copy
 import sqlite3
-import six
 import numpy as np
 import pandas as pd
 from taxcalc.policy import Policy
@@ -76,7 +74,7 @@ class TaxCalcIO(object):
         inp = 'x'
         self.puf_input_data = False
         self.cps_input_data = False
-        if isinstance(input_data, six.string_types):
+        if isinstance(input_data, str):
             # remove any leading directory path from INPUT filename
             fname = os.path.basename(input_data)
             # check if fname ends with ".csv"
@@ -100,7 +98,7 @@ class TaxCalcIO(object):
         bas = '-x'
         if baseline is None:
             bas = '-#'
-        elif isinstance(baseline, six.string_types):
+        elif isinstance(baseline, str):
             # remove any leading directory path from BASELINE filename
             fname = os.path.basename(baseline)
             # check if fname ends with ".json"
@@ -121,7 +119,7 @@ class TaxCalcIO(object):
         if reform is None:
             self.specified_reform = False
             ref = '-#'
-        elif isinstance(reform, six.string_types):
+        elif isinstance(reform, str):
             self.specified_reform = True
             # split any compound reform into list of simple reforms
             refnames = list()
@@ -154,7 +152,7 @@ class TaxCalcIO(object):
         asm = '-x'
         if assump is None:
             asm = '-#'
-        elif isinstance(assump, six.string_types):
+        elif isinstance(assump, str):
             # remove any leading directory path from ASSUMP filename
             fname = os.path.basename(assump)
             # check if fname ends with ".json"
@@ -173,7 +171,7 @@ class TaxCalcIO(object):
         # check name and existence of OUTDIR
         if outdir is None:
             valid_outdir = True
-        elif isinstance(outdir, six.string_types):
+        elif isinstance(outdir, str):
             # check existence of OUTDIR
             if os.path.isdir(outdir):
                 valid_outdir = True
@@ -382,7 +380,7 @@ class TaxCalcIO(object):
         contains the contents of the tcdumpvars file in the current directory.
         Also, builds self.errmsg if any custom variables are not valid.
         """
-        assert isinstance(tcdumpvars_str, six.string_types)
+        assert isinstance(tcdumpvars_str, str)
         self.errmsg = ''
         # change some common delimiter characters into spaces
         dump_vars_str = tcdumpvars_str.replace(',', ' ')
@@ -461,7 +459,7 @@ class TaxCalcIO(object):
         -------
         Nothing
         """
-        # pylint: disable=too-many-arguments,too-many-branches
+        # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
         if self.puf_input_data and self.calc.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'  # pragma: no cover
             print(  # pragma: no cover

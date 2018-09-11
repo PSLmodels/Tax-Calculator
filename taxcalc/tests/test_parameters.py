@@ -8,7 +8,6 @@ Tests for Tax-Calculator ParametersBase class and JSON parameter files.
 import os
 import json
 import math
-import six
 import numpy as np
 import pytest
 # pylint: disable=import-error
@@ -87,17 +86,17 @@ def test_json_file_contents(tests_path, fname):
     failures = ''
     for pname in allparams:
         # all parameter names should be strings
-        assert isinstance(pname, six.string_types)
+        assert isinstance(pname, str)
         # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
         for key in reqkeys:
             assert key in param
         # check for non-empty long_name and description strings
-        assert isinstance(param['long_name'], six.string_types)
+        assert isinstance(param['long_name'], str)
         if not param['long_name']:
             assert '{} long_name'.format(pname) == 'empty string'
-        assert isinstance(param['description'], six.string_types)
+        assert isinstance(param['description'], str)
         if not param['description']:
             assert '{} description'.format(pname) == 'empty string'
         # check that row_var is FLPDYR
@@ -123,10 +122,10 @@ def test_json_file_contents(tests_path, fname):
         assert len(value) == len(rowlabel)
         # check that col_var and col_label are consistent
         cvar = param['col_var']
-        assert isinstance(cvar, six.string_types)
+        assert isinstance(cvar, str)
         clab = param['col_label']
         if cvar == '':
-            assert isinstance(clab, six.string_types) and clab == ''
+            assert isinstance(clab, str) and clab == ''
         else:
             assert isinstance(clab, list)
             # check different possible col_var values

@@ -29,22 +29,15 @@ def test_for_consistency(tests_path):
     """
     Ensure that there is consistency between environment.yml dependencies
     and conda.recipe/meta.yaml requirements.
-    It is OK if only environment.yml contains the development packages
-    included in the dev_pkgs set.
-    It is also OK if only conda.recipe/meta.yaml contains the run packages
-    included in the run_pkgs set.
     """
     dev_pkgs = set([
+        'pytest',
+        'pytest-pep8',
+        'pytest-xdist',
         'mock',
-        'pep8',
         'pycodestyle',
         'pylint',
-        'coverage',
-        'pytest-pep8',
-        'pytest-xdist'
-    ])
-    run_pkgs = set([
-        'python'
+        'coverage'
     ])
     # read conda.recipe/meta.yaml requirements
     meta_file = os.path.join(tests_path, '..', '..',
@@ -61,9 +54,6 @@ def test_for_consistency(tests_path):
     with open(envr_file, 'r') as stream:
         envr = yaml.load(stream)
     env = set(envr['dependencies'])
-    # confirm all extras in env are in dev_pkgs set
+    # confirm that extras in env (relative to run) equal the dev_pkgs set
     extras = env - run
-    assert extras <= dev_pkgs
-    # confirm all extras in run are in run_pkgs set
-    extras = run - env
-    assert extras <= run_pkgs
+    assert extras == dev_pkgs

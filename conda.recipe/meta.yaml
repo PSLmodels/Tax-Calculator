@@ -8,21 +8,20 @@ build:
 
 requirements:
   build:
-    - python
+    - python >=3.6.5
     - numpy >=1.12.1
     - pandas >=0.22.0
+    - bokeh >=0.12.3
     - numba
     - toolz
-    - six
-    - bokeh >=0.12.3
+
   run:
-    - python
+    - python >=3.6.5
     - numpy >=1.12.1
     - pandas >=0.22.0
+    - bokeh >=0.12.3
     - numba
     - toolz
-    - six
-    - bokeh >=0.12.3
 
 test:
   commands:

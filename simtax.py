@@ -2,7 +2,7 @@
 SIMple input-output capabilities for TAX-calculator used in validation work
 """
 # CODING-STYLE CHECKS:
-# pycodestyle --ignore=E402 simtax.py
+# pycodestyle simtax.py
 # pylint --disable=locally-disabled simtax.py
 
 import argparse

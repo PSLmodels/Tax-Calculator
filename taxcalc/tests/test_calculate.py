@@ -6,7 +6,6 @@ import json
 from io import StringIO
 import tempfile
 import copy
-import six
 import pytest
 import numpy as np
 import pandas as pd
@@ -886,7 +885,7 @@ def test_reform_documentation():
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
     doc = Calculator.reform_documentation(params)
-    assert isinstance(doc, six.string_types)
+    assert isinstance(doc, str)
     dump = False  # set to True to print documentation and force test failure
     if dump:
         print(doc)

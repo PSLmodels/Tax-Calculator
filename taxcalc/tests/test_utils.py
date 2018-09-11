@@ -7,7 +7,6 @@ Tests of Tax-Calculator utility functions.
 #
 # pylint: disable=missing-docstring,no-member,protected-access,too-many-lines
 
-from __future__ import print_function
 import os
 import math
 import random
@@ -617,7 +616,7 @@ def test_diff_table_sum_row(cps_subsample):
 def test_mtr_graph_data(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
-    year = calc.current_year,
+    year = calc.current_year
     with pytest.raises(ValueError):
         mtr_graph_data(None, year, mars='bad',
                        income_measure='agi',

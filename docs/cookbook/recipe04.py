@@ -1,4 +1,3 @@
-from __future__ import print_function  # necessary only if using Python 2.7
 from taxcalc import *
 
 # use publicly-available CPS input file
@@ -61,7 +60,7 @@ tot_funits = 0.
 tot_response = 0.
 tot_baseline = 0.
 idx = 0
-for gname, grp in gbydf:
+for grp_interval, grp in gbydf:
     funits = grp['s006'].sum() * 1e-6
     tot_funits += funits
     response = quantity_response(grp['e19800'],
@@ -76,7 +75,8 @@ for gname, grp in gbydf:
     grp_baseline = (grp['e19800'] * grp['s006']).sum() * 1e-9
     tot_baseline += grp_baseline
     pct_response = 100. * grp_response / grp_baseline
-    print(results.format(gname, funits, grp_response, pct_response))
+    glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left, grp_interval.right)
+    print(results.format(glabel, funits, grp_response, pct_response))
     idx += 1
 pct_response = 100. * tot_response / tot_baseline
 print(results.format('ALL', tot_funits, tot_response, pct_response))

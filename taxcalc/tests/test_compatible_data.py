@@ -9,11 +9,9 @@ plug-in pytest-xdist is able to run all parametrized functions in parallel
 # pycodestyle test_compatible_data.py
 # pylint --disable=locally-disabled test_compatible_data.py
 
-from __future__ import print_function
 import copy
 import pytest
 import numpy as np
-import six
 from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 
 
@@ -248,23 +246,23 @@ def test_compatible_data(cps_subsample, puf_subsample,
         param = allparams_batch[pname]
         max_listed = param['range']['max']
         # handle links to other params or self
-        if isinstance(max_listed, six.string_types):
+        if isinstance(max_listed, str):
             if max_listed == 'default':
                 max_val = param['value'][-1]
             else:
                 max_val = allparams[max_listed]['value'][0]
-        if not isinstance(max_listed, six.string_types):
+        if not isinstance(max_listed, str):
             if isinstance(param['value'][0], list):
                 max_val = [max_listed] * len(param['value'][0])
             else:
                 max_val = max_listed
         min_listed = param['range']['min']
-        if isinstance(min_listed, six.string_types):
+        if isinstance(min_listed, str):
             if min_listed == 'default':
                 min_val = param['value'][-1]
             else:
                 min_val = allparams[min_listed]['value'][0]
-        if not isinstance(min_listed, six.string_types):
+        if not isinstance(min_listed, str):
             if isinstance(param['value'][0], list):
                 min_val = [min_listed] * len(param['value'][0])
             else:

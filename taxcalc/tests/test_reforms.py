@@ -5,7 +5,6 @@ Test example JSON policy reform files in taxcalc/reforms directory
 # pycodestyle test_reforms.py
 # pylint --disable=locally-disabled test_reforms.py
 
-from __future__ import print_function
 import os
 import glob
 import json

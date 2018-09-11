@@ -1,6 +1,5 @@
-from __future__ import print_function  # necessary only if using Python 2.7
+from urllib.request import urlopen
 from taxcalc import *
-import urllib as url_lib  # Python 3.6 uses "import urllib.request as url_lib"
 
 # read two "old" reform files from Tax-Calculator website
 # ("old" means the reform files are defined relative to pre-TCJA policy)
@@ -11,13 +10,13 @@ BASE_URL = ('https://raw.githubusercontent.com/'
             'open-source-economics/Tax-Calculator/master/taxcalc/reforms/')
 
 baseline_name = '2017_law.json'  # pre-TCJA policy
-baseline_text = url_lib.urlopen(BASE_URL + baseline_name).read()
+baseline_text = urlopen(BASE_URL + baseline_name).read().decode()
 baseline = Calculator.read_json_param_objects(baseline_text, None)
 
 reform1_name = 'TCJA_Senate.json'  # TCJA as orginally proposed in Senate
-reform1_text = url_lib.urlopen(BASE_URL + reform1_name).read()
+reform1_text = urlopen(BASE_URL + reform1_name).read().decode()
 reform2_name = 'TCJA_Reconciliation.json'  # TCJA as passed by Congress
-reform2_text = url_lib.urlopen(BASE_URL + reform2_name).read()
+reform2_text = urlopen(BASE_URL + reform2_name).read().decode()
 
 # specify Policy object for static analysis of reform1 relative to pre-TCJA
 reform1 = Calculator.read_json_param_objects(reform1_text, None)

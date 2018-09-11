@@ -5,7 +5,6 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 # pycodestyle behavior.py
 # pylint --disable=locally-disabled behavior.py
 
-from __future__ import print_function
 import copy
 import numpy as np
 from taxcalc.policy import Policy
