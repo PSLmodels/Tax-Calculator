@@ -4,7 +4,7 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-09-11 Release 0.21.0 : FIRST RELEASE COMPATIBLE ONLY WITH PYTHON 3.6
+2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6
 -------------------------------------------------------------------------
 (last merged pull request is
 [#2058](https://github.com/open-source-economics/Tax-Calculator/pull/2058))
