@@ -48,46 +48,43 @@ Setup Git
    where you would like your local repo to live.
 
 6. Create a local repo by entering at the command line the text after
-   the $. [1]_ This step creates a directory called tax-calculator in
+   the $. [1]_ This step creates a directory called Tax-Calculator in
    the directory that you specified in the prior step::
 
-      $ git clone https://github.com/[github-username]/tax-calculator.git
+      $ git clone https://github.com/[github-username]/Tax-Calculator.git
 
 7. From your command line or terminal, navigate to your local
-   tax-calculator directory.
+   Tax-Calculator directory.
 
 8. Make it easier to `push`_ your local work to others and `pull`_
    others' work to your local machine by entering at the command line::
 
-      $ cd tax-calculator
-      tax-calculator$ git remote add upstream https://github.com/open-source-economics/tax-calculator.git
+      $ cd Tax-Calculator
+      Tax-Calculator$ git remote add upstream https://github.com/open-source-economics/Tax-Calculator.git
 
 9. Create a conda environment with all of the necessary packages to
    execute the source code::
 
-      tax-calculator$ conda env create
+      Tax-Calculator$ conda env create
 
 10. The prior command will create a conda environment called "taxcalc-dev".
     Activate this environment as follows::
 
-      tax-calculator$ source activate taxcalc-dev
+      Tax-Calculator$ source activate taxcalc-dev
 
     If you are working on Windows, use the following from the command line::
 
-      tax-calculator$ activate taxcalc-dev
+      Tax-Calculator$ activate taxcalc-dev
 
     Note: never conda install the taxcalc package in the taxcalc-dev
     environment because the taxcalc source code and the installed package
     will conflict.
 
 11. To check that everything is working properly, run the following at
-    the command line from the tax-calculator directory, but skip the
-    validation tests if you are working on Windows::
+    the command line from the Tax-Calculator directory::
 
-      tax-calculator$ cd taxcalc
-      tax-calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
-      tax-calculator/taxcalc$ cd validation
-      tax-calculator/taxcalc/validation$ bash tests.sh
+      Tax-Calculator$ cd taxcalc
+      Tax-Calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
 
     If you do have a copy of the OSPC-supplied puf.csv file, then on
     the second line above omit the 'not requires_pufcsv and'
@@ -97,8 +94,8 @@ Setup Git
     the following updates at the command line and then try running the
     tests again::
 
-      tax-calculator$ conda update conda
-      tax-calculator$ conda env update
+      Tax-Calculator$ conda update conda
+      Tax-Calculator$ conda env update
 
     For more detail on Tax-Calculator testing procedures, read the
     `testing documentation`_.  If the tests still don't pass, please
@@ -108,7 +105,7 @@ If you've made it this far, you've successfully made a remote copy (a
 fork) of central Tax-Calculator repo. That remote repo is hosted on
 GitHub.com. You've also created a local repo (a `clone`_) that lives
 on your machine and only you can see; you will make your changes to
-the Tax-Calculator by editing the files in the tax-calculator
+the Tax-Calculator by editing the files in the Tax-Calculator
 directory on your machine and then submitting those changes to your
 local repo. As a new contributor, you will push your changes from your
 local repo to your remote repo when you're ready to share that work
@@ -132,24 +129,24 @@ situations, in which case other contributors are here to help.
    repository by executing the following **four** Git commands:
 
    a. Tell Git to switch to the master branch in your local repo.
-      Navigate to your local tax-calculator directory and enter the
+      Navigate to your local Tax-Calculator directory and enter the
       following text at the command line::
 
-        tax-calculator$ git checkout master
+        Tax-Calculator$ git checkout master
 
    b. Download all of the content from the central Tax-Calculator repo::
 
-        tax-calculator$ git fetch upstream
+        Tax-Calculator$ git fetch upstream
 
    c. Update your local master branch to contain the latest content of
       the central master branch using `merge`_. This step ensures that
       you are working with the latest version of the Tax-Calculator::
 
-        tax-calculator$ git merge upstream/master
+        Tax-Calculator$ git merge upstream/master
 
    d. Push the updated master branch in your local repo to your GitHub repo::
 
-        tax-calculator$ git push origin master
+        Tax-Calculator$ git push origin master
 
 2. Create a new `branch`_ on your local machine. Think of your
    branches as a way to organize your projects. If you want to work on
@@ -157,7 +154,7 @@ situations, in which case other contributors are here to help.
    work. If you want to change the maximum child care tax credit in
    the Tax-Calculator, create a different branch for that project::
 
-     tax-calculator$ git checkout -b [new-branch-name]
+     Tax-Calculator$ git checkout -b [new-branch-name]
 
 3. If your changes involve creating a new tax policy parameter, be
    sure to read about Tax-Calculator :doc:`parameter naming
@@ -165,13 +162,10 @@ situations, in which case other contributors are here to help.
 
 4. As you make changes, frequently check that your changes do not
    introduce bugs or degrade the accuracy of the Tax-Calculator. To do
-   this, run the following commands from the command line from inside
-   the tax-calculator/taxcalc directory (but skip the validation tests
-   if you are working on Windows)::
+   this, run the following command from the command line from inside
+   the Tax-Calculator/taxcalc directory::
 
-     tax-calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
-     tax-calculator/taxcalc$ cd validation
-     tax-calculator/taxcalc/validation$ ./tests
+     Tax-Calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
 
    If the tests do not pass, try to fix the issue by using the
    information provided by the error message. If this isn't possible
@@ -191,16 +185,16 @@ situations, in which case other contributors are here to help.
    your changes. This means that you can always revert to a previous
    version of your work if you need to.  Do this to commit::
 
-     tax-calculator$ git add [filename]
-     tax-calculator$ git commit -m "[description-of-your-commit]"
+     Tax-Calculator$ git add [filename]
+     Tax-Calculator$ git commit -m "[description-of-your-commit]"
 
 6. Periodically, make sure that the branch you created in step 2
    is in sync with the changes other contributors are making to
    the central master branch by fetching upstream and merging
    upstream/master into your branch::
 
-      tax-calculator$ git fetch upstream
-      tax-calculator$ git merge upstream/master
+      Tax-Calculator$ git fetch upstream
+      Tax-Calculator$ git merge upstream/master
 
    You may need to resolve conflicts that arise when another
    contributor changed the same section of code that you are
@@ -211,7 +205,7 @@ situations, in which case other contributors are here to help.
 7. When you are ready for other team members to review your code, make
    your final commit and push your local branch to your remote repo::
 
-     tax-calculator$ git push origin [new-branch-name]
+     Tax-Calculator$ git push origin [new-branch-name]
 
 8. From the GitHub.com user interface, `open a pull request`_.
 
