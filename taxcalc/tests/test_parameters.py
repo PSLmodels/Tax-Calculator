@@ -49,7 +49,7 @@ def test_instantiation_and_usage():
 @pytest.mark.parametrize("fname",
                          [("behavior.json"),
                           ("consumption.json"),
-                          ("current_law_policy.json"),
+                          ("policy_current_law.json"),
                           ("growdiff.json")])
 def test_json_file_contents(tests_path, fname):
     """
@@ -106,7 +106,7 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(syr, int) and syr == first_year
         # check that cpi_inflated is boolean
         assert isinstance(param['cpi_inflated'], bool)
-        if fname != 'current_law_policy.json':
+        if fname != 'policy_current_law.json':
             assert param['cpi_inflated'] is False
         # check that row_label is list
         rowlabel = param['row_label']
@@ -169,7 +169,7 @@ def test_json_file_contents(tests_path, fname):
 @pytest.mark.parametrize("jfname, pfname",
                          [("behavior.json", "behavior.py"),
                           ("consumption.json", "consumption.py"),
-                          ("current_law_policy.json", "functions.py"),
+                          ("policy_current_law.json", "functions.py"),
                           ("growdiff.json", "growdiff.py")])
 def test_parameters_mentioned(tests_path, jfname, pfname):
     """
@@ -309,7 +309,7 @@ def test_expand_2d_partial_expand():
 
 
 @pytest.mark.parametrize('json_filename',
-                         ['current_law_policy.json',
+                         ['policy_current_law.json',
                           'behavior.json',
                           'consumption.json',
                           'growdiff.json'])
@@ -364,7 +364,7 @@ def test_bool_int_value_info(tests_path, json_filename):
 
 
 @pytest.mark.parametrize('json_filename',
-                         ['current_law_policy.json',
+                         ['policy_current_law.json',
                           'behavior.json',
                           'consumption.json',
                           'growdiff.json'])

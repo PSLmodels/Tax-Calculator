@@ -42,10 +42,12 @@ class Policy(ParametersBase):
     class instance: Policy
     """
 
-    DEFAULTS_FILENAME = 'current_law_policy.json'
+    DEFAULTS_FILENAME = 'policy_current_law.json'
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     LAST_KNOWN_YEAR = 2017  # last year for which indexed param vals are known
-    LAST_BUDGET_YEAR = 2027  # increases by one every calendar year
+    # should increase LAST_KNOWN_YEAR by one every calendar year
+    LAST_BUDGET_YEAR = 2027  # last extrapolation year
+    # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     def __init__(self,
@@ -402,7 +404,7 @@ class Policy(ParametersBase):
         for idx in range(0, self.num_years):
             infrate = round(self._inflation_rates[idx] + cpi_offset[idx], 6)
             self._inflation_rates[idx] = infrate
-        # revert CPI-indexed parameter values to current_law_policy.json values
+        # revert CPI-indexed parameter values to policy_current_law.json values
         for name in self._vals.keys():
             if self._vals[name]['cpi_inflated']:
                 setattr(self, name, self._vals[name]['value'])
@@ -498,7 +500,7 @@ class Policy(ParametersBase):
     def _validate_parameter_values(self, parameters_set):
         """
         Check values of parameters in specified parameter_set using
-        range information from the current_law_policy.json file.
+        range information from the policy_current_law.json file.
         """
         # pylint: disable=too-many-locals
         # pylint: disable=too-many-branches

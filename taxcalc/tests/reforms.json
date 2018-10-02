@@ -633,7 +633,7 @@
   },
 
   "58": {
-      "baseline": "current_law_policy.json",
+      "baseline": "policy_current_law.json",
       "start_year": 2017,
       "value": {"_cpi_offset": [0.0025]},
       "name": "Repeal TCJA chained CPI indexing",

@@ -134,7 +134,7 @@ def reform_results(reform_dict, puf_data, reform_2017_law):
     pol = Policy()
     if reform_dict['baseline'] == '2017_law.json':
         pol.implement_reform(reform_2017_law)
-    elif reform_dict['baseline'] == 'current_law_policy.json':
+    elif reform_dict['baseline'] == 'policy_current_law.json':
         pass
     else:
         msg = 'illegal baseline value {}'

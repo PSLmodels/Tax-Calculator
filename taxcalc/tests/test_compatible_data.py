@@ -1,5 +1,5 @@
 """
-Tests of the compatible_data fields in the current_law_policy.json file.
+Tests of the compatible_data fields in the policy_current_law.json file.
 
 In order to tap into the parallelization capabilities of py.test, this module
 leans heavily on py.tests's `parametrization` method. Once you do so, the
@@ -25,7 +25,7 @@ def fixture_allparams():
 
 def test_compatible_data_presence(allparams):
     """
-    Test that every parameter in the current_law_policy.json file
+    Test that every parameter in the policy_current_law.json file
     has a compatible_data field that is a dictionary.
     """
     compatible_data_keys_set = set(['puf', 'cps'])
@@ -221,7 +221,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
                          allparams, reform_xx,
                          tc_objs, allparams_batch):
     """
-    Test that the compatible_data attribute in current_law_policy.json
+    Test that the compatible_data attribute in policy_current_law.json
     is accurate by implementing the min and max values of each parameter
     as reforms and ensuring that revenue differs from baseline when for
     at least one of these reforms when using datasets marked compatible
