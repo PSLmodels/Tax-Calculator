@@ -1,6 +1,6 @@
 """
 Implement numba JIT decorators used to speed-up Tax-Calculator functions in
-the functions.py module.
+the calcfunctions.py module.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle decorators.py
@@ -235,9 +235,9 @@ def apply_jit(dtype_sig_out, dtype_sig_in, parameters=None, **kwargs):
 
 def iterate_jit(parameters=None, **kwargs):
     """
-    Public decorator for a calc-style function (see functions.py) that
+    Public decorator for a calc-style function (see calcfunctions.py) that
     transforms the calc-style function into an apply-style function that
-    can be called by Calculator class methods (see calculate.py).
+    can be called by Calculator class methods (see calculator.py).
     """
     if not parameters:
         parameters = []

@@ -25,7 +25,7 @@ class Records(object):
         default value is the string 'puf.csv'
         For details on how to use your own data with the Tax-Calculator,
         look at the test_Calculator_using_nonstd_input() function in the
-        tests/test_calculate.py file.
+        tests/test_calculator.py file.
 
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
@@ -57,7 +57,7 @@ class Records(object):
         use your own data with the Tax-Calculator, read the
         DATAPREP.md file in the top-level directory and then
         look at the test_Calculator_using_nonstd_input()
-        function in the taxcalc/tests/test_calculate.py file.
+        function in the taxcalc/tests/test_calculator.py file.
 
     Raises
     ------

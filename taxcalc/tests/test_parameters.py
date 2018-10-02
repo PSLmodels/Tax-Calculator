@@ -169,7 +169,7 @@ def test_json_file_contents(tests_path, fname):
 @pytest.mark.parametrize("jfname, pfname",
                          [("behavior.json", "behavior.py"),
                           ("consumption.json", "consumption.py"),
-                          ("policy_current_law.json", "functions.py"),
+                          ("policy_current_law.json", "calcfunctions.py"),
                           ("growdiff.json", "growdiff.py")])
 def test_parameters_mentioned(tests_path, jfname, pfname):
     """
