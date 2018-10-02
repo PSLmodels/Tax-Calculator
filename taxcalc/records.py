@@ -33,8 +33,8 @@ class Records(object):
         default value is false.
 
     gfactors: GrowFactors class instance or None
-        containing record data extrapolation (or "blowup") factors.
-        NOTE: the constructor should never call the _blowup() method.
+        containing record data grow (or extrapolation) factors.
+        NOTE: the constructor should never call the _extrapolate() method.
 
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
@@ -232,7 +232,7 @@ class Records(object):
         self.__current_year += 1
         # apply variable extrapolation grow factors
         if self.gfactors is not None:
-            self._blowup(self.__current_year)
+            self._extrapolate(self.__current_year)
         # apply variable adjustment ratios
         self._adjust(self.__current_year)
         # specify current-year sample weights
@@ -294,7 +294,7 @@ class Records(object):
 
     # ----- begin private methods of Records class -----
 
-    def _blowup(self, year):
+    def _extrapolate(self, year):
         """
         Apply to variables the grow factors for specified calendar year.
         """
