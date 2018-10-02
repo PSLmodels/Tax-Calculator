@@ -17,7 +17,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
-from taxcalc.calculate import Calculator
+from taxcalc.calculator import Calculator
 from taxcalc.growmodel import GrowModel
 from taxcalc.utils import (delete_file, write_graph_file,
                            add_quantile_table_row_variable,
