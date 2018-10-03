@@ -60,7 +60,7 @@ def test_json_file_contents(tests_path, fname):
     reqkeys = ['long_name', 'description',
                'section_1', 'section_2', 'notes',
                'row_var', 'row_label',
-               'start_year', 'cpi_inflated',
+               'start_year', 'cpi_inflated', 'cpi_inflatable',
                'col_var', 'col_label',
                'value']
     first_year = Policy.JSON_START_YEAR
