@@ -45,7 +45,7 @@ def test_instantiation_and_usage():
     with pytest.raises(ValueError):
         ParametersBase._expand_array(arr3d, False, False, True, [0.02], 1)
 
-
+@pytest.mark.one
 @pytest.mark.parametrize("fname",
                          [("behavior.json"),
                           ("consumption.json"),
@@ -104,10 +104,25 @@ def test_json_file_contents(tests_path, fname):
         # check that start_year equals first_year
         syr = param['start_year']
         assert isinstance(syr, int) and syr == first_year
-        # check that cpi_inflated is boolean
+        # check that cpi_inflatable and cpi_inflated are boolean
+        assert isinstance(param['cpi_inflatable'], bool)
         assert isinstance(param['cpi_inflated'], bool)
+        # check that cpi_inflatable and cpi_inflated are False in many files
         if fname != 'current_law_policy.json':
+            assert param['cpi_inflatable'] is False
             assert param['cpi_inflated'] is False
+        # check that cpi_inflatable is True when cpi_inflated is True
+        if param['cpi_inflated'] and not param['cpi_inflatable']:
+            msg = 'param:<{}>; cpi_inflated={}; cpi_inflatable={}'
+            fail = msg.format(pname, param['cpi_inflated'],
+                              param['cpi_inflatable'])
+            failures += fail + '\n'
+        # ensure that cpi_inflatable is False when integer_value is True
+        if param['integer_value'] and param['cpi_inflatable']:
+            msg = 'param:<{}>; integer_value={}; cpi_inflatable={}'
+            fail = msg.format(pname, param['integer_value'],
+                              param['cpi_inflatable'])
+            failures += fail + '\n'
         # check that row_label is list
         rowlabel = param['row_label']
         assert isinstance(rowlabel, list)
@@ -361,31 +376,3 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['boolean_value'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
-
-
-@pytest.mark.parametrize('json_filename',
-                         ['current_law_policy.json',
-                          'behavior.json',
-                          'consumption.json',
-                          'growdiff.json'])
-def test_cpi_inflatable_info(tests_path, json_filename):
-    """
-    Check presence and consistency of cpi_inflatable info in
-    JSON parameter files.
-    """
-    path = os.path.join(tests_path, '..', json_filename)
-    with open(path, 'r') as pfile:
-        pdict = json.load(pfile)
-    for param in sorted(pdict.keys()):
-        # check for presence of cpi_inflatable field
-        if 'cpi_inflatable' not in pdict[param]:
-            msg = 'param= {}'.format(str(param))
-            assert msg == 'ERROR: missing cpi_inflatable field'
-        # ensure that cpi_inflatable is True when cpi_inflated is True
-        if pdict[param]['cpi_inflated'] and not pdict[param]['cpi_inflatable']:
-            msg = 'param= {}'.format(str(param))
-            assert msg == 'ERROR: cpi_inflatable=False when cpi_inflated=True'
-        # ensure that cpi_inflatable is False when integer_value is True
-        if pdict[param]['integer_value'] and pdict[param]['cpi_inflatable']:
-            msg = 'param= {}'.format(str(param))
-            assert msg == 'ERROR: cpi_inflatable=True when integer_value=True'
