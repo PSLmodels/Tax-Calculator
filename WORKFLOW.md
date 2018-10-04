@@ -52,7 +52,13 @@ of your branch in place of `BNAME`).
 save the changes.  If you want to add a new file to the Tax-Calculator
 repository, create and save the new file in your editor and then do
 `git add FNAME` (where you type in the name of your new file in place
-of `FNAME`).
+of `FNAME`).  If you want to delete an existing file in the
+Tax-Calculator repository, then do `git rm FNAME` (where you type in
+the name of the file you want to delete in place of `FNAME`).  If you
+want to rename an existing file in the Tax-Calculator repository, then
+do `git mv OLDNAME NEWNAME` (where you type in the name of the file
+you want to rename in place of `OLDNAME` and type in the new name of
+the file in place of `NEWNAME`).
 
 5. Next test your proposed source-code changes in two ways: for coding
 style and for substantive results.  Read the documentation on [testing
