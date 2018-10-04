@@ -11,7 +11,7 @@ import re
 import pandas as pd
 from taxcalc.policy import Policy
 from taxcalc.records import Records
-from taxcalc.calculate import Calculator
+from taxcalc.calculator import Calculator
 
 
 class SimpleTaxIO(object):

@@ -2,8 +2,8 @@
 Tax-Calculator federal tax Calculator class.
 """
 # CODING-STYLE CHECKS:
-# pycodestyle calculate.py
-# pylint --disable=locally-disabled calculate.py
+# pycodestyle calculator.py
+# pylint --disable=locally-disabled calculator.py
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
@@ -13,19 +13,19 @@ import re
 import copy
 import numpy as np
 import pandas as pd
-from taxcalc.functions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
-                               NetInvIncTax, AMT, EI_PayrollTax, Adj,
-                               DependentCare, ALD_InvInc_ec_base, CapGains,
-                               SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
-                               StdDed, AdditionalMedicareTax, F2441, EITC,
-                               ChildDepTaxCredit, AdditionalCTC, CTC_new,
-                               PersonalTaxCredit, SchR,
-                               AmOppCreditParts, EducationTaxCredit,
-                               CharityCredit,
-                               NonrefundableCredits, C1040, IITAX,
-                               BenefitSurtax, BenefitLimitation,
-                               FairShareTax, LumpSumTax, BenefitPrograms,
-                               ExpandIncome, AfterTaxIncome)
+from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
+                                   NetInvIncTax, AMT, EI_PayrollTax, Adj,
+                                   DependentCare, ALD_InvInc_ec_base, CapGains,
+                                   SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
+                                   StdDed, AdditionalMedicareTax, F2441, EITC,
+                                   ChildDepTaxCredit, AdditionalCTC, CTC_new,
+                                   PersonalTaxCredit, SchR,
+                                   AmOppCreditParts, EducationTaxCredit,
+                                   CharityCredit,
+                                   NonrefundableCredits, C1040, IITAX,
+                                   BenefitSurtax, BenefitLimitation,
+                                   FairShareTax, LumpSumTax, BenefitPrograms,
+                                   ExpandIncome, AfterTaxIncome)
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
@@ -815,7 +815,7 @@ class Calculator(object):
             - 'agi': adjusted gross income, AGI (c00100)
 
             - 'expanded_income': broader than AGI (see definition in
-                                 functions.py file).
+                                 calcfunctions.py file).
 
         dollar_weighting : boolean
             False implies both income_measure percentiles on x axis
@@ -1501,7 +1501,7 @@ class Calculator(object):
 
         The {...}  object may be empty (that is, be {}), or
         may contain one or more pairs with parameter string primary keys
-        and string years as secondary keys.  See tests/test_calculate.py for
+        and string years as secondary keys.  See tests/test_calculator.py for
         an extended example of a commented JSON policy reform text
         that can be read by this method.
 
@@ -1562,12 +1562,12 @@ class Calculator(object):
 
         The {...}  object may be empty (that is, be {}), or
         may contain one or more pairs with parameter string primary keys
-        and string years as secondary keys.  See tests/test_calculate.py for
+        and string years as secondary keys.  See tests/test_calculator.py for
         an extended example of a commented JSON economic assumption text
         that can be read by this method.
 
         Note that an example is shown in the ASSUMP_CONTENTS string in
-        the tests/test_calculate.py file.
+        the tests/test_calculator.py file.
 
         Returned dictionaries (cons_dict, behv_dict, gdiff_baseline_dict,
         gdiff_respose_dict, growmodel_dict) have integer years as primary

@@ -23,7 +23,7 @@ CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
 
 INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
-POLICY_PATH = os.path.join(TAXCALC_PATH, 'current_law_policy.json')
+POLICY_PATH = os.path.join(TAXCALC_PATH, 'policy_current_law.json')
 IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
 BEHAVIOR_PATH = os.path.join(TAXCALC_PATH, 'behavior.json')

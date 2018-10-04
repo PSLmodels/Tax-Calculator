@@ -1,5 +1,5 @@
 # CODING-STYLE CHECKS:
-# pycodestyle test_calculate.py
+# pycodestyle test_calculator.py
 
 import os
 import json

@@ -49,7 +49,7 @@ def test_instantiation_and_usage():
 @pytest.mark.parametrize("fname",
                          [("behavior.json"),
                           ("consumption.json"),
-                          ("current_law_policy.json"),
+                          ("policy_current_law.json"),
                           ("growdiff.json")])
 def test_json_file_contents(tests_path, fname):
     """
@@ -108,7 +108,7 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(param['cpi_inflatable'], bool)
         assert isinstance(param['cpi_inflated'], bool)
         # check that cpi_inflatable and cpi_inflated are False in many files
-        if fname != 'current_law_policy.json':
+        if fname != 'policy_current_law.json':
             assert param['cpi_inflatable'] is False
             assert param['cpi_inflated'] is False
         # check that cpi_inflatable is True when cpi_inflated is True
@@ -192,7 +192,7 @@ def test_json_file_contents(tests_path, fname):
 @pytest.mark.parametrize("jfname, pfname",
                          [("behavior.json", "behavior.py"),
                           ("consumption.json", "consumption.py"),
-                          ("current_law_policy.json", "functions.py"),
+                          ("policy_current_law.json", "calcfunctions.py"),
                           ("growdiff.json", "growdiff.py")])
 def test_parameters_mentioned(tests_path, jfname, pfname):
     """
@@ -332,7 +332,7 @@ def test_expand_2d_partial_expand():
 
 
 @pytest.mark.parametrize('json_filename',
-                         ['current_law_policy.json',
+                         ['policy_current_law.json',
                           'behavior.json',
                           'consumption.json',
                           'growdiff.json'])
