@@ -35,25 +35,6 @@ def test_correct_Policy_instantiation():
         pol.implement_reform({2020: {'_II_em': [-1000]}})
 
 
-@pytest.fixture(scope='module', name='policyfile')
-def fixture_policyfile():
-    # specify JSON text for policy reform
-    txt = """{"_almdep": {"value": [7150, 7250, 7400],
-                          "cpi_inflated": true},
-              "_cpi_offset": {"value": [0]},
-              "_almsep": {"value": [40400, 41050],
-                          "cpi_inflated": true},
-              "_rt5": {"value": [0.33 ],
-                       "cpi_inflated": false},
-              "_rt7": {"value": [0.396],
-                       "cpi_inflated": false}}"""
-    with tempfile.NamedTemporaryFile(mode='a', delete=False) as f:
-        f.write(txt + '\n')
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
 def test_policy_json_content():
     ppo = Policy()
     policy = getattr(ppo, '_vals')
@@ -329,10 +310,29 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
-def test_create_parameters_from_file(monkeypatch, policyfile):
-    # py.test monkeypatch sets the temporary file path as the default path.
-    # After the test completes, monkeypatch restores the default settings.
-    monkeypatch.setattr(Policy, 'DEFAULTS_FILENAME', policyfile.name)
+@pytest.fixture(scope='module', name='defaultpolicyfile')
+def fixture_defaultpolicyfile():
+    # specify JSON text for alternative to policy_current_law.json file
+    txt = """{"_almdep": {"value": [7150, 7250, 7400],
+                          "cpi_inflated": true},
+              "_cpi_offset": {"value": [0]},
+              "_almsep": {"value": [40400, 41050],
+                          "cpi_inflated": true},
+              "_rt5": {"value": [0.33 ],
+                       "cpi_inflated": false},
+              "_rt7": {"value": [0.396],
+                       "cpi_inflated": false}}"""
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as f:
+        f.write(txt + '\n')
+    # Must close and then yield for Windows platform
+    yield f
+    os.remove(f.name)
+
+
+def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
+    # pytest monkeypatch sets the temporary file path as the default path;
+    # after the test completes, monkeypatch restores the default settings.
+    monkeypatch.setattr(Policy, 'DEFAULTS_FILENAME', defaultpolicyfile.name)
     ppo = Policy()
     inf_rates = ppo.inflation_rates()
     assert_allclose(ppo._almdep,

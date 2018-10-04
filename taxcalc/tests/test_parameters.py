@@ -45,7 +45,7 @@ def test_instantiation_and_usage():
     with pytest.raises(ValueError):
         ParametersBase._expand_array(arr3d, False, False, True, [0.02], 1)
 
-@pytest.mark.one
+
 @pytest.mark.parametrize("fname",
                          [("behavior.json"),
                           ("consumption.json"),
@@ -116,6 +116,14 @@ def test_json_file_contents(tests_path, fname):
             msg = 'param:<{}>; cpi_inflated={}; cpi_inflatable={}'
             fail = msg.format(pname, param['cpi_inflated'],
                               param['cpi_inflatable'])
+            failures += fail + '\n'
+        # check that cpi_inflatable param is not boolean or integer
+        nonfloat_value = param['integer_value'] or param['boolean_value']
+        if param['cpi_inflatable'] and nonfloat_value:
+            msg = ('param:<{}>; boolean_value={}; integer_value={}; '
+                   'cpi_inflatable={}')
+            fail = msg.format(pname, param['boolean_value'],
+                              param['integer_value'], param['cpi_inflatable'])
             failures += fail + '\n'
         # ensure that cpi_inflatable is False when integer_value is True
         if param['integer_value'] and param['cpi_inflatable']:
@@ -345,15 +353,6 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['boolean_value'],
                              pdict[param]['integer_value'])
             assert msg == 'ERROR: boolean_value is integer_value'
-        # check that cpi_indexed param is not boolean or integer
-        nonfloat_value = (pdict[param]['integer_value'] or
-                          pdict[param]['boolean_value'])
-        if pdict[param]['cpi_inflated'] and nonfloat_value:
-            msg = 'param,boolean_value,integer_value,= {} {} {}'
-            msg = msg.format(str(param),
-                             pdict[param]['boolean_value'],
-                             pdict[param]['integer_value'])
-            assert msg == 'ERROR: nonfloat_value param is inflation indexed'
         # find param type based on value
         val = pdict[param]['value']
         while isinstance(val, list):
