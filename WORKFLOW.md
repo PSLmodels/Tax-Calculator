@@ -51,12 +51,12 @@ of your branch in place of `BNAME`).
 4. In your favorite text editor, revise one or more existing files and
 save the changes.  If you want to add a new file to the Tax-Calculator
 repository, create and save the new file in your editor and then do
-`git add NEWFNAME` (where you type in the name of your new file in
-place of `NEWFNAME`).
+`git add FNAME` (where you type in the name of your new file in place
+of `FNAME`).
 
 5. Next test your proposed source-code changes in two ways: for coding
 style and for substantive results.  Read the documentation on [testing
-procedures](TESTING.md) for how to conduct the tests on your local
+procedures](TESTING.md) for how to conduct these tests on your local
 computer.
 
 6. When you have successfully tested your changes, commit the changes
@@ -70,7 +70,7 @@ will typically contain spaces.
 
 7. When finished with the development of your pull request, submit it
 to GitHub for review by doing `git push origin BNAME` (where you type
-in the name of your branch in place of `BNAME`).
+in the branch name you used in step 3 in place of `BNAME`).
 
 8. Then in your browser go to the [central GitHub Tax-Calculator
 repository](https://github.com/open-source-economics/Tax-Calculator)
@@ -88,6 +88,6 @@ you type in the branch name you used in step 3 in place of `BNAME`).
 9. After your pull request is merged into the `upstream` `master`
 branch, repeat steps 1-2 in order to synchronize your `origin` and
 `local` repositories with the new `master` branch in the `upstream`
-repository.  You should also delete the redundant development branch
-from your local computer by doing `git branch -d BNAME` (where you
-type in the branch name you used in step 3 in place of `BNAME`).
+repository.  You should also delete the now redundant development
+branch from your local computer by doing `git branch -d BNAME` (where
+you type in the branch name you used in step 3 in place of `BNAME`).
