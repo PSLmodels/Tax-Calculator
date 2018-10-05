@@ -78,6 +78,7 @@ top of the repository directory tree:
 ```
 cd taxcalc
 pytest -m "not requires_pufcsv and not pre_release" -n4
+cd ..
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
@@ -97,6 +98,7 @@ top-level directory:
 ```
 cd taxcalc
 pytest -m "not pre_release" -n4
+cd ..
 ```
 
 This will start executing a pytest suite containing hundreds of tests,
@@ -114,6 +116,7 @@ execute the pre-release tests using this command:
 ```
 cd taxcalc
 pytest -m pre_release -n4
+cd ..
 ``` 
 
 But if you execute the pre_release tests well before releasing a new
