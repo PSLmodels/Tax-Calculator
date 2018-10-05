@@ -22,7 +22,7 @@ def test_docs_index_up_to_date(tests_path):
     target = os.path.join(docs_path, 'index.html')
     dependencies = [os.path.join(docs_path, 'index.htmx'),
                     os.path.join(docs_path, 'make_index.py'),
-                    os.path.join(code_path, 'current_law_policy.json'),
+                    os.path.join(code_path, 'policy_current_law.json'),
                     os.path.join(code_path, 'consumption.json'),
                     os.path.join(code_path, 'behavior.json'),
                     os.path.join(code_path, 'growdiff.json'),

@@ -1,9 +1,9 @@
 """
-Tests for Tax-Calculator functions.py logic.
+Tests for Tax-Calculator calcfunctions.py logic.
 """
 # CODING-STYLE CHECKS:
-# pycodestyle test_functions.py
-# pylint --disable=locally-disabled test_functions.py
+# pycodestyle test_calcfunctions.py
+# pylint --disable=locally-disabled test_calcfunctions.py
 
 import os
 import re
@@ -59,24 +59,24 @@ class GetFuncDefs(ast.NodeVisitor):
 
 def test_calc_and_used_vars(tests_path):
     """
-    Runs two kinds of tests on variables used in the functions.py file:
+    Runs two kinds of tests on variables used in the calcfunctions.py file:
 
     (1) Checks that each var in Records.CALCULATED_VARS is actually calculated
 
     If test (1) fails, a variable in Records.CALCULATED_VARS was not
-    calculated in any function in the functions.py file.  With the exception
-    of a few variables listed in this test, all Records.CALCULATED_VARS
-    must be calculated in the functions.py file.
+    calculated in any function in the calcfunctions.py file.  With the
+    exception of a few variables listed in this test, all
+    Records.CALCULATED_VARS must be calculated in the calcfunctions.py file.
 
     (2) Check that each variable that is calculated in a function and
     returned by that function is an argument of that function.
     """
     # pylint: disable=too-many-locals
-    funcpath = os.path.join(tests_path, '..', 'functions.py')
+    funcpath = os.path.join(tests_path, '..', 'calcfunctions.py')
     gfd = GetFuncDefs()
     fnames, fargs, cvars, rvars = gfd.visit(ast.parse(open(funcpath).read()))
     # Test (1):
-    # .. create set of vars that are actually calculated in functions.py file
+    # .. create set of vars that are actually calculated in calcfunctions.py
     all_cvars = set()
     for fname in fnames:
         if fname == 'BenefitSurtax':
@@ -88,9 +88,11 @@ def test_calc_and_used_vars(tests_path):
     all_cvars.update(set(['mtr_paytax', 'mtr_inctax']))
     all_cvars.update(set(['benefit_cost_total', 'benefit_value_total']))
     # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
+    Records.read_var_info()
     found_error1 = False
     if not Records.CALCULATED_VARS <= all_cvars:
-        msg1 = 'all Records.CALCULATED_VARS not calculated in functions.py\n'
+        msg1 = ('all Records.CALCULATED_VARS not calculated '
+                'in calcfunctions.py\n')
         for var in Records.CALCULATED_VARS - all_cvars:
             found_error1 = True
             msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
@@ -118,9 +120,10 @@ def test_calc_and_used_vars(tests_path):
 
 def test_function_args_usage(tests_path):
     """
-    Checks each function argument in functions.py for use in its function body.
+    Checks each function argument in calcfunctions.py for use in its
+    function body.
     """
-    funcfilename = os.path.join(tests_path, '..', 'functions.py')
+    funcfilename = os.path.join(tests_path, '..', 'calcfunctions.py')
     with open(funcfilename, 'r') as funcfile:
         fcontent = funcfile.read()
     fcontent = re.sub('#.*', '', fcontent)  # remove all '#...' comments

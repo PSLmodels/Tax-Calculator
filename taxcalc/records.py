@@ -25,7 +25,7 @@ class Records(object):
         default value is the string 'puf.csv'
         For details on how to use your own data with the Tax-Calculator,
         look at the test_Calculator_using_nonstd_input() function in the
-        tests/test_calculate.py file.
+        tests/test_calculator.py file.
 
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
@@ -33,8 +33,8 @@ class Records(object):
         default value is false.
 
     gfactors: GrowFactors class instance or None
-        containing record data extrapolation (or "blowup") factors.
-        NOTE: the constructor should never call the _blowup() method.
+        containing record data grow (or extrapolation) factors.
+        NOTE: the constructor should never call the _extrapolate() method.
 
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
@@ -57,7 +57,7 @@ class Records(object):
         use your own data with the Tax-Calculator, read the
         DATAPREP.md file in the top-level directory and then
         look at the test_Calculator_using_nonstd_input()
-        function in the taxcalc/tests/test_calculate.py file.
+        function in the taxcalc/tests/test_calculator.py file.
 
     Raises
     ------
@@ -232,7 +232,7 @@ class Records(object):
         self.__current_year += 1
         # apply variable extrapolation grow factors
         if self.gfactors is not None:
-            self._blowup(self.__current_year)
+            self._extrapolate(self.__current_year)
         # apply variable adjustment ratios
         self._adjust(self.__current_year)
         # specify current-year sample weights
@@ -294,7 +294,7 @@ class Records(object):
 
     # ----- begin private methods of Records class -----
 
-    def _blowup(self, year):
+    def _extrapolate(self, year):
         """
         Apply to variables the grow factors for specified calendar year.
         """
