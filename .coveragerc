@@ -1,7 +1,7 @@
 [run]
 omit =
     taxcalc/_version.py
-    taxcalc/functions.py
+    taxcalc/calcfunctions.py
     taxcalc/*.json
     taxcalc/cli/*
     taxcalc/tbi/*
