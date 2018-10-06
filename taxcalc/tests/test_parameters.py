@@ -60,7 +60,7 @@ def test_json_file_contents(tests_path, fname):
     reqkeys = ['long_name', 'description',
                'section_1', 'section_2', 'notes',
                'row_var', 'row_label',
-               'start_year', 'cpi_inflated',
+               'start_year', 'cpi_inflated', 'cpi_inflatable',
                'col_var', 'col_label',
                'value']
     first_year = Policy.JSON_START_YEAR
@@ -104,10 +104,33 @@ def test_json_file_contents(tests_path, fname):
         # check that start_year equals first_year
         syr = param['start_year']
         assert isinstance(syr, int) and syr == first_year
-        # check that cpi_inflated is boolean
+        # check that cpi_inflatable and cpi_inflated are boolean
+        assert isinstance(param['cpi_inflatable'], bool)
         assert isinstance(param['cpi_inflated'], bool)
+        # check that cpi_inflatable and cpi_inflated are False in many files
         if fname != 'policy_current_law.json':
+            assert param['cpi_inflatable'] is False
             assert param['cpi_inflated'] is False
+        # check that cpi_inflatable is True when cpi_inflated is True
+        if param['cpi_inflated'] and not param['cpi_inflatable']:
+            msg = 'param:<{}>; cpi_inflated={}; cpi_inflatable={}'
+            fail = msg.format(pname, param['cpi_inflated'],
+                              param['cpi_inflatable'])
+            failures += fail + '\n'
+        # check that cpi_inflatable param is not boolean or integer
+        nonfloat_value = param['integer_value'] or param['boolean_value']
+        if param['cpi_inflatable'] and nonfloat_value:
+            msg = ('param:<{}>; boolean_value={}; integer_value={}; '
+                   'cpi_inflatable={}')
+            fail = msg.format(pname, param['boolean_value'],
+                              param['integer_value'], param['cpi_inflatable'])
+            failures += fail + '\n'
+        # ensure that cpi_inflatable is False when integer_value is True
+        if param['integer_value'] and param['cpi_inflatable']:
+            msg = 'param:<{}>; integer_value={}; cpi_inflatable={}'
+            fail = msg.format(pname, param['integer_value'],
+                              param['cpi_inflatable'])
+            failures += fail + '\n'
         # check that row_label is list
         rowlabel = param['row_label']
         assert isinstance(rowlabel, list)
@@ -330,15 +353,6 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['boolean_value'],
                              pdict[param]['integer_value'])
             assert msg == 'ERROR: boolean_value is integer_value'
-        # check that cpi_indexed param is not boolean or integer
-        nonfloat_value = (pdict[param]['integer_value'] or
-                          pdict[param]['boolean_value'])
-        if pdict[param]['cpi_inflated'] and nonfloat_value:
-            msg = 'param,boolean_value,integer_value,= {} {} {}'
-            msg = msg.format(str(param),
-                             pdict[param]['boolean_value'],
-                             pdict[param]['integer_value'])
-            assert msg == 'ERROR: nonfloat_value param is inflation indexed'
         # find param type based on value
         val = pdict[param]['value']
         while isinstance(val, list):
@@ -361,31 +375,3 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['boolean_value'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
-
-
-@pytest.mark.parametrize('json_filename',
-                         ['policy_current_law.json',
-                          'behavior.json',
-                          'consumption.json',
-                          'growdiff.json'])
-def test_cpi_inflatable_info(tests_path, json_filename):
-    """
-    Check presence and consistency of cpi_inflatable info in
-    JSON parameter files.
-    """
-    path = os.path.join(tests_path, '..', json_filename)
-    with open(path, 'r') as pfile:
-        pdict = json.load(pfile)
-    for param in sorted(pdict.keys()):
-        # check for presence of cpi_inflatable field
-        if 'cpi_inflatable' not in pdict[param]:
-            msg = 'param= {}'.format(str(param))
-            assert msg == 'ERROR: missing cpi_inflatable field'
-        # ensure that cpi_inflatable is True when cpi_inflated is True
-        if pdict[param]['cpi_inflated'] and not pdict[param]['cpi_inflatable']:
-            msg = 'param= {}'.format(str(param))
-            assert msg == 'ERROR: cpi_inflatable=False when cpi_inflated=True'
-        # ensure that cpi_inflatable is False when integer_value is True
-        if pdict[param]['integer_value'] and pdict[param]['cpi_inflatable']:
-            msg = 'param= {}'.format(str(param))
-            assert msg == 'ERROR: cpi_inflatable=True when integer_value=True'
