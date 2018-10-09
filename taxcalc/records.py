@@ -6,11 +6,10 @@ Tax-Calculator tax-filing-unit Records class.
 # pylint --disable=locally-disabled records.py
 
 import os
-import json
 import numpy as np
 import pandas as pd
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import read_egg_csv, read_egg_json
+from taxcalc.utils import read_egg_csv, read_egg_json, json2dict
 
 
 class Records(object):
@@ -259,7 +258,8 @@ class Records(object):
                                      Records.VAR_INFO_FILENAME)
         if os.path.exists(var_info_path):
             with open(var_info_path) as vfile:
-                vardict = json.load(vfile)
+                json_text = vfile.read()
+            vardict = json2dict(json_text)
         else:
             # cannot call read_egg_ function in unit tests
             vardict = read_egg_json(
