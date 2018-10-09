@@ -1733,3 +1733,49 @@ def quantity_response(quantity,
     pch_q = price_elasticity * pch_price + income_elasticity * pch_income
     response = pch_q * quantity
     return response
+
+
+def json2dict(json_text, ordered_dict=False):
+    """
+    Convert specified JSON text into a dictionary.
+
+    Parameters
+    ----------
+    json_text: string
+        JSON text.
+
+    ordered_dict: boolean
+        whether or not to return ordered dictionary.
+
+    Raises
+    ------
+    ValueError:
+        if json_text contains a JSON syntax error.
+
+    Returns
+    -------
+    dictionary: dict
+        JSON data expressed as a (regular or ordered) Python dictionary.
+    """
+    try:
+        if ordered_dict:
+            raw_dict = json.loads(json_text,
+                                  object_pairs_hook=collections.OrderedDict)
+        else:
+            raw_dict = json.loads(json_text)
+    except ValueError as valerr:
+        text_lines = json_text.split('\n')
+        msg = 'Text below contains invalid JSON:\n'
+        msg += str(valerr) + '\n'
+        msg += 'Above location of the first error may be approximate.\n'
+        msg += 'The invalid JSON text is between the lines:\n'
+        bline = ('XXXX----.----1----.----2----.----3----.----4'
+                 '----.----5----.----6----.----7')
+        msg += bline + '\n'
+        linenum = 0
+        for line in text_lines:
+            linenum += 1
+            msg += '{:04d}{}'.format(linenum, line) + '\n'
+        msg += bline + '\n'
+        raise ValueError(msg)
+    return raw_dict

@@ -8,7 +8,6 @@ Tax-Calculator federal tax Calculator class.
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
 import os
-import json
 import re
 import copy
 import numpy as np
@@ -32,7 +31,8 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
+from taxcalc.utils import (json2dict,
+                           DIST_VARIABLES, create_distribution_table,
                            DIFF_VARIABLES, create_difference_table,
                            create_diagnostic_table,
                            ce_aftertax_expanded_income,
@@ -1513,22 +1513,7 @@ class Calculator(object):
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        try:
-            raw_dict = json.loads(json_str)
-        except ValueError as valerr:
-            msg = 'Policy reform text below contains invalid JSON:\n'
-            msg += str(valerr) + '\n'
-            msg += 'Above location of the first error may be approximate.\n'
-            msg += 'The invalid JSON reform text is between the lines:\n'
-            bline = 'XX----.----1----.----2----.----3----.----4'
-            bline += '----.----5----.----6----.----7'
-            msg += bline + '\n'
-            linenum = 0
-            for line in json_str.split('\n'):
-                linenum += 1
-                msg += '{:02d}{}'.format(linenum, line) + '\n'
-            msg += bline + '\n'
-            raise ValueError(msg)
+        raw_dict = json2dict(json_str)
         # check key contents of dictionary
         actual_keys = set(raw_dict.keys())
         missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
@@ -1583,22 +1568,7 @@ class Calculator(object):
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        try:
-            raw_dict = json.loads(json_str)
-        except ValueError as valerr:
-            msg = 'Economic assumption text below contains invalid JSON:\n'
-            msg += str(valerr) + '\n'
-            msg += 'Above location of the first error may be approximate.\n'
-            msg += 'The invalid JSON asssump text is between the lines:\n'
-            bline = 'XX----.----1----.----2----.----3----.----4'
-            bline += '----.----5----.----6----.----7'
-            msg += bline + '\n'
-            linenum = 0
-            for line in json_str.split('\n'):
-                linenum += 1
-                msg += '{:02d}{}'.format(linenum, line) + '\n'
-            msg += bline + '\n'
-            raise ValueError(msg)
+        raw_dict = json2dict(json_str)
         # check key contents of dictionary
         actual_keys = set(raw_dict.keys())
         missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys
