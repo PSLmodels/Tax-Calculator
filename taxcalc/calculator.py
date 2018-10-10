@@ -13,6 +13,8 @@ import re
 import copy
 import numpy as np
 import pandas as pd
+import urllib
+from urllib.error import URLError
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
@@ -1163,7 +1165,10 @@ class Calculator(object):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
             else:
-                txt = assump
+                try:
+                    txt = urllib.request.urlopen(assump).read().decode()
+                except (ValueError, URLError):
+                    txt = assump
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
@@ -1178,7 +1183,10 @@ class Calculator(object):
             if os.path.isfile(reform):
                 txt = open(reform, 'r').read()
             else:
-                txt = reform
+                try:
+                    txt = urllib.request.urlopen(reform).read().decode()
+                except (ValueError, URLError):
+                    txt = reform
             rpol_dict = (
                 Calculator._read_json_policy_reform_text(txt,
                                                          gdiff_base_dict,

@@ -507,6 +507,32 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     assert add4aged[2022 - syr] == 0.0
 
 
+def test_json_reform_url():
+    """
+    Test reading a JSON reform from a URL. Results from the URL are expected
+    to match the results from the string.
+    """
+    reform_str = """
+    {
+    "policy": {
+        "_FICA_ss_trt": {
+            "2018": [0.130],
+            "2020": [0.140]
+        },
+        "_FICA_mc_trt": {
+            "2019": [0.030],
+            "2021": [0.032]
+        }
+      }
+    }
+    """
+    reform_url = ('https://raw.githubusercontent.com/open-source-economics/' +
+                  'Tax-Calculator/master/taxcalc/reforms/ptaxes0.json')
+    params_str = Calculator.read_json_param_objects(reform_str, None)
+    params_url = Calculator.read_json_param_objects(reform_url, None)
+    assert params_str['policy'] == params_url['policy']
+
+
 @pytest.fixture(scope='module', name='bad1reformfile')
 def fixture_bad1reformfile():
     # specify JSON text for reform
