@@ -14,7 +14,7 @@ follow when preparing a pull request on your local computer.  By coding
 style we mean primarily the vertical and horizontal spacing of the
 code and the naming of new variables.
 
-You main objective is to write Python code that is indistinguishable
+The main objective is to write Python code that is indistinguishable
 in style from existing code in the repository.  In other words, after
 your new code is merged with existing code it should be difficult for
 somebody else to determine what you contributed.
