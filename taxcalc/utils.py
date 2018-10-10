@@ -1737,7 +1737,7 @@ def quantity_response(quantity,
 
 def json2dict(json_text, ordered_dict=False):
     """
-    Convert specified JSON text into a dictionary.
+    Convert specified JSON text into a (regular or ordered) Python dictionary.
 
     Parameters
     ----------
@@ -1754,7 +1754,7 @@ def json2dict(json_text, ordered_dict=False):
 
     Returns
     -------
-    dictionary: dict
+    dictionary: dict/OrderedDict
         JSON data expressed as a (regular or ordered) Python dictionary.
     """
     try:
