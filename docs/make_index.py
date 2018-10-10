@@ -151,7 +151,7 @@ def policy_params(path, text):
     # pylint: disable=too-many-locals
     with open(path) as pfile:
         json_text = pfile.read()
-    params = json2dict(json_text, ordered_dict=True)
+    params = json2dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct section dict containing sec1_sec2 titles
     concat_str = ' @ '
@@ -266,7 +266,7 @@ def assumption_params(ptype, path, text):
     """
     with open(path) as pfile:
         json_text = pfile.read()
-    params = json2dict(json_text, ordered_dict=True)
+    params = json2dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct parameter text for each param
     ptext = ''

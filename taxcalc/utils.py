@@ -1735,17 +1735,14 @@ def quantity_response(quantity,
     return response
 
 
-def json2dict(json_text, ordered_dict=False):
+def json2dict(json_text):
     """
-    Convert specified JSON text into a (regular or ordered) Python dictionary.
+    Convert specified JSON text into an ordered Python dictionary.
 
     Parameters
     ----------
     json_text: string
         JSON text.
-
-    ordered_dict: boolean
-        whether or not to return ordered dictionary.
 
     Raises
     ------
@@ -1754,15 +1751,12 @@ def json2dict(json_text, ordered_dict=False):
 
     Returns
     -------
-    dictionary: dict/OrderedDict
-        JSON data expressed as a (regular or ordered) Python dictionary.
+    dictionary: collections.OrderedDict
+        JSON data expressed as an ordered Python dictionary.
     """
     try:
-        if ordered_dict:
-            raw_dict = json.loads(json_text,
+        ordered_dict = json.loads(json_text,
                                   object_pairs_hook=collections.OrderedDict)
-        else:
-            raw_dict = json.loads(json_text)
     except ValueError as valerr:
         text_lines = json_text.split('\n')
         msg = 'Text below contains invalid JSON:\n'
@@ -1778,4 +1772,4 @@ def json2dict(json_text, ordered_dict=False):
             msg += '{:04d}{}'.format(linenum, line) + '\n'
         msg += bline + '\n'
         raise ValueError(msg)
-    return raw_dict
+    return ordered_dict

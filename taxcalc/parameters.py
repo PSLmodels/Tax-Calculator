@@ -335,7 +335,7 @@ class ParametersBase(object):
         if os.path.exists(path):
             with open(path) as pfile:
                 json_text = pfile.read()
-            params_dict = json2dict(json_text, ordered_dict=True)
+            params_dict = json2dict(json_text)
         else:
             # cannot call read_egg_ function in unit tests
             params_dict = read_egg_json(
