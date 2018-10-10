@@ -24,14 +24,16 @@ def cli_tc_main():
     # pylint: disable=too-many-statements,too-many-branches
     # pylint: disable=too-many-return-statements
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}{}{}'.format(
-        '[--baseline BASELINE]\n',
-        '          ',
-        '[--reform REFORM] [--assump  ASSUMP]\n',
-        '          ',
-        '[--exact] [--tables] [--graphs] [--ceeu] [--dump] [--sqldb]\n',
-        '          ',
-        '[--outdir] [--test] [--version] [--help]')
+    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
+        '[--help]\n',
+        ('          '
+         '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n'),
+        ('          '
+         '[--exact] [--tables] [--graphs]\n'),
+        ('          '
+         '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'),
+        ('          '
+         '[--test] [--version]'))
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
@@ -84,15 +86,6 @@ def cli_tc_main():
     parser.add_argument('--graphs',
                         help=('optional flag that causes graphs to be written '
                               'to HTML files for viewing in browser.'),
-                        default=False,
-                        action="store_true")
-    parser.add_argument('--ceeu',
-                        help=('optional flag that causes normative welfare '
-                              'statistics, including certainty-equivalent '
-                              'expected-utility (ceeu) of after-tax income '
-                              'values for different '
-                              'constant-relative-risk-aversion parameter '
-                              'values, to be written to stdout.'),
                         default=False,
                         action="store_true")
     parser.add_argument('--dump',
@@ -201,7 +194,6 @@ def cli_tc_main():
                                         writing_output_file=True,
                                         output_tables=args.tables,
                                         output_graphs=args.graphs,
-                                        output_ceeu=args.ceeu,
                                         dump_varset=dumpvar_set,
                                         output_dump=args.dump,
                                         output_sqldb=args.sqldb)
@@ -209,7 +201,6 @@ def cli_tc_main():
         tcio.analyze(writing_output_file=True,
                      output_tables=args.tables,
                      output_graphs=args.graphs,
-                     output_ceeu=args.ceeu,
                      dump_varset=dumpvar_set,
                      output_dump=args.dump,
                      output_sqldb=args.sqldb)
