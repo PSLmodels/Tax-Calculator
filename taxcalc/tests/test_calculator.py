@@ -979,3 +979,13 @@ def test_n65(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     assert calc.n65().sum() > 1500
+
+
+def test_ce_aftertax_income(cps_subsample):
+    rec = Records.cps_constructor(data=cps_subsample)
+    pol = Policy()
+    calc1 = Calculator(policy=pol, records=rec)
+    pol.implement_reform({2013: {'_SS_Earnings_c': [9e99]}})
+    calc2 = Calculator(policy=pol, records=rec)
+    res = calc1.ce_aftertax_income(calc2)
+    assert isinstance(res, dict)
