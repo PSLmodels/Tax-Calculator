@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/open-source-economics/Tax-Calculator.svg?branch=master)](https://travis-ci.org/open-source-economics/Tax-Calculator)
+[![Codecov](https://img.shields.io/codecov/c/github/codecov/example-python.svg)](github.com/open-source-economics/Tax-Calculator)
 
 Developing Tax-Calculator
 =========================
