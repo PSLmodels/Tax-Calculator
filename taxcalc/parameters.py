@@ -7,9 +7,8 @@ Tax-Calculator abstract base parameters class.
 import os
 import json
 import abc
-import collections as collect
 import numpy as np
-from taxcalc.utils import read_egg_json
+from taxcalc.utils import read_egg_json, json2dict
 
 
 class ParametersBase(object):
@@ -335,8 +334,8 @@ class ParametersBase(object):
                             cls.DEFAULTS_FILENAME)
         if os.path.exists(path):
             with open(path) as pfile:
-                params_dict = json.load(pfile,
-                                        object_pairs_hook=collect.OrderedDict)
+                json_text = pfile.read()
+            params_dict = json2dict(json_text)
         else:
             # cannot call read_egg_ function in unit tests
             params_dict = read_egg_json(
