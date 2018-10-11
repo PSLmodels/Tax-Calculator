@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/open-source-economics/Tax-Calculator.svg?branch=master)](https://travis-ci.org/open-source-economics/Tax-Calculator)
+
 Developing Tax-Calculator
 =========================
 

@@ -419,7 +419,6 @@ class TaxCalcIO(object):
     def analyze(self, writing_output_file=False,
                 output_tables=False,
                 output_graphs=False,
-                output_ceeu=False,
                 dump_varset=None,
                 output_dump=False,
                 output_sqldb=False):
@@ -438,10 +437,6 @@ class TaxCalcIO(object):
         output_graphs: boolean
            whether or not to generate and write HTML graphs of average
            and marginal tax rates by income percentile
-
-        output_ceeu: boolean
-           whether or not to calculate and write to stdout standard
-           certainty-equivalent expected-utility statistics
 
         dump_varset: set
            custom set of variables to include in dump and sqldb output;
@@ -482,27 +477,6 @@ class TaxCalcIO(object):
             # definitely do not need marginal tax rates
             mtr_paytax = None
             mtr_inctax = None
-        # optionally conduct normative welfare analysis
-        if output_ceeu:
-            if self.behavior_has_any_response:
-                ceeu_results = 'SKIP --ceeu output because baseline and '
-                ceeu_results += 'reform cannot be sensibly compared\n '
-                ceeu_results += '                  '
-                ceeu_results += 'when specifying "behavior" with --assump '
-                ceeu_results += 'option'
-            elif self.calc.total_weight() <= 0.:
-                ceeu_results = 'SKIP --ceeu output because '
-                ceeu_results += 'sum of weights is not positive'
-            else:
-                self.calc_base.calc_all()
-                calc_base_calculated = True
-                cedict = self.calc_base.ce_aftertax_income(
-                    self.calc,
-                    custom_params=None,
-                    require_no_agg_tax_change=False)
-                ceeu_results = TaxCalcIO.ceeu_output(cedict)
-        else:
-            ceeu_results = None
         # extract output if writing_output_file
         if writing_output_file:
             self.write_output_file(output_dump, dump_varset,
@@ -523,9 +497,6 @@ class TaxCalcIO(object):
                 self.calc_base.calc_all()
                 calc_base_calculated = True
             self.write_graph_files()
-        # optionally write --ceeu output to stdout
-        if ceeu_results:
-            print(ceeu_results)
 
     def write_output_file(self, output_dump, dump_varset,
                           mtr_paytax, mtr_inctax):
@@ -735,47 +706,6 @@ class TaxCalcIO(object):
         odf = pd.DataFrame(data=odict, columns=varlist)
         return odf
 
-    @staticmethod
-    def ceeu_output(cedict):
-        """
-        Extract --ceeu output and return as text string.
-        """
-        text = ('Aggregate {} Pre-Tax Expanded Income and '
-                'Tax Revenue ($billion)\n')
-        txt = text.format(cedict['year'])
-        txt += '           baseline     reform   difference\n'
-        fmt = '{} {:12.3f} {:10.3f} {:12.3f}\n'
-        txt += fmt.format('income', cedict['inc1'], cedict['inc2'],
-                          cedict['inc2'] - cedict['inc1'])
-        alltaxdiff = cedict['tax2'] - cedict['tax1']
-        txt += fmt.format('alltax', cedict['tax1'], cedict['tax2'],
-                          alltaxdiff)
-        txt += ('Certainty Equivalent of Expected Utility of '
-                'After-Tax Expanded Income ($)\n')
-        txt += ('(assuming consumption equals '
-                'after-tax expanded income)\n')
-        txt += 'crra       baseline     reform     pctdiff\n'
-        fmt = '{} {:17.2f} {:10.2f} {:11.2f}\n'
-        for crra, ceeu1, ceeu2 in zip(cedict['crra'],
-                                      cedict['ceeu1'],
-                                      cedict['ceeu2']):
-            txt += fmt.format(crra, ceeu1, ceeu2,
-                              100.0 * (ceeu2 - ceeu1) / ceeu1)
-        if abs(alltaxdiff) >= 0.0005:
-            txt += ('WARN: baseline and reform cannot be '
-                    'sensibly compared\n')
-            text = ('      because "alltax difference" is '
-                    '{:.3f} which is not zero\n')
-            txt += text.format(alltaxdiff)
-            txt += ('FIX: adjust _LST or another reform policy parameter '
-                    'to bracket\n')
-            txt += ('     "alltax difference" equals zero and '
-                    'then interpolate')
-        else:
-            txt += 'NOTE: baseline and reform can be sensibly compared\n'
-            txt += '      because "alltax difference" is essentially zero'
-        return txt
-
     def dump_output(self, dump_varset, mtr_inctax, mtr_paytax):
         """
         Extract dump output and return it as Pandas DataFrame.
@@ -808,7 +738,6 @@ class TaxCalcIO(object):
                            writing_output_file=False,
                            output_tables=False,
                            output_graphs=False,
-                           output_ceeu=False,
                            dump_varset=None,
                            output_dump=False,
                            output_sqldb=False):
@@ -843,7 +772,6 @@ class TaxCalcIO(object):
                                                 writing_output_file,
                                                 output_tables,
                                                 output_graphs,
-                                                output_ceeu,
                                                 dump_varset,
                                                 output_dump,
                                                 output_sqldb)
@@ -856,7 +784,6 @@ class TaxCalcIO(object):
                         writing_output_file,
                         output_tables,
                         output_graphs,
-                        output_ceeu,
                         dump_varset,
                         output_dump,
                         output_sqldb):
@@ -895,7 +822,6 @@ class TaxCalcIO(object):
             tcio.analyze(writing_output_file=writing_output_file,
                          output_tables=output_tables,
                          output_graphs=output_graphs,
-                         output_ceeu=output_ceeu,
                          dump_varset=dump_varset,
                          output_dump=output_dump,
                          output_sqldb=output_sqldb)

@@ -432,7 +432,7 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
 
 def test_output_options(rawinputfile, reformfile1, assumpfile1):
     """
-    Test TaxCalcIO output_ceeu & output_dump options when writing_output_file.
+    Test TaxCalcIO output_dump options when writing_output_file.
     """
     taxyear = 2021
     tcio = TaxCalcIO(input_data=rawinputfile.name,
@@ -451,16 +451,16 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
               exact_calculations=False)
     assert not tcio.errmsg
     outfilepath = tcio.output_filepath()
-    # --ceeu output and standard output
+    # minimal output with no --dump option
     try:
-        tcio.analyze(writing_output_file=True, output_ceeu=True)
+        tcio.analyze(writing_output_file=True, output_dump=False)
     except Exception:  # pylint: disable=broad-except
         if os.path.isfile(outfilepath):
             try:
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(ceeu)_ok' == 'no'
+        assert 'TaxCalcIO.analyze(minimal_output)_ok' == 'no'
     # --dump output with full dump
     try:
         tcio.analyze(writing_output_file=True, output_dump=True)
@@ -470,7 +470,7 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
+        assert 'TaxCalcIO.analyze(full_dump_output)_ok' == 'no'
     # --dump output with partial dump
     try:
         tcio.analyze(writing_output_file=True,
@@ -482,7 +482,7 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
                 os.remove(outfilepath)
             except OSError:
                 pass  # sometimes we can't remove a generated temporary file
-        assert 'TaxCalcIO.analyze(dump)_ok' == 'no'
+        assert 'TaxCalcIO.analyze(partial_dump_output)_ok' == 'no'
     # if tries were successful, remove doc file and output file
     docfilepath = outfilepath.replace('.csv', '-doc.text')
     if os.path.isfile(docfilepath):
@@ -687,84 +687,6 @@ def test_graphs(reformfile1):
         os.remove(fname)
 
 
-def test_ceeu_output1(lumpsumreformfile):
-    """
-    Test TaxCalcIO calculate method with no output writing using ceeu option.
-    """
-    taxyear = 2020
-    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
-    recdf = pd.DataFrame(data=recdict, index=[0])
-    tcio = TaxCalcIO(input_data=recdf,
-                     tax_year=taxyear,
-                     baseline=None,
-                     reform=lumpsumreformfile.name,
-                     assump=None)
-    assert not tcio.errmsg
-    tcio.init(input_data=recdf,
-              tax_year=taxyear,
-              baseline=None,
-              reform=lumpsumreformfile.name,
-              assump=None,
-              growdiff_growmodel=None,
-              aging_input_data=False,
-              exact_calculations=False)
-    assert not tcio.errmsg
-    tcio.analyze(writing_output_file=False, output_ceeu=True)
-    assert tcio.tax_year() == taxyear
-
-
-def test_ceeu_output2():
-    """
-    Test TaxCalcIO calculate method with no output writing using ceeu option.
-    """
-    taxyear = 2020
-    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
-    recdf = pd.DataFrame(data=recdict, index=[0])
-    tcio = TaxCalcIO(input_data=recdf,
-                     tax_year=taxyear,
-                     baseline=None,
-                     reform=None,
-                     assump=None)
-    assert not tcio.errmsg
-    tcio.init(input_data=recdf,
-              tax_year=taxyear,
-              baseline=None,
-              reform=None,
-              assump=None,
-              growdiff_growmodel=None,
-              aging_input_data=False,
-              exact_calculations=False)
-    assert not tcio.errmsg
-    tcio.analyze(writing_output_file=False, output_ceeu=True)
-    assert tcio.tax_year() == taxyear
-
-
-def test_ceeu_with_behavior(lumpsumreformfile, assumpfile2):
-    """
-    Test TaxCalcIO.analyze method when assuming behavior & doing ceeu calcs.
-    """
-    taxyear = 2020
-    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
-    recdf = pd.DataFrame(data=recdict, index=[0])
-    tcio = TaxCalcIO(input_data=recdf,
-                     tax_year=taxyear,
-                     baseline=None,
-                     reform=lumpsumreformfile.name,
-                     assump=assumpfile2.name)
-    assert not tcio.errmsg
-    tcio.init(input_data=recdf,
-              tax_year=taxyear,
-              baseline=None,
-              reform=lumpsumreformfile.name,
-              assump=assumpfile2.name,
-              growdiff_growmodel=None,
-              aging_input_data=False,
-              exact_calculations=False)
-    assert not tcio.errmsg
-    tcio.analyze(writing_output_file=False, output_ceeu=True)
-    assert tcio.tax_year() == taxyear
-
-
 @pytest.fixture(scope='module', name='warnreformfile')
 def fixture_warnreformfile():
     """
@@ -805,7 +727,7 @@ def test_analyze_warnings_print(warnreformfile):
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
-    tcio.analyze(writing_output_file=False, output_ceeu=False)
+    tcio.analyze(writing_output_file=False)
     assert tcio.tax_year() == taxyear
 
 
@@ -877,7 +799,6 @@ def test_growmodel_analysis(reformfile9, assumpfile3):
                                  writing_output_file=False,
                                  output_tables=False,
                                  output_graphs=False,
-                                 output_ceeu=False,
                                  dump_varset=None,
                                  output_dump=False,
                                  output_sqldb=False)
