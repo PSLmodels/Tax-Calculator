@@ -59,10 +59,12 @@ If you want to **propose code changes**, follow the directions in the
 Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
 on how to fork and clone the Tax-Calculator git repository.  Before
 developing any code changes be sure to read completely the Contributor
-Guide and then read about the [pull-request workflow](WORKFLOW.md).
-The Tax-Calculator [release history](RELEASES.md) provides a
-high-level summary of past pull requests and access to a complete list
-of merged, closed, and pending pull requests.
+Guide and then read about the [pull-request
+workflow](https://github.com/open-source-economics/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow).
+The Tax-Calculator [release
+history](https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history)
+provides a high-level summary of past pull requests and access to a
+complete list of merged, closed, and pending pull requests.
 
 If you are relying on Tax-Calculator capabilities in your own project,
 be sure to read the definition of the [Tax-Calculator Public

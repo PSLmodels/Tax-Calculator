@@ -8,5 +8,7 @@ analyzed on your local computer using the tc CLI (command-line
 interface) to Tax-Calculator, as described in the [user
 documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#cli).
 
-[This document](REFORMS.md) provides access to several reform files
-that represent recent tax reform proposals.
+[This
+document](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md#how-to-specify-a-tax-reform-in-a-json-policy-reform-file)
+provides access to several reform files that represent recent tax
+reform proposals.

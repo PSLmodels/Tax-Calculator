@@ -1,13 +1,13 @@
 Odd Tax Records
 ===============
 
-Tax-Calculator is capable of dealing with large amounts of input
-data, so long as each filing unit has variable names that are in the
+Tax-Calculator is capable of dealing with large amounts of input data,
+so long as each filing unit has variable names that are in the
 `USABLE_READ_VARS` set in the [records.py
 file](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/records.py).
-More details about data input requirements can be found here in the
-[DATAPREP.md
-file](https://github.com/open-source-economics/Tax-Calculator/blob/master/DATAPREP.md).
+More details about data input requirements can be found in the
+[data-preparation
+documentation](https://github.com/open-source-economics/Tax-Calculator/blob/master/DATAPREP.md#tax-calculator-input-file-preparation-guidelines).
 
 Thanks to such capability, we are able to test the current tax logic
 with as many "extreme" units as we want, and thus are able to find
