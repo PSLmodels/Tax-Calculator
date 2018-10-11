@@ -217,7 +217,9 @@ situations, in which case other contributors are here to help.
    your newly added code.  Add tests so that the number of untested
    statements is the same as it is on the master branch.
 
+You should now read the more `detailed pull-request workflow`_ document.
 
+   
 Simple Usage
 ------------
 
@@ -303,3 +305,6 @@ interpreter or imported into a Python notebook for interactive execution.
 
 .. _`Cookbook of Tested Recipes for Python Programming with Tax-Calculator`:
    https://github.com/open-source-economics/Tax-Calculator/blob/master/docs/cookbook.html
+
+.. _`detailed pull-request workflow`:
+   https://github.com/open-source-economics/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow

@@ -62,8 +62,8 @@ the file in place of `NEWNAME`).
 
 5. Next test your proposed source-code changes in two ways: for coding
 style and for substantive results.  Read the documentation on [testing
-procedures](TESTING.md) for how to conduct these tests on your local
-computer.
+procedures](https://github.com/open-source-economics/Tax-Calculator/blob/master/TESTING.md#tax-calculator-testing-procedures)
+for how to conduct these tests on your local computer.
 
 6. When you have successfully tested your changes, commit the changes
 to your local repository by doing `git commit -a -m "MESSAGE"` (where

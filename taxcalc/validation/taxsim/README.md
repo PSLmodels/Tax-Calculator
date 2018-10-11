@@ -1,9 +1,11 @@
 Validation of Tax-Calculator against Internet-TAXSIM
 ====================================================
 
-The cross-model validation process described [here](../README.md) has used
+The cross-model validation process described
+[here](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/README.md#validation-of-tax-calculator-logic)
+has used
 [Internet-TAXSIM](http://users.nber.org/~taxsim/taxsim-calc9/index.html)
-to generate step-three results.  
+to generate step-three results.
 
 We are in the process of comparing Tax-Calculator and Internet-TAXSIM
 results generated from the `a` and `d` assumption sets in the
