@@ -131,5 +131,26 @@
         "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">https://github.com/open-source-economics/Tax-Calculator/issues</a>",
         "source": null,
         "type": "html"
+    },
+    "core_maintainers": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<ul><li>Martin Holmer</li><li>Matt Jensen</li></ul>",
+        "source": null,
+        "type": "html"
+    },
+    "unit_test": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>",
+        "source": "https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests",
+        "type": "html"
+    },
+    "integration_test": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>",
+        "source": "https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests",
+        "type": "html"
     }
 }
