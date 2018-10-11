@@ -7,8 +7,8 @@ Developing Tax-Calculator
 =========================
 
 This document tells you how to begin contributing to Tax-Calculator by
-reporting a bug, improving the documentation or making an enhancement
-to the Python source code.  If you only want to use Tax-Calculator,
+reporting a bug, improving the documentation, or making an enhancement
+to the Python source code.  If you only want to **use** Tax-Calculator,
 you should begin by reading the [user
 documentation](http://open-source-economics.github.io/Tax-Calculator/)
 that describes how to use Tax-Calculator on your own computer (without
