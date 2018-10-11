@@ -15,6 +15,7 @@ import numpy as np
 import pandas as pd
 import urllib
 from urllib.error import URLError
+import requests
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
@@ -1164,11 +1165,10 @@ class Calculator(object):
         elif isinstance(assump, str):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
+            elif assump.startswith('http'):
+                txt = urllib.request.urlopen(assump).read().decode()
             else:
-                try:
-                    txt = urllib.request.urlopen(assump).read().decode()
-                except (ValueError, URLError):
-                    txt = assump
+                txt = assump
             (cons_dict,
              behv_dict,
              gdiff_base_dict,
@@ -1182,11 +1182,10 @@ class Calculator(object):
         elif isinstance(reform, str):
             if os.path.isfile(reform):
                 txt = open(reform, 'r').read()
+            elif reform.startswith('http'):
+                txt = urllib.request.urlopen(reform).read().decode()
             else:
-                try:
-                    txt = urllib.request.urlopen(reform).read().decode()
-                except (ValueError, URLError):
-                    txt = reform
+                txt = reform
             rpol_dict = (
                 Calculator._read_json_policy_reform_text(txt,
                                                          gdiff_base_dict,
