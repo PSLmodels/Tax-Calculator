@@ -91,11 +91,11 @@
         "data": null
     },
     "contributor_guide": {
-        "start_header": "Tax-Calculator Coding Style",
-        "end_header": "pycodestype (the program formerly known as pep8)",
-        "source": "CODING.md",
-        "type": "github_file",
-        "data": null
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://taxcalc.readthedocs.io/en/latest/contributor_guide.html\">https://taxcalc.readthedocs.io/en/latest/contributor_guide.html</a>"
     },
     "governance_overview": {
         "start_header": null,
