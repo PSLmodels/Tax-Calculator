@@ -10,6 +10,7 @@ Tax-Calculator federal tax Calculator class.
 import os
 import re
 import copy
+import urllib
 import numpy as np
 import pandas as pd
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
@@ -1138,6 +1139,9 @@ class Calculator(object):
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
 
+        Either of the two function arguments may also be valid URL strings that
+        begin with http and point to valid JSON files hosted online.
+
         The reform file contents or JSON string must be like this:
         {"policy": {...}}
         and the assump file contents or JSON string must be like this:
@@ -1162,6 +1166,8 @@ class Calculator(object):
         elif isinstance(assump, str):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
+            elif assump.startswith('http'):
+                txt = urllib.request.urlopen(assump).read().decode()
             else:
                 txt = assump
             (cons_dict,
@@ -1177,6 +1183,8 @@ class Calculator(object):
         elif isinstance(reform, str):
             if os.path.isfile(reform):
                 txt = open(reform, 'r').read()
+            elif reform.startswith('http'):
+                txt = urllib.request.urlopen(reform).read().decode()
             else:
                 txt = reform
             rpol_dict = (
