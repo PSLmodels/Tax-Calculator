@@ -11,9 +11,9 @@ import os
 import json
 import re
 import copy
+import urllib
 import numpy as np
 import pandas as pd
-import urllib
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
@@ -1138,6 +1138,9 @@ class Calculator(object):
         containing a valid JSON string (rather than a filename),
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
+
+        Either of the two function arguments may also be valid URL strings that
+        point to valid JSON files hosted online.
 
         The reform file contents or JSON string must be like this:
         {"policy": {...}}
