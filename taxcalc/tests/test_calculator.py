@@ -355,9 +355,9 @@ def test_calculator_using_nonstd_input(rawinputfile):
     assert calc.weighted_total('e00200') == 0
     assert calc.total_weight() == 0
     varlist = ['RECID', 'MARS']
-    pdf = calc.dataframe(varlist)
-    assert isinstance(pdf, pd.DataFrame)
-    assert pdf.shape == (RAWINPUTFILE_FUNITS, len(varlist))
+    dframe = calc.dataframe(varlist)
+    assert isinstance(dframe, pd.DataFrame)
+    assert dframe.shape == (RAWINPUTFILE_FUNITS, len(varlist))
     mars = calc.array('MARS')
     assert isinstance(mars, np.ndarray)
     assert mars.shape == (RAWINPUTFILE_FUNITS,)

@@ -204,31 +204,32 @@ class Calculator(object):
 
     def dataframe(self, variable_list):
         """
-        Return pandas DataFrame containing the listed variables from embedded
+        Return Pandas DataFrame containing the listed variables from embedded
         Records object.
         """
         assert isinstance(variable_list, list)
         arys = [self.array(vname) for vname in variable_list]
-        pdf = pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
+        dframe = pd.DataFrame(data=np.column_stack(arys),
+                              columns=variable_list)
         del arys
-        return pdf
+        return dframe
 
     def distribution_table_dataframe(self):
         """
         Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables
         from embedded Records object.
         """
-        pdf = self.dataframe(DIST_VARIABLES)
+        dframe = self.dataframe(DIST_VARIABLES)
         # weighted count of itemized-deduction returns
-        pdf['num_returns_ItemDed'] = pdf['s006'].where(
-            pdf['c04470'] > 0., 0.)
+        dframe['num_returns_ItemDed'] = dframe['s006'].where(
+            dframe['c04470'] > 0., 0.)
         # weighted count of standard-deduction returns
-        pdf['num_returns_StandardDed'] = pdf['s006'].where(
-            pdf['standard'] > 0., 0.)
+        dframe['num_returns_StandardDed'] = dframe['s006'].where(
+            dframe['standard'] > 0., 0.)
         # weight count of returns with positive Alternative Minimum Tax (AMT)
-        pdf['num_returns_AMT'] = pdf['s006'].where(
-            pdf['c09600'] > 0., 0.)
-        return pdf
+        dframe['num_returns_AMT'] = dframe['s006'].where(
+            dframe['c09600'] > 0., 0.)
+        return dframe
 
     def array(self, variable_name, variable_value=None):
         """

@@ -162,12 +162,13 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         sres = summary_diff_xdec(sres, dv1, dv2)
 
     # nested function used below
-    def append_year(pdf):
+    def append_year(dframe):
         """
-        append_year embedded function revises all column names in pdf
+        append_year embedded function revises all column names in dframe
         """
-        pdf.columns = [str(col) + '_{}'.format(year_n) for col in pdf.columns]
-        return pdf
+        dframe.columns = [str(col) + '_{}'.format(year_n)
+                          for col in dframe.columns]
+        return dframe
 
     # optionally return non-JSON-like results
     if not return_dict:
