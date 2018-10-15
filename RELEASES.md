@@ -13,7 +13,7 @@ for a complete commit history.
 - None
 
 **New Features**
-- Add more detailed pull-request workflow documentation
+- Add more detailed pull-request work-flow documentation
   [[#2071](https://github.com/open-source-economics/Tax-Calculator/pull/2071)
   by Martin Holmer]
 - Add Travis-CI-build badge to `README.md` file
