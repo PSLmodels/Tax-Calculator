@@ -14,8 +14,6 @@ import copy
 import numpy as np
 import pandas as pd
 import urllib
-from urllib.error import URLError
-import requests
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
