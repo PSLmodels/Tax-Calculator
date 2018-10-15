@@ -1140,7 +1140,7 @@ class Calculator(object):
         read_json_*_text method is called.
 
         Either of the two function arguments may also be valid URL strings that
-        point to valid JSON files hosted online.
+        begin with http and point to valid JSON files hosted online.
 
         The reform file contents or JSON string must be like this:
         {"policy": {...}}
