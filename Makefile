@@ -69,6 +69,7 @@ tctest: package
 	@$(tctest-cleanup)
 	@echo "validation tests using tc will be added in the future"
 
+TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
 TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
 PYLINT_FILES := $(shell grep -rl --include="*py" disable=locally-disabled .)
@@ -80,6 +81,7 @@ RECIPE_OPTIONS = --disable=C0103,C0111,W0401,W0614 --score=no --jobs=4
 cstest:
 	pycodestyle taxcalc
 	pycodestyle docs/cookbook
+	@pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
 	@pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
 	@pylint $(PYLINT_OPTIONS) $(PYLINT_FILES)
