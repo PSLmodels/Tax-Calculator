@@ -3,7 +3,7 @@
 # Development is typically conducted on Linux or Max OS X (with the Xcode
 #              command-line tools installed), so this Makefile is designed
 #              to work in that environment (and not on Windows).
-# USAGE: tax-calculator$ make [TARGET]
+# USAGE: Tax-Calculator$ make [TARGET]
 
 .PHONY=help
 help:
