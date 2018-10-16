@@ -11,7 +11,7 @@ help:
 	@echo "TARGETS:"
 	@echo "help       : show help message"
 	@echo "clean      : remove .pyc files and local taxcalc package"
-	@echo "package    : build and install local taxcalc package"
+	@echo "package    : build and install local package"
 	@echo "pytest-cps : generate report for and cleanup after"
 	@echo "             pytest -m 'not requires_pufcsv and not pre_release'"
 	@echo "pytest     : generate report for and cleanup after"
@@ -30,11 +30,11 @@ help:
 clean:
 	@find . -name *pyc -exec rm {} \;
 	@find . -name *cache -maxdepth 1 -exec rm -r {} \;
-	@./conda.recipe/remove_local_taxcalc_package.sh
+	@./conda.recipe/remove_local_package.sh
 
 .PHONY=package
 package:
-	@./conda.recipe/install_local_taxcalc_package.sh
+	@cd conda.recipe ; ./install_local_package.sh
 
 define pytest-cleanup
 find . -name *cache -maxdepth 1 -exec rm -r {} \;
@@ -60,7 +60,7 @@ pytest-all:
 define tctest-cleanup
 rm -f test.csv
 rm -f test-18-*
-./conda.recipe/remove_local_taxcalc_package.sh	
+./conda.recipe/remove_local_package.sh
 endef
 
 .PHONY=tctest
