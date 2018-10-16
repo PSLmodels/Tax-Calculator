@@ -30,4 +30,4 @@ test:
     - tc --help
 
 about:
-  home: http://www.github.com/OpenSourcePolicyCenter
+  home: https://github.com/open-source-economics/Tax-Calculator

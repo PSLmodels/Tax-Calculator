@@ -18,8 +18,8 @@ cmdclass = versioneer.get_cmdclass()
 
 config = {
     'description': 'Tax Calculator',
-    'url': 'https://github.com/OpenSourcePolicyCenter/Tax-Calculator',
-    'download_url': 'https://github.com/OpenSourcePolicyCenter/Tax-Calculator',
+    'url': 'https://github.com/open-source-economics/Tax-Calculator',
+    'download_url': 'https://github.com/open-source-economics/Tax-Calculator',
     'description': 'taxcalc',
     'long_description': longdesc,
     'version': version,
