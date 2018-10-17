@@ -8,7 +8,6 @@ import json
 import numpy as np
 import pandas as pd
 import pytest
-from taxcalc.tbi.tbi_utils import *
 from taxcalc.tbi import *
 from taxcalc import Policy, Records, Calculator
 
@@ -124,20 +123,6 @@ def test_run_gdp_qelast_model_3():
                                        gdp_elasticity=0.36,
                                        return_dict=False)
     assert res == 0.0
-
-
-def test_random_seed_from_subdict():
-    """
-    Test except logic in try statement in random_seed_from_subdict function.
-    """
-    dct = {
-        2014: {'param1': [0.11]},
-        2016: {'param1': [0.13]}
-    }
-    seed1 = random_seed_from_subdict(dct)
-    dct[2016] = {'param1': 0.13}
-    seed2 = random_seed_from_subdict(dct)
-    assert seed1 == seed2
 
 
 def test_create_dict_table():
