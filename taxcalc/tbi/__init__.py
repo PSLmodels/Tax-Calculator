@@ -1,5 +1,4 @@
 from taxcalc.tbi.tbi import (reform_warnings_errors,
-                             create_dict_table,
                              run_nth_year_taxcalc_model,
                              run_nth_year_gdp_elast_model,
                              check_years, check_user_mods,
@@ -8,4 +7,5 @@ from taxcalc.tbi.tbi import (reform_warnings_errors,
                              summary_aggregate,
                              summary_dist_xbin, summary_diff_xbin,
                              summary_dist_xdec, summary_diff_xdec,
+                             create_dict_table,
                              check_years_return_first_year)

@@ -1,5 +1,8 @@
 """
 Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
+
+All the tests in this file, and only these tests, can be executed this way:
+Tax-Calculator$ cd taxcalc ; pytest -n4 -k tests/test_tbi.py ; cd ..
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_tbi.py
@@ -9,7 +12,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from taxcalc.tbi import *
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator, Behavior
 
 
 USER_MODS = {

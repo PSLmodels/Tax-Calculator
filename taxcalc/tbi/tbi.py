@@ -3,7 +3,7 @@ The public API of the TaxBrain Interface (tbi) to Tax-Calculator, which can
 be used by other models in the Policy Simulation Library (PSL) collection of
 USA tax models.
 
-The tbi functions are used by TaxBrain to call Tax-Calculator in order
+The tbi functions are used by TaxBrain to call PSL tax models in order
 to do distributed processing of TaxBrain runs and in order to maintain
 the privacy of the IRS-SOI PUF data being used by TaxBrain.  Maintaining
 privacy is done by "fuzzing" reform results for several randomly selected
@@ -95,51 +95,6 @@ def reform_warnings_errors(user_mods, using_puf):
     return rtn_dict
 
 
-def create_dict_table(dframe, row_names=None, column_types=None,
-                      num_decimals=2):
-    """
-    Create and return dictionary with JSON-like content from specified dframe.
-    """
-    # embedded formatted_string function
-    def formatted_string(val, _type, num_decimals):
-        """
-        Return formatted conversion of number val into a string.
-        """
-        float_types = [float, np.dtype('f8')]
-        int_types = [int, np.dtype('i8')]
-        frmat_str = "0:.{num}f".format(num=num_decimals)
-        frmat_str = "{" + frmat_str + "}"
-        try:
-            if _type in float_types or _type is None:
-                return frmat_str.format(val)
-            elif _type in int_types:
-                return str(int(val))
-            elif _type == str:
-                return str(val)
-            else:
-                raise NotImplementedError()
-        except ValueError:
-            # try making it a string - good luck!
-            return str(val)
-    # high-level create_dict_table function logic
-    out = dict()
-    if row_names is None:
-        row_names = [str(x) for x in list(dframe.index)]
-    else:
-        assert len(row_names) == len(dframe.index)
-    if column_types is None:
-        column_types = [dframe[col].dtype for col in dframe.columns]
-    else:
-        assert len(column_types) == len(dframe.columns)
-    for idx, row_name in zip(dframe.index, row_names):
-        row_out = out.get(row_name, [])
-        for col, dtype in zip(dframe.columns, column_types):
-            row_out.append(formatted_string(dframe.loc[idx, col],
-                                            dtype, num_decimals))
-        out[row_name] = row_out
-    return out
-
-
 def run_nth_year_taxcalc_model(year_n, start_year,
                                use_puf_not_cps,
                                use_full_sample,
@@ -158,7 +113,7 @@ def run_nth_year_taxcalc_model(year_n, start_year,
     start_time = time.time()
 
     # create calc1 and calc2 calculated for year_n
-    check_years_return_first_year(year_n, start_year, use_puf_not_cps)
+    check_years(year_n, start_year, use_puf_not_cps)
     calc1, calc2 = calculator_objects(year_n, start_year,
                                       use_puf_not_cps, use_full_sample,
                                       user_mods,
@@ -714,6 +669,51 @@ def summary_diff_xdec(res, df1, df2):
         create_difference_table(df1, df2, 'weighted_deciles', 'combined')
     # return res dictionary
     return res
+
+
+def create_dict_table(dframe, row_names=None, column_types=None,
+                      num_decimals=2):
+    """
+    Create and return dictionary with JSON-like content from specified dframe.
+    """
+    # embedded formatted_string function
+    def formatted_string(val, _type, num_decimals):
+        """
+        Return formatted conversion of number val into a string.
+        """
+        float_types = [float, np.dtype('f8')]
+        int_types = [int, np.dtype('i8')]
+        frmat_str = "0:.{num}f".format(num=num_decimals)
+        frmat_str = "{" + frmat_str + "}"
+        try:
+            if _type in float_types or _type is None:
+                return frmat_str.format(val)
+            elif _type in int_types:
+                return str(int(val))
+            elif _type == str:
+                return str(val)
+            else:
+                raise NotImplementedError()
+        except ValueError:
+            # try making it a string - good luck!
+            return str(val)
+    # high-level create_dict_table function logic
+    out = dict()
+    if row_names is None:
+        row_names = [str(x) for x in list(dframe.index)]
+    else:
+        assert len(row_names) == len(dframe.index)
+    if column_types is None:
+        column_types = [dframe[col].dtype for col in dframe.columns]
+    else:
+        assert len(column_types) == len(dframe.columns)
+    for idx, row_name in zip(dframe.index, row_names):
+        row_out = out.get(row_name, [])
+        for col, dtype in zip(dframe.columns, column_types):
+            row_out.append(formatted_string(dframe.loc[idx, col],
+                                            dtype, num_decimals))
+        out[row_name] = row_out
+    return out
 
 
 def check_years_return_first_year(year_n, start_year, use_puf_not_cps):
