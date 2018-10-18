@@ -233,7 +233,8 @@ def test_reform_warnings_errors():
 @pytest.mark.pre_release
 @pytest.mark.tbi_vs_std_behavior
 @pytest.mark.requires_pufcsv
-def test_behavioral_response(puf_subsample):
+@pytest.mark.parametrize('use_puf_not_cps', [True, False])
+def test_behavioral_response(use_puf_not_cps, puf_subsample, cps_fullsample):
     """
     Test that behavioral-response results are the same
     when generated from standard Tax-Calculator calls and
@@ -264,7 +265,7 @@ def test_behavioral_response(puf_subsample):
     kwargs = {
         'start_year': 2019,
         'year_n': 0,
-        'use_puf_not_cps': True,
+        'use_puf_not_cps': use_puf_not_cps,
         'use_full_sample': False,
         'user_mods': {
             'policy': params['policy'],
@@ -280,6 +281,12 @@ def test_behavioral_response(puf_subsample):
     num_years = 9
     std_res = dict()
     tbi_res = dict()
+    if use_puf_not_cps:
+        rec = Records(data=puf_subsample)
+    else:
+        # IMPORTANT: use same subsample as used in test_cpscsv.py
+        std_cps_subsample = cps_fullsample.sample(frac=0.03, random_state=180)
+        rec = Records.cps_constructor(data=std_cps_subsample)
     for using_tbi in [True, False]:
         for year in range(0, num_years):
             cyr = year + kwargs['start_year']
@@ -290,7 +297,6 @@ def test_behavioral_response(puf_subsample):
                 for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
                     tbi_res[cyr][tbl] = tables[tbl]
             else:
-                rec = Records(data=puf_subsample)
                 pol = Policy()
                 calc1 = Calculator(policy=pol, records=rec)
                 pol.implement_reform(params['policy'])
@@ -326,10 +332,13 @@ def test_behavioral_response(puf_subsample):
                                                      index=rows,
                                                      columns=cols)
     # compare the two sets of results
-    # NOTE that the tbi results have been "fuzzed" for PUF privacy reasons,
-    #      so there is no expectation that the results should be identical.
+    # NOTE that the PUF tbi results have been "fuzzed" for privacy reasons,
+    #      so there is no expectation that those results should be identical.
     no_diffs = True
-    reltol = 0.004  # std and tbi differ if more than 0.4 percent different
+    if use_puf_not_cps:
+        reltol = 0.004  # std and tbi differ if more than 0.4 percent different
+    else:  # CPS results are not "fuzzed", so
+        reltol = 1e-9  # std and tbi should be nearly identical
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
         col = '0_{}'.format(year)
@@ -338,7 +347,12 @@ def test_behavioral_response(puf_subsample):
             std = std_res[cyr][tbl][col]
             if not np.allclose(tbi, std, atol=0.0, rtol=reltol):
                 no_diffs = False
-                print('**** DIFF for year {} (year_n={}):'.format(cyr, year))
+                if use_puf_not_cps:
+                    dataset = 'PUF'
+                else:
+                    dataset = 'CPS'
+                txt = '***** {} diff in {} table for year {} (year_n={}):'
+                print(txt.format(dataset, tbl, cyr, year))
                 print('TBI RESULTS:')
                 print(tbi)
                 print('STD RESULTS:')
