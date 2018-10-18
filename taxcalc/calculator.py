@@ -1133,28 +1133,39 @@ class Calculator(object):
 
         Note that either of the two function arguments can be None.
         If reform is None, the dict in the 'policy':dict pair is empty.
-        If assump is None, the dict in the all the key:dict pairs is empty.
+        If assump is None, the dict in all the other key:dict pairs is empty.
 
         Also note that either of the two function arguments can be strings
-        containing a valid JSON string (rather than a filename),
+        containing a valid JSON string (rather than a local filename),
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
 
-        Either of the two function arguments may also be valid URL strings that
-        begin with http and point to valid JSON files hosted online.
+        Either of the two function arguments can also be a valid URL string
+        beginning with 'http' and pointing to a valid JSON file hosted online.
 
-        The reform file contents or JSON string must be like this:
+        The reform file/URL contents or JSON string must be like this:
         {"policy": {...}}
-        and the assump file contents or JSON string must be like this:
+        and the assump file/URL contents or JSON string must be like this:
         {"consumption": {...},
          "behavior": {...},
          "growdiff_baseline": {...},
          "growdiff_response": {...},
          "growmodel": {...}}
         The {...} should be empty like this {} if not specifying a policy
-        reform or if not specifying any economic assumptions of that type.
+        reform or if not specifying any non-default economic assumptions
+        of that type.
 
-        The returned dictionary contains parameter lists (not arrays).
+        The 'policy' subdictionary of the returned dictionary is
+        suitable as input into the Policy.implement_reform method.
+
+        The 'consumption' subdictionary of the returned dictionary is
+        suitable as input into the Consumption.update_consumption method.
+
+        The 'growdiff_baseline' subdictionary of the returned dictionary is
+        suitable as input into the GrowDiff.update_growdiff method.
+
+        The 'growdiff_response' subdictionary of the returned dictionary is
+        suitable as input into the GrowDiff.update_growdiff method.
         """
         # pylint: disable=too-many-branches
         # first process second assump parameter
@@ -1205,6 +1216,41 @@ class Calculator(object):
         param_dict['growmodel'] = growmodel_dict
         # return the composite dictionary
         return param_dict
+
+    @staticmethod
+    def read_json_assumptions(assump):
+        """
+        Read JSON assump object and return one dictionary that has
+        the same structure as each subdictionary returned by the
+        Calculator.read_json_param_objects method.
+
+        Note that the assump argument can be None, in which case
+        the returned dictionary is empty.  Also note that the
+        assump argument can be a string containing a local file name,
+        URL beginning with 'http', or valid JSON string.
+
+        The assump file/URL contents or JSON string must be like the
+        structure required for each subsection of the assump argument
+        of the Calculator.read_json_param_objects method.
+        """
+        # construct returned dictionary from specified assump
+        if assump is None:
+            returned_dict = dict()
+        elif isinstance(assump, str):
+            if os.path.isfile(assump):
+                txt = open(assump, 'r').read()
+            elif assump.startswith('http'):
+                txt = urllib.request.urlopen(assump).read().decode()
+            else:
+                txt = assump
+            # strip out //-comments without changing line numbers
+            json_text = re.sub('//.*', ' ', txt)
+            # convert JSON text into a Python dictionary
+            raw_dict = json2dict(json_text)
+            returned_dict = Calculator._convert_parameter_dict(raw_dict)
+        else:
+            raise ValueError('assump is neither None nor string')
+        return returned_dict
 
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
@@ -1619,8 +1665,7 @@ class Calculator(object):
         Returned dictionary has integer years as primary keys and
         string parameters as secondary keys.
         """
-        # convert year skey strings into integers and
-        # optionally convert lists into np.arrays
+        # convert year skey strings into integers
         year_param = dict()
         for pkey, sdict in param_key_dict.items():
             if not isinstance(pkey, str):

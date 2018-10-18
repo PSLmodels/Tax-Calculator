@@ -79,13 +79,13 @@ RECIPE_OPTIONS = --disable=C0103,C0111,W0401,W0614 --score=no --jobs=4
 
 .PHONY=cstest
 cstest:
-	pycodestyle taxcalc
-	pycodestyle docs/cookbook
-	@pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
-	@pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
-	@pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
-	@pylint $(PYLINT_OPTIONS) $(PYLINT_FILES)
-	@pylint $(RECIPE_OPTIONS) $(RECIPE_FILES)
+	-pycodestyle taxcalc
+	-pycodestyle docs/cookbook
+	@-pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
+	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
+	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
+	@-pylint $(PYLINT_OPTIONS) $(PYLINT_FILES)
+	@-pylint $(RECIPE_OPTIONS) $(RECIPE_FILES)
 
 define coverage-cleanup
 rm -f .coverage htmlcov/*
