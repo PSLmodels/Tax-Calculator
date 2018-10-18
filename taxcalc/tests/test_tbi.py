@@ -284,7 +284,8 @@ def test_behavioral_response(use_puf_not_cps, puf_subsample, cps_fullsample):
     if use_puf_not_cps:
         rec = Records(data=puf_subsample)
     else:
-        # IMPORTANT: use same subsample as used in test_cpscsv.py
+        # IMPORTANT: must use same subsample as used in test_cpscsv.py because
+        #            that is the subsample used by run_nth_year_taxcalc_model
         std_cps_subsample = cps_fullsample.sample(frac=0.03, random_state=180)
         rec = Records.cps_constructor(data=std_cps_subsample)
     for using_tbi in [True, False]:
@@ -335,22 +336,31 @@ def test_behavioral_response(use_puf_not_cps, puf_subsample, cps_fullsample):
     # NOTE that the PUF tbi results have been "fuzzed" for privacy reasons,
     #      so there is no expectation that those results should be identical.
     no_diffs = True
+    cps_dump = False  # setting to True produces dump output and test failure
     if use_puf_not_cps:
         reltol = 0.004  # std and tbi differ if more than 0.4 percent different
+        dataset = 'PUF'
+        dumping = False
     else:  # CPS results are not "fuzzed", so
-        reltol = 1e-9  # std and tbi should be nearly identical
+        reltol = 1e-9  # std and tbi should be virtually identical
+        dataset = 'CPS'
+        dumping = cps_dump
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
+        if dumping and cyr >= 2019 and cyr <= 2020:
+            do_dump = True
+        else:
+            do_dump = False
         col = '0_{}'.format(year)
         for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
             tbi = tbi_res[cyr][tbl][col]
+            if do_dump:
+                txt = 'DUMP of {} {} table for year {}:'
+                print(txt.format(dataset, tbl, cyr))
+                print(tbi)
             std = std_res[cyr][tbl][col]
             if not np.allclose(tbi, std, atol=0.0, rtol=reltol):
                 no_diffs = False
-                if use_puf_not_cps:
-                    dataset = 'PUF'
-                else:
-                    dataset = 'CPS'
                 txt = '***** {} diff in {} table for year {} (year_n={}):'
                 print(txt.format(dataset, tbl, cyr, year))
                 print('TBI RESULTS:')
@@ -358,3 +368,4 @@ def test_behavioral_response(use_puf_not_cps, puf_subsample, cps_fullsample):
                 print('STD RESULTS:')
                 print(std)
     assert no_diffs
+    assert not dumping

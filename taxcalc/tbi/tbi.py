@@ -262,6 +262,14 @@ def run_nth_year_gdp_elast_model(year_n, start_year,
     return gdp_effect
 
 
+# -------------------------------------------------------
+# Begin "private" functions used to build functions like
+# run_nth_year_taxcalc_model for other models in the USA
+# tax collection of the Policy Simulation Library (PSL).
+# Any other use of the following functions is suspect.
+# -------------------------------------------------------
+
+
 def check_years(year_n, start_year, use_puf_not_cps):
     """
     Ensure year_n and start_year values are valid given input data used.
