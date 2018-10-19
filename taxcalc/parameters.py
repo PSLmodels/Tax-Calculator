@@ -145,7 +145,7 @@ class ParametersBase(object):
         Parameters
         ----------
         year: int
-            calendar year for which to current_year and parameter values
+            calendar year for which to set current_year and parameter values
 
         Raises
         ------
@@ -174,6 +174,57 @@ class ParametersBase(object):
                 if isinstance(name, str):
                     arr = getattr(self, name)
                     setattr(self, name[1:], arr[year_zero_indexed])
+
+    @staticmethod
+    def param_dict_for_year(cyear, param_dict, param_info):
+        """
+        Set parameters to their values for the specified calendar year.
+
+        Parameters
+        ----------
+        cyear: int
+            calendar year for which to set parameter values
+
+        param_dict: dict
+            dictionary returned by the Calculator.read_json_assumptions method
+
+        param_info: dict
+            dictionary of information about each parameter that can be used in
+            param_dict, where information about each parameter must include at
+            a minimum the following key-value pairs:
+            'default_value': <number>
+            'minimum_value': <number>
+            'maximum_value': <number>
+
+        Returns
+        -------
+        param_values_for_year: dict
+            dictionary containing a key:value pair for each parameter in the
+            param_info dictionary, where each pair looks like this:
+            '<param_name>': <number>
+        """
+        assert isinstance(cyear, int)
+        assert isinstance(param_dict, dict)
+        assert isinstance(param_info, dict)
+        # set each parameter to its default value
+        pvalue = dict()
+        for pname in param_info:
+            pvalue[pname] = param_info[pname]['default_value']
+        # update pvalue using param_dict contents
+        for year in sorted(param_dict.keys()):
+            assert isinstance(year, int)
+            if year > cyear:
+                break  # out of the for year loop
+            ydict = param_dict[year]
+            assert isinstance(ydict, dict)
+            for pname in ydict:
+                assert pname in param_info
+                pval = ydict[pname]
+                assert isinstance(pval, float)
+                assert pval >= param_info[pname]['minimum_value']
+                assert pval <= param_info[pname]['maximum_value']
+                pvalue[pname] = pval
+        return pvalue
 
     # ----- begin private methods of ParametersBase class -----
 

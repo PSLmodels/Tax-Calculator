@@ -1110,7 +1110,7 @@ def test_ce_aftertax_income(cps_subsample):
 ASSUMPTION_FILE_CONTENT = """
 // Example of JSON assump file suitable for read_json_assumptions().
 {
-  "BE_sub": {"2018": -0.05},
+  "BE_sub": {"2018": -0.05, "2021": -0.25},
   "BE_inc": {"2020": 0.10},
   "BE_cg": {"2022": -0.70}
 }
