@@ -56,10 +56,10 @@
         "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew\">http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew</a>"
     },
     "dev_changelog": {
-        "start_header": "2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6",
-        "end_header": "2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7",
-        "source": "RELEASES.md",
-        "type": "github_file",
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
         "data": null
     },
     "disclaimer": {
