@@ -6,6 +6,7 @@ import json
 from io import StringIO
 import tempfile
 import copy
+import urllib
 import pytest
 import numpy as np
 import pandas as pd
@@ -430,7 +431,7 @@ def fixture_reform_file():
 
 
 ASSUMP_CONTENTS = """
-// Example of assump file suitable for the read_json_param_objects().
+// Example of JSON assump file suitable for read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within each "behavior", "consumption" and "growth" object, the
@@ -1104,3 +1105,47 @@ def test_ce_aftertax_income(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec)
     res = calc1.ce_aftertax_income(calc2)
     assert isinstance(res, dict)
+
+
+ASSUMPTION_FILE_CONTENT = """
+// Example of JSON assump file suitable for read_json_assumptions().
+{
+  "BE_sub": {"2018": -0.05},
+  "BE_inc": {"2020": 0.10},
+  "BE_cg": {"2022": -0.70}
+}
+"""
+
+
+@pytest.fixture(scope='module', name='assumption_file')
+def fixture_assumption_file():
+    """
+    Temporary assumption file for read_json_assumptions() function.
+    """
+    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    afile.write(ASSUMPTION_FILE_CONTENT)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_read_json_assumptions(assumption_file):
+    """
+    Test Calculator.read_json_assumptions() function.
+    """
+    assert isinstance(Calculator.read_json_assumptions(None), dict)
+    with pytest.raises(ValueError):
+        Calculator.read_json_assumptions(list())
+    with pytest.raises(urllib.request.URLError):
+        Calculator.read_json_assumptions('http://unknown-url')
+    assump_filename = assumption_file.name
+    file_dict = Calculator.read_json_assumptions(assump_filename)
+    assert isinstance(file_dict, dict)
+    text_dict = Calculator.read_json_assumptions(ASSUMPTION_FILE_CONTENT)
+    assert isinstance(text_dict, dict)
+    assert text_dict == file_dict
