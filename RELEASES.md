@@ -10,16 +10,19 @@ for a complete commit history.
 [#2058](https://github.com/open-source-economics/Tax-Calculator/pull/2058))
 
 **API Changes**
+
 - Require Python 3.6 to run Tax-Calculator source code or conda package
   [[#2058](https://github.com/open-source-economics/Tax-Calculator/pull/2058)
   by Martin Holmer], which requires new `puf.csv` input file (see [taxdata pull request 283](https://github.com/open-source-economics/taxdata/pull/283) for details) with this information:
-  * Byte size: 56415698  
-  * MD5 checksum: 3f1c7c2b16b6394a9148779db992bed1
+    * Byte size: 56415698
+    * MD5 checksum: 3f1c7c2b16b6394a9148779db992bed1
 
 **New Features**
+
 - None
 
 **Bug Fixes**
+
 - None
 
 
@@ -446,7 +449,7 @@ for a complete commit history.
 - Handle small numerical differences in test results generated under Python 3.6
   [[#1795](https://github.com/open-source-economics/Tax-Calculator/pull/1795)
   by Martin Holmer with need pointed out by Matt Jensen]
-- Make the `_cpi_offset` policy parameter work like other policy parameters 
+- Make the `_cpi_offset` policy parameter work like other policy parameters
   [[#1796](https://github.com/open-source-economics/Tax-Calculator/pull/1796)
   by Martin Holmer with need pointed out by Matt Jensen and Hank Doupe]
 
