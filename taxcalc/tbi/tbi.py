@@ -135,9 +135,9 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         # (reform-specific seed is used to choose whose results are fuzzed)
         seed = random_seed(user_mods)
         print('fuzzing_seed={}'.format(seed))
-        np.random.seed(seed)  # pylint: disable=no-member
+        np.random.seed(seed)
         # make bool array marking which filing units are affected by the reform
-        reform_affected = np.logical_not(  # pylint: disable=no-member
+        reform_affected = np.logical_not(
             np.isclose(dv1['combined'], dv2['combined'], atol=0.01, rtol=0.0)
         )
         agg1, agg2 = fuzzed(dv1, dv2, reform_affected, 'aggr')
@@ -372,10 +372,8 @@ def calculator_objects(year_n, start_year,
     if use_full_sample:
         sample = full_sample
     else:
-        sample = full_sample.sample(  # pylint: disable=no-member
-            frac=sampling_frac,
-            random_state=sampling_seed
-        )
+        sample = full_sample.sample(frac=sampling_frac,
+                                    random_state=sampling_seed)
     if use_puf_not_cps:
         print('puf-read-time= {:.1f}'.format(time.time() - stime))
     else:
@@ -478,12 +476,12 @@ def random_seed(user_mods):
         txt = u''.join(all_vals).encode('utf-8')
         hsh = hashlib.sha512(txt)
         seed = int(hsh.hexdigest(), 16)
-        return seed % np.iinfo(np.uint32).max  # pylint: disable=no-member
+        return seed % np.iinfo(np.uint32).max
     # start of random_seed function
     ans = 0
     for subdict_name in user_mods:
         ans += random_seed_from_subdict(user_mods[subdict_name])
-    return ans % np.iinfo(np.uint32).max  # pylint: disable=no-member
+    return ans % np.iinfo(np.uint32).max
 
 
 NUM_TO_FUZZ = 3  # when using dropq algorithm on puf.csv results
@@ -556,8 +554,7 @@ def fuzzed(df1, df2, reform_affected, table_row_type):
         indices = np.where(group2['reform_affected'])
         num = min(len(indices[0]), NUM_TO_FUZZ)
         if num > 0:
-            choices = np.random.choice(indices[0],  # pylint: disable=no-member
-                                       size=num, replace=False)
+            choices = np.random.choice(indices[0], size=num, replace=False)
             group1 = gdf1.get_group(name)
             for idx in choices:
                 group2.iloc[idx] = group1.iloc[idx]
