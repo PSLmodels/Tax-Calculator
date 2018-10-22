@@ -455,7 +455,7 @@ def calculator_objects(year_n, start_year,
 def calculators(year_n, start_year,
                 use_puf_not_cps,
                 use_full_sample,
-                user_mods)
+                user_mods):
     """
     This function assumes that the specified user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
@@ -464,8 +464,7 @@ def calculators(year_n, start_year,
       calc2 is post-reform Calculator object for year_n.
     Neither Calculator object has had the calc_all() method executed.
     """
-    # xpylint: disable=too-many-arguments,too-many-locals
-    # xpylint: disable=too-many-branches,too-many-statements
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
 
     check_user_mods(user_mods)
 
