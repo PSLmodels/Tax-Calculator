@@ -17,7 +17,6 @@ tax results.
 # pylint --disable=locally-disabled tbi.py
 
 import os
-import time
 import copy
 import hashlib
 import numpy as np
@@ -110,8 +109,6 @@ def run_nth_year_taxcalc_model(year_n, start_year,
     """
     # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
 
-    start_time = time.time()
-
     # create calc1 and calc2 calculated for year_n
     check_years(year_n, start_year, use_puf_not_cps)
     calc1, calc2 = calculator_objects(year_n, start_year,
@@ -176,8 +173,6 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         res = dict()
         for tbl in sres:
             res[tbl] = append_year(sres[tbl])
-        elapsed_time = time.time() - start_time
-        print('elapsed time for this run: {:.1f}'.format(elapsed_time))
         return res
 
     # optionally construct JSON-like results dictionaries for year n
@@ -211,10 +206,6 @@ def run_nth_year_taxcalc_model(year_n, start_year,
             res[tbl] = create_dict_table(sres[tbl],
                                          row_names=info[tbl]['row_names'],
                                          column_types=info[tbl]['col_types'])
-
-    elapsed_time = time.time() - start_time
-    print('elapsed time for this run: {:.1f}'.format(elapsed_time))
-
     return res
 
 
@@ -348,7 +339,6 @@ def calculator_objects(year_n, start_year,
     growdiff_response.apply_to(growfactors_post)
 
     # create sample pd.DataFrame from specified input file and sampling scheme
-    stime = time.time()
     tbi_path = os.path.abspath(os.path.dirname(__file__))
     if use_puf_not_cps:
         # first try TaxBrain deployment path
@@ -374,10 +364,6 @@ def calculator_objects(year_n, start_year,
     else:
         sample = full_sample.sample(frac=sampling_frac,
                                     random_state=sampling_seed)
-    if use_puf_not_cps:
-        print('puf-read-time= {:.1f}'.format(time.time() - stime))
-    else:
-        print('cps-read-time= {:.1f}'.format(time.time() - stime))
 
     # create pre-reform Calculator instance
     if use_puf_not_cps:
