@@ -452,6 +452,120 @@ def calculator_objects(year_n, start_year,
     return (calc1, calc2)
 
 
+def calculators(year_n, start_year,
+                use_puf_not_cps,
+                use_full_sample,
+                user_mods)
+    """
+    This function assumes that the specified user_mods is a dictionary
+      returned by the Calculator.read_json_param_objects() function.
+    This function returns (calc1, calc2) where
+      calc1 is pre-reform Calculator object for year_n, and
+      calc2 is post-reform Calculator object for year_n.
+    Neither Calculator object has had the calc_all() method executed.
+    """
+    # xpylint: disable=too-many-arguments,too-many-locals
+    # xpylint: disable=too-many-branches,too-many-statements
+
+    check_user_mods(user_mods)
+
+    # specify Consumption instance
+    consump = Consumption()
+    consump_assumptions = user_mods['consumption']
+    consump.update_consumption(consump_assumptions)
+
+    # specify growdiff_baseline and growdiff_response
+    growdiff_baseline = GrowDiff()
+    growdiff_response = GrowDiff()
+    growdiff_base_assumps = user_mods['growdiff_baseline']
+    growdiff_resp_assumps = user_mods['growdiff_response']
+    growdiff_baseline.update_growdiff(growdiff_base_assumps)
+    growdiff_response.update_growdiff(growdiff_resp_assumps)
+
+    # create pre-reform and post-reform GrowFactors instances
+    growfactors_pre = GrowFactors()
+    growdiff_baseline.apply_to(growfactors_pre)
+    growfactors_post = GrowFactors()
+    growdiff_baseline.apply_to(growfactors_post)
+    growdiff_response.apply_to(growfactors_post)
+
+    # create sample pd.DataFrame from specified input file and sampling scheme
+    tbi_path = os.path.abspath(os.path.dirname(__file__))
+    if use_puf_not_cps:
+        # first try TaxBrain deployment path
+        input_path = 'puf.csv.gz'
+        if not os.path.isfile(input_path):
+            # otherwise try local Tax-Calculator deployment path
+            input_path = os.path.join(tbi_path, '..', '..', 'puf.csv')
+        sampling_frac = 0.05
+        sampling_seed = 2222
+    else:  # if using cps input not puf input
+        # first try Tax-Calculator code path
+        input_path = os.path.join(tbi_path, '..', 'cps.csv.gz')
+        if not os.path.isfile(input_path):
+            # otherwise read from taxcalc package "egg"
+            input_path = None  # pragma: no cover
+            full_sample = read_egg_csv('cps.csv.gz')  # pragma: no cover
+        sampling_frac = 0.03
+        sampling_seed = 180
+    if input_path:
+        full_sample = pd.read_csv(input_path)
+    if use_full_sample:
+        sample = full_sample
+    else:
+        sample = full_sample.sample(frac=sampling_frac,
+                                    random_state=sampling_seed)
+
+    # create pre-reform Calculator instance
+    if use_puf_not_cps:
+        recs1 = Records(data=sample,
+                        gfactors=growfactors_pre)
+    else:
+        recs1 = Records.cps_constructor(data=sample,
+                                        gfactors=growfactors_pre)
+    policy1 = Policy(gfactors=growfactors_pre)
+    calc1 = Calculator(policy=policy1, records=recs1, consumption=consump)
+    while calc1.current_year < start_year:
+        calc1.increment_year()
+    assert calc1.current_year == start_year
+
+    # create post-reform Calculator instance
+    if use_puf_not_cps:
+        recs2 = Records(data=sample,
+                        gfactors=growfactors_post)
+    else:
+        recs2 = Records.cps_constructor(data=sample,
+                                        gfactors=growfactors_post)
+    policy2 = Policy(gfactors=growfactors_post)
+    policy_reform = user_mods['policy']
+    policy2.implement_reform(policy_reform)
+    calc2 = Calculator(policy=policy2, records=recs2, consumption=consump)
+    while calc2.current_year < start_year:
+        calc2.increment_year()
+    assert calc2.current_year == start_year
+
+    # delete objects now embedded in calc1 and calc2
+    del sample
+    del full_sample
+    del consump
+    del growdiff_baseline
+    del growdiff_response
+    del growfactors_pre
+    del growfactors_post
+    del recs1
+    del recs2
+    del policy1
+    del policy2
+
+    # increment Calculator objects for year_n years
+    for _ in range(0, year_n):
+        calc1.increment_year()
+        calc2.increment_year()
+
+    # return Calculator objects
+    return (calc1, calc2)
+
+
 def random_seed(user_mods):
     """
     Compute random seed based on specified user_mods, which is a
