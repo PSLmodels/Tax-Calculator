@@ -347,10 +347,7 @@ def test_behavioral_response(use_puf_not_cps, puf_subsample, cps_fullsample):
         dumping = cps_dump
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
-        if dumping and cyr >= 2019 and cyr <= 2020:
-            do_dump = True
-        else:
-            do_dump = False
+        do_dump = bool(dumping and cyr >= 2019 and cyr <= 2020)
         col = '0_{}'.format(year)
         for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
             tbi = tbi_res[cyr][tbl][col]
