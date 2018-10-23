@@ -4,13 +4,15 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-2018-??-?? Release 0.22.0
+2018-10-2? Release 0.22.0
 -------------------------------------------------------------------------
 (last merged pull request is
-[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+[#2087](https://github.com/open-source-economics/Tax-Calculator/pull/2087))
 
 **API Changes**
-- None
+- Refactor `tbi` functions so that other models in the Policy Simulation Library (PSL) collection of USA tax models can easily produce the tables expected by TaxBrain
+  [[#2087](https://github.com/open-source-economics/Tax-Calculator/pull/2087)
+  by Martin Holmer]
 
 **New Features**
 - Add more detailed pull-request work-flow documentation
@@ -29,6 +31,9 @@ for a complete commit history.
 **Bug Fixes**
 - Fix syntax error in `gitpr.bat` Windows batch script
   [[#2084](https://github.com/open-source-economics/Tax-Calculator/pull/2084)
+  by Martin Holmer]
+- Fix bug in create_difference_table utility function that affected the `ubi` and `benefit_*_total` variables
+  [[#2087](https://github.com/open-source-economics/Tax-Calculator/pull/2087)
   by Martin Holmer]
 
 
