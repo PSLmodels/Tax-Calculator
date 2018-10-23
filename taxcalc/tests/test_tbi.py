@@ -132,7 +132,7 @@ def test_create_dict_table():
     # test correct usage
     dframe = pd.DataFrame(data=[[1., 2, 3], [4, 5, 6], [7, 8, 9]],
                           columns=['a', 'b', 'c'])
-    ans = create_dict_table(dframe)
+    ans = create_dict_table(dframe, num_decimals=2)
     exp = {'0': ['1.00', '2', '3'],
            '1': ['4.00', '5', '6'],
            '2': ['7.00', '8', '9']}
@@ -184,7 +184,7 @@ def test_with_pufcsv(puf_fullsample):
                                          user_mods=usermods,
                                          return_dict=True)
     total = resdict['aggr_2']
-    tbi_reform_revenue = float(total['combined_tax_9']) * 1e-9
+    tbi_reform_revenue = float(total['combined_tax_9'])
     # assert that tbi revenue is similar to the fullsample calculation
     diff = abs(fulls_reform_revenue - tbi_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue
@@ -332,6 +332,10 @@ def test_behavioral_response(use_puf_not_cps, puf_subsample, cps_fullsample):
                     std_res[cyr][tbl] = pd.DataFrame(data=datalist,
                                                      index=rows,
                                                      columns=cols)
+                    for col in std_res[cyr][tbl].columns:
+                        val = std_res[cyr][tbl][col] * 1e-9
+                        std_res[cyr][tbl][col] = round(val, 3)
+
     # compare the two sets of results
     # NOTE that the PUF tbi results have been "fuzzed" for privacy reasons,
     #      so there is no expectation that those results should be identical.

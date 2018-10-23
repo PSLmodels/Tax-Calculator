@@ -674,6 +674,7 @@ def summary_aggregate(res, df1, df2):
     df2 contains results variables for reform policy.
     returns augmented dictionary of summary-results DataFrames.
     """
+    # pylint: disable=too-many-locals
     # tax difference totals between reform and baseline
     aggr_itax_d = ((df2['iitax'] - df1['iitax']) * df2['s006']).sum()
     aggr_ptax_d = ((df2['payrolltax'] - df1['payrolltax']) * df2['s006']).sum()
@@ -695,6 +696,10 @@ def summary_aggregate(res, df1, df2):
     aggr2 = [aggr_itax_2, aggr_ptax_2, aggr_comb_2]
     res['aggr_2'] = pd.DataFrame(data=aggr2, index=AGG_ROW_NAMES)
     del aggr2
+    # scale res dictionary elements
+    for tbl in ['aggr_d', 'aggr_1', 'aggr_2']:
+        for col in res[tbl]:
+            res[tbl][col] = round(res[tbl][col] * 1.e-9, 3)
     # return res dictionary
     return res
 
@@ -776,7 +781,7 @@ def summary_diff_xdec(res, df1, df2):
 
 
 def create_dict_table(dframe, row_names=None, column_types=None,
-                      num_decimals=2):
+                      num_decimals=3):
     """
     Create and return dictionary with JSON-like content from specified dframe.
     """
