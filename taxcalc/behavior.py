@@ -8,12 +8,12 @@ Tax-Calculator elasticity-based behavioral-response Behavior class.
 import copy
 import numpy as np
 from taxcalc.policy import Policy
-from taxcalc.parameters import ParametersBase
+from taxcalc.parameters import Parameters
 
 
-class Behavior(ParametersBase):
+class Behavior(Parameters):
     """
-    Behavior is a subclass of the abstract ParametersBase class, and
+    Behavior is a subclass of the abstract Parameters class, and
     therefore, inherits its methods (none of which are shown here).
 
     Constructor for elasticity-based behavioral-response class.

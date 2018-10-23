@@ -11,7 +11,7 @@ import numpy as np
 from taxcalc.utils import read_egg_json, json2dict
 
 
-class ParametersBase(object):
+class Parameters(object):
     """
     Inherit from this class for Policy, Behavior, Consumption, GrowDiff, and
     other groups of parameters that need to have a set_year method.
@@ -44,8 +44,8 @@ class ParametersBase(object):
             ppo = cls(num_years=nyrs)
             ppo.set_year(start_year)
             params = getattr(ppo, '_vals')
-            params = ParametersBase._revised_default_data(params, start_year,
-                                                          nyrs, ppo)
+            params = Parameters._revised_default_data(params, start_year,
+                                                      nyrs, ppo)
         # return different data from params dict depending on metadata value
         if metadata:
             return params
@@ -113,28 +113,28 @@ class ParametersBase(object):
     @property
     def num_years(self):
         """
-        ParametersBase class number of parameter years property.
+        Parameters class number of parameter years property.
         """
         return self._num_years
 
     @property
     def current_year(self):
         """
-        ParametersBase class current calendar year property.
+        Parameters class current calendar year property.
         """
         return self._current_year
 
     @property
     def start_year(self):
         """
-        ParametersBase class first parameter year property.
+        Parameters class first parameter year property.
         """
         return self._start_year
 
     @property
     def end_year(self):
         """
-        ParametersBase class lasst parameter year property.
+        Parameters class lasst parameter year property.
         """
         return self._end_year
 
@@ -226,7 +226,7 @@ class ParametersBase(object):
                 pvalue[pname] = pval
         return pvalue
 
-    # ----- begin private methods of ParametersBase class -----
+    # ----- begin private methods of Parameters class -----
 
     def _validate_assump_parameter_names_types(self, revision):
         """
@@ -582,11 +582,11 @@ class ParametersBase(object):
             else:
                 x = np.array(x, np.float64)
         if len(x.shape) == 1:
-            return ParametersBase._expand_1D(x, inflate, inflation_rates,
-                                             num_years)
+            return Parameters._expand_1D(x, inflate, inflation_rates,
+                                         num_years)
         elif len(x.shape) == 2:
-            return ParametersBase._expand_2D(x, inflate, inflation_rates,
-                                             num_years)
+            return Parameters._expand_2D(x, inflate, inflation_rates,
+                                         num_years)
         else:
             raise ValueError('_expand_array expects a 1D or 2D array')
 

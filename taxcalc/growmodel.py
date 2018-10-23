@@ -7,12 +7,12 @@ Simple macroeconomic growth model embedded in Tax-Calculator.
 
 import numpy as np
 from taxcalc.policy import Policy
-from taxcalc.parameters import ParametersBase
+from taxcalc.parameters import Parameters
 
 
-class GrowModel(ParametersBase):
+class GrowModel(Parameters):
     """
-    GrowModel is a subclass of the abstract ParametersBase class, and
+    GrowModel is a subclass of the abstract Parameters class, and
     therefore, inherits its methods (none of which are shown here).
 
     Constructor for simple macroeconomic growth model.
