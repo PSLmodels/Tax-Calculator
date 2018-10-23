@@ -89,8 +89,8 @@ DIST_TABLE_LABELS = ['Returns',
 # labels list to map a label to the correct column in a difference table.
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
-                  'iitax', 'payrolltax', 'combined', 's006', 'ubi',
-                  'benefit_cost_total', 'benefit_value_total']
+                  'iitax', 'payrolltax', 'combined', 's006',
+                  'ubi', 'benefit_cost_total', 'benefit_value_total']
 
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
@@ -245,7 +245,7 @@ def get_sums(dframe):
     return pd.Series(sums, name='ALL')
 
 
-def create_distribution_table(vdf, groupby, income_measure):
+def create_distribution_table(vdf, groupby, income_measure, scaling=True):
     """
     Get results from vdf, sort them by expanded_income based on groupby,
     and return them as a table.
@@ -264,6 +264,9 @@ def create_distribution_table(vdf, groupby, income_measure):
     income_measure: String object
         options for input: 'expanded_income' or 'expanded_income_baseline'
         determines which variable is used to sort rows
+
+    scaling : boolean
+        specifies whether or not table entries are scaled
 
     Returns
     -------
@@ -339,8 +342,6 @@ def create_distribution_table(vdf, groupby, income_measure):
     else:
         dist_table = dist_table.append(sum_row)
     del sum_row
-    # set print display format for float table elements
-    pd.options.display.float_format = '{:8,.0f}'.format
     # ensure dist_table columns are in correct order
     assert dist_table.columns.values.tolist() == DIST_TABLE_COLUMNS
     # add row names to table if using weighted_deciles or standard_income_bins
@@ -357,6 +358,17 @@ def create_distribution_table(vdf, groupby, income_measure):
     # delete intermediate Pandas DataFrame objects
     del gdf
     del dframe
+    # scale table elements
+    if scaling:
+        count_vars = ['s006',
+                      'num_returns_StandardDed',
+                      'num_returns_ItemDed',
+                      'num_returns_AMT']
+        for col in dist_table.columns:
+            if col in count_vars:
+                dist_table[col] = np.round(dist_table[col] * 1e-6, 2)
+            else:
+                dist_table[col] = np.round(dist_table[col] * 1e-9, 3)
     # return table as Pandas DataFrame
     vdf.sort_index(inplace=True)
     return dist_table
@@ -401,7 +413,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
           positive (denoted by a 0-10p row label) values of the
           specified income_measure.
     """
-    # pylint: disable=too-many-statements,too-many-locals
+    # pylint: disable=too-many-statements,too-many-locals,too-many-branches
     # nested function that creates dataframe containing additive statistics
     def additive_stats_dataframe(gdf):
         """
@@ -436,6 +448,8 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     baseline_expanded_income = 'expanded_income_baseline'
     vdf2[baseline_expanded_income] = vdf1['expanded_income']
     vdf2['tax_diff'] = vdf2[tax_to_diff] - vdf1[tax_to_diff]
+    for col in ['ubi', 'benefit_cost_total', 'benefit_value_total']:
+        vdf2[col] = vdf2[col] - vdf1[col]
     vdf2['atinc1'] = vdf1['aftertax_income']
     vdf2['atinc2'] = vdf2['aftertax_income']
     # add table_row column to vdf2 given specified groupby and income_measure
@@ -503,8 +517,6 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     del diff_table['atinc2']
     del count
     del sum_row
-    # set print display format for float table elements
-    pd.options.display.float_format = '{:10,.2f}'.format
     # put diff_table columns in correct order
     diff_table = diff_table.reindex(columns=DIFF_TABLE_COLUMNS)
     # add row names to table if using weighted_deciles or standard_income_bins
@@ -518,6 +530,17 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
         assert len(diff_table.index) == len(rownames)
         diff_table.index = rownames
         del rownames
+    # scale table elements
+    count_vars = ['count']
+    scale_vars = ['tax_cut', 'tax_inc', 'tot_change', 'ubi',
+                  'benefit_cost_total', 'benefit_value_total']
+    for col in diff_table.columns:
+        if col in count_vars:
+            diff_table[col] = np.round(diff_table[col] * 1e-6, 2)
+        elif col in scale_vars:
+            diff_table[col] = np.round(diff_table[col] * 1e-9, 3)
+        else:
+            diff_table[col] = np.round(diff_table[col], 1)
     # return table as Pandas DataFrame
     vdf1.sort_index(inplace=True)
     vdf2.sort_index(inplace=True)

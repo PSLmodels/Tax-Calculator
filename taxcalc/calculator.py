@@ -427,7 +427,7 @@ class Calculator(object):
         del diag
         return pd.concat(tlist, axis=1)
 
-    def distribution_tables(self, calc, groupby):
+    def distribution_tables(self, calc, groupby, scaling=True):
         """
         Get results from self and calc, sort them by expanded_income into
         table rows defined by groupby, compute grouped statistics, and
@@ -446,6 +446,10 @@ class Calculator(object):
         groupby : String object
             options for input: 'weighted_deciles', 'standard_income_bins'
             determines how the columns in resulting Pandas DataFrame are sorted
+
+        scaling : boolean
+            specifies create_distribution_table utility function argument
+            that determines whether table entries are scaled or not
 
         Return and typical usage
         ------------------------
@@ -486,7 +490,8 @@ class Calculator(object):
                                calc.array('s006'))  # check rows in same order
         var_dataframe = self.distribution_table_dataframe()
         imeasure = 'expanded_income'
-        dt1 = create_distribution_table(var_dataframe, groupby, imeasure)
+        dt1 = create_distribution_table(var_dataframe, groupby,
+                                        imeasure, scaling)
         del var_dataframe
         if calc is None:
             dt2 = None
@@ -501,7 +506,8 @@ class Calculator(object):
             else:
                 imeasure = 'expanded_income_baseline'
                 var_dataframe[imeasure] = self.array('expanded_income')
-            dt2 = create_distribution_table(var_dataframe, groupby, imeasure)
+            dt2 = create_distribution_table(var_dataframe, groupby,
+                                            imeasure, scaling)
             del var_dataframe
         return (dt1, dt2)
 

@@ -48,7 +48,8 @@ def test_reform_json_and_output(tests_path):
         """
         Write abbreviated distribution table calc to file with resfilename.
         """
-        dist, _ = calc.distribution_tables(None, 'standard_income_bins')
+        dist, _ = calc.distribution_tables(None, 'standard_income_bins',
+                                           scaling=False)
         for stat in unused_dist_stats:
             del dist[stat]
         dist = dist[used_dist_stats]
