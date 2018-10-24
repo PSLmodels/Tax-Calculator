@@ -1,5 +1,6 @@
 <title>recipe01.py</title><pre>
 from urllib.request import urlopen
+import pandas as pd
 from taxcalc import *
 
 # read two "old" reform files from Tax-Calculator website
@@ -54,14 +55,13 @@ dif_colnames = ['count', 'tax_cut', 'tax_inc',
                 'tot_change', 'mean', 'pc_aftertaxinc']
 ext_colnames = ['funits(#m)', 'taxfall(#m)', 'taxrise(#m)',
                 'agg_diff($b)', 'mean_diff($)', 'aftertax_income_diff(%)']
-scaling_factors = [1e-6, 1e-6, 1e-6, 1e-9, 1e0, 1e0, 1e0]
-for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
-    diff_extract[ename] = diff_table[dname] * sfactor
+for dname, ename in zip(dif_colnames, ext_colnames):
+    diff_extract[ename] = diff_table[dname]
 
 # print total revenue estimates for cyr
 # (estimates in billons of dollars rounded to nearest tenth of a billion)
-print('{}_REFORM1_iitax_rev($B)= {:.1f}'.format(cyr, iitax_rev1 * 1e-9))
-print('{}_REFORM2_iitax_rev($B)= {:.1f}'.format(cyr, iitax_rev2 * 1e-9))
+print('{}_REFORM1_iitax_rev($B)= {:.3f}'.format(cyr, iitax_rev1 * 1e-9))
+print('{}_REFORM2_iitax_rev($B)= {:.3f}'.format(cyr, iitax_rev2 * 1e-9))
 print('')
 
 title = 'Extract of {} income-tax difference table by expanded-income decile'
