@@ -12,7 +12,7 @@ from collections import OrderedDict
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..'))
 # pylint: disable=import-error,wrong-import-position
-from taxcalc import Policy, json2dict
+from taxcalc import Policy, json_to_dict
 
 
 INPUT_FILENAME = 'index.htmx'
@@ -151,7 +151,7 @@ def policy_params(path, text):
     # pylint: disable=too-many-locals
     with open(path) as pfile:
         json_text = pfile.read()
-    params = json2dict(json_text)
+    params = json_to_dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct section dict containing sec1_sec2 titles
     concat_str = ' @ '
@@ -214,7 +214,7 @@ def io_variables(iotype, path, text):
     """
     with open(path) as vfile:
         json_text = vfile.read()
-    variables = json2dict(json_text)
+    variables = json_to_dict(json_text)
     assert isinstance(variables, dict)
     # construct variable text
     vtext = ''
@@ -266,7 +266,7 @@ def assumption_params(ptype, path, text):
     """
     with open(path) as pfile:
         json_text = pfile.read()
-    params = json2dict(json_text)
+    params = json_to_dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct parameter text for each param
     ptext = ''

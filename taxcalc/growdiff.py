@@ -6,12 +6,12 @@ Tax-Calculator GrowDiff class that is used to modify GrowFactors.
 # pylint --disable=locally-disabled growdiff.py
 
 import numpy as np
-from taxcalc.parameters import ParametersBase
+from taxcalc.parameters import Parameters
 
 
-class GrowDiff(ParametersBase):
+class GrowDiff(Parameters):
     """
-    GrowDiff is a subclass of the abstract ParametersBase class, and
+    GrowDiff is a subclass of the abstract Parameters class, and
     therefore, inherits its methods (none of which are shown here).
 
     Constructor for GrowDiff class.
