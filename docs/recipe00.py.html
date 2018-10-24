@@ -1,4 +1,5 @@
 <title>recipe00.py</title><pre>
+import pandas as pd
 from taxcalc import *
 
 # use publicly-available CPS input file including benefits
@@ -44,8 +45,8 @@ print(Calculator.reform_documentation(params))
 
 # print total revenue estimates for cyr
 # (estimates in billons of dollars rounded to nearest hundredth of a billion)
-print('{}_CLP_itax_rev($B)= {:.2f}'.format(cyr, itax_rev1 * 1e-9))
-print('{}_REF_itax_rev($B)= {:.2f}'.format(cyr, itax_rev2 * 1e-9))
+print('{}_CLP_itax_rev($B)= {:.3f}'.format(cyr, itax_rev1 * 1e-9))
+print('{}_REF_itax_rev($B)= {:.3f}'.format(cyr, itax_rev2 * 1e-9))
 print('')
 
 # generate several other standard results tables:
@@ -59,11 +60,11 @@ dist_table1, dist_table2 = calc1.distribution_tables(calc2, 'weighted_deciles')
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
 dist_extract = pd.DataFrame()
-dist_extract['funits(#m)'] = dist_table1['s006'] * 1e-6
-dist_extract['itax1($b)'] = dist_table1['iitax'] * 1e-9
-dist_extract['itax2($b)'] = dist_table2['iitax'] * 1e-9
-dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income'] * 1e-9
-dist_extract['aftertax_inc2($b)'] = dist_table2['aftertax_income'] * 1e-9
+dist_extract['funits(#m)'] = dist_table1['s006']
+dist_extract['itax1($b)'] = dist_table1['iitax']
+dist_extract['itax2($b)'] = dist_table2['iitax']
+dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income']
+dist_extract['aftertax_inc2($b)'] = dist_table2['aftertax_income']
 
 # income-tax difference table by expanded-income decile for cyr
 diff_table = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
@@ -73,9 +74,8 @@ dif_colnames = ['count', 'tot_change', 'mean',
                 'pc_aftertaxinc']
 ext_colnames = ['funits(#m)', 'agg_diff($b)', 'mean_diff($)',
                 'aftertaxinc_diff(%)']
-scaling_factors = [1e-6, 1e-9, 1e0, 1e0, 1e0]
-for dname, ename, sfactor in zip(dif_colnames, ext_colnames, scaling_factors):
-    diff_extract[ename] = diff_table[dname] * sfactor
+for dname, ename in zip(dif_colnames, ext_colnames):
+    diff_extract[ename] = diff_table[dname]
 
 # generate percentage-change-in-aftertax-income graph and save in an HTML file
 fig = calc1.pch_graph(calc2)
