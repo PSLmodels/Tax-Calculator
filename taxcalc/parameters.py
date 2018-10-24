@@ -8,7 +8,7 @@ import os
 import json
 import abc
 import numpy as np
-from taxcalc.utils import read_egg_json, json2dict
+from taxcalc.utils import read_egg_json, json_to_dict
 
 
 class Parameters(object):
@@ -386,7 +386,7 @@ class Parameters(object):
         if os.path.exists(path):
             with open(path) as pfile:
                 json_text = pfile.read()
-            params_dict = json2dict(json_text)
+            params_dict = json_to_dict(json_text)
         else:
             # cannot call read_egg_ function in unit tests
             params_dict = read_egg_json(

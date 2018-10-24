@@ -32,7 +32,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import (json2dict,
+from taxcalc.utils import (json_to_dict,
                            DIST_VARIABLES, create_distribution_table,
                            DIFF_VARIABLES, create_difference_table,
                            create_diagnostic_table,
@@ -1252,7 +1252,7 @@ class Calculator(object):
             # strip out //-comments without changing line numbers
             json_text = re.sub('//.*', ' ', txt)
             # convert JSON text into a Python dictionary
-            raw_dict = json2dict(json_text)
+            raw_dict = json_to_dict(json_text)
             returned_dict = Calculator._convert_parameter_dict(raw_dict)
         else:
             raise ValueError('assump is neither None nor string')
@@ -1574,7 +1574,7 @@ class Calculator(object):
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json2dict(json_str)
+        raw_dict = json_to_dict(json_str)
         # check key contents of dictionary
         actual_keys = set(raw_dict.keys())
         missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
@@ -1629,7 +1629,7 @@ class Calculator(object):
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json2dict(json_str)
+        raw_dict = json_to_dict(json_str)
         # check key contents of dictionary
         actual_keys = set(raw_dict.keys())
         missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys

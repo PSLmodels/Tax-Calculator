@@ -1761,7 +1761,7 @@ def quantity_response(quantity,
     return response
 
 
-def json2dict(json_text):
+def json_to_dict(json_text):
     """
     Convert specified JSON text into an ordered Python dictionary.
 
