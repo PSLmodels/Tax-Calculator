@@ -10,6 +10,7 @@ Tax-Calculator federal tax Calculator class.
 import os
 import re
 import copy
+import urllib
 import numpy as np
 import pandas as pd
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
@@ -31,7 +32,7 @@ from taxcalc.consumption import Consumption
 from taxcalc.behavior import Behavior
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import (json2dict,
+from taxcalc.utils import (json_to_dict,
                            DIST_VARIABLES, create_distribution_table,
                            DIFF_VARIABLES, create_difference_table,
                            create_diagnostic_table,
@@ -203,31 +204,32 @@ class Calculator(object):
 
     def dataframe(self, variable_list):
         """
-        Return pandas DataFrame containing the listed variables from embedded
+        Return Pandas DataFrame containing the listed variables from embedded
         Records object.
         """
         assert isinstance(variable_list, list)
         arys = [self.array(vname) for vname in variable_list]
-        pdf = pd.DataFrame(data=np.column_stack(arys), columns=variable_list)
+        dframe = pd.DataFrame(data=np.column_stack(arys),
+                              columns=variable_list)
         del arys
-        return pdf
+        return dframe
 
     def distribution_table_dataframe(self):
         """
         Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables
         from embedded Records object.
         """
-        pdf = self.dataframe(DIST_VARIABLES)
+        dframe = self.dataframe(DIST_VARIABLES)
         # weighted count of itemized-deduction returns
-        pdf['num_returns_ItemDed'] = pdf['s006'].where(
-            pdf['c04470'] > 0., 0.)
+        dframe['num_returns_ItemDed'] = dframe['s006'].where(
+            dframe['c04470'] > 0., 0.)
         # weighted count of standard-deduction returns
-        pdf['num_returns_StandardDed'] = pdf['s006'].where(
-            pdf['standard'] > 0., 0.)
+        dframe['num_returns_StandardDed'] = dframe['s006'].where(
+            dframe['standard'] > 0., 0.)
         # weight count of returns with positive Alternative Minimum Tax (AMT)
-        pdf['num_returns_AMT'] = pdf['s006'].where(
-            pdf['c09600'] > 0., 0.)
-        return pdf
+        dframe['num_returns_AMT'] = dframe['s006'].where(
+            dframe['c09600'] > 0., 0.)
+        return dframe
 
     def array(self, variable_name, variable_value=None):
         """
@@ -425,7 +427,7 @@ class Calculator(object):
         del diag
         return pd.concat(tlist, axis=1)
 
-    def distribution_tables(self, calc, groupby):
+    def distribution_tables(self, calc, groupby, scaling=True):
         """
         Get results from self and calc, sort them by expanded_income into
         table rows defined by groupby, compute grouped statistics, and
@@ -444,6 +446,10 @@ class Calculator(object):
         groupby : String object
             options for input: 'weighted_deciles', 'standard_income_bins'
             determines how the columns in resulting Pandas DataFrame are sorted
+
+        scaling : boolean
+            specifies create_distribution_table utility function argument
+            that determines whether table entries are scaled or not
 
         Return and typical usage
         ------------------------
@@ -484,7 +490,8 @@ class Calculator(object):
                                calc.array('s006'))  # check rows in same order
         var_dataframe = self.distribution_table_dataframe()
         imeasure = 'expanded_income'
-        dt1 = create_distribution_table(var_dataframe, groupby, imeasure)
+        dt1 = create_distribution_table(var_dataframe, groupby,
+                                        imeasure, scaling)
         del var_dataframe
         if calc is None:
             dt2 = None
@@ -499,7 +506,8 @@ class Calculator(object):
             else:
                 imeasure = 'expanded_income_baseline'
                 var_dataframe[imeasure] = self.array('expanded_income')
-            dt2 = create_distribution_table(var_dataframe, groupby, imeasure)
+            dt2 = create_distribution_table(var_dataframe, groupby,
+                                            imeasure, scaling)
             del var_dataframe
         return (dt1, dt2)
 
@@ -1131,25 +1139,39 @@ class Calculator(object):
 
         Note that either of the two function arguments can be None.
         If reform is None, the dict in the 'policy':dict pair is empty.
-        If assump is None, the dict in the all the key:dict pairs is empty.
+        If assump is None, the dict in all the other key:dict pairs is empty.
 
         Also note that either of the two function arguments can be strings
-        containing a valid JSON string (rather than a filename),
+        containing a valid JSON string (rather than a local filename),
         in which case the file reading is skipped and the appropriate
         read_json_*_text method is called.
 
-        The reform file contents or JSON string must be like this:
+        Either of the two function arguments can also be a valid URL string
+        beginning with 'http' and pointing to a valid JSON file hosted online.
+
+        The reform file/URL contents or JSON string must be like this:
         {"policy": {...}}
-        and the assump file contents or JSON string must be like this:
+        and the assump file/URL contents or JSON string must be like this:
         {"consumption": {...},
          "behavior": {...},
          "growdiff_baseline": {...},
          "growdiff_response": {...},
          "growmodel": {...}}
         The {...} should be empty like this {} if not specifying a policy
-        reform or if not specifying any economic assumptions of that type.
+        reform or if not specifying any non-default economic assumptions
+        of that type.
 
-        The returned dictionary contains parameter lists (not arrays).
+        The 'policy' subdictionary of the returned dictionary is
+        suitable as input into the Policy.implement_reform method.
+
+        The 'consumption' subdictionary of the returned dictionary is
+        suitable as input into the Consumption.update_consumption method.
+
+        The 'growdiff_baseline' subdictionary of the returned dictionary is
+        suitable as input into the GrowDiff.update_growdiff method.
+
+        The 'growdiff_response' subdictionary of the returned dictionary is
+        suitable as input into the GrowDiff.update_growdiff method.
         """
         # pylint: disable=too-many-branches
         # first process second assump parameter
@@ -1162,6 +1184,8 @@ class Calculator(object):
         elif isinstance(assump, str):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
+            elif assump.startswith('http'):
+                txt = urllib.request.urlopen(assump).read().decode()
             else:
                 txt = assump
             (cons_dict,
@@ -1177,6 +1201,8 @@ class Calculator(object):
         elif isinstance(reform, str):
             if os.path.isfile(reform):
                 txt = open(reform, 'r').read()
+            elif reform.startswith('http'):
+                txt = urllib.request.urlopen(reform).read().decode()
             else:
                 txt = reform
             rpol_dict = (
@@ -1196,6 +1222,41 @@ class Calculator(object):
         param_dict['growmodel'] = growmodel_dict
         # return the composite dictionary
         return param_dict
+
+    @staticmethod
+    def read_json_assumptions(assump):
+        """
+        Read JSON assump object and return one dictionary that has
+        the same structure as each subdictionary returned by the
+        Calculator.read_json_param_objects method.
+
+        Note that the assump argument can be None, in which case
+        the returned dictionary is empty.  Also note that the
+        assump argument can be a string containing a local file name,
+        URL beginning with 'http', or valid JSON string.
+
+        The assump file/URL contents or JSON string must be like the
+        structure required for each subsection of the assump argument
+        of the Calculator.read_json_param_objects method.
+        """
+        # construct returned dictionary from specified assump
+        if assump is None:
+            returned_dict = dict()
+        elif isinstance(assump, str):
+            if os.path.isfile(assump):
+                txt = open(assump, 'r').read()
+            elif assump.startswith('http'):
+                txt = urllib.request.urlopen(assump).read().decode()
+            else:
+                txt = assump
+            # strip out //-comments without changing line numbers
+            json_text = re.sub('//.*', ' ', txt)
+            # convert JSON text into a Python dictionary
+            raw_dict = json_to_dict(json_text)
+            returned_dict = Calculator._convert_parameter_dict(raw_dict)
+        else:
+            raise ValueError('assump is neither None nor string')
+        return returned_dict
 
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
@@ -1513,7 +1574,7 @@ class Calculator(object):
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json2dict(json_str)
+        raw_dict = json_to_dict(json_str)
         # check key contents of dictionary
         actual_keys = set(raw_dict.keys())
         missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
@@ -1568,7 +1629,7 @@ class Calculator(object):
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json2dict(json_str)
+        raw_dict = json_to_dict(json_str)
         # check key contents of dictionary
         actual_keys = set(raw_dict.keys())
         missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys
@@ -1610,8 +1671,7 @@ class Calculator(object):
         Returned dictionary has integer years as primary keys and
         string parameters as secondary keys.
         """
-        # convert year skey strings into integers and
-        # optionally convert lists into np.arrays
+        # convert year skey strings into integers
         year_param = dict()
         for pkey, sdict in param_key_dict.items():
             if not isinstance(pkey, str):

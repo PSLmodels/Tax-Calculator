@@ -5,14 +5,14 @@ Tax-Calculator Consumption class.
 # pycodestyle consumption.py
 # pylint --disable=locally-disabled consumption.py
 
-from taxcalc.parameters import ParametersBase
+from taxcalc.parameters import Parameters
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 
 
-class Consumption(ParametersBase):
+class Consumption(Parameters):
     """
-    Consumption is a subclass of the abstract ParametersBase class, and
+    Consumption is a subclass of the abstract Parameters class, and
     therefore, inherits its methods (none of which are shown here).
 
     Constructor for Consumption class.

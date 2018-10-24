@@ -16,7 +16,9 @@ class GetFuncDefs(ast.NodeVisitor):
     Return information about each function defined in the functions.py file.
     """
     def __init__(self):
-        """class constructor"""
+        """
+        GetFuncDefs class constructor
+        """
         self.fname = ''
         self.fnames = list()  # function name (fname) list
         self.fargs = dict()  # lists of function arguments indexed by fname
@@ -24,12 +26,16 @@ class GetFuncDefs(ast.NodeVisitor):
         self.rvars = dict()  # lists of function return vars indexed by fname
 
     def visit_Module(self, node):  # pylint: disable=invalid-name
-        """visit the one Module node"""
+        """
+        visit the specified Module node
+        """
         self.generic_visit(node)
         return (self.fnames, self.fargs, self.cvars, self.rvars)
 
     def visit_FunctionDef(self, node):  # pylint: disable=invalid-name
-        """visit FunctionDef node"""
+        """
+        visit the specified FunctionDef node
+        """
         self.fname = node.name
         self.fnames.append(self.fname)
         self.fargs[self.fname] = list()
@@ -47,7 +53,9 @@ class GetFuncDefs(ast.NodeVisitor):
         self.generic_visit(node)
 
     def visit_Return(self, node):  # pylint: disable=invalid-name
-        """visit Return node"""
+        """
+        visit the specified Return node
+        """
         if isinstance(node.value, ast.Tuple):
             self.rvars[self.fname] = [r_v.id for r_v in node.value.elts]
         elif isinstance(node.value, ast.BinOp):

@@ -21,10 +21,9 @@ install:
   - pip install codecov
   - python setup.py install
 
-
 # command to run tests
 script:
-  - python -c "import taxcalc"; coverage run -m py.test -v -m "not requires_pufcsv and not pre_release and not local" --pep8
+  - python -c "import taxcalc"; coverage run -m pytest -v -m "not requires_pufcsv and not pre_release and not local" --pep8
 
 after_success:
   - codecov

@@ -9,7 +9,7 @@ import os
 import numpy as np
 import pandas as pd
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import read_egg_csv, read_egg_json, json2dict
+from taxcalc.utils import read_egg_csv, read_egg_json, json_to_dict
 
 
 class Records(object):
@@ -259,7 +259,7 @@ class Records(object):
         if os.path.exists(var_info_path):
             with open(var_info_path) as vfile:
                 json_text = vfile.read()
-            vardict = json2dict(json_text)
+            vardict = json_to_dict(json_text)
         else:
             # cannot call read_egg_ function in unit tests
             vardict = read_egg_json(

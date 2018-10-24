@@ -6,6 +6,7 @@ import json
 from io import StringIO
 import tempfile
 import copy
+import urllib
 import pytest
 import numpy as np
 import pandas as pd
@@ -355,9 +356,9 @@ def test_calculator_using_nonstd_input(rawinputfile):
     assert calc.weighted_total('e00200') == 0
     assert calc.total_weight() == 0
     varlist = ['RECID', 'MARS']
-    pdf = calc.dataframe(varlist)
-    assert isinstance(pdf, pd.DataFrame)
-    assert pdf.shape == (RAWINPUTFILE_FUNITS, len(varlist))
+    dframe = calc.dataframe(varlist)
+    assert isinstance(dframe, pd.DataFrame)
+    assert dframe.shape == (RAWINPUTFILE_FUNITS, len(varlist))
     mars = calc.array('MARS')
     assert isinstance(mars, np.ndarray)
     assert mars.shape == (RAWINPUTFILE_FUNITS,)
@@ -430,7 +431,7 @@ def fixture_reform_file():
 
 
 ASSUMP_CONTENTS = """
-// Example of assump file suitable for the read_json_param_objects().
+// Example of JSON assump file suitable for read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
 // Within each "behavior", "consumption" and "growth" object, the
@@ -507,6 +508,32 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
     assert add4aged[2022 - syr] == 0.0
 
 
+def test_json_reform_url():
+    """
+    Test reading a JSON reform from a URL. Results from the URL are expected
+    to match the results from the string.
+    """
+    reform_str = """
+    {
+    "policy": {
+        "_FICA_ss_trt": {
+            "2018": [0.130],
+            "2020": [0.140]
+        },
+        "_FICA_mc_trt": {
+            "2019": [0.030],
+            "2021": [0.032]
+        }
+      }
+    }
+    """
+    reform_url = ('https://raw.githubusercontent.com/open-source-economics/'
+                  'Tax-Calculator/master/taxcalc/reforms/ptaxes0.json')
+    params_str = Calculator.read_json_param_objects(reform_str, None)
+    params_url = Calculator.read_json_param_objects(reform_url, None)
+    assert params_str == params_url
+
+
 @pytest.fixture(scope='module', name='bad1reformfile')
 def fixture_bad1reformfile():
     # specify JSON text for reform
@@ -579,6 +606,95 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, list())
+
+
+def test_json_assump_url():
+    assump_str = """
+    {
+        "consumption": {
+            "_BEN_housing_value": {"2017": [1.0]},
+            "_BEN_snap_value": {"2017": [1.0]},
+            "_BEN_tanf_value": {"2017": [1.0]},
+            "_BEN_vet_value": {"2017": [1.0]},
+            "_BEN_wic_value": {"2017": [1.0]},
+            "_BEN_mcare_value": {"2017": [1.0]},
+            "_BEN_mcaid_value": {"2017": [1.0]},
+            "_BEN_other_value": {"2017": [1.0]},
+            "_MPC_e17500": {"2017": [0.0]},
+            "_MPC_e18400": {"2017": [0.0]},
+            "_MPC_e19800": {"2017": [0.0]},
+            "_MPC_e20400": {"2017": [0.0]}
+        },
+        "behavior": {
+            "_BE_inc": {"2017": [0.0]},
+            "_BE_sub": {"2017": [0.0]},
+            "_BE_cg": {"2017": [0.0]}
+        },
+        "growdiff_baseline": {
+            "_ABOOK": {"2017": [0.0]},
+            "_ACGNS": {"2017": [0.0]},
+            "_ACPIM": {"2017": [0.0]},
+            "_ACPIU": {"2017": [0.0]},
+            "_ADIVS": {"2017": [0.0]},
+            "_AINTS": {"2017": [0.0]},
+            "_AIPD": {"2017": [0.0]},
+            "_ASCHCI": {"2017": [0.0]},
+            "_ASCHCL": {"2017": [0.0]},
+            "_ASCHEI": {"2017": [0.0]},
+            "_ASCHEL": {"2017": [0.0]},
+            "_ASCHF": {"2017": [0.0]},
+            "_ASOCSEC": {"2017": [0.0]},
+            "_ATXPY": {"2017": [0.0]},
+            "_AUCOMP": {"2017": [0.0]},
+            "_AWAGE": {"2017": [0.0]},
+            "_ABENOTHER": {"2017": [0.0]},
+            "_ABENMCARE": {"2017": [0.0]},
+            "_ABENMCAID": {"2017": [0.0]},
+            "_ABENSSI": {"2017": [0.0]},
+            "_ABENSNAP": {"2017": [0.0]},
+            "_ABENWIC": {"2017": [0.0]},
+            "_ABENHOUSING": {"2017": [0.0]},
+            "_ABENTANF": {"2017": [0.0]},
+            "_ABENVET": {"2017": [0.0]}
+        },
+        "growdiff_response": {
+            "_ABOOK": {"2017": [0.0]},
+            "_ACGNS": {"2017": [0.0]},
+            "_ACPIM": {"2017": [0.0]},
+            "_ACPIU": {"2017": [0.0]},
+            "_ADIVS": {"2017": [0.0]},
+            "_AINTS": {"2017": [0.0]},
+            "_AIPD": {"2017": [0.0]},
+            "_ASCHCI": {"2017": [0.0]},
+            "_ASCHCL": {"2017": [0.0]},
+            "_ASCHEI": {"2017": [0.0]},
+            "_ASCHEL": {"2017": [0.0]},
+            "_ASCHF": {"2017": [0.0]},
+            "_ASOCSEC": {"2017": [0.0]},
+            "_ATXPY": {"2017": [0.0]},
+            "_AUCOMP": {"2017": [0.0]},
+            "_AWAGE": {"2017": [0.0]},
+            "_ABENOTHER": {"2017": [0.0]},
+            "_ABENMCARE": {"2017": [0.0]},
+            "_ABENMCAID": {"2017": [0.0]},
+            "_ABENSSI": {"2017": [0.0]},
+            "_ABENSNAP": {"2017": [0.0]},
+            "_ABENWIC": {"2017": [0.0]},
+            "_ABENHOUSING": {"2017": [0.0]},
+            "_ABENTANF": {"2017": [0.0]},
+            "_ABENVET": {"2017": [0.0]}
+        },
+        "growmodel": {
+            "_active": {"2017": [false]}
+        }
+    }
+    """
+    assump_url = ('https://raw.githubusercontent.com/open-source-economics/'
+                  'Tax-Calculator/master/taxcalc/assumptions/'
+                  'economic_assumptions_template.json')
+    params_str = Calculator.read_json_param_objects(None, assump_str)
+    params_url = Calculator.read_json_param_objects(None, assump_url)
+    assert params_str == params_url
 
 
 @pytest.fixture(scope='module', name='bad1assumpfile')
@@ -989,3 +1105,47 @@ def test_ce_aftertax_income(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec)
     res = calc1.ce_aftertax_income(calc2)
     assert isinstance(res, dict)
+
+
+ASSUMPTION_FILE_CONTENT = """
+// Example of JSON assump file suitable for read_json_assumptions().
+{
+  "BE_sub": {"2018": -0.05, "2021": -0.25},
+  "BE_inc": {"2020": 0.10},
+  "BE_cg": {"2022": -0.70}
+}
+"""
+
+
+@pytest.fixture(scope='module', name='assumption_file')
+def fixture_assumption_file():
+    """
+    Temporary assumption file for read_json_assumptions() function.
+    """
+    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    afile.write(ASSUMPTION_FILE_CONTENT)
+    afile.close()
+    # must close and then yield for Windows platform
+    yield afile
+    if os.path.isfile(afile.name):
+        try:
+            os.remove(afile.name)
+        except OSError:
+            pass  # sometimes we can't remove a generated temporary file
+
+
+def test_read_json_assumptions(assumption_file):
+    """
+    Test Calculator.read_json_assumptions() function.
+    """
+    assert isinstance(Calculator.read_json_assumptions(None), dict)
+    with pytest.raises(ValueError):
+        Calculator.read_json_assumptions(list())
+    with pytest.raises(urllib.request.URLError):
+        Calculator.read_json_assumptions('http://unknown-url')
+    assump_filename = assumption_file.name
+    file_dict = Calculator.read_json_assumptions(assump_filename)
+    assert isinstance(file_dict, dict)
+    text_dict = Calculator.read_json_assumptions(ASSUMPTION_FILE_CONTENT)
+    assert isinstance(text_dict, dict)
+    assert text_dict == file_dict

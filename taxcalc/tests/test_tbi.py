@@ -1,5 +1,8 @@
 """
 Test functions in taxcalc/tbi directory using both puf.csv and cps.csv input.
+
+All the tests in this file, and only these tests, can be executed this way:
+Tax-Calculator$ cd taxcalc ; pytest -n4 -k tests/test_tbi.py ; cd ..
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_tbi.py
@@ -8,9 +11,8 @@ import json
 import numpy as np
 import pandas as pd
 import pytest
-from taxcalc.tbi.tbi_utils import *
 from taxcalc.tbi import *
-from taxcalc import Policy, Records, Calculator
+from taxcalc import Policy, Records, Calculator, Behavior
 
 
 USER_MODS = {
@@ -126,25 +128,11 @@ def test_run_gdp_qelast_model_3():
     assert res == 0.0
 
 
-def test_random_seed_from_subdict():
-    """
-    Test except logic in try statement in random_seed_from_subdict function.
-    """
-    dct = {
-        2014: {'param1': [0.11]},
-        2016: {'param1': [0.13]}
-    }
-    seed1 = random_seed_from_subdict(dct)
-    dct[2016] = {'param1': 0.13}
-    seed2 = random_seed_from_subdict(dct)
-    assert seed1 == seed2
-
-
 def test_create_dict_table():
     # test correct usage
     dframe = pd.DataFrame(data=[[1., 2, 3], [4, 5, 6], [7, 8, 9]],
                           columns=['a', 'b', 'c'])
-    ans = create_dict_table(dframe)
+    ans = create_dict_table(dframe, num_decimals=2)
     exp = {'0': ['1.00', '2', '3'],
            '1': ['4.00', '5', '6'],
            '2': ['7.00', '8', '9']}
@@ -196,7 +184,7 @@ def test_with_pufcsv(puf_fullsample):
                                          user_mods=usermods,
                                          return_dict=True)
     total = resdict['aggr_2']
-    tbi_reform_revenue = float(total['combined_tax_9']) * 1e-9
+    tbi_reform_revenue = float(total['combined_tax_9'])
     # assert that tbi revenue is similar to the fullsample calculation
     diff = abs(fulls_reform_revenue - tbi_reform_revenue)
     proportional_diff = diff / fulls_reform_revenue
@@ -245,7 +233,8 @@ def test_reform_warnings_errors():
 @pytest.mark.pre_release
 @pytest.mark.tbi_vs_std_behavior
 @pytest.mark.requires_pufcsv
-def test_behavioral_response(puf_subsample):
+@pytest.mark.parametrize('use_puf_not_cps', [True, False])
+def test_behavioral_response(use_puf_not_cps, puf_subsample, cps_fullsample):
     """
     Test that behavioral-response results are the same
     when generated from standard Tax-Calculator calls and
@@ -276,7 +265,7 @@ def test_behavioral_response(puf_subsample):
     kwargs = {
         'start_year': 2019,
         'year_n': 0,
-        'use_puf_not_cps': True,
+        'use_puf_not_cps': use_puf_not_cps,
         'use_full_sample': False,
         'user_mods': {
             'policy': params['policy'],
@@ -292,6 +281,13 @@ def test_behavioral_response(puf_subsample):
     num_years = 9
     std_res = dict()
     tbi_res = dict()
+    if use_puf_not_cps:
+        rec = Records(data=puf_subsample)
+    else:
+        # IMPORTANT: must use same subsample as used in test_cpscsv.py because
+        #            that is the subsample used by run_nth_year_taxcalc_model
+        std_cps_subsample = cps_fullsample.sample(frac=0.03, random_state=180)
+        rec = Records.cps_constructor(data=std_cps_subsample)
     for using_tbi in [True, False]:
         for year in range(0, num_years):
             cyr = year + kwargs['start_year']
@@ -302,7 +298,6 @@ def test_behavioral_response(puf_subsample):
                 for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
                     tbi_res[cyr][tbl] = tables[tbl]
             else:
-                rec = Records(data=puf_subsample)
                 pol = Policy()
                 calc1 = Calculator(policy=pol, records=rec)
                 pol.implement_reform(params['policy'])
@@ -337,22 +332,41 @@ def test_behavioral_response(puf_subsample):
                     std_res[cyr][tbl] = pd.DataFrame(data=datalist,
                                                      index=rows,
                                                      columns=cols)
+                    for col in std_res[cyr][tbl].columns:
+                        val = std_res[cyr][tbl][col] * 1e-9
+                        std_res[cyr][tbl][col] = round(val, 3)
+
     # compare the two sets of results
-    # NOTE that the tbi results have been "fuzzed" for PUF privacy reasons,
-    #      so there is no expectation that the results should be identical.
+    # NOTE that the PUF tbi results have been "fuzzed" for privacy reasons,
+    #      so there is no expectation that those results should be identical.
     no_diffs = True
-    reltol = 0.004  # std and tbi differ if more than 0.4 percent different
+    cps_dump = False  # setting to True produces dump output and test failure
+    if use_puf_not_cps:
+        reltol = 0.004  # std and tbi differ if more than 0.4 percent different
+        dataset = 'PUF'
+        dumping = False
+    else:  # CPS results are not "fuzzed", so
+        reltol = 1e-9  # std and tbi should be virtually identical
+        dataset = 'CPS'
+        dumping = cps_dump
     for year in range(0, num_years):
         cyr = year + kwargs['start_year']
+        do_dump = bool(dumping and cyr >= 2019 and cyr <= 2020)
         col = '0_{}'.format(year)
         for tbl in ['aggr_1', 'aggr_2', 'aggr_d']:
             tbi = tbi_res[cyr][tbl][col]
+            if do_dump:
+                txt = 'DUMP of {} {} table for year {}:'
+                print(txt.format(dataset, tbl, cyr))
+                print(tbi)
             std = std_res[cyr][tbl][col]
             if not np.allclose(tbi, std, atol=0.0, rtol=reltol):
                 no_diffs = False
-                print('**** DIFF for year {} (year_n={}):'.format(cyr, year))
+                txt = '***** {} diff in {} table for year {} (year_n={}):'
+                print(txt.format(dataset, tbl, cyr, year))
                 print('TBI RESULTS:')
                 print(tbi)
                 print('STD RESULTS:')
                 print(std)
     assert no_diffs
+    assert not dumping

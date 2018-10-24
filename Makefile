@@ -3,7 +3,7 @@
 # Development is typically conducted on Linux or Max OS X (with the Xcode
 #              command-line tools installed), so this Makefile is designed
 #              to work in that environment (and not on Windows).
-# USAGE: tax-calculator$ make [TARGET]
+# USAGE: Tax-Calculator$ make [TARGET]
 
 .PHONY=help
 help:
@@ -11,7 +11,7 @@ help:
 	@echo "TARGETS:"
 	@echo "help       : show help message"
 	@echo "clean      : remove .pyc files and local taxcalc package"
-	@echo "package    : build and install local taxcalc package"
+	@echo "package    : build and install local package"
 	@echo "pytest-cps : generate report for and cleanup after"
 	@echo "             pytest -m 'not requires_pufcsv and not pre_release'"
 	@echo "pytest     : generate report for and cleanup after"
@@ -30,11 +30,11 @@ help:
 clean:
 	@find . -name *pyc -exec rm {} \;
 	@find . -name *cache -maxdepth 1 -exec rm -r {} \;
-	@./conda.recipe/remove_local_taxcalc_package.sh
+	@./conda.recipe/remove_local_package.sh
 
 .PHONY=package
 package:
-	@./conda.recipe/install_local_taxcalc_package.sh
+	@cd conda.recipe ; ./install_local_package.sh
 
 define pytest-cleanup
 find . -name *cache -maxdepth 1 -exec rm -r {} \;
@@ -60,7 +60,7 @@ pytest-all:
 define tctest-cleanup
 rm -f test.csv
 rm -f test-18-*
-./conda.recipe/remove_local_taxcalc_package.sh	
+./conda.recipe/remove_local_package.sh
 endef
 
 .PHONY=tctest
@@ -69,6 +69,7 @@ tctest: package
 	@$(tctest-cleanup)
 	@echo "validation tests using tc will be added in the future"
 
+TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
 TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
 PYLINT_FILES := $(shell grep -rl --include="*py" disable=locally-disabled .)
@@ -78,12 +79,13 @@ RECIPE_OPTIONS = --disable=C0103,C0111,W0401,W0614 --score=no --jobs=4
 
 .PHONY=cstest
 cstest:
-	pycodestyle taxcalc
-	pycodestyle docs/cookbook
-	@pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
-	@pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
-	@pylint $(PYLINT_OPTIONS) $(PYLINT_FILES)
-	@pylint $(RECIPE_OPTIONS) $(RECIPE_FILES)
+	-pycodestyle taxcalc
+	-pycodestyle docs/cookbook
+	@-pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
+	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
+	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
+	@-pylint $(PYLINT_OPTIONS) $(PYLINT_FILES)
+	@-pylint $(RECIPE_OPTIONS) $(RECIPE_FILES)
 
 define coverage-cleanup
 rm -f .coverage htmlcov/*
