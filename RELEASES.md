@@ -4,6 +4,23 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-10-25 Release 0.22.1
+-------------------------------------------------------------------------
+(last merged pull request is
+[#2091](https://github.com/open-source-economics/Tax-Calculator/pull/2091))
+
+**API Changes**
+- None
+
+**New Features**
+- Add Records.read_cps_data static method to make it easier to test other models in the Policy Simulation Library collection of USA tax models
+  [[#2090](https://github.com/open-source-economics/Tax-Calculator/pull/2090)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+
 2018-10-24 Release 0.22.0
 -------------------------------------------------------------------------
 (last merged pull request is
