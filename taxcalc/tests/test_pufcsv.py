@@ -47,9 +47,7 @@ def test_agg(tests_path, puf_fullsample):
     adt = calc.diagnostic_table(nyrs)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt results to a string with a trailing EOL character
-    pd.options.display.float_format = '{:8.1f}'.format
-    adtstr = adt.to_string() + '\n'
-    pd.reset_option('display.float_format')
+    adtstr = adt.to_string(float_format='%8.1f') + '\n'
     # create actual and expected lists of diagnostic table lines
     actual = adtstr.splitlines(True)
     aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.txt')
