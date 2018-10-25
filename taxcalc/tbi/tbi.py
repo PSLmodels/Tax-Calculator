@@ -781,7 +781,7 @@ def summary_diff_xdec(res, df1, df2):
 
 
 def create_dict_table(dframe, row_names=None, column_types=None,
-                      num_decimals=3):
+                      num_decimals=2):
     """
     Create and return dictionary with JSON-like content from specified dframe.
     """

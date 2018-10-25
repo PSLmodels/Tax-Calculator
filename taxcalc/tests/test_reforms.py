@@ -9,7 +9,6 @@ import os
 import glob
 import json
 import pytest
-import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Calculator, Policy, Records, Behavior, DIST_TABLE_COLUMNS
 from taxcalc import nonsmall_diffs
@@ -54,9 +53,8 @@ def test_reform_json_and_output(tests_path):
             del dist[stat]
         dist = dist[used_dist_stats]
         dist.rename(mapper=renamed_columns, axis='columns', inplace=True)
-        pd.options.display.float_format = '{:7.0f}'.format
         with open(resfilename, 'w') as resfile:
-            dist.to_string(resfile)
+            dist.to_string(resfile, float_format='%7.0f')
 
     # embedded function used only in test_reform_json_and_output
     def res_and_out_are_same(base):
