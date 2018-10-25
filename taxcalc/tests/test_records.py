@@ -48,6 +48,11 @@ def test_correct_Records_instantiation(cps_subsample):
     assert rec2.current_year == rec2.data_year
 
 
+def test_read_cps_data(cps_fullsample):
+    data = Records.read_cps_data()
+    assert data.equals(cps_fullsample)
+
+
 @pytest.mark.parametrize("csv", [
     (
         u'RECID,MARS,e00200,e00200p,e00200s\n'

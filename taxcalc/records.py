@@ -292,6 +292,19 @@ class Records(object):
     CHANGING_CALCULATED_VARS = None
     INTEGER_VARS = None
 
+    @staticmethod
+    def read_cps_data():
+        """
+        Return data in cps.csv.gz as a Pandas DataFrame.
+        """
+        fname = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
+        if os.path.isfile(fname):
+            cpsdf = pd.read_csv(fname)
+        else:
+            # cannot call read_egg_ function in unit tests
+            cpsdf = read_egg_csv(fname)  # pragma: no cover
+        return cpsdf
+
     # ----- begin private methods of Records class -----
 
     def _extrapolate(self, year):
