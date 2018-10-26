@@ -5428,6 +5428,38 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
+    "_EITC_basic_frac": {
+        "long_name": "Fraction of maximum earned income credit paid at zero earnings",
+        "description": "This fraction of _EITC_c is always paid as a credit and one minus this fraction is applied to the phasein rate, _EITC_rt.  This fraction is zero under current law.",
+        "section_1": "Refundable Credits",
+        "section_2": "Earned Income Tax Credit",
+        "irs_ref": "Form 1040, line 66a&b, instruction (table).",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013",
+                      "2014",
+                      "2015",
+                      "2016",
+                      "2017"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0,
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0],
+        "range": {"min": 0.0, "max": 1.0},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
+    },
+
     "_EITC_prt": {
         "long_name": "Earned income credit phaseout rate",
         "description": "Earned income credit begins to decrease at the this rate when AGI is higher than earned income credit phaseout start AGI.",

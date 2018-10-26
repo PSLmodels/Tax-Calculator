@@ -4,6 +4,23 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-10-26 Release 0.22.2
+-------------------------------------------------------------------------
+(last merged pull request is
+[#2094](https://github.com/open-source-economics/Tax-Calculator/pull/2094))
+
+**API Changes**
+- None
+
+**New Features**
+- Add _EITC_basic_frac policy parameter so that an Earned and Basic Income Tax Credit (EBITC) reform can be analyzed.
+  [[#2094](https://github.com/open-source-economics/Tax-Calculator/pull/2094)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+
 2018-10-25 Release 0.22.1
 -------------------------------------------------------------------------
 (last merged pull request is
