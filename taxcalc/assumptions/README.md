@@ -9,5 +9,7 @@ the tc CLI (command-line interface) to Tax-Calculator, as described in
 the [user
 documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#cli).
 
-[This document](ASSUMPTIONS.md) provides access to a template
-economic assumption filea and guidelines about their preparation.
+[This
+document](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/assumptions/ASSUMPTIONS.md#how-to-specify-economic-assumptions-in-a-json-assumption-file)
+provides access to a template economic assumption files and guidelines
+about their preparation.

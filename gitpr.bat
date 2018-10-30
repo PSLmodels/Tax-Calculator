@@ -9,7 +9,7 @@ IF /I "%ONMASTER%" NEQ "y" GOTO END
 
 :PR-NUMBER
 SET PRNUM=%1
-IF "%PRNUM%" EQ "" GOTO ERROR
+IF "%PRNUM%" EQU "" GOTO ERROR
 
 git fetch upstream pull/%PRNUM%/head:pr-%PRNUM%
 git checkout pr-%PRNUM%

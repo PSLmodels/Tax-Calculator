@@ -18,8 +18,6 @@ enhancement.
 Proposing code changes
 ----------------------
 In a new pull request, provide a clear description of the rationale
-and nature of the code changes.  Make sure that your proposed changes
-are consistent with our [coding
-style](https://github.com/open-source-economics/Tax-Calculator/blob/master/CODING.md)
-and our [testing
-procedures](https://github.com/open-source-economics/Tax-Calculator/blob/master/TESTING.md).
+and nature of the code changes.  Make sure that you prepare your pull
+request using the [suggested workflow and testing
+procedures](https://github.com/open-source-economics/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow).

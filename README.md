@@ -1,9 +1,14 @@
+[![Python 3.6.5](https://img.shields.io/badge/python-3.6.5-blue.svg)](https://www.python.org/downloads/release/python-365/)
+[![Build Status](https://travis-ci.org/open-source-economics/Tax-Calculator.svg?branch=master)](https://travis-ci.org/open-source-economics/Tax-Calculator)
+[![Codecov](https://codecov.io/gh/open-source-economics/Tax-Calculator/branch/master/graph/badge.svg)](https://codecov.io/gh/open-source-economics/Tax-Calculator)
+
+
 Developing Tax-Calculator
 =========================
 
 This document tells you how to begin contributing to Tax-Calculator by
-reporting a bug, improving the documentation or making an enhancement
-to the Python source code.  If you only want to use Tax-Calculator,
+reporting a bug, improving the documentation, or making an enhancement
+to the Python source code.  If you only want to **use** Tax-Calculator,
 you should begin by reading the [user
 documentation](http://open-source-economics.github.io/Tax-Calculator/)
 that describes how to use Tax-Calculator on your own computer (without
@@ -52,12 +57,14 @@ providing details on what you think should be added to Tax-Calculator.
 If you want to **propose code changes**, follow the directions in the
 [Contributor
 Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
-on how to clone the Tax-Calculator git repository.  Before developing
-any code changes be sure to read completely the Contributor Guide and
-then read about our [coding style](CODING.md) and [testing
-procedures](TESTING.md).  The Tax-Calculator [release
-history](RELEASES.md) provides a summary of past and current
-development work.
+on how to fork and clone the Tax-Calculator git repository.  Before
+developing any code changes be sure to read completely the Contributor
+Guide and then read about the [pull-request
+workflow](https://github.com/open-source-economics/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow).
+The Tax-Calculator [release
+history](https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history)
+provides a high-level summary of past pull requests and access to a
+complete list of merged, closed, and pending pull requests.
 
 If you are relying on Tax-Calculator capabilities in your own project,
 be sure to read the definition of the [Tax-Calculator Public

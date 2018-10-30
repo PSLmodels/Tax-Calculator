@@ -7,12 +7,11 @@ Tax-Calculator abstract base parameters class.
 import os
 import json
 import abc
-import collections as collect
 import numpy as np
-from taxcalc.utils import read_egg_json
+from taxcalc.utils import read_egg_json, json_to_dict
 
 
-class ParametersBase(object):
+class Parameters(object):
     """
     Inherit from this class for Policy, Behavior, Consumption, GrowDiff, and
     other groups of parameters that need to have a set_year method.
@@ -45,8 +44,8 @@ class ParametersBase(object):
             ppo = cls(num_years=nyrs)
             ppo.set_year(start_year)
             params = getattr(ppo, '_vals')
-            params = ParametersBase._revised_default_data(params, start_year,
-                                                          nyrs, ppo)
+            params = Parameters._revised_default_data(params, start_year,
+                                                      nyrs, ppo)
         # return different data from params dict depending on metadata value
         if metadata:
             return params
@@ -114,28 +113,28 @@ class ParametersBase(object):
     @property
     def num_years(self):
         """
-        ParametersBase class number of parameter years property.
+        Parameters class number of parameter years property.
         """
         return self._num_years
 
     @property
     def current_year(self):
         """
-        ParametersBase class current calendar year property.
+        Parameters class current calendar year property.
         """
         return self._current_year
 
     @property
     def start_year(self):
         """
-        ParametersBase class first parameter year property.
+        Parameters class first parameter year property.
         """
         return self._start_year
 
     @property
     def end_year(self):
         """
-        ParametersBase class lasst parameter year property.
+        Parameters class lasst parameter year property.
         """
         return self._end_year
 
@@ -146,7 +145,7 @@ class ParametersBase(object):
         Parameters
         ----------
         year: int
-            calendar year for which to current_year and parameter values
+            calendar year for which to set current_year and parameter values
 
         Raises
         ------
@@ -176,7 +175,58 @@ class ParametersBase(object):
                     arr = getattr(self, name)
                     setattr(self, name[1:], arr[year_zero_indexed])
 
-    # ----- begin private methods of ParametersBase class -----
+    @staticmethod
+    def param_dict_for_year(cyear, param_dict, param_info):
+        """
+        Set parameters to their values for the specified calendar year.
+
+        Parameters
+        ----------
+        cyear: int
+            calendar year for which to set parameter values
+
+        param_dict: dict
+            dictionary returned by the Calculator.read_json_assumptions method
+
+        param_info: dict
+            dictionary of information about each parameter that can be used in
+            param_dict, where information about each parameter must include at
+            a minimum the following key-value pairs:
+            'default_value': <number>
+            'minimum_value': <number>
+            'maximum_value': <number>
+
+        Returns
+        -------
+        param_values_for_year: dict
+            dictionary containing a key:value pair for each parameter in the
+            param_info dictionary, where each pair looks like this:
+            '<param_name>': <number>
+        """
+        assert isinstance(cyear, int)
+        assert isinstance(param_dict, dict)
+        assert isinstance(param_info, dict)
+        # set each parameter to its default value
+        pvalue = dict()
+        for pname in param_info:
+            pvalue[pname] = param_info[pname]['default_value']
+        # update pvalue using param_dict contents
+        for year in sorted(param_dict.keys()):
+            assert isinstance(year, int)
+            if year > cyear:
+                break  # out of the for year loop
+            ydict = param_dict[year]
+            assert isinstance(ydict, dict)
+            for pname in ydict:
+                assert pname in param_info
+                pval = ydict[pname]
+                assert isinstance(pval, float)
+                assert pval >= param_info[pname]['minimum_value']
+                assert pval <= param_info[pname]['maximum_value']
+                pvalue[pname] = pval
+        return pvalue
+
+    # ----- begin private methods of Parameters class -----
 
     def _validate_assump_parameter_names_types(self, revision):
         """
@@ -335,8 +385,8 @@ class ParametersBase(object):
                             cls.DEFAULTS_FILENAME)
         if os.path.exists(path):
             with open(path) as pfile:
-                params_dict = json.load(pfile,
-                                        object_pairs_hook=collect.OrderedDict)
+                json_text = pfile.read()
+            params_dict = json_to_dict(json_text)
         else:
             # cannot call read_egg_ function in unit tests
             params_dict = read_egg_json(
@@ -532,11 +582,11 @@ class ParametersBase(object):
             else:
                 x = np.array(x, np.float64)
         if len(x.shape) == 1:
-            return ParametersBase._expand_1D(x, inflate, inflation_rates,
-                                             num_years)
+            return Parameters._expand_1D(x, inflate, inflation_rates,
+                                         num_years)
         elif len(x.shape) == 2:
-            return ParametersBase._expand_2D(x, inflate, inflation_rates,
-                                             num_years)
+            return Parameters._expand_2D(x, inflate, inflation_rates,
+                                         num_years)
         else:
             raise ValueError('_expand_array expects a 1D or 2D array')
 

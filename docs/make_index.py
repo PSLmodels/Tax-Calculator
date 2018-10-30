@@ -3,17 +3,16 @@ Reads skeletal index.htmx file and writes fleshed-out index.html file
 containing information from several JSON files.
 """
 # CODING-STYLE CHECKS:
-# pycodestyle make_index.py
+# pycodestyle --ignore=E402 make_index.py
 # pylint --disable=locally-disabled make_index.py
 
 import os
 import sys
-import json
 from collections import OrderedDict
 CUR_PATH = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(os.path.join(CUR_PATH, '..'))
 # pylint: disable=import-error,wrong-import-position
-from taxcalc import Policy
+from taxcalc import Policy, json_to_dict
 
 
 INPUT_FILENAME = 'index.htmx'
@@ -149,8 +148,10 @@ def policy_params(path, text):
     Read policy parameters from path, integrate them into text, and
     return the integrated text.
     """
+    # pylint: disable=too-many-locals
     with open(path) as pfile:
-        params = json.load(pfile, object_pairs_hook=OrderedDict)
+        json_text = pfile.read()
+    params = json_to_dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct section dict containing sec1_sec2 titles
     concat_str = ' @ '
@@ -212,7 +213,8 @@ def io_variables(iotype, path, text):
     from path, integrate them into text, and return the integrated text.
     """
     with open(path) as vfile:
-        variables = json.load(vfile)
+        json_text = vfile.read()
+    variables = json_to_dict(json_text)
     assert isinstance(variables, dict)
     # construct variable text
     vtext = ''
@@ -263,7 +265,8 @@ def assumption_params(ptype, path, text):
     and return the integrated text.
     """
     with open(path) as pfile:
-        params = json.load(pfile, object_pairs_hook=OrderedDict)
+        json_text = pfile.read()
+    params = json_to_dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct parameter text for each param
     ptext = ''

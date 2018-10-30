@@ -41,7 +41,7 @@ def test_agg(tests_path, cps_fullsample):
     adt = calc.diagnostic_table(nyrs)
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # convert adt to a string with a trailing EOL character
-    actual_results = adt.to_string() + '\n'
+    actual_results = adt.to_string(float_format='%8.1f') + '\n'
     # read expected results from file
     aggres_path = os.path.join(tests_path, 'cpscsv_agg_expect.txt')
     with open(aggres_path, 'r') as expected_file:

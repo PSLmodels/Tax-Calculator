@@ -49,7 +49,7 @@ four-step process are provided in a different sub-directory for each
 other model.  Here are links to the cross-model validation results
 that are currently available:
 
-[Internet-TAXSIM](taxsim/README.md)
+[Internet-TAXSIM](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim)
 
 [...]()
 
