@@ -57,7 +57,7 @@
     },
     "dev_changelog": {
         "start_header": "TAX-CALCULATOR RELEASE HISTORY",
-        "end_header": "2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7",
+        "end_header": "Earlier Releases:",
         "source": "RELEASES.md",
         "type": "github_file",
         "data": null
