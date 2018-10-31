@@ -1,0 +1,156 @@
+{
+    "project_one_line": {
+        "start_header": null,
+        "end_header": null,
+        "source": "https://github.com/open-source-economics/Tax-Calculator",
+        "type": "html",
+        "data": "<p>Federal Individual Income and Payroll Tax Microsimulation Model</p>"
+    },
+    "key_features": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    },
+    "project_overview": {
+        "start_header": "What is Tax-Calculator?",
+        "end_header": "Disclaimer",
+        "source": "README.md",
+        "type": "github_file",
+        "data": null
+    },
+    "citation": {
+        "start_header": "Citing Tax-Calculator",
+        "end_header": null,
+        "source": "README.md",
+        "type": "github_file",
+        "data": null
+    },
+    "license": {
+        "start_header": null,
+        "end_header": null,
+        "source": "https://github.com/open-source-economics/Tax-Calculator/blob/master/LICENSE.md",
+        "data": "<p>CC0 1.0 Universal (CC0 1.0) Public Domain Dedication</p>",
+        "type": "html"
+    },
+    "user_documentation": {
+        "start_header": null,
+        "end_header": null,
+        "source": "http://open-source-economics.github.io/Tax-Calculator/index.html",
+        "type": "html",
+        "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html\">http://open-source-economics.github.io/Tax-Calculator/index.html</a>"
+    },
+    "user_changelog": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    },
+    "user_changelog_recent": {
+        "start_header": null,
+        "end_header": null,
+        "source": "http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew",
+        "type": "html",
+        "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew\">http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew</a>"
+    },
+    "dev_changelog": {
+        "start_header": "TAX-CALCULATOR RELEASE HISTORY",
+        "end_header": "Earlier Releases:",
+        "source": "RELEASES.md",
+        "type": "github_file",
+        "data": null
+    },
+    "disclaimer": {
+        "start_header": "Disclaimer",
+        "end_header": "Getting Started",
+        "source": "README.md",
+        "type": "github_file",
+        "data": null
+    },
+    "user_case_studies": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    },
+    "project_roadmap": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    },
+    "contributor_overview": {
+        "start_header": "Getting Started",
+        "end_header": "Citing Tax-Calculator",
+        "source": "README.md",
+        "type": "github_file",
+        "data": null
+    },
+    "contributor_guide": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://taxcalc.readthedocs.io/en/latest/contributor_guide.html\">https://taxcalc.readthedocs.io/en/latest/contributor_guide.html</a>"
+    },
+    "governance_overview": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    },
+    "public_funding": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    },
+    "link_to_webapp": {
+        "data": "<a href=\"https://www.ospc.org/taxbrain/\">https://www.ospc.org/taxbrain/</a>",
+        "source": null,
+        "type": "html",
+        "start_header": null,
+        "end_header": null
+    },
+    "public_issue_tracker": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">https://github.com/open-source-economics/Tax-Calculator/issues</a>",
+        "source": null,
+        "type": "html"
+    },
+    "public_qanda": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">https://github.com/open-source-economics/Tax-Calculator/issues</a>",
+        "source": null,
+        "type": "html"
+    },
+    "core_maintainers": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<ul><li>Martin Holmer</li><li>Matt Jensen</li></ul>",
+        "source": null,
+        "type": "html"
+    },
+    "unit_test": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>",
+        "source": "https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests",
+        "type": "html"
+    },
+    "integration_test": {
+        "start_header": null,
+        "end_header": null,
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>",
+        "source": "https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests",
+        "type": "html"
+    }
+}
