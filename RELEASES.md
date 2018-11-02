@@ -13,7 +13,7 @@ for a complete commit history.
 - None
 
 **New Features**
-- Add _EITC_basic_frac policy parameter so that an Earned and Basic Income Tax Credit (EBITC) reform can be analyzed.
+- Add _EITC_basic_frac policy parameter so that an Earned and Basic Income Tax Credit (EBITC) reform can be analyzed
   [[#2094](https://github.com/open-source-economics/Tax-Calculator/pull/2094)
   by Martin Holmer]
 
