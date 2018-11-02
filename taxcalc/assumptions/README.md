@@ -3,11 +3,11 @@ be combined and modified to construct your own economic assumption files
 that are stored on your local computer.
 
 Such an economic assumption file can then be uploaded to the [TaxBrain
-webapp](http://www.ospc.org/taxbrain/file/) along with policy reform
+webapp](https://www.ospc.org/taxbrain/file/) along with policy reform
 file for analysis, or be used on your local computer using
 the tc CLI (command-line interface) to Tax-Calculator, as described in
 the [user
-documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#cli).
+documentation](https://open-source-economics.github.io/Tax-Calculator/index.html#cli).
 
 [This
 document](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/assumptions/ASSUMPTIONS.md#how-to-specify-economic-assumptions-in-a-json-assumption-file)

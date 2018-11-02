@@ -5,9 +5,9 @@ This description of Tax-Calculator testing procedures is written for a
 person who wants to contribute changes to Tax-Calculator source code.
 
 It assumes that you have read the [Contributor
-Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
+Guide](https://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
 and the [conventions about naming and placing new policy
-parameters](http://taxcalc.readthedocs.io/en/latest/parameter_naming.html),
+parameters](https://taxcalc.readthedocs.io/en/latest/parameter_naming.html),
 have forked the [central GitHub Tax-Calculator
 repository](https://github.com/open-source-economics/Tax-Calculator)
 to your GitHub account, and have cloned that forked copy to your local
@@ -51,7 +51,7 @@ Testing with pytest
 There are two variants of this second testing phase depending on
 whether or not you have access to a file called `puf.csv` that
 contains a representative sample of tax filing units used by the
-[TaxBrain web application](http://www.ospc.org/taxbrain) and by core
+[TaxBrain web application](https://www.ospc.org/taxbrain) and by core
 Tax-Calculator developers.
 
 A brief description of the `puf.csv` file is followed by

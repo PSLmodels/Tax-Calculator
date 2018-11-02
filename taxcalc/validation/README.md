@@ -74,7 +74,7 @@ source code of the scripts for additional details on how to use them.
 The `taxdiffs.tcl` script calls the `taxdiff.awk` script to compute
 the number of large and small tax differences between two OUTPUT files
 that are formatted like Internet-TAXSIM 28-variable output files.  See
-[this link](http://users.nber.org/~taxsim/taxsim-calc9/index.html) for
+[this link](https://users.nber.org/~taxsim/taxsim-calc9/index.html) for
 details on the space-delimited Internet-TAXSIM output file format.
 All dollar amount differences of one cent or more are reported but
 those differences are divided into small and large differences, where

@@ -4,9 +4,9 @@ Tax-Calculator Pull-Request Workflow
 This description of the git/GitHub workflow is written for a person
 who wants to contribute changes to Tax-Calculator source code.  It
 assumes that you have read the [Contributor
-Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
+Guide](https://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
 and the [conventions about naming and placing new policy
-parameters](http://taxcalc.readthedocs.io/en/latest/parameter_naming.html),
+parameters](httpso://taxcalc.readthedocs.io/en/latest/parameter_naming.html),
 have forked the [central GitHub Tax-Calculator
 repository](https://github.com/open-source-economics/Tax-Calculator)
 to your GitHub account, and have cloned that forked copy to your local

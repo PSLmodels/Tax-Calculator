@@ -7,7 +7,7 @@ only required input variables are `RECID` (a unique filing-unit record
 identifier) and `MARS` (a positive-valued filing-status indicator).
 Other variables in the input file must have variable names that are
 included in the [Input Variables
-section](http://open-source-economics.github.io/Tax-Calculator/index.html#input)
+section](https://open-source-economics.github.io/Tax-Calculator/index.html#input)
 of the user documentation in order for them to affect tax
 calculations.  Any variable listed in Input Variables that is not in
 an input file is automatically set to a value of zero for every filing
