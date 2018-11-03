@@ -10,15 +10,15 @@ This document tells you how to begin contributing to Tax-Calculator by
 reporting a bug, improving the documentation, or making an enhancement
 to the Python source code.  If you only want to **use** Tax-Calculator,
 you should begin by reading the [user
-documentation](http://open-source-economics.github.io/Tax-Calculator/)
+documentation](https://open-source-economics.github.io/Tax-Calculator/)
 that describes how to use Tax-Calculator on your own computer (without
 doing any programming) and how to use the Tax-Calculator web application
-called [TaxBrain](http://www.ospc.org/taxbrain/).  If you want the most
+called [TaxBrain](https://www.ospc.org/taxbrain/).  If you want the most
 flexibility in using Tax-Calculator on your own computer, read the [user
-documentation](http://open-source-economics.github.io/Tax-Calculator/)
+documentation](https://open-source-economics.github.io/Tax-Calculator/)
 first and then read our [Cookbook of Tested Recipes for Python Programming
 with
-Tax-Calculator](http://open-source-economics.github.io/Tax-Calculator/cookbook.html).
+Tax-Calculator](https://open-source-economics.github.io/Tax-Calculator/cookbook.html).
 
 
 What is Tax-Calculator?
@@ -56,7 +56,7 @@ providing details on what you think should be added to Tax-Calculator.
 
 If you want to **propose code changes**, follow the directions in the
 [Contributor
-Guide](http://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
+Guide](https://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
 on how to fork and clone the Tax-Calculator git repository.  Before
 developing any code changes be sure to read completely the Contributor
 Guide and then read about the [pull-request
@@ -68,7 +68,7 @@ complete list of merged, closed, and pending pull requests.
 
 If you are relying on Tax-Calculator capabilities in your own project,
 be sure to read the definition of the [Tax-Calculator Public
-API](http://taxcalc.readthedocs.io/en/latest/public_api.html).
+API](https://taxcalc.readthedocs.io/en/latest/public_api.html).
 
 
 Citing Tax-Calculator
@@ -76,7 +76,7 @@ Citing Tax-Calculator
 
 Please cite the source of your analysis as "Tax-Calculator release
 #.#.#, author's calculations." If you wish to link to Tax-Calculator,
-http://open-source-economics.github.io/Tax-Calculator/ is
+https://open-source-economics.github.io/Tax-Calculator/ is
 preferred. Additionally, we strongly recommend that you describe the
 input data used, and provide a link to the materials required to
 replicate your analysis or, at least, note that those materials are

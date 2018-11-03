@@ -994,7 +994,7 @@ _Earlier Releases:_
   [[#1332](https://github.com/open-source-economics/Tax-Calculator/pull/1332)
   by Cody Kallen]
 - Complete process of creating [user
-  documentation](http://open-source-economics.github.io/Tax-Calculator/)
+  documentation](https://open-source-economics.github.io/Tax-Calculator/)
   [[#1355](https://github.com/open-source-economics/Tax-Calculator/pull/1355)
   by Martin Holmer]
 - Add Tax-Calculator conda package for Python 3.6

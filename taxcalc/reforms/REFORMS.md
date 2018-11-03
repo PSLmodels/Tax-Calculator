@@ -4,10 +4,10 @@ A tax reform consists of a collection of reform provisions.  There is
 a way to specify in a text file the collection of reform provisions
 that make up a reform proposal.  When stored on your local computer,
 such reform files can be used to estimate reform effects either by
-uploading to the [TaxBrain webapp](http://www.ospc.org/taxbrain/file/)
+uploading to the [TaxBrain webapp](https://www.ospc.org/taxbrain/file/)
 or by using the `--reform` option of the [Tax-Calculator command-line
 tool,
-tc](http://open-source-economics.github.io/Tax-Calculator/index.html#cli).
+tc](https://open-source-economics.github.io/Tax-Calculator/index.html#cli).
 
 Here we provide links to several reform files that specify historical
 reform proposals, and then provide a more general explanation of the
@@ -17,7 +17,7 @@ structure and syntax of reform files.
 
 Note that the current-law (that is, TCJA) values of each tax policy
 parameter are shown in the [Policy Parameters section of the user
-documentation](http://open-source-economics.github.io/Tax-Calculator/index.html#pol).
+documentation](https://open-source-economics.github.io/Tax-Calculator/index.html#pol).
 
 - [Pre-TCJA Policy](2017_law.json)
 

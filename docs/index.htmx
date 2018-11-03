@@ -17,7 +17,7 @@ federal income and payroll tax simulation model.  The two ways of
 using Tax-Calculator described here require no computer programming.
 If you are interested in Python programming with Tax-Calculator, you
 should read the tested recipes in our
-<a href="http://open-source-economics.github.io/Tax-Calculator/cookbook.html">
+<a href="https://open-source-economics.github.io/Tax-Calculator/cookbook.html">
 Tax-Calculator Cookbook</a>. If you want to participate in the
 development of Tax-Calculator &mdash; by asking a question, reporting
 a bug, improving the documentation or making an enhancement to the
@@ -79,7 +79,7 @@ assumptions</p>
 <h2 id="gui">TaxBrain GUI</h2>
 
 <p>You can use Tax-Calculator via a graphical user interface (GUI)
-provided by the <a href="http://www.ospc.org/taxbrain/">TaxBrain web
+provided by the <a href="https://www.ospc.org/taxbrain/">TaxBrain web
 application</a>.  This approach requires only an Internet connection
 and web browser on your computer.  TaxBrain (TB) uses a micro dataset
 to produce both aggregate and distributional reform estimates for each
@@ -278,7 +278,7 @@ report your experience by creating a new issue at
 <a href="https://github.com/open-source-economics/Tax-Calculator/issues">
 this website</a> or by sending an email to one of the core maintainers
 of Tax-Calculator listed at the bottom of the <i>What is TaxBrain?</i>
-page at <a href="http://www.ospc.org/taxbrain/">this website</a>.
+page at <a href="https://www.ospc.org/taxbrain/">this website</a>.
 
 <p>If your installation passes the test, you are ready to begin using
 tc to analyze your tax reforms.  Continue reading this section for
@@ -584,7 +584,7 @@ database table:  The CSV file is almost twice as large as the
 database, but it can be easily imported into a wide range of
 statistical packages.  The main advantage of the
 SQLite3 database is that the Anaconda Python distribution includes
-<a href="http://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe
+<a href="https://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe
 on Windows), a command-line tool that can be used to tabulate dump
 output using structured query language (SQL).  SQL is a language that
 you use to specify the tabulation you want and the SQL database
@@ -952,7 +952,7 @@ can be downloaded to your computer for storage or for additional
 analysis.</p>
 
 <p>The files on your computer can be uploaded
-at <a href="http://www.ospc.org/taxbrain/file/">the TaxBrain
+at <a href="https://www.ospc.org/taxbrain/file/">the TaxBrain
 file-upload page</a>.</p>
 
 <p>An extended example of how preliminary tax analysis on your
