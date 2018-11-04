@@ -358,7 +358,7 @@ def test_bool_int_value_info(tests_path, json_filename):
         while isinstance(val, list):
             val = val[0]
         valstr = str(val)
-        val_is_boolean = bool(valstr == 'True' or valstr == 'False')
+        val_is_boolean = valstr in ('True', 'False')
         val_is_integer = (not bool('.' in valstr or abs(val) > maxint) and
                           not val_is_boolean)
         # check that val_is_integer is consistent with integer_value
