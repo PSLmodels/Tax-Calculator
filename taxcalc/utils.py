@@ -301,11 +301,10 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
         return sdf
     # main logic of create_distribution_table
     assert isinstance(vdf, pd.DataFrame)
-    assert (groupby == 'weighted_deciles' or
-            groupby == 'standard_income_bins' or
-            groupby == 'soi_agi_bins')
-    assert (income_measure == 'expanded_income' or
-            income_measure == 'expanded_income_baseline')
+    assert groupby in ('weighted_deciles',
+                       'standard_income_bins',
+                       'soi_agi_bins')
+    assert income_measure in ('expanded_income', 'expanded_income_baseline')
     assert income_measure in vdf
     assert 'table_row' not in list(vdf.columns.values)
     # sort the data given specified groupby and income_measure
@@ -436,13 +435,11 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     assert isinstance(vdf1, pd.DataFrame)
     assert isinstance(vdf2, pd.DataFrame)
     assert np.allclose(vdf1['s006'], vdf2['s006'])  # check rows in same order
-    assert (groupby == 'weighted_deciles' or
-            groupby == 'standard_income_bins' or
-            groupby == 'soi_agi_bins')
+    assert groupby in ('weighted_deciles',
+                       'standard_income_bins',
+                       'soi_agi_bins')
     assert 'expanded_income' in vdf1
-    assert (tax_to_diff == 'iitax' or
-            tax_to_diff == 'payrolltax' or
-            tax_to_diff == 'combined')
+    assert tax_to_diff in ('iitax', 'payrolltax', 'combined')
     assert 'table_row' not in list(vdf1.columns.values)
     assert 'table_row' not in list(vdf2.columns.values)
     baseline_expanded_income = 'expanded_income_baseline'
@@ -1200,14 +1197,14 @@ def isoelastic_utility_function(consumption, crra, cmin):
         if crra == 1.0:
             return math.log(consumption)
         return math.pow(consumption, (1.0 - crra)) / (1.0 - crra)
-    else:  # if consumption < cmin
-        if crra == 1.0:
-            tu_at_cmin = math.log(cmin)
-        else:
-            tu_at_cmin = math.pow(cmin, (1.0 - crra)) / (1.0 - crra)
-        mu_at_cmin = math.pow(cmin, -crra)
-        tu_at_c = tu_at_cmin + mu_at_cmin * (consumption - cmin)
-        return tu_at_c
+    # else if consumption < cmin
+    if crra == 1.0:
+        tu_at_cmin = math.log(cmin)
+    else:
+        tu_at_cmin = math.pow(cmin, (1.0 - crra)) / (1.0 - crra)
+    mu_at_cmin = math.pow(cmin, -crra)
+    tu_at_c = tu_at_cmin + mu_at_cmin * (consumption - cmin)
+    return tu_at_c
 
 
 def expected_utility(consumption, probability, crra, cmin):
@@ -1645,7 +1642,7 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
     assert isinstance(linelist2, list)
     if len(linelist1) != len(linelist2):
         return True
-    assert small >= 0.0 and small <= 1.0
+    assert 0.0 <= small <= 1.0
     epsilon = 1e-6
     smallamt = small + epsilon
     for line1, line2 in zip(linelist1, linelist2):
