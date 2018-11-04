@@ -12,7 +12,7 @@ from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import read_egg_csv, read_egg_json, json_to_dict
 
 
-class Records(object):
+class Records():
     """
     Constructor for the tax-filing-unit Records class.
 

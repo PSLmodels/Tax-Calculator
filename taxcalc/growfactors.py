@@ -11,7 +11,7 @@ import pandas as pd
 from taxcalc.utils import read_egg_csv
 
 
-class GrowFactors(object):
+class GrowFactors():
     """
     Constructor for the GrowFactors class.
 

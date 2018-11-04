@@ -375,7 +375,6 @@ class Behavior(Parameters):
         _, iitax2, combined2 = calc2.mtr(mtr_of, wrt_full_compensation=True)
         if tax_type == 'combined':
             return (combined1, combined2)
-        elif tax_type == 'iitax':
+        if tax_type == 'iitax':
             return (iitax1, iitax2)
-        else:
-            raise ValueError('tax_type must be "combined" or "iitax"')
+        raise ValueError('tax_type must be "combined" or "iitax"')

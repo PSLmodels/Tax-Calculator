@@ -43,7 +43,7 @@ from taxcalc.utils import (json_to_dict,
 # import pdb
 
 
-class Calculator(object):
+class Calculator():
     """
     Constructor for the Calculator class.
 

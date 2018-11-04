@@ -14,7 +14,7 @@ from taxcalc.records import Records
 from taxcalc.calculator import Calculator
 
 
-class SimpleTaxIO(object):
+class SimpleTaxIO():
     """
     Constructor for the simple tax input-output class.
 

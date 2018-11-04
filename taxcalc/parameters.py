@@ -11,7 +11,7 @@ import numpy as np
 from taxcalc.utils import read_egg_json, json_to_dict
 
 
-class Parameters(object):
+class Parameters():
     """
     Inherit from this class for Policy, Behavior, Consumption, GrowDiff, and
     other groups of parameters that need to have a set_year method.

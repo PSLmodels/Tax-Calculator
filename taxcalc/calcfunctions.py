@@ -1165,7 +1165,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     """
     Computes EITC amount, c59660.
     """
-    # pylint: disable=too-many-branches
+    # pylint: disable=too-many-branches,chained-comparison
     if not EITC_indiv:
         # filing-unit and number-of-kids based EITC (rather than indiv EITC)
         invinc = (e00400 + e00300 + e00600 +
@@ -1363,7 +1363,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
         elif MARS == 3:
             schr12 = 3750.
             schr15 = 5000.
-        elif MARS == 1 or MARS == 4:
+        elif MARS in (1, 4):
             schr12 = 5000.
             schr15 = 7500.
         else:
@@ -1585,6 +1585,7 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
     # Part II of 2005 Form 8812
+    # pylint: disable=chained-comparison
     if n24 > 0 and n24 < ACTC_ChildNum and c82890 > 0:
         c82940 = min(c82890, c82935)
     if n24 >= ACTC_ChildNum:
