@@ -24,7 +24,7 @@ from taxcalc.utils import (delete_file, write_graph_file,
                            unweighted_sum, weighted_sum)
 
 
-class TaxCalcIO(object):
+class TaxCalcIO():
     """
     Constructor for the Tax-Calculator Input-Output class.
 

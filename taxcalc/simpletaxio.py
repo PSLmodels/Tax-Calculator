@@ -14,7 +14,7 @@ from taxcalc.records import Records
 from taxcalc.calculator import Calculator
 
 
-class SimpleTaxIO(object):
+class SimpleTaxIO():
     """
     Constructor for the simple tax input-output class.
 
@@ -150,7 +150,7 @@ class SimpleTaxIO(object):
         # loop through self._year_set doing tax calculations and saving output
         output = {}  # dictionary indexed by Records index for filing unit
         for calcyr in self._year_set:
-            if calcyr != self.calc.policy_current_year:
+            if calcyr != self.calc.policy_current_year():
                 self.calc.policy_current_year(calcyr)
                 self.calc.records_current_year(calcyr)
             self.calc.calc_all()

@@ -43,7 +43,7 @@ from taxcalc.utils import (json_to_dict,
 # import pdb
 
 
-class Calculator(object):
+class Calculator():
     """
     Constructor for the Calculator class.
 
@@ -483,8 +483,7 @@ class Calculator(object):
             return np.allclose(im1, im2, rtol=0.0, atol=0.01)
         # main logic of method
         assert calc is None or isinstance(calc, Calculator)
-        assert (groupby == 'weighted_deciles' or
-                groupby == 'standard_income_bins')
+        assert groupby in ('weighted_deciles', 'standard_income_bins')
         if calc is not None:
             assert np.allclose(self.array('s006'),
                                calc.array('s006'))  # check rows in same order
@@ -717,8 +716,7 @@ class Calculator(object):
         incometax_diff = incometax_chng - incometax_base
         combined_diff = combined_taxes_chng - combined_taxes_base
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
-        mtr_on_earnings = (variable_str == 'e00200p' or
-                           variable_str == 'e00200s')
+        mtr_on_earnings = variable_str in ('e00200p', 'e00200s')
         if wrt_full_compensation and mtr_on_earnings:
             adj = np.where(variable < self.policy_param('SS_Earnings_c'),
                            0.5 * (self.policy_param('FICA_ss_trt') +
@@ -738,7 +736,7 @@ class Calculator(object):
             mtr_combined = np.where(mars == 2, mtr_combined, np.nan)
         # delete intermediate variables
         del variable
-        if variable_str == 'e00200p' or variable_str == 'e00200s':
+        if variable_str in ('e00200p', 'e00200s'):
             del earnings_var
         elif variable_str == 'e00900p':
             del seincome_var
@@ -846,11 +844,9 @@ class Calculator(object):
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
         # check validity of mars parameter
-        assert mars == 'ALL' or (mars >= 1 and mars <= 4)
+        assert mars == 'ALL' or 1 <= mars <= 4
         # check validity of income_measure
-        assert (income_measure == 'expanded_income' or
-                income_measure == 'agi' or
-                income_measure == 'wages')
+        assert income_measure in ('expanded_income', 'agi', 'wages')
         if income_measure == 'expanded_income':
             income_variable = 'expanded_income'
         elif income_measure == 'agi':
@@ -858,9 +854,7 @@ class Calculator(object):
         elif income_measure == 'wages':
             income_variable = 'e00200'
         # check validity of mtr_measure parameter
-        assert (mtr_measure == 'combined' or
-                mtr_measure == 'itax' or
-                mtr_measure == 'ptax')
+        assert mtr_measure in ('combined', 'itax', 'ptax')
         # calculate marginal tax rates
         (mtr1_ptax, mtr1_itax,
          mtr1_combined) = self.mtr(variable_str=mtr_variable,
@@ -970,10 +964,8 @@ class Calculator(object):
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
         # check validity of function arguments
-        assert mars == 'ALL' or (mars >= 1 and mars <= 4)
-        assert (atr_measure == 'combined' or
-                atr_measure == 'itax' or
-                atr_measure == 'ptax')
+        assert mars == 'ALL' or 1 <= mars <= 4
+        assert atr_measure in ('combined', 'itax', 'ptax')
         # extract needed output that is assumed unchanged by reform from self
         record_variables = ['s006']
         if mars != 'ALL':

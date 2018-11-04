@@ -107,7 +107,8 @@ def run_nth_year_taxcalc_model(year_n, start_year,
     Setting use_full_sample=False implies use sub-sample of input file;
       otherwsie, use the complete sample.
     """
-    # pylint: disable=too-many-arguments,too-many-locals,too-many-branches
+    # pylint: disable=too-many-arguments,too-many-statements
+    # pylint: disable=too-many-locals,too-many-branches
 
     # create calc1 and calc2 calculated for year_n
     check_years(year_n, start_year, use_puf_not_cps)
@@ -613,9 +614,7 @@ def fuzzed(df1, df2, reform_affected, table_row_type):
         where copied df2 is fuzzed to maintain data privacy and
         where copied df1 has same filing unit order as has the fuzzed df2
     """
-    assert (table_row_type == 'aggr' or
-            table_row_type == 'xbin' or
-            table_row_type == 'xdec')
+    assert table_row_type in ('aggr', 'xbin', 'xdec')
     assert len(df1.index) == len(df2.index)
     assert reform_affected.size == len(df1.index)
     df1 = copy.deepcopy(df1)
@@ -797,12 +796,11 @@ def create_dict_table(dframe, row_names=None, column_types=None,
         try:
             if _type in float_types or _type is None:
                 return frmat_str.format(val)
-            elif _type in int_types:
+            if _type in int_types:
                 return str(int(val))
-            elif _type == str:
+            if _type == str:
                 return str(val)
-            else:
-                raise NotImplementedError()
+            raise NotImplementedError()
         except ValueError:
             # try making it a string - good luck!
             return str(val)

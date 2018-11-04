@@ -257,7 +257,7 @@ class Policy(Parameters):
         return a JSON-equivalent dictionary containing constructed array
         parameters and containing no parameters with suffixes, odict.
         """
-
+        # pylint: disable=too-many-statements
         # define no_suffix function used only in this method
         def no_suffix(idict):
             """

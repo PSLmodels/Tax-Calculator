@@ -12,7 +12,7 @@ from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import read_egg_csv, read_egg_json, json_to_dict
 
 
-class Records(object):
+class Records():
     """
     Constructor for the tax-filing-unit Records class.
 
@@ -285,12 +285,12 @@ class Records(object):
         return vardict
 
     # specify various sets of variable names
-    INTEGER_READ_VARS = None
-    MUST_READ_VARS = None
-    USABLE_READ_VARS = None
-    CALCULATED_VARS = None
-    CHANGING_CALCULATED_VARS = None
-    INTEGER_VARS = None
+    INTEGER_READ_VARS = set()
+    MUST_READ_VARS = set()
+    USABLE_READ_VARS = set()
+    CALCULATED_VARS = set()
+    CHANGING_CALCULATED_VARS = set()
+    INTEGER_VARS = set()
 
     @staticmethod
     def read_cps_data():
@@ -430,7 +430,7 @@ class Records(object):
         Specifies exact array depending on boolean value of exact_calcs.
         """
         # pylint: disable=too-many-statements,too-many-branches
-        if Records.INTEGER_VARS is None:
+        if Records.INTEGER_VARS == set():
             Records.read_var_info()
         # read specified data
         if isinstance(data, pd.DataFrame):
