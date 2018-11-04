@@ -339,7 +339,7 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
     """
     if ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
-    elif ymod >= SS_thd50[MARS - 1] and ymod < SS_thd85[MARS - 1]:
+    elif ymod < SS_thd85[MARS - 1]:
         c02500 = SS_percentage1 * min(ymod - SS_thd50[MARS - 1], e02400)
     else:
         c02500 = min(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
@@ -1165,7 +1165,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     """
     Computes EITC amount, c59660.
     """
-    # pylint: disable=too-many-branches,chained-comparison
+    # pylint: disable=too-many-branches
     if not EITC_indiv:
         # filing-unit and number-of-kids based EITC (rather than indiv EITC)
         invinc = (e00400 + e00300 + e00600 +
@@ -1183,21 +1183,16 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
                 # enforce age eligibility rule for those with no EITC-eligible
                 # kids assuming that an unknown age_* value implies EITC age
                 # eligibility
-                # pylint: disable=too-many-boolean-expressions
+                h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
+                s_age_elig = EITC_MinEligAge <= age_spouse <= EITC_MaxEligAge
                 if MARS == 2:
-                    if (age_head == 0 or
-                            age_spouse == 0 or
-                            (age_head >= EITC_MinEligAge and
-                             age_head <= EITC_MaxEligAge) or
-                            (age_spouse >= EITC_MinEligAge and
-                             age_spouse <= EITC_MaxEligAge)):
+                    if (age_head == 0 or age_spouse == 0 or
+                            h_age_elig or s_age_elig):
                         c59660 = eitc
                     else:
                         c59660 = 0.
                 else:  # if MARS != 2
-                    if (age_head == 0 or
-                            (age_head >= EITC_MinEligAge and
-                             age_head <= EITC_MaxEligAge)):
+                    if (age_head == 0 or h_age_elig):
                         c59660 = eitc
                     else:
                         c59660 = 0.
@@ -1585,10 +1580,10 @@ def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
         c82920 = max(0., c82910 - c82915)
         c82937 = max(c82890, c82920)
     # Part II of 2005 Form 8812
-    # pylint: disable=chained-comparison
-    if n24 > 0 and n24 < ACTC_ChildNum and c82890 > 0:
-        c82940 = min(c82890, c82935)
-    if n24 >= ACTC_ChildNum:
+    if n24 < ACTC_ChildNum:
+        if n24 > 0 and c82890 > 0:
+            c82940 = min(c82890, c82935)
+    else:  # if n24 >= ACTC_ChildNum
         if c82890 >= c82935:
             c82940 = c82935
         else:
@@ -1754,8 +1749,6 @@ def BenefitLimitation(calc):
     deductible expenses.
     """
     if calc.policy_param('ID_BenefitCap_rt') != 1.:
-        # pylint: disable=no-member
-        # (above pylint comment eliminates bogus np.maximum warnings)
         benefit = ComputeBenefit(calc,
                                  calc.policy_param('ID_BenefitCap_Switch'))
         # Calculate total deductible expenses under the cap
