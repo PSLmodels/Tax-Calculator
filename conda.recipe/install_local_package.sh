@@ -45,7 +45,7 @@ conda install taxcalc=0.0.0 --use-local --yes 2>&1 > /dev/null
 
 # clean-up after package build
 echo "CLEAN-UP..."
-conda build purge
+conda build purge 2> /dev/null
 topdir=$(git rev-parse --show-toplevel)
 pushd $topdir > /dev/null
 rm -rf build/*

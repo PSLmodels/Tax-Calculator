@@ -11,7 +11,7 @@ requirements:
     - python=3.6
     - "numpy>=1.13"
     - "pandas>=0.22"
-    - "bokeh>=1.0"
+    - "bokeh>=0.13"
     - numba
     - toolz
 
@@ -19,7 +19,7 @@ requirements:
     - python=3.6
     - "numpy>=1.13"
     - "pandas>=0.22"
-    - "bokeh>=1.0"
+    - "bokeh>=0.13"
     - numba
     - toolz
 
