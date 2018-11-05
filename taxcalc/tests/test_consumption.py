@@ -7,6 +7,11 @@ import copy
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
+def test_year_consistency():
+    assert Consumption.JSON_START_YEAR == Policy.JSON_START_YEAR
+    assert Consumption.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
+
+
 def test_validity_of_consumption_vars_set():
     assert Consumption.RESPONSE_VARS.issubset(Records.USABLE_READ_VARS)
     useable_vars = set(['housing', 'snap', 'tanf', 'vet', 'wic',

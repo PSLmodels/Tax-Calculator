@@ -3,7 +3,7 @@
 
 import os
 import json
-from numpy.testing import assert_allclose
+import numpy as np
 import pytest
 from taxcalc import GrowDiff, GrowFactors, Policy
 
@@ -13,26 +13,19 @@ def test_year_consistency():
     assert GrowDiff.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
 
 
-def test_incorrect_growdiff_ctor():
-    with pytest.raises(ValueError):
-        gdiff = GrowDiff(start_year=2000)
-    with pytest.raises(ValueError):
-        gdiff = GrowDiff(num_years=0)
-
-
 def test_update_and_apply_growdiff():
-    syr = 2013
-    nyrs = 5
-    lyr = syr + nyrs - 1
-    gdiff = GrowDiff(start_year=syr, num_years=nyrs)
+    gdiff = GrowDiff()
     # update GrowDiff instance
     diffs = {2014: {'_AWAGE': [0.01]},
              2016: {'_AWAGE': [0.02]}}
     gdiff.update_growdiff(diffs)
-    expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02]
-    assert_allclose(gdiff._AWAGE, expected_wage_diffs, atol=0.0, rtol=0.0)
+    expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02] + [0.02]*10
+    assert np.allclose(gdiff._AWAGE, expected_wage_diffs, atol=0.0, rtol=0.0)
     # apply growdiff to GrowFactors instance
     gf = GrowFactors()
+    syr = GrowDiff.JSON_START_YEAR
+    nyrs = GrowDiff.DEFAULT_NUM_YEARS
+    lyr = syr + nyrs - 1
     pir_pre = gf.price_inflation_rates(syr, lyr)
     wgr_pre = gf.wage_growth_rates(syr, lyr)
     gfactors = GrowFactors()
@@ -41,8 +34,8 @@ def test_update_and_apply_growdiff():
     wgr_pst = gfactors.wage_growth_rates(syr, lyr)
     expected_wgr_pst = [wgr_pre[i] + expected_wage_diffs[i]
                         for i in range(0, nyrs)]
-    assert_allclose(pir_pre, pir_pst, atol=0.0, rtol=0.0)
-    assert_allclose(wgr_pst, expected_wgr_pst, atol=1.0e-9, rtol=0.0)
+    assert np.allclose(pir_pre, pir_pst, atol=0.0, rtol=0.0)
+    assert np.allclose(wgr_pst, expected_wgr_pst, atol=1.0e-9, rtol=0.0)
 
 
 def test_incorrect_update_growdiff():
@@ -61,11 +54,12 @@ def test_incorrect_update_growdiff():
 
 
 def test_has_any_response():
-    syr = 2014
-    gdiff = GrowDiff(start_year=syr)
+    start_year = GrowDiff.JSON_START_YEAR
+    gdiff = GrowDiff()
+    assert gdiff.current_year == start_year
     assert gdiff.has_any_response() is False
     gdiff.update_growdiff({2020: {'_AWAGE': [0.01]}})
-    assert gdiff.current_year == syr
+    assert gdiff.current_year == start_year
     assert gdiff.has_any_response() is True
 
 
