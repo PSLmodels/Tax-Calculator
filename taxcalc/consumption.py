@@ -19,18 +19,7 @@ class Consumption(Parameters):
 
     Parameters
     ----------
-    start_year: integer
-        first calendar year for consumption parameters.
-
-    num_years: integer
-        number of calendar years for which to specify parameter
-        values beginning with start_year.
-
-    Raises
-    ------
-    ValueError:
-        if start_year is less than Policy.JSON_START_YEAR.
-        if num_years is less than one.
+    none
 
     Returns
     -------
@@ -41,15 +30,11 @@ class Consumption(Parameters):
     DEFAULTS_FILENAME = 'consumption.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
 
-    def __init__(self,
-                 start_year=JSON_START_YEAR,
-                 num_years=DEFAULT_NUM_YEARS):
+    def __init__(self):
         super(Consumption, self).__init__()
         self._vals = self._params_dict_from_json_file()
-        if start_year < Policy.JSON_START_YEAR:
-            raise ValueError('start_year < Policy.JSON_START_YEAR')
-        if num_years < 1:
-            raise ValueError('num_years < 1')
+        start_year = Consumption.JSON_START_YEAR
+        num_years = Consumption.DEFAULT_NUM_YEARS
         self.initialize(start_year, num_years)
         self.parameter_errors = ''
 

@@ -7,13 +7,6 @@ import copy
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
-def test_incorrect_Consumption_instantiation():
-    with pytest.raises(ValueError):
-        consump = Consumption(start_year=2000)
-    with pytest.raises(ValueError):
-        consump = Consumption(num_years=0)
-
-
 def test_validity_of_consumption_vars_set():
     assert Consumption.RESPONSE_VARS.issubset(Records.USABLE_READ_VARS)
     useable_vars = set(['housing', 'snap', 'tanf', 'vet', 'wic',
@@ -22,7 +15,7 @@ def test_validity_of_consumption_vars_set():
 
 
 def test_update_consumption():
-    consump = Consumption(start_year=2013)
+    consump = Consumption()
     consump.update_consumption({})
     consump.update_consumption({2014: {'_MPC_e20400': [0.05],
                                        '_BEN_mcare_value': [0.75]},
