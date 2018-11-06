@@ -479,12 +479,6 @@
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_cps"
     },
-    "filer": {
-      "type": "int",
-      "desc": "Input variable not used in tax-calculation logic; in puf.csv data, filer=1 indicates record is from IRS/SOI PUF and filer=0 indicates record is from CPS",
-      "form": {"2013-2016": "sample construction info"},
-      "availability": "taxdata_puf, taxdata_cps"
-    },
     "fips": {
       "type": "int",
       "desc": "FIPS state code (not used in tax-calculation logic)",
