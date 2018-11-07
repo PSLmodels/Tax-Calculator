@@ -4,8 +4,36 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-11-?? Release 0.23.0
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/open-source-economics/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Remove confusing `filer` variable from list of usable input variables
+  [[#2102](https://github.com/open-source-economics/Tax-Calculator/pull/2102)
+  by Martin Holmer]
+
+- Remove useless `start_year` and `num_years` arguments of constructor for the Policy, Consumption, and GrowDiff classes
+  [[#2103](https://github.com/open-source-economics/Tax-Calculator/pull/2103)
+  by Martin Holmer]
+
+- Add deprecated warning to Behavior class constructor and documentation because Behavior class will be removed from Tax-Calculator in a future release
+  [[#2105](https://github.com/open-source-economics/Tax-Calculator/pull/2105)
+  by Martin Holmer]
+
+**New Features**
+- None
+
+**Bug Fixes**
+- None
+
+
+_Earlier Releases:_
+
+
 2018-10-26 Release 0.22.2
--------------------------------------------------------------------------
+-------------------------
 (last merged pull request is
 [#2094](https://github.com/open-source-economics/Tax-Calculator/pull/2094))
 
@@ -21,11 +49,8 @@ for a complete commit history.
 - None
 
 
-_Earlier Releases:_
-
-
 2018-10-25 Release 0.22.1
--------------------------------------------------------------------------
+-------------------------
 (last merged pull request is
 [#2091](https://github.com/open-source-economics/Tax-Calculator/pull/2091))
 
@@ -42,7 +67,7 @@ _Earlier Releases:_
 
 
 2018-10-24 Release 0.22.0
--------------------------------------------------------------------------
+-------------------------
 (last merged pull request is
 [#2087](https://github.com/open-source-economics/Tax-Calculator/pull/2087))
 
