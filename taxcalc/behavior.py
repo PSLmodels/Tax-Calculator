@@ -18,6 +18,10 @@ class Behavior(Parameters):
 
     Constructor for elasticity-based behavioral-response class.
 
+    WARNING: the Behavior class is deprecated and will be removed soon.
+    FUTURE: use the Behavioral-Responses behresp package OR
+            use the Tax-Calculator quantity_response function.
+
     Parameters
     ----------
     start_year: integer
@@ -45,6 +49,10 @@ class Behavior(Parameters):
     def __init__(self,
                  start_year=JSON_START_YEAR,
                  num_years=DEFAULT_NUM_YEARS):
+        print(('WARNING: the Behavior class is deprecated '
+               'and will be removed soon.'))
+        print('FUTURE: use the Behavioral-Responses behresp package OR')
+        print('        use the Tax-Calculator quantity_response function.')
         super(Behavior, self).__init__()
         self._vals = self._params_dict_from_json_file()
         if start_year < Policy.JSON_START_YEAR:
