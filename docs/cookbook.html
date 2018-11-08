@@ -94,12 +94,12 @@ the exactly the <q>dish</q> you want. Remember to copy a recipe file
 and give it a new file name before you start to modify the recipe.</p>
 
 <p>The Calculator object is the central object in Tax-Calculator and
-it is created by passing four secondary objects (a Policy object, a
-Records object, a Behavior object, and a Consumption object) to the
+it is created by passing three secondary objects (a Policy object, a
+Records object, and a Consumption object) to the
 Calculator class constructor. When modifying a recipe, following a
 few rules will minimize the chance of running into problems.</p>
 
-<p>Fully specify Consumption, Behavior, Records, and Policy objects
+<p>Fully specify Policy, Records, and Consumption objects
 before passing them to the Calculator class constructor.</p>
 
 <p>After initializing a Calculator object, manipulate it using only
@@ -236,15 +236,16 @@ to Tax Reform</h2>
 
 <p>This is an advanced recipe that should be followed only after
 mastering the <a href="#recipe00">basic recipe</a>.  This recipe
-shows how to analyze the behavioral responses to a tax reform.</p>
+shows how to analyze the behavioral responses to a tax reform using
+the Behavioral-Responses <kbd>behresp</kbd> package.  Before following
+this recipe, be sure to install the <kbd>behresp</kbd> package on your
+compter by executing this at the command prompt:
+<kbd>conda install -c OSPC behresp</kbd></p>
 
 <p><b>Ingredients</b></p>
 
 <p><a href="reformA.json.html" target="_blank">Policy reform</a> in
 the <kbd>ingredients/reformA.json</kbd> file.</p>
-
-<p><a href="assumpA.json.html" target="_blank">Economic assumptions</a> in
-the <kbd>ingredients/assumpA.json</kbd> file.</p>
 
 <p><b>Instructions</b></p>
 
