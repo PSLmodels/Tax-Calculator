@@ -50,7 +50,7 @@ unzip -oq output-taxsim.zip $LYY.in.out-taxsim$SUFFIX
 tclsh taxdiffs.tcl $OVAR4 $LYY.in.out-simtax$SUFFIX \
                           $LYY.in.out-taxsim$SUFFIX > $LYY$SUFFIX.taxdiffs
 RC=$?
-if [ $RC -ne 0 ]; then
+if [[ $RC -ne 0 ]]; then
    exit $RC
 fi
 # Check for difference between actual .taxdiffs and expected .taxdiffs files
