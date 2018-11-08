@@ -56,17 +56,18 @@ def fixture_policyfile():
 
 
 def test_make_calculator(cps_subsample):
-    syr = 2014
-    pol = Policy(start_year=syr, num_years=9)
-    assert pol.current_year == syr
+    start_year = Policy.JSON_START_YEAR
+    sim_year = 2018
+    pol = Policy()
+    assert pol.current_year == start_year
     rec = Records.cps_constructor(data=cps_subsample)
     consump = Consumption()
-    consump.update_consumption({syr: {'_MPC_e20400': [0.05]}})
-    assert consump.current_year == Consumption.JSON_START_YEAR
+    consump.update_consumption({sim_year: {'_MPC_e20400': [0.05]}})
+    assert consump.current_year == start_year
     calc = Calculator(policy=pol, records=rec,
                       consumption=consump, behavior=Behavior())
-    assert calc.current_year == syr
-    assert calc.records_current_year() == syr
+    assert calc.current_year == Records.CPSCSV_YEAR
+    assert calc.records_current_year() == Records.CPSCSV_YEAR
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
         Calculator(policy=None, records=rec)
@@ -224,8 +225,7 @@ def test_calculator_mtr_when_PT_rates_differ():
 
 def test_make_calculator_increment_years_first(cps_subsample):
     # create Policy object with policy reform
-    syr = 2013
-    pol = Policy(start_year=syr)
+    pol = Policy()
     reform = {2015: {}, 2016: {}}
     std5 = 2000
     reform[2015]['_STD_Aged'] = [[std5, std5, std5, std5, std5]]
@@ -238,6 +238,7 @@ def test_make_calculator_increment_years_first(cps_subsample):
     calc = Calculator(policy=pol, records=rec)
     # compare expected policy parameter values with those embedded in calc
     irates = pol.inflation_rates()
+    syr = Policy.JSON_START_YEAR
     irate2015 = irates[2015 - syr]
     irate2016 = irates[2016 - syr]
     std6 = std5 * (1.0 + irate2015)
