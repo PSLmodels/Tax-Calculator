@@ -23,7 +23,9 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
-- None
+- Revise Cookbook recipe 2 to show use of new Behavioral-Responses behresp package as alternative to deprecated Behavior class
+  [[#2107](https://github.com/open-source-economics/Tax-Calculator/pull/2107)
+  by Martin Holmer]
 
 **Bug Fixes**
 - None
