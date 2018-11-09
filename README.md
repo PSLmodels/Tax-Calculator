@@ -1,4 +1,4 @@
-[![Python 3.6.5](https://img.shields.io/badge/python-3.6.5-blue.svg)](https://www.python.org/downloads/release/python-365/)
+[![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![Build Status](https://travis-ci.org/open-source-economics/Tax-Calculator.svg?branch=master)](https://travis-ci.org/open-source-economics/Tax-Calculator)
 [![Codecov](https://codecov.io/gh/open-source-economics/Tax-Calculator/branch/master/graph/badge.svg)](https://codecov.io/gh/open-source-economics/Tax-Calculator)
 
