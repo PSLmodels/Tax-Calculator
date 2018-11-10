@@ -41,20 +41,6 @@ def fixture_rawinputfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-@pytest.fixture(scope='module', name='policyfile')
-def fixture_policyfile():
-    txt = """{"_almdep": {"value": [7150, 7250, 7400]},
-             "_almsep": {"value": [40400, 41050]},
-             "_rt5": {"value": [0.33 ]},
-             "_rt7": {"value": [0.396]}}"""
-    f = tempfile.NamedTemporaryFile(mode="a", delete=False)
-    f.write(txt + "\n")
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
 def test_make_calculator(cps_subsample):
     start_year = Policy.JSON_START_YEAR
     sim_year = 2018
