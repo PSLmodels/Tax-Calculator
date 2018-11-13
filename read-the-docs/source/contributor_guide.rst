@@ -86,8 +86,8 @@ Setup Git
       Tax-Calculator$ cd taxcalc
       Tax-Calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
 
-    If you do have a copy of the OSPC-supplied puf.csv file, then on
-    the second line above omit the 'not requires_pufcsv and'
+    If you do have a copy of the puf.csv file used by Tax-Calculator,
+    then on the second line above omit the 'not requires_pufcsv and'
     expression so as to execute 'py.test -m "not pre_release" -n4'.
 
     If all the tests pass, you're good to go. If they don't pass, enter
