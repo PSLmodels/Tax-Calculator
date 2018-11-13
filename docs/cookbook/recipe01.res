@@ -1,6 +1,16 @@
+WARNING: the Behavior class is deprecated and will be removed soon.
+FUTURE: use the Behavioral-Responses behresp package OR
+        use the Tax-Calculator quantity_response function.
 You loaded data for 2014.
+Your data include the following unused variables that will be ignored:
+  filer
 Tax-Calculator startup automatically extrapolated your data to 2014.
+WARNING: the Behavior class is deprecated and will be removed soon.
+FUTURE: use the Behavioral-Responses behresp package OR
+        use the Tax-Calculator quantity_response function.
 You loaded data for 2014.
+Your data include the following unused variables that will be ignored:
+  filer
 Tax-Calculator startup automatically extrapolated your data to 2014.
 2018_REFORM1_iitax_rev($B)= 1422.082
 2018_REFORM2_iitax_rev($B)= 1267.362
