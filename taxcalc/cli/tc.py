@@ -133,10 +133,7 @@ def cli_tc_main():
     args = parser.parse_args()
     # show Tax-Calculator version and quit if --version option specified
     if args.version:
-        version = tc.__version__
-        if version == 'unknown':
-            version = 'locally.generated.package'
-        sys.stdout.write('Tax-Calculator {}\n'.format(version))
+        sys.stdout.write('Tax-Calculator {}\n'.format(tc.__version__))
         return 0
     # write test input and expected output files if --test option specified
     if args.test:

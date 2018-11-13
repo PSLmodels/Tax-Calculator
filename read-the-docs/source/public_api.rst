@@ -70,16 +70,10 @@ taxcalc.Growfactors
 .. autoclass:: taxcalc.Growfactors
    :members:
 
-taxcalc.macro_elasticity
-------------------------
+taxcalc.Parameters
+------------------
 
-.. automodule:: taxcalc.macro_elasticity
-   :members:
-
-taxcalc.ParametersBase
-----------------------
-
-.. autoclass:: taxcalc.ParametersBase
+.. autoclass:: taxcalc.Parameters
    :members:
    :exclude-members: _update, _indexing_rates_for_update
 

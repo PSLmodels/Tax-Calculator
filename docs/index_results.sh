@@ -10,7 +10,7 @@ echo "STARTING : `date`"
 
 # check existence of taxcalc package
 conda list taxcalc | awk '$1~/taxcalc/{rc=1}END{exit(rc)}'
-if [ $? -eq 0 ]; then
+if [[ $? -eq 0 ]]; then
     echo "ERROR: taxcalc package does not exist"
     exit 1
 fi

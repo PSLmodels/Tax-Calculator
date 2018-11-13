@@ -6,7 +6,6 @@ import sys
 import json
 import tempfile
 import numpy as np
-from numpy.testing import assert_allclose
 import pytest
 from taxcalc import Policy, Calculator
 
@@ -14,10 +13,6 @@ from taxcalc import Policy, Calculator
 def test_incorrect_Policy_instantiation():
     with pytest.raises(ValueError):
         Policy(gfactors=list())
-    with pytest.raises(ValueError):
-        Policy(start_year=2000)
-    with pytest.raises(ValueError):
-        Policy(num_years=0)
 
 
 def test_correct_Policy_instantiation():
@@ -53,8 +48,7 @@ def test_policy_json_content():
 
 
 def test_constant_inflation_rate_with_reform():
-    syr = 2013
-    pol = Policy(start_year=syr)
+    pol = Policy()
     # implement reform in year before final year
     fyr = Policy.LAST_BUDGET_YEAR
     ryr = fyr - 1
@@ -65,6 +59,7 @@ def test_constant_inflation_rate_with_reform():
     pol.implement_reform(reform)
     # extract price inflation rates
     pirates = pol.inflation_rates()
+    syr = Policy.JSON_START_YEAR
     irate_b = pirates[ryr - 2 - syr]
     irate_a = pirates[ryr - syr]
     # check implied inflation rate just before reform
@@ -76,8 +71,8 @@ def test_constant_inflation_rate_with_reform():
 
 
 def test_variable_inflation_rate_with_reform():
-    syr = 2013
-    pol = Policy(start_year=syr)
+    pol = Policy()
+    syr = Policy.JSON_START_YEAR
     assert pol._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
     reform = {
@@ -108,9 +103,9 @@ def test_multi_year_reform():
     Test multi-year reform involving 1D and 2D parameters.
     """
     # specify dimensions of policy Policy object
-    syr = 2013
+    syr = Policy.JSON_START_YEAR
     nyrs = Policy.DEFAULT_NUM_YEARS
-    pol = Policy(start_year=syr)
+    pol = Policy()
     iratelist = pol.inflation_rates()
     ifactor = {}
     for i in range(0, nyrs):
@@ -120,48 +115,48 @@ def test_multi_year_reform():
     for i in range(0, nyrs):
         wfactor[syr + i] = 1.0 + wratelist[i]
     # confirm that parameters have current-law values
-    assert_allclose(getattr(pol, '_EITC_c'),
-                    Policy._expand_array(
-                        np.array([[487, 3250, 5372, 6044],
-                                  [496, 3305, 5460, 6143],
-                                  [503, 3359, 5548, 6242],
-                                  [506, 3373, 5572, 6269],
-                                  [510, 3400, 5616, 6318]],
-                                 dtype=np.float64),
-                        False, False,
-                        inflate=True,
-                        inflation_rates=iratelist,
-                        num_years=nyrs),
-                    atol=0.01, rtol=0.0)
-    assert_allclose(getattr(pol, '_STD_Dep'),
-                    Policy._expand_array(
-                        np.array([1000, 1000, 1050, 1050, 1050],
-                                 dtype=np.float64),
-                        False, False,
-                        inflate=True,
-                        inflation_rates=iratelist,
-                        num_years=nyrs),
-                    atol=0.01, rtol=0.0)
-    assert_allclose(getattr(pol, '_CTC_c'),
-                    Policy._expand_array(
-                        np.array([1000] * 5 + [1400] * 4 +
-                                 [1500] * 3 + [1600] + [1000],
-                                 dtype=np.float64),
-                        False, False,
-                        inflate=False,
-                        inflation_rates=iratelist,
-                        num_years=nyrs),
-                    atol=0.01, rtol=0.0)
+    assert np.allclose(getattr(pol, '_EITC_c'),
+                       Policy._expand_array(
+                           np.array([[487, 3250, 5372, 6044],
+                                     [496, 3305, 5460, 6143],
+                                     [503, 3359, 5548, 6242],
+                                     [506, 3373, 5572, 6269],
+                                     [510, 3400, 5616, 6318]],
+                                    dtype=np.float64),
+                           False, False,
+                           inflate=True,
+                           inflation_rates=iratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(getattr(pol, '_STD_Dep'),
+                       Policy._expand_array(
+                           np.array([1000, 1000, 1050, 1050, 1050],
+                                    dtype=np.float64),
+                           False, False,
+                           inflate=True,
+                           inflation_rates=iratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(getattr(pol, '_CTC_c'),
+                       Policy._expand_array(
+                           np.array([1000] * 5 + [1400] * 4 +
+                                    [1500] * 3 + [1600] + [1000],
+                                    dtype=np.float64),
+                           False, False,
+                           inflate=False,
+                           inflation_rates=iratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
     # this parameter uses a different indexing rate
-    assert_allclose(getattr(pol, '_SS_Earnings_c'),
-                    Policy._expand_array(
-                        np.array([113700, 117000, 118500, 118500, 127200],
-                                 dtype=np.float64),
-                        False, False,
-                        inflate=True,
-                        inflation_rates=wratelist,
-                        num_years=nyrs),
-                    atol=0.01, rtol=0.0)
+    assert np.allclose(getattr(pol, '_SS_Earnings_c'),
+                       Policy._expand_array(
+                           np.array([113700, 117000, 118500, 118500, 127200],
+                                    dtype=np.float64),
+                           False, False,
+                           inflate=True,
+                           inflation_rates=wratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
     # specify multi-year reform using a dictionary of year_provisions dicts
     reform = {
         2015: {
@@ -232,26 +227,26 @@ def check_eitc_c(ppo, reform, ifactor):
     alen = len(arr[0])
     for i in range(0, ppo.num_years):
         actual[ppo.start_year + i] = arr[i]
-    assert_allclose(actual[2013], [487, 3250, 5372, 6044],
-                    atol=0.01, rtol=0.0)
-    assert_allclose(actual[2014], [496, 3305, 5460, 6143],
-                    atol=0.01, rtol=0.0)
-    assert_allclose(actual[2015], [503, 3359, 5548, 6242],
-                    atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2013], [487, 3250, 5372, 6044],
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2014], [496, 3305, 5460, 6143],
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2015], [503, 3359, 5548, 6242],
+                       atol=0.01, rtol=0.0)
     e2016 = reform[2016]['_EITC_c'][0]
-    assert_allclose(actual[2016], e2016, atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2016], e2016, atol=0.01, rtol=0.0)
     e2017 = [ifactor[2016] * actual[2016][j] for j in range(0, alen)]
-    assert_allclose(actual[2017], e2017, atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2017], e2017, atol=0.01, rtol=0.0)
     e2018 = [ifactor[2017] * actual[2017][j] for j in range(0, alen)]
     assert np.allclose(actual[2018], e2018, atol=0.01, rtol=0.0)
     e2019 = reform[2019]['_EITC_c'][0]
-    assert_allclose(actual[2019], e2019, atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2019], e2019, atol=0.01, rtol=0.0)
     e2020 = [ifactor[2019] * actual[2019][j] for j in range(0, alen)]
-    assert_allclose(actual[2020], e2020, atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2020], e2020, atol=0.01, rtol=0.0)
     e2021 = [ifactor[2020] * actual[2020][j] for j in range(0, alen)]
-    assert_allclose(actual[2021], e2021, atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2021], e2021, atol=0.01, rtol=0.0)
     e2022 = [ifactor[2021] * actual[2021][j] for j in range(0, alen)]
-    assert_allclose(actual[2022], e2022, atol=0.01, rtol=0.0)
+    assert np.allclose(actual[2022], e2022, atol=0.01, rtol=0.0)
 
 
 def check_ii_em(ppo, reform, ifactor):
@@ -335,40 +330,40 @@ def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
     monkeypatch.setattr(Policy, 'DEFAULTS_FILENAME', defaultpolicyfile.name)
     ppo = Policy()
     inf_rates = ppo.inflation_rates()
-    assert_allclose(ppo._almdep,
-                    Policy._expand_array(
-                        np.array([7150, 7250, 7400],
-                                 dtype=np.float64),
-                        False, False,
-                        inflate=True,
-                        inflation_rates=inf_rates,
-                        num_years=ppo.num_years),
-                    atol=0.01, rtol=0.0)
-    assert_allclose(ppo._almsep,
-                    Policy._expand_array(
-                        np.array([40400, 41050],
-                                 dtype=np.float64),
-                        False, False,
-                        inflate=True,
-                        inflation_rates=inf_rates,
-                        num_years=ppo.num_years),
-                    atol=0.01, rtol=0.0)
-    assert_allclose(ppo._rt5,
-                    Policy._expand_array(
-                        np.array([0.33]),
-                        False, False,
-                        inflate=False,
-                        inflation_rates=inf_rates,
-                        num_years=ppo.num_years),
-                    atol=0.01, rtol=0.0)
-    assert_allclose(ppo._rt7,
-                    Policy._expand_array(
-                        np.array([0.396]),
-                        False, False,
-                        inflate=False,
-                        inflation_rates=inf_rates,
-                        num_years=ppo.num_years),
-                    atol=0.01, rtol=0.0)
+    assert np.allclose(ppo._almdep,
+                       Policy._expand_array(
+                           np.array([7150, 7250, 7400],
+                                    dtype=np.float64),
+                           False, False,
+                           inflate=True,
+                           inflation_rates=inf_rates,
+                           num_years=ppo.num_years),
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(ppo._almsep,
+                       Policy._expand_array(
+                           np.array([40400, 41050],
+                                    dtype=np.float64),
+                           False, False,
+                           inflate=True,
+                           inflation_rates=inf_rates,
+                           num_years=ppo.num_years),
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(ppo._rt5,
+                       Policy._expand_array(
+                           np.array([0.33]),
+                           False, False,
+                           inflate=False,
+                           inflation_rates=inf_rates,
+                           num_years=ppo.num_years),
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(ppo._rt7,
+                       Policy._expand_array(
+                           np.array([0.396]),
+                           False, False,
+                           inflate=False,
+                           inflation_rates=inf_rates,
+                           num_years=ppo.num_years),
+                       atol=0.01, rtol=0.0)
 
 
 def test_parameters_get_default():
@@ -384,23 +379,23 @@ def test_implement_reform_Policy_raises_on_no_year():
 
 
 def test_Policy_reform_in_start_year():
-    ppo = Policy(start_year=2013)
+    ppo = Policy()
     reform = {2013: {'_STD': [[16000, 13000, 13000, 16000, 16000]]}}
     ppo.implement_reform(reform)
-    assert_allclose(ppo.STD,
-                    np.array([16000, 13000, 13000, 16000, 16000]),
-                    atol=0.01, rtol=0.0)
+    assert np.allclose(ppo.STD,
+                       np.array([16000, 13000, 13000, 16000, 16000]),
+                       atol=0.01, rtol=0.0)
 
 
-def test_implement_reform_Policy_raises_on_future_year():
-    ppo = Policy(start_year=2013)
+def test_implement_reform_Policy_raises_on_early_year():
+    ppo = Policy()
     reform = {2010: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
 
 def test_Policy_reform_with_default_cpi_flags():
-    ppo = Policy(start_year=2013)
+    ppo = Policy()
     reform = {2015: {'_II_em': [4300]}}
     ppo.implement_reform(reform)
     # '_II_em' has a default cpi_flag of True, so
@@ -410,43 +405,47 @@ def test_Policy_reform_with_default_cpi_flags():
 
 
 def test_Policy_reform_after_start_year():
-    ppo = Policy(start_year=2013)
+    ppo = Policy()
     reform = {2015: {'_STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
-    assert_allclose(ppo.STD_Aged,
-                    np.array([1400, 1100, 1100, 1400, 1400]),
-                    atol=0.01, rtol=0.0)
+    assert np.allclose(ppo.STD_Aged,
+                       np.array([1400, 1100, 1100, 1400, 1400]),
+                       atol=0.01, rtol=0.0)
 
 
 def test_Policy_reform_makes_no_changes_before_year():
-    ppo = Policy(start_year=2013)
+    ppo = Policy()
     reform = {2015: {'_II_em': [4400], '_II_em_cpi': True}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
-    assert_allclose(ppo._II_em[:3], np.array([3900, 3950, 4400]),
-                    atol=0.01, rtol=0.0)
+    assert np.allclose(ppo._II_em[:3], np.array([3900, 3950, 4400]),
+                       atol=0.01, rtol=0.0)
     assert ppo.II_em == 4400
 
 
-def test_parameters_get_default_start_year():
-    paramdata = Policy.default_data(metadata=True, start_year=2015)
-    # 1D data, has 2015 values
+def test_parameters_get_default_data():
+    paramdata = Policy.default_data(metadata=True)
+    # 1D data, has 2013+ values
     meta_II_em = paramdata['_II_em']
-    assert meta_II_em['start_year'] == 2015
-    assert meta_II_em['row_label'] == [str(cyr) for cyr in range(2015, 2027)]
-    assert meta_II_em['value'] == [4000, 4050, 4050] + [0] * 8 + [4883]
-    # 2D data, has 2015 values
+    assert meta_II_em['start_year'] == 2013
+    assert meta_II_em['row_label'] == [str(cyr) for cyr in range(2013, 2027)]
+    expval = [3900, 3950, 4000, 4050, 4050] + [0] * 8 + [4883]
+    assert meta_II_em['value'] == expval
+    # 2D data, has 2013+ values
     meta_std_aged = paramdata['_STD_Aged']
-    assert meta_std_aged['start_year'] == 2015
-    assert meta_std_aged['row_label'] == ['2015', '2016', '2017']
-    assert meta_std_aged['value'] == [[1550, 1250, 1250, 1550, 1550],
+    assert meta_std_aged['start_year'] == 2013
+    explabels = ['2013', '2014', '2015', '2016', '2017']
+    assert meta_std_aged['row_label'] == explabels
+    assert meta_std_aged['value'] == [[1500, 1200, 1200, 1500, 1500],
+                                      [1550, 1200, 1200, 1550, 1550],
+                                      [1550, 1250, 1250, 1550, 1550],
                                       [1550, 1250, 1250, 1550, 1550],
                                       [1550, 1250, 1250, 1550, 1550]]
-    # 1D data, doesn't have 2015 values, is not CPI inflated
+    # 1D data, has only 2013 values because is not CPI inflated
     meta_kt_c_age = paramdata['_AMT_KT_c_Age']
-    assert meta_kt_c_age['start_year'] == 2015
-    assert meta_kt_c_age['row_label'] == ['2015']
+    assert meta_kt_c_age['start_year'] == 2013
+    assert meta_kt_c_age['row_label'] == ['2013']
     assert meta_kt_c_age['value'] == [24]
 
 
@@ -553,11 +552,12 @@ def test_pop_the_cap_reform():
     Test eliminating the maximum taxable earnings (MTE)
     used in the calculation of the OASDI payroll tax.
     """
-    # clarify start year and create Policy parameters object
-    syr = 2013
-    ppo = Policy(start_year=syr)
+    # create Policy parameters object
+    ppo = Policy()
+    assert ppo.current_year == Policy.JSON_START_YEAR
     # confirm that MTE has current-law values in 2015 and 2016
     mte = ppo._SS_Earnings_c
+    syr = Policy.JSON_START_YEAR
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 118500
     # specify a "pop the cap" reform that eliminates MTE cap in 2016
@@ -580,9 +580,9 @@ def test_order_of_cpi_and_level_reforms():
               {2015: {'_SS_Earnings_c_cpi': False,
                       '_SS_Earnings_c': [500000]}}]
     # specify two Policy objects
-    syr = 2013
-    ppo = [Policy(start_year=syr), Policy(start_year=syr)]
+    ppo = [Policy(), Policy()]
     # apply reforms to corresponding Policy object & check post-reform values
+    syr = Policy.JSON_START_YEAR
     for ref in range(len(reform)):
         # confirm pre-reform MTE values in 2014-17
         mte = ppo[ref]._SS_Earnings_c

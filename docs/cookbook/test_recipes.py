@@ -20,7 +20,7 @@ print('{}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
 RECIPES = glob.glob('./recipe[0-9][0-9].py')
 
 # execute each recipe in RECIPES list and compare output with expected output
-for recipe in RECIPES:
+for recipe in sorted(RECIPES):
     out_filename = recipe.replace('.py', '.out')
     if os.path.isfile(out_filename):
         os.remove(out_filename)

@@ -7,11 +7,9 @@ import copy
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
-def test_incorrect_Consumption_instantiation():
-    with pytest.raises(ValueError):
-        consump = Consumption(start_year=2000)
-    with pytest.raises(ValueError):
-        consump = Consumption(num_years=0)
+def test_year_consistency():
+    assert Consumption.JSON_START_YEAR == Policy.JSON_START_YEAR
+    assert Consumption.DEFAULT_NUM_YEARS == Policy.DEFAULT_NUM_YEARS
 
 
 def test_validity_of_consumption_vars_set():
@@ -22,7 +20,7 @@ def test_validity_of_consumption_vars_set():
 
 
 def test_update_consumption():
-    consump = Consumption(start_year=2013)
+    consump = Consumption()
     consump.update_consumption({})
     consump.update_consumption({2014: {'_MPC_e20400': [0.05],
                                        '_BEN_mcare_value': [0.75]},

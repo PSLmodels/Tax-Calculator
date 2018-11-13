@@ -22,7 +22,7 @@ class Parameters():
     DEFAULTS_FILENAME = None
 
     @classmethod
-    def default_data(cls, metadata=False, start_year=None):
+    def default_data(cls, metadata=False):
         """
         Return parameter data read from the subclass's json file.
 
@@ -30,22 +30,12 @@ class Parameters():
         ----------
         metadata: boolean
 
-        start_year: int or None
-
         Returns
         -------
         params: dictionary of data
         """
-        # extract different data from DEFAULT_FILENAME depending on start_year
-        if start_year is None:
-            params = cls._params_dict_from_json_file()
-        else:
-            nyrs = start_year - cls.JSON_START_YEAR + 1
-            ppo = cls(num_years=nyrs)
-            ppo.set_year(start_year)
-            params = getattr(ppo, '_vals')
-            params = Parameters._revised_default_data(params, start_year,
-                                                      nyrs, ppo)
+        # extract data from DEFAULT_FILENAME
+        params = cls._params_dict_from_json_file()
         # return different data from params dict depending on metadata value
         if metadata:
             return params
@@ -315,54 +305,6 @@ class Parameters():
                                                    vvalue[idx]) + '\n'
                         )
         del parameters
-
-    @staticmethod
-    def _revised_default_data(params, start_year, nyrs, ppo):
-        """
-        Return revised default parameter data.
-
-        Parameters
-        ----------
-        params: dictionary of NAME:DATA pairs for each parameter
-            as defined in calling default_data staticmethod.
-
-        start_year: int
-            as defined in calling default_data staticmethod.
-
-        nyrs: int
-            as defined in calling default_data staticmethod.
-
-        ppo: Policy object
-            as defined in calling default_data staticmethod.
-
-        Returns
-        -------
-        params: dictionary of revised parameter data
-
-        Notes
-        -----
-        This staticmethod is called from default_data staticmethod in
-        order to reduce the complexity of the default_data staticmethod.
-        """
-        start_year_str = '{}'.format(start_year)
-        for name, data in params.items():
-            data['start_year'] = start_year
-            values = data['value']
-            num_values = len(values)
-            if num_values <= nyrs:
-                # val should be the single start_year value
-                rawval = getattr(ppo, name[1:])
-                if isinstance(rawval, np.ndarray):
-                    val = rawval.tolist()
-                else:
-                    val = rawval
-                data['value'] = [val]
-                data['row_label'] = [start_year_str]
-            else:  # if num_values > nyrs
-                # val should extend beyond the start_year value
-                data['value'] = data['value'][(nyrs - 1):]
-                data['row_label'] = data['row_label'][(nyrs - 1):]
-        return params
 
     @classmethod
     def _params_dict_from_json_file(cls):

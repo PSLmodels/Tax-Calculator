@@ -18,18 +18,7 @@ class GrowDiff(Parameters):
 
     Parameters
     ----------
-    start_year: integer
-        first calendar year for growth difference parameters.
-
-    num_years: integer
-        number of calendar years for which to specify parameter
-        values beginning with start_year.
-
-    Raises
-    ------
-    ValueError:
-        if start_year is less than 2013
-        if num_years is less than one.
+    none
 
     Returns
     -------
@@ -40,15 +29,11 @@ class GrowDiff(Parameters):
     DEFAULTS_FILENAME = 'growdiff.json'
     DEFAULT_NUM_YEARS = 15  # must be same as Policy.DEFAULT_NUM_YEARS
 
-    def __init__(self,
-                 start_year=JSON_START_YEAR,
-                 num_years=DEFAULT_NUM_YEARS):
+    def __init__(self):
         super(GrowDiff, self).__init__()
         self._vals = self._params_dict_from_json_file()
-        if start_year < GrowDiff.JSON_START_YEAR:
-            raise ValueError('start_year < GrowDiff.JSON_START_YEAR')
-        if num_years < 1:
-            raise ValueError('num_years < 1')
+        start_year = GrowDiff.JSON_START_YEAR
+        num_years = GrowDiff.DEFAULT_NUM_YEARS
         self.initialize(start_year, num_years)
         self.parameter_errors = ''
 
