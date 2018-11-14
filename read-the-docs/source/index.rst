@@ -26,7 +26,6 @@ Contents
    parameter_naming.rst
    public_api.rst
    data.rst
-   disclaimer.rst
    license.rst
    contributors.rst
 
