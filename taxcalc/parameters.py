@@ -186,6 +186,11 @@ class Parameters():
             'minimum_value': <number>
             'maximum_value': <number>
 
+        Note
+        ----
+        This method may not be used by Tax-Calculator, but it is used by
+        other PSL models that work with Tax-Calculator.
+
         Returns
         -------
         param_values_for_year: dict
