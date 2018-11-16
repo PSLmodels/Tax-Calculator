@@ -37,7 +37,7 @@
     "user_documentation": {
         "start_header": null,
         "end_header": null,
-        "source": "http://open-source-economics.github.io/Tax-Calculator/index.html",
+        "source": null,
         "type": "html",
         "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html\">http://open-source-economics.github.io/Tax-Calculator/index.html</a>"
     },
@@ -51,7 +51,7 @@
     "user_changelog_recent": {
         "start_header": null,
         "end_header": null,
-        "source": "http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew",
+        "source": null,
         "type": "html",
         "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew\">http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew</a>"
     },
@@ -143,14 +143,14 @@
         "start_header": null,
         "end_header": null,
         "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>",
-        "source": "https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests",
+        "source": null,
         "type": "html"
     },
     "integration_test": {
         "start_header": null,
         "end_header": null,
         "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>",
-        "source": "https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests",
+        "source": null,
         "type": "html"
     }
 }
