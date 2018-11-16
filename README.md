@@ -24,18 +24,20 @@ Tax-Calculator](https://open-source-economics.github.io/Tax-Calculator/cookbook.
 What is Tax-Calculator?
 -----------------------
 
-Tax-Calculator simulates the US federal individual income and payroll
-tax system.  In conjunction with micro data that represent the US
-population and a set of behavioral assumptions, Tax-Calculator can
-be used to conduct revenue scoring and distributional analyses of tax
-policies.  Tax-Calculator is written in Python, an interpreted
-language that can execute on Windows, Mac, or Linux.
+Tax-Calculator simulates the USA federal individual income and payroll
+tax system.  In conjunction with micro data that represent the USA
+population, Tax-Calculator can be used to estimate the aggregate
+revenue and distributional effects of tax reforms under static
+analysis assumptions.  In conjunction with other modules,
+Tax-Calculator can be used to estimate reform effects under a range of
+non-static assumptions.  Tax-Calculator is written in Python, an
+interpreted language that can execute on Windows, Mac, or Linux.
 
 
 Disclaimer
 ----------
 
-Results will change as the underlying models improve. A fundamental
+Results will change as model data and logic improve. A fundamental
 reason for adopting open source methods in this project is so that
 people from all backgrounds can contribute to the models that our
 society uses to assess economic policy; when community-contributed
