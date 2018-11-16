@@ -37,7 +37,7 @@ interpreted language that can execute on Windows, Mac, or Linux.
 Disclaimer
 ----------
 
-Results will change as the model data and logic improve. A fundamental
+Results will change as model data and logic improve. A fundamental
 reason for adopting open source methods in this project is so that
 people from all backgrounds can contribute to the models that our
 society uses to assess economic policy; when community-contributed
