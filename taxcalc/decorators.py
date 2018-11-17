@@ -256,9 +256,9 @@ def iterate_jit(parameters=None, **kwargs):
         # Any name that is a parameter
         # Boolean flag is given special treatment.
         # Identify those names here
-        dd_key_list = list(Policy.default_data(metadata=True).keys())
-        allowed_parameters = dd_key_list
-        allowed_parameters += list(arg[1:] for arg in dd_key_list)
+        param_list = Policy.parameter_list()
+        allowed_parameters = param_list
+        allowed_parameters += list(arg[1:] for arg in param_list)
         additional_parameters = [arg for arg in in_args if
                                  arg in allowed_parameters]
         additional_parameters += parameters

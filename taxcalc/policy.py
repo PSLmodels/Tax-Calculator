@@ -362,7 +362,7 @@ class Policy(Parameters):
         Returns list of parameter names in the policy_current_law.json file.
         """
         pdict = Policy._params_dict_from_json_file()
-        plist = pdict.keys()
+        plist = list(pdict.keys())
         del pdict
         return plist
 
