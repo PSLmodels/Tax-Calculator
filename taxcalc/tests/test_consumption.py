@@ -91,12 +91,13 @@ def test_future_update_consumption():
 
 
 def test_consumption_default_data():
-    paramdata = Consumption.default_data()
-    for param in paramdata:
-        if param.startswith('_MPC'):
-            assert paramdata[param] == [0.0]
-        elif param.startswith('_BEN'):
-            assert paramdata[param] == [1.0]
+    consump = Consumption()
+    pdata = consump._vals
+    for pname in pdata.keys():
+        if pname.startswith('_MPC'):
+            assert pdata[pname]['value'] == [0.0]
+        elif pname.startswith('_BEN'):
+            assert pdata[pname]['value'] == [1.0]
 
 
 def test_consumption_response(cps_subsample):

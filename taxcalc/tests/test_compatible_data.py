@@ -18,9 +18,10 @@ from taxcalc import Policy, Records, Calculator  # pylint: disable=import-error
 @pytest.fixture(scope='module', name='allparams')
 def fixture_allparams():
     """
-    Return metadata for current law parameters
+    Return metadata for current-law policy parameters.
     """
-    return Policy.default_data(metadata=True)
+    clp = Policy()
+    return clp.metadata()
 
 
 def test_compatible_data_presence(allparams):
@@ -135,7 +136,7 @@ def fixture_sorted_param_names(allparams):
     return sorted(list(allparams.keys()))
 
 
-NPARAMS = len(Policy.default_data())
+NPARAMS = 218  # hard-code NPARAMS to len(allparams)
 BATCHSIZE = 10
 BATCHES = int(np.floor(NPARAMS / BATCHSIZE)) + 1
 
@@ -229,6 +230,9 @@ def test_compatible_data(cps_subsample, puf_subsample,
     """
     # pylint: disable=too-many-arguments,too-many-locals
     # pylint: disable=too-many-statements,too-many-branches
+
+    # Check NPARAMS value
+    assert NPARAMS == len(allparams)
 
     # Get taxcalc objects from tc_objs fixture
     rec_xx, c_xx, puftest = tc_objs
