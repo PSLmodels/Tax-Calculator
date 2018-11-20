@@ -2,35 +2,37 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 =======================================
 
 ```
-... on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
+--> on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
 
-... merge master branch into X-Y-Z branch
+--> merge master branch into X-Y-Z branch
 
-... edit "version = 'X.Y.Z'" in read-the-docs/source/conf.py
+--> edit "version = 'X.Y.Z'" in read-the-docs/source/conf.py
 
-... run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc]
+--> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc]
 
-... run `make package`  [so that tc CLI is available]
+--> run `make package`  [to make taxcalc package available in docs]
 
-... cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
+--> run `conda install -c PSLmodels behresp --yes`  [to make behresp available]
 
-... cd .. ; ./index_results.sh ; .fix.
+--> cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
 
-... edit "What's New" section of index.htmx ; python make_index.py
+--> cd .. ; ./index_results.sh ; .fix.
 
-... cd .. ; make clean  [to remove local taxcalc package]
+--> edit "What's New" section of index.htmx ; python make_index.py
 
-... commit X-Y-Z branch and push to origin
+--> cd .. ; make clean  [to remove taxcalc and behresp packages]
 
-... merge X-Y-Z branch into master branch on GitHub
+--> commit X-Y-Z branch and push to origin
 
-... on local master branch, ./gitsync
+--> merge X-Y-Z branch into master branch on GitHub
 
-... create release X.Y.Z on GitHub using master branch
+--> on local master branch, ./gitsync
 
-... create packages using `pbrelease Tax-Calculator taxcalc X.Y.Z` command
+--> create release X.Y.Z on GitHub using master branch
 
-... email policybrain-modelers list about the new release and packages
+--> create packages using `pbrelease Tax-Calculator taxcalc X.Y.Z` command
+
+--> email policybrain-modelers list about the new release and packages
 ```
 
 LATER: create new X-Y-Z branch that will hold RELEASES.md info for next release
@@ -51,13 +53,13 @@ $ git checkout master
 
 $ git checkout  -b 1-4-1  1.4.0
 
-... fix bug on branch 1-4-1, test, commit bug fix
+--> fix bug on branch 1-4-1, test, commit bug fix
 
 $ git push upstream 1-4-1
 
-... create release 1.4.1 using GitHub releases GUI citing branch 1-4-1
+--> create release 1.4.1 using GitHub releases GUI citing branch 1-4-1
 
-... then in order to merge bug-fix into master branch and future releases
+--> then in order to merge bug-fix into master branch and future releases
     beginning with 1.5.0, do the following:
 
 $ git checkout master
