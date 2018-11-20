@@ -5,6 +5,7 @@ Tax-Calculator federal tax policy Policy class.
 # pycodestyle policy.py
 # pylint --disable=locally-disabled policy.py
 
+import collections
 import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
@@ -333,6 +334,37 @@ class Policy(Parameters):
         Sets self._ignore_errors to True.
         """
         self._ignore_errors = True
+
+    def metadata(self):
+        """
+        Returns ordered dictionary of parameter information based on
+        the contents of the policy_current_law.json file with updates
+        to each parameter's 'start_year', 'row_label', and 'value' key
+        values so that the updated values contain just the current_year
+        information for this instance of the Policy class.
+        """
+        mdata = collections.OrderedDict()
+        for pname, pdata in self._vals.items():
+            mdata[pname] = pdata
+            mdata[pname]['row_label'] = ['{}'.format(self.current_year)]
+            mdata[pname]['start_year'] = '{}'.format(self.current_year)
+            valraw = getattr(self, pname[1:])
+            if isinstance(valraw, np.ndarray):
+                val = valraw.tolist()
+            else:
+                val = valraw
+            mdata[pname]['value'] = [val]
+        return mdata
+
+    @staticmethod
+    def parameter_list():
+        """
+        Returns list of parameter names in the policy_current_law.json file.
+        """
+        pdict = Policy._params_dict_from_json_file()
+        plist = list(pdict.keys())
+        del pdict
+        return plist
 
     # ----- begin private methods of Policy class -----
 

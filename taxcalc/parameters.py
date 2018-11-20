@@ -13,34 +13,13 @@ from taxcalc.utils import read_egg_json, json_to_dict
 
 class Parameters():
     """
-    Inherit from this class for Policy, Behavior, Consumption, GrowDiff, and
+    Inherit from this class for Policy, Consumption, GrowDiff, and
     other groups of parameters that need to have a set_year method.
     Override this __init__ method and DEFAULTS_FILENAME.
     """
     __metaclass__ = abc.ABCMeta
 
     DEFAULTS_FILENAME = None
-
-    @classmethod
-    def default_data(cls, metadata=False):
-        """
-        Return parameter data read from the subclass's json file.
-
-        Parameters
-        ----------
-        metadata: boolean
-
-        Returns
-        -------
-        params: dictionary of data
-        """
-        # extract data from DEFAULT_FILENAME
-        params = cls._params_dict_from_json_file()
-        # return different data from params dict depending on metadata value
-        if metadata:
-            return params
-        else:
-            return {name: data['value'] for name, data in params.items()}
 
     def __init__(self):
         pass
@@ -150,9 +129,9 @@ class Parameters():
         -----
         To increment the current year, use the following statement::
 
-            behavior.set_year(behavior.current_year + 1)
+            policy.set_year(policy.current_year + 1)
 
-        where, in this example, behavior is a Behavior object.
+        where, in this example, policy is a Policy class object.
         """
         if year < self.start_year or year > self.end_year:
             msg = 'year {} passed to set_year() must be in [{},{}] range.'

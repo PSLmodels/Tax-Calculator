@@ -98,11 +98,6 @@ def test_future_update_growmodel():
 """
 
 
-def test_growmodel_default_data():
-    paramdata = GrowModel.default_data()
-    assert paramdata['_active'] == [False]
-
-
 def test_boolean_value_infomation(tests_path):
     """
     Check consistency of boolean_value in growmodel.json file.

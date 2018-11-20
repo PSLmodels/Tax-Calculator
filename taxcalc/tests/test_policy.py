@@ -366,9 +366,10 @@ def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
                        atol=0.01, rtol=0.0)
 
 
-def test_parameters_get_default():
-    paramdata = Policy.default_data()
-    assert paramdata['_CDCC_ps'] == [15000]
+def test_policy_metadata():
+    clp = Policy()
+    mdata = clp.metadata()
+    assert mdata['_CDCC_ps']['value'] == [15000]
 
 
 def test_implement_reform_Policy_raises_on_no_year():
@@ -422,31 +423,6 @@ def test_Policy_reform_makes_no_changes_before_year():
     assert np.allclose(ppo._II_em[:3], np.array([3900, 3950, 4400]),
                        atol=0.01, rtol=0.0)
     assert ppo.II_em == 4400
-
-
-def test_parameters_get_default_data():
-    paramdata = Policy.default_data(metadata=True)
-    # 1D data, has 2013+ values
-    meta_II_em = paramdata['_II_em']
-    assert meta_II_em['start_year'] == 2013
-    assert meta_II_em['row_label'] == [str(cyr) for cyr in range(2013, 2027)]
-    expval = [3900, 3950, 4000, 4050, 4050] + [0] * 8 + [4883]
-    assert meta_II_em['value'] == expval
-    # 2D data, has 2013+ values
-    meta_std_aged = paramdata['_STD_Aged']
-    assert meta_std_aged['start_year'] == 2013
-    explabels = ['2013', '2014', '2015', '2016', '2017']
-    assert meta_std_aged['row_label'] == explabels
-    assert meta_std_aged['value'] == [[1500, 1200, 1200, 1500, 1500],
-                                      [1550, 1200, 1200, 1550, 1550],
-                                      [1550, 1250, 1250, 1550, 1550],
-                                      [1550, 1250, 1250, 1550, 1550],
-                                      [1550, 1250, 1250, 1550, 1550]]
-    # 1D data, has only 2013 values because is not CPI inflated
-    meta_kt_c_age = paramdata['_AMT_KT_c_Age']
-    assert meta_kt_c_age['start_year'] == 2013
-    assert meta_kt_c_age['row_label'] == ['2013']
-    assert meta_kt_c_age['value'] == [24]
 
 
 REFORM_CONTENTS = """
