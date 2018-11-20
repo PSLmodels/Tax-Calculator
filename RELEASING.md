@@ -40,7 +40,7 @@ LATER: create new X-Y-Z branch that will hold RELEASES.md info for next release
 CREATING NEW BRANCH TO FIX BUG IN OLD RELEASE
 =============================================
 
-Useful when tip of master branch includes changes since old release.
+Useful when tip of master branch includes major changes since old release.
 
 EXAMPLE: fix bug in release 1.4.0 and then release 1.4.1
 
