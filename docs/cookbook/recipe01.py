@@ -1,4 +1,3 @@
-from urllib.request import urlopen
 import pandas as pd
 from taxcalc import *
 
@@ -7,26 +6,26 @@ from taxcalc import *
 #   For more about the compound-reform technique used in this recipe,
 #   read answer to Question 1 of FAQ at the following URL:
 #   https://github.com/open-source-economics/Tax-Calculator/issues/1830
-BASE_URL = ('https://raw.githubusercontent.com/'
-            'open-source-economics/Tax-Calculator/master/taxcalc/reforms/')
+REFORMS_URL = ('https://raw.githubusercontent.com/'
+               'open-source-economics/Tax-Calculator/master/taxcalc/reforms/')
 
 baseline_name = '2017_law.json'  # pre-TCJA policy
-baseline_text = urlopen(BASE_URL + baseline_name).read().decode()
-baseline = Calculator.read_json_param_objects(baseline_text, None)
+baseline_url = REFORMS_URL + baseline_name
+baseline = Calculator.read_json_param_objects(baseline_url, None)
 
 reform1_name = 'TCJA_Senate.json'  # TCJA as orginally proposed in Senate
-reform1_text = urlopen(BASE_URL + reform1_name).read().decode()
+reform1_url = REFORMS_URL + reform1_name
 reform2_name = 'TCJA_Reconciliation.json'  # TCJA as passed by Congress
-reform2_text = urlopen(BASE_URL + reform2_name).read().decode()
+reform2_url = REFORMS_URL + reform2_name
 
 # specify Policy object for static analysis of reform1 relative to pre-TCJA
-reform1 = Calculator.read_json_param_objects(reform1_text, None)
+reform1 = Calculator.read_json_param_objects(reform1_url, None)
 policy1 = Policy()
 policy1.implement_reform(baseline['policy'], print_warnings=False)
 policy1.implement_reform(reform1['policy'], print_warnings=False)
 
 # specify Policy object for static analysis of reform2 relative to pre-TCJA
-reform2 = Calculator.read_json_param_objects(reform2_text, None)
+reform2 = Calculator.read_json_param_objects(reform2_url, None)
 policy2 = Policy()
 policy1.implement_reform(baseline['policy'], print_warnings=False)
 policy2.implement_reform(reform2['policy'], print_warnings=False)
