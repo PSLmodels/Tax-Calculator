@@ -4,6 +4,32 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-11-20 Release 0.23.1
+-------------------------
+(last merged pull request is
+[#2123](https://github.com/open-source-economics/Tax-Calculator/pull/2123))
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Replace buggy Parameters.default_data() with Policy.metadata() method
+  [[#2119](https://github.com/open-source-economics/Tax-Calculator/pull/2119)
+  by Martin Holmer with bug reported by Hank Doupe]
+- Add ability to pass Pandas DataFrame as the `adjust_ratios` argument to Records class constructor
+  [[#2121](https://github.com/open-source-economics/Tax-Calculator/pull/2121)
+  by Martin Holmer with bug reported by Anderson Frailey]
+- Revise Cookbook recipe 1 to show easier way to access reform files on website
+  [[#2122](https://github.com/open-source-economics/Tax-Calculator/pull/2122)
+  by Martin Holmer]
+
+
+_Earlier Releases:_
+
+
 2018-11-13 Release 0.23.0
 -------------------------
 (last merged pull request is
@@ -30,9 +56,6 @@ for a complete commit history.
 
 **Bug Fixes**
 - None
-
-
-_Earlier Releases:_
 
 
 2018-10-26 Release 0.22.2
