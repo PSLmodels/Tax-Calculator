@@ -53,12 +53,13 @@ class GrowFactors():
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
         if isinstance(growfactors_filename, str):
+            assert os.path.isabs(growfactors_filename)
             if os.path.isfile(growfactors_filename):
                 gfdf = pd.read_csv(growfactors_filename,
                                    index_col='YEAR')
             else:
                 # cannot call read_egg_ function in unit tests
-                gfdf = read_egg_csv(GrowFactors.FILENAME,
+                gfdf = read_egg_csv(os.path.basename(growfactors_filename),
                                     index_col='YEAR')  # pragma: no cover
         else:
             raise ValueError('growfactors_filename is not a string')
