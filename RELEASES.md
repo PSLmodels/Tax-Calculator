@@ -4,6 +4,26 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-11-22 Release 0.23.2
+-------------------------
+(last merged pull request is
+[#2126](https://github.com/open-source-economics/Tax-Calculator/pull/2126))
+
+**API Changes**
+- None
+
+**New Features**
+- Refactor `create_diagnostic_table` utility function to work better when using the Behavioral-Repsonses `behresp` package
+  [[#2126](https://github.com/open-source-economics/Tax-Calculator/pull/2126)
+  by Martin Holmer responding to question from Ernie Tedeschi]
+
+**Bug Fixes**
+- None
+
+
+_Earlier Releases:_
+
+
 2018-11-20 Release 0.23.1
 -------------------------
 (last merged pull request is
@@ -25,9 +45,6 @@ for a complete commit history.
 - Revise Cookbook recipe 1 to show easier way to access reform files on website
   [[#2122](https://github.com/open-source-economics/Tax-Calculator/pull/2122)
   by Martin Holmer]
-
-
-_Earlier Releases:_
 
 
 2018-11-13 Release 0.23.0
