@@ -547,7 +547,7 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
 def create_diagnostic_table(vdf, year):
     """
     Extract single-year diagnostic table from Pandas DataFrame object
-    returned from a calc.dataframe(DIST_VARIABLES + ['surtax']) call.
+    returned from a calc.dataframe(DIST_VARIABLES) call.
 
     Parameters
     ----------
@@ -624,9 +624,6 @@ def create_diagnostic_table(vdf, year):
         # nonrefundable credits
         val = (vdf['c07100'] * wghts).sum()
         odict['Nonrefundable Credits ($b)'] = round(val * in_billions, 3)
-        # reform surtaxes (part of federal individual income tax liability)
-        val = (vdf['surtax'] * wghts).sum()
-        odict['Reform Surtaxes ($b)'] = round(val * in_billions, 3)
         # other taxes on Form 1040
         val = (vdf['othertaxes'] * wghts).sum()
         odict['Other Taxes ($b)'] = round(val * in_billions, 3)
