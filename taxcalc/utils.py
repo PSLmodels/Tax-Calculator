@@ -544,23 +544,24 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     return diff_table
 
 
-def create_diagnostic_table(vdf, year):
+def create_diagnostic_table(dframe_list, year_list):
     """
-    Extract single-year diagnostic table from Pandas DataFrame object
-    returned from a calc.dataframe(DIST_VARIABLES + ['surtax']) call.
+    Extract diagnostic table from list of Pandas DataFrame objects
+    returned from a Calculator dataframe(DIST_VARIABLES) call for
+    each year in the specified list of years.
 
     Parameters
     ----------
-    vdf : Pandas DataFrame object containing the variables
+    dframe_list : list of Pandas DataFrame objects containing the variables
 
-    year : calendar year for which variables were drawn from Calculator object
+    year_list : list of calendar years corresponding to the dframe_list
 
     Returns
     -------
     Pandas DataFrame object containing the diagnostic table
     """
     # pylint: disable=too-many-statements
-    def diagnostic_table_odict(recs):
+    def diagnostic_table_odict(vdf):
         """
         Nested function that extracts diagnostic table dictionary from
         the specified Pandas DataFrame object, vdf.
@@ -594,7 +595,7 @@ def create_diagnostic_table(vdf, year):
         val = wghts[vdf['standard'] > 0.].sum()
         odict['Standard Deduction Filers (#m)'] = round(val * in_millions, 2)
         # standard deduction
-        sded1 = recs.standard * wghts
+        sded1 = vdf.standard * wghts
         val = sded1[vdf['standard'] > 0.].sum()
         odict['Standard Deduction ($b)'] = round(val * in_billions, 3)
         # personal exemption
@@ -624,9 +625,6 @@ def create_diagnostic_table(vdf, year):
         # nonrefundable credits
         val = (vdf['c07100'] * wghts).sum()
         odict['Nonrefundable Credits ($b)'] = round(val * in_billions, 3)
-        # reform surtaxes (part of federal individual income tax liability)
-        val = (vdf['surtax'] * wghts).sum()
-        odict['Reform Surtaxes ($b)'] = round(val * in_billions, 3)
         # other taxes on Form 1040
         val = (vdf['othertaxes'] * wghts).sum()
         odict['Other Taxes ($b)'] = round(val * in_billions, 3)
@@ -646,12 +644,23 @@ def create_diagnostic_table(vdf, year):
         val = (wghts[vdf['combined'] <= 0]).sum()
         odict['With Combined Tax <= 0 (#m)'] = round(val * in_millions, 2)
         return odict
-    # tabulate diagnostic table
-    odict = diagnostic_table_odict(vdf)
-    dframe = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
-    dframe = dframe.transpose()
+    # check function arguments
+    assert isinstance(dframe_list, list)
+    assert dframe_list
+    assert isinstance(year_list, list)
+    assert year_list
+    assert len(dframe_list) == len(year_list)
+    assert isinstance(year_list[0], int)
+    assert isinstance(dframe_list[0], pd.DataFrame)
+    # construct diagnostic table
+    tlist = list()
+    for year, vardf in zip(year_list, dframe_list):
+        odict = diagnostic_table_odict(vardf)
+        ddf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
+        ddf = ddf.transpose()
+        tlist.append(ddf)
     del odict
-    return dframe
+    return pd.concat(tlist, axis=1)
 
 
 def mtr_graph_data(vdf, year,
