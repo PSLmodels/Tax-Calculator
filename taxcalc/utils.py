@@ -644,8 +644,14 @@ def create_diagnostic_table(dframe_list, year_list):
         val = (wghts[vdf['combined'] <= 0]).sum()
         odict['With Combined Tax <= 0 (#m)'] = round(val * in_millions, 2)
         return odict
-    # check consistency of function arguments
+    # check function arguments
+    assert isinstance(dframe_list, list)
+    assert dframe_list
+    assert isinstance(year_list, list)
+    assert year_list
     assert len(dframe_list) == len(year_list)
+    assert isinstance(year_list[0], int)
+    assert isinstance(dframe_list[0], pd.DataFrame)
     # construct diagnostic table
     tlist = list()
     for year, vardf in zip(year_list, dframe_list):
