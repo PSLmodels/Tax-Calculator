@@ -561,7 +561,7 @@ def create_diagnostic_table(dframe_list, year_list):
     Pandas DataFrame object containing the diagnostic table
     """
     # pylint: disable=too-many-statements
-    def diagnostic_table_odict(recs):
+    def diagnostic_table_odict(vdf):
         """
         Nested function that extracts diagnostic table dictionary from
         the specified Pandas DataFrame object, vdf.
@@ -595,7 +595,7 @@ def create_diagnostic_table(dframe_list, year_list):
         val = wghts[vdf['standard'] > 0.].sum()
         odict['Standard Deduction Filers (#m)'] = round(val * in_millions, 2)
         # standard deduction
-        sded1 = recs.standard * wghts
+        sded1 = vdf.standard * wghts
         val = sded1[vdf['standard'] > 0.].sum()
         odict['Standard Deduction ($b)'] = round(val * in_billions, 3)
         # personal exemption
@@ -648,9 +648,9 @@ def create_diagnostic_table(dframe_list, year_list):
     assert len(dframe_list) == len(year_list)
     # construct diagnostic table
     tlist = list()
-    for cyr, vdf in zip(year_list, dframe_list):
-        odict = diagnostic_table_odict(vdf)
-        ddf = pd.DataFrame(data=odict, index=[cyr], columns=odict.keys())
+    for year, vardf in zip(year_list, dframe_list):
+        odict = diagnostic_table_odict(vardf)
+        ddf = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
         ddf = ddf.transpose()
         tlist.append(ddf)
     del odict
