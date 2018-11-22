@@ -22,27 +22,62 @@ params = Calculator.read_json_param_objects(reform=reform_filename,
 
 # specify Calculator object for static analysis of reform policy
 pol.implement_reform(params['policy'])
-calc2sa = Calculator(policy=pol, records=recs)
+calc2 = Calculator(policy=pol, records=recs)
 
 # calculate reform income tax liabilities for cyr under static assumptions
-calc2sa.advance_to_year(cyr)
-calc2sa.calc_all()
-itax_rev2sa = calc2sa.weighted_total('iitax')
+calc2.advance_to_year(cyr)
+calc2.calc_all()
+itax_rev2sa = calc2.weighted_total('iitax')
 
 # specify behavioral-response assumptions
 behresp_json = '{"BE_sub": {"2018": 0.25}}'
 behresp_dict = Calculator.read_json_assumptions(behresp_json)
 
 # specify Calculator object for analysis of reform with behavioral response
-calc2br = Calculator(policy=pol, records=recs)
-calc2br.advance_to_year(cyr)
-_, df2br = behresp.response(calc1, calc2br, behresp_dict)
+calc2 = Calculator(policy=pol, records=recs)
+calc2.advance_to_year(cyr)
+_, df2br = behresp.response(calc1, calc2, behresp_dict)
 
 # calculate reform income tax liabilities for cyr with behavioral response
 itax_rev2br = (df2br['iitax'] * df2br['s006']).sum()
 
 # print total income tax revenue estimates for cyr
 # (estimates in billons of dollars rounded to nearest hundredth of a billion)
-print('{}_CURRENT_LAW_P__itax_rev($B)= {:.2f}'.format(cyr, itax_rev1 * 1e-9))
-print('{}_REFORM_STATIC__itax_rev($B)= {:.2f}'.format(cyr, itax_rev2sa * 1e-9))
-print('{}_REFORM_DYNAMIC_itax_rev($B)= {:.2f}'.format(cyr, itax_rev2br * 1e-9))
+print('{}_CURRENT_LAW_P__itax_rev($B)= {:.3f}'.format(cyr, itax_rev1 * 1e-9))
+print('{}_REFORM_STATIC__itax_rev($B)= {:.3f}'.format(cyr, itax_rev2sa * 1e-9))
+print('{}_REFORM_DYNAMIC_itax_rev($B)= {:.3f}'.format(cyr, itax_rev2br * 1e-9))
+
+# create multi-year diagnostic tables for
+# (1) baseline,
+# (2) reform excluding behavioral responses, and
+# (3) reform including behavioral responses
+num_years = 3  # number of diagnostic table years beginning with cyr
+dvar_list1 = list()
+year_list1 = list()
+dvar_list2 = list()
+year_list2 = list()
+dvar_list3 = list()
+year_list3 = list()
+for year in range(cyr, cyr + num_years):
+    calc1.advance_to_year(year)
+    calc2.advance_to_year(year)
+    # exclude reform's behavioral responses by passing empty dictionary
+    df1, df2sa = behresp.response(calc1, calc2, dict())
+    dvar_list1.append(df1)
+    year_list1.append(year)
+    dvar_list2.append(df2sa)
+    year_list2.append(year)
+    # include reform's behavioral responses by passing meaningful dictionary
+    _, df2br = behresp.response(calc1, calc2, behresp_dict)
+    dvar_list3.append(df2br)
+    year_list3.append(year)
+dtable1 = create_diagnostic_table(dvar_list1, year_list1)
+dtable2 = create_diagnostic_table(dvar_list2, year_list2)
+dtable3 = create_diagnostic_table(dvar_list3, year_list3)
+print()
+print('DIAGNOSTIC TABLE FOR BASELINE')
+print(dtable1)
+print('DIAGNOSTIC TABLE FOR REFORM EXCLUDING BEHAVIORAL RESPONSES')
+print(dtable2)
+print('DIAGNOSTIC TABLE FOR REFORM INCLUDING BEHAVIORAL RESPONSES')
+print(dtable3)
