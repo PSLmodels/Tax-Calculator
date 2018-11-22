@@ -544,16 +544,17 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     return diff_table
 
 
-def create_diagnostic_table(vdf, year):
+def create_diagnostic_table(dframe_list, year_list):
     """
-    Extract single-year diagnostic table from Pandas DataFrame object
-    returned from a calc.dataframe(DIST_VARIABLES) call.
+    Extract diagnostic table from list of Pandas DataFrame objects
+    returned from a Calculator dataframe(DIST_VARIABLES) call for
+    each year in the specified list of years.
 
     Parameters
     ----------
-    vdf : Pandas DataFrame object containing the variables
+    dframe_list : list of Pandas DataFrame objects containing the variables
 
-    year : calendar year for which variables were drawn from Calculator object
+    year_list : list of calendar years corresponding to the dframe_list
 
     Returns
     -------
@@ -643,12 +644,17 @@ def create_diagnostic_table(vdf, year):
         val = (wghts[vdf['combined'] <= 0]).sum()
         odict['With Combined Tax <= 0 (#m)'] = round(val * in_millions, 2)
         return odict
-    # tabulate diagnostic table
-    odict = diagnostic_table_odict(vdf)
-    dframe = pd.DataFrame(data=odict, index=[year], columns=odict.keys())
-    dframe = dframe.transpose()
+    # check consistency of function arguments
+    assert len(dframe_list) == len(year_list)
+    # construct diagnostic table
+    tlist = list()
+    for cyr, vdf in zip(year_list, dframe_list):
+        odict = diagnostic_table_odict(vdf)
+        ddf = pd.DataFrame(data=odict, index=[cyr], columns=odict.keys())
+        ddf = ddf.transpose()
+        tlist.append(ddf)
     del odict
-    return dframe
+    return pd.concat(tlist, axis=1)
 
 
 def mtr_graph_data(vdf, year,

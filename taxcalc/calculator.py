@@ -411,21 +411,18 @@ class Calculator():
         assert num_years >= 1
         max_num_years = self.__policy.end_year - self.__policy.current_year + 1
         assert num_years <= max_num_years
-        diag_variables = DIST_VARIABLES + ['surtax']
         calc = copy.deepcopy(self)
-        tlist = list()
+        yearlist = list()
+        varlist = list()
         for iyr in range(1, num_years + 1):
             assert calc.behavior_has_response() is False
             calc.calc_all()
-            diag = create_diagnostic_table(calc.dataframe(diag_variables),
-                                           calc.current_year)
-            tlist.append(diag)
+            yearlist.append(calc.current_year)
+            varlist.append(calc.dataframe(DIST_VARIABLES))
             if iyr < num_years:
                 calc.increment_year()
-        del diag_variables
         del calc
-        del diag
-        return pd.concat(tlist, axis=1)
+        return create_diagnostic_table(varlist, yearlist)
 
     def distribution_tables(self, calc, groupby, scaling=True):
         """
