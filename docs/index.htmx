@@ -43,7 +43,8 @@ previously visited pages.</i></p>
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-11-13-release-0230">Behavior class is going away soon</a>
 and being replaced by the Behavioral-Responses <kbd>behresp</kbd> package,
 the use of which is demonstrated in
-<a href="https://open-source-economics.github.io/Tax-Calculator/cookbook.html">Cookbook</a> recipe 2</p>
+<a href="https://open-source-economics.github.io/Tax-Calculator/cookbook.html">Cookbook</a>
+recipe 2, which requires Tax-Calculator release 0.23.2 or higher</p>
 
 <p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-10-24-release-0220">Automatic scaling of table results</a>
 (so that Python scripts, and Cookbook recipes, do not need to change
