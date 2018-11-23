@@ -30,7 +30,7 @@ from taxcalc.utilsprvt import (weighted_count_lt_zero,
 
 DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
-                  'c05800', 'othertaxes', 'refund', 'c07100',
+                  'c05800', 'surtax', 'othertaxes', 'refund', 'c07100',
                   'iitax', 'payrolltax', 'combined', 's006', 'ubi',
                   'benefit_cost_total', 'benefit_value_total']
 
@@ -595,7 +595,7 @@ def create_diagnostic_table(dframe_list, year_list):
         val = wghts[vdf['standard'] > 0.].sum()
         odict['Standard Deduction Filers (#m)'] = round(val * in_millions, 2)
         # standard deduction
-        sded1 = vdf.standard * wghts
+        sded1 = vdf['standard'] * wghts
         val = sded1[vdf['standard'] > 0.].sum()
         odict['Standard Deduction ($b)'] = round(val * in_billions, 3)
         # personal exemption
@@ -625,6 +625,9 @@ def create_diagnostic_table(dframe_list, year_list):
         # nonrefundable credits
         val = (vdf['c07100'] * wghts).sum()
         odict['Nonrefundable Credits ($b)'] = round(val * in_billions, 3)
+        # reform surtaxes (part of federal individual income tax liability)
+        val = (vdf['surtax'] * wghts).sum()
+        odict['Reform Surtaxes ($b)'] = round(val * in_billions, 3)
         # other taxes on Form 1040
         val = (vdf['othertaxes'] * wghts).sum()
         odict['Other Taxes ($b)'] = round(val * in_billions, 3)
