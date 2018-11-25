@@ -4,9 +4,6 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
-_Current Release:_
-
-
 2018-11-22 Release 0.23.2
 -------------------------
 (last merged pull request is
