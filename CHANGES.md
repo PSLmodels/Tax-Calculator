@@ -1,6 +1,3 @@
-CHANGES
-=======
-
 TAX-CALCULATOR CHANGE HISTORY
 =============================
 

@@ -1,6 +1,3 @@
-RELEASES
-========
-
 TAX-CALCULATOR RELEASE HISTORY
 ==============================
 Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)

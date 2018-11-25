@@ -32,21 +32,21 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html\">http://open-source-economics.github.io/Tax-Calculator/index.html</a>"
+        "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html\">User Documentation</a>"
     },
     "user_changelog": {
-        "start_header": "CHANGES",
+        "start_header": null,
         "end_header": null,
-        "source": "CHANGES.md",
-        "type": "github_file",
-        "data": null
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history\">Tax-Calculator Change History</a>"
     },
     "dev_changelog": {
-        "start_header": "RELEASES",
+        "start_header": null,
         "end_header": null,
-        "source": "RELEASES.md",
-        "type": "github_file",
-        "data": null
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history\">Tax-Calculator Release History</a>"
     },
     "disclaimer": {
         "start_header": "Disclaimer",
@@ -81,42 +81,42 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://taxcalc.readthedocs.io/en/latest/contributor_guide.html\">https://taxcalc.readthedocs.io/en/latest/contributor_guide.html</a>"
+        "data": "<a href=\"https://taxcalc.readthedocs.io/en/latest/contributor_guide.html\">Contributor Guide</a>"
     },
     "unit_test": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\"><kbd>pytest</kbd> Unit Tests</a>"
     },
     "integration_test": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\"><kbd>pytest</kbd> Unit Tests</a>"
     },
     "link_to_webapp": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://www.ospc.org/taxbrain/\">https://www.ospc.org/taxbrain/</a>"
+        "data": "<a href=\"https://www.ospc.org/taxbrain/\">TaxBrain</a>"
     },
     "public_issue_tracker": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">https://github.com/open-source-economics/Tax-Calculator/issues</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">Issues</a>"
     },
     "public_qanda": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">https://github.com/open-source-economics/Tax-Calculator/issues</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">Issues</a>"
     },
 
     "key_features": {
