@@ -77,10 +77,10 @@
         "data": null
     },
     "project_roadmap": {
-        "start_header": null,
+        "start_header": "ROADMAP",
         "end_header": null,
-        "source": null,
-        "type": null,
+        "source": "ROADMAP.md",
+        "type": "github_file",
         "data": null
     },
     "contributor_overview": {
