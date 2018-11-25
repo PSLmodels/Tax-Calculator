@@ -3,7 +3,7 @@ Tax-Calculator Public API
 
 The Tax-Calculator's core capabilities are in the Python package
 called taxcalc, the source code for which is located in the
-tax-calculator/taxcalc directory tree.
+Tax-Calculator/taxcalc directory tree.
 
 Here we provide a high-level view of the **public API** of the taxcalc
 conda package with links to the source code.  This high-level view is
