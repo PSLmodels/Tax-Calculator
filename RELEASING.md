@@ -2,7 +2,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 =======================================
 
 ```
---> on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
+--> on branch X-Y-Z, edit RELEASES.md and CHANGES.md to finalize X.Y.Z info
 
 --> merge master branch into X-Y-Z branch
 

@@ -35,22 +35,15 @@
         "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html\">http://open-source-economics.github.io/Tax-Calculator/index.html</a>"
     },
     "user_changelog": {
-        "start_header": null,
+        "start_header": "CHANGES",
         "end_header": null,
-        "source": null,
-        "type": null,
+        "source": "CHANGES.md",
+        "type": "github_file",
         "data": null
     },
-    "user_changelog_recent": {
-        "start_header": null,
-        "end_header": null,
-        "source": null,
-        "type": "html",
-        "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew\">http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew</a>"
-    },
     "dev_changelog": {
-        "start_header": "Current Release:",
-        "end_header": "Earlier Releases:",
+        "start_header": "RELEASES",
+        "end_header": null,
         "source": "RELEASES.md",
         "type": "github_file",
         "data": null
@@ -141,6 +134,13 @@
         "data": null
     },
     "public_funding": {
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": null,
+        "data": null
+    },
+    "user_changelog_recent": {
         "start_header": null,
         "end_header": null,
         "source": null,

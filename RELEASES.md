@@ -1,3 +1,6 @@
+RELEASES
+========
+
 TAX-CALCULATOR RELEASE HISTORY
 ==============================
 Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
@@ -19,9 +22,6 @@ for a complete commit history.
 
 **Bug Fixes**
 - None
-
-
-_Earlier Releases:_
 
 
 2018-11-20 Release 0.23.1
