@@ -63,11 +63,11 @@
         "data": "<ul><li>Martin Holmer</li><li>Matt Jensen</li></ul>"
     },
     "project_roadmap": {
-        "start_header": "ROADMAP",
+        "start_header": null,
         "end_header": null,
-        "source": "ROADMAP.md",
-        "type": "github_file",
-        "data": null
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/ROADMAP.md#plans-for-future-tax-calculator-development\">PLANS FOR FUTURE TAX-CALCULATOR DEVELOPMENT</a>"
     },
     "contributor_overview": {
         "start_header": "Getting Started",

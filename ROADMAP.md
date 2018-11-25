@@ -1,6 +1,3 @@
-ROADMAP
-=======
-
 PLANS FOR FUTURE TAX-CALCULATOR DEVELOPMENT
 ===========================================
 
