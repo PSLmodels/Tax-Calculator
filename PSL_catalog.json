@@ -49,7 +49,7 @@
         "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew\">http://open-source-economics.github.io/Tax-Calculator/index.html#whatsnew</a>"
     },
     "dev_changelog": {
-        "start_header": "TAX-CALCULATOR RELEASE HISTORY",
+        "start_header": "Current Release:",
         "end_header": "Earlier Releases:",
         "source": "RELEASES.md",
         "type": "github_file",
