@@ -16,9 +16,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
 
---> cd .. ; ./index_results.sh ; .fix.
-
---> edit "What's New" section of index.htmx ; python make_index.py
+--> cd .. ; ./index_results.sh ; .fix. ; python make_index.py
 
 --> cd .. ; make clean  [to remove taxcalc and behresp packages]
 

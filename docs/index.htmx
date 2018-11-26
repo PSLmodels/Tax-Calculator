@@ -35,35 +35,8 @@ that those materials are available upon request.</p>
 
 <h2 id="whatsnew">What's New</h2>
 
-<p><i>Click your browser's Reload button to
-ensure you are viewing the most recent version of this page rather
-than an older version that your browser has saved in its cache of
-previously visited pages.</i></p>
-
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-11-13-release-0230">Behavior class is going away soon</a>
-and being replaced by the Behavioral-Responses <kbd>behresp</kbd> package,
-the use of which is demonstrated in
-<a href="https://open-source-economics.github.io/Tax-Calculator/cookbook.html">Cookbook</a>
-recipe 2, which requires Tax-Calculator release 0.23.2 or higher</p>
-
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-10-24-release-0220">Automatic scaling of table results</a>
-(so that Python scripts, and Cookbook recipes, do not need to change
-dollars into billions of dollars and filing units into millions of
-filing units) is available in Tax-Calculator release 0.22.0 and higher</p>
-  
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-09-11-release-0210">Code changes so works only with
-Python 3.6 plus minor PUF data change</a> are available in Tax-Calculator
-release 0.21.0 and higher.  <b>Note that release 0.21.0 is the first
-release that is compatible with only Python 3.6</b></p>
-
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-09-06-release-0203">Both CPS and PUF data improvements</a>
-are available in Tax-Calculator release 0.20.3 and higher.
-<b>Note that release 0.20.3 is the last release that will be compatible
-with Python 2.7; subsequest releases will run only with Python 3.6</b></p>
-
-<p><a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-05-18-release-0200">Flexible <kbd>quantity_response</kbd>
-utility function</a> is available in Tax-Calculator release 0.20.0 and
-higher, and there is a new Cookbook recipe to illustrate its use</p>
+<p>A list of recent changes to Tax-Calculator can be viewed
+<a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history">here</a>.</p>
 
 <p>To upgrade to the newest version of the Tax-Calculator package,
 execute this command:<br><kbd>conda update -c PSLmodels taxcalc</kbd></p>
