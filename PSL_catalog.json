@@ -7,25 +7,25 @@
         "data": "<p>USA federal individual income and payroll tax microsimulation model</p>"
     },
     "project_overview": {
-        "start_header": "What is Tax-Calculator?",
-        "end_header": "Disclaimer",
-        "source": "README.md",
-        "type": "github_file",
-        "data": null
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#what-is-tax-calculator\">What is Tax-Calculator?</a>"
     },
     "citation": {
-        "start_header": "Citing Tax-Calculator",
+        "start_header": null,
         "end_header": null,
-        "source": "README.md",
-        "type": "github_file",
-        "data": null
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#citing-tax-calculator\">Citing Tax-Calculator</a>"
     },
     "license": {
         "start_header": null,
         "end_header": null,
-        "source": "https://github.com/open-source-economics/Tax-Calculator/blob/master/LICENSE.md",
+        "source": null,
         "type": "html",
-        "data": "<p>CC0 1.0 Universal (CC0 1.0) Public Domain Dedication</p>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/LICENSE.md#license\">Tax-Calculator Open-Source License</a>"
     },
     "user_documentation": {
         "start_header": null,
@@ -49,11 +49,11 @@
         "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history\">Tax-Calculator Release History</a>"
     },
     "disclaimer": {
-        "start_header": "Disclaimer",
-        "end_header": "Getting Started",
-        "source": "README.md",
-        "type": "github_file",
-        "data": null
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#disclaimer\">Disclaimer</a>"
     },
     "core_maintainers": {
         "start_header": null,
@@ -67,14 +67,14 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/ROADMAP.md#plans-for-future-tax-calculator-development\">PLANS FOR FUTURE TAX-CALCULATOR DEVELOPMENT</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/ROADMAP.md#plans-for-future-tax-calculator-development\">Plans for Future Tax-Calculator Development</a>"
     },
     "contributor_overview": {
-        "start_header": "Getting Started",
-        "end_header": "Citing Tax-Calculator",
-        "source": "README.md",
-        "type": "github_file",
-        "data": null
+        "start_header": null,
+        "end_header": null,
+        "source": null,
+        "type": "html",
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#getting-started\">Getting Started Contributing to Tax-Calculator</a>"
     },
     "contributor_guide": {
         "start_header": null,
@@ -88,14 +88,14 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\"><kbd>pytest</kbd> Unit Tests</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Unit Tests using pytest</a>"
     },
     "integration_test": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\"><kbd>pytest</kbd> Unit Tests</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Unit Tests using pytest</a>"
     },
     "link_to_webapp": {
         "start_header": null,
