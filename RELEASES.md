@@ -21,9 +21,6 @@ for a complete commit history.
 - None
 
 
-_Earlier Releases:_
-
-
 2018-11-20 Release 0.23.1
 -------------------------
 (last merged pull request is
