@@ -88,14 +88,14 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Unit Tests using pytest</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Unit testing with pytest</a>"
     },
     "integration_test": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Unit Tests using pytest</a>"
+        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Integration testing with pytest</a>"
     },
     "link_to_webapp": {
         "start_header": null,
