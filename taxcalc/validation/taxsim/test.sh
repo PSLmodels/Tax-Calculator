@@ -43,10 +43,10 @@ RC=$?
 if [[ $RC -ne 0 ]]; then
    exit $RC
 fi
-# Check for difference between actual .taxdiffs and expected .taxdiffs files
+# Check for difference between actual .taxdiffs and .taxdiffs-expect files
 DIR="taxsim"
 RC=0
-DIFF=$(git diff --name-status $LYY.taxdiffs)
+DIFF=$(diff $LYY.taxdiffs $LYY.taxdiffs-expect)
 if [[ "$DIFF" != "" ]] ; then
     RC=1
     touch testerror
@@ -56,9 +56,10 @@ if [[ "$DIFF" != "" ]] ; then
     NORMAL=$(tput sgr0)
     printf "$BOLD$RED$DIF$NORMAL\n"
 else
-    printf ". $DIR/$LYY$SUFFIX\n"
+    printf ". $DIR/$LYY\n"
 fi
 # Remove temporary files
+rm -f $LYY.in-$YY-#-#-#-doc.text
 if [[ "$SAVE" == false ]] ; then
     rm -f $LYY.in $LYY.in.csv $LYY.in-$YY-#-#-#.csv \
           $LYY.in.out-taxcalc $LYY.in.out-taxsim
