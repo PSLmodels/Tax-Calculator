@@ -34,7 +34,7 @@ tclsh taxsim_in.tcl 20$YY $L > $LYY.in
 # Generate Tax-Calculator OUTPUT for specified INPUT
 python prepare_tc_input.py $LYY.in $LYY.in.csv
 python ../../cli/tc.py $LYY.in.csv 20$YY --exact --dump
-python tc_dump_to_taxsim_out.py $LYY.in-$YY-#-#-#.csv $LYY.in.out-taxcalc
+python process_tc_output.py $LYY.in-$YY-#-#-#.csv $LYY.in.out-taxcalc
 # Unzip Internet-TAXSIM output for specified INPUT
 unzip -oq output-taxsim.zip $LYY.in.out-taxsim
 # Compare Tax-Calculator and Internet-TAXSIM OUTPUT

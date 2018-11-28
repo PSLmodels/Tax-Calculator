@@ -34,8 +34,8 @@ def main():
                         help=('OUTPUT is name of file that will contain '
                               'CSV-formatted Tax-Calculator tc input.'))
     args = parser.parse_args()
+    sname = 'prepare_tc_input.py'
     # check INPUT filename
-    sname = 'prepare_tc_input.out.py'
     if args.INPUT == '':
         sys.stderr.write('ERROR: must specify INPUT file name\n')
         sys.stderr.write('USAGE: python {} --help\n'.format(sname))
