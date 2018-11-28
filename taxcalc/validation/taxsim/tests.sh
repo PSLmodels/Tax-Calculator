@@ -23,11 +23,11 @@ fi
 # .... execute validation tests
 rm -f testerror
 if [[ "$ALLTESTS" == true ]] ; then
-    bash test.sh a15 . &
-    bash test.sh d15 . &
+    bash test.sh a15 &
+    bash test.sh d15 &
     wait
 else
-    bash test.sh d15 .
+    bash test.sh d15
 fi
 if [[ -f "testerror" ]]; then
     ERROR=1
