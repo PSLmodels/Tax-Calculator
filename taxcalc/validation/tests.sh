@@ -1,5 +1,5 @@
 #!/bin/bash
-# Executes validation TESTS by calling TESTS scripts in various subdirectories.
+# Executes validation TESTS by calling tests.sh scripts in subdirectories.
 # .... check number of command-line arguments
 if [[ "$#" -gt 1 ]]; then
     echo "ERROR: can specify at most one command-line argument"
@@ -24,7 +24,7 @@ if [[ $ALLTESTS == true ]] ; then
     cd taxsim
     bash tests.sh all
     cd ..
-    # cd drake
+    # cd someothermodel
     # bash tests.sh all
     # cd ..
 else
@@ -32,7 +32,7 @@ else
     cd taxsim
     bash tests.sh &
     cd ..
-    # cd drake
+    # cd someothermodel
     # bash tests.sh &
     # cd ..
     wait

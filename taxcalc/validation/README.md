@@ -1,7 +1,7 @@
 Validation of Tax-Calculator Logic
 ==================================
 
-The Tax-Calculator computes federal income and payroll taxes for a
+Tax-Calculator computes USA federal income and payroll taxes for a
 sample of tax filing units in years beginning with 2013.  The Python
 code that performs the tax calculations has been validated in several
 ways.  During the course of development Tax-Calculator results for a
@@ -49,7 +49,7 @@ four-step process are provided in a different sub-directory for each
 other model.  Here are links to the cross-model validation results
 that are currently available:
 
-[Internet-TAXSIM](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim)
+[Internet TAXSIM version 27](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
 
 [...]()
 
@@ -57,31 +57,12 @@ that are currently available:
 Details on Using the Validation Tools
 -------------------------------------
 
-The current version of the validation tools in this directory should
-work on Linux or Mac OS X without any changes and without adding any
-extra software.  Those who want to use these validation tools on Windows
-will have to do three things: (a) install an AWK interpreter,
-(b) install a Tcl interpreter, and (c) translate each `tests.sh` bash script
-into a Windows batch file (tests.bat).  The Free Software Foundation
-provides a free AWK interpreter for Windows (gawk.exe) and ActiveState
-provides a free Tcl interpreter for Windows (tclsh.exe).
-
-The `taxsim_in.tcl` and `csv_in.py` scripts are used to randomly
-generate INPUT files, which have increasingly longer sets of filing
-unit attributes and contain as many as 100,000 filing units.  Read the
-source code of the scripts for additional details on how to use them.
-
-The `taxdiffs.tcl` script calls the `taxdiff.awk` script to compute
-the number of large and small tax differences between two OUTPUT files
-that are formatted like Internet-TAXSIM 28-variable output files.  See
-[this link](https://users.nber.org/~taxsim/taxsim-calc9/index.html) for
-details on the space-delimited Internet-TAXSIM output file format.
-All dollar amount differences of one cent or more are reported but
-those differences are divided into small and large differences, where
-small is defined as being ten dollars or less and large being greater
-than ten dollars in absolute value.  This small/large borderline is
-arbitrary and has been specified in an attempt to separate out
-differences that arise from repeatedly applying IRS-approved
-rounding-to-the-nearest dollar rules (which Tax-Calculator does not
-implement).  Read the source code of the `taxdiffs.tcl` script for
-additional details on how to use it.
+The current version of the validation tools in this directory tree
+should work on Linux or Mac OS X without any changes and without
+adding any extra software.  Those who want to use these validation
+tools on Windows will have to do three things: (a) install an AWK
+interpreter, (b) install a Tcl interpreter, and (c) translate each
+`tests.sh` and `test.sh` bash script into a Windows batch file.  The
+Free Software Foundation provides a free AWK interpreter for Windows
+(`gawk.exe`).  ActiveState provides a free Tcl interpreter for Windows
+(`tclsh.exe`).
