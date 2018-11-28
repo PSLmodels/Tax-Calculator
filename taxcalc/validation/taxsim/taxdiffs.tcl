@@ -87,8 +87,6 @@ if { $ovar4 == 1 } {
     exit 0
 }
 taxdiff $awkfilename  6 $out1_filename $out2_filename $dump
-taxdiff $awkfilename  7 $out1_filename $out2_filename $dump
-taxdiff $awkfilename  9 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 10 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 11 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 12 $out1_filename $out2_filename $dump

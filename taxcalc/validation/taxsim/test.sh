@@ -38,25 +38,27 @@ python process_tc_output.py $LYY.in-$YY-#-#-#.csv $LYY.in.out-taxcalc
 # Unzip Internet-TAXSIM output for specified INPUT
 unzip -oq output-taxsim.zip $LYY.in.out-taxsim
 # Compare Tax-Calculator and Internet-TAXSIM OUTPUT
-tclsh taxdiffs.tcl $LYY.in.out-taxcalc $LYY.in.out-taxsim  > $LYY.taxdiffs
+tclsh taxdiffs.tcl $LYY.in.out-taxcalc $LYY.in.out-taxsim > $LYY.taxdiffs
 RC=$?
 if [[ $RC -ne 0 ]]; then
    exit $RC
 fi
 # Check for difference between actual .taxdiffs and .taxdiffs-expect files
 DIR="taxsim"
-RC=0
-DIFF=$(diff $LYY.taxdiffs $LYY.taxdiffs-expect)
-if [[ "$DIFF" != "" ]] ; then
-    RC=1
+diff --brief $LYY.taxdiffs $LYY.taxdiffs-expect
+RC=$?
+if [[ $RC -ne 0 ]]; then
     touch testerror
-    DIF=${DIFF/M/F}
+    MSG="DIFF $DIR/$LYY"
     RED=$(tput setaf 1)
     BOLD=$(tput bold)
     NORMAL=$(tput sgr0)
-    printf "$BOLD$RED$DIF$NORMAL\n"
+    printf "$BOLD$RED$MSG$NORMAL\n"
 else
-    printf ". $DIR/$LYY\n"
+    printf "SAME $DIR/$LYY\n"
+    if [[ "$SAVE" == false ]] ; then
+        rm -f $LYY.taxdiffs
+    fi
 fi
 # Remove temporary files
 rm -f $LYY.in-$YY-#-#-#-doc.text
