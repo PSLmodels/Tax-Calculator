@@ -1,6 +1,7 @@
 #!/bin/bash
 # Call Tax-Calculator tc CLI reading input data from specified TAXSIM-27
-# input file and writing output in TAXSIM-27 output format.
+# input file and writing output in TAXSIM-27 output format to a file
+# with the spcified input file name plus the .out-taxcalc extension.
 #
 # USAGE: ./taxcalc.sh LYY_FILENAME [save]
 #
@@ -28,9 +29,9 @@ fi
 # ... prepare Tax-Calculator input file
 L=${LYY_FN:0:1}    
 YY=${LYY_FN:1:2}
-python prepare_tc_input.py $LYY_FN $LYY_FN.csv
+python prepare_taxcalc_input.py $LYY_FN $LYY_FN.csv
 # ... calculate Tax-Calculator output
-python ../../cli/tc.py $LYY_FN.csv 20$YY --exact --dump
+python ../../cli/tc.py $LYY_FN.csv 20$YY --dump
 # ... convert Tax-Calculator output to Internet-TAXSIM-27-format
-python process_tc_output.py $LYY_FN-$YY-#-#-#.csv $LYY_FN.out-taxcalc
+python process_taxcalc_output.py $LYY_FN-$YY-#-#-#.csv $LYY_FN.out-taxcalc
 exit 0
