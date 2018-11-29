@@ -134,7 +134,8 @@ def sample_dataframe(assump, offset):
     sdict[3] = zero
     # (04) MSTAT
     urn = np.random.random(size)
-    sdict[4] = np.where(urn < assump['joint_frac'], 2, 1)
+    mstat = np.where(urn < assump['joint_frac'], 2, 1)
+    sdict[4] = mstat
     # (05) PAGE
     sdict[5] = np.random.random_integers(assump['min_page'],
                                          assump['max_page'],
@@ -143,7 +144,7 @@ def sample_dataframe(assump, offset):
     sage = np.random.random_integers(assump['min_sage'],
                                      assump['max_sage'],
                                      size)
-    sdict[6] = np.where(sdict[4] == 2, sage, zero)
+    sdict[6] = np.where(mstat == 2, sage, zero)
     # (07-10) DEPX, DEP13, DEP17, DEP18
     depx = np.random.random_integers(0, assump['max_depx'], size)
     d18 = np.random.random_integers(0, assump['max_dep18'], size)
@@ -164,7 +165,7 @@ def sample_dataframe(assump, offset):
     swages_yng = np.random.random_integers(0, assump['max_swages_yng'], size)
     swages_old = np.random.random_integers(0, assump['max_swages_old'], size)
     swages = np.where(sdict[6] >= 65, swages_old, swages_yng) * 1000
-    sdict[12] = np.where(sdict[4] == 2, swages, zero)
+    sdict[12] = np.where(mstat == 2, swages, zero)
     # (13)
     sdict[13] = zero
     # (14)
