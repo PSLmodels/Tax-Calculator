@@ -40,7 +40,7 @@ from taxcalc.utils import (json_to_dict,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
                            dec_graph_data, dec_graph_plot,
                            pch_graph_data, pch_graph_plot)
-# import pdb
+import pdb
 
 
 class Calculator():

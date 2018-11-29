@@ -1035,12 +1035,14 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     else:
         amtsepadd = 0.
     c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
+    print("c62100=", c62100)
     # Form 6251, Part II top
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     if age_head != 0 and age_head < AMT_KT_c_Age:
         line29 = min(line29, earned + AMT_Child_em)
     line30 = max(0., c62100 - line29)
+    print("line30=", line30)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2 * max(0., (line30 - (AMT_brk1 / sep))))
     if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:

@@ -40,8 +40,8 @@ except (ImportError, AttributeError):
 # One way to use the Python debugger is to do these two things:
 #    (a) uncomment the two lines below item (b) in this comment, and
 #    (b) import pdb package and call pdb.set_trace() in calculator.py
-# jit = id_wrapper
-# DO_JIT = False
+jit = id_wrapper
+DO_JIT = False
 
 
 class GetReturnNode(ast.NodeVisitor):
