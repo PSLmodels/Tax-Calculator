@@ -486,10 +486,8 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         gross_ded_amt += e20400
     if ID_AmountCap_Switch[5]:  # interest
         gross_ded_amt += e19200
-    if ID_AmountCap_Switch[6]:  # charitycash
+    if ID_AmountCap_Switch[6]:  # charity
         gross_ded_amt += e19800 + e20100
-    if ID_AmountCap_Switch[7]:  # charitynoncash
-        gross_ded_amt += e20100
 
     overage = max(0., gross_ded_amt - cap)
 
