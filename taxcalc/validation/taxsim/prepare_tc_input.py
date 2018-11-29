@@ -1,5 +1,5 @@
 """
-Translates TAXSIM22 (Internet-TAXSIM 9.3) input file to tc input file.
+Translates TAXSIM-27 input file to Tax-Calculator tc input file.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle prepare_tc_input.py
@@ -21,15 +21,15 @@ def main():
     parser = argparse.ArgumentParser(
         prog='',
         usage=usage_str,
-        description=('Translates TAXSIM22 (Internet-TAXSIM 9.3) input file '
-                     'into a Tax-Calculator CSC-formatted tc input file. '
+        description=('Translates TAXSIM-27 input file into a Tax-Calculator '
+                     'CSV-formatted tc input file. '
                      'Any pre-existing OUTPUT file contents are overwritten. '
-                     'For details on Internet-TAXSIM version 9.3 INPUT '
+                     'For details on Internet TAXSIM version 27 INPUT '
                      'format, go to '
-                     'http://users.nber.org/~taxsim/taxsim-calc9/'))
+                     'https://users.nber.org/~taxsim/taxsim27/'))
     parser.add_argument('INPUT', nargs='?', default='',
                         help=('INPUT is name of file that contains '
-                              'TAXSIM22 input.'))
+                              'TAXSIM-27 input.'))
     parser.add_argument('OUTPUT', nargs='?', default='',
                         help=('OUTPUT is name of file that will contain '
                               'CSV-formatted Tax-Calculator tc input.'))
@@ -51,9 +51,9 @@ def main():
         return 1
     if os.path.isfile(args.OUTPUT):
         os.remove(args.OUTPUT)
-    # read TAXSIM22 INPUT file into a pandas DataFrame
+    # read TAXSIM-27 INPUT file into a pandas DataFrame
     ivar = pd.read_csv(args.INPUT, delim_whitespace=True,
-                       header=None, names=range(1, 23))
+                       header=None, names=range(1, 28))
     # translate INPUT variables into OUTPUT variables
     invar = translate(ivar)
     # write OUTPUT file containing Tax-Calculator input variables
@@ -65,51 +65,49 @@ def main():
 
 def translate(ivar):
     """
-    Translate TAXSIM22 input variables into Tax-Calculator input variables.
+    Translate TAXSIM-27 input variables into Tax-Calculator input variables.
     Both ivar and returned invar are pandas DataFrame objects.
     """
     assert isinstance(ivar, pd.DataFrame)
     invar = pd.DataFrame()
     invar['RECID'] = ivar.loc[:, 1]
     invar['FLPDYR'] = ivar.loc[:, 2]
-    # no use of TAXSIM variable 3, state code
-    mars = ivar.loc[:, 4]
-    invar['MARS'] = np.where(mars == 3, 4, np.where(mars == 2, 2, 1))
-    num_taxpayers = np.where(mars == 3, 1, np.where(mars == 2, 2, 1))
-    num_dependents = ivar.loc[:, 5]
-    num_eitc_qualified_kids = num_dependents  # simplifying assumption
+    # no Tax-Calculator use of TAXSIM variable 3, state code
+    mstat = ivar.loc[:, 4]
+    assert np.all(np.logical_or(mstat == 1, mstat == 2))
+    invar['age_head'] = ivar.loc[:, 5]
+    invar['age_spouse'] = ivar.loc[:, 6]
+    num_deps = ivar.loc[:, 7]
+    mars = np.where(mstat == 1, np.where(num_deps > 0, 4, 1), 2)
+    assert np.all(np.logical_or(mars == 1,
+                                np.logical_or(mars == 2, mars == 4)))
+    invar['MARS'] = mars
+    invar['f2441'] = ivar.loc[:, 8]
+    invar['n24'] = ivar.loc[:, 9]
+    num_eitc_qualified_kids = ivar.loc[:, 10]
     invar['EIC'] = np.minimum(num_eitc_qualified_kids, 3)
-    total_num_exemptions = num_taxpayers + num_dependents
-    invar['XTOT'] = total_num_exemptions
-    ages = ivar.loc[:, 6]
-    assert np.all(ages >= 3)
-    # using new coding of TAXSIM22 input variable 6
-    invar['age_head'] = np.floor_divide(ages, 100)  # like Python //
-    invar['age_spouse'] = np.remainder(ages, 100)  # like Python %
-    invar['e00200p'] = ivar.loc[:, 7]
-    invar['e00200s'] = ivar.loc[:, 8]
+    num_taxpayers = np.where(mars == 2, 2, 1)
+    invar['XTOT'] = num_taxpayers + num_deps
+    invar['e00200p'] = ivar.loc[:, 11]
+    invar['e00200s'] = ivar.loc[:, 12]
     invar['e00200'] = invar['e00200p'] + invar['e00200s']
-    invar['e00650'] = ivar.loc[:, 9]  # qualified dividend income
-    invar['e00600'] = invar['e00650']
-    invar['e00300'] = ivar.loc[:, 10]
-    invar['e01500'] = ivar.loc[:, 11]  # total pension/annuity income
-    invar['e01700'] = invar['e01500']  # all pension/annuity income is taxable
-    invar['e02400'] = ivar.loc[:, 12]
-    invar['e00400'] = ivar.loc[:, 13]
-    # no use of TAXSIM variable 14 because no state income tax calculations
-    invar['e18500'] = ivar.loc[:, 15]
-    invar['e18400'] = ivar.loc[:, 16]
-    invar['e32800'] = ivar.loc[:, 17]
-    invar['e02300'] = ivar.loc[:, 18]
-    invar['n24'] = ivar.loc[:, 19]  # number dependents under age 17
-    # approximate number of Form 2441 qualified persons associated with
-    # the child care expenses specified by variable 17. (Note that the exact
-    # number is the number of dependents under age 13, but that is not
-    # an Internet-TAXSIM input variable; hence the need to approximate.)
-    invar['f2441'] = num_dependents  # TODO  OR: = invar['n24'] ???
-    invar['e19200'] = ivar.loc[:, 20]
-    invar['p22250'] = ivar.loc[:, 21]
-    invar['p23250'] = ivar.loc[:, 22]
+    invar['e00650'] = ivar.loc[:, 13]
+    invar['e00300'] = ivar.loc[:, 14]
+    invar['p22250'] = ivar.loc[:, 15]
+    invar['p23250'] = ivar.loc[:, 16]
+    nonqualified_dividends = ivar.loc[:, 17]
+    invar['e00600'] = invar['e00650'] + nonqualified_dividends
+    invar['e00800'] = ivar.loc[:, 18]
+    invar['e01700'] = ivar.loc[:, 19]
+    invar['e01500'] = invar['e01700']
+    invar['e02400'] = ivar.loc[:, 20]
+    invar['e02300'] = ivar.loc[:, 21]
+    # no Tax-Calculator use of TAXSIM variable 22, non-taxable transfers
+    # no Tax-Calculator use of TAXSIM variable 23, rent paid
+    invar['e18500'] = ivar.loc[:, 24]
+    invar['e18400'] = ivar.loc[:, 25]
+    invar['e32800'] = ivar.loc[:, 26]
+    invar['e19200'] = ivar.loc[:, 27]
     return invar
 
 

@@ -11,8 +11,8 @@
 if [[ "$#" -lt 1 || "$#" -gt 2 ]]; then
     echo "ERROR: number of command-line arguments not in 1-to-2 range"
     echo "USAGE: bash test.sh LYY [save]"
-    echo "       WHERE L is a letter that is valid taxsim_in.tcl L input and"
-    echo "             YY is valid taxsim_in.tcl CALENDAR YEAR (20YY) input;"
+    echo "       WHERE L is a letter that is valid taxsim_input.py L input and"
+    echo "             YY is valid taxsim_input.py YEAR (20YY) input;"
     echo "       WHERE the 'save' option skips the deletion of INPUT and"
     echo "             OUTPUT files at the end of the test"
     touch testerror
@@ -33,12 +33,9 @@ fi
 # Generate specified INPUT file
 L=${LYY:0:1}    
 YY=${LYY:1:2}
-tclsh taxsim_in.tcl 20$YY $L > $LYY.in
-# Generate TC_OUTPUT for specified INPUT
-python prepare_tc_input.py $LYY.in $LYY.in.csv
-python ../../cli/tc.py $LYY.in.csv 20$YY --exact --dump
-# Convert TC_OUTPUT to Internet-TAXSIM-27-formatted OUTPUT
-python process_tc_output.py $LYY.in-$YY-#-#-#.csv $LYY.in.out-taxcalc
+python taxsim_input.py 20$YY $L > $LYY.in
+# Generate TAXSIM-27-formatted output using Tax-Calculator tc CLI
+./taxcalc.sh $LYY.in save
 # Unzip TAXSIM-27 OUTPUT for specified INPUT
 unzip -oq output-taxsim.zip $LYY.in.out-taxsim
 # Compare Tax-Calculator OUTPUT and Internet-TAXSIM-27 OUTPUT files
