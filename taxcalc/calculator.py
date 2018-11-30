@@ -288,17 +288,12 @@ class Calculator():
         del self.__stored_records
         self.__stored_records = None
 
-    def records_current_year(self, year=None):
+    @property
+    def records_current_year(self):
         """
-        If year is None, return current_year of embedded Records object.
-        If year is not None, set embedded Records current_year to year and
-         return None (which can be ignored).
+        Value of embedded Records object's current_year.
         """
-        if year is None:
-            return self.__records.current_year
-        assert isinstance(year, int)
-        self.__records.set_current_year(year)
-        return None
+        return self.__records.current_year
 
     @property
     def array_len(self):
@@ -366,17 +361,12 @@ class Calculator():
         """
         return self.__policy.parameter_warnings
 
-    def policy_current_year(self, year=None):
+    @property
+    def policy_current_year(self):
         """
-        If year is None, return current_year of embedded Policy object.
-        If year is not None, set embedded Policy current_year to year and
-         return None (which can be ignored).
+        Value of embedded Policy object's current_year.
         """
-        if year is None:
-            return self.__policy.current_year
-        assert isinstance(year, int)
-        self.__policy.set_year(year)
-        return None
+        return self.__policy.current_year
 
     @property
     def current_year(self):
