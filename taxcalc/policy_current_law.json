@@ -4754,7 +4754,7 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
-    "_AMT_Child_em": {
+    "_AMT_child_em": {
         "long_name": "Child AMT exemption additional income base",
         "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
         "section_1": "",
@@ -4786,9 +4786,9 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
-    "_AMT_KT_c_Age": {
-        "long_name": "Maximum age subject to Kiddie Tax",
-        "description": "At or under this age, the individual is subject to Kiddie Tax.",
+    "_AMT_child_em_c_age": {
+        "long_name": "Age ceiling for special AMT exemption",
+        "description": "Individuals under this age must use the child AMT exemption rules.",
         "section_1": "",
         "section_2": "",
         "irs_ref": "Form 6251, line 28, instruction.",
@@ -4802,7 +4802,7 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": true,
-        "value": [24],
+        "value": [18],
         "range": {"min": 0, "max": 30},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
