@@ -148,6 +148,7 @@ class Calculator():
                       'extrapolated your data to ' +
                       str(self.__records.current_year) + '.')
         assert self.__policy.current_year == self.__records.current_year
+        assert self.__policy.current_year == self.__consumption.current_year
         self.__stored_records = None
 
     def increment_year(self):
@@ -169,7 +170,7 @@ class Calculator():
         iteration = year - self.current_year
         if iteration < 0:
             raise ValueError('New current year must be ' +
-                             'greater than current year!')
+                             'greater than or equal to current year!')
         for _ in range(iteration):
             self.increment_year()
         assert self.current_year == year
@@ -179,7 +180,6 @@ class Calculator():
         Call all tax-calculation functions for the current_year.
         """
         # conducts static analysis of Calculator object for current_year
-        assert self.__records.current_year == self.__policy.current_year
         BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
@@ -289,13 +289,6 @@ class Calculator():
         self.__stored_records = None
 
     @property
-    def records_current_year(self):
-        """
-        Value of embedded Records object's current_year.
-        """
-        return self.__records.current_year
-
-    @property
     def array_len(self):
         """
         Length of arrays in embedded Records object.
@@ -360,13 +353,6 @@ class Calculator():
         Calculator class embedded Policy object's reform_warnings.
         """
         return self.__policy.parameter_warnings
-
-    @property
-    def policy_current_year(self):
-        """
-        Value of embedded Policy object's current_year.
-        """
-        return self.__policy.current_year
 
     @property
     def current_year(self):

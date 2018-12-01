@@ -53,8 +53,6 @@ def test_make_calculator(cps_subsample):
     calc = Calculator(policy=pol, records=rec,
                       consumption=consump, behavior=Behavior())
     assert calc.current_year == Records.CPSCSV_YEAR
-    assert calc.records_current_year == Records.CPSCSV_YEAR
-    assert calc.policy_current_year == Records.CPSCSV_YEAR
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
         Calculator(policy=None, records=rec)
