@@ -65,7 +65,7 @@ def main():
     # get dictionary containing assumption set
     assump = assumption_set(args.YEAR, args.LETTER)
     # generate sample as pandas DataFrame
-    sample = sample_dataframe(assump, args.OFFSET)
+    sample = sample_dataframe(assump, args.YEAR, args.OFFSET)
     # write sample to input file
     filename = '{}{}.in'.format(args.LETTER, args.YEAR % 100)
     sample.to_csv(filename, sep=' ', header=False, index=False)
@@ -81,14 +81,14 @@ def assumption_set(year, letter):
     adict = dict()
     if letter == 'a':
         # assumption paramters for aYY.in sample:
-        adict['sample_size'] = 100
+        adict['sample_size'] = 100000
         adict['year'] = year  # TAXSIM ivar 2
         adict['joint_frac'] = 0.60  # fraction of sample with joint MARS
-        adict['min_page'] = 17  # TAXSIM ivar 5 (primary taxpayer age)
-        adict['max_page'] = 77  # TAXSIM ivar 5 (primary taxpayer age)
-        adict['min_sage'] = 17  # TAXSIM ivar 6 (spouse age)
-        adict['max_sage'] = 77  # TAXSIM ivar 6 (spouse age)
-        adict['max_depx'] = 5  # TAXSIM ivar 7 (personal exemptions)
+        adict['min_age'] = 17  # TAXSIM ivar 5 (primary taxpayer age)
+        adict['max_age'] = 77  # TAXSIM ivar 5 (primary taxpayer age)
+        adict['min_age_diff'] = -10  # min spouse age difference
+        adict['max_age_diff'] = 10  # max spouse age difference
+        adict['max_depx'] = 5  # TAXSIM ivar 7 (total number of dependents)
         adict['max_dep13'] = 4  # TAXSIM ivar 8 (Child/Dependent Care Credit)
         adict['max_dep17'] = 4  # TAXSIM ivar 9 (Child Credit)
         adict['max_dep18'] = 4  # TAXSIM ivar 10 (EITC)
@@ -117,12 +117,12 @@ def assumption_set(year, letter):
     return adict
 
 
-def sample_dataframe(assump, offset):
+def sample_dataframe(assump, year, offset):
     """
     Construct DataFrame containing sample specified by assump and offset.
     """
     # pylint: disable=too-many-locals
-    np.random.seed(12345678 + offset)
+    np.random.seed(123456789 + year + offset)
     size = assump['sample_size']
     zero = np.zeros(size, dtype=np.int64)
     sdict = dict()
@@ -137,14 +137,15 @@ def sample_dataframe(assump, offset):
     mstat = np.where(urn < assump['joint_frac'], 2, 1)
     sdict[4] = mstat
     # (05) PAGE
-    sdict[5] = np.random.random_integers(assump['min_page'],
-                                         assump['max_page'],
+    sdict[5] = np.random.random_integers(assump['min_age'],
+                                         assump['max_age'],
                                          size)
     # (06) SAGE
-    sage = np.random.random_integers(assump['min_sage'],
-                                     assump['max_sage'],
-                                     size)
-    sdict[6] = np.where(mstat == 2, sage, zero)
+    age_diff = np.random.random_integers(assump['min_age_diff'],
+                                         assump['max_age_diff'],
+                                         size)
+    sage = sdict[5] + age_diff
+    sdict[6] = np.where(mstat == 2, np.maximum(sage, assump['min_age']), zero)
     # (07-10) DEPX, DEP13, DEP17, DEP18
     depx = np.random.random_integers(0, assump['max_depx'], size)
     d18 = np.random.random_integers(0, assump['max_dep18'], size)
