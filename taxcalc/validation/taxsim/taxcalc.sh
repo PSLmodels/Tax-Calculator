@@ -34,4 +34,10 @@ python prepare_taxcalc_input.py $LYY_FN $LYY_FN.csv
 tc $LYY_FN.csv 20$YY --dump
 # ... convert Tax-Calculator output to Internet-TAXSIM-27-format
 python process_taxcalc_output.py $LYY_FN-$YY-#-#-#.csv $LYY_FN.out-taxcalc
+# ... delete intermediate input and output files if not saving files
+rm -f $LYY_FN-$YY-#-#-#-doc.text
+if [[ $SAVE == false ]]; then
+    rm -f $LYY_FN.csv
+    rm -f $LYY_FN-$YY-#-#-#.csv
+fi
 exit 0
