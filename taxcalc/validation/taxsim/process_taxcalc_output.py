@@ -36,11 +36,10 @@ def main():
                         help=('OUTPUT is name of file that will contain '
                               'output formatted like TAXSIM-27 output.'))
     args = parser.parse_args()
-    sname = 'process_tc_output.py'
     # check INPUT filename
     if args.INPUT == '':
         sys.stderr.write('ERROR: must specify INPUT file name\n')
-        sys.stderr.write('USAGE: python {} --help\n'.format(sname))
+        sys.stderr.write('USAGE: {}\n'.format(usage_str))
         return 1
     if not os.path.isfile(args.INPUT):
         emsg = 'INPUT file named {} does not exist'.format(args.INPUT)
@@ -49,7 +48,7 @@ def main():
     # check OUTPUT filename
     if args.OUTPUT == '':
         sys.stderr.write('ERROR: must specify OUTPUT file name\n')
-        sys.stderr.write('USAGE: python {} --help\n'.format(sname))
+        sys.stderr.write('USAGE: {}\n'.format(usage_str))
         return 1
     if os.path.isfile(args.OUTPUT):
         os.remove(args.OUTPUT)

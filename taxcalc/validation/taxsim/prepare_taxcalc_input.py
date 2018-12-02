@@ -34,11 +34,10 @@ def main():
                         help=('OUTPUT is name of file that will contain '
                               'CSV-formatted Tax-Calculator tc input.'))
     args = parser.parse_args()
-    sname = 'prepare_tc_input.py'
     # check INPUT filename
     if args.INPUT == '':
         sys.stderr.write('ERROR: must specify INPUT file name\n')
-        sys.stderr.write('USAGE: python {} --help\n'.format(sname))
+        sys.stderr.write('USAGE: {}\n'.format(usage_str))
         return 1
     if not os.path.isfile(args.INPUT):
         emsg = 'INPUT file named {} does not exist'.format(args.INPUT)
@@ -47,7 +46,7 @@ def main():
     # check OUTPUT filename
     if args.OUTPUT == '':
         sys.stderr.write('ERROR: must specify OUTPUT file name\n')
-        sys.stderr.write('USAGE: python {} --help\n'.format(sname))
+        sys.stderr.write('USAGE: {}\n'.format(usage_str))
         return 1
     if os.path.isfile(args.OUTPUT):
         os.remove(args.OUTPUT)
