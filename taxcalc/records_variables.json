@@ -639,17 +639,17 @@
     },
     "earned": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "earned_p": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "earned_s": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "eitc": {
@@ -660,7 +660,7 @@
     },
     "exact": {
       "type": "int",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "expanded_income": {
@@ -703,7 +703,7 @@
     },
     "sey": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "standard": {
@@ -713,7 +713,7 @@
     },
     "surtax": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "taxbc": {
@@ -728,7 +728,7 @@
     },
     "c01000": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c02500": {
@@ -743,7 +743,7 @@
     },
     "c03260": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c04470": {
@@ -768,7 +768,7 @@
     },
     "c05700": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c05800": {
@@ -809,32 +809,32 @@
     },
     "c07240": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c07260": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c07300": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c07400": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c07600": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c08000": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c09200": {
@@ -942,12 +942,12 @@
     },
     "c23650": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c59660": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "c62100": {
@@ -962,12 +962,12 @@
     },
     "care_deduction": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "ctc_new": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "dep_credit": {
@@ -992,37 +992,37 @@
     },
     "dwks10": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "dwks13": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "dwks14": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "dwks19": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "fstax": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "invinc_agi_ec": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "invinc_ec_base": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "lumpsum_tax": {
@@ -1037,7 +1037,7 @@
     },
     "prectc": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "ptax_amc": {
@@ -1066,12 +1066,12 @@
     },
     "ymod": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "ymod1": {
       "type": "float",
-      "desc": "search taxcalc/functions.py for how calculated and used",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
     "ubi": {
