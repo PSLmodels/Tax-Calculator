@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 
-VALID_LETTERS = ['a']
+VALID_LETTERS = ['a', 'b']
 
 
 def main():
@@ -78,8 +78,8 @@ def assumption_set(year, letter):
     Return dictionary containing assumption parameters.
     """
     adict = dict()
-    if letter == 'a':
-        # assumption paramters for aYY.in sample:
+    if letter in VALID_LETTERS:  # <===========================================
+        # basic assumption parameters for all ?YY.in samples:
         adict['sample_size'] = 100000
         adict['year'] = year  # TAXSIM ivar 2
         # demographic attributes:
@@ -116,9 +116,11 @@ def assumption_set(year, letter):
         adict['max_ided_nopref'] = 0  # TAXSIM ivar 25
         adict['max_ccexp'] = 0  # TAXSIM ivar 26
         adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
+        # end if letter in VALID_LETTERS
+    if letter == 'b':  # <=====================================================
+        adict['max_intinc'] = 20  # TAXSIM ivar 14
         """
         adict['max_divinc'] = 10  # TAXSIM ivar 13
-        adict['max_intinc'] = 10  # TAXSIM ivar 14
         adict['min_stcg'] = -10  # TAXSIM ivar 15
         adict['max_stcg'] = 10  # TAXSIM ivar 15
         adict['min_ltcg'] = -10  # TAXSIM ivar 16
@@ -127,14 +129,14 @@ def assumption_set(year, letter):
         adict['max_other_prop_inc'] = 0  # TAXSIM ivar 17
         adict['min_other_nonprop_inc'] = 0  # TAXSIM ivar 18
         adict['max_other_nonprop_inc'] = 0  # TAXSIM ivar 18
-        adict['max_pnben'] = 40  # TAXSIM ivar 19
-        adict['max_ssben'] = 40  # TAXSIM ivar 20
+        adict['max_pnben'] = 60  # TAXSIM ivar 19
+        adict['max_ssben'] = 60  # TAXSIM ivar 20
         adict['max_uiben'] = 10  # TAXSIM ivar 21
-        adict['max_ided_pref'] = 0
-        adict['max_property_tax'] = 0  # TAXSIM ivar 24
+        # itemized and childcare expense amounts:
+        adict['max_ided_proptax'] = 0  # TAXSIM ivar 24
         adict['max_ided_nopref'] = 0  # TAXSIM ivar 25
-        adict['max_cc_expenses'] = 0  # TAXSIM ivar 26
-        adict['max_mortgage'] = 0  # TAXSIM ivar 27
+        adict['max_ccexp'] = 15  # TAXSIM ivar 26
+        adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
         """
     return adict
 
