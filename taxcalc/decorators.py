@@ -6,6 +6,7 @@ of Tax-Calculator functions in the calcfunctions.py module.
 # pycodestyle decorators.py
 # pylint --disable=locally-disabled decorators.py
 
+import os
 import io
 import ast
 import inspect
@@ -39,10 +40,10 @@ def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     return wrap
 
 
-if DO_JIT:
-    JIT = numba.jit
-else:
+if DO_JIT is False or 'NOTAXCALCJIT' in os.environ:
     JIT = id_wrapper
+else:
+    JIT = numba.jit
 
 
 class GetReturnNode(ast.NodeVisitor):
