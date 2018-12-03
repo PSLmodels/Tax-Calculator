@@ -20,7 +20,7 @@ in a reform that introduces chained-CPI indexing).
 import math
 import copy
 import numpy as np
-from taxcalc.decorators import iterate_jit, jit
+from taxcalc.decorators import iterate_jit, JIT
 
 
 def BenefitPrograms(calc):
@@ -795,7 +795,7 @@ def TaxInc(c00100, standard, c04470, c04600, c04800, MARS,
     return c04800
 
 
-@jit(nopython=True)
+@JIT(nopython=True)
 def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
            PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
            PT_rt6, PT_rt7, PT_rt8,
@@ -1138,7 +1138,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     return c07180
 
 
-@jit(nopython=True)
+@JIT(nopython=True)
 def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
                phaseout_start, agi, phaseout_rate):
     """
@@ -1660,7 +1660,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new,
     return (eitc, refund, iitax, combined)
 
 
-@jit(nopython=True)
+@JIT(nopython=True)
 def Taxes(income, MARS, tbrk_base,
           rate1, rate2, rate3, rate4, rate5, rate6, rate7, rate8,
           tbrk1, tbrk2, tbrk3, tbrk4, tbrk5, tbrk6, tbrk7):

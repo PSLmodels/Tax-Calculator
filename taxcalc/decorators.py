@@ -1,6 +1,6 @@
 """
-Implement numba JIT decorators used to speed-up Tax-Calculator functions in
-the calcfunctions.py module.
+Implement numba JIT decorators used to speed-up the execution
+of Tax-Calculator functions in the calcfunctions.py module.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle decorators.py
@@ -9,13 +9,22 @@ the calcfunctions.py module.
 import io
 import ast
 import inspect
+import numba
 import toolz
 from taxcalc.policy import Policy
 
 
+DO_JIT = True
+# One way to use the Python debugger is to do these two things:
+#  (a) change the line immediately above this comment from
+#      "DO_JIT = True" to "DO_JIT = False", and
+#  (b) import pdb package and call pdb.set_trace() in either the
+#      calculator.py or calcfunctions.py file.
+
+
 def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     """
-    Function wrapper when numba package is not available or when debugging
+    Function wrapper when numba package is not being used during debugging.
     """
     def wrap(fnc):
         """
@@ -30,18 +39,10 @@ def id_wrapper(*dec_args, **dec_kwargs):  # pylint: disable=unused-argument
     return wrap
 
 
-try:
-    import numba
-    jit = numba.jit  # pylint: disable=invalid-name
-    DO_JIT = True
-except (ImportError, AttributeError):
-    jit = id_wrapper  # pylint: disable=invalid-name
-    DO_JIT = False
-# One way to use the Python debugger is to do these two things:
-#    (a) uncomment the two lines below item (b) in this comment, and
-#    (b) import pdb package and call pdb.set_trace() in calculator.py
-# jit = id_wrapper
-# DO_JIT = False
+if DO_JIT:
+    JIT = numba.jit
+else:
+    JIT = id_wrapper
 
 
 class GetReturnNode(ast.NodeVisitor):
@@ -181,7 +182,7 @@ def make_apply_function(func, out_args, in_args, parameters,
     apply-style function
     """
     if do_jit:
-        jitted_f = jit(**kwargs)(func)
+        jitted_f = JIT(**kwargs)(func)
     else:
         jitted_f = func
     apfunc = create_apply_function_string(out_args, in_args, parameters)
@@ -190,7 +191,7 @@ def make_apply_function(func, out_args, in_args, parameters,
     eval(func_code,  # pylint: disable=eval-used
          {"jitted_f": jitted_f}, fakeglobals)
     if do_jit:
-        return jit(**kwargs)(fakeglobals['ap_func'])
+        return JIT(**kwargs)(fakeglobals['ap_func'])
     return fakeglobals['ap_func']
 
 
@@ -250,7 +251,7 @@ def iterate_jit(parameters=None, **kwargs):
         # Get the input arguments from the function
         in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
-        jit_args = inspect.getfullargspec(jit).args + ['nopython']
+        jit_args = inspect.getfullargspec(JIT).args + ['nopython']
         kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
 
         # Any name that is a parameter
