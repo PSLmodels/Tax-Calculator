@@ -34,7 +34,6 @@ def test_for_consistency(tests_path):
         'pytest',
         'pytest-pep8',
         'pytest-xdist',
-        'mock',
         'pycodestyle',
         'pylint',
         'coverage'
