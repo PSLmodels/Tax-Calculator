@@ -1,13 +1,15 @@
 # CODING-STYLE CHECKS:
 # pycodestyle test_decorators.py
 
+import os
 import sys
 import pytest
 import importlib
 import numpy as np
 from pandas import DataFrame
-from taxcalc.decorators import *
 from pandas.util.testing import assert_frame_equal
+import taxcalc
+from taxcalc.decorators import *
 
 
 def test_create_apply_function_string():
@@ -302,28 +304,17 @@ def Magic_calc6(w, x, y, z):
     return (a, b)
 
 
-def test_force_no_numba():
+def test_force_no_jit():
     """
-    Force execution of code for non-existence of Numba
+    Force execution of code for "DO_JIT = False", which tests the
+    id_wrapper function in the decorators.py file.
     """
-    global Magic_calc6
-
-    # Mock the numba module
-    from mock import Mock
-    mck = Mock()
-    hasattr(mck, 'jit')
-    del mck.jit
-    import taxcalc
-    nmba = sys.modules.get('numba', None)
-    sys.modules.update([('numba', mck)])
-    # Reload the decorators with faked out numba
+    # set environment variable that turns off JIT decorator logic
+    os.environ['NOTAXCALCJIT'] = 'NOJIT'
+    # reload the decorators module
     importlib.reload(taxcalc.decorators)
-    # Get access to iterate_jit and force to jit
-    ij = taxcalc.decorators.iterate_jit
-    taxcalc.decorators.DO_JIT = True
-    # Now use iterate_jit on a dummy function
-    Magic_calc6 = ij(parameters=['w'], nopython=True)(Magic_calc6)
-    # Do work and verify function works as expected
+    # verify Magic_calc6 function works as expected
+    Magic_calc6_ = iterate_jit(parameters=['w'], nopython=True)(Magic_calc6)
     pm = Foo()
     pf = Foo()
     pm.a = np.ones((5,))
@@ -332,10 +323,10 @@ def test_force_no_numba():
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
-    ans = Magic_calc6(pm, pf)
+    ans = Magic_calc6_(pm, pf)
     exp = DataFrame(data=[[2.0, 4.0]] * 5,
                     columns=["a", "b"])
     assert_frame_equal(ans, exp)
-    # Restore numba module
-    if nmba:
-        sys.modules['numba'] = nmba
+    # restore normal JIT operation of decorators module
+    del os.environ['NOTAXCALCJIT']
+    importlib.reload(taxcalc.decorators)
