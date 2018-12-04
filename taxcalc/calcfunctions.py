@@ -1005,9 +1005,9 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, earned, cmbtp,
-        AMT_KT_c_Age, AMT_brk1,
+        AMT_child_em_c_age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
-        AMT_Child_em, AMT_em_ps, AMT_em_pe,
+        AMT_child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
         AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
     """
@@ -1036,8 +1036,8 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     # Form 6251, Part II top
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if age_head != 0 and age_head < AMT_KT_c_Age:
-        line29 = min(line29, earned + AMT_Child_em)
+    if age_head != 0 and age_head < AMT_child_em_c_age:
+        line29 = min(line29, earned + AMT_child_em)
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2 * max(0., (line30 - (AMT_brk1 / sep))))

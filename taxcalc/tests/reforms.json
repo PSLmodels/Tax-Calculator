@@ -129,7 +129,7 @@
       "name": "Increase personal and dependent exemption amount by $1000",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,-32.9,-32.1,-35.2,-36.6"
+      "expected": "Tax-Calculator,-32.9,-32.2,-35.2,-36.7"
   },
 
   "14": {
@@ -189,7 +189,7 @@
       "name": "Eliminate interest-paid itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [74.8, 81.6, 87.8, 93.2]},
-      "expected": "Tax-Calculator,66.3,70.7,75.6,80.5"
+      "expected": "Tax-Calculator,66.2,70.6,75.6,80.5"
   },
 
   "20": {
@@ -220,7 +220,7 @@
       "name": "Eliminate medical itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [11.0, 12.4, 12.7, 13.9]},
-      "expected": "Tax-Calculator,6.7,7.1,6.2,6.3"
+      "expected": "Tax-Calculator,6.6,7.0,6.2,6.2"
   },
 
   "23": {
@@ -240,7 +240,7 @@
       "name": "Eliminate charity itemded",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [45.6, 47.0, 48.5, 50.1]},
-      "expected": "Tax-Calculator,47.0,49.4,51.6,54.4"
+      "expected": "Tax-Calculator,46.9,49.4,51.6,54.4"
   },
 
   "25": {
@@ -345,7 +345,7 @@
       "name": "Increase tax rate in each bracket by 1 pts",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [56, 60, 65, 69]},
-      "expected": "Tax-Calculator,58.9,61.3,64.3,66.9"
+      "expected": "Tax-Calculator,58.9,61.4,64.3,67.0"
   },
 
   "33": {
@@ -431,7 +431,7 @@
       "name": "Increase AMT rate under the surtax threshold by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
-      "expected": "Tax-Calculator,28.2,29.6,31.4,32.9"
+      "expected": "Tax-Calculator,28.1,29.5,31.3,32.8"
   },
 
   "39": {
@@ -608,7 +608,7 @@
       "name": "Limit amount of S&L deduction to 2% AGI",
       "output_type": "iitax",
       "compare_with": {"Budget Options": [44.1, 86.6, 87.1, 91.2]},
-      "expected": "Tax-Calculator,87.2,91.6,96.1,100.6"
+      "expected": "Tax-Calculator,87.2,91.6,96.2,100.6"
   },
 
   "56": {
