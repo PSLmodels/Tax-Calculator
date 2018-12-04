@@ -407,7 +407,7 @@ class TaxCalcIO():
         """
         Return calendar year for which TaxCalcIO calculations are being done.
         """
-        return self.calc.policy_current_year()
+        return self.calc.current_year
 
     def output_filepath(self):
         """
