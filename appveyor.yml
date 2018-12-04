@@ -11,19 +11,19 @@ environment:
 
   matrix:
     # Since appveyor is quite slow, we only use a single configuration
-    - PYTHON: "3.6"
+    - PYTHON: "3.7"
       ARCH: "64"
       CONDA_ENV: taxcalc-dev
 
 init:
   # Use AppVeyor's provided Miniconda, which is available from
   # https://www.appveyor.com/docs/installed-software#python
-  - if "%ARCH%" == "64" set MINICONDA=C:\Miniconda36-x64
-  - if "%ARCH%" == "32" set MINICONDA=C:\Miniconda36
+  - if "%ARCH%" == "64" set MINICONDA=C:\Miniconda37-x64
+  - if "%ARCH%" == "32" set MINICONDA=C:\Miniconda37
   - set PATH=%MINICONDA%;%MINICONDA%/Scripts;%MINICONDA%/Library/bin;%PATH%
 
 install:
-  # Update to a recent version of conda that is consistent with Python 3.6
+  # Update to a recent version of conda that is consistent with Python 3.6+
   - conda install -q -y conda>=4.3.0
   - continuous_integration\\setup_conda_environment.cmd
 
