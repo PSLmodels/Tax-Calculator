@@ -216,10 +216,10 @@ files to TaxBrain.</p>
 <p>Installation of tc CLI involves several steps:</p>
 
 <p><b>Install the free Anaconda Python distribution</b> by going to
-the <a href="https://www.continuum.io/downloads">Continuum Analytics
-download page</a> and selecting a version of Python.  You should install
-Python 3.6 because we will be forced to discontinue support for Python
-2.7 at the end of 2018.  You must do this installation even if you already
+the <a href="https://www.anaconda.com/download/">Anaconda download
+page</a> and selecting Python 3.6.  You should install Python 3.6
+because we have discontinued support for Python 2.7 and are not yet
+supporting Python 3.7.  You must do this installation even if you already
 have Python installed on your computer because the Anaconda
 distribution contains all the additional Python packages that
 Tax-Calculator uses to conduct tax calculations (many of which are not
