@@ -20,6 +20,8 @@ help:
 	@echo "             pytest -m ''"
 	@echo "tctest     : generate report for and cleanup after"
 	@echo "             tc --test"
+	@echo "tctest-jit : generate report for and cleanup after"
+	@echo "             tc --test when environment var NOTAXCALCJIT is set"
 	@echo "cstest     : generate coding-style errors using the"
 	@echo "             pycodestyle (nee pep8) and pylint tools"
 	@echo "coverage   : generate test coverage report"
@@ -67,7 +69,11 @@ endef
 tctest: package
 	tc --test
 	@$(tctest-cleanup)
-	@echo "validation tests using tc will be added in the future"
+
+.PHONY=tctest-jit
+tctest-jit:
+	@./tctest-nojit.sh
+	@$(tctest-cleanup)
 
 TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
