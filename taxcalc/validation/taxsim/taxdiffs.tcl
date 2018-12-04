@@ -3,23 +3,20 @@
 #              Internet-TAXSIM generated output
 # NOTE: taxdiff.awk file must be in same directory as this taxdiffs.tcl file.
 # USAGE: tclsh taxdiffs.tcl \
-#              [--ovar4 | --ovar4-eitc | --drake] \
+#              [--ovar4 | --ovar4-eitc] \
 #              1st-out-file 2nd-out-file [dump]
 # WHERE --ovar4 option computes differences only for output variable 4
 # WHERE --ovar4-eitc option uses variable 4 net of variable 25
-#    OR --drake option skips output variables not in Drake Software output
 # AND optional dump causes all ovar4 differences greater than $10 to be shown
 
 proc usage {} {
-    set options "--ovar4|--ovar4-eitc|--drake"
+    set options "--ovar4|--ovar4-eitc"
     set args "\[$options\] \[--dump\] file1 file2"
     puts stderr "USAGE: tclsh taxdiffs.tcl $args"
-    set details "computes diffs only for output variable 4"
+    set details "computes diffs ONLY for output variable 4"
     puts stderr "       WHERE using --ovar4 option $details"
-    set details "computes diffs for ovar4 net of ovar25"
+    set details "computes diffs ONLY for ovar4 net of ovar25"
     puts stderr "          OR using --ovar4-eitc option $details"
-    set details "skips output not in Drake Software files"
-    puts stderr "          OR using --drake option $details"
     set details "shows all ovar4 diffs greater than \$10"
     puts stderr "       WHERE using --dump option $details"
 }
@@ -43,7 +40,6 @@ if { $argc < 2 || $argc > 4 } {
 }
 set ovar4 0
 set ovar4_net_eitc 0
-set drake 0
 set dump 0
 if { $argc >= 3 } {
     # $argc >= 3 implies some options are specified
@@ -52,8 +48,6 @@ if { $argc >= 3 } {
         set ovar4 1
     } elseif { [string compare $option "--ovar4-eitc"] == 0 } {
         set ovar4_net_eitc 1
-    } elseif { [string compare $option "--drake"] == 0 } {
-        set drake 1
     } elseif { [string compare $option "--dump"] == 0 } {
         set dump 1
     } else {
@@ -93,18 +87,8 @@ if { $ovar4 == 1 } {
     exit 0
 }
 taxdiff $awkfilename  6 $out1_filename $out2_filename $dump
-if { $drake == 1 } {
-    # skip 7 and 9
-} else {
-    taxdiff $awkfilename  7 $out1_filename $out2_filename $dump
-    taxdiff $awkfilename  9 $out1_filename $out2_filename $dump
-}
 taxdiff $awkfilename 10 $out1_filename $out2_filename $dump
-if { $drake == 1 } {
-    # skip 11
-} else {
-    taxdiff $awkfilename 11 $out1_filename $out2_filename $dump
-}
+taxdiff $awkfilename 11 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 12 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 14 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 15 $out1_filename $out2_filename $dump
@@ -116,16 +100,8 @@ taxdiff $awkfilename 22 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 23 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 24 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 25 $out1_filename $out2_filename $dump
-if { $drake == 1 } {
-    # skip 26
-} else {
-    taxdiff $awkfilename 26 $out1_filename $out2_filename $dump
-}
+taxdiff $awkfilename 26 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 27 $out1_filename $out2_filename $dump
-if { $drake == 1 } {
-    # skip 28
-} else {
-    taxdiff $awkfilename 28 $out1_filename $out2_filename $dump
-}
+taxdiff $awkfilename 28 $out1_filename $out2_filename $dump
 taxdiff $awkfilename  4 $out1_filename $out2_filename $dump
 exit 0
