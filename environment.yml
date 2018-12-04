@@ -1,6 +1,6 @@
 name: taxcalc-dev
 dependencies:
-- python=3.6
+- "python>=3.6"
 - "numpy>=1.13"
 - "pandas>=0.23"
 - "bokeh>=0.13"

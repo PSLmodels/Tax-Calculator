@@ -19,7 +19,7 @@ config = {
     'packages': ['taxcalc', 'taxcalc.tbi', 'taxcalc.cli'],
     'include_package_data': True,
     'name': 'taxcalc',
-    'install_requires': ['numpy', 'pandas', 'bokeh', 'numba', 'toolz'],
+    'install_requires': ['numpy', 'pandas', 'bokeh', 'numba'],
     'classifiers': [
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -29,6 +29,7 @@ config = {
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     'tests_require': ['pytest']
 }
