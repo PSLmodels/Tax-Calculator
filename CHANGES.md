@@ -2,6 +2,12 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 0.23.3 on 2018-12-05
+---------------------------------------
+
+- Fix minor error in calculation of AMT for those in the 18 to 23 age range.  This changes estimated aggregate income tax liability in 2018 by only 0.06 percent.
+
+
 Changes in release 0.23.2 on 2018-11-22
 ---------------------------------------
 
