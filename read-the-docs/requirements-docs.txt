@@ -5,8 +5,6 @@ mock  # used to mock numba dependency
 numpy
 pandas
 numba
-six
-toolz
 
 # for ReadTheDocs
 sphinx>=1.3

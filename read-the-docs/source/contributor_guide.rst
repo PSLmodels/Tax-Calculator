@@ -18,8 +18,8 @@ Setup Python
 -------------
 
 The Tax-Calculator is written in the Python programming language.
-Download and install the free Anaconda distribution of Python 3.6 from
-`Continuum Analytics`_.  You must do this even if you already have
+Download and install the free Anaconda distribution of Python 3.6
+from `Anaconda`_.  You must do this even if you already have
 Python installed on your computer because the Anaconda distribution
 contains all the additional Python packages that we use to conduct tax
 calculations (many of which are not included in other Python
@@ -270,8 +270,8 @@ interpreter or imported into a Python notebook for interactive execution.
 .. _`Github Flow`:
    https://guides.github.com/introduction/flow/
 
-.. _`Continuum Analytics`:
-   http://www.continuum.io/downloads
+.. _`Anaconda`:
+   https://www.anaconda.com/download/
 
 .. _`remote`:
    https://help.github.com/articles/github-glossary/#remote
