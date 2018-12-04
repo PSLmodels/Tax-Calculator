@@ -11,7 +11,6 @@ import io
 import ast
 import inspect
 import numba
-import toolz
 from taxcalc.policy import Policy
 
 
@@ -249,11 +248,15 @@ def iterate_jit(parameters=None, **kwargs):
         make_wrapper function nested in iterate_jit decorator
         wraps specified func using apply_jit.
         """
+        # pylint: disable=too-many-locals
         # Get the input arguments from the function
         in_args = inspect.getfullargspec(func).args
         # Get the numba.jit arguments
-        jit_args = inspect.getfullargspec(JIT).args + ['nopython']
-        kwargs_for_jit = toolz.keyfilter(jit_args.__contains__, kwargs)
+        jit_args_list = inspect.getfullargspec(JIT).args + ['nopython']
+        kwargs_for_jit = dict()
+        for key, val in kwargs.items():
+            if key in jit_args_list:
+                kwargs_for_jit[key] = val
 
         # Any name that is a parameter
         # Boolean flag is given special treatment.

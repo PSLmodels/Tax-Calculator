@@ -13,7 +13,6 @@ requirements:
     - "pandas>=0.23"
     - "bokeh>=0.13"
     - numba
-    - toolz
 
   run:
     - python=3.6
@@ -21,7 +20,6 @@ requirements:
     - "pandas>=0.23"
     - "bokeh>=0.13"
     - numba
-    - toolz
 
 test:
   commands:
