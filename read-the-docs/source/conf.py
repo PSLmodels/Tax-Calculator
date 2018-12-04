@@ -56,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Tax-Calculator'
-copyright = u'2016-, Open Source Policy Center'
+copyright = u'2015-, the Policy Simulation Library community'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -226,7 +226,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     ('index', 'TaxCalculator.tex', u'Tax-Calculator Developer Documentation',
-     u'Open Source Policy Center', 'manual'),
+     u'Policy Simulation Library', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -256,7 +256,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'taxcalculator', u'Tax-Calculator Developer Documentation',
-     [u'Open Source Policy Center'], 1)
+     [u'Policy Simulation Library'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -270,8 +270,8 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     ('index', 'TaxCalculator', u'Tax-Calculator Developer Documentation',
-     u'Open Source Policy Center', 'TaxCalculator',
-     'One line description of project.',
+     u'Policy Simulation Library', 'TaxCalculator',
+     'USA federal individual income and payroll tax microsimulation model',
      'Miscellaneous'),
 ]
 
@@ -292,9 +292,9 @@ texinfo_documents = [
 
 # Bibliographic Dublin Core info.
 epub_title = u'Tax-Calculator'
-epub_author = u'Open Source Policy Center'
-epub_publisher = u'Open Source Policy Center'
-epub_copyright = u'2017, Open Source Policy Center'
+epub_author = u'Policy Simulation Library'
+epub_publisher = u'Policy Simulation Library'
+epub_copyright = u'2015-, the Policy Simulation Library community'
 
 # The basename for the epub file. It defaults to the project name.
 # epub_basename = u'Tax-Calculator'

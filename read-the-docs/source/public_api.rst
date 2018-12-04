@@ -24,21 +24,18 @@ taxcalc.Behavior
 
 .. autoclass:: taxcalc.Behavior
    :members:
-   :exclude-members: _validate_elasticity_values
 
 taxcalc.Calculator
 ------------------
 
 .. autoclass:: taxcalc.Calculator
    :members:
-   :exclude-members: _calc_one_year, _taxinc_to_amt
 
 taxcalc.cli.tc
 --------------
 
 .. automodule:: taxcalc.cli.tc
    :members:
-   :exclude-members: _compare_test_output_files, _write_test_input_output_files
 
 taxcalc.Consumption
 -------------------
@@ -75,7 +72,6 @@ taxcalc.Parameters
 
 .. autoclass:: taxcalc.Parameters
    :members:
-   :exclude-members: _update, _indexing_rates_for_update
 
 taxcalc.Policy
 --------------
@@ -88,7 +84,6 @@ taxcalc.Records
 
 .. autoclass:: taxcalc.Records
    :members:
-   :exclude-members: _adjust, _blowup, _read_adjust, _read_data, _read_weights
 
 taxcalc.TaxCalcIO
 -----------------
