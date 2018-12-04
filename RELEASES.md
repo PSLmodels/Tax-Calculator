@@ -16,7 +16,7 @@ for a complete commit history.
 - Revise taxcalc/validation/taxsim logic to work with new TAXSIM version 27
   [[#2140](https://github.com/open-source-economics/Tax-Calculator/pull/2140)
   by Martin Holmer]
-- Use `tc --dump` in validation work, which allows removal of `simtax.py` and it class and tests
+- Use `tc --dump` in validation work, which allows removal of `simtax.py` and its class and tests
   [[#2142](https://github.com/open-source-economics/Tax-Calculator/pull/2142)
   by Martin Holmer]
 - Add test to Makefile that detects previously undetected bugs in `calcfunctions.py`
