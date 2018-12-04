@@ -53,27 +53,16 @@ print('{}_REFORM_DYNAMIC_itax_rev($B)= {:.3f}'.format(cyr, itax_rev2br * 1e-9))
 # (2) reform excluding behavioral responses, and
 # (3) reform including behavioral responses
 num_years = 3  # number of diagnostic table years beginning with cyr
-dvar_list1 = list()
-year_list1 = list()
-dvar_list2 = list()
-year_list2 = list()
+dtable1 = calc1.diagnostic_table(num_years)
+dtable2 = calc2.diagnostic_table(num_years)
 dvar_list3 = list()
 year_list3 = list()
 for year in range(cyr, cyr + num_years):
     calc1.advance_to_year(year)
     calc2.advance_to_year(year)
-    # exclude reform's behavioral responses by passing empty dictionary
-    df1, df2sa = behresp.response(calc1, calc2, dict())
-    dvar_list1.append(df1)
-    year_list1.append(year)
-    dvar_list2.append(df2sa)
-    year_list2.append(year)
-    # include reform's behavioral responses by passing meaningful dictionary
     _, df2br = behresp.response(calc1, calc2, behresp_dict)
     dvar_list3.append(df2br)
     year_list3.append(year)
-dtable1 = create_diagnostic_table(dvar_list1, year_list1)
-dtable2 = create_diagnostic_table(dvar_list2, year_list2)
 dtable3 = create_diagnostic_table(dvar_list3, year_list3)
 print()
 print('DIAGNOSTIC TABLE FOR BASELINE')

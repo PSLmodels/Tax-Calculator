@@ -4,6 +4,34 @@ Go [here](https://github.com/open-source-economics/Tax-Calculator/pulls?q=is%3Ap
 for a complete commit history.
 
 
+2018-12-05 Release 0.23.3
+-------------------------
+(last merged pull request is
+[#2150](https://github.com/open-source-economics/Tax-Calculator/pull/2150))
+
+**API Changes**
+- None
+
+**New Features**
+- Revise taxcalc/validation/taxsim logic to work with new TAXSIM version 27
+  [[#2140](https://github.com/open-source-economics/Tax-Calculator/pull/2140)
+  by Martin Holmer]
+- Use `tc --dump` in validation work, which allows removal of `simtax.py` and it class and tests
+  [[#2142](https://github.com/open-source-economics/Tax-Calculator/pull/2142)
+  by Martin Holmer]
+- Add test to Makefile that detects previously undetected bugs in `calcfunctions.py`
+  [[#2144](https://github.com/open-source-economics/Tax-Calculator/pull/2144)
+  by Martin Holmer]
+- Eliminate Tax-Calculator dependency on the `toolz` package
+  [[#2148](https://github.com/open-source-economics/Tax-Calculator/pull/2148)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Change the age range for those using the special child AMT-exemption rules
+  [[#2141](https://github.com/open-source-economics/Tax-Calculator/pull/2141)
+  by Martin Holmer]
+
+
 2018-11-22 Release 0.23.2
 -------------------------
 (last merged pull request is
