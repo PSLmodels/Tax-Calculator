@@ -8,7 +8,7 @@
 # ... check command-line arguments
 if [[ "$#" -lt 1 || "$#" -gt 2 ]]; then
     echo "ERROR: number of command-line arguments not in 1-to-2 range"
-    echo "USAGE: /taxcalc.sh LYY_FILENAME [save]"
+    echo "USAGE: ./taxcalc.sh LYY_FILENAME [save]"
     echo "       WHERE L is a letter that is valid taxsim_input.py L input and"
     echo "             YY is valid taxsim_input.py YEAR (20YY) input;"
     echo "       WHERE the 'save' option skips the deletion of intermediate"
