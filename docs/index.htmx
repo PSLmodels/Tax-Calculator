@@ -17,12 +17,12 @@ federal income and payroll tax simulation model.  The two ways of
 using Tax-Calculator described here require no computer programming.
 If you are interested in Python programming with Tax-Calculator, you
 should read the tested recipes in our
-<a href="https://open-source-economics.github.io/Tax-Calculator/cookbook.html">
+<a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html">
 Tax-Calculator Cookbook</a>. If you want to participate in the
 development of Tax-Calculator &mdash; by asking a question, reporting
 a bug, improving the documentation or making an enhancement to the
 Python source code &mdash; you should go to
-the <a href="https://github.com/open-source-economics/Tax-Calculator">
+the <a href="https://github.com/PSLmodels/Tax-Calculator">
 developer website</a>.</p>
 
 <p>Please cite the source of your analysis as <q>Tax-Calculator
@@ -36,7 +36,7 @@ that those materials are available upon request.</p>
 <h2 id="whatsnew">What's New</h2>
 
 <p>A list of recent changes to Tax-Calculator can be viewed
-<a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history">here</a>.</p>
+<a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history">here</a>.</p>
 
 <p>To upgrade to the newest version of the Tax-Calculator package,
 execute this command:<br><kbd>conda update -c PSLmodels taxcalc</kbd></p>
@@ -254,7 +254,7 @@ Expected output (after about twenty seconds) is <kbd>PASSED
 TEST</kbd>.  If you get <kbd>FAILED TEST</kbd>, something went wrong
 in the installation process.  If the installation test fails, please
 report your experience by creating a new issue at
-<a href="https://github.com/open-source-economics/Tax-Calculator/issues">
+<a href="https://github.com/PSLmodels/Tax-Calculator/issues">
 this website</a> or by sending an email to one of the core maintainers
 of Tax-Calculator listed at the bottom of the <i>What is TaxBrain?</i>
 page at <a href="https://www.ospc.org/taxbrain/">this website</a>.
@@ -268,7 +268,7 @@ the range of tc capabilities, enter the following:
 
 <p>After you have installed the taxcalc package, keep it up to date by
 checking for new releases at
-<a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history">this page</a> and, when there
+<a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history">this page</a> and, when there
 is a new release, executing this command:
 <pre>$ conda update -c PSLmodels taxcalc</pre>
 The packages are usually available about an hour after the release.</p>
@@ -292,7 +292,7 @@ language.</p>
 
 <p>For several examples of reform files and the general rules for
 writing JSON reform files, go
-to <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md">this
+to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md">this
 page</a>.</p>
 
 <p>If you want to upload a reform file to TaxBrain for static analysis
@@ -324,7 +324,7 @@ widely-used data-specification language.</p>
 
 <p>For examples of economic assumption files and the general rules for
 writing JSON assumption files, go
-to <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/assumptions/ASSUMPTIONS.md">this
+to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/ASSUMPTIONS.md">this
 page</a>.</p>
 
 <p>If you want to upload policy reform and economic assumption files
@@ -749,7 +749,7 @@ name of this option stands for certainty-equivalent expected utility.
 If you want to use this output option, you should read the commented
 Python source code for the <kbd>ce_aftertax_expanded_income</kbd>
 function in the <kbd>taxcalc/utils.py</kbd> file at the
-<a href="https://github.com/open-source-economics/Tax-Calculator">
+<a href="https://github.com/PSLmodels/Tax-Calculator">
 developer website</a>.</p>
 
 <p id="baseline">None of the above examples use the
@@ -762,7 +762,7 @@ To do this we need to have pre-TCJA policy be the baseline policy and
 we need to have the alternative reform be implemented relative to
 pre-TCJA policy.  The following tc run does exactly that using a local
 copy of
-the <a href="https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">2017_law.json<a>
+the <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">2017_law.json<a>
 file and the <kbd>alt_reform.json</kbd> file containing the
 alternative reform defined relative to pre-TCJA law.</p>
 
@@ -936,7 +936,7 @@ file-upload page</a>.</p>
 
 <p>An extended example of how preliminary tax analysis on your
 computer can be combined with TaxBrain file-uploading is
-<a href="https://github.com/open-source-economics/Tax-Calculator/issues/1335">here</a>.</p>
+<a href="https://github.com/PSLmodels/Tax-Calculator/issues/1335">here</a>.</p>
 
 <p><a href="#cli">Back to Section Contents</a>&nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a></p>
@@ -1190,7 +1190,7 @@ annual rate of growth in economic variables.</p>
 those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
 assumption parameters control advanced features of Tax-Calculator, so
 understanding the
-<a href="https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc">source
+<a href="https://github.com/PSLmodels/Tax-Calculator/tree/master/taxcalc">source
 code</a> that uses them is essential.  Default values of most
 assumption parameters are zero and are projected into the future at
 that value, which implies no response to the reform.  Using the

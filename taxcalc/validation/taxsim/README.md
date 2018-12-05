@@ -2,7 +2,7 @@ Validation of Tax-Calculator against Internet TAXSIM version 27
 ===============================================================
 
 The general cross-model validation process described
-[here](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/validation/README.md#validation-of-tax-calculator-logic)
+[here](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/README.md#validation-of-tax-calculator-logic)
 is being executed in this directory using
 [TAXSIM-27](https://users.nber.org/~taxsim/taxsim27/).
 

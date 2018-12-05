@@ -60,7 +60,7 @@ Setup Git
    others' work to your local machine by entering at the command line::
 
       $ cd Tax-Calculator
-      Tax-Calculator$ git remote add upstream https://github.com/open-source-economics/Tax-Calculator.git
+      Tax-Calculator$ git remote add upstream https://github.com/PSLmodels/Tax-Calculator.git
 
 9. Create a conda environment with all of the necessary packages to
    execute the source code::
@@ -256,7 +256,7 @@ interpreter or imported into a Python notebook for interactive execution.
    https://help.github.com/articles/caching-your-github-password-in-git/
 
 .. _`Tax-Calculator's GitHub page`:
-   https://github.com/open-source-economics/Tax-Calculator
+   https://github.com/PSLmodels/Tax-Calculator
 
 .. _`repository`:
    https://help.github.com/articles/github-glossary/#repository
@@ -277,7 +277,7 @@ interpreter or imported into a Python notebook for interactive execution.
    https://help.github.com/articles/github-glossary/#remote
 
 .. _`testing documentation`:
-   https://github.com/open-source-economics/Tax-Calculator/blob/master/TESTING.md
+   https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md
 
 .. _`clone`:
    https://help.github.com/articles/github-glossary/#clone
@@ -304,7 +304,7 @@ interpreter or imported into a Python notebook for interactive execution.
    https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request
 
 .. _`Cookbook of Tested Recipes for Python Programming with Tax-Calculator`:
-   https://github.com/open-source-economics/Tax-Calculator/blob/master/docs/cookbook.html
+   https://github.com/PSLmodels/Tax-Calculator/blob/master/docs/cookbook.html
 
 .. _`detailed pull-request workflow`:
-   https://github.com/open-source-economics/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow
+   https://github.com/PSLmodels/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow
