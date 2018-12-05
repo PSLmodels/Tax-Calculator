@@ -20,4 +20,4 @@ Proposing code changes
 In a new pull request, provide a clear description of the rationale
 and nature of the code changes.  Make sure that you prepare your pull
 request using the [suggested workflow and testing
-procedures](https://github.com/open-source-economics/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow).
+procedures](https://github.com/PSLmodels/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow).

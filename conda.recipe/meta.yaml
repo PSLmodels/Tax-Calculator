@@ -28,4 +28,4 @@ test:
     - tc --help
 
 about:
-  home: https://github.com/open-source-economics/Tax-Calculator
+  home: https://github.com/PSLmodels/Tax-Calculator

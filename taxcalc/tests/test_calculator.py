@@ -513,7 +513,7 @@ def test_json_reform_url():
       }
     }
     """
-    reform_url = ('https://raw.githubusercontent.com/open-source-economics/'
+    reform_url = ('https://raw.githubusercontent.com/PSLmodels/'
                   'Tax-Calculator/master/taxcalc/reforms/ptaxes0.json')
     params_str = Calculator.read_json_param_objects(reform_str, None)
     params_url = Calculator.read_json_param_objects(reform_url, None)
@@ -675,7 +675,7 @@ def test_json_assump_url():
         }
     }
     """
-    assump_url = ('https://raw.githubusercontent.com/open-source-economics/'
+    assump_url = ('https://raw.githubusercontent.com/PSLmodels/'
                   'Tax-Calculator/master/taxcalc/assumptions/'
                   'economic_assumptions_template.json')
     params_str = Calculator.read_json_param_objects(None, assump_str)

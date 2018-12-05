@@ -7,7 +7,7 @@ assumption files can be used in the analysis of a tax reform
 either by uploading to the [TaxBrain
 webapp](https://www.ospc.org/taxbrain/file/) or by using the `--assump`
 option of the [tc
-CLI](https://open-source-economics.github.io/Tax-Calculator/index.html#cli)
+CLI](https://PSLmodels.github.io/Tax-Calculator/index.html#cli)
 (command-line interface) to Tax-Calculator.
 
 Here we provide a link to an economic assumptions template file, and
@@ -81,8 +81,8 @@ GrowModel parameter values:
 
 The rules about structuring a non-empty value for a top-level key are
 the same as for policy reform files, which are described
-[here](https://github.com/open-source-economics/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md#how-to-specify-a-tax-reform-in-a-json-policy-reform-file).
+[here](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md#how-to-specify-a-tax-reform-in-a-json-policy-reform-file).
 The assumption parameter names recognized by Tax-Calculator, and there
 default values, are listed in [this
-section](https://open-source-economics.github.io/Tax-Calculator/index.html#params)
+section](https://PSLmodels.github.io/Tax-Calculator/index.html#params)
 of the user documentation.

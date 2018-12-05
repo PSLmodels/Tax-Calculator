@@ -33,7 +33,7 @@ Contents
 
 
 .. _`user documentation`:
-   http://open-source-economics.github.io/Tax-Calculator/
+   https://PSLmodels.github.io/Tax-Calculator/
 
 .. _`Tax-Calculator Public API`:
    http://taxcalc.readthedocs.io/en/latest/public_api.html

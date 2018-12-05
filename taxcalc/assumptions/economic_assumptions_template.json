@@ -4,7 +4,7 @@
 // about how individuals and the overall economy respond to a tax reform.
 //
 // Detailed documentation on these parameters can be found at
-// <http://open-source-economics.github.io/Tax-Calculator/#params>.
+// <http://PSLmodels.github.io/Tax-Calculator/#params>.
 {
     "consumption": {
         "_BEN_housing_value": {"2017": [1.0]},

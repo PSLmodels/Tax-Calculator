@@ -9,12 +9,12 @@ Guide](https://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
 and the [conventions about naming and placing new policy
 parameters](https://taxcalc.readthedocs.io/en/latest/parameter_naming.html),
 have forked the [central GitHub Tax-Calculator
-repository](https://github.com/open-source-economics/Tax-Calculator)
+repository](https://github.com/PSLmodels/Tax-Calculator)
 to your GitHub account, and have cloned that forked copy to your local
 computer.
 
 This document also assumes that you have read the [pull-request
-workflow](https://github.com/open-source-economics/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow)
+workflow](https://github.com/PSLmodels/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow)
 document so that you understand where the testing procedures fit into
 the broader workflow of preparing a pull request that changes
 Tax-Calculator source code.

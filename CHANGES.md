@@ -12,7 +12,7 @@ Changes in release 0.23.2 on 2018-11-22
 ---------------------------------------
 
 - Make create_diagnostic_table utility function work better when using the Behavioral-Responses behresp package.  This is illustrated in [Cookbook recipe
-2](https://open-source-economics.github.io/Tax-Calculator/cookbook.html#recipe02).
+2](https://PSLmodels.github.io/Tax-Calculator/cookbook.html#recipe02).
 
 
 Changes in release 0.23.1 on 2018-11-20
@@ -30,7 +30,7 @@ Changes in release 0.23.0 on 2018-11-13
 
 - Add deprecated warning to Behavior class constructor and documentation because Behavior class will be removed from Tax-Calculator in the near future.
 
-- Revise [Cookbook recipe 2](https://open-source-economics.github.io/Tax-Calculator/cookbook.html#recipe02) to show use of new Behavioral-Responses behresp package as alternative to deprecated Behavior class.
+- Revise [Cookbook recipe 2](https://PSLmodels.github.io/Tax-Calculator/cookbook.html#recipe02) to show use of new Behavioral-Responses behresp package as alternative to deprecated Behavior class.
 
 
 Changes in release 0.22.2 on 2018-10-26
@@ -50,7 +50,7 @@ Changes in release 0.22.0 on 2018-10-24
 
 - Refactor tbi functions so that other models in the Policy Simulation Library (PSL) collection of USA tax models can easily produce the tables expected by TaxBrain.
 
-- Add ability to read online JSON reform/assumption files located at URLs beginning with 'http'.  This is illustrated in [Cookbook recipe 1](https://open-source-economics.github.io/Tax-Calculator/cookbook.html#recipe01).
+- Add ability to read online JSON reform/assumption files located at URLs beginning with 'http'.  This is illustrated in [Cookbook recipe 1](https://PSLmodels.github.io/Tax-Calculator/cookbook.html#recipe01).
 
 - Fix bug in create_difference_table utility function that affected accuracy of the ubi variable and benefit-total variables in the difference table.
 
@@ -76,4 +76,4 @@ Changes in release 0.20.3 on 2018-09-06
 Changes in releases before 0.20.3
 ---------------------------------
 See more technical descriptions of changes in releases before 0.20.3
-[here](https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#2018-08-10-release-0202).
+[here](https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#2018-08-10-release-0202).
