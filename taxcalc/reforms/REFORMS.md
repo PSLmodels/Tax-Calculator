@@ -7,7 +7,7 @@ such reform files can be used to estimate reform effects either by
 uploading to the [TaxBrain webapp](https://www.ospc.org/taxbrain/file/)
 or by using the `--reform` option of the [Tax-Calculator command-line
 tool,
-tc](https://open-source-economics.github.io/Tax-Calculator/index.html#cli).
+tc](https://PSLmodels.github.io/Tax-Calculator/index.html#cli).
 
 Here we provide links to several reform files that specify historical
 reform proposals, and then provide a more general explanation of the
@@ -17,14 +17,14 @@ structure and syntax of reform files.
 
 Note that the current-law (that is, TCJA) values of each tax policy
 parameter are shown in the [Policy Parameters section of the user
-documentation](https://open-source-economics.github.io/Tax-Calculator/index.html#pol).
+documentation](https://PSLmodels.github.io/Tax-Calculator/index.html#pol).
 
 - [Pre-TCJA Policy](2017_law.json)
 
 ## Tax Reforms Defined Relative to pre-TCJA Policy
 
 Read the answer to [Question 1 in this
-FAQ](https://github.com/open-source-economics/Tax-Calculator/issues/1830)
+FAQ](https://github.com/PSLmodels/Tax-Calculator/issues/1830)
 to see how to use the compound-reform techique to analyze the reforms
 in this section.
 

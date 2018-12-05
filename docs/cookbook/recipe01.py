@@ -5,9 +5,9 @@ from taxcalc import *
 # ("old" means the reform files are defined relative to pre-TCJA policy)
 #   For more about the compound-reform technique used in this recipe,
 #   read answer to Question 1 of FAQ at the following URL:
-#   https://github.com/open-source-economics/Tax-Calculator/issues/1830
+#   https://github.com/PSLmodels/Tax-Calculator/issues/1830
 REFORMS_URL = ('https://raw.githubusercontent.com/'
-               'open-source-economics/Tax-Calculator/master/taxcalc/reforms/')
+               'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
 
 baseline_name = '2017_law.json'  # pre-TCJA policy
 baseline_url = REFORMS_URL + baseline_name

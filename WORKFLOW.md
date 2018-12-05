@@ -8,7 +8,7 @@ Guide](https://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
 and the [conventions about naming and placing new policy
 parameters](httpso://taxcalc.readthedocs.io/en/latest/parameter_naming.html),
 have forked the [central GitHub Tax-Calculator
-repository](https://github.com/open-source-economics/Tax-Calculator)
+repository](https://github.com/PSLmodels/Tax-Calculator)
 to your GitHub account, and have cloned that forked copy to your local
 computer.
 
@@ -62,7 +62,7 @@ the file in place of `NEWNAME`).
 
 5. Next test your proposed source-code changes in two ways: for coding
 style and for substantive results.  Read the documentation on [testing
-procedures](https://github.com/open-source-economics/Tax-Calculator/blob/master/TESTING.md#tax-calculator-testing-procedures)
+procedures](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md#tax-calculator-testing-procedures)
 for how to conduct these tests on your local computer.
 
 6. When you have successfully tested your changes, commit the changes
@@ -79,7 +79,7 @@ to GitHub for review by doing `git push origin BNAME` (where you type
 in the branch name you used in step 3 in place of `BNAME`).
 
 8. Then in your browser go to the [central GitHub Tax-Calculator
-repository](https://github.com/open-source-economics/Tax-Calculator)
+repository](https://github.com/PSLmodels/Tax-Calculator)
 and you should see an invitation to create a pull request based on the
 branch you just pushed to `origin`.  Accept that invitation, write a
 meaningful title, add a description of the reason for and nature of

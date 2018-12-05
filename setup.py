@@ -10,8 +10,8 @@ version = '0.0.0'
 
 config = {
     'description': 'Tax Calculator',
-    'url': 'https://github.com/open-source-economics/Tax-Calculator',
-    'download_url': 'https://github.com/open-source-economics/Tax-Calculator',
+    'url': 'https://github.com/PSLmodels/Tax-Calculator',
+    'download_url': 'https://github.com/PSLmodels/Tax-Calculator',
     'description': 'taxcalc',
     'long_description': longdesc,
     'version': version,

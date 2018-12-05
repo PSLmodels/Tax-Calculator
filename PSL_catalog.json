@@ -11,49 +11,49 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#what-is-tax-calculator\">What is Tax-Calculator?</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/README.md#what-is-tax-calculator\">What is Tax-Calculator?</a>"
     },
     "citation": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#citing-tax-calculator\">Citing Tax-Calculator</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/README.md#citing-tax-calculator\">Citing Tax-Calculator</a>"
     },
     "license": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/LICENSE.md#license\">Tax-Calculator Open-Source License</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/LICENSE.md#license\">Tax-Calculator Open-Source License</a>"
     },
     "user_documentation": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"http://open-source-economics.github.io/Tax-Calculator/index.html\">User Documentation</a>"
+        "data": "<a href=\"http://PSLmodels.github.io/Tax-Calculator/index.html\">User Documentation</a>"
     },
     "user_changelog": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history\">Tax-Calculator Change History</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history\">Tax-Calculator Change History</a>"
     },
     "dev_changelog": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history\">Tax-Calculator Release History</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history\">Tax-Calculator Release History</a>"
     },
     "disclaimer": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#disclaimer\">Disclaimer</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/README.md#disclaimer\">Disclaimer</a>"
     },
     "core_maintainers": {
         "start_header": null,
@@ -67,14 +67,14 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/ROADMAP.md#plans-for-future-tax-calculator-development\">Plans for Future Tax-Calculator Development</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/ROADMAP.md#plans-for-future-tax-calculator-development\">Plans for Future Tax-Calculator Development</a>"
     },
     "contributor_overview": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/blob/master/README.md#getting-started\">Getting Started Contributing to Tax-Calculator</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/README.md#getting-started\">Getting Started Contributing to Tax-Calculator</a>"
     },
     "contributor_guide": {
         "start_header": null,
@@ -88,14 +88,14 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Unit testing with pytest</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/tree/master/taxcalc/tests\">Unit testing with pytest</a>"
     },
     "integration_test": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/tree/master/taxcalc/tests\">Integration testing with pytest</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/tree/master/taxcalc/tests\">Integration testing with pytest</a>"
     },
     "link_to_webapp": {
         "start_header": null,
@@ -109,14 +109,14 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">Issues</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/issues\">Issues</a>"
     },
     "public_qanda": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/open-source-economics/Tax-Calculator/issues\">Issues</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/issues\">Issues</a>"
     },
 
     "key_features": {

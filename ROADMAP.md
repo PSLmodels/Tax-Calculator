@@ -11,7 +11,7 @@ that can be used along with Tax-Calculator to conduct non-static
 analysis that generates both aggregate and distributional reform
 results.  At least three other modules are being planned:
 
-1. [Partial-equilibrium behavioral-responses](https://github.com/open-source-economics/Behavioral-Responses)
+1. [Partial-equilibrium behavioral-responses](https://github.com/PSLmodels/Behavioral-Responses)
 capabilities have been completed,
 
 2. Corporate-income-tax capabilities are being developed, and
