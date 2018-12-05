@@ -1,8 +1,7 @@
 language: python
-services: [docker]
 python:
   - "3.6"
-  - "3.7"
+  - "3.7-dev"
 
 install:
   # Install conda
