@@ -8,14 +8,14 @@ build:
 
 requirements:
   build:
-    - python=3.6
+    - python
     - "numpy>=1.13"
     - "pandas>=0.23"
     - "bokeh>=0.13"
     - numba
 
   run:
-    - python=3.6
+    - python
     - "numpy>=1.13"
     - "pandas>=0.23"
     - "bokeh>=0.13"

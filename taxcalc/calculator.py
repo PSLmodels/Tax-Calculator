@@ -1,5 +1,5 @@
 """
-Tax-Calculator federal tax Calculator class.
+Tax-Calculator federal income and payroll tax Calculator class.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle calculator.py
