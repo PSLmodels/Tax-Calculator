@@ -8,17 +8,28 @@ is being executed in this directory using
 
 We are in the process of comparing Tax-Calculator and TAXSIM-27
 results generated from several assumption sets in the `taxsim_in.py`
-script for years beginning with 2015.  Each INPUT file is used to
-generate a TAXSIM-27 OUTPUT file by uploading it to the TAXSIM-27
-website and requesting detailed intermediate calculations.  And each
-INPUT file is translated into a CSV-formatted input file that is read
-by the Tax-Calculator `tc.py` tool to generate output that is then
-transformed into an OUTPUT file having the TAXSIM-27 format.  Finally,
-these two OUTPUT files are compared using the `taxdiffs.tcl` script.
-See the `tests.sh` and `test.sh` scripts in this directory for more
-details.
+script for selected years beginning with 2013.  Each INPUT file is
+used to generate a TAXSIM-27 OUTPUT file by uploading it to the
+TAXSIM-27 website and requesting detailed intermediate calculations.
+And each INPUT file is translated into a CSV-formatted input file that
+is read by the Tax-Calculator `tc` CLI tool to generate output that is
+then transformed into an OUTPUT file having the TAXSIM-27 format.
+Finally, these two OUTPUT files are compared using the `taxdiffs.tcl`
+script.  See the `test.sh` scripts in this directory for more details.
+
+The following results are for INPUT files containing 100,000
+randomly-generated filing units for a given year.  The random
+sampling is such that a different sample is drawn for each year.
+
+In the following results, when we say "same results" we mean the all
+the output variables being compared have differences of no larger than
+one cent.
 
 Validation Results
 ------------------
 
-...
+**2018-12-07** : Same results for INPUT files for 2013 through 2017
+that specify the first twelve of the TAXSIM-27 input variables, which
+include demographic variables and labor income, but set to zero all
+the TAXSIM-27 input variables numbered from 13 through 27.  Only the
+2017 results are being saved for future validation testing.
