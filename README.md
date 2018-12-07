@@ -1,6 +1,9 @@
 [![Python 3.6](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/downloads/release/python-360/)
 [![Build Status](https://travis-ci.org/PSLmodels/Tax-Calculator.svg?branch=master)](https://travis-ci.org/PSLmodels/Tax-Calculator)
 [![Codecov](https://codecov.io/gh/PSLmodels/Tax-Calculator/branch/master/graph/badge.svg)](https://codecov.io/gh/PSLmodels/Tax-Calculator)
+<div style="text-align: right">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="94" height="20"><linearGradient id="b" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient><clipPath id="a"><rect width="94" height="20" rx="3" fill="#fff"/></clipPath><g clip-path="url(#a)"><path fill="#555" d="M0 0h31v20H0z"/><path fill="#97CA00" d="M31 0h63v20H31z"/><path fill="url(#b)" d="M0 0h94v20H0z"/></g><g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="110"> <text x="165" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="210">PSL</text><text x="165" y="140" transform="scale(.1)" textLength="210">PSL</text><text x="615" y="150" fill="#010101" fill-opacity=".3" transform="scale(.1)" textLength="530">cataloged</text><text x="615" y="140" transform="scale(.1)" textLength="530">cataloged</text></g> </svg>
+</div>
 
 
 Developing Tax-Calculator
