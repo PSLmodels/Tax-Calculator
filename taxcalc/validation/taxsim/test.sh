@@ -46,14 +46,16 @@ fi
 # check for difference between LYY.taxdiffs-actual and LYY.taxdiffs-expect
 diff --brief $LYY.taxdiffs-actual $LYY.taxdiffs-expect
 RC=$?
+BOLD=$(tput bold)
+NORMAL=$(tput sgr0)
+RED=$(tput setaf 1)
+GREEN=$(tput setaf 2)
 if [[ $RC -ne 0 ]]; then
     MSG="DIFF $LYY"
-    RED=$(tput setaf 1)
-    BOLD=$(tput bold)
-    NORMAL=$(tput sgr0)
     printf "$BOLD$RED$MSG$NORMAL\n"
 else
-    printf "SAME $LYY\n"
+    MSG="SAME $LYY"
+    printf "$BOLD$GREEN$MSG$NORMAL\n"
     if [[ "$SAVE" == "" ]] ; then
         rm -f $LYY.taxdiffs-actual
     fi
