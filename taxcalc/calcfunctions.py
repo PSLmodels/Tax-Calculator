@@ -1004,7 +1004,8 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
 @iterate_jit(nopython=True)
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, sep, dwks19,
-        dwks14, c05700, e62900, e00700, dwks10, age_head, earned, cmbtp,
+        dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
+        earned, cmbtp,
         AMT_child_em_c_age, AMT_brk1,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_child_em, AMT_em_ps, AMT_em_pe,
@@ -1036,7 +1037,9 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     # Form 6251, Part II top
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
-    if age_head != 0 and age_head < AMT_child_em_c_age:
+    young_head = age_head != 0 and age_head < AMT_child_em_c_age
+    no_or_young_spouse = age_spouse < AMT_child_em_c_age
+    if young_head and no_or_young_spouse:
         line29 = min(line29, earned + AMT_child_em)
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
