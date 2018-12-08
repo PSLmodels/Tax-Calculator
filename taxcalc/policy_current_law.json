@@ -5597,8 +5597,8 @@
     },
 
     "_EITC_InvestIncome_c": {
-        "long_name": "Max disqualifying income for EITC",
-        "description": "The earned income credit may not be claimed by taxpayers whose investment income exceeds this limit.",
+        "long_name": "Maximum investment income allowed for EITC eligibility",
+        "description": "The EITC may not be claimed by taxpayers whose investment income exceeds this limit.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "Form 1040, line 66a&b, instruction(step2)",
