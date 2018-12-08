@@ -21,6 +21,13 @@ The following results are for INPUT files containing 100,000
 randomly-generated filing units for a given year.  The random
 sampling is such that a different sample is drawn for each year.
 
+In order to handle known differences in assumptions between the two
+models, we use the `taxsim_emulation.json` "reform" file to make
+Tax-Calculator operate like TAXSIM-27.  See the
+[`taxsim_emulation.json`
+file](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/taxsim_emulation.json)
+for details.
+
 In the following results, when we say "same results" we mean the all
 the output variables being compared have differences of no larger than
 one cent.
@@ -32,4 +39,11 @@ Validation Results
 that specify the first twelve of the TAXSIM-27 input variables, which
 include demographic variables and labor income, but set to zero all
 the TAXSIM-27 input variables numbered from 13 through 27.  Only the
-2017 results are being saved for future validation testing.
+2017 results are being saved for future validation testing. (This is
+the a17 assumption set.)
+
+**2018-12-08** : Same results for a 2017 INPUT file that specifies
+interest income plus the first twelve of the TAXSIM-27 input
+variables, which include demographic variables and labor income, but
+set to zero all the other TAXSIM-27 input variables. (This is the b17
+assumption set.)
