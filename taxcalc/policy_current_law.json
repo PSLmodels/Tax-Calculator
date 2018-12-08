@@ -4802,7 +4802,7 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": true,
-        "value": [18],
+        "value": [24],
         "range": {"min": 0, "max": 30},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
