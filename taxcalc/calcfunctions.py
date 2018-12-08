@@ -1161,17 +1161,17 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          e27200, age_head, age_spouse, earned, earned_p, earned_s,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
-         EITC_rt, EITC_c, EITC_prt, EITC_InvestIncome_c, EITC_indiv,
-         EITC_basic_frac, c59660):
+         EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
+         EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
+         EITC_indiv,
+         c59660):
     """
     Computes EITC amount, c59660.
     """
     # pylint: disable=too-many-branches
     if not EITC_indiv:
         # filing-unit and number-of-kids based EITC (rather than indiv EITC)
-        invinc = (e00400 + e00300 + e00600 +
-                  max(0., c01000) + max(0., e27200))
-        if MARS == 3 or DSI == 1 or invinc > EITC_InvestIncome_c:
+        if MARS == 3 or DSI == 1:
             c59660 = 0.
         else:
             po_start = EITC_ps[EIC]
@@ -1199,6 +1199,14 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
                         c59660 = 0.
             else:  # if EIC != 0
                 c59660 = eitc
+            # reduce positive EITC if investment income exceeds ceiling
+            if c59660 > 0.:
+                invinc = (e00400 + e00300 + e00600 +
+                          max(0., c01000) + max(0., e27200))
+                if invinc > EITC_InvestIncome_c:
+                    eitc = (c59660 - EITC_excess_InvestIncome_rt *
+                            (invinc - EITC_InvestIncome_c))
+                    c59660 = max(0., eitc)
     else:
         # individual EITC rather than a filing-unit EITC
         # .. calculate eitc amount for taxpayer
