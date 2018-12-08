@@ -31,13 +31,14 @@ L=${LYY_FN:0:1}
 YY=${LYY_FN:1:2}
 python prepare_taxcalc_input.py $LYY_FN $LYY_FN.csv
 # ... calculate Tax-Calculator output
-tc $LYY_FN.csv 20$YY --dump
+tc $LYY_FN.csv 20$YY --reform taxsim_emulation.json --dump
+mv $LYY_FN-$YY-#-taxsim_emulation-#.csv $LYY_FN.out.csv
+rm -f $LYY_FN-$YY-#-taxsim_emulation-#-doc.text
 # ... convert Tax-Calculator output to Internet-TAXSIM-27-format
-python process_taxcalc_output.py $LYY_FN-$YY-#-#-#.csv $LYY_FN.out-taxcalc
+python process_taxcalc_output.py $LYY_FN.out.csv $LYY_FN.out-taxcalc
 # ... delete intermediate input and output files if not saving files
-rm -f $LYY_FN-$YY-#-#-#-doc.text
 if [[ $SAVE == false ]]; then
     rm -f $LYY_FN.csv
-    rm -f $LYY_FN-$YY-#-#-#.csv
+    rm -f $LYY_FN.out.csv
 fi
 exit 0

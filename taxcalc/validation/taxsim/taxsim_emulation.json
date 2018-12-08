@@ -1,0 +1,9 @@
+// JSON "reform" file that specifies changes in current-law policy that
+// are required to make Tax-Calculator work like TAXSIM-27.
+{
+    "policy": {
+
+        "_AMT_child_em_c_age": {"2013": [24]}
+
+    }
+}
