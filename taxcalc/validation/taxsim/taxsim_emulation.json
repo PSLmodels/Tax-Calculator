@@ -3,7 +3,9 @@
 {
     "policy": {
 
-        "_AMT_child_em_c_age": {"2013": [24]}
+        "_AMT_child_em_c_age": {"2013": [24]},
+
+        "_EITC_excess_InvestIncome_rt": {"2013": [1.0]}
 
     }
 }
