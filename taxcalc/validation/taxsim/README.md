@@ -18,8 +18,12 @@ Finally, these two OUTPUT files are compared using the `taxdiffs.tcl`
 script.  See the `test.sh` scripts in this directory for more details.
 
 The following results are for INPUT files containing 100,000
-randomly-generated filing units for a given year.  The random
-sampling is such that a different sample is drawn for each year.
+randomly-generated filing units for a given year.  The random sampling
+is such that a different sample is drawn for each year.  In each INPUT
+file three state-related variables are set to zero for every filing
+unit, one variable specifies the year, and another specifies an filing
+unit id, which leaves twenty-two input variables that are set to
+randomly-generated values.
 
 In order to handle known differences in assumptions between the two
 models, we use the `taxsim_emulation.json` "reform" file to make
