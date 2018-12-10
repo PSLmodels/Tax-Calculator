@@ -3,11 +3,11 @@
 //
 // (1) _II_brk6 for MARS=4 = 444500 (rather than 444550)
 //     This seems to be a typo in TAXSIM-27 source code.
-//     [This change was introduced for assumption set a and higher.]
+//     (This change was introduced for assumption set a and higher.)
 //
 // (2) _CG_brk2 for MARS=4 = 444500 (rather than 444550)
 //     This seems to be a typo in TAXSIM-27 source code.
-//     [This change was introduced for assumption set b and higher.]
+//     (This change was introduced for assumption set b and higher.)
 //
 // (3) _AMT_child_em_c_age = 24 (rather than 18)
 //     Whether to set this parameter to 18 or 24 is arbitary because
@@ -18,7 +18,7 @@
 //     assumption that only those under 18 are required to use the child
 //     AMT exemption rules, while TAXSIM-27 makes the arbitrary assumption
 //     that all those under 24 are required to use the child AMT exemption.
-//     [This change was introduced for assumption set b and higher.]
+//     (This change was introduced for assumption set b and higher.)
 //
 // (4) _EITC_excess_InvestIncome_rt = 1.0 (rather than 9e99)
 //     The rate at which the EITC amount is reduced per dollar of investment
@@ -33,7 +33,7 @@
 //     the magnitude of model-calculated marginal tax rates with respect to
 //     investment income in cases where a marginal increase in investment
 //     income takes a filing unit above the ceiling.
-//     [This change was introduced for assumption set b and higher.]
+//     (This change was introduced for assumption set b and higher.)
 //
 {
     "policy": {
