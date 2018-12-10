@@ -28,22 +28,26 @@ Tax-Calculator operate like TAXSIM-27.  See the
 file](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/taxsim_emulation.json)
 for details.
 
-In the following results, when we say "same results" we mean the all
-the output variables being compared have differences of no larger than
-one cent.
+In the following results, when we say "same results" we mean that the
+federal individual income tax liabilities and payroll tax liabilities
+being compared have differences of no larger than one cent.
 
 Validation Results
 ------------------
 
-**2018-12-07** : Same results for INPUT files for 2013 through 2017
-that specify the first twelve of the TAXSIM-27 input variables, which
+**2018-12-10** : Same results for a 2017 INPUT file that specifies
+the first twelve of the TAXSIM-27 input variables, which
 include demographic variables and labor income, but set to zero all
-the TAXSIM-27 input variables numbered from 13 through 27.  Only the
-2017 results are being saved for future validation testing. (This is
+the TAXSIM-27 input variables numbered from 13 through 27. (This is
 the a17 assumption set.)
 
-**2018-12-08** : Same results for a 2017 INPUT file that specifies
-interest income plus the first twelve of the TAXSIM-27 input
-variables, which include demographic variables and labor income, but
-set to zero all the other TAXSIM-27 input variables. (This is the b17
-assumption set.)
+**2018-12-10** : Same results for a 2017 INPUT file that specifies the
+first twenty-one of the TAXSIM-27 input variables, which include
+demographic variables, labor income, capital income, and
+federally-taxable benefits, but set to zero all the other six
+TAXSIM-27 input variables.  Two of those six are always set to zero
+because they specify trasfer income that is not taxed under the
+federal income tax or because they specify rent paid that does not
+affect federal income tax liability.  Three of the remaining four
+input variables are itemized expense amounts and the fourth is
+child-care expenses. (This is the b17 assumption set.)
