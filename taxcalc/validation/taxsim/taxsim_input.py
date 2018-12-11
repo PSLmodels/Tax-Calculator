@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 
-VALID_LETTERS = ['a', 'b']
+VALID_LETTERS = ['a', 'b', 'c']
 
 
 def main():
@@ -138,6 +138,9 @@ def assumption_set(year, letter):
         adict['max_ccexp'] = 15  # TAXSIM ivar 26
         adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
         """
+    if letter == 'c':  # <=====================================================
+        adict['max_ccexp'] = 10  # TAXSIM ivar 26
+
     return adict
 
 
@@ -229,8 +232,9 @@ def sample_dataframe(assump, year, offset):
     sdict[25] = np.random.random_integers(0,
                                           assump['max_ided_nopref'],
                                           size) * 1000
-    # (26) CHILDCARE
-    sdict[26] = np.random.random_integers(0, assump['max_ccexp'], size) * 1000
+    # (26) CHILDCARE (TAXSIM-27 EXPECTS ZERO IF NO QUALIFYING CHILDRED)
+    ccexp = np.random.random_integers(0, assump['max_ccexp'], size) * 1000
+    sdict[26] = np.where(dep13 > 0, ccexp, zero)
     # (27) MORTGAGE
     sdict[27] = np.random.random_integers(0,
                                           assump['max_ided_mortgage'],
