@@ -10,7 +10,7 @@
 #           value of all the variable differences.
 
 BEGIN {
-    DUMP_MIN = 10 # absolute value of ovar4 difference must exceed this to dump
+    DUMP_MIN = 1 # absolute value of ovar4 difference must exceed this to dump
     file_number = 0
     file_name = ""
     if ( col == "4-25" ) {
