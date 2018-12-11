@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 
 
-VALID_LETTERS = ['a', 'b']
+VALID_LETTERS = ['a', 'b', 'c']
 
 
 def main():
@@ -97,7 +97,7 @@ def assumption_set(year, letter):
         adict['max_pwages_old'] = 30  # TAXSIM ivar 11 (65+ ==> old)
         adict['max_swages_yng'] = 500  # TAXSIM ivar 12
         adict['max_swages_old'] = 30  # TAXSIM ivar 12 (65+ ==> old)
-        # non-labor income:
+        # non-labor income (all zeros):
         adict['max_divinc'] = 0  # TAXSIM ivar 13
         adict['max_intinc'] = 0  # TAXSIM ivar 14
         adict['min_stcg'] = 0  # TAXSIM ivar 15
@@ -109,13 +109,14 @@ def assumption_set(year, letter):
         adict['max_pnben'] = 0  # TAXSIM ivar 19
         adict['max_ssben'] = 0  # TAXSIM ivar 20
         adict['max_uiben'] = 0  # TAXSIM ivar 21
-        # itemized and childcare expense amounts:
+        # itemized and childcare expense amounts (all zero):
         adict['max_ided_proptax'] = 0  # TAXSIM ivar 24
         adict['max_ided_nopref'] = 0  # TAXSIM ivar 25
         adict['max_ccexp'] = 0  # TAXSIM ivar 26
         adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
         # end if letter in VALID_LETTERS
     if letter == 'b':  # <=====================================================
+        # non-labor income:
         adict['max_divinc'] = 20  # TAXSIM ivar 13
         adict['max_intinc'] = 20  # TAXSIM ivar 14
         adict['min_stcg'] = -10  # TAXSIM ivar 15
@@ -127,13 +128,14 @@ def assumption_set(year, letter):
         adict['max_pnben'] = 60  # TAXSIM ivar 19
         adict['max_ssben'] = 60  # TAXSIM ivar 20
         adict['max_uiben'] = 10  # TAXSIM ivar 21
-
-        # itemized and childcare expense amounts:
+    if letter == 'c':  # <=====================================================
+        # childcare expense amount:
+        adict['max_ccexp'] = 10  # TAXSIM ivar 26
+        # itemized expense amounts:
         # adict['max_ided_proptax'] = 0  # TAXSIM ivar 24
         # adict['max_ided_nopref'] = 0  # TAXSIM ivar 25
         # adict['max_ccexp'] = 15  # TAXSIM ivar 26
         # adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
-
     return adict
 
 
@@ -225,8 +227,9 @@ def sample_dataframe(assump, year, offset):
     sdict[25] = np.random.random_integers(0,
                                           assump['max_ided_nopref'],
                                           size) * 1000
-    # (26) CHILDCARE
-    sdict[26] = np.random.random_integers(0, assump['max_ccexp'], size) * 1000
+    # (26) CHILDCARE (TAXSIM-27 EXPECTS ZERO IF NO QUALIFYING CHILDRED)
+    ccexp = np.random.random_integers(0, assump['max_ccexp'], size) * 1000
+    sdict[26] = np.where(dep13 > 0, ccexp, zero)
     # (27) MORTGAGE
     sdict[27] = np.random.random_integers(0,
                                           assump['max_ided_mortgage'],
