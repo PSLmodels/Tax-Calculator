@@ -93,9 +93,9 @@ def assumption_set(year, letter):
         adict['max_dep17'] = 4  # TAXSIM ivar 9 (Child Credit)
         adict['max_dep18'] = 4  # TAXSIM ivar 10 (EITC)
         # labor income:
-        adict['max_pwages_yng'] = 300  # TAXSIM ivar 11
+        adict['max_pwages_yng'] = 500  # TAXSIM ivar 11
         adict['max_pwages_old'] = 30  # TAXSIM ivar 11 (65+ ==> old)
-        adict['max_swages_yng'] = 300  # TAXSIM ivar 12
+        adict['max_swages_yng'] = 500  # TAXSIM ivar 12
         adict['max_swages_old'] = 30  # TAXSIM ivar 12 (65+ ==> old)
         # non-labor income:
         adict['max_divinc'] = 0  # TAXSIM ivar 13
@@ -104,9 +104,7 @@ def assumption_set(year, letter):
         adict['max_stcg'] = 0  # TAXSIM ivar 15
         adict['min_ltcg'] = 0  # TAXSIM ivar 16
         adict['max_ltcg'] = 0  # TAXSIM ivar 16
-        adict['min_other_prop_inc'] = 0  # TAXSIM ivar 17
         adict['max_other_prop_inc'] = 0  # TAXSIM ivar 17
-        adict['min_other_nonprop_inc'] = 0  # TAXSIM ivar 18
         adict['max_other_nonprop_inc'] = 0  # TAXSIM ivar 18
         adict['max_pnben'] = 0  # TAXSIM ivar 19
         adict['max_ssben'] = 0  # TAXSIM ivar 20
@@ -118,26 +116,24 @@ def assumption_set(year, letter):
         adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
         # end if letter in VALID_LETTERS
     if letter == 'b':  # <=====================================================
+        adict['max_divinc'] = 20  # TAXSIM ivar 13
         adict['max_intinc'] = 20  # TAXSIM ivar 14
-        """
-        adict['max_divinc'] = 10  # TAXSIM ivar 13
         adict['min_stcg'] = -10  # TAXSIM ivar 15
         adict['max_stcg'] = 10  # TAXSIM ivar 15
         adict['min_ltcg'] = -10  # TAXSIM ivar 16
         adict['max_ltcg'] = 10  # TAXSIM ivar 16
-        adict['min_other_prop_inc'] = 0  # TAXSIM ivar 17
-        adict['max_other_prop_inc'] = 0  # TAXSIM ivar 17
-        adict['min_other_nonprop_inc'] = 0  # TAXSIM ivar 18
-        adict['max_other_nonprop_inc'] = 0  # TAXSIM ivar 18
+        adict['max_other_prop_inc'] = 30  # TAXSIM ivar 17
+        adict['max_other_nonprop_inc'] = 30  # TAXSIM ivar 18
         adict['max_pnben'] = 60  # TAXSIM ivar 19
         adict['max_ssben'] = 60  # TAXSIM ivar 20
         adict['max_uiben'] = 10  # TAXSIM ivar 21
+
         # itemized and childcare expense amounts:
-        adict['max_ided_proptax'] = 0  # TAXSIM ivar 24
-        adict['max_ided_nopref'] = 0  # TAXSIM ivar 25
-        adict['max_ccexp'] = 15  # TAXSIM ivar 26
-        adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
-        """
+        # adict['max_ided_proptax'] = 0  # TAXSIM ivar 24
+        # adict['max_ided_nopref'] = 0  # TAXSIM ivar 25
+        # adict['max_ccexp'] = 15  # TAXSIM ivar 26
+        # adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
+
     return adict
 
 
@@ -204,11 +200,11 @@ def sample_dataframe(assump, year, offset):
                                           assump['max_ltcg'],
                                           size) * 1000
     # (17) OTHERPROP
-    sdict[17] = np.random.random_integers(assump['min_other_prop_inc'],
+    sdict[17] = np.random.random_integers(0,
                                           assump['max_other_prop_inc'],
                                           size) * 1000
     # (18) NONPROP
-    sdict[18] = np.random.random_integers(assump['min_other_nonprop_inc'],
+    sdict[18] = np.random.random_integers(0,
                                           assump['max_other_nonprop_inc'],
                                           size) * 1000
     # (19) PENSIONS

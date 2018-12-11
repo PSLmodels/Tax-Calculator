@@ -95,7 +95,6 @@ taxdiff $awkfilename 15 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 16 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 17 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 18 $out1_filename $out2_filename $dump
-taxdiff $awkfilename 19 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 22 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 23 $out1_filename $out2_filename $dump
 taxdiff $awkfilename 24 $out1_filename $out2_filename $dump
