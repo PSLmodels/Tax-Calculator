@@ -1117,15 +1117,15 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
     """
+    # credit for at most two cared-for individuals and for actual expenses
+    max_credit = min(f2441, 2) * CDCC_c
+    c32800 = max(0., min(e32800, max_credit))
+    # credit is limited to minimum of individuals' earned income
     c32880 = earned_p  # earned income of taxpayer
     if MARS == 2:
-        c32890 = earned_s  # earned income of spouse, if present
+        c32890 = earned_s  # earned income of spouse when present
     else:
         c32890 = earned_p
-    dclim = min(f2441, 2) * CDCC_c
-    # care expenses are limited by policy
-    c32800 = max(0., min(e32800, dclim))
-    # credit is limited to minimum of individuals' earned income
     c33000 = max(0., min(c32800, min(c32880, c32890)))
     # credit is limited by AGI-related fraction
     if exact == 1:  # exact calculation as on tax forms
