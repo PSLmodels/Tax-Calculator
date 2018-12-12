@@ -30,12 +30,24 @@ fi
 L=${LYY_FN:0:1}    
 YY=${LYY_FN:1:2}
 python prepare_taxcalc_input.py $LYY_FN $LYY_FN.csv
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: prepare_taxcalc_input.py failed"
+    exit 1
+fi
 # ... calculate Tax-Calculator output
 tc $LYY_FN.csv 20$YY --reform taxsim_emulation.json --dump
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: taxcalc package is not available"
+    exit 1
+fi
 mv $LYY_FN-$YY-#-taxsim_emulation-#.csv $LYY_FN.out.csv
 rm -f $LYY_FN-$YY-#-taxsim_emulation-#-doc.text
 # ... convert Tax-Calculator output to Internet-TAXSIM-27-format
 python process_taxcalc_output.py $LYY_FN.out.csv $LYY_FN.out-taxcalc
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: process_taxcalc_output.py failed"
+    exit 1
+fi
 # ... delete intermediate input and output files if not saving files
 if [[ $SAVE == false ]]; then
     rm -f $LYY_FN.csv

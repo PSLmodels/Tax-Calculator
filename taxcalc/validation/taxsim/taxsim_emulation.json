@@ -35,6 +35,10 @@
 //     income takes a filing unit above the ceiling.
 //     (This change was introduced for assumption set b and higher.)
 //
+// (5) _AMT_CG_brk2 for MARS=4 = 444500 (rather than 444550)
+//     This seems to be a typo in TAXSIM-27 source code.
+//     (This change was introduced for assumption set c and higher.)
+//
 {
     "policy": {
 
@@ -44,7 +48,9 @@
 
         "_AMT_child_em_c_age": {"2013": [24]},
 
-        "_EITC_excess_InvestIncome_rt": {"2013": [1.0]}
+        "_EITC_excess_InvestIncome_rt": {"2013": [1.0]},
+
+        "_AMT_CG_brk2": {"2017": [[418400, 470700, 235350, 444500, 470700]]}
 
     }
 }

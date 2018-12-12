@@ -55,3 +55,7 @@ federal income tax or because they specify rent paid that does not
 affect federal income tax liability.  Three of the remaining four
 input variables are itemized expense amounts and the fourth is
 child-care expenses. (This is the b17 assumption set.)
+
+**2018-12-12** : Same results for a 2017 INPUT file that specifies all
+the non-state TAXSIM-27 input variables to be randomly generated
+values.  (This is the c17 assumption set.)

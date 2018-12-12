@@ -32,16 +32,24 @@ fi
 L=${LYY:0:1}    
 YY=${LYY:1:2}
 python taxsim_input.py 20$YY $L > $LYY.in
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: taxsim_input.py failed"
+    exit 1
+fi
 # (2) generate TAXSIM-27-formatted output using Tax-Calculator tc CLI
 ./taxcalc.sh $LYY.in $SAVE
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: taxcalc.sh failed"
+    exit 1
+fi
 # (3) generate tax differences
 # ... unzip TAXSIM-27 OUTPUT for specified INPUT
 unzip -oq output-taxsim.zip $LYY.in.out-taxsim
 # ... compare Tax-Calculator OUTPUT and TAXSIM-27 OUTPUT files
 tclsh taxdiffs.tcl $LYY.in.out-taxcalc $LYY.in.out-taxsim > $LYY.taxdiffs-actual
-RC=$?
-if [[ $RC -ne 0 ]]; then
-   exit $RC
+if [[ $? -ne 0 ]]; then
+    echo "ERROR: taxdiffs.tcl failed"
+    exit 1
 fi
 # check for difference between LYY.taxdiffs-actual and LYY.taxdiffs-expect
 diff --brief $LYY.taxdiffs-actual $LYY.taxdiffs-expect
