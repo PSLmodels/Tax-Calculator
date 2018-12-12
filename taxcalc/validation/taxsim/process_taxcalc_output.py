@@ -100,9 +100,9 @@ def extract_output(out):
     ovar[4] = out['iitax']  # federal income tax liability
     ovar[5] = 0.0  # no state income tax calculation
     ovar[6] = out['payrolltax']  # ee+er for OASDI+HI
-    ovar[7] = 0.0  # marginal federal income tax rate as percent
+    ovar[7] = out['mtr_inctax']  # marginal federal income tax rate as percent
     ovar[8] = 0.0  # no state income tax calculation
-    ovar[9] = 0.0  # marginal payroll tax rate as percent
+    ovar[9] = out['mtr_paytax']  # marginal payroll tax rate as percent
     ovar[10] = out['c00100']  # federal AGI
     ovar[11] = out['e02300']  # UI benefits in AGI
     ovar[12] = out['c02500']  # OASDI benefits in AGI
