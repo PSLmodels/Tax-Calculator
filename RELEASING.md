@@ -8,6 +8,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> edit "version = 'X.Y.Z'" in read-the-docs/source/conf.py
 
+--> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
+
 --> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc]
 
 --> run `make package`  [to make taxcalc package available in docs]
@@ -28,7 +30,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> create release X.Y.Z on GitHub using master branch
 
---> create packages using `pbrelease Tax-Calculator taxcalc X.Y.Z` command
+--> `pbrelease Tax-Calculator taxcalc X.Y.Z --also37` [to build/upload packages]
 
 --> email policybrain-modelers list about the new release and packages
 ```

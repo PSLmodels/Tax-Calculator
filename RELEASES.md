@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2018-12-13 Release 0.23.4
+-------------------------
+(last merged pull request is
+[#2170](https://github.com/PSLmodels/Tax-Calculator/pull/2170))
+
+**API Changes**
+- None
+
+**New Features**
+- Add new EITC policy parameter to aid in [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+  [[#2164](https://github.com/PSLmodels/Tax-Calculator/pull/2164)
+  by Martin Holmer]
+
+**Bug Fixes**
+- fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+  [[#2162](https://github.com/PSLmodels/Tax-Calculator/pull/2162)
+  by Martin Holmer]
+
+
 2018-12-05 Release 0.23.3
 -------------------------
 (last merged pull request is

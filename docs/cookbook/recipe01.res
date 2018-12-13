@@ -12,8 +12,8 @@ You loaded data for 2014.
 Your data include the following unused variables that will be ignored:
   filer
 Tax-Calculator startup automatically extrapolated your data to 2014.
-2018_REFORM1_iitax_rev($B)= 1421.831
-2018_REFORM2_iitax_rev($B)= 1266.990
+2018_REFORM1_iitax_rev($B)= 1421.829
+2018_REFORM2_iitax_rev($B)= 1266.987
 
 Extract of 2018 income-tax difference table by expanded-income decile
 (taxfall is count of funits with cut in income tax in reform 2 vs 1)
@@ -31,7 +31,7 @@ Extract of 2018 income-tax difference table by expanded-income decile
 70-80        16.29        0.013        0.002       -15.739        -966.4                      1.1
 80-90        16.29        0.014        0.002       -23.443       -1439.5                      1.2
 90-100       16.29        0.015        0.002       -77.451       -4755.4                      2.0
-ALL         162.86        0.108        0.017      -154.841        -950.7                      1.3
+ALL         162.86        0.108        0.017      -154.842        -950.7                      1.3
 90-95         8.14        0.007        0.001       -18.247       -2240.8                      1.4
 95-99         6.51        0.006        0.001       -35.134       -5393.9                      2.4
-Top 1%        1.63        0.001        0.000       -24.069      -14766.8                      2.3
+Top 1%        1.63        0.001        0.000       -24.070      -14766.9                      2.3
