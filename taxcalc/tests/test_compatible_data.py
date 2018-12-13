@@ -136,7 +136,7 @@ def fixture_sorted_param_names(allparams):
     return sorted(list(allparams.keys()))
 
 
-NPARAMS = 218  # hard-code NPARAMS to len(allparams)
+NPARAMS = 219  # hard-code NPARAMS to len(allparams)
 BATCHSIZE = 10
 BATCHES = int(np.floor(NPARAMS / BATCHSIZE)) + 1
 

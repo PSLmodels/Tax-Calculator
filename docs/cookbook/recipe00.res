@@ -57,31 +57,31 @@ Policy Reform Parameter Values by Year:
         and above tax bracket 6.
   baseline_value: 0.37
 
-2020_CLP_itax_rev($B)= 1413.016
-2020_REF_itax_rev($B)= 1410.350
+2020_CLP_itax_rev($B)= 1413.014
+2020_REF_itax_rev($B)= 1410.347
 
 CLP diagnostic table:
                                      2020
 Returns (#m)                      167.510
 AGI ($b)                        11946.468
 Itemizers (#m)                     31.010
-Itemized Deduction ($b)           872.625
+Itemized Deduction ($b)           872.622
 Standard Deduction Filers (#m)    136.500
-Standard Deduction ($b)          2438.664
+Standard Deduction ($b)          2438.667
 Personal Exemption ($b)             0.000
-Taxable Income ($b)              9126.134
+Taxable Income ($b)              9126.133
 Regular Tax ($b)                 1574.241
-AMT Income ($b)                 11332.221
-AMT Liability ($b)                  1.424
+AMT Income ($b)                 11332.222
+AMT Liability ($b)                  1.421
 AMT Filers (#m)                     0.270
-Tax before Credits ($b)          1575.665
+Tax before Credits ($b)          1575.663
 Refundable Credits ($b)            78.598
 Nonrefundable Credits ($b)         93.678
 Reform Surtaxes ($b)                0.000
 Other Taxes ($b)                    9.627
-Ind Income Tax ($b)              1413.016
+Ind Income Tax ($b)              1413.014
 Payroll Taxes ($b)               1316.606
-Combined Liability ($b)          2729.622
+Combined Liability ($b)          2729.619
 With Income Tax <= 0 (#m)          60.380
 With Combined Tax <= 0 (#m)        39.230
 
@@ -90,23 +90,23 @@ REF diagnostic table:
 Returns (#m)                      167.510
 AGI ($b)                        11946.468
 Itemizers (#m)                     30.930
-Itemized Deduction ($b)           870.301
+Itemized Deduction ($b)           870.299
 Standard Deduction Filers (#m)    136.580
-Standard Deduction ($b)          2440.094
+Standard Deduction ($b)          2440.097
 Personal Exemption ($b)           327.446
-Taxable Income ($b)              8879.640
-Regular Tax ($b)                 1569.174
-AMT Income ($b)                 11334.178
-AMT Liability ($b)                  1.359
+Taxable Income ($b)              8879.639
+Regular Tax ($b)                 1569.173
+AMT Income ($b)                 11334.179
+AMT Liability ($b)                  1.356
 AMT Filers (#m)                     0.270
-Tax before Credits ($b)          1570.532
+Tax before Credits ($b)          1570.530
 Refundable Credits ($b)            81.346
 Nonrefundable Credits ($b)         88.463
 Reform Surtaxes ($b)                0.000
 Other Taxes ($b)                    9.627
-Ind Income Tax ($b)              1410.350
+Ind Income Tax ($b)              1410.347
 Payroll Taxes ($b)               1316.606
-Combined Liability ($b)          2726.956
+Combined Liability ($b)          2726.953
 With Income Tax <= 0 (#m)          62.590
 With Combined Tax <= 0 (#m)        39.570
 
@@ -122,12 +122,12 @@ Extract of 2020 distribution table by baseline expanded-income decile:
 50-60        16.75     32.389     29.325           1028.539           1031.603
 60-70        16.75     61.360     57.428           1263.665           1267.597
 70-80        16.75    106.617    101.306           1584.030           1589.341
-80-90        16.75    213.707    205.455           2108.778           2117.029
-90-100       16.75    972.778    997.364           4309.821           4285.236
-ALL         167.51   1413.016   1410.350          12938.428          12941.095
+80-90        16.75    213.706    205.454           2108.779           2117.031
+90-100       16.75    972.777    997.363           4309.822           4285.237
+ALL         167.51   1413.014   1410.347          12938.431          12941.098
 90-95         8.38    214.444    210.125           1438.241           1442.561
-95-99         6.70    327.051    326.019           1668.489           1669.520
-Top 1%        1.68    431.283    461.220           1203.091           1173.155
+95-99         6.70    327.050    326.019           1668.490           1669.521
+Top 1%        1.68    431.283    461.219           1203.091           1173.155
 
 Extract of 2020 income-tax difference table by expanded-income decile:
         funits(#m)  agg_diff($b)  mean_diff($)  aftertaxinc_diff(%)
@@ -146,4 +146,4 @@ Extract of 2020 income-tax difference table by expanded-income decile:
 ALL         167.51        -2.667         -15.9                  0.0
 90-95         8.38        -4.320        -515.7                  0.3
 95-99         6.70        -1.031        -153.9                  0.1
-Top 1%        1.68        29.936       17871.0                 -2.5
+Top 1%        1.68        29.936       17871.1                 -2.5
