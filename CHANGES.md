@@ -2,6 +2,12 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 0.23.4 on 2018-12-13
+---------------------------------------
+
+- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27).
+
+
 Changes in release 0.23.3 on 2018-12-05
 ---------------------------------------
 
