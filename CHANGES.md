@@ -5,13 +5,13 @@ TAX-CALCULATOR CHANGE HISTORY
 Changes in release 0.23.4 on 2018-12-13
 ---------------------------------------
 
-- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27).
+- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during recent validation work.
 
 
 Changes in release 0.23.3 on 2018-12-05
 ---------------------------------------
 
-- Fix minor error in calculation of AMT for those in the 18 to 23 age range.  This changes estimated aggregate income tax liability in 2018 by only 0.06 percent.
+- Fix minor error in calculation of AMT for those in the 18 to 23 age range.  This changes estimated aggregate income tax liability in 2018 by only 0.06 of one percent.
 
 
 Changes in release 0.23.2 on 2018-11-22
