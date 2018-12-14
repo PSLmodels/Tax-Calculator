@@ -133,16 +133,16 @@ END {
             }
         }
     } # end for i loop
+    if ( net_eitc == 1 ) {
+        colstr = "4-"
+    } else {
+        colstr = sprintf("%2s", col)
+    }
     if ( num_diffs > 0 ) {
         if ( max_abs_vardiff_positive == 1 ) {
             signed_max_abs_vardiff = max_abs_vardiff
         } else {
             signed_max_abs_vardiff = -max_abs_vardiff
-        }
-        if ( net_eitc == 1 ) {
-            colstr = "4-"
-        } else {
-            colstr = sprintf("%2s", col)
         }
         printf( "%s= %s %6d %6d %9.2f [%d]\n",
                 "TAXDIFF:ovar,#diffs,#smdiffs,maxdiff[id]",
@@ -170,5 +170,8 @@ END {
                         num_big_vardiff_with_big_taxdiff )
             }
         }
+    } else {
+        printf( "TAXDIFF:ovar=                             %s  no-diffs\n",
+                colstr )
     }
 }
