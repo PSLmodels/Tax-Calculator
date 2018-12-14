@@ -18,8 +18,8 @@ Setup Python
 -------------
 
 The Tax-Calculator is written in the Python programming language.
-Download and install the free Anaconda distribution of Python 3.6
-from `Anaconda`_.  You must do this even if you already have
+Download and install the free Anaconda distribution of Python 3.6 or
+Python 3.7 from `Anaconda`_.  You must do this even if you already have
 Python installed on your computer because the Anaconda distribution
 contains all the additional Python packages that we use to conduct tax
 calculations (many of which are not included in other Python

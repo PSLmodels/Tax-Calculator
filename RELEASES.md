@@ -4,6 +4,23 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2018-12-14 Release 0.24.0
+-------------------------
+(last merged pull request is
+[#2176](https://github.com/PSLmodels/Tax-Calculator/pull/2176))
+
+**API Changes**
+- None
+
+**New Features**
+- Make taxcalc packages available for Python 3.7 as well as for Python 3.6
+  [[#2176](https://github.com/PSLmodels/Tax-Calculator/pull/2176)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+
 2018-12-13 Release 0.23.4
 -------------------------
 (last merged pull request is
@@ -18,7 +35,7 @@ for a complete commit history.
   by Martin Holmer]
 
 **Bug Fixes**
-- fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
   [[#2162](https://github.com/PSLmodels/Tax-Calculator/pull/2162)
   by Martin Holmer]
 

@@ -217,9 +217,9 @@ files to TaxBrain.</p>
 
 <p><b>Install the free Anaconda Python distribution</b> by going to
 the <a href="https://www.anaconda.com/download/">Anaconda download
-page</a> and selecting Python 3.6.  You should install Python 3.6
-because we have discontinued support for Python 2.7 and are not yet
-supporting Python 3.7.  You must do this installation even if you already
+page</a> and selecting Python 3.6 or Python 3.7.  You should install
+Python 3.6+ because we have discontinued support for Python 2.7.
+You must do this installation even if you already
 have Python installed on your computer because the Anaconda
 distribution contains all the additional Python packages that
 Tax-Calculator uses to conduct tax calculations (many of which are not
@@ -234,11 +234,12 @@ following two commands at the operating system command prompt (which
 is shown as <kbd>$</kbd> here, but would be <kbd>></kbd> on Windows)
 in any directory:
 <pre>$ conda --version</pre>
-Expected output is something like <kbd>conda 4.4.7</kbd>
+Expected output is something like <kbd>conda 4.5.11</kbd>
 <pre>$ python --version</pre>
-Expected output should contain the <kbd>Python 3.6</kbd> phrase as
-well as the <kbd>Anaconda</kbd> phrase, the presence of which confirm
-that the installation went smoothly.</p>
+Expected output should contain the <kbd>Python 3.6</kbd> or the
+<kbd>Python 3.7</kbd> phrase as well as the <kbd>Anaconda</kbd>
+phrase, the presence of which confirm that the installation went
+smoothly.</p>
 
 <p><b>Install the free taxcalc package</b> by entering the following:
 <pre>$ conda install -c PSLmodels taxcalc</pre>

@@ -2,6 +2,12 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 0.24.0 on 2018-12-14
+---------------------------------------
+
+- Make taxcalc packages available for Python 3.7 as well as for Python 3.6.
+
+
 Changes in release 0.23.4 on 2018-12-13
 ---------------------------------------
 
