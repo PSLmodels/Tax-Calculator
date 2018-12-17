@@ -39,13 +39,13 @@ being compared have differences of no larger than one cent.
 Validation Results
 ------------------
 
-**2018-12-10** : Same results for a 2017 INPUT file that specifies
+**2018-12-17** : Same results for a 2017 INPUT file that specifies
 the first twelve of the TAXSIM-27 input variables, which
 include demographic variables and labor income, but set to zero all
 the TAXSIM-27 input variables numbered from 13 through 27. (This is
 the a17 assumption set.)
 
-**2018-12-10** : Same results for a 2017 INPUT file that specifies the
+**2018-12-17** : Same results for a 2017 INPUT file that specifies the
 first twenty-one of the TAXSIM-27 input variables, which include
 demographic variables, labor income, capital income, and
 federally-taxable benefits, but set to zero all the other six
@@ -56,6 +56,6 @@ affect federal income tax liability.  Three of the remaining four
 input variables are itemized expense amounts and the fourth is
 child-care expenses. (This is the b17 assumption set.)
 
-**2018-12-12** : Same results for a 2017 INPUT file that specifies all
+**2018-12-17** : Same results for a 2017 INPUT file that specifies all
 the non-state TAXSIM-27 input variables to be randomly generated
 values.  (This is the c17 assumption set.)

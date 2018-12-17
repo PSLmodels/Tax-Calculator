@@ -1,15 +1,7 @@
 // JSON "reform" file that specifies changes in current-law policy that
 // are required to make Tax-Calculator work like TAXSIM-27.
 //
-// (1) _II_brk6 for MARS=4 = 444500 (rather than 444550)
-//     This seems to be a typo in TAXSIM-27 source code.
-//     (This change was introduced for assumption set a and higher.)
-//
-// (2) _CG_brk2 for MARS=4 = 444500 (rather than 444550)
-//     This seems to be a typo in TAXSIM-27 source code.
-//     (This change was introduced for assumption set b and higher.)
-//
-// (3) _AMT_child_em_c_age = 24 (rather than 18)
+// (1) _AMT_child_em_c_age = 24 (rather than 18)
 //     Whether to set this parameter to 18 or 24 is arbitary because
 //     neither model has enough information to apply correctly the child
 //     AMT exemption rules.  Information on full-time student status and
@@ -20,7 +12,7 @@
 //     that all those under 24 are required to use the child AMT exemption.
 //     (This change was introduced for assumption set b and higher.)
 //
-// (4) _EITC_excess_InvestIncome_rt = 1.0 (rather than 9e99)
+// (2) _EITC_excess_InvestIncome_rt = 1.0 (rather than 9e99)
 //     The rate at which the EITC amount is reduced per dollar of investment
 //     income in excess of the EITC investment income ceiling is infinity under
 //     current law (that is, any investment income in excess of the ceiling
@@ -35,22 +27,12 @@
 //     income takes a filing unit above the ceiling.
 //     (This change was introduced for assumption set b and higher.)
 //
-// (5) _AMT_CG_brk2 for MARS=4 = 444500 (rather than 444550)
-//     This seems to be a typo in TAXSIM-27 source code.
-//     (This change was introduced for assumption set c and higher.)
-//
 {
     "policy": {
 
-        "_II_brk6": {"2017": [[418400, 470700, 235350, 444500, 470700]]},
-        
-        "_CG_brk2": {"2017": [[418400, 470700, 235350, 444500, 470700]]},
-
         "_AMT_child_em_c_age": {"2013": [24]},
 
-        "_EITC_excess_InvestIncome_rt": {"2013": [1.0]},
-
-        "_AMT_CG_brk2": {"2017": [[418400, 470700, 235350, 444500, 470700]]}
+        "_EITC_excess_InvestIncome_rt": {"2013": [1.0]}
 
     }
 }
