@@ -303,26 +303,13 @@
                 "_AMT_CG_rt1": [0.02],
                 "_AMT_CG_rt2": [0.17],
                 "_AMT_CG_rt3": [0.22]},
-      "name": "Raise LTCG/QDIV tax rates by 2 pts, no behavioral response",
+      "name": "Raise LTCG/QDIV tax rates by 2 pts",
       "output_type": "iitax",
       "compare_with": {},
       "expected": "Tax-Calculator,17.7,16.1,17.7,18.3"
   },
 
   "31": {
-      "baseline": "2017_law.json",
-      "start_year": 2015,
-      "value": {"_CG_rt1": [0.02],
-                "_CG_rt2": [0.17],
-                "_CG_rt3": [0.22],
-                "_AMT_CG_rt1": [0.02],
-                "_AMT_CG_rt2": [0.17],
-                "_AMT_CG_rt3": [0.22],
-                "_BE_cg": [-3.67]},
-      "name": "Raise LTCG/QDIV tax rates by 2 pts, with behavioral response",
-      "output_type": "iitax",
-      "compare_with": {"Budget Options": [4.6, 5, 5.3, 5.6]},
-      "expected": "Tax-Calculator,4.4,4.5,4.6,4.8"
   },
 
   "32": {

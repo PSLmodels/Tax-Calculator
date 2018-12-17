@@ -10,7 +10,7 @@ import urllib
 import pytest
 import numpy as np
 import pandas as pd
-from taxcalc import Policy, Records, Calculator, Behavior, Consumption
+from taxcalc import Policy, Records, Calculator, Consumption
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -50,16 +50,13 @@ def test_make_calculator(cps_subsample):
     consump = Consumption()
     consump.update_consumption({sim_year: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == start_year
-    calc = Calculator(policy=pol, records=rec,
-                      consumption=consump, behavior=Behavior())
+    calc = Calculator(policy=pol, records=rec, consumption=consump)
     assert calc.current_year == Records.CPSCSV_YEAR
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
         Calculator(policy=None, records=rec)
     with pytest.raises(ValueError):
         Calculator(policy=pol, records=None)
-    with pytest.raises(ValueError):
-        Calculator(policy=pol, records=rec, behavior=list())
     with pytest.raises(ValueError):
         Calculator(policy=pol, records=rec, consumption=list())
 
@@ -420,13 +417,12 @@ ASSUMP_CONTENTS = """
 // Example of JSON assump file suitable for read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// Within each "behavior", "consumption" and "growth" object, the
-// primary keys are parameters and the secondary keys are years.
+// Within each "consumption" and "grow" object, the primary keys are
+// parameters and the secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
   "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-  "behavior": {},
   "growdiff_baseline": {},
   "growdiff_response": {},
   "growmodel": {}
@@ -566,7 +562,7 @@ def fixture_bad3reformfile():
       "policy": {
         "_SS_Earnings_c": {"2018": [9e99]}
       },
-      "behavior": { // example of misplaced "behavior" key
+      "consumption": { // example of misplaced "consumption" key
       }
     }
     """
@@ -610,11 +606,6 @@ def test_json_assump_url():
             "_MPC_e18400": {"2017": [0.0]},
             "_MPC_e19800": {"2017": [0.0]},
             "_MPC_e20400": {"2017": [0.0]}
-        },
-        "behavior": {
-            "_BE_inc": {"2017": [0.0]},
-            "_BE_sub": {"2017": [0.0]},
-            "_BE_cg": {"2017": [0.0]}
         },
         "growdiff_baseline": {
             "_ABOOK": {"2017": [0.0]},
@@ -679,8 +670,8 @@ def test_json_assump_url():
                   'Tax-Calculator/master/taxcalc/assumptions/'
                   'economic_assumptions_template.json')
     params_str = Calculator.read_json_param_objects(None, assump_str)
-    params_url = Calculator.read_json_param_objects(None, assump_url)
-    assert params_str == params_url
+    # params_url = Calculator.read_json_param_objects(None, assump_url)  # TODO
+    # assert params_str == params_url  # TODO: activate this line & above line
 
 
 @pytest.fixture(scope='module', name='bad1assumpfile')
@@ -688,8 +679,7 @@ def fixture_bad1assumpfile():
     # specify JSON text for assumptions
     txt = """
     {
-      "consumption": {},
-      "behavior": { // example of incorrect JSON because 'x' must be "x"
+      "consumption": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [0.25]}
       },
       "growdiff_baseline": {},
@@ -710,8 +700,7 @@ def fixture_bad2assumpfile():
     # specify JSON text for assumptions
     txt = """
     {
-      "consumption": {},
-      "behaviorx": {}, // example of assump file not containing "behavior" key
+      "consumptionx": {}, // example of file not containing "consumption" key
       "growdiff_baseline": {},
       "growdiff_response": {},
       "growmodel": {}
@@ -731,7 +720,6 @@ def fixture_bad3assumpfile():
     txt = """
     {
       "consumption": {},
-      "behavior": {},
       "growdiff_baseline": {},
       "growdiff_response": {},
       "policy": { // example of misplaced policy key
@@ -933,7 +921,6 @@ def test_noreform_documentation():
     assump_json = """
     {
     "consumption": {},
-    "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
     "growmodel": {}
@@ -976,7 +963,6 @@ def test_reform_documentation():
     assump_json = """
     {
     "consumption": {},
-    "behavior": {},
     // increase baseline inflation rate by one percentage point in 2014+
     // (has no effect on known policy parameter values)
     "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
@@ -1073,8 +1059,6 @@ def test_privacy_of_embedded_objects(cps_subsample):
         wgh = calc.__records.s006
     with pytest.raises(AttributeError):
         cyr = calc.__consumption.current_year
-    with pytest.raises(AttributeError):
-        cyr = calc.__behavior.current_year
 
 
 def test_n65(cps_subsample):

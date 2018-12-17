@@ -1,7 +1,6 @@
 """
 Specify what is available to import from the taxcalc package.
 """
-from taxcalc.behavior import *
 from taxcalc.calculator import *
 from taxcalc.consumption import *
 from taxcalc.growfactors import *

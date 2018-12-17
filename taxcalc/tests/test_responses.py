@@ -9,7 +9,7 @@ import os
 import glob
 import pytest  # pylint: disable=unused-import
 # pylint: disable=import-error
-from taxcalc import Calculator, Consumption, Behavior, GrowDiff, GrowModel
+from taxcalc import Calculator, Consumption, GrowDiff, GrowModel
 
 
 def test_response_json(tests_path):
@@ -25,18 +25,15 @@ def test_response_json(tests_path):
         jpf_text = jfile.read()
         # check that jpf_text can be used to construct objects
         response_file = ('"consumption"' in jpf_text and
-                         '"behavior"' in jpf_text and
                          '"growdiff_baseline"' in jpf_text and
                          '"growdiff_response"' in jpf_text and
                          '"growmodel"' in jpf_text)
         if response_file:
             # pylint: disable=protected-access
-            (con, beh, gdiff_base, gdiff_resp,
+            (con, gdiff_base, gdiff_resp,
              grow_model) = Calculator._read_json_econ_assump_text(jpf_text)
             cons = Consumption()
             cons.update_consumption(con)
-            behv = Behavior()
-            behv.update_behavior(beh)
             growdiff_baseline = GrowDiff()
             growdiff_baseline.update_growdiff(gdiff_base)
             growdiff_response = GrowDiff()
@@ -57,18 +54,16 @@ def test_growmodel_json():
     txt = """
     {
     "consumption": {},
-    "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
     "growmodel": {}
     }
     """
     # pylint: disable=protected-access
-    (con, beh, gdiff_base, gdiff_resp,
+    (con, gdiff_base, gdiff_resp,
      growmod) = Calculator._read_json_econ_assump_text(txt)
     empty_dict = dict()
     assert con == empty_dict
-    assert beh == empty_dict
     assert gdiff_base == empty_dict
     assert gdiff_resp == empty_dict
     assert growmod == empty_dict

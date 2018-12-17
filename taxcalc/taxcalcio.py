@@ -14,7 +14,6 @@ import pandas as pd
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
-from taxcalc.behavior import Behavior
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
 from taxcalc.calculator import Calculator
@@ -202,7 +201,6 @@ class TaxCalcIO():
             delete_file(self._output_filename.replace('.csv', '-mtr.html'))
             delete_file(self._output_filename.replace('.csv', '-pch.html'))
         # initialize variables whose values are set in init method
-        self.behavior_has_any_response = False
         self.calc = None
         self.calc_base = None
         self.growmodel = None
@@ -251,13 +249,6 @@ class TaxCalcIO():
         # remember parameters for reform documentation
         self.param_dict = paramdict
         self.policy_dicts = policydicts
-        # create Behavior object
-        beh = Behavior()
-        try:
-            beh.update_behavior(paramdict['behavior'])
-        except ValueError as valerr_msg:
-            self.errmsg += valerr_msg.__str__()
-        self.behavior_has_any_response = beh.has_any_response()
         # create gdiff_baseline object
         gdiff_baseline = GrowDiff()
         try:
@@ -367,7 +358,6 @@ class TaxCalcIO():
         self.calc = Calculator(policy=pol, records=recs,
                                verbose=True,
                                consumption=con,
-                               behavior=beh,
                                sync_years=aging_input_data)
         self.calc_base = Calculator(policy=base, records=recs_base,
                                     verbose=False,
@@ -463,11 +453,7 @@ class TaxCalcIO():
                             'CONTINUING WITH CALCULATIONS...')
             )
         calc_base_calculated = False
-        if self.behavior_has_any_response:
-            self.calc = Behavior.response(self.calc_base, self.calc)
-            calc_base_calculated = True
-        else:
-            self.calc.calc_all()
+        self.calc.calc_all()
         if output_dump or output_sqldb:
             # might need marginal tax rates
             (mtr_paytax, mtr_inctax,

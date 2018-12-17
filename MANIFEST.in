@@ -1,6 +1,3 @@
-include versioneer.py
-include taxcalc/_version.py
-include taxcalc/behavior.json
 include taxcalc/consumption.json
 include taxcalc/cps.csv.gz
 include taxcalc/cps_weights.csv.gz

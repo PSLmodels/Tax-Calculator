@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 import pytest
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Behavior, Calculator
+from taxcalc import Policy, Records, Calculator
 from taxcalc.utils import (DIST_VARIABLES,
                            DIST_TABLE_COLUMNS, DIST_TABLE_LABELS,
                            DIFF_VARIABLES,
@@ -671,7 +671,7 @@ def test_atr_graph_data(cps_subsample):
 
 def test_xtr_graph_plot(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
-    calc = Calculator(policy=Policy(), records=recs, behavior=Behavior())
+    calc = Calculator(policy=Policy(), records=recs)
     mtr = 0.20 * np.ones_like(cps_subsample['e00200'])
     vdf = calc.dataframe(['s006', 'MARS', 'c00100'])
     vdf['mtr1'] = mtr

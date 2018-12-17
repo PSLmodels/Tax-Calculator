@@ -72,7 +72,6 @@ def fixture_assumpfile0():
     contents = """
     {
     "consumption": {},
-    "behavior": {"_BE_sub": {"2020": [0.05]}},
     "growdiff_baseline": {"_ABOOK": {"2015": [-0.01]}},
     "growdiff_response": {},
     "growmodel": {}
@@ -178,7 +177,6 @@ def fixture_errorassumpfile():
     contents = """
     {
     "consumption": {"_MPC_e18400": {"2018": [-9]}},
-    "behavior": {"_BE_inc": {"2018": [0.4]}},
     "growdiff_baseline": {"_ABOOKxx": {"2017": [0.02]}},
     "growdiff_response": {"_ABOOKxx": {"2017": [0.02]}},
     "growmodel": {"_activexx": {"2018": [true]}}
@@ -204,7 +202,6 @@ def fixture_assumpfile1():
     contents = """
     {
     "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-    "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
     "growmodel": {}
@@ -247,8 +244,7 @@ def fixture_assumpfile2():
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     assump2_contents = """
     {
-    "consumption": {},
-    "behavior": {"_BE_sub": {"2020": [0.05]}},
+    "consumption":  {"_BEN_snap_value": {"2018": [0.90]}},
     "growdiff_baseline": {},
     "growdiff_response": {},
     "growmodel": {}
@@ -766,7 +762,6 @@ def fixture_assumpfile3():
     contents = """
     {
     "consumption": {},
-    "behavior": {},
     "growdiff_baseline": {},
     "growdiff_response": {},
     "growmodel": {"_active": {"2019": [true]}}

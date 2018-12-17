@@ -22,7 +22,7 @@ import hashlib
 import numpy as np
 import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
-                     Consumption, Behavior, GrowFactors, GrowDiff,
+                     Consumption, GrowFactors, GrowDiff,
                      DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
                      add_income_table_row_variable,
                      add_quantile_table_row_variable,
@@ -38,14 +38,13 @@ def reform_warnings_errors(user_mods, using_puf):
     returned by the Calculator.read_json_param_objects() function.
 
     This function returns a dictionary containing five STR:STR subdictionaries,
-    where the dictionary keys are: 'policy', 'behavior', consumption',
+    where the dictionary keys are: 'policy', 'consumption',
     'growdiff_baseline' and 'growdiff_response'; and the subdictionaries are:
     {'warnings': '<empty-or-message(s)>', 'errors': '<empty-or-message(s)>'}.
     Note that non-policy parameters have no warnings, so the 'warnings'
     string for the non-policy parameters is always empty.
     """
     rtn_dict = {'policy': {'warnings': '', 'errors': ''},
-                'behavior': {'warnings': '', 'errors': ''},
                 'consumption': {'warnings': '', 'errors': ''},
                 'growdiff_baseline': {'warnings': '', 'errors': ''},
                 'growdiff_response': {'warnings': '', 'errors': ''}}
@@ -75,12 +74,6 @@ def reform_warnings_errors(user_mods, using_puf):
         rtn_dict['policy']['errors'] = pol.parameter_errors
     except ValueError as valerr_msg:
         rtn_dict['policy']['errors'] = valerr_msg.__str__()
-    # create Behavior object
-    behv = Behavior()
-    try:
-        behv.update_behavior(user_mods['behavior'])
-    except ValueError as valerr_msg:
-        rtn_dict['behavior']['errors'] = valerr_msg.__str__()
     # create Consumption object
     consump = Consumption()
     try:
@@ -111,8 +104,7 @@ def run_nth_year_taxcalc_model(year_n, start_year,
     check_years(year_n, start_year, use_puf_not_cps)
     calc1, calc2 = calculator_objects(year_n, start_year,
                                       use_puf_not_cps, use_full_sample,
-                                      user_mods,
-                                      behavior_allowed=True)
+                                      user_mods)
 
     # extract unfuzzed raw results from calc1 and calc2
     dv1 = calc1.distribution_table_dataframe()
@@ -243,7 +235,7 @@ def check_user_mods(user_mods):
     if not isinstance(user_mods, dict):
         raise ValueError('user_mods is not a dictionary')
     actual_keys = set(list(user_mods.keys()))
-    expected_keys = set(['policy', 'consumption', 'behavior',
+    expected_keys = set(['policy', 'consumption',
                          'growdiff_baseline', 'growdiff_response',
                          'growmodel'])
     if actual_keys != expected_keys:
@@ -256,16 +248,13 @@ def check_user_mods(user_mods):
 def calculator_objects(year_n, start_year,
                        use_puf_not_cps,
                        use_full_sample,
-                       user_mods,
-                       behavior_allowed):
+                       user_mods):
     """
     This function assumes that the specified user_mods is a dictionary
       returned by the Calculator.read_json_param_objects() function.
     This function returns (calc1, calc2) where
       calc1 is pre-reform Calculator object calculated for year_n, and
       calc2 is post-reform Calculator object calculated for year_n.
-    Set behavior_allowed to False when generating static results or
-      set behavior_allowed to True when generating dynamic results.
     """
     # pylint: disable=too-many-arguments,too-many-locals
     # pylint: disable=too-many-branches,too-many-statements
@@ -333,21 +322,6 @@ def calculator_objects(year_n, start_year,
     calc1.calc_all()
     assert calc1.current_year == start_year
 
-    # specify Behavior instance
-    behv = Behavior()
-    behavior_assumps = user_mods['behavior']
-    behv.update_behavior(behavior_assumps)
-
-    # always prevent both behavioral response and growdiff response
-    if behv.has_any_response() and growdiff_response.has_any_response():
-        msg = 'BOTH behavior AND growdiff_response HAVE RESPONSE'
-        raise ValueError(msg)
-
-    # optionally prevent behavioral response
-    if behv.has_any_response() and not behavior_allowed:
-        msg = 'A behavior RESPONSE IS NOT ALLOWED'
-        raise ValueError(msg)
-
     # create post-reform Calculator instance
     if use_puf_not_cps:
         recs2 = Records(data=sample,
@@ -358,8 +332,7 @@ def calculator_objects(year_n, start_year,
     policy2 = Policy(gfactors=growfactors_post)
     policy_reform = user_mods['policy']
     policy2.implement_reform(policy_reform)
-    calc2 = Calculator(policy=policy2, records=recs2,
-                       consumption=consump, behavior=behv)
+    calc2 = Calculator(policy=policy2, records=recs2, consumption=consump)
     while calc2.current_year < start_year:
         calc2.increment_year()
     assert calc2.current_year == start_year
@@ -372,7 +345,6 @@ def calculator_objects(year_n, start_year,
     del growdiff_response
     del growfactors_pre
     del growfactors_post
-    del behv
     del recs1
     del recs2
     del policy1
@@ -383,10 +355,7 @@ def calculator_objects(year_n, start_year,
         calc1.increment_year()
         calc2.increment_year()
     calc1.calc_all()
-    if calc2.behavior_has_response():
-        calc2 = Behavior.response(calc1, calc2)
-    else:
-        calc2.calc_all()
+    calc2.calc_all()
 
     # return calculated Calculator objects
     return (calc1, calc2)
