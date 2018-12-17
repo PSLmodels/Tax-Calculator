@@ -24,15 +24,12 @@ import pandas as pd
 from taxcalc import (Policy, Records, Calculator,
                      Consumption, Behavior, GrowFactors, GrowDiff,
                      DIST_TABLE_LABELS, DIFF_TABLE_LABELS,
-                     proportional_change_in_gdp,
                      add_income_table_row_variable,
                      add_quantile_table_row_variable,
                      create_difference_table, create_distribution_table,
                      STANDARD_INCOME_BINS, read_egg_csv)
 
 AGG_ROW_NAMES = ['ind_tax', 'payroll_tax', 'combined_tax']
-
-GDP_ELAST_ROW_NAMES = ['gdp_proportional_change']
 
 
 def reform_warnings_errors(user_mods, using_puf):
@@ -208,50 +205,6 @@ def run_nth_year_taxcalc_model(year_n, start_year,
                                          row_names=info[tbl]['row_names'],
                                          column_types=info[tbl]['col_types'])
     return res
-
-
-def run_nth_year_gdp_elast_model(year_n, start_year,
-                                 use_puf_not_cps,
-                                 use_full_sample,
-                                 user_mods,
-                                 gdp_elasticity,
-                                 return_dict=True):
-    """
-    The run_nth_year_gdp_elast_model function assumes user_mods is a dictionary
-      returned by the Calculator.read_json_param_objects() function.
-    Setting use_puf_not_cps=True implies use puf.csv input file;
-      otherwise, use cps.csv input file.
-    Setting use_full_sample=False implies use sub-sample of input file;
-      otherwsie, use the complete sample.
-    """
-    # pylint: disable=too-many-arguments,too-many-locals
-
-    # calculate gdp_effect
-    fyear = check_years_return_first_year(year_n, start_year, use_puf_not_cps)
-    if year_n > 0 and (start_year + year_n) > fyear:
-        # create calc1 and calc2 calculated for year_n - 1
-        (calc1, calc2) = calculator_objects((year_n - 1), start_year,
-                                            use_puf_not_cps,
-                                            use_full_sample,
-                                            user_mods,
-                                            behavior_allowed=False)
-        # compute GDP effect given specified gdp_elasticity
-        gdp_effect = proportional_change_in_gdp((start_year + year_n),
-                                                calc1, calc2, gdp_elasticity)
-    else:
-        gdp_effect = 0.0
-
-    # return gdp_effect results
-    if return_dict:
-        gdp_df = pd.DataFrame(data=[gdp_effect], columns=['col0'])
-        gdp_elast_names_n = [x + '_' + str(year_n)
-                             for x in GDP_ELAST_ROW_NAMES]
-        gdp_elast_total = create_dict_table(gdp_df,
-                                            row_names=gdp_elast_names_n,
-                                            num_decimals=5)
-        gdp_elast_total = dict((k, v[0]) for k, v in gdp_elast_total.items())
-        return gdp_elast_total
-    return gdp_effect
 
 
 # -------------------------------------------------------
