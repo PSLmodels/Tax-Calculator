@@ -28,8 +28,6 @@ USER_MODS = {
     'growdiff_baseline': {
     },
     'growdiff_response': {
-    },
-    'growmodel': {
     }
 }
 
@@ -95,9 +93,8 @@ def test_with_pufcsv(puf_fullsample):
     usermods['consumption'] = {}
     usermods['growdiff_baseline'] = {}
     usermods['growdiff_response'] = {}
-    usermods['growmodel'] = {}
     seed = random_seed(usermods)
-    assert seed == 1574318062
+    assert seed == 2568216296
     # create a Policy object (pol) containing reform policy parameters
     pol = Policy()
     pol.implement_reform(usermods['policy'])
@@ -139,8 +136,7 @@ def test_reform_warnings_errors():
                    2021: {'_ID_Charity_crt_all': [0.7]}},
         'consumption': {},
         'growdiff_baseline': {},
-        'growdiff_response': {},
-        'growmodel': {}
+        'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad1_mods, using_puf=True)
     assert len(msg_dict['policy']['warnings']) > 0
@@ -149,8 +145,7 @@ def test_reform_warnings_errors():
         'policy': {2020: {'_II_rt33': [0.4]}},
         'consumption': {},
         'growdiff_baseline': {},
-        'growdiff_response': {},
-        'growmodel': {}
+        'growdiff_response': {}
     }
     msg_dict = reform_warnings_errors(bad2_mods, using_puf=True)
     assert len(msg_dict['policy']['warnings']) == 0

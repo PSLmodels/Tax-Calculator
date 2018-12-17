@@ -73,8 +73,7 @@ def fixture_assumpfile0():
     {
     "consumption": {},
     "growdiff_baseline": {"_ABOOK": {"2015": [-0.01]}},
-    "growdiff_response": {},
-    "growmodel": {}
+    "growdiff_response": {}
     }
     """
     afile.write(contents)
@@ -178,8 +177,7 @@ def fixture_errorassumpfile():
     {
     "consumption": {"_MPC_e18400": {"2018": [-9]}},
     "growdiff_baseline": {"_ABOOKxx": {"2017": [0.02]}},
-    "growdiff_response": {"_ABOOKxx": {"2017": [0.02]}},
-    "growmodel": {"_activexx": {"2018": [true]}}
+    "growdiff_response": {"_ABOOKxx": {"2017": [0.02]}}
     }
     """
     rfile.write(contents)
@@ -203,8 +201,7 @@ def fixture_assumpfile1():
     {
     "consumption": { "_MPC_e18400": {"2018": [0.05]} },
     "growdiff_baseline": {},
-    "growdiff_response": {},
-    "growmodel": {}
+    "growdiff_response": {}
     }
     """
     afile.write(contents)
@@ -246,8 +243,7 @@ def fixture_assumpfile2():
     {
     "consumption":  {"_BEN_snap_value": {"2018": [0.90]}},
     "growdiff_baseline": {},
-    "growdiff_response": {},
-    "growmodel": {}
+    "growdiff_response": {}
     }
     """
     afile.write(assump2_contents)
@@ -319,7 +315,6 @@ def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
     # test TaxCalcIO.init method
     tcio.init(input_data=recdf, tax_year=year,
               baseline=baseline, reform=reform, assump=assump,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=True)
     assert tcio.errmsg
@@ -341,7 +336,6 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=reformfile0.name,
               assump=None,
-              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -358,7 +352,6 @@ def test_creation_with_aging(rawinputfile, reformfile0):
               baseline=None,
               reform=None,
               assump=None,
-              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -373,7 +366,6 @@ def test_ctor_init_with_cps_files():
     txyr = 2020
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -382,7 +374,6 @@ def test_ctor_init_with_cps_files():
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
-              growdiff_growmodel=None,
               aging_input_data=True,
               exact_calculations=False)
     assert tcio.errmsg
@@ -414,7 +405,6 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
     assert not tcio.errmsg
     tcio.init(input_data=recdf, tax_year=year,
               baseline=None, reform=None, assump=None,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -442,7 +432,6 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -504,7 +493,6 @@ def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=compound_reform,
               assump=assumpfile1.name,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -531,7 +519,6 @@ def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -578,7 +565,6 @@ def test_no_tables_or_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -627,7 +613,6 @@ def test_tables(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -665,7 +650,6 @@ def test_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -719,7 +703,6 @@ def test_analyze_warnings_print(warnreformfile):
               baseline=None,
               reform=warnreformfile.name,
               assump=None,
-              growdiff_growmodel=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -751,49 +734,3 @@ def fixture_reformfile9():
             os.remove(rfile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
-
-
-@pytest.fixture(scope='module', name='assumpfile3')
-def fixture_assumpfile3():
-    """
-    Temporary assumption file with .json extension.
-    """
-    afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = """
-    {
-    "consumption": {},
-    "growdiff_baseline": {},
-    "growdiff_response": {},
-    "growmodel": {"_active": {"2019": [true]}}
-    }
-    """
-    afile.write(contents)
-    afile.close()
-    # must close and then yield for Windows platform
-    yield afile
-    if os.path.isfile(afile.name):
-        try:
-            os.remove(afile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_growmodel_analysis(reformfile9, assumpfile3):
-    """
-    Test TaxCalcIO.growmodel_analysis logic.
-    """
-    recdict = {'RECID': 1, 'MARS': 1, 'e00300': 100000, 's006': 1e8}
-    recdf = pd.DataFrame(data=recdict, index=[0])
-    TaxCalcIO.growmodel_analysis(input_data=recdf,
-                                 tax_year=2019,
-                                 baseline=None,
-                                 reform=reformfile9.name,
-                                 assump=assumpfile3.name,
-                                 aging_input_data=True,
-                                 exact_calculations=False,
-                                 writing_output_file=False,
-                                 output_tables=False,
-                                 output_graphs=False,
-                                 dump_varset=None,
-                                 output_dump=False,
-                                 output_sqldb=False)

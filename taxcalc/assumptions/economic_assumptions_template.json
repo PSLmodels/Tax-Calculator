@@ -73,8 +73,5 @@
         "_ABENHOUSING": {"2017": [0.0]},
         "_ABENTANF": {"2017": [0.0]},
         "_ABENVET": {"2017": [0.0]}
-    },
-    "growmodel": {
-        "_active": {"2017": [false]}
     }
 }

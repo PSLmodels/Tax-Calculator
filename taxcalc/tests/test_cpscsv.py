@@ -128,8 +128,6 @@ def test_run_taxcalc_model(tests_path):
         'growdiff_baseline': {
         },
         'growdiff_response': {
-        },
-        'growmodel': {
         }
     }
     res = run_nth_year_taxcalc_model(year_n=2, start_year=2018,

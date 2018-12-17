@@ -425,8 +425,7 @@ ASSUMP_CONTENTS = """
 {
   "consumption": { "_MPC_e18400": {"2018": [0.05]} },
   "growdiff_baseline": {},
-  "growdiff_response": {},
-  "growmodel": {}
+  "growdiff_response": {}
 }
 """
 
@@ -661,9 +660,6 @@ def test_json_assump_url():
             "_ABENHOUSING": {"2017": [0.0]},
             "_ABENTANF": {"2017": [0.0]},
             "_ABENVET": {"2017": [0.0]}
-        },
-        "growmodel": {
-            "_active": {"2017": [false]}
         }
     }
     """
@@ -684,8 +680,7 @@ def fixture_bad1assumpfile():
         'x': {"2014": [0.25]}
       },
       "growdiff_baseline": {},
-      "growdiff_response": {},
-      "growmodel": {}
+      "growdiff_response": {}
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -703,8 +698,7 @@ def fixture_bad2assumpfile():
     {
       "consumptionx": {}, // example of file not containing "consumption" key
       "growdiff_baseline": {},
-      "growdiff_response": {},
-      "growmodel": {}
+      "growdiff_response": {}
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -725,8 +719,7 @@ def fixture_bad3assumpfile():
       "growdiff_response": {},
       "policy": { // example of misplaced policy key
         "_SS_Earnings_c": {"2018": [9e99]}
-      },
-    "growmodel": {}
+      }
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -923,8 +916,7 @@ def test_noreform_documentation():
     {
     "consumption": {},
     "growdiff_baseline": {},
-    "growdiff_response": {},
-    "growmodel": {}
+    "growdiff_response": {}
     }
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
@@ -967,8 +959,7 @@ def test_reform_documentation():
     // increase baseline inflation rate by one percentage point in 2014+
     // (has no effect on known policy parameter values)
     "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
-    "growdiff_response": {},
-    "growmodel": {}
+    "growdiff_response": {}
     }
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
