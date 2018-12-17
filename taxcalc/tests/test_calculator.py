@@ -51,6 +51,7 @@ def test_make_calculator(cps_subsample):
     consump.update_consumption({sim_year: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == start_year
     calc = Calculator(policy=pol, records=rec, consumption=consump)
+    assert calc.data_year == Records.CPSCSV_YEAR
     assert calc.current_year == Records.CPSCSV_YEAR
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
