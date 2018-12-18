@@ -236,7 +236,7 @@ class Parameters():
                         pval_is_int = type(pval) == int
                         pval_is_float = type(pval) == float
                         if bool_param_type:
-                            if not pval_is_bool:
+                            if not pval_is_bool:  # pragma: no cover
                                 msg = '{} {} value {} is not boolean'
                                 self.parameter_errors += (
                                     'ERROR: ' +
