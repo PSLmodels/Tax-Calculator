@@ -1,16 +1,19 @@
 """
-Script to calculate future policy parameter values under TCJA,
-which should be used when the following happens:
-(1) the inflation factor values change in growfactors.csv, and/or
-(2) the last known historical values of policy parameters are updated.
-USAGE: $ python policy_parameter_projection.py
+Policy parameter projection script, which calculates future policy parameter
+values under TCJA and which should be used when the following happens:
+(1) the inflation factor values change in growfactors.csv, or
+(2) the last known historical values of policy parameters are updated,
+    in which case the byear parameter (see below) should be incremented.
+USAGE:  $ python ppp.py
+OUTPUT: ppp.old -- contains old parameter values in policy_current_law.json
+        ppp.new -- contains new parameter values that should now be used
 """
 from taxcalc import Policy
 
-# specify year constants (only byear can vary)
+# specify year constants (only byear should vary)
 syear = Policy.JSON_START_YEAR
 pyear = 2017  # prior year before TCJA first implemented
-byear = 2018  # base year of last known actual parameter values
+byear = 2018  # base year: year for last known historical parameter values
 fyear = 2026  # final year in which parameter values revert to pre-TCJA values
 
 # ensure proper relationship between year constants
@@ -33,6 +36,16 @@ for pname in sorted(pdata.keys()):
             reverting_params.append(pname)
 print('number_of_reverting_parameters= {}'.format(len(reverting_params)))
 
+# write ppp.old containing existing values for reverting policy parameters
+old = open('ppp.old', 'w')
+for pname in reverting_params:
+    old.write('*** {} ***\n'.format(pname))
+    # write parameter values for each year in [pyear,fyear] range
+    for year in range(pyear, fyear + 1):
+        value = pdata[pname]['value'][year - syear]
+        old.write('{}: {}\n'.format(year, value))
+old.close()
+
 # get TCJA parameter inflation rates for each year
 irate = clp.inflation_rates()
 
@@ -51,33 +64,35 @@ for year in range(byear, fyear):
     factor *= 1 + irate[year - syear]
 
 # write or calculate policy parameter values for pyear through fyear
+new = open('ppp.new', 'w')
 for pname in reverting_params:
-    print('*** {} ***'.format(pname))
+    new.write('*** {} ***\n'.format(pname))
     # write parameter values for prior year
     value = pdata[pname]['value'][pyear - syear]
-    print('{}: {}'.format(pyear, value))
+    new.write('{}: {}\n'.format(pyear, value))
     # write parameter values for year after prior year up through base year
     for year in range(pyear + 1, byear + 1):
         value = pdata[pname]['value'][year - syear]
-        print('{}: {}'.format(year, value))
+        new.write('{}: {}\n'.format(year, value))
     # compute parameter values for intermediate years
     bvalue = pdata[pname]['value'][byear - syear]
     for year in range(byear + 1, fyear):
         if isinstance(bvalue, list):
             value = list()
             for idx in range(0, len(bvalue)):
-                val = min(9e99, round(bvalue[idx] * ifactor[year]))
+                val = min(9e99, round(bvalue[idx] * ifactor[year], 2))
                 value.append(val)
         else:
-            value = min(9e99, round(bvalue * ifactor[year]))
-        print('{}: {}'.format(year, value))
+            value = min(9e99, round(bvalue * ifactor[year], 2))
+        new.write('{}: {}\n'.format(year, value))
     # compute final year parameter value
     pvalue = pdata[pname]['value'][pyear - syear]
     if isinstance(pvalue, list):
         value = list()
         for idx in range(0, len(pvalue)):
-            val = min(9e99, round(pvalue[idx] * final_ifactor))
+            val = min(9e99, round(pvalue[idx] * final_ifactor, 0))
             value.append(val)
     else:
-        value = min(9e99, round(pvalue * final_ifactor))
-    print('{}: {}'.format(fyear, value))
+        value = min(9e99, round(pvalue * final_ifactor, 0))
+    new.write('{}: {}\n'.format(fyear, value))
+new.close()
