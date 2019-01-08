@@ -4,6 +4,23 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-01-?? Release 0.25.0
+-------------------------
+(last merged pull request is
+[#xxxx](https://github.com/PSLmodels/Tax-Calculator/pull/xxxx))
+
+**API Changes**
+- Remove Behavior class from Tax-Calculator
+  [[#2182](https://github.com/PSLmodels/Tax-Calculator/pull/2182)
+  by Martin Holmer]
+
+**New Features**
+- None
+
+**Bug Fixes**
+- None
+
+
 2018-12-14 Release 0.24.0
 -------------------------
 (last merged pull request is

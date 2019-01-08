@@ -2,6 +2,12 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 0.25.0 on 2019-01-??
+---------------------------------------
+
+- Remove Behavior class from Tax-Calculator and rely instead on the Behavioral-Responses behresp package.
+
+
 Changes in release 0.24.0 on 2018-12-14
 ---------------------------------------
 

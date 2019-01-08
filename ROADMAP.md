@@ -14,9 +14,10 @@ results.  At least three other modules are being planned:
 1. [Partial-equilibrium behavioral-responses](https://github.com/PSLmodels/Behavioral-Responses)
 capabilities have been completed,
 
-2. Corporate-income-tax capabilities are being developed, and
+2. Business-income-tax capabilities are being developed, and
 
-3. Simple-growth-model capabilities are being planned.
+3. Macro-model capabilities are being planned that will allow
+macroeconomic growth feedback to Tax-Calculator.
 
 Once Tax-Calculator can support these other modules in the USA tax
 collection of the Policy Simulation Library, it is anticipated that
