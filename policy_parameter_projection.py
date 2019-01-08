@@ -5,7 +5,7 @@ which should be used when the following happens:
 (2) the last known historical values of policy parameters are updated.
 USAGE: $ python policy_parameter_projection.py
 """
-from taxcalc import *
+from taxcalc import Policy
 
 # specify year constants (only byear can vary)
 syear = Policy.JSON_START_YEAR
