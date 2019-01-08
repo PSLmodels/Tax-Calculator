@@ -56,7 +56,6 @@ for pname in reverting_params:
     # write parameter values for prior year
     value = pdata[pname]['value'][pyear - syear]
     print('{}: {}'.format(pyear, value))
-
     # write parameter values for year after prior year up through base year
     for year in range(pyear + 1, byear + 1):
         value = pdata[pname]['value'][year - syear]
