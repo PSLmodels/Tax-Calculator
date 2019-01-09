@@ -3,117 +3,131 @@ Tax-Calculator Contributor Guide
 
 The purpose of this guide is to get you to the point where you can
 make improvements to the Tax-Calculator and share them with the rest
-of the team.
+of the development team.
 
 We keep track of Tax-Calculator source code using the [Git version
 control system](https://git-scm.com/) via
 [GitHub](https://help.github.com/articles/github-glossary/#git).  We
 don't expect you to be an expert Git user. Where possible, we link to
 Git and GitHub documentation to help with some of the unfamiliar
-terminology, including this [glossary of
+terminology (often from this [glossary of GitHub
 terms](https://help.github.com/articles/github-glossary/). Following
 the next steps will get you up and running and contributing to
 Tax-Calculator even if you've never used anything like Git and GitHub.
 
-If you have already completed the **Setup Python** and **Setup Git**
-sections, please skip to [Workflow](#workflow).
+If you have already completed the [Setup Python](#setup-python) and
+[Setup Git](#setup-Git) sections, please skip to [Workflow](#workflow).
 
 Setup Python
 ------------
 
 Tax-Calculator is written in the Python programming language.
 Download and install the free Anaconda distribution of Python 3.6 or
-Python 3.7 from `Anaconda`_.  You must do this even if you already
-have Python installed on your computer because the Anaconda
-distribution contains all the additional Python packages that we use
-to conduct tax calculations (many of which are not included in other
-Python installations).  You can install the Anaconda distribution
-without having administrative privileges on your computer and the
-Anaconda distribution will not interfere with any Python installation
-that came as part of your computer's operating system.
+Python 3.7 from [Anaconda](https://www.anaconda.com/download/).  You
+must do this even if you already have Python installed on your
+computer because the Anaconda distribution contains all the additional
+Python packages that we use to conduct tax calculations (many of which
+are not included in other Python installations).  You can install the
+Anaconda distribution without having administrative privileges on your
+computer and the Anaconda distribution will not interfere with any
+Python installation that came as part of your computer's operating
+system.
 
 Setup Git
 ---------
 
-1. Create a `GitHub`_ user account.
+1. Create a free GitHub user account from the [GitHub home
+page](https://github.com/).
 
-2. Install Git on your local machine by following steps 1-4 on `Git
-   setup`_.
+2. Install Git on your local computer by following steps 1-4
+[here](https://help.github.com/articles/set-up-git/).
 
-3. Tell Git to remember your GitHub password by following steps 1-4 on
-   `password setup`_.
+3. Tell Git to remember your GitHub password by following steps 1-4
+[here](https://help.github.com/articles/caching-your-github-password-in-git/).
 
-4. Sign in to GitHub and create your own `remote`_ `repository`_
-   (repo) of Tax-Calculator by clicking `Fork`_ in the upper
-   right corner of the `Tax-Calculator's GitHub page`_. Select your
+4. Sign in to GitHub and create your own
+   [remote](https://help.github.com/articles/github-glossary/#remote)
+   [repository](https://help.github.com/articles/github-glossary/#repository)
+   (or "repo" for short) of Tax-Calculator by clicking on
+   [Fork](https://help.github.com/articles/github-glossary/#fork) in
+   the upper right corner of the [Tax-Calculator GitHub
+   page](https://github.com/PSLmodels/Tax-Calculator). Select your
    username when asked "Where should we fork this repository?"
 
 5. From your command line, navigate to the directory on your computer
    where you would like your local repo to live.
 
 6. Create a local repo by entering at the command line the text after
-   the $. [1]_ This step creates a directory called Tax-Calculator in
-   the directory that you specified in the prior step::
-
-      $ git clone https://github.com/[github-username]/Tax-Calculator.git
+   the `$` character on Mac and Linux (or the `>` character on Windows).
+   This step creates a directory called Tax-Calculator in
+   the directory that you specified in the prior step:
+   ```
+   $ git clone https://github.com/[github-username]/Tax-Calculator.git
+   ```
 
 7. From your command line or terminal, navigate to your local
    Tax-Calculator directory.
 
-8. Make it easier to `push`_ your local work to others and `pull`_
-   others' work to your local machine by entering at the command line::
-
-      $ cd Tax-Calculator
-      Tax-Calculator$ git remote add upstream https://github.com/PSLmodels/Tax-Calculator.git
+8. Make it easier to
+   [push](https://help.github.com/articles/github-glossary/#push) your
+   local work to others and [pull]() others' work to your local computer
+   by entering at the command line:
+   ```
+   $ cd Tax-Calculator
+   $ git remote add upstream https://github.com/PSLmodels/Tax-Calculator.git
+   ```
 
 9. Create a conda environment with all of the necessary packages to
-   execute the source code::
+   execute Tax-Calculator source code in the Tax-Calculator directory:
+   ```
+   $ conda env create
+   ```
 
-      Tax-Calculator$ conda env create
+10. The prior command will create a conda environment called `taxcalc-dev`.
+    Activate this environment as follows if working on Mac or Linux:
 
-10. The prior command will create a conda environment called "taxcalc-dev".
-    Activate this environment as follows::
-
-      Tax-Calculator$ source activate taxcalc-dev
+    $ source activate taxcalc-dev
 
     If you are working on Windows, use the following from the command line::
 
-      Tax-Calculator$ activate taxcalc-dev
+    $ activate taxcalc-dev
 
-    Note: never conda install the taxcalc package in the taxcalc-dev
-    environment because the taxcalc source code and the installed package
-    will conflict.
+    Important Note: never conda install the taxcalc package in the
+    taxcalc-dev environment because the taxcalc source code and the
+    installed package will conflict.
 
 11. To check that everything is working properly, run the following at
-    the command line from the Tax-Calculator directory::
-
-      Tax-Calculator$ cd taxcalc
-      Tax-Calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
-
-    If you do have a copy of the puf.csv file used by Tax-Calculator,
+    the command line in the Tax-Calculator directory:
+    ```
+    $ cd taxcalc
+    $ py.test -m "not requires_pufcsv and not pre_release" -n4
+    ```
+    If you do have a copy of the `puf.csv` file used by Tax-Calculator,
     then on the second line above omit the 'not requires_pufcsv and'
-    expression so as to execute 'py.test -m "not pre_release" -n4'.
+    expression so as to execute `py.test -m "not pre_release" -n4`.
 
     If all the tests pass, you're good to go. If they don't pass, enter
     the following updates at the command line and then try running the
-    tests again::
-
-      Tax-Calculator$ conda update conda
-      Tax-Calculator$ conda env update
-
+    tests again:
+    ```
+    $ conda update conda
+    $ conda env update
+    ```
+    
     For more detail on Tax-Calculator testing procedures, read the
-    `testing documentation`_.  If the tests still don't pass, please
-    contact us.
+    [testing documentation](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md).
+    If the tests still don't pass, please contact us.
 
 If you've made it this far, you've successfully made a remote copy (a
 fork) of central Tax-Calculator repo. That remote repo is hosted on
-GitHub.com. You've also created a local repo (a `clone`_) that lives
-on your machine and only you can see; you will make your changes to
-the Tax-Calculator by editing the files in the Tax-Calculator
-directory on your machine and then submitting those changes to your
-local repo. As a new contributor, you will push your changes from your
-local repo to your remote repo when you're ready to share that work
-with the team.
+GitHub.com. You've also created a local repo --- a
+[clone](https://help.github.com/articles/github-glossary/#clone) ---
+that lives on your computer and only you can see; you will make your
+changes to the Tax-Calculator by editing the files in the
+Tax-Calculator directory on your computer and then submitting those
+changes to your local repo. As a new contributor, you will push your
+changes from your local repo to your remote repo when you're ready to
+share that work with the team.
 
 Don't be alarmed if the above paragraph is confusing. The following
 section introduces some standard Git practices and guides you through
@@ -239,14 +253,8 @@ interpreter or imported into a Python notebook for interactive execution.
        preceding characters should already be there.
 
 
-.. _`Git`:
-   https://help.github.com/articles/github-glossary/#git
-
 .. _`quant econ`:
    http://quant-econ.net/py/learning_python.html
-
-.. _`GitHub`:
-   https://github.com/
 
 .. _`Git setup`:
    https://help.github.com/articles/set-up-git/
