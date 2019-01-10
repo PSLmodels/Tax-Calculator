@@ -5,9 +5,9 @@ This description of Tax-Calculator testing procedures is written for a
 person who wants to contribute changes to Tax-Calculator source code.
 
 It assumes that you have read the [Contributor
-Guide](https://github.com/martinholmer/Tax-Calculator/blob/32587b3a801abac2eabe4d587480b7d064745dc8/CONTRIBUTING.md#tax-calculator-contributor-guide)
+Guide](https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide)
 and the [conventions about naming and placing new policy
-parameters](https://github.com/martinholmer/Tax-Calculator/blob/master/NAMING.md#policy-parameter-naming-and-placing-conventions),
+parameters](https://github.com/PSLmodels/Tax-Calculator/blob/master/NAMING.md#policy-parameter-naming-and-placing-conventions),
 have forked the [central GitHub Tax-Calculator
 repository](https://github.com/PSLmodels/Tax-Calculator)
 to your GitHub account, and have cloned that forked copy to your local

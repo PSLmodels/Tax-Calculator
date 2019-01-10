@@ -60,7 +60,7 @@ providing details on what you think should be added to Tax-Calculator.
 
 If you want to **propose code changes**, follow the directions in the
 [Contributor
-Guide](https://github.com/martinholmer/Tax-Calculator/blob/32587b3a801abac2eabe4d587480b7d064745dc8/CONTRIBUTING.md#tax-calculator-contributor-guide)
+Guide](https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide)
 on how to fork and clone the Tax-Calculator git repository.  Before
 developing any code changes be sure to read completely the Contributor
 Guide and then read about the [pull-request
