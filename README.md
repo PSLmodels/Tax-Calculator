@@ -26,13 +26,14 @@ What is Tax-Calculator?
 -----------------------
 
 Tax-Calculator simulates the USA federal individual income and payroll
-tax system.  In conjunction with micro data that represent the USA
-population, Tax-Calculator can be used to estimate the aggregate
-revenue and distributional effects of tax reforms under static
-analysis assumptions.  In conjunction with other modules,
-Tax-Calculator can be used to estimate reform effects under a range of
-non-static assumptions.  Tax-Calculator is written in Python, an
-interpreted language that can execute on Windows, Mac, or Linux.
+tax system.  In conjunction with [micro
+data](https://github.com/PSLmodels/taxdata#about-taxdata-repository)
+that represent the USA population, Tax-Calculator can be used to
+estimate the aggregate revenue and distributional effects of tax
+reforms under static analysis assumptions.  In conjunction with other
+modules, Tax-Calculator can be used to estimate reform effects under a
+range of non-static assumptions.  Tax-Calculator is written in Python,
+an interpreted language that can execute on Windows, Mac, or Linux.
 
 
 Disclaimer
