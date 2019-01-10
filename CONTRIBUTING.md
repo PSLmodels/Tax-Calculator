@@ -18,6 +18,7 @@ Tax-Calculator even if you've never used anything like Git and GitHub.
 If you have already completed the [Setup Python](#setup-python) and
 [Setup Git](#setup-Git) sections, please skip to [Workflow](#workflow).
 
+
 Setup Python
 ------------
 
@@ -32,6 +33,12 @@ Anaconda distribution without having administrative privileges on your
 computer and the Anaconda distribution will not interfere with any
 Python installation that came as part of your computer's operating
 system.
+
+If you are new to or have limited experience with Python, you should
+read some introductory tutorials available online.  One such tutorial
+is [Quantitative Economics with
+Python](https://lectures.quantecon.org/py/).
+
 
 Setup Git
 ---------
@@ -70,8 +77,10 @@ page](https://github.com/).
 
 8. Make it easier to
    [push](https://help.github.com/articles/github-glossary/#push) your
-   local work to others and [pull]() others' work to your local computer
-   by entering at the command line:
+   local work to others and
+   [pull](https://help.github.com/articles/github-glossary/#pull)
+   others' work to your local computer by entering at the command
+   line:
    ```
    $ cd Tax-Calculator
    $ git remote add upstream https://github.com/PSLmodels/Tax-Calculator.git
@@ -88,9 +97,9 @@ page](https://github.com/).
     ```
     $ source activate taxcalc-dev
     ```
-    If you are working on Windows, use the following from the command line::
+    If you are working on Windows, use the following from the command line:
     ```
-    $ activate taxcalc-dev
+    > activate taxcalc-dev
     ```
     Important Note: never conda install the taxcalc package in the
     taxcalc-dev environment because the taxcalc source code and the
@@ -133,6 +142,7 @@ Don't be alarmed if the above paragraph is confusing. The following
 section introduces some standard Git practices and guides you through
 the contribution process.
 
+
 Workflow
 --------
 
@@ -142,28 +152,55 @@ situations, in which case other contributors are here to help.
 
 1. Before you edit the Tax-Calculator source code on your computer,
    make sure you have the latest version of the central Tax-Calculator
-   repository by executing the following **four** Git commands (or the
-   script described at the end of this step):
+   repository by executing the **four** Git commands listed in
+   substeps `a-d` (or alternatively by executing just substeps `a` and
+   `e`):
 
    a. Tell Git to switch to the master branch in your local repo.
       Navigate to your local Tax-Calculator directory and enter the
-      following text at the command line::
+      following text at the command line:
+      ```
+      $ git checkout master
+      ```
 
-        Tax-Calculator$ git checkout master
-
-   b. Download all of the content from the central Tax-Calculator repo::
-
-        Tax-Calculator$ git fetch upstream
+   b. Download all of the content from the central Tax-Calculator repo
+      using the Git
+      [fetch](https://help.github.com/articles/github-glossary/#fetch)
+      command:
+      ```
+      $ git fetch upstream
+      ```
 
    c. Update your local master branch to contain the latest content of
-      the central master branch using `merge`_. This step ensures that
-      you are working with the latest version of the Tax-Calculator::
+      the central master branch using the Git
+      [merge](https://help.github.com/articles/github-glossary/#merge)
+      command. This step ensures that you are working with the latest
+      version of the Tax-Calculator on your computer:
+      ```
+      $ git merge upstream/master
+      ```
 
-        Tax-Calculator$ git merge upstream/master
+   d. Push the updated master branch in your local repo to your GitHub
+      repo using the Git
+      [push](https://help.github.com/articles/github-glossary/#push)
+      command:
+      ```
+      $ git push origin master
+      ```
 
-   d. Push the updated master branch in your local repo to your GitHub repo::
-
-        Tax-Calculator$ git push origin master
+   e. As an alternative to executing substeps `a-d`, you can
+      simply execute substeps `a` and `e`.  If you are working on Mac
+      or Linux, execute these commands in the Tax-Calculator directory:
+      ```
+      $ git checkout master
+      $ ./gitsync
+      ```
+      If you are working on Windows, execute these commands in the
+      Tax-Calculator directory:
+      ```
+      > git checkout master
+      > gitsync
+      ```
 
 2. Create a new
    [branch](https://help.github.com/articles/github-glossary/#branch)
@@ -178,57 +215,80 @@ situations, in which case other contributors are here to help.
    ```
 
 3. If your changes involve creating a new tax policy parameter, be
-   sure to read about Tax-Calculator [parameter naming
+   sure to read about the Tax-Calculator [parameter naming
    conventions](https://github.com/PSLmodels/Tax-Calculator/blob/master/NAMING.md).
 
 4. As you make changes, frequently check that your changes do not
    introduce bugs or degrade the accuracy of the Tax-Calculator. To do
-   this, run the following command from the command line from inside
+   this, run the following commands from the command line from inside
    the Tax-Calculator/taxcalc directory::
-
-     Tax-Calculator/taxcalc$ py.test -m "not requires_pufcsv and not pre_release" -n4
+   ```
+   $ pycodestyle .
+   $ py.test -m "not requires_pufcsv and not pre_release" -n4
+   ```
+   Consult the [testing
+   documentation](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md)
+   for more details.
 
    If the tests do not pass, try to fix the issue by using the
    information provided by the error message. If this isn't possible
    or doesn't work, we are here to help.
 
-5. Now you're ready to `commit`_ your changes to your local repo using
-   the code below. The first line of code tells Git to track a
-   file. Use "git status" to find all the files you've edited, and
-   "git add" each of the files that you'd like Git to track. As a
-   rule, do not add large files. If you'd like to add a file that is
+5. Now you're ready to
+   [commit](https://help.github.com/articles/github-glossary/#commit)
+   your changes to your local repo using the commands described in
+   this step. You need to use the Git `add` command only if your
+   branch creates one or more new files that you want to include in
+   the repository.  Use the Git `status` command to see which files
+   you have edited and which files are new:
+   ```
+   $ git status
+   ```
+   If adding a new file, use the Git `add` command:
+   ```
+   $ git add [new-filename]
+   ```
+   As a rule, do not add large files. If you'd like to add a file that is
    larger than 25 MB, please contact the other contributors and ask how to
-   proceed. The second line of code commits your changes to your local
-   repo and allows you to create a commit message; this should be a
-   short description of your changes.
+   proceed.
 
-   *Tip*: Committing often is a good idea as Git keeps a record of
+   The actual commit of code changes (and possibly new files) to your
+   local repository is accomplished with this sort of command:
+   ```
+   $ git commit -a -m "[description-of-your-commit]"
+   ```
+   where you should replace the bracketed text inside the quotation
+   marks with a short (no more than about 70 characters) description
+   of your changes.
+
+   **Tip**: Committing often is a good idea as Git keeps a record of
    your changes. This means that you can always revert to a previous
-   version of your work if you need to.  Do this to commit::
-
-     Tax-Calculator$ git add [filename]
-     Tax-Calculator$ git commit -m "[description-of-your-commit]"
+   version of your work if you need to.
 
 6. Periodically, make sure that the branch you created in step 2
    is in sync with the changes other contributors are making to
    the central master branch by fetching upstream and merging
-   upstream/master into your branch::
-
-      Tax-Calculator$ git fetch upstream
-      Tax-Calculator$ git merge upstream/master
-
+   upstream/master into your branch:
+   ```
+   $ git fetch upstream
+   $ git merge upstream/master
+   ```
    You may need to resolve conflicts that arise when another
    contributor changed the same section of code that you are
    changing. Feel free to ask other contributors for guidance
    if this happens to you. If you do need to fix a merge
-   conflict, re-run the test suite afterwards (step 4.)
+   conflict, run the tests (step 4) again fixing.
 
 7. When you are ready for other team members to review your code, make
-   your final commit and push your local branch to your remote repo::
+   your final commit and push your local branch to your remote repo:
+   ```
+   $ git push origin [new-branch-name]
+   ```
 
-     Tax-Calculator$ git push origin [new-branch-name]
-
-8. From the GitHub.com user interface, `open a pull request`_.
+8. From the [central GitHub Tax-Calculator
+page](https://github.com/PSLmodels/Tax-Calculator), [open a pull
+request](https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request)
+containing the changes in your local branch.
 
 9. When you open a GitHub pull request, a code coverage report will be
    automatically generated.  If your branch adds new code that is not
@@ -238,88 +298,21 @@ situations, in which case other contributors are here to help.
    your newly added code.  Add tests so that the number of untested
    statements is the same as it is on the master branch.
 
-You should now read the more `detailed pull-request workflow`_ document.
+**IMPORTANT NOTE:** you can always make more changes on your local
+branch, commit them (step 6), and push them to your remote repo (step
+7), and these changes will be automatically incorporated into your
+pull request.
 
-   
+You should now read the more [detailed pull-request workflow
+document](https://github.com/PSLmodels/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow).
+
+
 Simple Usage
 ------------
 
-For examples of Tax-Calculator usage, see the `Cookbook of Tested
-Recipes for Python Programming with Tax-Calculator`_, which contains
-Python scripts that can be executed by the Python command-line
-interpreter or imported into a Python notebook for interactive execution.
-
-
-.. [1] The dollar sign is the end of the command prompt on a Mac.  If
-       you're on Windows, this is usually the right angle bracket (>).
-       No matter the symbol, you don't need to type it (or anything to
-       its left, which shows the current working directory) at the
-       command line before you enter a command; the prompt symbol and
-       preceding characters should already be there.
-
-
-.. _`quant econ`:
-   http://quant-econ.net/py/learning_python.html
-
-.. _`Git setup`:
-   https://help.github.com/articles/set-up-git/
-
-.. _`Fork`:
-   https://help.github.com/articles/github-glossary/#fork
-
-.. _`password setup`:
-   https://help.github.com/articles/caching-your-github-password-in-git/
-
-.. _`Tax-Calculator's GitHub page`:
-   https://github.com/PSLmodels/Tax-Calculator
-
-.. _`repository`:
-   https://help.github.com/articles/github-glossary/#repository
-
-.. _`push`:
-   https://help.github.com/articles/github-glossary/#push
-
-.. _`pull`:
-   https://help.github.com/articles/github-glossary/#pull
-
-.. _`Github Flow`:
-   https://guides.github.com/introduction/flow/
-
-.. _`Anaconda`:
-   https://www.anaconda.com/download/
-
-.. _`remote`:
-   https://help.github.com/articles/github-glossary/#remote
-
-.. _`testing documentation`:
-   https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md
-
-.. _`clone`:
-   https://help.github.com/articles/github-glossary/#clone
-
-.. _`branch`:
-   https://help.github.com/articles/github-glossary/#branch
-
-.. _`merge`:
-   https://help.github.com/articles/github-glossary/#merge
-
-.. _`commit`:
-   https://help.github.com/articles/github-glossary/#commit
-
-.. _`fetch`:
-   https://help.github.com/articles/github-glossary/#fetch
-
-.. _`upstream`:
-   https://help.github.com/articles/github-glossary/#upstream
-
-.. _`pull request`:
-   https://help.github.com/articles/github-glossary/#pull-request
-
-.. _`open a pull request`:
-   https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request
-
-.. _`Cookbook of Tested Recipes for Python Programming with Tax-Calculator`:
-   https://github.com/PSLmodels/Tax-Calculator/blob/master/docs/cookbook.html
-
-.. _`detailed pull-request workflow`:
-   https://github.com/PSLmodels/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow
+For examples of Tax-Calculator usage, see the [Cookbook of Tested
+Recipes for Python Programming with
+Tax-Calculator](https://github.com/PSLmodels/Tax-Calculator/blob/master/docs/cookbook.html),
+which contains Python scripts that can be executed by the Python
+command-line interpreter or imported into a Python notebook for
+interactive execution.
