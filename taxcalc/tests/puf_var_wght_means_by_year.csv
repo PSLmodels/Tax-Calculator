@@ -11,6 +11,7 @@ c09600,Federal AMT liability,     237,     253,     268,     276,     287,     2
 c11070,Extra child tax credit (refunded),     164,     158,     153,     149,     143,     140,     137,     135,     133,     132,     129,     128,     125,     123,     121
 c21040,Itemized deduction that is phased out,     227,     272,     298,     294,     308,     314,     318,     325,     332,     341,     352,     364,     376,     389,     402
 cmbtp,Estimate of income on (AMT) Form 6251 but not in AGI,     414,     432,     452,     463,     475,     493,     510,     529,     547,     564,     584,     603,     622,     646,     670
+data_source,1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic),       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1
 e00200,"Wages, salaries, and tips for filing unit net of pension contributions",   39911,   41868,   43390,   44519,   45742,   47002,   48110,   49150,   50295,   51606,   52974,   54424,   55876,   57402,   58981
 e00300,Taxable interest income,     601,     558,     551,     547,     559,     574,     607,     653,     708,     756,     797,     832,     861,     892,     923
 e00400,Tax-exempt interest income,     382,     362,     360,     359,     370,     383,     408,     442,     485,     521,     553,     581,     605,     630,     656

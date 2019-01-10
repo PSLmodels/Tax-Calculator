@@ -46,13 +46,13 @@
     },
     "age_head": {
       "type": "int",
-      "desc": "Age in years of taxpayer (i.e. primary filer)",
+      "desc": "Age in years of taxpayer (i.e. primary adult)",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
     "age_spouse": {
       "type": "int",
-      "desc": "Age in years of spouse (i.e. secondary filer if present)",
+      "desc": "Age in years of spouse (i.e. secondary adult if present)",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
@@ -490,6 +490,12 @@
       "desc": "CPS household sequence number (not used in tax-calculation logic)",
       "form": {"2013-2016": "sample construction info"},
       "availability": "taxdata_cps"
+    },
+    "data_source": {
+      "type": "int",
+      "desc": "1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)",
+      "form": {"2013-2016": "sample construction info"},
+      "availability": "taxdata_puf"
     },
     "k1bx14p": {
       "type": "float",

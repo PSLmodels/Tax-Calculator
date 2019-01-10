@@ -107,7 +107,7 @@ def test_cps_availability(tests_path, cps_path):
         if 'taxdata_cps' in vdict.get('availability', ''):
             recvars.add(vname)
     # check that cpsvars and recvars sets are the same
-    assert (cpsvars - recvars) == set(['filer'])
+    assert (cpsvars - recvars) == set()
     assert (recvars - cpsvars) == set()
 
 
