@@ -85,13 +85,13 @@ page](https://github.com/).
 
 10. The prior command will create a conda environment called `taxcalc-dev`.
     Activate this environment as follows if working on Mac or Linux:
-
+    ```
     $ source activate taxcalc-dev
-
+    ```
     If you are working on Windows, use the following from the command line::
-
+    ```
     $ activate taxcalc-dev
-
+    ```
     Important Note: never conda install the taxcalc package in the
     taxcalc-dev environment because the taxcalc source code and the
     installed package will conflict.
@@ -103,7 +103,7 @@ page](https://github.com/).
     $ py.test -m "not requires_pufcsv and not pre_release" -n4
     ```
     If you do have a copy of the `puf.csv` file used by Tax-Calculator,
-    then on the second line above omit the 'not requires_pufcsv and'
+    then on the second line above omit the `not requires_pufcsv and`
     expression so as to execute `py.test -m "not pre_release" -n4`.
 
     If all the tests pass, you're good to go. If they don't pass, enter
@@ -140,9 +140,10 @@ The following text describes a typical workflow for changing
 Tax-Calculator.  Different workflows may be necessary in some
 situations, in which case other contributors are here to help.
 
-1. Before you edit the Tax-Calculator source code on your machine,
+1. Before you edit the Tax-Calculator source code on your computer,
    make sure you have the latest version of the central Tax-Calculator
-   repository by executing the following **four** Git commands:
+   repository by executing the following **four** Git commands (or the
+   script described at the end of this step):
 
    a. Tell Git to switch to the master branch in your local repo.
       Navigate to your local Tax-Calculator directory and enter the
@@ -164,17 +165,21 @@ situations, in which case other contributors are here to help.
 
         Tax-Calculator$ git push origin master
 
-2. Create a new `branch`_ on your local machine. Think of your
-   branches as a way to organize your projects. If you want to work on
-   this documentation, for example, create a separate branch for that
-   work. If you want to change the maximum child care tax credit in
-   the Tax-Calculator, create a different branch for that project::
-
-     Tax-Calculator$ git checkout -b [new-branch-name]
+2. Create a new
+   [branch](https://help.github.com/articles/github-glossary/#branch)
+   on your local computer in the Tax-Calculator directory. Think of
+   your branches as a way to organize your projects. If you want to
+   work on this documentation, for example, create a separate branch
+   for that work. If you want to change the maximum child care tax
+   credit in the Tax-Calculator, create a different branch for that
+   project:
+   ```
+   $ git checkout -b [new-branch-name]
+   ```
 
 3. If your changes involve creating a new tax policy parameter, be
-   sure to read about Tax-Calculator :doc:`parameter naming
-   conventions </parameter_naming>`.
+   sure to read about Tax-Calculator [parameter naming
+   conventions](https://github.com/PSLmodels/Tax-Calculator/blob/master/NAMING.md).
 
 4. As you make changes, frequently check that your changes do not
    introduce bugs or degrade the accuracy of the Tax-Calculator. To do
