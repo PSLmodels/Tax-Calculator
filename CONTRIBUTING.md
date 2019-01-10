@@ -216,7 +216,7 @@ situations, in which case other contributors are here to help.
 
 3. If your changes involve creating a new tax policy parameter, be
    sure to read about the Tax-Calculator [parameter naming
-   conventions](https://github.com/PSLmodels/Tax-Calculator/blob/master/NAMING.md).
+   conventions](https://github.com/martinholmer/Tax-Calculator/blob/master/NAMING.md#policy-parameter-naming-and-placing-conventions).
 
 4. As you make changes, frequently check that your changes do not
    introduce bugs or degrade the accuracy of the Tax-Calculator. To do
