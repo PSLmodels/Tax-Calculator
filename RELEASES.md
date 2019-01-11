@@ -15,7 +15,17 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
-- None
+- Add `ppp.py` developer-only script and create FAQ issue #2183 to describe its use
+  [[#2181](https://github.com/PSLmodels/Tax-Calculator/pull/2181)
+  by Martin Holmer]
+- Move read-the-docs documentation into several Tax-Calculator/*.md files
+  [[#2184](https://github.com/PSLmodels/Tax-Calculator/pull/2184)
+  by Martin Holmer]
+- Incorporate slightly different CPS and PUF input data files
+  [[#2185](https://github.com/PSLmodels/Tax-Calculator/pull/2185)
+  by Martin Holmer with data from Anderson Frailey], which requires new `puf.csv` input file (see [taxdata pull request 296](https://github.com/PSLmodels/taxdata/pull/296) for details) with this information:
+  * Byte size: 56415704
+  * MD5 checksum: 4aa15435c319bf5e4d3427faf52384c0
 
 **Bug Fixes**
 - None
