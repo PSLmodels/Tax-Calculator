@@ -716,15 +716,13 @@ def test_json_assump_url():
         }
     }
     """
-    # TODO remove this line
-    # pylint: disable=unused-variable
     assump_url = ('https://raw.githubusercontent.com/PSLmodels/'
                   'Tax-Calculator/master/taxcalc/assumptions/'
                   'economic_assumptions_template.json')
     params_str = Calculator.read_json_param_objects(None, assump_str)
     assert params_str
-    # params_url = Calculator.read_json_param_objects(None, assump_url)  # TODO
-    # assert params_str == params_url  # TODO: activate this line & above line
+    params_url = Calculator.read_json_param_objects(None, assump_url)
+    assert params_str == params_url
 
 
 @pytest.fixture(scope='module', name='bad1assumpfile')
