@@ -1293,8 +1293,8 @@ def ce_aftertax_expanded_income(df1, df2,
     IMPORTANT NOTES: These normative welfare calculations are very simple.
     It is assumed that utility is a function of only consumption, and that
     consumption is equal to after-tax income.  This means that any assumed
-    behavioral responses that change work effort will not affect utility via
-    the correpsonding change in leisure.  And any saving response to changes
+    responses that change work effort will not affect utility via the
+    correpsonding change in leisure.  And any saving response to changes
     in after-tax income do not affect consumption.
 
     The cmin value is the consumption level below which marginal utility

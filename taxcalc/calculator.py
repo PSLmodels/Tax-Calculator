@@ -29,7 +29,6 @@ from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
-from taxcalc.behavior import Behavior
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import (json_to_dict,
@@ -72,11 +71,6 @@ class Calculator():
         consumption values specified implying consumption value is equal to
         government cost of providing the in-kind benefits
 
-    behavior: Behavior class object
-        specifies behavioral responses used by Calculator; default is None,
-        which implies no behavioral responses to policy reform;
-        when argument is an object it is copied for internal use
-
     Raises
     ------
     ValueError:
@@ -101,7 +95,7 @@ class Calculator():
     # pylint: disable=too-many-public-methods
 
     def __init__(self, policy=None, records=None, verbose=True,
-                 sync_years=True, consumption=None, behavior=None):
+                 sync_years=True, consumption=None):
         # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
             self.__policy = copy.deepcopy(policy)
@@ -121,14 +115,6 @@ class Calculator():
             raise ValueError('consumption must be None or Consumption object')
         if self.__consumption.current_year < self.__policy.current_year:
             self.__consumption.set_year(self.__policy.current_year)
-        if behavior is None:
-            self.__behavior = Behavior(start_year=policy.start_year)
-        elif isinstance(behavior, Behavior):
-            self.__behavior = copy.deepcopy(behavior)
-        else:
-            raise ValueError('behavior must be None or Behavior object')
-        if self.__behavior.current_year < self.__policy.current_year:
-            self.__behavior.set_year(self.__policy.current_year)
         current_year_is_data_year = (
             self.__records.current_year == self.__records.data_year)
         if sync_years and current_year_is_data_year:
@@ -159,7 +145,6 @@ class Calculator():
         self.__records.increment_year()
         self.__policy.set_year(next_year)
         self.__consumption.set_year(next_year)
-        self.__behavior.set_year(next_year)
 
     def advance_to_year(self, year):
         """
@@ -321,32 +306,6 @@ class Calculator():
         """
         return self.__consumption.benval_params()
 
-    def behavior_has_response(self):
-        """
-        Return True if embedded Behavior object has response;
-        otherwise return False.
-        """
-        return self.__behavior.has_response()
-
-    def behavior(self, param_name, param_value=None):
-        """
-        If param_value is None, return named parameter in
-         embedded Behavior object.
-        If param_value is not None, set named parameter in
-         embedded Behavior object to specified param_value and
-         return None (which can be ignored).
-        """
-        if param_value is None:
-            return getattr(self.__behavior, param_name)
-        setattr(self.__behavior, param_name, param_value)
-        return None
-
-    def records_include_behavioral_responses(self):
-        """
-        Mark embedded Records object as including behavioral responses
-        """
-        self.__records.behavioral_responses_are_included = True
-
     @property
     def reform_warnings(self):
         """
@@ -391,7 +350,6 @@ class Calculator():
         yearlist = list()
         varlist = list()
         for iyr in range(1, num_years + 1):
-            assert calc.behavior_has_response() is False
             calc.calc_all()
             yearlist.append(calc.current_year)
             varlist.append(calc.dataframe(DIST_VARIABLES))
@@ -1089,18 +1047,16 @@ class Calculator():
         return fig
 
     REQUIRED_REFORM_KEYS = set(['policy'])
-    REQUIRED_ASSUMP_KEYS = set(['consumption', 'behavior',
-                                'growdiff_baseline', 'growdiff_response',
-                                'growmodel'])
+    REQUIRED_ASSUMP_KEYS = set(['consumption',
+                                'growdiff_baseline', 'growdiff_response'])
 
     @staticmethod
     def read_json_param_objects(reform, assump):
         """
         Read JSON reform and assump objects and
         return a single dictionary containing 6 key:dict pairs:
-        'policy':dict, 'consumption':dict, 'behavior':dict,
-        'growdiff_baseline':dict, 'growdiff_response':dict, and
-        'growmodel':dict.
+        'policy':dict, 'consumption':dict,
+        'growdiff_baseline':dict, and 'growdiff_response':dict.
 
         Note that either of the two function arguments can be None.
         If reform is None, the dict in the 'policy':dict pair is empty.
@@ -1118,10 +1074,8 @@ class Calculator():
         {"policy": {...}}
         and the assump file/URL contents or JSON string must be like this:
         {"consumption": {...},
-         "behavior": {...},
          "growdiff_baseline": {...},
-         "growdiff_response": {...},
-         "growmodel": {...}}
+         "growdiff_response": {...}}
         The {...} should be empty like this {} if not specifying a policy
         reform or if not specifying any non-default economic assumptions
         of that type.
@@ -1142,10 +1096,8 @@ class Calculator():
         # first process second assump parameter
         if assump is None:
             cons_dict = dict()
-            behv_dict = dict()
             gdiff_base_dict = dict()
             gdiff_resp_dict = dict()
-            growmodel_dict = dict()
         elif isinstance(assump, str):
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
@@ -1154,10 +1106,8 @@ class Calculator():
             else:
                 txt = assump
             (cons_dict,
-             behv_dict,
              gdiff_base_dict,
-             gdiff_resp_dict,
-             growmodel_dict) = Calculator._read_json_econ_assump_text(txt)
+             gdiff_resp_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
             raise ValueError('assump is neither None nor string')
         # next process first reform parameter
@@ -1181,10 +1131,8 @@ class Calculator():
         param_dict = dict()
         param_dict['policy'] = rpol_dict
         param_dict['consumption'] = cons_dict
-        param_dict['behavior'] = behv_dict
         param_dict['growdiff_baseline'] = gdiff_base_dict
         param_dict['growdiff_response'] = gdiff_resp_dict
-        param_dict['growmodel'] = growmodel_dict
         # return the composite dictionary
         return param_dict
 
@@ -1408,7 +1356,7 @@ class Calculator():
         IMPORTANT NOTES: These normative welfare calculations are very
         simple.  It is assumed that utility is a function of only
         consumption, and that consumption is equal to after-tax
-        income.  This means that any assumed behavioral responses that
+        income.  This means that any assumed responses that
         change work effort will not affect utility via the
         correpsonding change in leisure.  And any saving response to
         changes in after-tax income do not affect consumption.
@@ -1522,8 +1470,8 @@ class Calculator():
         Specified text is JSON with at least 1 high-level key:object pair:
         a "policy": {...} pair.
 
-        Other keys such as "consumption", "behavior", "growdiff_baseline",
-        "growdiff_response" or "growmodel" will raise a ValueError.
+        Other keys such as "consumption", "growdiff_baseline", or
+        "growdiff_response" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
         may contain one or more pairs with parameter string primary keys
@@ -1564,10 +1512,8 @@ class Calculator():
 
         Specified text is JSON with at least 5 high-level key:value pairs:
         a "consumption": {...} pair,
-        a "behavior": {...} pair,
-        a "growdiff_baseline": {...} pair,
-        a "growdiff_response": {...} pair, and
-        a "growmodel": {...} pair.
+        a "growdiff_baseline": {...} pair, and
+        a "growdiff_response": {...} pair.
 
         Other keys such as "policy" will raise a ValueError.
 
@@ -1580,15 +1526,13 @@ class Calculator():
         Note that an example is shown in the ASSUMP_CONTENTS string in
         the tests/test_calculator.py file.
 
-        Returned dictionaries (cons_dict, behv_dict, gdiff_baseline_dict,
-        gdiff_respose_dict, growmodel_dict) have integer years as primary
+        Returned dictionaries (cons_dict, gdiff_baseline_dict,
+        gdiff_respose_dict) have integer years as primary
         keys and string parameters as secondary keys.
 
         These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
-        the Behavior.update_behavior(behv_dict) method, or
-        the GrowDiff.update_growdiff(gdiff_dict) method, or
-        the GrowModel.update_growmodel(growmodel_dict) method.
+        the GrowDiff.update_growdiff(gdiff_dict) method.
         """
         # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
@@ -1608,16 +1552,11 @@ class Calculator():
         # convert the assumption dictionaries in raw_dict
         key = 'consumption'
         cons_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        key = 'behavior'
-        behv_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_baseline'
         gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
         key = 'growdiff_response'
         gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        key = 'growmodel'
-        growmodel_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        return (cons_dict, behv_dict, gdiff_base_dict, gdiff_resp_dict,
-                growmodel_dict)
+        return (cons_dict, gdiff_base_dict, gdiff_resp_dict)
 
     @staticmethod
     def _convert_parameter_dict(param_key_dict):
@@ -1626,9 +1565,7 @@ class Calculator():
         keys are calendar years, and hence, is suitable as the argument to
         the Policy.implement_reform() method, or
         the Consumption.update_consumption() method, or
-        the Behavior.update_behavior() method, or
-        the GrowDiff.update_growdiff() method, or
-        the GrowModel.update_growmodel() method.
+        the GrowDiff.update_growdiff() method.
 
         Specified input dictionary has string parameter primary keys and
         string years as secondary keys.

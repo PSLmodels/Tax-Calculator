@@ -125,14 +125,9 @@ def test_run_taxcalc_model(tests_path):
         'consumption': {
             2016: {'_MPC_e20400': [0.01]}
         },
-        'behavior': {
-            2016: {'_BE_sub': [0.25]}
-        },
         'growdiff_baseline': {
         },
         'growdiff_response': {
-        },
-        'growmodel': {
         }
     }
     res = run_nth_year_taxcalc_model(year_n=2, start_year=2018,

@@ -36,48 +36,19 @@ follows:
   "consumption": {
      <parameter_name>: {<calyear>: <parameter-value>}
   },
-  "behavior": {
-     <parameter_name>: {<calyear>: <parameter-value>,
-     <parameter_name>: {<calyear>: <parameter-value>},
-     ...,
-     <parameter_name>: {<calyear>: <parameter-value>,
-                        ...,
-                        <calyear>: <parameter-value>}
-  },
   "growdiff_baseline": {
   },
   "growdiff_response": {
-     <parameter_name>: {<calyear>: <parameter-value>}
-  },
-  "growmodels": {
      <parameter_name>: {<calyear>: <parameter-value>}
   }
 }
 ```
 
 Notice that an assumption file must always contain these top-level keys:
-consumption, behavior, growdiff_baseline, growdiff_response and growmodel.
+consumption, growdiff_baseline, and growdiff_response.
 Any key can have an empty value like the growdiff_baseline key above.
 Empty values mean that the default assumption parameter values are
 used.
-
-Including just these four key:value pairs in the assumption file indicates
-that the GrowModel is inactive.  To activate the GrowModel, simply add a
-fifth key:value pair like this when you want to use the default parameter
-values of the GrowModel:
-```
-  ,
-  "growmodel": {
-  } 
-```
-or add fifth key:value pair like this when you want to customize the
-GrowModel parameter values:
-```
-  ,
-  "growmodel": {
-     <parameter_name>: {<calyear>: <parameter-value>}
-  } 
-```
 
 The rules about structuring a non-empty value for a top-level key are
 the same as for policy reform files, which are described

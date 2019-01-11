@@ -24,7 +24,6 @@ def test_docs_index_up_to_date(tests_path):
                     os.path.join(docs_path, 'make_index.py'),
                     os.path.join(code_path, 'policy_current_law.json'),
                     os.path.join(code_path, 'consumption.json'),
-                    os.path.join(code_path, 'behavior.json'),
                     os.path.join(code_path, 'growdiff.json'),
                     os.path.join(code_path, 'records_variables.json')]
     target_timestamp = os.path.getmtime(target)
