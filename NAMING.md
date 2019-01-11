@@ -98,13 +98,13 @@ Examples
    **_EITC_MinEligAge**: Earned Income Tax Credit minimum eligibility
    age for those with no EITC-eligible children
 
-Placing New Parameters in ``current_law_policy.json``
------------------------------------------------------
+Placing New Parameters in `policy_current_law.json`
+---------------------------------------------------
 
 All new policy parameters should be added to the
-``current_law_policy.json`` file in a location that is near
-conceptually similar parameters.  Be sure to specify the ``section_1``
-and ``section_2`` values of each new parameter so that it appears in
-an appropriate place on the TaxBrain input page.  If the new parameter
-is not supposed to appear on the TaxBrain input page, set the value of
-``section_1`` and ``section_2`` to an empty string.
+`policy_current_law.json` file in a location that is near conceptually
+similar parameters.  Be sure to specify the `section_1` and
+`section_2` values of each new parameter so that it appears in an
+appropriate place on the TaxBrain input page.  If the new parameter is
+not supposed to appear on the TaxBrain input page, set the value of
+`section_1` and `section_2` to an empty string.
