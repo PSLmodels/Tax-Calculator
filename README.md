@@ -26,13 +26,14 @@ What is Tax-Calculator?
 -----------------------
 
 Tax-Calculator simulates the USA federal individual income and payroll
-tax system.  In conjunction with micro data that represent the USA
-population, Tax-Calculator can be used to estimate the aggregate
-revenue and distributional effects of tax reforms under static
-analysis assumptions.  In conjunction with other modules,
-Tax-Calculator can be used to estimate reform effects under a range of
-non-static assumptions.  Tax-Calculator is written in Python, an
-interpreted language that can execute on Windows, Mac, or Linux.
+tax system.  In conjunction with [micro
+data](https://github.com/PSLmodels/taxdata#about-taxdata-repository)
+that represent the USA population, Tax-Calculator can be used to
+estimate the aggregate revenue and distributional effects of tax
+reforms under static analysis assumptions.  In conjunction with other
+modules, Tax-Calculator can be used to estimate reform effects under a
+range of non-static assumptions.  Tax-Calculator is written in Python,
+an interpreted language that can execute on Windows, Mac, or Linux.
 
 
 Disclaimer
@@ -59,7 +60,7 @@ providing details on what you think should be added to Tax-Calculator.
 
 If you want to **propose code changes**, follow the directions in the
 [Contributor
-Guide](https://taxcalc.readthedocs.io/en/latest/contributor_guide.html)
+Guide](https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide)
 on how to fork and clone the Tax-Calculator git repository.  Before
 developing any code changes be sure to read completely the Contributor
 Guide and then read about the [pull-request
@@ -70,8 +71,8 @@ provides a high-level summary of past pull requests and access to a
 complete list of merged, closed, and pending pull requests.
 
 If you are relying on Tax-Calculator capabilities in your own project,
-be sure to read the definition of the [Tax-Calculator Public
-API](https://taxcalc.readthedocs.io/en/latest/public_api.html).
+be sure to read the definition of the [Tax-Calculator
+API](https://PSLmodels.github.io/Tax-Calculator/api.html).
 
 
 Citing Tax-Calculator

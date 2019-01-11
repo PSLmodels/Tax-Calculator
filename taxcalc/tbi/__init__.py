@@ -1,6 +1,5 @@
 from taxcalc.tbi.tbi import (reform_warnings_errors,
                              run_nth_year_taxcalc_model,
-                             run_nth_year_gdp_elast_model,
                              check_years, check_user_mods,
                              calculator_objects, calculators,
                              random_seed, fuzzed,

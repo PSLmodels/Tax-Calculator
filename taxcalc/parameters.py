@@ -236,7 +236,7 @@ class Parameters():
                         pval_is_int = type(pval) == int
                         pval_is_float = type(pval) == float
                         if bool_param_type:
-                            if not pval_is_bool:
+                            if not pval_is_bool:  # pragma: no cover
                                 msg = '{} {} value {} is not boolean'
                                 self.parameter_errors += (
                                     'ERROR: ' +
@@ -342,10 +342,10 @@ class Parameters():
         -----
         This is a private method that should **never** be used by clients
         of the inheriting classes.  Instead, always use the public
-        implement_reform or update_behavior methods.
+        implement_reform or update_consumption-like methods.
         This is a private method that helps the public methods work.
 
-        This method implements a policy reform or behavior modification,
+        This method implements a policy reform or consumption modification,
         the provisions of which are specified in the year_mods dictionary,
         that changes the values of some policy parameters in objects of
         inheriting classes.  This year_mods dictionary contains exactly one
@@ -390,11 +390,6 @@ class Parameters():
         Notice the pair of double square brackets around the four values
         for 2019.  The one-dimensional parameters above require only a pair
         of single square brackets.
-
-        To model a change in behavior substitution effect, a year_mods dict
-        example would be::
-
-            {2014: {'_BE_sub': [0.2, 0.3]}}
         """
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
