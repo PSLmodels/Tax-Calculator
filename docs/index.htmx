@@ -19,8 +19,8 @@ If you are interested in Python programming with Tax-Calculator, you
 should read the tested recipes in our
 <a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html">
 Tax-Calculator Cookbook</a>. If you want ask a question, report a bug
-or request an enhancement, do that at
-the <a href="https://github.com/PSLmodels/Tax-Calculator">
+or request an enhancement, do that by creating a new issue at
+the <a href="https://github.com/PSLmodels/Tax-Calculator/issues">
 Tax-Calculator website</a>.</p>
 
 <p>Please cite the source of your analysis as <q>Tax-Calculator
@@ -1185,22 +1185,19 @@ used via the Behavioral-Response behresp package in a Python script.)</p>
 <p>All the assumption parameters can be used by the tc CLI, but only
 those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
 assumption parameters control advanced features of Tax-Calculator, so
-understanding the
-<a href="https://github.com/PSLmodels/Tax-Calculator/tree/master/taxcalc">source
-code</a> that uses them is essential.  Default values of most
-assumption parameters are zero and are projected into the future at
-that value, which implies no response to the reform.  Using the
-default no-reform-response assumption for all the response parameters
-generates a static analysis of the tax reform.  The benefit value 
-consumption parameters have a default value of one, which implies the
-consumption value of the in-kind benefits is equal to the government
-cost of providing the benefits.</p>
+understanding the source code that uses them is essential.  Default
+values of most assumption parameters are zero and are projected into
+the future at that value, which implies no response to the reform.
+Using the default no-reform-response assumption for all the response
+parameters generates a static analysis of the tax reform.  The benefit
+value consumption parameters have a default value of one, which
+implies the consumption value of the in-kind benefits is equal to the
+government cost of providing the benefits.</p>
 
 <h3>Section Contents</h3>
 
 <p><a href="#params-consump">Consumption Parameters</a></p>
 <p><a href="#params-growdiff">Growdiff Parameters</a></p>
-<p><a href="#params-growmodel">Growmodel Parameters</a></p>
 
 
 <h3 id="params-consump">Consumption Parameters</h3>
@@ -1214,10 +1211,6 @@ cost of providing the benefits.</p>
 
 <!-- growdiff@parameters -->
 
-
-<h3 id="params-growdiff">Growmodel Parameters</h3>
-
-<!-- growmodel@parameters -->
 
 <p><a href="#params">Back to Section Contents</a>&nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a></p>

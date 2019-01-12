@@ -42,7 +42,7 @@ modules, Tax-Calculator can be used to estimate reform effects under a
 range of non-static assumptions.  Tax-Calculator is written in Python,
 an interpreted language that can execute on Windows, Mac, or Linux.
 It is released under an [open-source
-license](https://github.com/PSLmodels/Tax-Calculator/blob/master/LICENSE.md).
+license](https://github.com/PSLmodels/Tax-Calculator/blob/master/LICENSE.md#license).
 
 
 Disclaimer
@@ -92,7 +92,7 @@ developing any code changes be sure to read completely the contributor
 guide.  The Tax-Calculator [release
 history](https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history)
 and [change
-history](https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-change-history)
+history](https://github.com/PSLmodels/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history)
 provide descriptions of features introduced or changed in past
 Tax-Calculator releases.  The release history is more technical while
 the change history is less technical and may be sufficient for many
