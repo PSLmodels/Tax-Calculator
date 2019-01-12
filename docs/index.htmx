@@ -2,7 +2,7 @@
 <!-- #WARN# -->
 <html>
 <head>
-<title>Using Tax-Calculator</title>
+<title>Tax-Calculator User Guide</title>
 <style>
 div { max-width: 19cm }
 </style>
@@ -10,7 +10,7 @@ div { max-width: 19cm }
 <body>
 <div>
 
-<h1 id="top">Using Tax-Calculator</h1>
+<h1 id="top">Tax-Calculator User Guide</h1>
 
 <p>This document tells you how to use Tax-Calculator, an open-source
 federal income and payroll tax simulation model.  The two ways of
@@ -18,12 +18,10 @@ using Tax-Calculator described here require no computer programming.
 If you are interested in Python programming with Tax-Calculator, you
 should read the tested recipes in our
 <a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html">
-Tax-Calculator Cookbook</a>. If you want to participate in the
-development of Tax-Calculator &mdash; by asking a question, reporting
-a bug, improving the documentation or making an enhancement to the
-Python source code &mdash; you should go to
-the <a href="https://github.com/PSLmodels/Tax-Calculator">
-developer website</a>.</p>
+Tax-Calculator Cookbook</a>. If you want ask a question, report a bug
+or request an enhancement, do that by creating a new issue at
+the <a href="https://github.com/PSLmodels/Tax-Calculator/issues">
+Tax-Calculator website</a>.</p>
 
 <p>Please cite the source of your analysis as <q>Tax-Calculator
 release #.#.#, author's calculations.</q> If you wish to link to
@@ -153,8 +151,7 @@ be easily imported into any spreadsheet program.</p>
 
 <p>After clicking on the Link to Dynamic Simulations on the static
 results page, you are presented with a page that allows you to choose
-three different types of dynamic simulations to conduct on your tax
-reform:</p>
+different types of dynamic simulations to conduct on your tax reform:</p>
 
 <p><b>Partial Equilibrium Simulation</b> is described this way:
 <i>This approach answers the question, <q>how would taxpayer behavior
@@ -164,11 +161,6 @@ economy could stay the same?</q></i></p>
 <p><b>Overlapping Generations Simulation</b> is described this way:
 <i>This approach answers the question, <q>how does tax policy affect
 macroeconomic aggregates and prices?</q></i></p>
-
-<p><b>Macro Elasticity Simulation</b> is described this way:
-<i>This approach harnesses econometric estimates of the historical
-relationship between tax policy and the macro economy to predict the
-effect of tax reforms on economic growth.</i></p>
 
 Clicking on one of these choices will allow you to specify some
 additional economic assumption parameters and initiate the dynamic
@@ -293,7 +285,7 @@ language.</p>
 
 <p>For several examples of reform files and the general rules for
 writing JSON reform files, go
-to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md">this
+to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/README.md#policy-reform-files">this
 page</a>.</p>
 
 <p>If you want to upload a reform file to TaxBrain for static analysis
@@ -325,7 +317,7 @@ widely-used data-specification language.</p>
 
 <p>For examples of economic assumption files and the general rules for
 writing JSON assumption files, go
-to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/ASSUMPTIONS.md">this
+to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this
 page</a>.</p>
 
 <p>If you want to upload policy reform and economic assumption files
@@ -429,7 +421,9 @@ will be satisfied because zero equals zero plus zero.</p>
 to you to specify the taxpayer-spouse split.  You will get an error
 message from Tax-Calculator, and it will stop running, if you do not
 split the filing-unit amount between taxpayer and spouse so that the
-above equations hold for each filing unit in the input file.</p>
+above equations hold for each filing unit in the input file.  Read
+<a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/DATAPREP.md#tax-calculator-input-file-preparation-guidelines">
+this document</a> for more details.</p>
 
 <p>In addition to this earnings-splitting data-preparation issue,
 Tax-Calculator expects that the value of ordinary dividends
@@ -1179,34 +1173,31 @@ output variables that Tax-Calculator is programmed to calculate.</p>
 <h2 id="params">Assumption Parameters</h2>
 
 <p>This section contains documentation of several sets of parameters
-that characterize responses to a tax reform.  Consumption
-parameters are used to compute marginal tax rates and to compute the
-consumption value of in-kind benefits.  Behavior
-parameters are used to compute changes in input variables caused by a
-tax reform in a partial-equilibrium setting.  Growdiff parameters are
-used to specify baseline differences and/or reform responses in the
-annual rate of growth in economic variables.</p>
+that characterize responses to a tax reform.  Consumption parameters
+are used to compute marginal tax rates and to compute the consumption
+value of in-kind benefits.  Growdiff parameters are used to specify
+baseline differences and/or reform responses in the annual rate of
+growth in economic variables.  (Note that behavior parameters used to
+compute changes in input variables caused by a tax reform in a
+partial-equilibrium setting are not part of Tax-Calculator, but can be
+used via the Behavioral-Response behresp package in a Python script.)</p>
 
 <p>All the assumption parameters can be used by the tc CLI, but only
 those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
 assumption parameters control advanced features of Tax-Calculator, so
-understanding the
-<a href="https://github.com/PSLmodels/Tax-Calculator/tree/master/taxcalc">source
-code</a> that uses them is essential.  Default values of most
-assumption parameters are zero and are projected into the future at
-that value, which implies no response to the reform.  Using the
-default no-reform-response assumption for all the response parameters
-generates a static analysis of the tax reform.  The benefit value 
-consumption parameters have a default value of one, which implies the
-consumption value of the in-kind benefits is equal to the government
-cost of providing the benefits.</p>
+understanding the source code that uses them is essential.  Default
+values of most assumption parameters are zero and are projected into
+the future at that value, which implies no response to the reform.
+Using the default no-reform-response assumption for all the response
+parameters generates a static analysis of the tax reform.  The benefit
+value consumption parameters have a default value of one, which
+implies the consumption value of the in-kind benefits is equal to the
+government cost of providing the benefits.</p>
 
 <h3>Section Contents</h3>
 
 <p><a href="#params-consump">Consumption Parameters</a></p>
-<p><a href="#params-behavior">Behavior Parameters</a></p>
 <p><a href="#params-growdiff">Growdiff Parameters</a></p>
-<p><a href="#params-growmodel">Growmodel Parameters</a></p>
 
 
 <h3 id="params-consump">Consumption Parameters</h3>
@@ -1216,21 +1207,10 @@ cost of providing the benefits.</p>
 <p><a href="#params">Back to Section Contents</a></p>
 
 
-<h3 id="params-behavior">Behavior Parameters</h3>
-
-<!-- behavior@parameters -->
-
-<p><a href="#params">Back to Section Contents</a></p>
-
-
 <h3 id="params-growdiff">Growdiff Parameters</h3>
 
 <!-- growdiff@parameters -->
 
-
-<h3 id="params-growdiff">Growmodel Parameters</h3>
-
-<!-- growmodel@parameters -->
 
 <p><a href="#params">Back to Section Contents</a>&nbsp;&nbsp;
 <a href="#doc">Back to Document Contents</a></p>

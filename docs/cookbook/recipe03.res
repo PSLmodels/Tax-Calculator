@@ -1,6 +1,3 @@
-WARNING: the Behavior class is deprecated and will be removed soon.
-FUTURE: use the Behavioral-Responses behresp package OR
-        use the Tax-Calculator quantity_response function.
 You loaded data for 2014.
 Your data include the following unused variables that will be ignored:
   filer

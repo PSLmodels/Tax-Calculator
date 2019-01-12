@@ -1,12 +1,8 @@
-include versioneer.py
-include taxcalc/_version.py
-include taxcalc/behavior.json
 include taxcalc/consumption.json
 include taxcalc/cps.csv.gz
 include taxcalc/cps_weights.csv.gz
 include taxcalc/growdiff.json
 include taxcalc/growfactors.csv
-include taxcalc/growmodel.json
 include taxcalc/policy_current_law.json
 include taxcalc/puf_weights.csv.gz
 include taxcalc/puf_ratios.csv

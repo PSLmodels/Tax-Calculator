@@ -331,7 +331,7 @@ def test_puf_availability(tests_path, puf_path):
         if 'taxdata_puf' in vdict.get('availability', ''):
             recvars.add(vname)
     # check that pufvars and recvars sets are the same
-    assert (pufvars - recvars) == set(['filer'])
+    assert (pufvars - recvars) == set()
     assert (recvars - pufvars) == set()
 
 
@@ -350,14 +350,9 @@ def test_run_taxcalc_model(tests_path):
         'consumption': {
             2016: {'_MPC_e20400': [0.01]}
         },
-        'behavior': {
-            2016: {'_BE_sub': [0.25]}
-        },
         'growdiff_baseline': {
         },
         'growdiff_response': {
-        },
-        'growmodel': {
         }
     }
     res = run_nth_year_taxcalc_model(year_n=2, start_year=2018,

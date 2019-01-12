@@ -175,8 +175,6 @@ class Records():
             wt_colname = 'WT{}'.format(self.current_year)
             if wt_colname in self.WT.columns:
                 self.s006 = self.WT[wt_colname] * 0.01
-        # specify that variable values do not include behavioral responses
-        self.behavioral_responses_are_included = False
 
     @staticmethod
     def cps_constructor(data=None,
@@ -227,8 +225,6 @@ class Records():
         Add one to current year.
         Also, does extrapolation, reweighting, adjusting for new current year.
         """
-        # no incrementing Records object that includes behavioral responses
-        assert self.behavioral_responses_are_included is False
         # move to next year
         self.__current_year += 1
         # apply variable extrapolation grow factors

@@ -135,3 +135,25 @@ def test_consumption_response(cps_subsample):
                                 np.around(mtr0_itax, decimals=5)))
     # confirm that some mtr with cons-resp are less than without cons-resp
     assert np.any(np.less(mtr1_itax, mtr0_itax))
+
+
+def test_validate_assump_parameters_errors():
+    """
+    Check detection of invalid consumption parameter names, types, values.
+    """
+    con0 = Consumption()
+    parm0 = {2020: {'_STD_cpi': True}}  # invalid name
+    with pytest.raises(ValueError):
+        con0.update_consumption(parm0)
+    con1 = Consumption()
+    parm1 = {2020: {'_MPC_e17500': [False]}}
+    with pytest.raises(ValueError):
+        con1.update_consumption(parm1)
+    con2 = Consumption()
+    parm2 = {2020: {'_MPC_e17500': [-0.5]}}
+    with pytest.raises(ValueError):
+        con2.update_consumption(parm2)
+    con3 = Consumption()
+    parm3 = {2020: {'_MPC_e17500': [1.5]}}
+    with pytest.raises(ValueError):
+        con3.update_consumption(parm3)

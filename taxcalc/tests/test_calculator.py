@@ -1,5 +1,11 @@
+"""
+Tests of Calculator class.
+"""
 # CODING-STYLE CHECKS:
 # pycodestyle test_calculator.py
+# pylint --disable=locally-disabled test_calculator.py
+#
+# pylint: disable=too-many-lines,invalid-name
 
 import os
 import json
@@ -10,7 +16,7 @@ import urllib
 import pytest
 import numpy as np
 import pandas as pd
-from taxcalc import Policy, Records, Calculator, Behavior, Consumption
+from taxcalc import Policy, Records, Calculator, Consumption
 
 
 RAWINPUTFILE_FUNITS = 4
@@ -42,6 +48,9 @@ def fixture_rawinputfile():
 
 
 def test_make_calculator(cps_subsample):
+    """
+    Test Calculator class ctor.
+    """
     start_year = Policy.JSON_START_YEAR
     sim_year = 2018
     pol = Policy()
@@ -50,8 +59,8 @@ def test_make_calculator(cps_subsample):
     consump = Consumption()
     consump.update_consumption({sim_year: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == start_year
-    calc = Calculator(policy=pol, records=rec,
-                      consumption=consump, behavior=Behavior())
+    calc = Calculator(policy=pol, records=rec, consumption=consump)
+    assert calc.data_year == Records.CPSCSV_YEAR
     assert calc.current_year == Records.CPSCSV_YEAR
     # test incorrect Calculator instantiation:
     with pytest.raises(ValueError):
@@ -59,12 +68,13 @@ def test_make_calculator(cps_subsample):
     with pytest.raises(ValueError):
         Calculator(policy=pol, records=None)
     with pytest.raises(ValueError):
-        Calculator(policy=pol, records=rec, behavior=list())
-    with pytest.raises(ValueError):
         Calculator(policy=pol, records=rec, consumption=list())
 
 
 def test_make_calculator_deepcopy(cps_subsample):
+    """
+    Test deepcopy of Calculator object.
+    """
     pol = Policy()
     rec = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=rec)
@@ -73,6 +83,9 @@ def test_make_calculator_deepcopy(cps_subsample):
 
 
 def test_make_calculator_with_policy_reform(cps_subsample):
+    """
+    Test Calculator class ctor with policy reform.
+    """
     rec = Records.cps_constructor(data=cps_subsample)
     year = rec.current_year
     # create a Policy object and apply a policy reform
@@ -97,6 +110,9 @@ def test_make_calculator_with_policy_reform(cps_subsample):
 
 
 def test_make_calculator_with_multiyear_reform(cps_subsample):
+    """
+    Test Calculator class ctor with multi-year policy reform.
+    """
     rec = Records.cps_constructor(data=cps_subsample)
     year = rec.current_year
     # create a Policy object and apply a policy reform
@@ -123,6 +139,9 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
 
 
 def test_calculator_advance_to_year(cps_subsample):
+    """
+    Test Calculator advance_to_year method.
+    """
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     calc = Calculator(policy=pol, records=rec)
@@ -133,12 +152,18 @@ def test_calculator_advance_to_year(cps_subsample):
 
 
 def test_make_calculator_raises_on_no_policy(cps_subsample):
+    """
+    Test Calculator ctor error with no policy argument.
+    """
     rec = Records.cps_constructor(data=cps_subsample)
     with pytest.raises(ValueError):
         Calculator(records=rec)
 
 
 def test_calculator_mtr(cps_subsample):
+    """
+    Test Calculator mtr method.
+    """
     rec = Records.cps_constructor(data=cps_subsample)
     calcx = Calculator(policy=Policy(), records=rec)
     calcx.calc_all()
@@ -180,6 +205,9 @@ def test_calculator_mtr(cps_subsample):
 
 
 def test_calculator_mtr_when_PT_rates_differ():
+    """
+    Test Calculator mtr method in special case.
+    """
     reform = {2013: {'_II_rt1': [0.40],
                      '_II_rt2': [0.40],
                      '_II_rt3': [0.40],
@@ -209,6 +237,10 @@ def test_calculator_mtr_when_PT_rates_differ():
 
 
 def test_make_calculator_increment_years_first(cps_subsample):
+    """
+    Test Calculator inflation indexing of policy parameters.
+    """
+    # pylint: disable=too-many-locals
     # create Policy object with policy reform
     pol = Policy()
     reform = {2015: {}, 2016: {}}
@@ -327,6 +359,9 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
 
 
 def test_calculator_using_nonstd_input(rawinputfile):
+    """
+    Test Calculator using non-standard input records.
+    """
     # check Calculator handling of raw, non-standard input data with no aging
     pol = Policy()
     pol.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
@@ -420,16 +455,14 @@ ASSUMP_CONTENTS = """
 // Example of JSON assump file suitable for read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
-// Within each "behavior", "consumption" and "growth" object, the
-// primary keys are parameters and the secondary keys are years.
+// Within each "consumption" and "grow" object, the primary keys are
+// parameters and the secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
 {
   "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-  "behavior": {},
   "growdiff_baseline": {},
-  "growdiff_response": {},
-  "growmodel": {}
+  "growdiff_response": {}
 }
 """
 
@@ -467,6 +500,7 @@ def test_read_json_reform_file_and_implement_reform(reform_file,
                                                     assump_file.name)
     pol.implement_reform(param_dict['policy'])
     syr = pol.start_year
+    # pylint: disable=protected-access,no-member
     amt_brk1 = pol._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
     assert amt_brk1[2016 - syr] > 200000
@@ -522,6 +556,9 @@ def test_json_reform_url():
 
 @pytest.fixture(scope='module', name='bad1reformfile')
 def fixture_bad1reformfile():
+    """
+    Specify invalid JSON reform file.
+    """
     # specify JSON text for reform
     txt = """
     {
@@ -540,6 +577,9 @@ def fixture_bad1reformfile():
 
 @pytest.fixture(scope='module', name='bad2reformfile')
 def fixture_bad2reformfile():
+    """
+    Specify invalid JSON reform file.
+    """
     # specify JSON text for reform
     txt = """
     {
@@ -559,6 +599,9 @@ def fixture_bad2reformfile():
 
 @pytest.fixture(scope='module', name='bad3reformfile')
 def fixture_bad3reformfile():
+    """
+    Specify invalid JSON reform file.
+    """
     # specify JSON text for reform
     txt = """
     {
@@ -566,7 +609,7 @@ def fixture_bad3reformfile():
       "policy": {
         "_SS_Earnings_c": {"2018": [9e99]}
       },
-      "behavior": { // example of misplaced "behavior" key
+      "consumption": { // example of misplaced "consumption" key
       }
     }
     """
@@ -580,6 +623,9 @@ def fixture_bad3reformfile():
 
 def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
                                    bad3reformfile):
+    """
+    Test invalid JSON reform files.
+    """
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(bad1reformfile.name, None)
     with pytest.raises(ValueError):
@@ -595,6 +641,9 @@ def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
 
 
 def test_json_assump_url():
+    """
+    Test reading JSON assumption file using URL.
+    """
     assump_str = """
     {
         "consumption": {
@@ -610,11 +659,6 @@ def test_json_assump_url():
             "_MPC_e18400": {"2017": [0.0]},
             "_MPC_e19800": {"2017": [0.0]},
             "_MPC_e20400": {"2017": [0.0]}
-        },
-        "behavior": {
-            "_BE_inc": {"2017": [0.0]},
-            "_BE_sub": {"2017": [0.0]},
-            "_BE_cg": {"2017": [0.0]}
         },
         "growdiff_baseline": {
             "_ABOOK": {"2017": [0.0]},
@@ -669,9 +713,6 @@ def test_json_assump_url():
             "_ABENHOUSING": {"2017": [0.0]},
             "_ABENTANF": {"2017": [0.0]},
             "_ABENVET": {"2017": [0.0]}
-        },
-        "growmodel": {
-            "_active": {"2017": [false]}
         }
     }
     """
@@ -679,22 +720,23 @@ def test_json_assump_url():
                   'Tax-Calculator/master/taxcalc/assumptions/'
                   'economic_assumptions_template.json')
     params_str = Calculator.read_json_param_objects(None, assump_str)
+    assert params_str
     params_url = Calculator.read_json_param_objects(None, assump_url)
     assert params_str == params_url
 
 
 @pytest.fixture(scope='module', name='bad1assumpfile')
 def fixture_bad1assumpfile():
-    # specify JSON text for assumptions
+    """
+    Specify invalid JSON assumption file.
+    """
     txt = """
     {
-      "consumption": {},
-      "behavior": { // example of incorrect JSON because 'x' must be "x"
+      "consumption": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [0.25]}
       },
       "growdiff_baseline": {},
-      "growdiff_response": {},
-      "growmodel": {}
+      "growdiff_response": {}
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -707,14 +749,14 @@ def fixture_bad1assumpfile():
 
 @pytest.fixture(scope='module', name='bad2assumpfile')
 def fixture_bad2assumpfile():
-    # specify JSON text for assumptions
+    """
+    Specify invalid JSON assumption file.
+    """
     txt = """
     {
-      "consumption": {},
-      "behaviorx": {}, // example of assump file not containing "behavior" key
+      "consumptionx": {}, // example of file not containing "consumption" key
       "growdiff_baseline": {},
-      "growdiff_response": {},
-      "growmodel": {}
+      "growdiff_response": {}
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -727,17 +769,17 @@ def fixture_bad2assumpfile():
 
 @pytest.fixture(scope='module', name='bad3assumpfile')
 def fixture_bad3assumpfile():
-    # specify JSON text for assump
+    """
+    Specify invalid JSON assumption file.
+    """
     txt = """
     {
       "consumption": {},
-      "behavior": {},
       "growdiff_baseline": {},
       "growdiff_response": {},
       "policy": { // example of misplaced policy key
         "_SS_Earnings_c": {"2018": [9e99]}
-      },
-    "growmodel": {}
+      }
     }
     """
     f = tempfile.NamedTemporaryFile(mode='a', delete=False)
@@ -750,6 +792,9 @@ def fixture_bad3assumpfile():
 
 def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
                                    bad3assumpfile):
+    """
+    Test invalid JSON assumption files.
+    """
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, bad1assumpfile.name)
     with pytest.raises(ValueError):
@@ -763,6 +808,10 @@ def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
 
 
 def test_convert_parameter_dict():
+    """
+    Test convert_parameter_dict method.
+    """
+    # pylint: disable=protected-access
     with pytest.raises(ValueError):
         Calculator._convert_parameter_dict({2013: {'2013': [40000]}})
     with pytest.raises(ValueError):
@@ -776,6 +825,9 @@ def test_convert_parameter_dict():
 
 
 def test_calc_all(reform_file, rawinputfile):
+    """
+    Test calc_all method.
+    """
     cyr = 2016
     pol = Policy()
     param_dict = Calculator.read_json_param_objects(reform_file.name, None)
@@ -791,8 +843,9 @@ def test_calc_all(reform_file, rawinputfile):
 
 
 def test_translate_json_reform_suffixes_mars_non_indexed():
-    # test read_json_param_objects()
-    # using MARS-indexed parameter suffixes
+    """
+    Test read_json_param_objects method using MARS-indexed parameter suffixes.
+    """
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_AMEDT_ec_joint": {"2018": [400000], "2016": [300000]},
@@ -822,8 +875,9 @@ def test_translate_json_reform_suffixes_mars_non_indexed():
 
 
 def test_translate_json_reform_suffixes_eic():
-    # test read_json_param_objects(...)
-    # using EIC-indexed parameter suffixes
+    """
+    Test read_json_param_objects method using EIC-indexed parameter suffixes.
+    """
     json1 = """{"policy": {
       "_II_em": {"2020": [20000], "2015": [15000]},
       "_EITC_c_0kids": {"2018": [510], "2019": [510]},
@@ -853,6 +907,9 @@ def test_translate_json_reform_suffixes_eic():
 
 
 def test_translate_json_reform_suffixes_idedtype():
+    """
+    Test read_json_param_objects method using idedtype-indexed param suffixes.
+    """
     # test read_json_param_objects(...)
     # using idedtype-indexed parameter suffixes
     json1 = """{"policy": {
@@ -892,8 +949,10 @@ def test_translate_json_reform_suffixes_idedtype():
 
 
 def test_read_json_param_with_suffixes_and_errors():
-    # test interaction of policy parameter suffixes and reform errors
-    # (fails without 0.10.2 bug fix as reported by Hank Doupe in PB PR#641)
+    """
+    Test interaction of policy parameter suffixes and reform errors
+    (fails without 0.10.2 bug fix as reported by Hank Doupe in PB PR#641)
+    """
     reform = {
         u'policy': {
             u'_II_brk4_separate': {u'2017': [5000.0]},
@@ -920,11 +979,14 @@ def test_read_json_param_with_suffixes_and_errors():
     pol.ignore_reform_errors()
     pol.implement_reform(params['policy'],
                          print_warnings=False, raise_errors=False)
-    assert len(pol.parameter_errors) > 0
-    assert len(pol.parameter_warnings) > 0
+    assert pol.parameter_errors
+    assert pol.parameter_warnings
 
 
 def test_noreform_documentation():
+    """
+    Test automatic documentation creation.
+    """
     reform_json = """
     {
     "policy": {}
@@ -933,10 +995,8 @@ def test_noreform_documentation():
     assump_json = """
     {
     "consumption": {},
-    "behavior": {},
     "growdiff_baseline": {},
-    "growdiff_response": {},
-    "growmodel": {}
+    "growdiff_response": {}
     }
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
@@ -953,6 +1013,9 @@ def test_noreform_documentation():
 
 
 def test_reform_documentation():
+    """
+    Test automatic documentation creation.
+    """
     reform_json = """
     {
     "policy": {
@@ -976,12 +1039,10 @@ def test_reform_documentation():
     assump_json = """
     {
     "consumption": {},
-    "behavior": {},
     // increase baseline inflation rate by one percentage point in 2014+
     // (has no effect on known policy parameter values)
     "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
-    "growdiff_response": {},
-    "growmodel": {}
+    "growdiff_response": {}
     }
     """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
@@ -995,6 +1056,9 @@ def test_reform_documentation():
 
 
 def test_distribution_tables(cps_subsample):
+    """
+    Test distribution_tables method.
+    """
     pol = Policy()
     recs = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=recs)
@@ -1019,6 +1083,9 @@ def test_distribution_tables(cps_subsample):
 
 
 def test_difference_table(cps_subsample):
+    """
+    Test difference_table method.
+    """
     cyr = 2014
     pol = Policy()
     recs = Records.cps_constructor(data=cps_subsample)
@@ -1035,6 +1102,9 @@ def test_difference_table(cps_subsample):
 
 
 def test_diagnostic_table(cps_subsample):
+    """
+    Test diagnostic_table method.
+    """
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     adt = calc.diagnostic_table(3)
@@ -1042,6 +1112,9 @@ def test_diagnostic_table(cps_subsample):
 
 
 def test_mtr_graph(cps_subsample):
+    """
+    Test mtr_graph method.
+    """
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     fig = calc.mtr_graph(calc,
@@ -1056,6 +1129,9 @@ def test_mtr_graph(cps_subsample):
 
 
 def test_atr_graph(cps_subsample):
+    """
+    Test atr_graph method.
+    """
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     fig = calc.atr_graph(calc, mars=2, atr_measure='itax')
@@ -1065,25 +1141,35 @@ def test_atr_graph(cps_subsample):
 
 
 def test_privacy_of_embedded_objects(cps_subsample):
+    """
+    Test privacy of objects embedded in Calculator object.
+    """
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
+    var1 = var2 = var3 = 0
+    # pylint: disable=protected-access
     with pytest.raises(AttributeError):
-        cyr = calc.__policy.current_year
+        var1 = calc.__policy.current_year
     with pytest.raises(AttributeError):
-        wgh = calc.__records.s006
+        var2 = calc.__records.s006
     with pytest.raises(AttributeError):
-        cyr = calc.__consumption.current_year
-    with pytest.raises(AttributeError):
-        cyr = calc.__behavior.current_year
+        var3 = calc.__consumption.current_year
+    assert var1 == var2 == var3
 
 
 def test_n65(cps_subsample):
+    """
+    Test n65 method.
+    """
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
     assert calc.n65().sum() > 1500
 
 
 def test_ce_aftertax_income(cps_subsample):
+    """
+    Test ce_aftertax_income method.
+    """
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     calc1 = Calculator(policy=pol, records=rec)

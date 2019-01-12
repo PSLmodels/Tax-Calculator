@@ -25,9 +25,7 @@ INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
 POLICY_PATH = os.path.join(TAXCALC_PATH, 'policy_current_law.json')
 IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
-BEHAVIOR_PATH = os.path.join(TAXCALC_PATH, 'behavior.json')
 GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
-GROWMODEL_PATH = os.path.join(TAXCALC_PATH, 'growmodel.json')
 OUTPUT_PATH = os.path.join(CURDIR_PATH, OUTPUT_FILENAME)
 
 
@@ -50,9 +48,7 @@ def main():
     text = io_variables('read', IOVARS_PATH, text)
     text = io_variables('calc', IOVARS_PATH, text)
     text = assumption_params('consumption', CONSUMPTION_PATH, text)
-    text = assumption_params('behavior', BEHAVIOR_PATH, text)
     text = assumption_params('growdiff', GROWDIFF_PATH, text)
-    text = assumption_params('growmodel', GROWMODEL_PATH, text)
 
     # write text variable to OUTPUT file
     with open(OUTPUT_PATH, 'w') as ofile:
