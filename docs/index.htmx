@@ -2,7 +2,7 @@
 <!-- #WARN# -->
 <html>
 <head>
-<title>Using Tax-Calculator</title>
+<title>Tax-Calculator User Guide</title>
 <style>
 div { max-width: 19cm }
 </style>
@@ -10,7 +10,7 @@ div { max-width: 19cm }
 <body>
 <div>
 
-<h1 id="top">Using Tax-Calculator</h1>
+<h1 id="top">Tax-Calculator User Guide</h1>
 
 <p>This document tells you how to use Tax-Calculator, an open-source
 federal income and payroll tax simulation model.  The two ways of
@@ -18,12 +18,10 @@ using Tax-Calculator described here require no computer programming.
 If you are interested in Python programming with Tax-Calculator, you
 should read the tested recipes in our
 <a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html">
-Tax-Calculator Cookbook</a>. If you want to participate in the
-development of Tax-Calculator &mdash; by asking a question, reporting
-a bug, improving the documentation or making an enhancement to the
-Python source code &mdash; you should go to
+Tax-Calculator Cookbook</a>. If you want ask a question, report a bug
+or request an enhancement, do that at
 the <a href="https://github.com/PSLmodels/Tax-Calculator">
-developer website</a>.</p>
+Tax-Calculator website</a>.</p>
 
 <p>Please cite the source of your analysis as <q>Tax-Calculator
 release #.#.#, author's calculations.</q> If you wish to link to
@@ -287,7 +285,7 @@ language.</p>
 
 <p>For several examples of reform files and the general rules for
 writing JSON reform files, go
-to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md">this
+to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/README.md#policy-reform-files">this
 page</a>.</p>
 
 <p>If you want to upload a reform file to TaxBrain for static analysis
@@ -319,7 +317,7 @@ widely-used data-specification language.</p>
 
 <p>For examples of economic assumption files and the general rules for
 writing JSON assumption files, go
-to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/ASSUMPTIONS.md">this
+to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this
 page</a>.</p>
 
 <p>If you want to upload policy reform and economic assumption files
@@ -423,7 +421,9 @@ will be satisfied because zero equals zero plus zero.</p>
 to you to specify the taxpayer-spouse split.  You will get an error
 message from Tax-Calculator, and it will stop running, if you do not
 split the filing-unit amount between taxpayer and spouse so that the
-above equations hold for each filing unit in the input file.</p>
+above equations hold for each filing unit in the input file.  Read
+<a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/DATAPREP.md#tax-calculator-input-file-preparation-guidelines">
+this document</a> for more details.</p>
 
 <p>In addition to this earnings-splitting data-preparation issue,
 Tax-Calculator expects that the value of ordinary dividends
