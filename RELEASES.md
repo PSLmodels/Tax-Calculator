@@ -103,7 +103,7 @@ for a complete commit history.
 - Add ability to pass Pandas DataFrame as the `adjust_ratios` argument to Records class constructor
   [[#2121](https://github.com/PSLmodels/Tax-Calculator/pull/2121)
   by Martin Holmer with bug reported by Anderson Frailey]
-- Revise Cookbook recipe 1 to show easier way to access reform files on website
+- Revise cookbook recipe 1 to show easier way to access reform files on website
   [[#2122](https://github.com/PSLmodels/Tax-Calculator/pull/2122)
   by Martin Holmer]
 
@@ -128,7 +128,7 @@ for a complete commit history.
   by Martin Holmer]
 
 **New Features**
-- Revise Cookbook recipe 2 to show use of new Behavioral-Responses behresp package as alternative to deprecated Behavior class
+- Revise cookbook recipe 2 to show use of new Behavioral-Responses behresp package as alternative to deprecated Behavior class
   [[#2107](https://github.com/PSLmodels/Tax-Calculator/pull/2107)
   by Martin Holmer]
 
@@ -337,13 +337,13 @@ for a complete commit history.
 - Add validity checking for non-behavior assumption parameters
   [[#1992](https://github.com/PSLmodels/Tax-Calculator/pull/1992)
   by Martin Holmer]
-- Add Tax-Calculator Cookbook recipe using Behavior class and its `response` method
+- Add Tax-Calculator cookbook recipe using Behavior class and its `response` method
   [[#1993](https://github.com/PSLmodels/Tax-Calculator/pull/1993)
   by Martin Holmer]
-- Add Tax-Calculator Cookbook recipe showing how to create a custom table
+- Add Tax-Calculator cookbook recipe showing how to create a custom table
   [[#1994](https://github.com/PSLmodels/Tax-Calculator/pull/1994)
   by Martin Holmer]
-- Add Tax-Calculator Cookbook recipe showing how to use new `quantity_response` utility function
+- Add Tax-Calculator cookbook recipe showing how to use new `quantity_response` utility function
   [[#2002](https://github.com/PSLmodels/Tax-Calculator/pull/2002)
   by Martin Holmer]
 
@@ -455,7 +455,7 @@ for a complete commit history.
 - None
 
 **New Features**
-- Add graph of percentage change in after-tax expanded income by baseline expanded-income percentile and include it in `tc --graphs` output and in the Cookbook's basic recipe
+- Add graph of percentage change in after-tax expanded income by baseline expanded-income percentile and include it in `tc --graphs` output and in the cookbook's basic recipe
   [[#1890](https://github.com/PSLmodels/Tax-Calculator/pull/1890)
   by Martin Holmer]
 - Improve handling of those with negative or zero `expanded_income` in tables and graphs
@@ -552,7 +552,7 @@ for a complete commit history.
 - Add ability to specify a compound reform in the tc `--reform` option
   [[#1842](https://github.com/PSLmodels/Tax-Calculator/pull/1842)
   by Martin Holmer as requested by Ernie Tedeschi]
-- Add compatible-data information for each policy parameter to user documentation
+- Add compatible-data information for each policy parameter to user guide
   [[#1844](https://github.com/PSLmodels/Tax-Calculator/pull/1844)
   by Martin Holmer as requested by Matt Jensen]
 - Add tc `--baseline BASELINE` option that sets baseline policy equal to that specified in BASELINE reform file (rather than baseline policy being current-law poliy)
@@ -617,7 +617,7 @@ for a complete commit history.
 - Add policy parameters and logic needed to represent TCJA limits on pass-through income and business losses
   [[#1819](https://github.com/PSLmodels/Tax-Calculator/pull/1819)
   by Cody Kallen]
-- Revise user documentation and Tax-Calculator Cookbook recipes to reflect TCJA as current-law policy
+- Revise user guide and Tax-Calculator cookbook recipes to reflect TCJA as current-law policy
   [[#1832](https://github.com/PSLmodels/Tax-Calculator/pull/1832)
   by Martin Holmer]
 
@@ -1123,7 +1123,7 @@ for a complete commit history.
   [[#1332](https://github.com/PSLmodels/Tax-Calculator/pull/1332)
   by Cody Kallen]
 - Complete process of creating [user
-  documentation](https://PSLmodels.github.io/Tax-Calculator/)
+  guide](https://PSLmodels.github.io/Tax-Calculator/)
   [[#1355](https://github.com/PSLmodels/Tax-Calculator/pull/1355)
   by Martin Holmer]
 - Add Tax-Calculator conda package for Python 3.6

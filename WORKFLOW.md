@@ -3,8 +3,8 @@ Tax-Calculator Pull-Request Workflow
 
 This description of the git/GitHub workflow is written for a person
 who wants to contribute changes to Tax-Calculator source code.  It
-assumes that you have read the [Contributor
-Guide](https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide)
+assumes that you have read the [contributor
+guide](https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide)
 and the [conventions about naming and placing new policy
 parameters](https://github.com/PSLmodels/Tax-Calculator/blob/master/NAMING.md#policy-parameter-naming-and-placing-conventions),
 have forked the [central GitHub Tax-Calculator
