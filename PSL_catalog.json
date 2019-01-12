@@ -81,7 +81,7 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://taxcalc.readthedocs.io/en/latest/contributor_guide.html\">Contributor Guide</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide\">Contributor Guide</a>"
     },
     "unit_test": {
         "start_header": null,
