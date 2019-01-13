@@ -1858,15 +1858,32 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     """
     Calculates expanded_income from component income types.
     """
-    # - adjust IRA/pension distributions for pension contributions in same year
+    # - prepare variables used to adjust taxable IRA/pension distributions
     taxable_IRA_distributions = e01400
-    total_pension_income = e01500  # total "pensions and annuities"
-    taxable_pension_income = e01700  # taxable "pensions and annuities"; this
+    total_pension_income = e01500  # total "pensions and annuities"; this
     # amount includes defined-contribution (DC) pension account distributions
     # (from 401(k) plans, e.g.) plus defined-benefit (DB) pension benefits
+    taxable_pension_income = e01700  # taxable portion of total_pension_income
     pencon = pencon_p + pencon_s  # salary-reduction contributions to
-    # tax-favored employer-sponsored DC pension plans; this amount
-    # is not included in the IRS-SOI PUF earnings, e00200, variable
+    # tax-favored employer-sponsored DC pension plans; this amount is
+    # not included in the IRS-SOI PUF earnings, e00200, variable
+    # - adjust taxable distributions for pension contributions in same year
+    taxable_ira_plus_pen = taxable_IRA_distributions + taxable_pension_income
+    if taxable_ira_plus_pen > 0. and pencon > 0.:
+        # adjust IRA distributions first because they include
+        # no DB benefits and no non-taxable DC plan distributions
+        if pencon <= taxable_IRA_distributions:
+            ira_adjustment = pencon
+            pen_adjustment = 0.
+        else:
+            ira_adjustment = taxable_IRA_distributions
+            unadjusted_pencon = pencon - ira_adjustment
+            if unadjusted_pencon <= taxable_pension_income:
+                pen_adjustment = unadjusted_pencon
+            else:
+                pen_adjustment = taxable_pension_income
+        taxable_IRA_distributions -= ira_adjustment
+        total_pension_income -= pen_adjustment
     # - specify expanded_income
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
@@ -1889,8 +1906,8 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         0.5 * ptax_was +  # employer share of FICA taxes
         ubi +  # total UBI benefit
         benefit_value_total  # consumption value of all benefits received; see
-        # the BenefitPrograms function in this file for
-        # details on exactly how this variable is computed
+        # the BenefitPrograms function in this file for details on
+        # exactly how the benefit_value_total variable is computed
     )
     return expanded_income
 
