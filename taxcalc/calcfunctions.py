@@ -1852,16 +1852,25 @@ def LumpSumTax(DSI, num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
-                 e02000, e02100, p22250, p23250,
+                 e01700, e02000, e02100, p22250, p23250,
                  cmbtp, ptax_was, benefit_value_total, ubi,
                  expanded_income):
     """
     Calculates expanded_income from component income types.
     """
+    # - adjust IRA/pension distributions for pension contributions in same year
+    taxable_IRA_distributions = e01400
+    total_pension_income = e01500  # total "pensions and annuities"
+    taxable_pension_income = e01700  # taxable "pensions and annuities"; this
+    # amount includes defined-contribution (DC) pension account distributions
+    # (from 401(k) plans, e.g.) plus defined-benefit (DB) pension benefits
+    pencon = pencon_p + pencon_s  # salary-reduction contributions to
+    # tax-favored employer-sponsored DC pension plans; this amount
+    # is not included in the IRS-SOI PUF earnings, e00200, variable
+    # - specify expanded_income
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
-        pencon_p +  # DC pension contributions for taxpayer
-        pencon_s +  # DC pension contributions for spouse
+        pencon +  # contributions to tax-favored employer-sponsored DC plans
         e00300 +  # taxable interest income
         e00400 +  # non-taxable interest income
         e00600 +  # dividends
@@ -1870,16 +1879,18 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         e00900 +  # Sch C business net income/loss
         e01100 +  # capital gain distributions not reported on Sch D
         e01200 +  # Form 4797 other net gain/loss
-        e01400 +  # taxable IRA distributions
-        e01500 +  # total pension and annuity income
+        taxable_IRA_distributions +  # see above for definition
+        total_pension_income +  # see above for definition
         e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
         e02100 +  # Sch F farm net income/loss
         p22250 +  # Sch D: net short-term capital gain/loss
         p23250 +  # Sch D: net long-term capital gain/loss
         cmbtp +  # other AMT taxable income items from Form 6251
         0.5 * ptax_was +  # employer share of FICA taxes
-        benefit_value_total +  # consumption value of all benefits received
-        ubi  # total UBI benefit
+        ubi +  # total UBI benefit
+        benefit_value_total  # consumption value of all benefits received; see
+        # the BenefitPrograms function in this file for
+        # details on exactly how this variable is computed
     )
     return expanded_income
 
