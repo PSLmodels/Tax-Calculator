@@ -163,6 +163,7 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
     and pos income_measure ) and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
+    # pylint: disable=too-many-locals
     assert isinstance(dframe, pd.DataFrame)
     assert income_measure in dframe
     if decile_details and num_quantiles != 10:
