@@ -28,7 +28,9 @@ for a complete commit history.
   * MD5 checksum: 4aa15435c319bf5e4d3427faf52384c0
 
 **Bug Fixes**
-- None
+- Fix negative/zero/positive split of bottom decile in distribution and difference tables
+  [[#2192](https://github.com/PSLmodels/Tax-Calculator/pull/2192)
+  by Martin Holmer]
 
 
 2018-12-14 Release 0.24.0
