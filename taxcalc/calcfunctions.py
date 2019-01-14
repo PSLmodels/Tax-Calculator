@@ -1852,42 +1852,29 @@ def LumpSumTax(DSI, num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
-                 e01700, e02000, e02100, p22250, p23250,
+                 e02000, e02100, p22250, p23250,
                  cmbtp, ptax_was, benefit_value_total, ubi,
                  expanded_income):
     """
     Calculates expanded_income from component income types.
     """
-    # - prepare variables used to adjust taxable IRA/pension distributions
-    taxable_IRA_distributions = e01400
-    total_pension_income = e01500  # total "pensions and annuities"; this
-    # amount includes defined-contribution (DC) pension account distributions
-    # (from 401(k) plans, e.g.) plus defined-benefit (DB) pension benefits
-    taxable_pension_income = e01700  # taxable portion of total_pension_income
-    pencon = pencon_p + pencon_s  # salary-reduction contributions to
-    # tax-favored employer-sponsored DC pension plans; this amount is
-    # not included in the IRS-SOI PUF earnings, e00200, variable
-    # - adjust taxable distributions for pension contributions in same year
-    taxable_ira_plus_pen = taxable_IRA_distributions + taxable_pension_income
-    if taxable_ira_plus_pen > 0. and pencon > 0.:
-        # adjust IRA distributions first because they include
-        # no DB benefits and no non-taxable DC plan distributions
-        if pencon <= taxable_IRA_distributions:
-            ira_adjustment = pencon
-            pen_adjustment = 0.
-        else:
-            ira_adjustment = taxable_IRA_distributions
-            unadjusted_pencon = pencon - ira_adjustment
-            if unadjusted_pencon <= taxable_pension_income:
-                pen_adjustment = unadjusted_pencon
-            else:
-                pen_adjustment = taxable_pension_income
-        taxable_IRA_distributions -= ira_adjustment
-        total_pension_income -= pen_adjustment
+    # - specify employee salary-reduction contributions to tax-favored
+    # employer-sponsored defined-contribution (DC) pension plans (this amount
+    # is not included in the IRS-SOI PUF earnings, e00200, variable):
+    p_cont = pencon_p + pencon_s
+    # - specify distributions from pension plans:
+    p_dist = e01400 + e01500
+    # where e01400 is taxable IRA distributions
+    # and e01500 is total "pensions and annuities", which includes
+    # DC pension account distributions (from 401(k) plans, for example) plus
+    # defined-benefit (DB) pension benefits
+    # - specify pension double-count amount:
+    p_dcnt = min(p_cont, p_dist)
+    # where p_dcnt is arguably overestimated when p_dist represents DB benefits
     # - specify expanded_income
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
-        pencon +  # contributions to tax-favored employer-sponsored DC plans
+        p_cont +  # see above for definition
         e00300 +  # taxable interest income
         e00400 +  # non-taxable interest income
         e00600 +  # dividends
@@ -1896,8 +1883,7 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         e00900 +  # Sch C business net income/loss
         e01100 +  # capital gain distributions not reported on Sch D
         e01200 +  # Form 4797 other net gain/loss
-        taxable_IRA_distributions +  # see above for definition
-        total_pension_income +  # see above for definition
+        p_dist +  # see above for definition
         e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
         e02100 +  # Sch F farm net income/loss
         p22250 +  # Sch D: net short-term capital gain/loss
@@ -1909,6 +1895,7 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         # the BenefitPrograms function in this file for details on
         # exactly how the benefit_value_total variable is computed
     )
+    expanded_income -= p_dcnt  # eliminate pension-related double-counting
     return expanded_income
 
 
