@@ -31,6 +31,9 @@ for a complete commit history.
 - Fix negative/zero/positive split of bottom decile in distribution and difference tables
   [[#2192](https://github.com/PSLmodels/Tax-Calculator/pull/2192)
   by Martin Holmer]
+- Fix pension-related double-counting in construction of `expanded_income` variable
+  [[#2194](https://github.com/PSLmodels/Tax-Calculator/pull/2194)
+  by Martin Holmer with need pointed out by Alan Viard]
 
 
 2018-12-14 Release 0.24.0
