@@ -9,7 +9,10 @@ Such policy reform files can then be uploaded to the [TaxBrain
 webapp](https://www.ospc.org/taxbrain/file/) for analysis, or be
 analyzed on your local computer using the `tc` CLI (command-line
 interface) to Tax-Calculator, as described in the [user
-guide](https://PSLmodels.github.io/Tax-Calculator/index.html#cli).
+guide](https://PSLmodels.github.io/Tax-Calculator/index.html#cli),
+or by writing Python scripts that import the `taxcalc` package, as
+described in the
+[cookbook](https://PSLmodels.github.io/Tax-Calculator/cookbook.html).
 
 [This
 document](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/REFORMS.md#how-to-specify-a-tax-reform-in-a-json-policy-reform-file)

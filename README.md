@@ -62,9 +62,16 @@ Getting Started
 The first step for everyone (users and developers) is to open a free
 GitHub account so that you can communicate with Tax-Calculator
 developers.  This is by far the easiest way to ask questions, make
-suggestions, or report bugs.  You can create an account at the [Join
+suggestions, or report bugs.  Note only does this put you into direct
+contact with Tax-Calculator develops, it allows the community of more
+experienced users, all of whom are watching the Tax-Calculator GitHub
+repository, to answer your questions.  You can create an account at
+the [Join
 GitHub](https://github.com/join?source=experiment-header-dropdowns)
-webpage.
+webpage.  And then you can specify how you want to "watch" the
+Tax-Calculator repository by clicking on the Watch button in the
+upper-right corner of the [Tax-Calculator main
+page](https://github.com/PSLmodels/Tax-Calculator).
 
 The second step is to get familiar with Tax-Caclulator code by reading
 the [code
