@@ -38,7 +38,7 @@ class Policy(Parameters):
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     LAST_KNOWN_YEAR = 2017  # last year for which indexed param vals are known
     # should increase LAST_KNOWN_YEAR by one every calendar year
-    LAST_BUDGET_YEAR = 2027  # last extrapolation year
+    LAST_BUDGET_YEAR = 2028  # last extrapolation year
     # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
