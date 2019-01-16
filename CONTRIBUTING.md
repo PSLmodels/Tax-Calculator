@@ -14,6 +14,9 @@ terminology (often from this [glossary of GitHub
 terms](https://help.github.com/articles/github-glossary/). Following
 the next steps will get you up and running and contributing to
 Tax-Calculator even if you've never used anything like Git and GitHub.
+But if you are unfamiliar with the concept of version control, you
+should read an introductory tutorial online.  A good tutorial can be found
+[here](https://homes.cs.washington.edu/~mernst/advice/version-control.html).
 
 If you have already completed the [Setup Python](#setup-python) and
 [Setup Git](#setup-Git) sections, please skip to [Workflow](#workflow).
