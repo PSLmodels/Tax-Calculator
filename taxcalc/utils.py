@@ -163,6 +163,7 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
     and pos income_measure ) and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
+    # pylint: disable=too-many-locals
     assert isinstance(dframe, pd.DataFrame)
     assert income_measure in dframe
     if decile_details and num_quantiles != 10:
@@ -187,8 +188,13 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
     num_bins = num_quantiles
     if decile_details:
         assert bin_edges[1] > 1e-9  # bin_edges[1] is top of bottom decile
-        bin_edges.insert(1, 1e-9)  # top of zeros
-        bin_edges.insert(1, -1e-9)  # top of negatives
+        neg_im = np.less_equal(dframe[income_measure], -1e-9)
+        neg_wght = dframe['s006'][neg_im].sum()
+        zer_im = np.logical_and(np.greater(dframe[income_measure], -1e-9),
+                                np.less(dframe[income_measure], 1e-9))
+        zer_wght = dframe['s006'][zer_im].sum()
+        bin_edges.insert(1, neg_wght + zer_wght)  # top of zeros
+        bin_edges.insert(1, neg_wght)  # top of negatives
         bin_edges.insert(-1, bin_edges[-2] + 0.5 * bin_width)  # top of 90-95
         bin_edges.insert(-1, bin_edges[-2] + 0.4 * bin_width)  # top of 95-99
         num_bins += 4
