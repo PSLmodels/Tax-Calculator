@@ -26,6 +26,9 @@ for a complete commit history.
   by Martin Holmer with data from Anderson Frailey], which requires new `puf.csv` input file (see [taxdata pull request 296](https://github.com/PSLmodels/taxdata/pull/296) for details) with this information:
   * Byte size: 56415704
   * MD5 checksum: 4aa15435c319bf5e4d3427faf52384c0
+- Add new data files generated in [taxdata pull request 297](https://github.com/PSLmodels/taxdata/pull/297) using the August-2018 CBO ten-year projection
+  [[#2196](https://github.com/PSLmodels/Tax-Calculator/pull/2196)
+  by Martin Holmer with data from Anderson Frailey]
 
 **Bug Fixes**
 - Fix negative/zero/positive split of bottom decile in distribution and difference tables

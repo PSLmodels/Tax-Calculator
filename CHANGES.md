@@ -7,6 +7,8 @@ Changes in release 0.25.0 on 2019-01-??
 
 - Remove Behavior class from Tax-Calculator and rely instead on the Behavioral-Responses behresp package.
 
+- Add new economic-variable growth factors and sample weights based on using the August-2018 CBO ten-year projection
+
 
 Changes in release 0.24.0 on 2018-12-14
 ---------------------------------------
