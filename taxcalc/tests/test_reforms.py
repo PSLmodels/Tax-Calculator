@@ -191,71 +191,128 @@ def fixture_reforms_dict(tests_path):
     return json.loads(rjson)
 
 
+REFORMS_INIT_FILENAME = 'reforms_actual_init'
 NUM_REFORMS = 64
 NUM_VOID_REFORMS = 1
 
-@pytest.mark.one
+
+def write_actual(rid, tests_path, baseline_2017_law,
+                 reforms_dict, puf_subsample):
+    """
+    Write actual results for specified reform in reforms_dict to file.
+    """
+    # skip void reforms
+    if reforms_dict[str(rid)] == dict():
+        return
+    # quit if test_reforms_init has not finished
+    initfile_path = os.path.join(tests_path, REFORMS_INIT_FILENAME)
+    if not os.path.isfile(initfile_path):
+        return
+    # conduct test for rid writing actual results to a file
+    actual = reform_results(rid, reforms_dict[str(rid)],
+                            puf_subsample, baseline_2017_law)
+    afile_path = os.path.join(tests_path,
+                              'reform_actual_{}.csv'.format(rid))
+    with open(afile_path, 'w') as afile:
+        afile.write('rid,res1,res2,res3,res4\n')
+        afile.write('{}\n'.format(actual))
+
+
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
-def test_reform(rid, tests_path, baseline_2017_law,
-                reforms_dict, puf_subsample):
+@pytest.mark.parametrize('rid', [i for i in range(0, NUM_REFORMS + 1)])
+def test_reform1(rid, tests_path, baseline_2017_law,
+                 reforms_dict, puf_subsample):
     """
-    Compare actual and expected results for specified reform in reforms_dict.
+    First round of writing actual reform results to files.
     """
-    # pylint: disable=too-many-locals
-    # remove actual files at start
-    actfile_path = os.path.join(tests_path, 'reforms_actual.csv')
-    afiles = os.path.join(tests_path, 'reform_actual_*.csv')
-    if rid == 1:
-        if os.path.isfile(actfile_path):
-            os.remove(actfile_path)
+    if rid != 0:
+        time.sleep(2)
+    if rid == 0:
+        afiles = os.path.join(tests_path, 'reform_actual_*.csv')
         for afile in glob.glob(afiles):
             os.remove(afile)
-    # conduct test for rid writing actual results to a file
-    if reforms_dict[str(rid)] != dict():
-        actual = reform_results(rid, reforms_dict[str(rid)],
-                                puf_subsample, baseline_2017_law)
+        initfile_path = os.path.join(tests_path, REFORMS_INIT_FILENAME)
+        with open(initfile_path, 'w') as initfile:
+            initfile.write('test_reform_init\n')
+    else:
+        write_actual(rid, tests_path, baseline_2017_law,
+                     reforms_dict, puf_subsample)
+
+
+@pytest.mark.requires_pufcsv
+@pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
+def test_reform2(rid, tests_path, baseline_2017_law,
+                 reforms_dict, puf_subsample):
+    """
+    Second round of writing actual reform results to files.
+    """
+    # skip void reforms
+    if reforms_dict[str(rid)] == dict():
+        return
+    # fail if test_reforms_init has not finished
+    initfile_path = os.path.join(tests_path, REFORMS_INIT_FILENAME)
+    if not os.path.isfile(initfile_path):
+        assert 'reforms_actual_init file does not exist' == ''
+    # skip test if 'reform_actual_*.csv' file already exists
+    afile_path = os.path.join(tests_path,
+                              'reform_actual_{}.csv'.format(rid))
+    if os.path.isfile(afile_path):
+        return
+    # write actual results
+    write_actual(rid, tests_path, baseline_2017_law,
+                 reforms_dict, puf_subsample)
+
+
+@pytest.mark.requires_pufcsv
+def test_reform_summarize(tests_path, reforms_dict):
+    """
+    Summarize files after test_reform1/2 execute (see above).
+    """
+    # pylint: disable=too-many-locals
+    # check that all actual files have been written
+    number_of_reforms = NUM_REFORMS - NUM_VOID_REFORMS
+    actfiles_path = os.path.join(tests_path, 'reform_actual_*.csv')
+    wait_secs = 2
+    num_waits = 10
+    for _ in range(0, num_waits):
+        time.sleep(wait_secs)
+        if len(glob.glob(actfiles_path)) == number_of_reforms:
+            break  # out of for loop
+    assert len(glob.glob(actfiles_path)) == number_of_reforms
+    # compare actual and expected results
+    # ... read expected results
+    efile_path = os.path.join(tests_path, 'reforms_expect.csv')
+    with open(efile_path, 'r') as efile:
+        expect_lines = efile.readlines()
+    # ... compare actual and expected results for each test
+    differences = False
+    actfile_path = os.path.join(tests_path, 'reforms_actual.csv')
+    actfile = open(actfile_path, 'w')
+    actfile.write('rid,res1,res2,res3,res4\n')
+    idx = 1  # expect_lines list index
+    for rnum in range(1, NUM_REFORMS + 1):
+        if reforms_dict[str(rnum)] != dict():
+            afile_path = os.path.join(tests_path,
+                                      'reform_actual_{}.csv'.format(rnum))
+            with open(afile_path, 'r') as afile:
+                actual_lines = afile.readlines()
+            actfile.write(actual_lines[1])
+            actual = [float(itm) for itm in actual_lines[1].split(',')]
+            expect = [float(itm) for itm in expect_lines[idx].split(',')]
+            if not np.allclose(actual, expect, atol=0.0, rtol=0.0):
+                differences = True
+            idx += 1
+    actfile.close()
+    # remove 'reforms_actual.csv' file if no actual-vs-expect differences
+    if differences:
+        assert 'reforms_actual.csv' == 'reform_expect.csv'
+    else:
+        os.remove(actfile_path)
+    # wait awhile, then remove reforms_actual_init & reform_actual_*.csv files
+    time.sleep(20)
+    os.remove(os.path.join(tests_path, REFORMS_INIT_FILENAME))
+    for rnum in range(1, NUM_REFORMS + 1):
         afile_path = os.path.join(tests_path,
-                                  'reform_actual_{}.csv'.format(rid))
-        with open(afile_path, 'w') as afile:
-            afile.write('rid,res1,res2,res3,res4\n')
-            afile.write('{}\n'.format(actual))
-    # compare actual and expected results at end
-    if rid == NUM_REFORMS:
-        # ... wait until all reform_actual_*.csv files are written
-        number_of_reforms = NUM_REFORMS - NUM_VOID_REFORMS
-        wait_secs = 2
-        max_waits = 20
-        for _ in range(0, max_waits):
-            time.sleep(wait_secs)
-            if len(glob.glob(afiles)) == number_of_reforms:
-                break   # out of for loop
-        assert len(glob.glob(afiles)) == number_of_reforms
-        # ... read expected results
-        efile_path = os.path.join(tests_path, 'reforms_expect.csv')
-        with open(efile_path, 'r') as efile:
-            expect_lines = efile.readlines()
-        # ... compare actual and expected results for each test
-        differences = False
-        actfile = open(actfile_path, 'w')
-        actfile.write('rid,res1,res2,res3,res4\n')
-        idx = 1  # expect_lines list index
-        for rnum in range(1, NUM_REFORMS + 1):
-            if reforms_dict[str(rnum)] != dict():
-                afile_path = os.path.join(tests_path,
-                                          'reform_actual_{}.csv'.format(rnum))
-                with open(afile_path, 'r') as afile:
-                    actual_lines = afile.readlines()
-                os.remove(afile_path)
-                actfile.write(actual_lines[1])
-                actual = [float(itm) for itm in actual_lines[1].split(',')]
-                expect = [float(itm) for itm in expect_lines[idx].split(',')]
-                if not np.allclose(actual, expect, atol=0.0, rtol=0.0):
-                    differences = True
-                idx += 1
-        actfile.close()
-        # ... remove 'reforms_actual.csv' file if no differences
-        if differences:
-            assert 'reforms_actual.csv' == 'reform_expect.csv'
-        else:
-            os.remove(actfile_path)
+                                  'reform_actual_{}.csv'.format(rnum))
+        if os.path.isfile(afile_path):
+            os.remove(afile_path)
