@@ -8,6 +8,8 @@ Test example JSON policy reform files in taxcalc/reforms directory
 import os
 import glob
 import json
+import time
+import numpy as np
 import pytest
 # pylint: disable=import-error
 from taxcalc import Calculator, Policy, Records, DIST_TABLE_COLUMNS
@@ -123,9 +125,9 @@ def test_reform_json_and_output(tests_path):
         raise ValueError(msg)
 
 
-def reform_results(reform_dict, puf_data, reform_2017_law):
+def reform_results(rid, reform_dict, puf_data, reform_2017_law):
     """
-    Return actual results of the reform specified in reform_dict.
+    Return actual results of the reform specified by rid and reform_dict.
     """
     # pylint: disable=too-many-locals
     rec = Records(data=puf_data)
@@ -162,7 +164,7 @@ def reform_results(reform_dict, puf_data, reform_2017_law):
         calc1.increment_year()
         calc2.increment_year()
     # write actual results to actual_str
-    actual_str = 'Tax-Calculator'
+    actual_str = '{}'.format(rid)
     for iyr in range(0, num_years):
         actual_str += ',{:.1f}'.format(results[iyr])
     return actual_str
@@ -190,18 +192,70 @@ def fixture_reforms_dict(tests_path):
 
 
 NUM_REFORMS = 64
+NUM_VOID_REFORMS = 1
 
-
+@pytest.mark.one
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
-def test_reform(rid, baseline_2017_law, reforms_dict, puf_subsample):
+def test_reform(rid, tests_path, baseline_2017_law,
+                reforms_dict, puf_subsample):
     """
     Compare actual and expected results for specified reform in reforms_dict.
     """
-    reform_id = str(rid)
-    reform_dict = reforms_dict[reform_id]
-    if reform_dict != dict():
-        actual = reform_results(reforms_dict[reform_id],
-                                puf_subsample,
-                                baseline_2017_law)
-        assert actual == reforms_dict[reform_id]['expected']
+    # pylint: disable=too-many-locals
+    # remove actual files at start
+    actfile_path = os.path.join(tests_path, 'reforms_actual.csv')
+    afiles = os.path.join(tests_path, 'reform_actual_*.csv')
+    if rid == 1:
+        if os.path.isfile(actfile_path):
+            os.remove(actfile_path)
+        for afile in glob.glob(afiles):
+            os.remove(afile)
+    # conduct test for rid writing actual results to a file
+    if reforms_dict[str(rid)] != dict():
+        actual = reform_results(rid, reforms_dict[str(rid)],
+                                puf_subsample, baseline_2017_law)
+        afile_path = os.path.join(tests_path,
+                                  'reform_actual_{}.csv'.format(rid))
+        with open(afile_path, 'w') as afile:
+            afile.write('rid,res1,res2,res3,res4\n')
+            afile.write('{}\n'.format(actual))
+    # compare actual and expected results at end
+    if rid == NUM_REFORMS:
+        # ... wait until all reform_actual_*.csv files are written
+        number_of_reforms = NUM_REFORMS - NUM_VOID_REFORMS
+        wait_secs = 2
+        max_waits = 20
+        for _ in range(0, max_waits):
+            time.sleep(wait_secs)
+            if len(glob.glob(afiles)) == number_of_reforms:
+                break   # out of for loop
+        assert len(glob.glob(afiles)) == number_of_reforms
+        # ... read expected results
+        efile_path = os.path.join(tests_path, 'reforms_expect.csv')
+        with open(efile_path, 'r') as efile:
+            expect_lines = efile.readlines()
+        # ... compare actual and expected results for each test
+        differences = False
+        actfile = open(actfile_path, 'w')
+        actfile.write('rid,res1,res2,res3,res4\n')
+        idx = 1  # expect_lines list index
+        for rnum in range(1, NUM_REFORMS + 1):
+            if reforms_dict[str(rnum)] != dict():
+                afile_path = os.path.join(tests_path,
+                                          'reform_actual_{}.csv'.format(rnum))
+                with open(afile_path, 'r') as afile:
+                    actual_lines = afile.readlines()
+                os.remove(afile_path)
+                actfile.write(actual_lines[1])
+                actual = [float(itm) for itm in actual_lines[1].split(',')]
+                expect = [float(itm) for itm in expect_lines[idx].split(',')]
+                if not np.allclose(actual, expect, atol=0.0, rtol=0.0):
+                    differences = True
+                idx += 1
+        actfile.close()
+        # ... remove 'reforms_actual.csv' file if no differences
+        if differences:
+            assert 'reforms_actual.csv' == 'reform_expect.csv'
+        else:
+            os.remove(actfile_path)
