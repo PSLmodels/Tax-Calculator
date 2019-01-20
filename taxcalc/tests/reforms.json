@@ -286,7 +286,7 @@
       "value": {},
       "name": "No reform",
       "output_type": "iitax",
-      "compare_with": {"Logic": [0, 0, 0, 0]}
+      "compare_with": {"[ADD NEXT REFORM AS 31] Logic:": [0, 0, 0, 0]}
   },
 
   "32": {
