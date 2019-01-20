@@ -8,6 +8,8 @@ Test example JSON policy reform files in taxcalc/reforms directory
 import os
 import glob
 import json
+import time
+import numpy as np
 import pytest
 # pylint: disable=import-error
 from taxcalc import Calculator, Policy, Records, DIST_TABLE_COLUMNS
@@ -123,9 +125,9 @@ def test_reform_json_and_output(tests_path):
         raise ValueError(msg)
 
 
-def reform_results(reform_dict, puf_data, reform_2017_law):
+def reform_results(rid, reform_dict, puf_data, reform_2017_law):
     """
-    Return actual results of the reform specified in reform_dict.
+    Return actual results of the reform specified by rid and reform_dict.
     """
     # pylint: disable=too-many-locals
     rec = Records(data=puf_data)
@@ -162,7 +164,7 @@ def reform_results(reform_dict, puf_data, reform_2017_law):
         calc1.increment_year()
         calc2.increment_year()
     # write actual results to actual_str
-    actual_str = 'Tax-Calculator'
+    actual_str = '{}'.format(rid)
     for iyr in range(0, num_years):
         actual_str += ',{:.1f}'.format(results[iyr])
     return actual_str
@@ -192,16 +194,91 @@ def fixture_reforms_dict(tests_path):
 NUM_REFORMS = 64
 
 
+@pytest.yield_fixture(scope='module', name='test_reforms_init')
+def fixture_test_reforms(tests_path):
+    """
+    Execute logic only once rather than on each pytest-xdist node.
+    """
+    # pylint: disable=too-many-locals
+    handling_logic = ('PYTEST_XDIST_WORKER' not in os.environ or
+                      os.environ['PYTEST_XDIST_WORKER'] == 'gw0')
+    initfile = os.path.join(tests_path, 'reforms_actual_init')
+    actfile_path = os.path.join(tests_path, 'reforms_actual.csv')
+    afiles = os.path.join(tests_path, 'reform_actual_*.csv')
+    wait_secs = 1
+    max_waits = 20
+    # test_reforms setup
+    if handling_logic:
+        # remove reforms_actual.csv file if exists
+        if os.path.isfile(actfile_path):
+            os.remove(actfile_path)
+        # remove all reform_actual_*.csv files
+        for afile in glob.glob(afiles):
+            os.remove(afile)
+        # create reforms_actual_init file
+        with open(initfile, 'w') as ifile:
+            ifile.write('test_reforms initialization done')
+    else:
+        num_waits = 0
+        while not os.path.isfile(initfile):
+            time.sleep(wait_secs)
+            num_waits += 1
+            assert num_waits <= max_waits
+    # yield while tests execute
+    yield True
+    # test_reforms teardown
+    if handling_logic:
+        # wait for all actual results files to be written
+        num_waits = 0
+        while len(glob.glob(afiles)) != NUM_REFORMS:
+            time.sleep(wait_secs)
+            num_waits += 1
+            assert num_waits <= max_waits
+        # compare actual and expected results for each test
+        # ... read expected results
+        efile_path = os.path.join(tests_path, 'reforms_expect.csv')
+        with open(efile_path, 'r') as efile:
+            expect_lines = efile.readlines()
+        # ... compare actual and expected results for each test
+        diffs = False
+        actfile = open(actfile_path, 'w')
+        actfile.write('rid,res1,res2,res3,res4\n')
+        idx = 1  # expect_lines list index
+        for rnum in range(1, NUM_REFORMS + 1):
+            afile_path = os.path.join(tests_path,
+                                      'reform_actual_{}.csv'.format(rnum))
+            with open(afile_path, 'r') as afile:
+                actual_lines = afile.readlines()
+            os.remove(afile_path)
+            actfile.write(actual_lines[1])
+            actual = [float(itm) for itm in actual_lines[1].split(',')]
+            expect = [float(itm) for itm in expect_lines[idx].split(',')]
+            if not np.allclose(actual, expect, atol=0.0, rtol=0.0):
+                diffs = True
+            idx += 1
+        actfile.close()
+        # remove init file
+        os.remove(initfile)
+        # remove 'reforms_actual.csv' file if no actual-vs-expect diffs
+        if diffs:
+            assert 'reforms_actual.csv' == 'reform_expect.csv'
+        else:
+            os.remove(actfile_path)
+
+
 @pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
-def test_reform(rid, baseline_2017_law, reforms_dict, puf_subsample):
+def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
+                 reforms_dict, puf_subsample):
     """
-    Compare actual and expected results for specified reform in reforms_dict.
+    Write actual reform results to files.
     """
-    reform_id = str(rid)
-    reform_dict = reforms_dict[reform_id]
-    if reform_dict != dict():
-        actual = reform_results(reforms_dict[reform_id],
-                                puf_subsample,
-                                baseline_2017_law)
-        assert actual == reforms_dict[reform_id]['expected']
+    # pylint: disable=too-many-arguments
+    assert test_reforms_init is True
+    actual = reform_results(rid, reforms_dict[str(rid)],
+                            puf_subsample, baseline_2017_law)
+    afile_path = os.path.join(tests_path,
+                              'reform_actual_{}.csv'.format(rid))
+    with open(afile_path, 'w') as afile:
+        afile.write('rid,res1,res2,res3,res4\n')
+        afile.write('{}\n'.format(actual))
