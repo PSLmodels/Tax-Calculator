@@ -281,6 +281,12 @@
   },
 
   "31": {
+      "baseline": "policy_current_law.json",
+      "start_year": 2015,
+      "value": {},
+      "name": "No reform",
+      "output_type": "iitax",
+      "compare_with": {"Logic": [0, 0, 0, 0]}
   },
 
   "32": {
