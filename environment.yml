@@ -7,7 +7,7 @@ dependencies:
 - numba
 - pytest=4.1.0
 - pytest-pep8
-- pytest-xdist
+- pytest-xdist=1.25.0
 - pycodestyle
 - pylint
 - coverage

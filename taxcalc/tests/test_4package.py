@@ -33,7 +33,7 @@ def test_for_consistency(tests_path):
     dev_pkgs = set([
         'pytest=4.1.0',
         'pytest-pep8',
-        'pytest-xdist',
+        'pytest-xdist=1.25.0',
         'pycodestyle',
         'pylint',
         'coverage'
