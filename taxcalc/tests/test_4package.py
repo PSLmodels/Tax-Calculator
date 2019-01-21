@@ -31,9 +31,9 @@ def test_for_consistency(tests_path):
     and conda.recipe/meta.yaml requirements.
     """
     dev_pkgs = set([
-        'pytest=4.1.0',
+        'pytest',
         'pytest-pep8',
-        'pytest-xdist=1.25.0',
+        'pytest-xdist',
         'pycodestyle',
         'pylint',
         'coverage'
