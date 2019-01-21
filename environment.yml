@@ -5,7 +5,7 @@ dependencies:
 - "pandas>=0.23"
 - "bokeh>=0.13"
 - numba
-- pytest
+- pytest=4.1.0
 - pytest-pep8
 - pytest-xdist
 - pycodestyle
