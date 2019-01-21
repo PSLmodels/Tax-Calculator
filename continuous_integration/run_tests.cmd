@@ -4,6 +4,6 @@ call activate %CONDA_ENV%
 
 set PYTHONFAULTHANDLER=1
 
-set PYTEST=pytest --capture=sys
+set PYTEST=python -m pytest --capture=sys
 
 %PYTEST% -v -m "not requires_pufcsv and not pre_release and not local"
