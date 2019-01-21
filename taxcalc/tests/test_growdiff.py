@@ -19,7 +19,9 @@ def test_update_and_apply_growdiff():
     diffs = {2014: {'_AWAGE': [0.01]},
              2016: {'_AWAGE': [0.02]}}
     gdiff.update_growdiff(diffs)
-    expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02] + [0.02]*10
+    expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02]
+    extra_years = GrowDiff.DEFAULT_NUM_YEARS - len(expected_wage_diffs)
+    expected_wage_diffs.extend([0.02] * extra_years)
     assert np.allclose(gdiff._AWAGE, expected_wage_diffs, atol=0.0, rtol=0.0)
     # apply growdiff to GrowFactors instance
     gf = GrowFactors()
