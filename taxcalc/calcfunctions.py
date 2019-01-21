@@ -1858,10 +1858,23 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     """
     Calculates expanded_income from component income types.
     """
+    # - specify employee salary-reduction contributions to tax-favored
+    # employer-sponsored defined-contribution (DC) pension plans (this amount
+    # is not included in the IRS-SOI PUF earnings, e00200, variable):
+    p_cont = pencon_p + pencon_s
+    # - specify distributions from pension plans:
+    p_dist = e01400 + e01500
+    # where e01400 is taxable IRA distributions
+    # and e01500 is total "pensions and annuities", which includes
+    # DC pension account distributions (from 401(k) plans, for example) plus
+    # defined-benefit (DB) pension benefits
+    # - specify pension double-count amount:
+    p_dcnt = min(p_cont, p_dist)
+    # where p_dcnt is arguably overestimated when p_dist represents DB benefits
+    # - specify expanded_income
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
-        pencon_p +  # DC pension contributions for taxpayer
-        pencon_s +  # DC pension contributions for spouse
+        p_cont +  # see above for definition
         e00300 +  # taxable interest income
         e00400 +  # non-taxable interest income
         e00600 +  # dividends
@@ -1870,17 +1883,19 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         e00900 +  # Sch C business net income/loss
         e01100 +  # capital gain distributions not reported on Sch D
         e01200 +  # Form 4797 other net gain/loss
-        e01400 +  # taxable IRA distributions
-        e01500 +  # total pension and annuity income
+        p_dist +  # see above for definition
         e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
         e02100 +  # Sch F farm net income/loss
         p22250 +  # Sch D: net short-term capital gain/loss
         p23250 +  # Sch D: net long-term capital gain/loss
         cmbtp +  # other AMT taxable income items from Form 6251
         0.5 * ptax_was +  # employer share of FICA taxes
-        benefit_value_total +  # consumption value of all benefits received
-        ubi  # total UBI benefit
+        ubi +  # total UBI benefit
+        benefit_value_total  # consumption value of all benefits received; see
+        # the BenefitPrograms function in this file for details on
+        # exactly how the benefit_value_total variable is computed
     )
+    expanded_income -= p_dcnt  # eliminate pension-related double-counting
     return expanded_income
 
 

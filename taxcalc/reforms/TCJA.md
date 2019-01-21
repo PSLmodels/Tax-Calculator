@@ -63,17 +63,10 @@ see below at the heading **A Round-Trip Compound Reform**.
 
 **4. Does TCJA current-law policy incorporate any behavior responses?**
 
-No, not yet.
+Beginning with release 0.25.0, Tax-Calculator incorporates a new CBO
+budget outlook that presumably includes the effects of any behavioral
+changes and growth effects that one might expect to be caused by TCJA.
 
-Until CBO releases a new budget outlook and [taxdata repository](https://github.com/open-source-economics/taxdata) incorporates that new budget outlook, any behavioral changes that one might expect to be caused by TCJA will not be incorporated in Tax-Calculator's current-law baseline. This is because taxdata relies on CBO for baseline projections, and CBO has not yet produced baseline projections that incorporate TCJA and are useable by taxdata for an update.
-
-The Tax-Calculator project could, conceivably, work around this issue
-ourselves, but it would be a significant amount of work that would
-only be used for a short period of time, if at all. (It would also
-require the Tax-Calculator project to take a stances on behavioral
-assumptions, which we have avoided doing so far.) Users can probably
-work around this issue themselves with some creativity, but we haven't
-thought through how to do it yet.
 
 TCJA and pre-TCJA Comparisons
 -----------------------------
