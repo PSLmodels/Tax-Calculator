@@ -12,7 +12,7 @@ environment:
   matrix:
     # Since appveyor is quite slow, we only use a single configuration
     - PYTHON: "3.6"
-      PYTHON_ARCH: "64"
+      ARCH: "64"
       CONDA_ENV: taxcalc-dev
 
 init:
