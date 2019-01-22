@@ -150,7 +150,8 @@ def test_multi_year_reform():
     # this parameter uses a different indexing rate
     assert np.allclose(getattr(pol, '_SS_Earnings_c'),
                        Policy._expand_array(
-                           np.array([113700, 117000, 118500, 118500, 127200],
+                           np.array([113700, 117000, 118500, 118500, 127200,
+                                     128400, 132900],
                                     dtype=np.float64),
                            False, False,
                            inflate=True,

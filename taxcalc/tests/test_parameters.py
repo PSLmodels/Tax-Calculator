@@ -178,8 +178,12 @@ def test_json_file_contents(tests_path, fname):
                 if len(rowlabel) != (known_years - 1):
                     error = True
             else:
-                if len(rowlabel) != known_years:
-                    error = True
+                if pname == '_SS_Earnings_c':
+                    if len(rowlabel) != known_years + 2:
+                        error = True
+                else:
+                    if len(rowlabel) != known_years:
+                        error = True
             if error:
                 msg = 'param:<{}>; len(rowlabel)={}; known_years={}'
                 fail = msg.format(pname, len(rowlabel), known_years)
