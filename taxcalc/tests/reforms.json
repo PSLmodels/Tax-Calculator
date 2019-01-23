@@ -555,7 +555,7 @@
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"_DependentCredit_Child_c": [500]},
-      "name": "Set Dependend Credit for Children at $500",
+      "name": "Set Dependent Credit for Children at $500",
       "output_type": "iitax",
       "compare_with": {}
   },
@@ -565,7 +565,7 @@
       "start_year": 2017,
       "value": {"_DependentCredit_before_CTC": [true],
                 "_DependentCredit_Child_c": [500]},
-      "name": "Set Dependend Credit for Children at $500 AND stack dependent credit before CTC",
+      "name": "Set Dependent Credit for Children at $500 AND stack dependent credit before CTC",
       "output_type": "iitax",
       "compare_with": {}
   },

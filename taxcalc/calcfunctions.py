@@ -1247,13 +1247,11 @@ def ChildDepTaxCredit(n24, MARS, c00100, exact,
     dep_credit = (DependentCredit_Child_c * n24 +
                   DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
                   FilerCredit_c[MARS - 1])
-    if dep_credit > 0. and CTC_prt > 0.:
-        thresh = CTC_ps[MARS - 1] + base_ctc / CTC_prt
-        if modAGI > thresh:
-            excess = modAGI - thresh
-            if exact == 1:  # exact calculation as on tax forms
-                excess = 1000. * math.ceil(excess / 1000.)
-            dep_credit = max(0., dep_credit - CTC_prt * excess)
+    if dep_credit > 0. and modAGI > CTC_ps[MARS - 1]:
+        excess = modAGI - CTC_ps[MARS - 1]
+        if exact == 1:  # exact calculation as on tax forms
+            excess = 1000. * math.ceil(excess / 1000.)
+        dep_credit = max(0., dep_credit - CTC_prt * excess)
     return (prectc, dep_credit)
 
 
