@@ -5148,7 +5148,7 @@
 
     "_DependentCredit_Child_c": {
         "long_name": "Nonrefundable credit for child dependents on top of the child tax credit",
-        "description": "This nonrefundable credit is applied to child dependents and begins phasing out after the CTC phaseout ends.",
+        "description": "This nonrefundable credit is applied to child dependents and phases out exactly like the CTC amount.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "",
@@ -5198,7 +5198,7 @@
 
     "_DependentCredit_Nonchild_c": {
         "long_name": "Nonrefundable credit for non-child dependents on top of the child tax credit",
-        "description": "This nonrefundable credit is applied to non-child dependents and begins phasing out after the CTC phaseout ends.",
+        "description": "This nonrefundable credit is applied to non-child dependents and phases out exactly like the CTC amount.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child Tax Credit",
         "irs_ref": "",
