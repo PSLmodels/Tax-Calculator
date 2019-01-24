@@ -27,11 +27,8 @@ def test_agg(tests_path, cps_fullsample):
     """
     # pylint: disable=too-many-statements,too-many-locals
     nyrs = 10
-    # create a baseline Policy object containing 2017_law.json parameters
-    pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
+    # create a baseline Policy object with current-law policy parameters
     baseline_policy = Policy()
-    baseline_policy.implement_reform(pre_tcja['policy'])
     # create a Records object (rec) containing all cps.csv input records
     recs = Records.cps_constructor(data=cps_fullsample)
     # create a Calculator object using baseline policy and cps records
