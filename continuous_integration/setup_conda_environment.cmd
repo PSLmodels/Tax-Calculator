@@ -20,6 +20,7 @@ conda create -n %CONDA_ENV% -q -y python=%PYTHON%
 call activate %CONDA_ENV%
 
 %CONDA% env update -f environment.yml
+%PIP_INSTALL% pillow
 
 @rem Display final environment (for reproducing)
 %CONDA% list
