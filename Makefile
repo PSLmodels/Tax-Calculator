@@ -38,6 +38,10 @@ clean:
 package:
 	@cd conda.recipe ; ./install_local_package.sh
 
+define pytest-setup
+rm -f taxcalc/tests/reforms_actual_init
+endef
+
 define pytest-cleanup
 find . -name *cache -maxdepth 1 -exec rm -r {} \;
 rm -f df-??-#-*
@@ -46,16 +50,19 @@ endef
 
 .PHONY=pytest-cps
 pytest-cps:
+	@$(pytest-setup)
 	@cd taxcalc ; pytest -n4 -m "not requires_pufcsv and not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest
 pytest:
+	@$(pytest-setup)
 	@cd taxcalc ; pytest -n4 -m "not pre_release"
 	@$(pytest-cleanup)
 
 .PHONY=pytest-all
 pytest-all:
+	@$(pytest-setup)
 	@cd taxcalc ; pytest -n4 -m ""
 	@$(pytest-cleanup)
 
