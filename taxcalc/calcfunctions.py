@@ -249,7 +249,7 @@ def Adj(e03150, e03210, c03260,
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
     """
-    # Form 2555 foreign earned income deduction is assumed to be zero
+    # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
     c02900 = ((1. - ALD_StudentLoan_hc) * e03210 +
               c03260 +
@@ -983,7 +983,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         dwks19 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
-    c05100 = c24580  # because no foreign earned income deduction
+    c05100 = c24580  # because foreign earned income exclusion is assumed zero
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     taxbc = c05700 + c05100
     return (dwks10, dwks13, dwks14, dwks19, c05700, taxbc)
@@ -1102,7 +1102,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
     Computes Net Investment Income Tax (NIIT) amount assuming that
     all annuity income is excluded from net investment income.
     """
-    modAGI = c00100  # no deducted foreign earned income to add
+    modAGI = c00100  # no foreign earned income exclusion to add
     if not NIIT_PT_taxed:
         NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
     else:  # do not subtract e26270 from e02000
@@ -1226,33 +1226,57 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 
 @iterate_jit(nopython=True)
-def ChildDepTaxCredit(n24, MARS, c00100, exact,
-                      CTC_c, CTC_ps, CTC_prt, prectc, nu05,
-                      CTC_c_under5_bonus, XTOT, num,
+def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05200,
+                      e07260, CR_ResidentialEnergy_hc,
+                      e07300, CR_ForeignTax_hc,
+                      c07180,
+                      c07230,
+                      e07240, CR_RetirementSavings_hc,
+                      c07200,
+                      CTC_c, CTC_ps, CTC_prt, exact,
                       DependentCredit_Child_c, DependentCredit_Nonchild_c,
-                      FilerCredit_c, dep_credit):
+                      CTC_c_under5_bonus, nu05, FilerCredit_c,
+                      prectc, c07220):
     """
-    Computes pre-CTC amount (prectc) and nonrefundable dependent credit.
+    Computes amounts on "Child Tax Credit and Credit for Other Dependents
+    Worksheet" in 2018 Publication 972, which pretain to these two
+    nonrefundable tax credits.
     """
-    modAGI = c00100  # no foreign earned income deduction to add to AGI
-    # calculate and phase-out pre-CTC amount
-    base_ctc = CTC_c * n24 + CTC_c_under5_bonus * nu05
-    prectc = base_ctc
-    if prectc > 0. and modAGI > CTC_ps[MARS - 1]:
+    # Worksheet Part 1
+    line1 = ((CTC_c + DependentCredit_Child_c) * n24 +
+             CTC_c_under5_bonus * nu05)
+    line2 = (DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
+             FilerCredit_c[MARS - 1])
+    line3 = line1 + line2
+    modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
+    if line3 > 0. and modAGI > CTC_ps[MARS - 1]:
         excess = modAGI - CTC_ps[MARS - 1]
         if exact == 1:  # exact calculation as on tax forms
             excess = 1000. * math.ceil(excess / 1000.)
-        prectc = max(0., prectc - CTC_prt * excess)
-    # calculate and phase-out dependent credit after pre-CTC is phased out
-    dep_credit = (DependentCredit_Child_c * n24 +
-                  DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
-                  FilerCredit_c[MARS - 1])
-    if dep_credit > 0. and modAGI > CTC_ps[MARS - 1]:
-        excess = modAGI - CTC_ps[MARS - 1]
-        if exact == 1:  # exact calculation as on tax forms
-            excess = 1000. * math.ceil(excess / 1000.)
-        dep_credit = max(0., dep_credit - CTC_prt * excess)
-    return (prectc, dep_credit)
+        line10 = max(0., line3 - CTC_prt * excess)
+    else:
+        line10 = line3
+    if line10 > 0.:
+        # Worksheet Part 2
+        line11 = c05200
+        line12 = (e07260 * (1. - CR_ResidentialEnergy_hc) +
+                  e07300 * (1. - CR_ForeignTax_hc) +
+                  c07180 +  # child & dependent care expense credit
+                  c07230 +  # education credit
+                  e07240 * (1. - CR_RetirementSavings_hc) +
+                  c07200)  # Schedule R credit
+        line13 = line11 - line12
+        line14 = 0.
+        line15 = max(0., line13 - line14)
+        line16 = min(line10, line15)  # credit is capped by tax liability
+    else:
+        line16 = 0.
+    if line1 > 0.:
+        prectc = line10  # post phaseout credit
+    else:
+        prectc = 0.
+    c07220 = line16  # combined nonrefundable CTC and ODTC amount
+    return (prectc, c07220)
 
 
 @iterate_jit(nopython=True)
