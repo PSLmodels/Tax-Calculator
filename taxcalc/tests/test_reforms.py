@@ -68,7 +68,7 @@ def test_reform_json_and_output(tests_path):
             exp_res = outfile.read()
         # check to see if act_res & exp_res have differences
         return not nonsmall_diffs(act_res.splitlines(True),
-                                  exp_res.splitlines(True))
+                                  exp_res.splitlines(True), small=1)
     # specify Records object containing cases data
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
