@@ -5856,7 +5856,7 @@
         "description": "The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.",
         "section_1": "Refundable Credits",
         "section_2": "Additional Child Tax Credit",
-        "irs_ref": "Form 2441, line 3, in-line.",
+        "irs_ref": "Form 8812, line 7, in-line.",
         "notes": "",
         "row_var": "FLPDYR",
         "row_label": ["2013",
