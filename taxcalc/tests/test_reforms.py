@@ -14,6 +14,7 @@ from taxcalc import Calculator, Policy, Records, DIST_TABLE_COLUMNS
 from taxcalc import nonsmall_diffs
 
 
+@pytest.mark.pre_release
 def test_reform_json_and_output(tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
@@ -67,8 +68,14 @@ def test_reform_json_and_output(tests_path):
         with open(base + '.out') as outfile:
             exp_res = outfile.read()
         # check to see if act_res & exp_res have differences
-        return not nonsmall_diffs(act_res.splitlines(True),
-                                  exp_res.splitlines(True))
+        diffs = nonsmall_diffs(act_res.splitlines(True),
+                               exp_res.splitlines(True), small=1)
+        dump = True
+        if dump and diffs:
+            print('{} ACTUAL:\n{}', base, act_res)
+            print('{} EXPECT:\n{}', base, exp_res)
+        return not diffs
+
     # specify Records object containing cases data
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')

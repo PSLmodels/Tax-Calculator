@@ -1041,7 +1041,7 @@
       "desc": "Personal exemption before phase-out",
       "form": {"2013-20??": "calculated variable"}
     },
-    "prectc": {
+    "codtc_limited": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
