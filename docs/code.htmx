@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<!-- #WARN# -->
+<html>
+<head>
+<title>Tax-Calculator Code</title>
+<style>
+div { max-width: 19cm }
+</style>
+</head>
+<body>
+<div>
+
+<h1 id="top">Tax-Calculator Code</h1>
+
+<p>This document provides an introductory overview of the components
+of Tax-Calculator and how they work together to calculate tax results.
+It concludes with full documentation of the each component.</p>
+
+<p>Each of the main components of Tax-Calculator is represented by a
+Python class, which has attributes and methods.  This approach to
+coding Tax-Calculator is known as object-oriented programming.  For a
+short introduction to object-oriented programming in Python, read
+<a href="https://www.datacamp.com/community/tutorials/python-oop-tutorial">
+this tutorial</a>.</p>
+
+<h2 id="toc">Document Contents</h2>
+
+<p><a href="#summary">High-Level Code Summary</a> explains the main
+components and how they interact to calculate tax results.</p>
+<p><a href="#descrip">Class Descriptions</a> explains the role and
+structure of each Tax-Calculator component.</p>
+<p><a href="#apidoc">API Documentation</a> provides complete
+documentation on each Tax-Calculator component (the class and its
+methods) plus documentation on each independent global function in
+Tax-Calculator.</p>
+
+<h2 id="summary">High-Level Code Summary</h2>
+
+<p>...UNDER CONSTRUCTION...</p>
+
+<p><a href="#summary">Back to Section top</a>&nbsp;&nbsp;
+<a href="#toc">Back to Document Contents</a></p>
+
+
+<h2 id="descrip">Class Descriptions</h2>
+
+<p>...UNDER CONSTRUCTION...</p>
+
+<p><a href="#descrip">Back to Section top</a>&nbsp;&nbsp;
+<a href="#toc">Back to Document Contents</a></p>
+
+
+<h2 id="apidoc">API Documentation</h2>
+
+<p>...UNDER CONSTRUCTION...</p>
+
+<p><a href="#apidoc">Back to Section top</a>&nbsp;&nbsp;
+<a href="#toc">Back to Document Contents</a></p>
+  
+</div>
+</body>
+</html>

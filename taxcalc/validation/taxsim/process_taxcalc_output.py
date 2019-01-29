@@ -121,8 +121,8 @@ def extract_output(out):
     ovar[19] = out['taxbc']
     ovar[20] = 0.0  # always set exemption surtax to zero
     ovar[21] = 0.0  # always set general tax credit to zero
-    ovar[22] = out['c07220']  # child tax credit (adjusted)
-    ovar[23] = out['c11070']  # extra refunded child tax credit
+    ovar[22] = out['c07220'] + out['dep_credit']  # child tax credit
+    ovar[23] = out['c11070']  # additional child tax credit
     ovar[24] = out['c07180']  # child care credit
     ovar[25] = out['eitc']  # federal EITC
     ovar[26] = out['c62100']  # federal AMT taxable income

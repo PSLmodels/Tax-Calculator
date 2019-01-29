@@ -11,16 +11,22 @@ that can be used along with Tax-Calculator to conduct non-static
 analysis that generates both aggregate and distributional reform
 results.  At least three other modules are being planned:
 
-1. [Partial-equilibrium behavioral-responses](https://github.com/PSLmodels/Behavioral-Responses)
+1. [Partial-equilibrium
+behavioral-response](https://github.com/PSLmodels/Behavioral-Responses)
 capabilities have been completed,
 
-2. Corporate-income-tax capabilities are being developed, and
+2. [Business-taxation](https://github.com/PSLmodels/Business-Taxation)
+capabilities are being developed that will permit the effects of
+reforms in (corporate and pass-through) business taxes to feedback to
+Tax-Calculator, and
 
-3. Simple-growth-model capabilities are being planned.
+3. Macro-model capabilities are being planned that will allow
+macroeconomic growth feedback to Tax-Calculator.
 
 Once Tax-Calculator can support these other modules in the USA tax
 collection of the Policy Simulation Library, it is anticipated that
-the public API of Tax-Calculator will be stable.
+the public application programming interface (API) of Tax-Calculator
+will be stable.
 
 Long-Term Development Plans
 ---------------------------
@@ -31,6 +37,8 @@ In the long-term Tax-Calculator will be enhanced in the following ways:
 
 2. Add new policy parameters to enable simulation of new reforms,
 
-3. Add historical policy parameter values as they become available, and
+3. Add historical policy parameter values as they become available,
 
-4. Update input data used by Tax-Calculator as they become available.
+4. Update input data used by Tax-Calculator as they become available, and
+
+5. Improve user and developer documentation.
