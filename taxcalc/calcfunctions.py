@@ -249,7 +249,7 @@ def Adj(e03150, e03210, c03260,
     -------
     c02900 : total Form 1040 adjustments, which are not included in AGI
     """
-    # Form 2555 foreign earned income deduction is assumed to be zero
+    # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
     c02900 = ((1. - ALD_StudentLoan_hc) * e03210 +
               c03260 +
@@ -983,7 +983,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         dwks19 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
-    c05100 = c24580  # because no foreign earned income deduction
+    c05100 = c24580  # because foreign earned income exclusion is assumed zero
     c05700 = 0.  # no Form 4972, Lump Sum Distributions
     taxbc = c05700 + c05100
     return (dwks10, dwks13, dwks14, dwks19, c05700, taxbc)
@@ -1102,7 +1102,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
     Computes Net Investment Income Tax (NIIT) amount assuming that
     all annuity income is excluded from net investment income.
     """
-    modAGI = c00100  # no deducted foreign earned income to add
+    modAGI = c00100  # no foreign earned income exclusion to add
     if not NIIT_PT_taxed:
         NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
     else:  # do not subtract e26270 from e02000
@@ -1226,35 +1226,61 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 
 @iterate_jit(nopython=True)
-def ChildDepTaxCredit(n24, MARS, c00100, exact,
-                      CTC_c, CTC_ps, CTC_prt, prectc, nu05,
-                      CTC_c_under5_bonus, XTOT, num,
+def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
+                      e07260, CR_ResidentialEnergy_hc,
+                      e07300, CR_ForeignTax_hc,
+                      c07180,
+                      c07230,
+                      e07240, CR_RetirementSavings_hc,
+                      c07200,
+                      CTC_c, CTC_ps, CTC_prt, exact,
                       DependentCredit_Child_c, DependentCredit_Nonchild_c,
-                      FilerCredit_c, dep_credit):
+                      CTC_c_under5_bonus, nu05, FilerCredit_c,
+                      c07220, dep_credit, codtc_limited):
     """
-    Computes pre-CTC amount (prectc) and nonrefundable dependent credit.
+    Computes amounts on "Child Tax Credit and Credit for Other Dependents
+    Worksheet" in 2018 Publication 972, which pertain to these two
+    nonrefundable tax credits.
     """
-    modAGI = c00100  # no foreign earned income deduction to add to AGI
-    # calculate and phase-out pre-CTC amount
-    base_ctc = CTC_c * n24 + CTC_c_under5_bonus * nu05
-    prectc = base_ctc
-    if prectc > 0. and modAGI > CTC_ps[MARS - 1]:
+    # Worksheet Part 1
+    line1 = ((CTC_c + DependentCredit_Child_c) * n24 +
+             CTC_c_under5_bonus * nu05)
+    line2 = (DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
+             FilerCredit_c[MARS - 1])
+    line3 = line1 + line2
+    modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
+    if line3 > 0. and modAGI > CTC_ps[MARS - 1]:
         excess = modAGI - CTC_ps[MARS - 1]
         if exact == 1:  # exact calculation as on tax forms
             excess = 1000. * math.ceil(excess / 1000.)
-        prectc = max(0., prectc - CTC_prt * excess)
-    # calculate and phase-out dependent credit after pre-CTC is phased out
-    dep_credit = (DependentCredit_Child_c * n24 +
-                  DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
-                  FilerCredit_c[MARS - 1])
-    if dep_credit > 0. and CTC_prt > 0.:
-        thresh = CTC_ps[MARS - 1] + base_ctc / CTC_prt
-        if modAGI > thresh:
-            excess = modAGI - thresh
-            if exact == 1:  # exact calculation as on tax forms
-                excess = 1000. * math.ceil(excess / 1000.)
-            dep_credit = max(0., dep_credit - CTC_prt * excess)
-    return (prectc, dep_credit)
+        line10 = max(0., line3 - CTC_prt * excess)
+    else:
+        line10 = line3
+    if line10 > 0.:
+        # Worksheet Part 2
+        line11 = c05800
+        line12 = (e07260 * (1. - CR_ResidentialEnergy_hc) +
+                  e07300 * (1. - CR_ForeignTax_hc) +
+                  c07180 +  # child & dependent care expense credit
+                  c07230 +  # education credit
+                  e07240 * (1. - CR_RetirementSavings_hc) +
+                  c07200)  # Schedule R credit
+        line13 = line11 - line12
+        line14 = 0.
+        line15 = max(0., line13 - line14)
+        line16 = min(line10, line15)  # credit is capped by tax liability
+    else:
+        line16 = 0.
+    # separate the CTC and ODTC amounts
+    c07220 = 0.  # nonrefundable CTC amount
+    dep_credit = 0.  # nonrefundable ODTC amount
+    if line16 > 0.:
+        if line1 > 0.:
+            c07220 = line16 * line1 / line3
+        dep_credit = max(0., line16 - c07220)
+    # compute codtc_limited for use in AdditionalCTC function
+    codtc_limited = max(0., line10 - line16)
+    return (c07220, dep_credit, codtc_limited)
 
 
 @iterate_jit(nopython=True)
@@ -1354,7 +1380,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
     are not able to be changed using Policy class parameters.
 
     Note that the CR_SchR_hc policy parameter allows the user to eliminate
-    or reduce total schedule R credits.
+    or reduce total Schedule R credits.
     """
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled (so line12 = line10)
@@ -1474,7 +1500,7 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
 
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
-                         e07600, p08000, prectc, dep_credit,
+                         e07600, p08000, dep_credit,
                          personal_nonrefundable_credit,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
@@ -1509,11 +1535,11 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
     if DependentCredit_before_CTC:
-        # Dependent credit
+        # Other dependent credit
         dep_credit = min(dep_credit, avail)
         avail = avail - dep_credit
     # Child tax credit
-    c07220 = min(prectc, avail)
+    c07220 = min(c07220, avail)
     avail = avail - c07220
     # Residential energy credit - Form 5695
     c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
@@ -1545,59 +1571,41 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(n24, prectc, earned, c07220, ptax_was,
-                  ACTC_Income_thd, ACTC_rt, ACTC_ChildNum,
-                  c03260, e09800, c59660, e11200, c11070, nu05,
-                  ACTC_rt_bonus_under5family):
+def AdditionalCTC(codtc_limited, CTC_c, n24, earned, ACTC_Income_thd,
+                  ACTC_rt, nu05, ACTC_rt_bonus_under5family, ACTC_ChildNum,
+                  ptax_was, c03260, e09800, c59660, e11200,
+                  c11070):
     """
-    Calculates Additional (refundable) Child Tax Credit, c11070.
+    Calculates refundable Additional Child Tax Credit (ACTC), c11070,
+    following 2018 Form 8812 logic.
     """
-    c82925 = 0.
-    c82930 = 0.
-    c82935 = 0.
-    c82880 = 0.
-    c82885 = 0.
-    c82890 = 0.
-    c82900 = 0.
-    c82905 = 0.
-    c82910 = 0.
-    c82915 = 0.
-    c82920 = 0.
-    c82937 = 0.
-    c82940 = 0.
-    c11070 = 0.
-    # Part I of 2005 Form 8812
-    if n24 > 0:
-        c82925 = prectc
-        c82930 = c07220
-        c82935 = c82925 - c82930
-        # CTC not applied to tax
-        c82880 = max(0., earned)
-        c82885 = max(0., c82880 - ACTC_Income_thd)
-        # Accomodate ACTC rate bonus for families with children under 5
+    # Part I
+    line3 = codtc_limited
+    line4 = CTC_c * n24
+    c11070 = 0.  # line15
+    if line3 > 0. and line4 > 0.:
+        line5 = min(line3, line4)
+        line7 = max(0., earned - ACTC_Income_thd)
+        # accommodate ACTC rate bonus for families with children under 5
         if nu05 == 0:
             ACTC_rate = ACTC_rt
         else:
             ACTC_rate = ACTC_rt + ACTC_rt_bonus_under5family
-        c82890 = ACTC_rate * c82885
-    # Part II of 2005 Form 8812
-    if n24 >= ACTC_ChildNum and c82890 < c82935:
-        c82900 = 0.5 * ptax_was
-        c82905 = c03260 + e09800
-        c82910 = c82900 + c82905
-        c82915 = c59660 + e11200
-        c82920 = max(0., c82910 - c82915)
-        c82937 = max(c82890, c82920)
-    # Part II of 2005 Form 8812
-    if n24 < ACTC_ChildNum:
-        if n24 > 0 and c82890 > 0:
-            c82940 = min(c82890, c82935)
-    else:  # if n24 >= ACTC_ChildNum
-        if c82890 >= c82935:
-            c82940 = c82935
-        else:
-            c82940 = min(c82935, c82937)
-    c11070 = c82940
+        line8 = ACTC_rate * line7
+        if n24 < ACTC_ChildNum:
+            if line8 > 0.:
+                c11070 = min(line5, line8)
+        else:  # if n24 >= ACTC_ChildNum
+            if line8 >= line5:
+                c11070 = line5
+            else:  # complete Part II
+                line9 = 0.5 * ptax_was
+                line10 = c03260 + e09800
+                line11 = line9 + line10
+                line12 = c59660 + e11200
+                line13 = max(0., line11 - line12)
+                line14 = max(line8, line13)
+                c11070 = min(line5, line14)
     return c11070
 
 
@@ -1858,10 +1866,23 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     """
     Calculates expanded_income from component income types.
     """
+    # - specify employee salary-reduction contributions to tax-favored
+    # employer-sponsored defined-contribution (DC) pension plans (this amount
+    # is not included in the IRS-SOI PUF earnings, e00200, variable):
+    p_cont = pencon_p + pencon_s
+    # - specify distributions from pension plans:
+    p_dist = e01400 + e01500
+    # where e01400 is taxable IRA distributions
+    # and e01500 is total "pensions and annuities", which includes
+    # DC pension account distributions (from 401(k) plans, for example) plus
+    # defined-benefit (DB) pension benefits
+    # - specify pension double-count amount:
+    p_dcnt = min(p_cont, p_dist)
+    # where p_dcnt is arguably overestimated when p_dist represents DB benefits
+    # - specify expanded_income
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
-        pencon_p +  # DC pension contributions for taxpayer
-        pencon_s +  # DC pension contributions for spouse
+        p_cont +  # see above for definition
         e00300 +  # taxable interest income
         e00400 +  # non-taxable interest income
         e00600 +  # dividends
@@ -1870,17 +1891,19 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         e00900 +  # Sch C business net income/loss
         e01100 +  # capital gain distributions not reported on Sch D
         e01200 +  # Form 4797 other net gain/loss
-        e01400 +  # taxable IRA distributions
-        e01500 +  # total pension and annuity income
+        p_dist +  # see above for definition
         e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
         e02100 +  # Sch F farm net income/loss
         p22250 +  # Sch D: net short-term capital gain/loss
         p23250 +  # Sch D: net long-term capital gain/loss
         cmbtp +  # other AMT taxable income items from Form 6251
         0.5 * ptax_was +  # employer share of FICA taxes
-        benefit_value_total +  # consumption value of all benefits received
-        ubi  # total UBI benefit
+        ubi +  # total UBI benefit
+        benefit_value_total  # consumption value of all benefits received; see
+        # the BenefitPrograms function in this file for details on
+        # exactly how the benefit_value_total variable is computed
     )
+    expanded_income -= p_dcnt  # eliminate pension-related double-counting
     return expanded_income
 
 
