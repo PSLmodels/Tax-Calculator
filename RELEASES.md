@@ -4,7 +4,7 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
-2019-01-?? Release 0.25.0
+2019-02-?? Release 0.25.0
 -------------------------
 (last merged pull request is
 [#xxxx](https://github.com/PSLmodels/Tax-Calculator/pull/xxxx))
@@ -37,6 +37,10 @@ for a complete commit history.
 - Fix pension-related double-counting in construction of `expanded_income` variable
   [[#2194](https://github.com/PSLmodels/Tax-Calculator/pull/2194)
   by Martin Holmer with need pointed out by Alan Viard]
+- Fix CTC+ODC logic for 2018+
+  [[#2211](https://github.com/PSLmodels/Tax-Calculator/pull/2211)
+   [#2205](https://github.com/PSLmodels/Tax-Calculator/pull/2205)
+  by Martin Holmer with need pointed out by Peter Metz]
 
 
 2018-12-14 Release 0.24.0
