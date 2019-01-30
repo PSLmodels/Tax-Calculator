@@ -953,3 +953,13 @@ def test_indexing_rates_for_update():
     wgrates = pol._indexing_rates_for_update('_SS_Earnings_c', 2017, 10)
     pirates = pol._indexing_rates_for_update('_II_em', 2017, 10)
     assert len(wgrates) == len(pirates)
+
+
+def test_reform_with_cpi_offset():
+    """
+    Implement a reform that includes the _cpi_offset policy parameter.
+    """
+    indexing_reform = {2020: {'_cpi_offset': [-0.0025]}}
+    pol = Policy()  # current-law policy
+    pol.implement_reform(indexing_reform)
+    assert not pol.parameter_errors

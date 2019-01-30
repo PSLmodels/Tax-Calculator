@@ -71,7 +71,7 @@ def test_agg(tests_path, cps_fullsample):
     msg = ''
     for cyr in range(calc_start_year, calc_start_year + nyrs):
         if cyr == calc_start_year:
-            reltol = 0.014
+            reltol = 0.0141
         else:
             reltol = 0.007
         if not np.allclose(taxes_subsample[cyr], taxes_fullsample[cyr],
