@@ -9,9 +9,54 @@ import os
 import glob
 import json
 import pytest
+import numpy as np
 # pylint: disable=import-error
 from taxcalc import Calculator, Policy, Records, DIST_TABLE_COLUMNS
 from taxcalc import nonsmall_diffs
+
+
+@pytest.mark.requires_pufcsv
+def test_round_trip_tcja_reform(tests_path, puf_fullsample):
+    """
+    Check that current-law policy produces the same results in a future year
+    as does a compound reform that first implements the reform in 2017_law.json
+    and then implements the reform in TCJA.json.  This test checks that the
+    future-year output from current-law policy (which incorporates TCJA) is
+    the same as future-year output from the compound round-trip reform.
+    Doing this check ensures that the 2017_law.json and TCJA.json reform
+    files are specified in a consistent manner.
+    """
+    # pylint: disable=too-many-locals
+    fyear = 2020
+    # create pol_clp and pol_rtr (round-trip reform) Policy objects
+    pol_clp = Policy()
+    rfile_2017 = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    with open(rfile_2017, 'r') as rfile:
+        r2017_text = rfile.read()
+    r2017 = Calculator.read_json_param_objects(r2017_text, None)
+    rfile_tcja = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
+    with open(rfile_tcja, 'r') as rfile:
+        rtcja_text = rfile.read()
+    rtcja = Calculator.read_json_param_objects(rtcja_text, None)
+    pol_rtr = Policy()
+    pol_rtr.implement_reform(r2017['policy'])
+    assert not pol_rtr.parameter_warnings
+    assert not pol_rtr.parameter_errors
+    pol_rtr.implement_reform(rtcja['policy'])
+    assert not pol_rtr.parameter_warnings
+    assert not pol_rtr.parameter_errors
+    # create calc_clp and calc_rtr Calculator objects
+    calc_clp = Calculator(policy=pol_clp, records=Records(data=puf_fullsample))
+    calc_rtr = Calculator(policy=pol_rtr, records=Records(data=puf_fullsample))
+    # compare fyear results
+    calc_clp.advance_to_year(fyear)
+    calc_clp.calc_all()
+    dtdf_clp = calc_clp.distribution_table_dataframe()
+    calc_rtr.advance_to_year(fyear)
+    calc_rtr.calc_all()
+    dtdf_rtr = calc_rtr.distribution_table_dataframe()
+    for var in dtdf_clp:
+        assert np.allclose(dtdf_clp[var], dtdf_rtr[var])
 
 
 @pytest.mark.pre_release
