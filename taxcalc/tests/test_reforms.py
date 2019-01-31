@@ -80,10 +80,10 @@ def test_reform_json_and_output(tests_path):
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
     cases = Records(data=cases_path,
+                    start_year=tax_year,  # set raw input data year
                     gfactors=None,  # keeps raw data unchanged
                     weights=None,
-                    adjust_ratios=None,
-                    start_year=tax_year)  # set raw input data year
+                    adjust_ratios=None)
     # specify list of reform failures
     failures = list()
     # specify current-law-policy Calculator object
