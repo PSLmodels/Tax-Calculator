@@ -366,9 +366,9 @@ def test_calculator_using_nonstd_input(rawinputfile):
     pol = Policy()
     pol.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
     nonstd = Records(data=rawinputfile.name,
+                     start_year=RAWINPUTFILE_YEAR,  # set raw input data year
                      gfactors=None,  # keeps raw data unchanged
-                     weights=None,
-                     start_year=RAWINPUTFILE_YEAR)  # set raw input data year
+                     weights=None)
     assert nonstd.array_length == RAWINPUTFILE_FUNITS
     calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
@@ -833,8 +833,8 @@ def test_calc_all(reform_file, rawinputfile):
     param_dict = Calculator.read_json_param_objects(reform_file.name, None)
     pol.implement_reform(param_dict['policy'])
     pol.set_year(cyr)
-    nonstd = Records(data=rawinputfile.name, gfactors=None,
-                     weights=None, start_year=cyr)
+    nonstd = Records(data=rawinputfile.name, start_year=cyr,
+                     gfactors=None, weights=None)
     assert nonstd.array_length == RAWINPUTFILE_FUNITS
     calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
