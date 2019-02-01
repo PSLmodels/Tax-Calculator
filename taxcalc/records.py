@@ -22,14 +22,18 @@ class Records():
         string describes CSV file in which records data reside;
         DataFrame already contains records data;
         default value is the string 'puf.csv'
-        For details on how to use your own data with the Tax-Calculator,
-        look at the test_Calculator_using_nonstd_input() function in the
-        tests/test_calculator.py file.
+        NOTE: to use your own data for a specific year with Tax-Calculator,
+        be sure to read the DATAPREP.md file in the top-level directory and
+        then construct a Records object like this:
+        myrec = Records(data=<mydata.csv>, start_year=<mydata_year>,
+                        gfactors=None, weights=None)
 
-    exact_calculations: boolean
-        specifies whether or not exact tax calculations are done without
-        any smoothing of "stair-step" provisions in income tax law;
-        default value is false.
+    start_year: integer
+        specifies calendar year of the input data;
+        default value is PUFCSV_YEAR.
+        Note that if specifying your own data (see above NOTE) as being
+        a custom data set, be sure to explicitly set start_year to the
+        custom data's calendar year.
 
     gfactors: GrowFactors class instance or None
         containing record data grow (or extrapolation) factors.
@@ -49,16 +53,10 @@ class Records():
         NOTE: if using ratio_df DataFrame, read file as follows:
         ratio_df = pandas.read_csv('csv_filename', index_col=0).transpose()
 
-    start_year: integer
-        specifies calendar year of the input data;
-        default value is PUFCSV_YEAR.
-        Note that if specifying your own data (see above) as being a custom
-        data set, be sure to explicitly set start_year to the
-        custom data's calendar year.  For details on how to
-        use your own data with the Tax-Calculator, read the
-        DATAPREP.md file in the top-level directory and then
-        look at the test_Calculator_using_nonstd_input()
-        function in the taxcalc/tests/test_calculator.py file.
+    exact_calculations: boolean
+        specifies whether or not exact tax calculations are done without
+        any smoothing of "stair-step" provisions in income tax law;
+        default value is false.
 
     Raises
     ------
@@ -109,12 +107,13 @@ class Records():
 
     def __init__(self,
                  data='puf.csv',
-                 exact_calculations=False,
+                 start_year=PUFCSV_YEAR,
                  gfactors=GrowFactors(),
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
-                 start_year=PUFCSV_YEAR):
+                 exact_calculations=False):
         # pylint: disable=too-many-arguments,too-many-locals
+        # pylint: disable=too-many-statements,too-many-branches
         self.__data_year = start_year
         # read specified data
         self._read_data(data, exact_calculations)
@@ -130,6 +129,16 @@ class Records():
         if not np.allclose(self.e02100, (self.e02100p + self.e02100s),
                            rtol=0.0, atol=tol):
             raise ValueError(msg.format('e02100'))
+        # check that spouse income variables have valid values
+        nospouse = self.MARS != 2
+        zeros = np.zeros_like(self.MARS[nospouse])
+        msg = '{} is not always zero for non-married filing unit'
+        if not np.allclose(self.e00200s[nospouse], zeros):
+            raise ValueError(msg.format('e00200s'))
+        if not np.allclose(self.e00900s[nospouse], zeros):
+            raise ValueError(msg.format('e00900s'))
+        if not np.allclose(self.e02100s[nospouse], zeros):
+            raise ValueError(msg.format('e02100s'))
         # check that ordinary dividends are no less than qualified dividends
         other_dividends = np.maximum(0., self.e00600 - self.e00650)
         if not np.allclose(self.e00600, self.e00650 + other_dividends,
