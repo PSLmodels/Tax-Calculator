@@ -3,7 +3,7 @@ c00100,Federal AGI,   57146,   61263,   63408,   63387,   65336,   68004,   7090
 c02500,OASDI benefits in AGI,    1449,    1557,    1661,    1700,    1755,    1855,    1996,    2153,    2311,    2475,    2649,    2832,    3020,    3214,    3419,    3641
 c04470,Post-phase-out itemized deduction,    6614,    6758,    7079,    7277,    7329,    7562,    7824,    8198,    8532,    8877,    9200,    9522,    9830,   10157,   10485,   10850
 c04600,Post-phase-out personal exemption,    7299,    7322,    7374,    7427,    7377,    7490,    7642,    7782,    7948,    8125,    8302,    8478,    8653,    8829,    9006,    9186
-c04800,Federal regular taxable income,   40086,   44105,   45812,   45596,   47539,   49832,   52207,   53575,   54789,   56126,   57571,   59228,   60951,   62702,   64635,   66646
+c04800,Federal regular taxable income,   40086,   44105,   45812,   45596,   47539,   49832,   52207,   53574,   54789,   56126,   57571,   59228,   60951,   62702,   64635,   66646
 c05200,Regular tax on taxable income,    8601,    9801,   10188,   10050,   10641,   11243,   11804,   12044,   12258,   12518,   12819,   13183,   13571,   13963,   14407,   14870
 c07180,Child care credit,      18,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19
 c07220,Child tax credit (adjusted),     174,     170,     166,     162,     158,     153,     148,     144,     139,     135,     131,     128,     124,     120,     117,     113
@@ -64,7 +64,7 @@ e58990,Investment income elected amount from Form 4952,      15,      16,      1
 e62900,Alternative Minimum Tax foreign tax credit from Form 6251,      88,      97,     100,     101,     103,     106,     110,     114,     117,     121,     125,     128,     131,     135,     139,     143
 e87521,Total tentative AmOppCredit amount for all students,     193,     197,     204,     207,     210,     217,     225,     234,     242,     249,     256,     264,     271,     278,     286,     295
 e87530,Adjusted qualified lifetime learning expenses for all students,     104,     104,     108,     109,     111,     115,     120,     124,     128,     132,     136,     140,     144,     148,     153,     157
-eitc,Federal EITC,     412,     408,     405,     398,     394,     394,     394,     395,     399,     404,     410,     415,     420,     425,     429,     434
+eitc,Federal EITC,     412,     408,     405,     398,     395,     394,     394,     395,     399,     404,     410,     415,     420,     425,     429,     434
 elderly_dependents,number of dependents age 65+ in filing unit excluding taxpayer and spouse,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 g20500,Itemizable gross (before 10% AGI disregard) casualty or theft loss,      31,      32,      34,      35,      36,      37,      39,      40,      42,      43,      45,      46,      47,      48,      50,      51
 iitax,Federal income tax liability,    7359,    8402,    8793,    8758,    9230,    9790,   10339,   10635,   10883,   11163,   11475,   11843,   12231,   12621,   13058,   13514
@@ -75,6 +75,6 @@ nu13,Number of dependents under 13 years old,       0,       0,       0,       0
 p08000,Other tax credits (but not including Sch R credit),       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1
 p22250,Sch D: Net short-term capital gains/losses,    -135,    -193,    -197,    -176,    -227,    -253,    -265,    -258,    -251,    -253,    -256,    -260,    -267,    -276,    -288,    -294
 p23250,Sch D: Net long-term capital gains/losses,    2567,    3591,    3583,    3099,    3948,    4276,    4403,    4160,    4023,    3971,    3972,    4013,    4077,    4152,    4246,    4344
-payrolltax,Payroll taxes (ee+er) for OASDI+HI,    5842,    6060,    6250,    6296,    6439,    6628,    6892,    7146,    7358,    7562,    7765,    7979,    8194,    8416,    8648,    8889
+payrolltax,Payroll taxes (ee+er) for OASDI+HI,    5842,    6060,    6250,    6296,    6439,    6628,    6901,    7155,    7368,    7572,    7775,    7989,    8204,    8427,    8659,    8901
 pencon_p,Contributions to defined-contribution pension plans for taxpayer,     976,    1025,    1063,    1079,    1094,    1132,    1180,    1223,    1258,    1294,    1328,    1365,    1403,    1441,    1482,    1524
 pencon_s,Contributions to defined-contribution pension plans for spouse,     430,     448,     464,     469,     477,     494,     513,     531,     546,     560,     574,     590,     605,     620,     637,     654
