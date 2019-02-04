@@ -14,14 +14,13 @@ import numpy as np
 from taxcalc import Calculator, Policy, Records, DIST_TABLE_COLUMNS
 from taxcalc import nonsmall_diffs
 
-@pytest.mark.one
+
 def test_2017_law_reform(tests_path):
     """
     Check that policy parameter values in a future year under current-law
     policy and under the reform specified in the 2017_law.json file are
     sensible.
     """
-    fyear = 2018
     # create pre metadata dictionary for 2017_law.json reform in fyear
     pol = Policy()
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
@@ -31,13 +30,43 @@ def test_2017_law_reform(tests_path):
     pol.implement_reform(reform['policy'])
     assert not pol.parameter_warnings
     assert not pol.parameter_errors
-    pol.set_year(fyear)
+    pol.set_year(2018)
     pre_mdata = pol.metadata()
-    # check a few fyear policy parameter values
-    assert pre_mdata['_II_em']['value'][0] > 4000
-    assert pre_mdata['_STD']['value'][0][0] < 7000
+    # check some policy parameter values against expected values under 2017 law
+    pre_expect = {
+        # relation '<' implies asserting that actual < expect
+        # relation '>' implies asserting that actual > expect
+        # ... parameters not affected by TCJA and that are not indexed
+        '_AMEDT_ec': {'relation': '=', 'value': 200000},
+        '_SS_thd85': {'relation': '=', 'value': 34000},
+        # ... parameters not affected by TCJA and that are indexed
+        '_STD_Aged': {'relation': '=', 'value': 1600},
+        '_EITC_InvestIncome_c': {'relation': '=', 'value': 3500},
+        # ... parameters affected by TCJA and that are not indexed
+        '_ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
+        '_II_rt3': {'relation': '=', 'value': 0.25},
+        # ... parameters affected by TCJA and that are indexed
+        '_II_brk3': {'relation': '>', 'value': 91900},
+        '_STD': {'relation': '<', 'value': 7000},
+        '_II_em': {'relation': '>', 'value': 4050}
+    }
+    assert isinstance(pre_expect, dict)
+    assert set(pre_expect.keys()).issubset(set(pre_mdata.keys()))
+    for name in pre_expect:
+        aval = pre_mdata[name]['value'][0]
+        if isinstance(aval, list):
+            act = aval[0]  # comparing only first item in a nonscalar parameter
+        else:
+            act = aval
+        exp = pre_expect[name]['value']
+        if pre_expect[name]['relation'] == '<':
+            assert act < exp, '{} a={} !< e={}'.format(name, act, exp)
+        elif pre_expect[name]['relation'] == '>':
+            assert act > exp, '{} a={} !> e={}'.format(name, act, exp)
+        elif pre_expect[name]['relation'] == '=':
+            assert act == exp, '{} a={} != e={}'.format(name, act, exp)
 
-@pytest.mark.one
+
 def test_round_trip_tcja_reform(tests_path):
     """
     Check that current-law policy has the same policy parameter values in
