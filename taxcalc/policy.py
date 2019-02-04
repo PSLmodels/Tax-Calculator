@@ -429,11 +429,11 @@ class Policy(Parameters):
                 setattr(self, name, self._vals[name]['value'])
         # construct and return known_years dictionary
         known_years = dict()
-        kyrs_in_reform = (first_cpi_offset_year
-                          - self.start_year + 1)
+        kyrs_in_reform = (first_cpi_offset_year -
+                          self.start_year + 1)
         kyrs_not_in_reform = (max(first_cpi_offset_year,
-                                  Policy.LAST_KNOWN_YEAR)
-                              - self.start_year + 1)
+                                  Policy.LAST_KNOWN_YEAR) -
+                              self.start_year + 1)
         for year in sorted(reform.keys()):
             for name in reform[year]:
                 if self._vals[name]['cpi_inflated']:
