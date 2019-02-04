@@ -25,6 +25,8 @@ def test_instantiation_and_usage():
     syr = 2010
     nyrs = 10
     pbase.initialize(start_year=syr, num_years=nyrs)
+    with pytest.raises(ValueError):
+        pbase.set_default_vals(known_years=list())
     # pylint: disable=protected-access
     with pytest.raises(ValueError):
         pbase.set_year(syr - 1)
