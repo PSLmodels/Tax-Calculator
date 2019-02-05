@@ -140,8 +140,7 @@ def test_multi_year_reform():
                        atol=0.01, rtol=0.0)
     assert np.allclose(getattr(pol, '_CTC_c'),
                        Policy._expand_array(
-                           np.array([1000] * 5 + [1400] * 4 +
-                                    [1500] * 3 + [1600] + [1000],
+                           np.array([1000] * 5 + [2000] * 8 + [1000],
                                     dtype=np.float64),
                            False, False,
                            inflate=False,
@@ -664,8 +663,12 @@ def test_section_titles(tests_path):
         'Nonrefundable Credits': {
             'Misc. Credit Limits': 0,
             'Child And Dependent Care': 0,
-            'Child Tax Credit': 0,
             'Personal Nonrefundable Credit': 0
+        },
+        'Child/Dependent Credits': {
+            'Child Tax Credit': 0,
+            'Additional Child Tax Credit': 0,
+            'Other Dependent Tax Credit': 0
         },
         'Itemized Deductions': {
             'Medical Expenses': 0,
@@ -695,7 +698,6 @@ def test_section_titles(tests_path):
         },
         'Refundable Credits': {
             'Earned Income Tax Credit': 0,
-            'Additional Child Tax Credit': 0,
             'New Refundable Child Tax Credit': 0,
             'Personal Refundable Credit': 0
         },

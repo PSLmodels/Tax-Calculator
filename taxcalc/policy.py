@@ -453,6 +453,10 @@ class Policy(Parameters):
         # pylint: disable=too-many-branches,too-many-nested-blocks
         # pylint: disable=too-many-statements,too-many-locals
         removed_param_names = set([
+            '_DependentCredit_Child_c',
+            '_DependentCredit_Nonchild_c',
+            '_DependentCredit_before_CTC',
+            '_ALD_InvInc_ec_base_RyanBrady'
         ])
         param_names = set(self._vals.keys())
         for year in sorted(reform.keys()):
