@@ -48,7 +48,8 @@ def test_2017_law_reform(tests_path):
         # ... parameters affected by TCJA and that are indexed
         '_II_brk3': {'relation': '>', 'value': 91900},
         '_STD': {'relation': '<', 'value': 7000},
-        '_II_em': {'relation': '>', 'value': 4050}
+        '_II_em': {'relation': '>', 'value': 4050},
+        '_AMT_em_pe': {'relation': '<', 'value': 260000}
     }
     assert isinstance(pre_expect, dict)
     assert set(pre_expect.keys()).issubset(set(pre_mdata.keys()))
