@@ -29,6 +29,12 @@ for a complete commit history.
 - Add new data files generated in [taxdata pull request 297](https://github.com/PSLmodels/taxdata/pull/297) using the August-2018 CBO ten-year projection
   [[#2196](https://github.com/PSLmodels/Tax-Calculator/pull/2196)
   by Martin Holmer with data from Anderson Frailey]
+- Add actual 2018 values for all policy parameters
+  [[#2212](https://github.com/PSLmodels/Tax-Calculator/pull/2212)
+  by Peter Metz]
+- Revise specification of `2017_law.json` and `TCJA.json` reform files to work when last known parameter values are for 2018
+  [[#2218](https://github.com/PSLmodels/Tax-Calculator/pull/2218)
+  by Martin Holmer]
 
 **Bug Fixes**
 - Fix negative/zero/positive split of bottom decile in distribution and difference tables

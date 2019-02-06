@@ -2,7 +2,7 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
-Changes in release 0.25.0 on 2019-01-??
+Changes in release 0.25.0 on 2019-02-??
 ---------------------------------------
 
 - Remove Behavior class from Tax-Calculator and rely instead on the Behavioral-Responses behresp package.
@@ -10,6 +10,8 @@ Changes in release 0.25.0 on 2019-01-??
 - Add new economic-variable growth factors and sample weights based on using the August-2018 CBO ten-year projection
 
 - Fix logic of computing nonrefundable tax credits for children under 17 and for other dependents in years starting with 2018
+
+- Add actual 2018 values for all tax policy parameters
 
 
 Changes in release 0.24.0 on 2018-12-14
