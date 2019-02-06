@@ -89,6 +89,30 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
+    "_SS_Earnings_thd": {
+        "long_name": "Additional Taxable Earnings Threshold for Social Security",
+        "description": "Wages and self-employment income above this threshold are subjected to Social Security (OASDI) payroll tax in addition to earnings below the maximum taxable earnings threshold.",
+        "section_1": "Payroll Taxes",
+        "section_2": "Social Security FICA",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": true,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "boolean_value": false,
+        "integer_value": false,
+        "value": [0.0],
+        "range": {"min": 0, "max": 9e99},
+        "out_of_range_minmsg": "",
+        "out_of_range_maxmsg": "",
+        "out_of_range_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
+    },
+
     "_FICA_mc_trt": {
         "long_name": "Medicare payroll tax rate",
         "description": "Medicare FICA rate, including both employer and employee.",
