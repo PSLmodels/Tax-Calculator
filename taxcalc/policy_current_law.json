@@ -5312,30 +5312,6 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
-    "_FilerCredit_c": {
-        "long_name": "Nonrefundable credit for each filing unit",
-        "description": "This nonrefundable credit is applied to the filing unit and begins phasing out after the CTC phaseout ends.",
-        "section_1": "Child/Dependent Credits",
-        "section_2": "Child Tax Credit",
-        "irs_ref": "",
-        "notes": "First introduced in House TCJA bills",
-        "row_var": "FLPDYR",
-        "row_label": ["2013"],
-        "start_year": 2013,
-        "cpi_inflatable": true,
-        "cpi_inflated": false,
-        "col_var": "MARS",
-        "col_label": ["single", "joint", "separate", "headhousehold", "widow"],
-        "boolean_value": false,
-        "integer_value": false,
-        "value": [[0.0, 0.0, 0.0, 0.0, 0.0]],
-        "range": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
-        "compatible_data": {"puf": true, "cps": true}
-    },
-
     "_NIIT_thd": {
         "long_name": "Net Investment Income Tax modified AGI threshold",
         "description": "If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.",

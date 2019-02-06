@@ -1222,7 +1222,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       e07240, CR_RetirementSavings_hc,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
-                      CTC_c_under5_bonus, nu05, FilerCredit_c,
+                      CTC_c_under5_bonus, nu05,
                       c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
@@ -1231,7 +1231,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     """
     # Worksheet Part 1
     line1 = CTC_c * n24 + CTC_c_under5_bonus * nu05
-    line2 = ODC_c * max(0, XTOT - n24 - num) + FilerCredit_c[MARS - 1]
+    line2 = ODC_c * max(0, XTOT - n24 - num)
     line3 = line1 + line2
     modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
     if line3 > 0. and modAGI > CTC_ps[MARS - 1]:

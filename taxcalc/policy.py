@@ -456,6 +456,7 @@ class Policy(Parameters):
             '_DependentCredit_Child_c',
             '_DependentCredit_Nonchild_c',
             '_DependentCredit_before_CTC',
+            '_FilerCredit_c',
             '_ALD_InvInc_ec_base_RyanBrady'
         ])
         param_names = set(self._vals.keys())
