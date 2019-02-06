@@ -88,9 +88,9 @@ def BenefitPrograms(calc):
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
-                  payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-                  sey, earned, earned_p, earned_s, SS_Earnings_thd):
+                  SS_Earnings_thd, e00900p, e00900s, e02100p, e02100s, k1bx14p,
+                  k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+                  sey, earned, earned_p, earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
