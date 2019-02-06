@@ -105,7 +105,7 @@
         "col_label": "",
         "boolean_value": false,
         "integer_value": false,
-        "value": [0.0],
+        "value": [9e99],
         "range": {"min": 0, "max": 9e99},
         "out_of_range_minmsg": "",
         "out_of_range_maxmsg": "",
