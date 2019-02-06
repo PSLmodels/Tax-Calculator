@@ -10,9 +10,9 @@ import glob
 import json
 import pytest
 import numpy as np
+import pandas as pd
 # pylint: disable=import-error
-from taxcalc import Calculator, Policy, Records, DIST_TABLE_COLUMNS
-from taxcalc import nonsmall_diffs
+from taxcalc import Calculator, Policy, Records
 
 
 def test_2017_law_reform(tests_path):
@@ -142,40 +142,23 @@ def test_reform_json_and_output(tests_path):
     generates no parameter_errors.
     Then use each reform to generate static tax results for small set of
     filing units in a single tax_year and compare those results with
-    expected results from a text file.
+    expected results from a CSV-formatted file.
     """
     # pylint: disable=too-many-statements,too-many-locals
-    used_dist_stats = ['c00100',  # AGI
-                       'c04600',  # personal exemptions
-                       'standard',  # standard deduction
-                       'c04800',  # regular taxable income
-                       'c05800',  # income tax before credits
-                       'iitax',  # income tax after credits
-                       'payrolltax',  # payroll taxes
-                       'aftertax_income']  # aftertax expanded income
-    unused_dist_stats = set(DIST_TABLE_COLUMNS) - set(used_dist_stats)
-    renamed_columns = {'c00100': 'AGI',
-                       'c04600': 'pexempt',
-                       'standard': 'stdded',
-                       'c04800': 'taxinc',
-                       'c05800': 'tax-wo-credits',
-                       'iitax': 'inctax',
-                       'payrolltax': 'paytax',
-                       'aftertax_income': 'ataxinc'}
 
     # embedded function used only in test_reform_json_and_output
-    def write_distribution_table(calc, resfilename):
+    def write_res_file(calc, resfilename):
         """
-        Write abbreviated distribution table calc to file with resfilename.
+        Write calc output to CSV-formatted file with resfilename.
         """
-        dist, _ = calc.distribution_tables(None, 'standard_income_bins',
-                                           scaling=False)
-        for stat in unused_dist_stats:
-            del dist[stat]
-        dist = dist[used_dist_stats]
-        dist.rename(mapper=renamed_columns, axis='columns', inplace=True)
+        varlist = [
+            'RECID', 'c00100', 'standard', 'c04800', 'iitax', 'payrolltax'
+        ]
+        # varnames  AGI    STD         TaxInc    ITAX     PTAX
+        stats = calc.dataframe(varlist)
+        stats['RECID'] = stats['RECID'].astype(int)
         with open(resfilename, 'w') as resfile:
-            dist.to_string(resfile, float_format='%7.0f')
+            stats.to_csv(resfile, index=False, float_format='%.2f')
 
     # embedded function used only in test_reform_json_and_output
     def res_and_out_are_same(base):
@@ -183,17 +166,15 @@ def test_reform_json_and_output(tests_path):
         Return True if base.res and base.out file contents are the same;
         return False if base.res and base.out file contents differ.
         """
-        with open(base + '.res') as resfile:
-            act_res = resfile.read()
-        with open(base + '.out') as outfile:
-            exp_res = outfile.read()
-        # check to see if act_res & exp_res have differences
-        diffs = nonsmall_diffs(act_res.splitlines(True),
-                               exp_res.splitlines(True), small=1)
-        dump = True
-        if dump and diffs:
-            print('{} ACTUAL:\n{}', base, act_res)
-            print('{} EXPECT:\n{}', base, exp_res)
+        resdf = pd.read_csv(base + '.res')
+        outdf = pd.read_csv(base + '.out')
+        diffs = False
+        for col in resdf:
+            if col in outdf:
+                if not np.allclose(resdf[col], outdf[col]):
+                    diffs = True
+            else:
+                diffs = True
         return not diffs
 
     # specify Records object containing cases data
@@ -207,15 +188,16 @@ def test_reform_json_and_output(tests_path):
     # specify list of reform failures
     failures = list()
     # specify current-law-policy Calculator object
-    calc1 = Calculator(policy=Policy(), records=cases, verbose=False)
-    calc1.advance_to_year(tax_year)
-    calc1.calc_all()
+    calc = Calculator(policy=Policy(), records=cases, verbose=False)
+    calc.advance_to_year(tax_year)
+    calc.calc_all()
     res_path = cases_path.replace('cases.csv', 'clp.res')
-    write_distribution_table(calc1, res_path)
+    write_res_file(calc, res_path)
     if res_and_out_are_same(res_path.replace('.res', '')):
         os.remove(res_path)
     else:
         failures.append(res_path)
+    del calc
     # read 2017_law.json reform file and specify its parameters dictionary
     pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
@@ -226,23 +208,25 @@ def test_reform_json_and_output(tests_path):
         # determine reform's baseline by reading contents of jrf
         with open(jrf, 'r') as rfile:
             jrf_text = rfile.read()
-            pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
+        pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
         # implement the reform relative to its baseline
         reform = Calculator.read_json_param_objects(jrf_text, None)
         pol = Policy()  # current-law policy
         if pre_tcja_baseline:
             pol.implement_reform(pre_tcja['policy'])
+            assert not pol.parameter_errors
         pol.implement_reform(reform['policy'])
         assert not pol.parameter_errors
-        calc2 = Calculator(policy=pol, records=cases, verbose=False)
-        calc2.advance_to_year(tax_year)
-        calc2.calc_all()
+        calc = Calculator(policy=pol, records=cases, verbose=False)
+        calc.advance_to_year(tax_year)
+        calc.calc_all()
         res_path = jrf.replace('.json', '.res')
-        write_distribution_table(calc2, res_path)
+        write_res_file(calc, res_path)
         if res_and_out_are_same(res_path.replace('.res', '')):
             os.remove(res_path)
         else:
             failures.append(res_path)
+        del calc
     if failures:
         msg = 'Following reforms have res-vs-out differences:\n'
         for ref in failures:
