@@ -1,15 +1,15 @@
 ,description,2013,2014,2015,2016,2017,2018,2019,2020,2021,2022,2023,2024,2025,2026,2027,2028
-c00100,Federal AGI,   57146,   61263,   63408,   63387,   65336,   68396,   71304,   73271,   75076,   77016,   79045,   81297,   83601,   85956,   88497,   91154
-c02500,OASDI benefits in AGI,    1449,    1557,    1661,    1700,    1755,    1856,    1997,    2153,    2311,    2475,    2650,    2832,    3020,    3214,    3420,    3641
-c04470,Post-phase-out itemized deduction,    6614,    6758,    7079,    7277,    7329,    7886,    8166,    8545,    8881,    9232,    9562,    9894,   10213,   10553,   10893,   11270
-c04600,Post-phase-out personal exemption,    7299,    7322,    7374,    7427,    7377,    7679,    7843,    7990,    8163,    8346,    8531,    8715,    8900,    9084,    9271,    9462
-c04800,Federal regular taxable income,   40086,   44105,   45812,   45596,   47539,   49532,   51884,   53233,   54434,   55756,   57188,   58831,   60539,   62272,   64189,   66182
-c05200,Regular tax on taxable income,    8601,    9801,   10188,   10050,   10641,   11130,   11683,   11915,   12124,   12379,   12675,   13035,   13417,   13802,   14240,   14696
+c00100,Federal AGI,   57146,   61263,   63408,   63387,   65336,   68004,   70900,   72879,   74692,   76636,   78661,   80901,   83193,   85539,   88066,   90710
+c02500,OASDI benefits in AGI,    1449,    1557,    1661,    1700,    1755,    1855,    1996,    2153,    2311,    2475,    2649,    2832,    3020,    3214,    3419,    3641
+c04470,Post-phase-out itemized deduction,    6614,    6758,    7079,    7277,    7329,    7562,    7824,    8198,    8532,    8877,    9200,    9522,    9830,   10157,   10485,   10850
+c04600,Post-phase-out personal exemption,    7299,    7322,    7374,    7427,    7377,    7490,    7642,    7782,    7948,    8125,    8302,    8478,    8653,    8829,    9006,    9186
+c04800,Federal regular taxable income,   40086,   44105,   45812,   45596,   47539,   49832,   52207,   53574,   54789,   56126,   57571,   59228,   60951,   62702,   64635,   66646
+c05200,Regular tax on taxable income,    8601,    9801,   10188,   10050,   10641,   11243,   11804,   12044,   12258,   12518,   12819,   13183,   13571,   13963,   14407,   14870
 c07180,Child care credit,      18,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19,      19
 c07220,Child tax credit (adjusted),     174,     170,     166,     162,     158,     153,     148,     144,     139,     135,     131,     128,     124,     120,     117,     113
-c09600,Federal AMT liability,     237,     253,     267,     274,     279,     366,     387,     408,     423,     439,     454,     470,     486,     504,     522,     542
+c09600,Federal AMT liability,     237,     253,     267,     274,     279,     289,     305,     323,     336,     349,     362,     374,     387,     401,     415,     431
 c11070,Extra child tax credit (refunded),     164,     159,     154,     150,     145,     141,     137,     134,     132,     130,     128,     126,     124,     122,     119,     117
-c21040,Itemized deduction that is phased out,     227,     271,     282,     275,     296,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
+c21040,Itemized deduction that is phased out,     227,     271,     282,     275,     296,     316,     332,     336,     340,     346,     353,     363,     374,     385,     398,     412
 cmbtp,Estimate of income on (AMT) Form 6251 but not in AGI,     414,     432,     452,     461,     468,     485,     508,     533,     553,     571,     591,     611,     630,     653,     676,     699
 data_source,1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic),       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1
 e00200,"Wages, salaries, and tips for filing unit net of pension contributions",   39911,   41868,   43390,   43954,   44599,   46149,   48092,   49784,   51199,   52591,   53979,   55449,   56938,   58464,   60067,   61724
@@ -64,10 +64,10 @@ e58990,Investment income elected amount from Form 4952,      15,      16,      1
 e62900,Alternative Minimum Tax foreign tax credit from Form 6251,      88,      97,     100,     101,     103,     106,     110,     114,     117,     121,     125,     128,     131,     135,     139,     143
 e87521,Total tentative AmOppCredit amount for all students,     193,     197,     204,     207,     210,     217,     225,     234,     242,     249,     256,     264,     271,     278,     286,     295
 e87530,Adjusted qualified lifetime learning expenses for all students,     104,     104,     108,     109,     111,     115,     120,     124,     128,     132,     136,     140,     144,     148,     153,     157
-eitc,Federal EITC,     412,     408,     405,     398,     395,     392,     392,     393,     397,     402,     407,     412,     417,     422,     427,     431
+eitc,Federal EITC,     412,     408,     405,     398,     395,     394,     394,     395,     399,     404,     410,     415,     420,     425,     429,     434
 elderly_dependents,number of dependents age 65+ in filing unit excluding taxpayer and spouse,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
 g20500,Itemizable gross (before 10% AGI disregard) casualty or theft loss,      31,      32,      34,      35,      36,      37,      39,      40,      42,      43,      45,      46,      47,      48,      50,      51
-iitax,Federal income tax liability,    7359,    8402,    8793,    8758,    9230,    9747,   10293,   10586,   10831,   11108,   11419,   11784,   12170,   12557,   12992,   13445
+iitax,Federal income tax liability,    7359,    8402,    8793,    8758,    9230,    9790,   10339,   10635,   10883,   11163,   11475,   11843,   12231,   12621,   13058,   13514
 k1bx14p,Partner self-employment earnings/loss for taxpayer (included in e26270 total),    -243,    -269,    -269,    -254,    -264,    -280,    -285,    -280,    -278,    -280,    -287,    -296,    -309,    -314,    -327,    -333
 k1bx14s,Partner self-employment earnings/loss for spouse (included in e26270 total),      -9,      -9,      -9,      -7,      -7,      -7,      -6,      -6,      -6,      -5,      -6,      -5,      -6,      -6,      -7,      -5
 nu05,Number of dependents under 5 years old,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0,       0
