@@ -128,8 +128,9 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
 
     # compute additional OASDI taxes on the sum of gross wage-and-salary income
     # and taxable self employment income
-    was_plus_sey_p = txearn_was_p + sey_p
-    was_plus_sey_s = txearn_was_s + sey_s
+    sey_frac = 1.0 - 0.5 * FICA_ss_trt
+    was_plus_sey_p = txearn_was_p + (sey_p * sey_frac)
+    was_plus_sey_s = txearn_was_s + (sey_s * sey_frac)
     additional_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
     additional_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
     additional_payrolltax = (additional_ss_income_p * FICA_ss_trt +
