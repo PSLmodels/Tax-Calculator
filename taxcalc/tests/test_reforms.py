@@ -134,8 +134,7 @@ def test_round_trip_tcja_reform(tests_path):
     if fail_params:
         raise ValueError(msg)
 
-@pytest.mark.one
-@pytest.mark.pre_release
+
 def test_reform_json_and_output(tests_path):
     """
     Check that each JSON reform file can be converted into a reform dictionary
