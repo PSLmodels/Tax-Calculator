@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 import pytest
 # pylint: disable=import-error
-from taxcalc import Policy, Records, Calculator, nonsmall_diffs
+from taxcalc import Policy, Records, Calculator
 
 
 def create_base_table(test_path):
@@ -105,17 +105,21 @@ def calculate_mean_stats(calc, table, year):
     table[str(year)] = means
 
 
-def differences(new_filename, old_filename, stat_kind, small=0.0):
+def differences(new_filename, old_filename, stat_kind):
     """
-    Return message string if there are differences at least as large as small;
-    otherwise (i.e., if there are only small differences) return empty string.
+    Return message string if differences detected by np.allclose();
+    otherwise return empty string.
     """
-    with open(new_filename, 'r') as vfile:
-        new_text = vfile.read()
-    with open(old_filename, 'r') as vfile:
-        old_text = vfile.read()
-    if nonsmall_diffs(new_text.splitlines(True),
-                      old_text.splitlines(True), small):
+    new_df = pd.read_csv(new_filename)
+    old_df = pd.read_csv(old_filename)
+    assert len(new_df.columns) == len(old_df.columns)
+    diffs = False
+    for col in new_df.columns[1:]:
+        if col == 'description':
+            continue  # skip description column
+        if not np.allclose(new_df[col], old_df[col]):
+            diffs = True
+    if diffs:
         new_name = os.path.basename(new_filename)
         old_name = os.path.basename(old_filename)
         msg = '{} RESULTS DIFFER:\n'.format(stat_kind)
@@ -174,7 +178,7 @@ def test_puf_var_stats(tests_path, puf_fullsample):
     table_corr.sort_index(inplace=True)
     table_corr.to_csv(corr_path, float_format='%8.2f',
                       columns=table_corr.index)
-    # compare new and old CSV files for nonsmall differences
+    # compare new and old CSV files for differences
     mean_msg = differences(mean_path, mean_path[:-4], 'MEAN')
     corr_msg = differences(corr_path, corr_path[:-4], 'CORR')
     if mean_msg or corr_msg:

@@ -1,6 +1,7 @@
 // Title: Tax Cuts and Jobs Act, final version
-// Reform_File_Author: Cody Kallen
-// Reform_Reference: http://docs.house.gov/billsthisweek/20171218/CRPT-115HRPT-466.pdf
+// Reform_File_Author: Cody Kallen (with updates by Martin Holmer)
+// Reform_Reference: 2018 IRS forms and this URL:
+//        http://docs.house.gov/billsthisweek/20171218/CRPT-115HRPT-466.pdf
 // Reform_Baseline: 2017_law.json
 // Reform_Description:
 // -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
@@ -8,7 +9,7 @@
 // -  New standard deductions (3)
 // -  Repeal personal exemption (4)
 // -  Modification to child tax credit, nonrefundable dependent credits (5)
-// -  Modification of Alternative Minimum Tax exemption (6)
+// -  Modification of Alternative Minimum Tax exemption parameters (6)
 // -  Changes to certain above the line deductions (7)
 // -  Changes to itemized deductions (8)
 // -  Switch to chained CPI from CPI-U for tax parameter adjustment (9)
@@ -18,16 +19,16 @@
 // - 3: _STD (can safely ignore WARNINGs about 2026+ values)
 // - 4: _II_em
 // - 5: _DependentCredit_*, _CTC_c, _CTC_ps, _ACTC_Income_thd
-// - 6: _AMT_rt*
+// - 6: _AMT_em*
 // - 7: _ALD_*
 // - 8: _ID_* (can safely ignore WARNINGs about values for several parameters)
 // - 9: _cpi_offset
-// Note: _II_rt*, _PT_rt*, _STD and _II_em are rounded to the nearest integer value.
+// Note: _II_brk*, _PT_brk*, _STD, _II_em are rounded to nearest integer value
 {
     "policy": {
         "_II_rt1":
-            {"2018": [0.1],
-             "2026": [0.1]},
+            {"2018": [0.10],
+             "2026": [0.10]},
         "_II_rt2":
             {"2018": [0.12],
              "2026": [0.15]},
@@ -62,11 +63,11 @@
             {"2018": [[200000, 400000, 200000, 200000, 400000]],
              "2026": [[502356, 502356, 251178, 502356, 502356]]},
         "_II_brk6":
-            {"2018": [[500000, 600000, 300000, 500000, 500000]],
+            {"2018": [[500000, 600000, 300000, 500000, 600000]],
              "2026": [[504406 ,567457, 283728, 535931, 567457]]},
         "_PT_rt1":
-            {"2018": [0.1],
-             "2026": [0.1]},
+            {"2018": [0.10],
+             "2026": [0.10]},
         "_PT_rt2":
             {"2018": [0.12],
              "2026": [0.15]},
@@ -101,7 +102,7 @@
             {"2018": [[200000, 400000, 200000, 200000, 400000]],
              "2026": [[502356, 502356, 251178, 502356, 502356]]},
         "_PT_brk6":
-            {"2018": [[500000, 600000, 300000, 500000, 500000]],
+            {"2018": [[500000, 600000, 300000, 500000, 600000]],
              "2026": [[504406, 567457, 283728, 535931, 567457]]},
         "_PT_excl_rt":
             {"2018": [0.2],
@@ -148,6 +149,9 @@
         "_AMT_em_ps":
             {"2018": [[500000, 1000000, 500000, 500000, 1000000]],
              "2026": [[145511, 193974, 96987, 145511, 193974]]},
+        "_AMT_em_pe":
+            {"2018": [718800],
+             "2026": [302083]},
         "_ALD_DomesticProduction_hc":
             {"2018": [1],
              "2026": [0]},
@@ -161,10 +165,10 @@
             {"2018": [[250000, 500000, 250000, 250000, 500000]],
              "2026": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
         "_ID_prt":
-            {"2018": [0],
+            {"2018": [0.00],
              "2026": [0.03]},
         "_ID_crt":
-            {"2018": [1],
+            {"2018": [1.0],
              "2026": [0.8]},
         "_ID_Charity_crt_all":
             {"2018": [0.6],
@@ -180,7 +184,7 @@
              "2026": [0]},
         "_ID_Medical_frt":
             {"2017": [0.075],
-             "2019": [0.1]},
+             "2019": [0.100]},
         "_cpi_offset":
             {"2017": [-0.0025]}  
     }

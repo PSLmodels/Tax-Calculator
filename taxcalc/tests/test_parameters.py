@@ -25,6 +25,8 @@ def test_instantiation_and_usage():
     syr = 2010
     nyrs = 10
     pbase.initialize(start_year=syr, num_years=nyrs)
+    with pytest.raises(ValueError):
+        pbase.set_default_vals(known_years=list())
     # pylint: disable=protected-access
     with pytest.raises(ValueError):
         pbase.set_year(syr - 1)
@@ -72,7 +74,7 @@ def test_json_file_contents(tests_path, fname):
                    '_PT_excl_wagelim_thd',
                    '_ALD_BusinessLosses_c',
                    '_STD', '_II_em',
-                   '_AMT_em', '_AMT_em_ps',
+                   '_AMT_em', '_AMT_em_ps', '_AMT_em_pe',
                    '_ID_AllTaxes_c']
     long_known_years = 2026 - first_year + 1  # for TCJA-revised long_params
     # read JSON parameter file into a dictionary

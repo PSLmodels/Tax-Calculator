@@ -119,6 +119,7 @@ class Mock(MagicMock):
         else:
             return Mock()
 
+
 MOCK_MODULES = ['numba', 'numba.jit', 'numba.vectorize', 'numba.guvectorize']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
