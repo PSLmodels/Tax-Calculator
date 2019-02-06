@@ -25,6 +25,8 @@ def test_instantiation_and_usage():
     syr = 2010
     nyrs = 10
     pbase.initialize(start_year=syr, num_years=nyrs)
+    with pytest.raises(ValueError):
+        pbase.set_default_vals(known_years=list())
     # pylint: disable=protected-access
     with pytest.raises(ValueError):
         pbase.set_year(syr - 1)
@@ -72,8 +74,8 @@ def test_json_file_contents(tests_path, fname):
                    '_PT_excl_wagelim_thd',
                    '_ALD_BusinessLosses_c',
                    '_STD', '_II_em',
-                   '_AMT_em', '_AMT_em_ps',
-                   '_ID_AllTaxes_c']
+                   '_AMT_em', '_AMT_em_ps', '_AMT_em_pe',
+                   '_ID_ps', '_ID_AllTaxes_c']
     long_known_years = 2026 - first_year + 1  # for TCJA-revised long_params
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
@@ -166,9 +168,7 @@ def test_json_file_contents(tests_path, fname):
                 assert len(valuerow) == len(clab)
         # check that indexed parameters have all known years in rowlabel list
         # form_parameters are those whose value is available only on IRS form
-        form_parameters = ['_AMT_em_pe',
-                           '_ETC_pe_Single',
-                           '_ETC_pe_Married']
+        form_parameters = []
         if param['cpi_inflated']:
             error = False
             known_years = num_known_years
@@ -178,12 +178,8 @@ def test_json_file_contents(tests_path, fname):
                 if len(rowlabel) != (known_years - 1):
                     error = True
             else:
-                if pname == '_SS_Earnings_c':
-                    if len(rowlabel) != known_years + 2:
-                        error = True
-                else:
-                    if len(rowlabel) != known_years:
-                        error = True
+                if len(rowlabel) != known_years:
+                    error = True
             if error:
                 msg = 'param:<{}>; len(rowlabel)={}; known_years={}'
                 fail = msg.format(pname, len(rowlabel), known_years)

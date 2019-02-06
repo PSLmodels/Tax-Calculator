@@ -9,9 +9,130 @@ import os
 import glob
 import json
 import pytest
+import numpy as np
 # pylint: disable=import-error
 from taxcalc import Calculator, Policy, Records, DIST_TABLE_COLUMNS
 from taxcalc import nonsmall_diffs
+
+
+def test_2017_law_reform(tests_path):
+    """
+    Check that policy parameter values in a future year under current-law
+    policy and under the reform specified in the 2017_law.json file are
+    sensible.
+    """
+    # create pre metadata dictionary for 2017_law.json reform in fyear
+    pol = Policy()
+    reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    reform = Calculator.read_json_param_objects(rtext, None)
+    pol.implement_reform(reform['policy'])
+    assert not pol.parameter_warnings
+    assert not pol.parameter_errors
+    pol.set_year(2018)
+    pre_mdata = pol.metadata()
+    # check some policy parameter values against expected values under 2017 law
+    pre_expect = {
+        # relation '<' implies asserting that actual < expect
+        # relation '>' implies asserting that actual > expect
+        # ... parameters not affected by TCJA and that are not indexed
+        '_AMEDT_ec': {'relation': '=', 'value': 200000},
+        '_SS_thd85': {'relation': '=', 'value': 34000},
+        # ... parameters not affected by TCJA and that are indexed
+        '_STD_Dep': {'relation': '>', 'value': 1050},
+        '_CG_brk2': {'relation': '>', 'value': 425800},
+        '_AMT_CG_brk1': {'relation': '>', 'value': 38600},
+        '_AMT_brk1': {'relation': '>', 'value': 191100},
+        '_EITC_c': {'relation': '>', 'value': 519},
+        '_EITC_ps': {'relation': '>', 'value': 8490},
+        '_EITC_ps_MarriedJ': {'relation': '>', 'value': 5680},
+        '_EITC_InvestIncome_c': {'relation': '>', 'value': 3500},
+        # ... parameters affected by TCJA and that are not indexed
+        '_ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
+        '_II_rt3': {'relation': '=', 'value': 0.25},
+        # ... parameters affected by TCJA and that are indexed
+        '_II_brk3': {'relation': '>', 'value': 91900},
+        '_STD': {'relation': '<', 'value': 7000},
+        '_II_em': {'relation': '>', 'value': 4050},
+        '_AMT_em_pe': {'relation': '<', 'value': 260000}
+    }
+    assert isinstance(pre_expect, dict)
+    assert set(pre_expect.keys()).issubset(set(pre_mdata.keys()))
+    for name in pre_expect:
+        aval = pre_mdata[name]['value'][0]
+        if isinstance(aval, list):
+            act = aval[0]  # comparing only first item in a nonscalar parameter
+        else:
+            act = aval
+        exp = pre_expect[name]['value']
+        if pre_expect[name]['relation'] == '<':
+            assert act < exp, '{} a={} !< e={}'.format(name, act, exp)
+        elif pre_expect[name]['relation'] == '>':
+            assert act > exp, '{} a={} !> e={}'.format(name, act, exp)
+        elif pre_expect[name]['relation'] == '=':
+            assert act == exp, '{} a={} != e={}'.format(name, act, exp)
+
+
+def test_round_trip_tcja_reform(tests_path):
+    """
+    Check that current-law policy has the same policy parameter values in
+    a future year as does a compound reform that first implements the
+    reform specified in the 2017_law.json file and then implements the
+    reform specified in the TCJA.json file.  This test checks that the
+    future-year parameter values for current-law policy (which incorporates
+    TCJA) are the same as future-year parameter values for the compound
+    round-trip reform.  Doing this check ensures that the 2017_law.json
+    and TCJA.json reform files are specified in a consistent manner.
+    """
+    # pylint: disable=too-many-locals
+    fyear = 2020
+    # create clp metadata dictionary for current-law policy in fyear
+    pol = Policy()
+    pol.set_year(fyear)
+    clp_mdata = pol.metadata()
+    # create rtr metadata dictionary for round-trip reform in fyear
+    pol = Policy()
+    reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    reform = Calculator.read_json_param_objects(rtext, None)
+    pol.implement_reform(reform['policy'])
+    assert not pol.parameter_warnings
+    assert not pol.parameter_errors
+    reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
+    with open(reform_file, 'r') as rfile:
+        rtext = rfile.read()
+    reform = Calculator.read_json_param_objects(rtext, None)
+    pol.implement_reform(reform['policy'])
+    assert not pol.parameter_warnings
+    assert not pol.parameter_errors
+    pol.set_year(fyear)
+    rtr_mdata = pol.metadata()
+    # compare fyear policy parameter values
+    assert clp_mdata.keys() == rtr_mdata.keys()
+    fail_dump = False
+    if fail_dump:
+        rtr_fails = open('fails_rtr', 'w')
+        clp_fails = open('fails_clp', 'w')
+    fail_params = list()
+    msg = '\nRound-trip-reform and current-law-policy param values differ for:'
+    for pname in clp_mdata.keys():
+        rtr_val = rtr_mdata[pname]['value']
+        clp_val = clp_mdata[pname]['value']
+        if not np.allclose(rtr_val, clp_val):
+            fail_params.append(pname)
+            msg += '\n  {} in {} : rtr={} clp={}'.format(
+                pname, fyear, rtr_val, clp_val
+            )
+            if fail_dump:
+                rtr_fails.write('{} {} {}\n'.format(pname, fyear, rtr_val))
+                clp_fails.write('{} {} {}\n'.format(pname, fyear, clp_val))
+    if fail_dump:
+        rtr_fails.close()
+        clp_fails.close()
+    if fail_params:
+        raise ValueError(msg)
 
 
 @pytest.mark.pre_release
@@ -80,10 +201,10 @@ def test_reform_json_and_output(tests_path):
     tax_year = 2020
     cases_path = os.path.join(tests_path, '..', 'reforms', 'cases.csv')
     cases = Records(data=cases_path,
+                    start_year=tax_year,  # set raw input data year
                     gfactors=None,  # keeps raw data unchanged
                     weights=None,
-                    adjust_ratios=None,
-                    start_year=tax_year)  # set raw input data year
+                    adjust_ratios=None)
     # specify list of reform failures
     failures = list()
     # specify current-law-policy Calculator object

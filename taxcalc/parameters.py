@@ -59,6 +59,12 @@ class Parameters():
         """
         Called by initialize method and from some subclass methods.
         """
+        if isinstance(known_years, int):
+            known_years_is_int = True
+        elif isinstance(known_years, dict):
+            known_years_is_int = False
+        else:
+            raise ValueError('known_years is neither an int nor a dict')
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
                 intg_val = data.get('integer_value')
@@ -69,7 +75,10 @@ class Parameters():
                     if cpi_inflated:
                         index_rates = self.indexing_rates(name)
                         if name != '_SS_Earnings_c':
-                            values = values[:known_years]
+                            if known_years_is_int:
+                                values = values[:known_years]
+                            else:
+                                values = values[:known_years[name]]
                     else:
                         index_rates = None
                     setattr(self, name,

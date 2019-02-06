@@ -36,7 +36,7 @@ class Policy(Parameters):
 
     DEFAULTS_FILENAME = 'policy_current_law.json'
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
-    LAST_KNOWN_YEAR = 2017  # last year for which indexed param vals are known
+    LAST_KNOWN_YEAR = 2018  # last year for which indexed param vals are known
     # should increase LAST_KNOWN_YEAR by one every calendar year
     LAST_BUDGET_YEAR = 2028  # last extrapolation year
     # should increase LAST_BUDGET_YEAR by one every calendar year
@@ -398,9 +398,14 @@ class Policy(Parameters):
         Call this method ONLY if _cpi_offset_in_reform returns True.
         Apply CPI offset to inflation rates and
         revert indexed parameter values in preparation for re-indexing.
-        Also, return known_years which is
-        (first cpi_offset year - start year + 1).
+        Also, return known_years which is dictionary with indexed policy
+        parameter names as keys and known_years as values.  For indexed
+        parameters included in reform, the known_years value is equal to:
+        (first_cpi_offset_year - start_year + 1).  For indexed parameters
+        not included in reform, the known_years value is equal to:
+        (max(first_cpi_offset_year, Policy.LAST_KNOWN_YEAR) - start_year + 1).
         """
+        # pylint: disable=too-many-branches
         # extrapolate cpi_offset reform
         self.set_year(self.start_year)
         first_cpi_offset_year = 0
@@ -422,8 +427,23 @@ class Policy(Parameters):
         for name in self._vals.keys():
             if self._vals[name]['cpi_inflated']:
                 setattr(self, name, self._vals[name]['value'])
-        # return known_years
-        return first_cpi_offset_year - self.start_year + 1
+        # construct and return known_years dictionary
+        known_years = dict()
+        kyrs_in_reform = (first_cpi_offset_year -
+                          self.start_year + 1)
+        kyrs_not_in_reform = (max(first_cpi_offset_year,
+                                  Policy.LAST_KNOWN_YEAR) -
+                              self.start_year + 1)
+        for year in sorted(reform.keys()):
+            for name in reform[year]:
+                if self._vals[name]['cpi_inflated']:
+                    if name not in known_years:
+                        known_years[name] = kyrs_in_reform
+        for name in self._vals.keys():
+            if self._vals[name]['cpi_inflated']:
+                if name not in known_years:
+                    known_years[name] = kyrs_not_in_reform
+        return known_years
 
     def _validate_parameter_names_types(self, reform):
         """

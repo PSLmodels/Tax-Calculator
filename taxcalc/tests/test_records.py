@@ -40,11 +40,11 @@ def test_correct_Records_instantiation(cps_subsample):
     ratios_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
     ratios_df = pd.read_csv(ratios_path, index_col=0).transpose()
     rec2 = Records(data=cps_subsample,
-                   exact_calculations=False,
+                   start_year=Records.CPSCSV_YEAR,
                    gfactors=GrowFactors(),
                    weights=wghts_df,
                    adjust_ratios=ratios_df,
-                   start_year=Records.CPSCSV_YEAR)
+                   exact_calculations=False)
     assert rec2
     assert np.all(rec2.MARS != 0)
     assert rec2.current_year == rec2.data_year
@@ -67,6 +67,18 @@ def test_read_cps_data(cps_fullsample):
     (
         u'RECID,MARS,e02100,e02100p,e02100s\n'
         u'1,    2,   200000, 200000,   0.03\n'
+    ),
+    (
+        u'RECID,MARS,e00200,e00200p,e00200s\n'
+        u'1,    4,   200000, 100000, 100000\n'
+    ),
+    (
+        u'RECID,MARS,e00900,e00900p,e00900s\n'
+        u'1,    4,   200000, 100000, 100000\n'
+    ),
+    (
+        u'RECID,MARS,e02100,e02100p,e02100s\n'
+        u'1,    4,   200000, 100000, 100000\n'
     ),
     (
         u'RxCID,MARS\n'
