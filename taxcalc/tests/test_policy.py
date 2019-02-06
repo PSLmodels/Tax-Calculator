@@ -864,49 +864,59 @@ def test_validate_param_names_types_errors():
     """
     Check detection of invalid policy parameter names and types in reforms.
     """
-    pol0 = Policy()
-    ref0 = {2020: {'_STD_cpi': 2}}
+    pol = Policy()
+    ref = {2020: {'_STD_cpi': 2}}
     with pytest.raises(ValueError):
-        pol0.implement_reform(ref0)
-    pol1 = Policy()
-    ref1 = {2020: {'_badname_cpi': True}}
+        pol.implement_reform(ref)
+    del pol
+    pol = Policy()
+    ref = {2020: {'_badname_cpi': True}}
     with pytest.raises(ValueError):
-        pol1.implement_reform(ref1)
-    pol2 = Policy()
-    ref2 = {2020: {'_II_em_cpi': 5}}
+        pol.implement_reform(ref)
+    del pol
+    pol = Policy()
+    ref = {2020: {'_II_em_cpi': 5}}
     with pytest.raises(ValueError):
-        pol2.implement_reform(ref2)
-    pol3 = Policy()
-    ref3 = {2020: {'_badname': [0.4]}}
+        pol.implement_reform(ref)
+    del pol
+    pol = Policy()
+    ref = {2020: {'_badname': [0.4]}}
     with pytest.raises(ValueError):
-        pol3.implement_reform(ref3)
-    pol4 = Policy()
-    ref4 = {2020: {'_EITC_MinEligAge': [21.4]}}
+        pol.implement_reform(ref)
+    del pol
+    pol = Policy()
+    ref = {2020: {'_EITC_MinEligAge': [21.4]}}
     with pytest.raises(ValueError):
-        pol4.implement_reform(ref4)
-    pol5 = Policy()
-    ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
+        pol.implement_reform(ref)
+    del pol
+    pol = Policy()
+    ref = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
     with pytest.raises(ValueError):
-        pol5.implement_reform(ref5)
-    pol6 = Policy()
-    ref6 = {2021: {'_II_em': ['not-a-number']}}
+        pol.implement_reform(ref)
+    del pol
+    pol = Policy()
+    ref = {2021: {'_II_em': ['not-a-number']}}
     with pytest.raises(ValueError):
-        pol6.implement_reform(ref6)
-    pol7 = Policy()
-    ref7 = {2019: {'_FICA_ss_trt_cpi': True}}
+        pol.implement_reform(ref)
+    del pol
+    pol = Policy()
+    ref = {2019: {'_FICA_ss_trt_cpi': True}}
     with pytest.raises(ValueError):
-        pol7.implement_reform(ref7)
-    # test 8 was contributed by Hank Doupe in bug report #1956
-    pol8 = Policy()
-    ref8 = {2019: {'_AMEDT_rt': [True]}}
+        pol.implement_reform(ref)
+    del pol
+    # this test was contributed by Hank Doupe in bug report #1956
+    pol = Policy()
+    ref = {2019: {'_AMEDT_rt': [True]}}
     with pytest.raises(ValueError):
-        pol8.implement_reform(ref8)
-    # test 9 extends test 8 to integer parameters
-    pol9 = Policy()
-    ref9 = {2019: {'_AMT_KT_c_Age': [True]}}
+        pol.implement_reform(ref)
+    del pol
+    # this test extends the prior test to integer parameters
+    pol = Policy()
+    ref = {2019: {'_AMT_KT_c_Age': [True]}}
     with pytest.raises(ValueError):
-        pol9.implement_reform(ref9)
-    # test 10 was contributed by Hank Doupe in bug report #1980
+        pol.implement_reform(ref)
+    del pol
+    # this test was contributed by Hank Doupe in bug report #1980
     json_reform = """
     {"policy": {"_ID_BenefitSurtax_Switch_medical": {"2018": [true]}}}
     """
@@ -914,6 +924,19 @@ def test_validate_param_names_types_errors():
     pol = Policy()
     pol.implement_reform(pdict["policy"], raise_errors=False)
     assert pol.parameter_errors == ''
+    del pol
+    # this test checks "is a removed parameter" error for base parameter
+    pol = Policy()
+    ref = {2019: {'_DependentCredit_Child_c': [400]}}
+    with pytest.raises(ValueError):
+        pol.implement_reform(ref)
+    del pol
+    # this test checks "is a removed parameter" error for _cpi parameter
+    pol = Policy()
+    ref = {2019: {'_DependentCredit_Child_c_cpi': False}}
+    with pytest.raises(ValueError):
+        pol.implement_reform(ref)
+    del pol
 
 
 def test_validate_param_values_warnings_errors():
