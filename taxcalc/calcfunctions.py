@@ -283,7 +283,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
 
 @iterate_jit(nopython=True)
 def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
-             ALD_InvInc_ec_rt, invinc_ec_base, ALD_InvInc_ec_base_RyanBrady,
+             ALD_InvInc_ec_rt, invinc_ec_base,
              e00200, e00300, e00600, e00650, e00700, e00800,
              CG_nodiff, CG_ec, CG_reinvest_ec_rt,
              ALD_BusinessLosses_c, MARS,
@@ -301,18 +301,6 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
     invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
-    # compute exclusion of investment income for Ryan-Brady plan
-    if ALD_InvInc_ec_base_RyanBrady:
-        # This RyanBrady code interprets the Blueprint reform as providing
-        # an investment income AGI exclusion for each of three investment
-        # income types (e00300, e00650, p23250) separately.  The alternative
-        # interpretation (that is not adopted here) is that the investment
-        # income AGI exclusion is calculated using a base that is the sum
-        # of those three investment income types, with the base being zero
-        # if the sum of the three is negative.
-        CG_ec_RyanBrady = (c01000 - max(-3000. / sep,
-                                        p22250 + ALD_InvInc_ec_rt * p23250))
-        invinc_agi_ec = ALD_InvInc_ec_rt * (e00300 + e00650) + CG_ec_RyanBrady
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
@@ -1233,20 +1221,17 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       c07230,
                       e07240, CR_RetirementSavings_hc,
                       c07200,
-                      CTC_c, CTC_ps, CTC_prt, exact,
-                      DependentCredit_Child_c, DependentCredit_Nonchild_c,
-                      CTC_c_under5_bonus, nu05, FilerCredit_c,
-                      c07220, dep_credit, codtc_limited):
+                      CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
+                      CTC_c_under5_bonus, nu05,
+                      c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
     Worksheet" in 2018 Publication 972, which pertain to these two
     nonrefundable tax credits.
     """
     # Worksheet Part 1
-    line1 = ((CTC_c + DependentCredit_Child_c) * n24 +
-             CTC_c_under5_bonus * nu05)
-    line2 = (DependentCredit_Nonchild_c * max(0, XTOT - n24 - num) +
-             FilerCredit_c[MARS - 1])
+    line1 = CTC_c * n24 + CTC_c_under5_bonus * nu05
+    line2 = ODC_c * max(0, XTOT - n24 - num)
     line3 = line1 + line2
     modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
     if line3 > 0. and modAGI > CTC_ps[MARS - 1]:
@@ -1273,14 +1258,14 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
         line16 = 0.
     # separate the CTC and ODTC amounts
     c07220 = 0.  # nonrefundable CTC amount
-    dep_credit = 0.  # nonrefundable ODTC amount
+    odc = 0.  # nonrefundable ODTC amount
     if line16 > 0.:
         if line1 > 0.:
             c07220 = line16 * line1 / line3
-        dep_credit = max(0., line16 - c07220)
+        odc = max(0., line16 - c07220)
     # compute codtc_limited for use in AdditionalCTC function
     codtc_limited = max(0., line10 - line16)
-    return (c07220, dep_credit, codtc_limited)
+    return (c07220, odc, codtc_limited)
 
 
 @iterate_jit(nopython=True)
@@ -1500,14 +1485,13 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
 
 @iterate_jit(nopython=True)
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
-                         e07600, p08000, dep_credit,
+                         e07600, p08000, odc,
                          personal_nonrefundable_credit,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit,
                          c07180, c07200, c07220, c07230, c07240,
-                         c07260, c07300, c07400, c07600, c08000,
-                         DependentCredit_before_CTC):
+                         c07260, c07300, c07400, c07600, c08000):
     """
     NonRefundableCredits function sequentially limits credits to tax liability.
 
@@ -1534,13 +1518,12 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Retirement savings credit - Form 8880
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
-    if DependentCredit_before_CTC:
-        # Other dependent credit
-        dep_credit = min(dep_credit, avail)
-        avail = avail - dep_credit
     # Child tax credit
     c07220 = min(c07220, avail)
     avail = avail - c07220
+    # Other dependent credit
+    odc = min(odc, avail)
+    avail = avail - odc
     # Residential energy credit - Form 5695
     c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
     avail = avail - c07260
@@ -1553,10 +1536,6 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Schedule R credit
     c07200 = min(c07200, avail)
     avail = avail - c07200
-    if not DependentCredit_before_CTC:
-        # Dependent credit
-        dep_credit = min(dep_credit, avail)
-        avail = avail - dep_credit
     # Other credits
     c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
@@ -1565,13 +1544,13 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # Personal nonrefundable credit
     personal_nonrefundable_credit = min(personal_nonrefundable_credit, avail)
     avail = avail - personal_nonrefundable_credit
-    return (c07180, c07200, c07220, c07230, c07240, dep_credit,
+    return (c07180, c07200, c07220, c07230, c07240, odc,
             c07260, c07300, c07400, c07600, c08000, charity_credit,
             personal_nonrefundable_credit)
 
 
 @iterate_jit(nopython=True)
-def AdditionalCTC(codtc_limited, CTC_c, n24, earned, ACTC_Income_thd,
+def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu05, ACTC_rt_bonus_under5family, ACTC_ChildNum,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
@@ -1581,7 +1560,7 @@ def AdditionalCTC(codtc_limited, CTC_c, n24, earned, ACTC_Income_thd,
     """
     # Part I
     line3 = codtc_limited
-    line4 = CTC_c * n24
+    line4 = ACTC_c * n24
     c11070 = 0.  # line15
     if line3 > 0. and line4 > 0.:
         line5 = min(line3, line4)
@@ -1612,7 +1591,7 @@ def AdditionalCTC(codtc_limited, CTC_c, n24, earned, ACTC_Income_thd,
 @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
-          c07100, c09200, dep_credit, charity_credit,
+          c07100, c09200, odc, charity_credit,
           personal_nonrefundable_credit):
     """
     Computes total used nonrefundable credits, c07100, othertaxes, and
@@ -1620,7 +1599,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     """
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
-              c07230 + c07240 + c07260 + dep_credit + charity_credit +
+              c07230 + c07240 + c07260 + odc + charity_credit +
               personal_nonrefundable_credit)
     # tax after credits (2016 Form 1040, line 56)
     tax_net_nonrefundable_credits = max(0., c05800 - c07100)

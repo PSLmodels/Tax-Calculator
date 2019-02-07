@@ -282,11 +282,11 @@
 
   "31": {
       "baseline": "policy_current_law.json",
-      "start_year": 2015,
-      "value": {},
-      "name": "No reform",
+      "start_year": 2016,
+      "value": {"_ODC_c": [600]},
+      "name": "Increase Other-Dependent Credit to $600",
       "output_type": "iitax",
-      "compare_with": {"[ADD NEXT REFORM AS 31] Logic:": [0, 0, 0, 0]}
+      "compare_with": {}
   },
 
   "32": {
@@ -552,25 +552,6 @@
   },
 
   "56": {
-      "baseline": "2017_law.json",
-      "start_year": 2017,
-      "value": {"_DependentCredit_Child_c": [500]},
-      "name": "Set Dependent Credit for Children at $500",
-      "output_type": "iitax",
-      "compare_with": {}
-  },
-
-  "57": {
-      "baseline": "2017_law.json",
-      "start_year": 2017,
-      "value": {"_DependentCredit_before_CTC": [true],
-                "_DependentCredit_Child_c": [500]},
-      "name": "Set Dependent Credit for Children at $500 AND stack dependent credit before CTC",
-      "output_type": "iitax",
-      "compare_with": {}
-  },
-
-  "58": {
       "baseline": "policy_current_law.json",
       "start_year": 2017,
       "value": {"_cpi_offset": [0.0025]},
@@ -579,7 +560,7 @@
       "compare_with": {}
   },
 
-  "59": {
+  "57": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"_PT_rt7": [0.35],
@@ -589,7 +570,7 @@
       "compare_with": {}
   },
 
-  "60": {
+  "58": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"_PT_wages_active_income": [true],
@@ -600,7 +581,7 @@
       "compare_with": {}
   },
 
-  "61": {
+  "59": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"_CTC_new_c": [1000],
@@ -612,7 +593,7 @@
       "compare_with": {}
   },
 
-  "62": {
+  "60": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"_CTC_new_c": [1000],
@@ -625,7 +606,7 @@
       "compare_with": {}
   },
 
-  "63": {
+  "61": {
       "baseline": "2017_law.json",
       "start_year": 2017,
       "value": {"_ID_Charity_hc": [1],
@@ -636,7 +617,7 @@
       "compare_with": {}
   },
 
-  "64": {
+  "62": {
       "baseline": "2017_law.json",
       "start_year": 2019,
       "value": {"_EITC_basic_frac": [0.5]},
