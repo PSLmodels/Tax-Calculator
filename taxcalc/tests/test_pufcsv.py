@@ -58,7 +58,7 @@ def test_agg(tests_path, puf_fullsample):
             diffs = True
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
-        adt.to_csv(new_filename)
+        adt.to_csv(new_filename, float_format='%.1f')
         msg = 'PUFCSV AGG RESULTS DIFFER FOR FULL-SAMPLE\n'
         msg += '-------------------------------------------------\n'
         msg += '--- NEW RESULTS IN pufcsv_agg_actual.csv FILE ---\n'

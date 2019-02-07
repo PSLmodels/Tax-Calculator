@@ -52,7 +52,7 @@ def test_agg(tests_path, cps_fullsample):
             diffs = True
     if diffs:
         new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
-        adt.to_csv(new_filename)
+        adt.to_csv(new_filename, float_format='%.1f')
         msg = 'CPSCSV AGG RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
         msg += '--- NEW RESULTS IN cpscsv_agg_actual.csv FILE ---\n'
