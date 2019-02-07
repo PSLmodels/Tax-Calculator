@@ -24,6 +24,9 @@ import pandas as pd
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 from taxcalc import run_nth_year_taxcalc_model
 
+
+START_YEAR = 2017
+
 @pytest.mark.one
 @pytest.mark.requires_pufcsv
 def test_agg(tests_path, puf_fullsample):
@@ -39,31 +42,28 @@ def test_agg(tests_path, puf_fullsample):
     recs = Records(data=puf_fullsample)
     # create a Calculator object using baseline policy and puf records
     calc = Calculator(policy=baseline_policy, records=recs)
-    calc.advance_to_year(2017)
+    calc.advance_to_year(START_YEAR)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = calc.diagnostic_table(nyrs)
+    adt = calc.diagnostic_table(nyrs)  # column labels are int
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
-    # convert adt results to a string with a trailing EOL character
-    adtstr = adt.to_string(float_format='%8.1f') + '\n'
-    # create actual and expected lists of diagnostic table lines
-    actual = adtstr.splitlines(True)
-    aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.txt')
-    with open(aggres_path, 'r') as expected_file:
-        txt = expected_file.read()
-    expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    expect = expected_results.splitlines(True)
-    # ensure actual and expect lines have differences no more than small value
-    diffs = nonsmall_diffs(actual, expect)
+    # compare actual DataFrame, adt, with the expected DataFrame, edt
+    aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.csv')
+    edt = pd.read_csv(aggres_path, index_col=False)  # column labels are str
+    edt.drop('Unnamed: 0', axis='columns', inplace=True)
+    assert len(adt.columns.values) == len(edt.columns.values)
+    diffs = False
+    for icol in adt.columns.values:
+        if not np.allclose(adt[icol], edt[str(icol)]):
+            diffs = True
     if diffs:
-        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
-        with open(new_filename, 'w') as new_file:
-            new_file.write(adtstr)
+        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
+        adt.to_csv(new_filename)
         msg = 'PUFCSV AGG RESULTS DIFFER FOR FULL-SAMPLE\n'
         msg += '-------------------------------------------------\n'
-        msg += '--- NEW RESULTS IN pufcsv_agg_actual.txt FILE ---\n'
-        msg += '--- if new OK, copy pufcsv_agg_actual.txt to  ---\n'
-        msg += '---                 pufcsv_agg_expect.txt     ---\n'
+        msg += '--- NEW RESULTS IN pufcsv_agg_actual.csv FILE ---\n'
+        msg += '--- if new OK, copy pufcsv_agg_actual.csv to  ---\n'
+        msg += '---                 pufcsv_agg_expect.csv     ---\n'
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
@@ -74,6 +74,7 @@ def test_agg(tests_path, puf_fullsample):
     subsample = fullsample.sample(frac=subfrac, random_state=rn_seed)
     recs_subsample = Records(data=subsample)
     calc_subsample = Calculator(policy=baseline_policy, records=recs_subsample)
+    calc_subsample.advance_to_year(START_YEAR)
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
