@@ -8,7 +8,7 @@
 // - Set pre-TCJA handling of pass-through income (2)
 // - Set pre-TCJA standard deduction and personal exemption (3)
 // - Set pre-TCJA child tax credit (CTC) and additional CTC policy (4)
-// - Set pre-TCJA dependent credit policy parameters (5)
+// - Set pre-TCJA other dependent credit policy parameters (5)
 // - Set pre-TCJA AMT exemption parameters (6)
 // - Set pre-TCJA above the line deduction policy (7)
 // - Set pre-TCJA itemized deduction policy (8)
@@ -17,8 +17,8 @@
 // - 1: _II_rt?/_II_brk? and _PT_rt?/_PT_brk?
 // - 2: four _PT_excl_* parameters
 // - 3: _STD and _II_em parameters
-// - 4: _CTC_c and _CTC_ps and _ACTC_Income_thd
-// - 5: three different _DependentCredit_* parameters
+// - 4: _CTC_* and _ACTC_* parameters
+// - 5: _ODC_c parameter
 // - 6: three different _AMT_em* parameters
 // - 7: three _ALD_* parameters
 // - 8: seven different _ID_* parameters
@@ -62,10 +62,9 @@
         "_II_em": {"2017": [4050]},
         "_CTC_c": {"2018": [1000]},
         "_CTC_ps": {"2018": [[75000, 110000, 55000, 75000, 75000]]},
+        "_ACTC_c": {"2018": [1000]},
         "_ACTC_Income_thd": {"2018": [3000]},
-        "_DependentCredit_Child_c": {"2018": [0]},
-        "_DependentCredit_Nonchild_c": {"2018": [0]},
-        "_DependentCredit_before_CTC": {"2018": [false]},
+        "_ODC_c": {"2018": [0]},
         "_AMT_em": {"2017": [[54300, 84500, 42250, 54300, 84500]]},
         "_AMT_em_ps": {"2017": [[120700, 160900, 80450, 120700, 160900]]},
         "_AMT_em_pe": {"2017": [249450]},

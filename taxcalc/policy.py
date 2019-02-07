@@ -451,7 +451,14 @@ class Policy(Parameters):
         in the specified reform dictionary.
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-statements,too-many-locals
+        removed_param_names = set([
+            '_DependentCredit_Child_c',
+            '_DependentCredit_Nonchild_c',
+            '_DependentCredit_before_CTC',
+            '_FilerCredit_c',
+            '_ALD_InvInc_ec_base_RyanBrady'
+        ])
         param_names = set(self._vals.keys())
         for year in sorted(reform.keys()):
             for name in reform[year]:
@@ -459,7 +466,10 @@ class Policy(Parameters):
                     if isinstance(reform[year][name], bool):
                         pname = name[:-4]  # root parameter name
                         if pname not in param_names:
-                            msg = '{} {} unknown parameter name'
+                            if pname in removed_param_names:
+                                msg = '{} {} is a removed parameter name'
+                            else:
+                                msg = '{} {} is an unknown parameter name'
                             self.parameter_errors += (
                                 'ERROR: ' + msg.format(year, name) + '\n'
                             )
@@ -477,7 +487,10 @@ class Policy(Parameters):
                         )
                 else:  # if name does not end with '_cpi'
                     if name not in param_names:
-                        msg = '{} {} unknown parameter name'
+                        if name in removed_param_names:
+                            msg = '{} {} is a removed parameter name'
+                        else:
+                            msg = '{} {} is an unknown parameter name'
                         self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )

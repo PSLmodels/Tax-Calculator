@@ -976,9 +976,9 @@
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
-    "dep_credit": {
+    "odc": {
       "type": "float",
-      "desc": "Dependent Credit added on top of Child Tax Credit",
+      "desc": "Other Dependent Credit",
       "form": {"2013-20??": "calculated variable"}
     },
     "personal_refundable_credit": {

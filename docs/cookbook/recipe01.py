@@ -1,11 +1,8 @@
 import pandas as pd
 from taxcalc import *
 
-# read two "old" reform files from Tax-Calculator website
-# ("old" means the reform files are defined relative to pre-TCJA policy)
-#   For more about the compound-reform technique used in this recipe,
-#   read answer to Question 1 of FAQ at the following URL:
-#   https://github.com/PSLmodels/Tax-Calculator/issues/1830
+# read an "old" reform file from Tax-Calculator website
+# ("old" means the reform file is defined relative to pre-TCJA policy)
 REFORMS_URL = ('https://raw.githubusercontent.com/'
                'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
 
@@ -13,31 +10,30 @@ baseline_name = '2017_law.json'  # pre-TCJA policy
 baseline_url = REFORMS_URL + baseline_name
 baseline = Calculator.read_json_param_objects(baseline_url, None)
 
-reform1_name = 'TCJA_Senate.json'  # TCJA as orginally proposed in Senate
-reform1_url = REFORMS_URL + reform1_name
-reform2_name = 'TCJA_Reconciliation.json'  # TCJA as passed by Congress
-reform2_url = REFORMS_URL + reform2_name
+reform_name = 'TCJA.json'  # TCJA as passed by Congress
+reform_url = REFORMS_URL + reform_name
 
-# specify Policy object for static analysis of reform1 relative to pre-TCJA
-reform1 = Calculator.read_json_param_objects(reform1_url, None)
-policy1 = Policy()
-policy1.implement_reform(baseline['policy'], print_warnings=False)
-policy1.implement_reform(reform1['policy'], print_warnings=False)
+# specify Policy object for pre-TCJA baseline
+bpolicy = Policy()
+bpolicy.implement_reform(baseline['policy'], print_warnings=False)
+assert not bpolicy.parameter_errors
 
-# specify Policy object for static analysis of reform2 relative to pre-TCJA
-reform2 = Calculator.read_json_param_objects(reform2_url, None)
-policy2 = Policy()
-policy1.implement_reform(baseline['policy'], print_warnings=False)
-policy2.implement_reform(reform2['policy'], print_warnings=False)
+# specify Policy object for static analysis of reform relative to pre-TCJA
+reform = Calculator.read_json_param_objects(reform_url, None)
+rpolicy = Policy()
+rpolicy.implement_reform(baseline['policy'], print_warnings=False)
+assert not rpolicy.parameter_errors
+rpolicy.implement_reform(reform['policy'], print_warnings=False)
+assert not rpolicy.parameter_errors
 
 cyr = 2018
 
-# specify Calculator objects using policy1 and policy2 and calculate for cyr
+# specify Calculator objects using bpolicy and rpolicy and calculate for cyr
 recs = Records.cps_constructor()
-calc1 = Calculator(policy=policy1, records=recs)
+calc1 = Calculator(policy=bpolicy, records=recs)
 calc1.advance_to_year(cyr)
 calc1.calc_all()
-calc2 = Calculator(policy=policy2, records=recs)
+calc2 = Calculator(policy=rpolicy, records=recs)
 calc2.advance_to_year(cyr)
 calc2.calc_all()
 
@@ -45,8 +41,8 @@ calc2.calc_all()
 iitax_rev1 = calc1.weighted_total('iitax')
 iitax_rev2 = calc2.weighted_total('iitax')
 
-# construct reform2-vs-reform1 difference table with results for income deciles
-diff_table = calc1.difference_table(calc2, 'weighted_deciles', 'iitax')
+# construct reform-vs-baseline difference table with results for income deciles
+diff_table = calc2.difference_table(calc1, 'weighted_deciles', 'iitax')
 assert isinstance(diff_table, pd.DataFrame)
 diff_extract = pd.DataFrame()
 dif_colnames = ['count', 'tax_cut', 'tax_inc',
@@ -58,12 +54,9 @@ for dname, ename in zip(dif_colnames, ext_colnames):
 
 # print total revenue estimates for cyr
 # (estimates in billons of dollars rounded to nearest tenth of a billion)
-print('{}_REFORM1_iitax_rev($B)= {:.3f}'.format(cyr, iitax_rev1 * 1e-9))
-print('{}_REFORM2_iitax_rev($B)= {:.3f}'.format(cyr, iitax_rev2 * 1e-9))
+print('{}_BASELINE_iitax_rev($B)= {:.3f}'.format(cyr, iitax_rev1 * 1e-9))
+print('{}_REFORM___iitax_rev($B)= {:.3f}'.format(cyr, iitax_rev2 * 1e-9))
 print('')
 
-title = 'Extract of {} income-tax difference table by expanded-income decile'
-print(title.format(cyr))
-print('(taxfall is count of funits with cut in income tax in reform 2 vs 1)')
-print('(taxrise is count of funits with rise in income tax in reform 2 vs 1)')
-print(diff_extract.to_string())
+# print reform-vs-baseline difference table
+print(diff_extract)
