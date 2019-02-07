@@ -45,7 +45,7 @@ def test_agg(tests_path, puf_fullsample):
     calc.advance_to_year(START_YEAR)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = calc.diagnostic_table(nyrs)  # column labels are int
+    adt = calc.diagnostic_table(nyrs).round(1)  # column labels are int
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
     # compare actual DataFrame, adt, with the expected DataFrame, edt
     aggres_path = os.path.join(tests_path, 'pufcsv_agg_expect.csv')
