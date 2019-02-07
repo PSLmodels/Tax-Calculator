@@ -1,0 +1,116 @@
+// Title: Tax Cuts and Jobs Act, Senate version, Chairman's mark (as of 11-9-17)
+// Reform_File_Author: Cody Kallen
+// Reform_Reference: https://www.finance.senate.gov/imo/media/doc/11.9.17%20Chairman's%20Mark.pdf
+// Reform_Baseline: 2017_law.json
+// Reform_Description:
+// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
+// -  New pass-through income tax schedule (2)
+// -  New standard deductions (3)
+// -  Repeal personal exemption (4)
+// -  Modification to child tax credit, nonrefundable dependent credits (5)
+// -  Repeal Alternative Minimum Tax (6)
+// -  Repeal of domestic production deduction
+// -  Changes to itemized deductions (8)
+// -  Adopt Chained CPI for parameter indexing (9)
+// Reform_Parameter_Map:
+// - 1: _II_rt*
+// - 2: _PT_*
+// - 3: _STD, _STD_Dep, _STD_Aged
+// - 4: _II_em
+// - 5: _DependentCredit_*, _CTC_c, _CTC_ps, _ACTC_Income_thd
+// - 6: _AMT_rt*
+// - 7: _ALD_DomesticProduction_hc
+// - 8: _ID_*
+// - 9: _cpi_offset
+{
+  "policy": {
+        "_II_rt1":
+            {"2018": [0.1]},
+        "_II_rt2":
+            {"2018": [0.12]},
+        "_II_rt3":
+            {"2018":  [0.225]},
+        "_II_rt4":
+            {"2018":  [0.25]},
+        "_II_rt5":
+            {"2018": [0.325]},
+        "_II_rt6":
+            {"2018": [0.35]},
+        "_II_rt7":
+            {"2018": [0.385]},
+        "_II_brk1":
+            {"2018": [[9525, 19050, 9525, 13600, 19050]]},
+        "_II_brk2":
+            {"2018": [[38700, 77400, 38700, 51800, 77400]]},
+        "_II_brk3":
+            {"2018": [[60000, 120000, 60000, 60000, 120000]]},
+        "_II_brk4":
+            {"2018": [[170000, 290000, 145000, 170000, 290000]]},
+        "_II_brk5":
+            {"2018": [[200000, 390000, 195000, 200000, 390000]]},
+        "_II_brk6":
+            {"2018": [[500000, 1000000, 500000, 500000, 1000000]]},
+        "_PT_rt1":
+            {"2018": [0.1]},
+        "_PT_rt2":
+            {"2018": [0.12]},
+        "_PT_rt3":
+            {"2018":  [0.225]},
+        "_PT_rt4":
+            {"2018":  [0.25]},
+        "_PT_rt5":
+            {"2018": [0.325]},
+        "_PT_rt6":
+            {"2018": [0.35]},
+        "_PT_rt7":
+            {"2018": [0.385]},
+        "_PT_brk1":
+            {"2018": [[9525, 19050, 9525, 13600, 19050]]},
+        "_PT_brk2":
+            {"2018": [[38700, 77400, 38700, 51800, 77400]]},
+        "_PT_brk3":
+            {"2018": [[60000, 120000, 60000, 60000, 120000]]},
+        "_PT_brk4":
+            {"2018": [[170000, 290000, 145000, 170000, 290000]]},
+        "_PT_brk5":
+            {"2018": [[200000, 390000, 195000, 200000, 390000]]},
+        "_PT_brk6":
+            {"2018": [[500000, 1000000, 500000, 500000, 1000000]]},
+        "_PT_excl_rt":
+            {"2018": [0.174]},
+        "_PT_excl_wagelim_rt":
+            {"2018": [0.5]},
+        "_STD":
+            {"2018": [[12000, 24000, 12000, 18000, 24000]]},
+        "_II_em":
+            {"2018": [0]},
+        "_CTC_ps":
+            {"2018": [[500000, 1000000, 500000, 500000, 1000000]]},
+        "_CTC_c":
+            {"2018": [1100], "2022": [1200], "2025": [1300]},
+        "_DependentCredit_Child_c":
+            {"2018": [550], "2022": [450], "2025": [350]},
+        "_DependentCredit_Nonchild_c":
+            {"2018": [500]},
+        "_DependentCredit_before_CTC":
+            {"2018": [true]},
+        "_ACTC_Income_thd":
+            {"2018": [2500.0]},
+        "_AMT_rt1":
+            {"2018": [0]},
+        "_AMT_rt2":
+            {"2018": [0]},
+        "_ALD_DomesticProduction_hc":
+            {"2018": [1]},
+        "_ID_prt":
+            {"2018": [0]},
+        "_ID_StateLocalTax_hc":
+            {"2018": [1]},
+        "_ID_RealEstate_hc":
+            {"2018": [1]},
+        "_ID_Miscellaneous_hc":
+            {"2018": [1]},
+        "_cpi_offset":
+            {"2017": [-0.0025]}
+  }
+}

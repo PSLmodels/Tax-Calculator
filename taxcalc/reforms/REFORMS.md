@@ -32,21 +32,13 @@ in this section.
 
 - [2016 Clinton Campaign Tax Plan](Clinton2016.json)
 
-- [2016 Ryan-Brady "Better Way" Tax Plan](RyanBrady.json)
-
 - [2017 Trump Administration Tax Plan](Trump2017.json)
 
 - [2017 Brown-Khanna GAIN Act](BrownKhanna.json)
 
-- [2017 Tax Cuts and Jobs Act, House version](TCJA_House.json)
+- [2017 Simplifying America's Tax System (Renacci)](Renacci.json)
 
-- [2017 Tax Cuts and Jobs Act, Passed House version](TCJA_House_Amended.json)
-
-- [2017 Tax Cuts and Jobs Act, Senate version](TCJA_Senate.json)
-
-- [2017 Tax Cuts and Jobs Act, Passed Senate version](TCJA_Senate_120117.json)
-
-- [2017 Tax Cuts and Jobs Act, Conference bill](TCJA_Reconciliation.json)
+- [2017 Tax Cuts and Jobs Act, as passed by Congress](TCJA.json)
 
 ## Structure and Syntax of Reform Files
 

@@ -1,0 +1,152 @@
+// Title: Tax Cuts and Jobs Act, House version, Amended (as of 11-9-17)
+// Reform_File_Author: Cody Kallen and Matt Jensen
+// Reform_Reference: https://waysandmeans.house.gov/chairman-brady-offers-second-amendment-tax-cuts-jobs-act/
+// Reform_Baseline: 2017_law.json
+// Reform_Description:
+// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1)
+// -  New pass-through income tax schedule, with approximated qualifying rules (2)
+// -  New standard deductions (3)
+// -  Repeal personal exemption (4)
+// -  New nonrefundable credits, phase-out with child tax credit (5)
+// -  Repeal Alternative Minimum Tax (6)
+// -  Minor changes to capital brackets for long-term gains and dividends (7)
+// -  Changes to above-the-line deductions (8)
+// -  Changes to itemized deductions (9)
+// -  Repeal of certain credits (10)
+// -  Adopt Chained CPI for parameter indexing (11)
+// Reform_Parameter_Map:
+// - 1: _II_rt*
+// - 2: _PT_rt*
+// - 3: _STD, _STD_Dep, _STD_Aged (can safely ignore WARNINGs about _STD_Dep values)
+// - 4: _II_em
+// - 5: _DependentCredit_*, _FilerCredit_c, _CTC_ps
+// - 6: _AMT_rt*
+// - 7: _CG_brk*
+// - 8: _ALD_*
+// - 9: _ID_*
+// - 10: _CR_SchR_hc, _LLC_Ecpense_c
+// - 11: _cpi_offset
+{
+  "policy": {
+        "_II_rt1":
+            {"2018": [0.12]},
+        "_II_rt2":
+            {"2018": [0.25]},
+        "_II_rt3":
+            {"2018":  [0.35]},
+        "_II_rt4":
+            {"2018":  [0.396]},
+        "_II_rt5":
+            {"2018": [0.456]},
+        "_II_rt6":
+            {"2018": [0.396]},
+        "_II_rt7":
+            {"2018": [0.396]},
+        "_II_brk1":
+            {"2018": [[45000, 90000, 45000, 67500, 90000]]},
+        "_II_brk2":
+            {"2018": [[200000, 260000, 130000, 200000, 260000]]},
+        "_II_brk3":
+            {"2018": [[500000, 1000000, 500000, 500000, 1000000]]},
+        "_II_brk4":
+            {"2018": [[1000000, 1200000, 1000000, 1000000, 1200000]]},
+        "_II_brk5":
+            {"2018": [[1207000, 1614000, 1207000, 1310500, 1614000]]},
+        "_II_brk6":
+            {"2018": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
+        "_PT_rt1":
+            {"2018": [0.11],
+             "2020": [0.10],
+             "2022": [0.09]},
+        "_PT_rt2":
+            {"2018": [0.12]},
+        "_PT_rt3":
+            {"2018": [0.25]},
+        "_PT_rt4":
+            {"2018": [0.26],
+             "2020": [0.27],
+             "2022": [0.28]},
+        "_PT_rt5":
+            {"2018": [0.25]},
+        "_PT_rt6":
+            {"2018": [0.31]},
+        "_PT_rt7":
+            {"2018": [0.25]},
+        "_PT_rt8":
+            {"2018": [0.25]},
+        "_PT_brk1":
+            {"2018": [[37500, 75000, 37500, 56250, 75000]]},
+        "_PT_brk2":
+            {"2018": [[45000, 90000, 45000, 67500, 90000]]},
+        "_PT_brk3":
+            {"2018": [[75000, 150000, 75000, 112500, 150000]]},
+        "_PT_brk4":
+            {"2018": [[112500, 225000, 112500, 168750, 225000]]},
+        "_PT_brk5":
+            {"2018": [[1000000, 1200000, 1000000, 1000000, 1200000]]},
+        "_PT_brk6":
+            {"2018": [[1207000, 1614000, 1207000, 1310500, 1614000]]},
+        "_PT_brk7":
+            {"2018": [[9e99, 9e99, 9e99, 9e99, 9e99]]},
+        "_PT_EligibleRate_active":
+            {"2018": [0.3]},
+        "_PT_EligibleRate_passive":
+            {"2018": [1.0]},
+        "_PT_wages_active_income":
+            {"2018": [true]},
+        "_PT_top_stacking":
+            {"2018": [false]},
+        "_STD":
+            {"2018": [[12000, 24000, 12000, 18000, 24000]]},
+        "_STD_Dep":
+            {"2018": [500]},
+        "_STD_Aged":
+            {"2018": [[0, 0, 0, 0, 0]]},
+        "_II_em": 
+            {"2018": [0]},
+        "_CTC_ps":
+            {"2018": [[115000, 230000, 115000, 115000, 115000]]},
+        "_CTC_c":
+            {"2018": [1100], "2019": [1200], "2023": [1300], "2027": [1400]},
+        "_DependentCredit_Child_c":
+            {"2018": [500], "2019": [400], "2023": [300], "2027": [200]},
+        "_DependentCredit_Nonchild_c":
+            {"2018": [300], "2023": [0]},
+        "_DependentCredit_before_CTC":
+            {"2018": [true]},
+        "_FilerCredit_c":
+            {"2018": [[300, 600, 300, 300, 300]], "2023": [[0, 0, 0, 0, 0]]},
+        "_AMT_rt1":
+            {"2018": [0]},
+        "_AMT_rt2":
+            {"2018": [0]},
+        "_CG_brk1":
+            {"2018": [[38600, 77200, 38600, 51700, 77200]]},
+        "_CG_brk2":
+            {"2018": [[425800, 479000, 239500, 452400, 479000]]},
+        "_ALD_DomesticProduction_hc":
+            {"2018": [1]},
+        "_ALD_StudentLoan_hc":
+            {"2018": [1]},
+        "_ALD_Tuition_hc":
+            {"2018": [1]},
+        "_ID_prt":
+            {"2018": [0]},
+        "_ID_StateLocalTax_hc":
+            {"2018": [1]},
+        "_ID_RealEstate_c":
+            {"2018": [[10000, 10000, 10000, 10000, 10000]]},
+        "_ID_Casualty_hc":
+            {"2018": [1]},
+        "_ID_Medical_hc":
+            {"2018": [1]},
+        "_ID_Miscellaneous_hc":
+            {"2018": [1]},
+        "_CR_SchR_hc":
+            {"2018": [1]},
+        "_LLC_Expense_c":
+            {"2018": [0]},
+        "_cpi_offset":
+            {"2017": [-0.0025]}
+  }
+}
