@@ -20,7 +20,8 @@ import pandas as pd
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 from taxcalc import run_nth_year_taxcalc_model
 
-
+import pytest
+@pytest.mark.one
 def test_agg(tests_path, cps_fullsample):
     """
     Test current-law aggregate taxes using cps.csv file.
@@ -33,6 +34,7 @@ def test_agg(tests_path, cps_fullsample):
     recs = Records.cps_constructor(data=cps_fullsample)
     # create a Calculator object using baseline policy and cps records
     calc = Calculator(policy=baseline_policy, records=recs)
+    calc.advance_to_year(2017)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
     adt = calc.diagnostic_table(nyrs)
