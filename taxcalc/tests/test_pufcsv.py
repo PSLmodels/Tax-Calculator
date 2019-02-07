@@ -27,7 +27,7 @@ from taxcalc import run_nth_year_taxcalc_model
 
 START_YEAR = 2017
 
-@pytest.mark.one
+
 @pytest.mark.requires_pufcsv
 def test_agg(tests_path, puf_fullsample):
     """

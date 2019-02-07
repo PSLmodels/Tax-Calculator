@@ -20,10 +20,10 @@ import pandas as pd
 from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 from taxcalc import run_nth_year_taxcalc_model
 
+
 START_YEAR = 2017
 
-import pytest
-@pytest.mark.one
+
 def test_agg(tests_path, cps_fullsample):
     """
     Test current-law aggregate taxes using cps.csv file.
