@@ -453,6 +453,7 @@ class Policy(Parameters):
         # pylint: disable=too-many-branches,too-many-nested-blocks
         # pylint: disable=too-many-statements,too-many-locals
         removed_param_names = set([
+            # following 5 parameters removed in PR 2223 merged on 2019-02-06
             '_DependentCredit_Child_c',
             '_DependentCredit_Nonchild_c',
             '_DependentCredit_before_CTC',
