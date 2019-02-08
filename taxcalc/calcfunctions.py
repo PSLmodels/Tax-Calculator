@@ -88,8 +88,8 @@ def BenefitPrograms(calc):
 @iterate_jit(nopython=True)
 def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  e00900p, e00900s, e02100p, e02100s, k1bx14p, k1bx14s,
-                  payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+                  SS_Earnings_thd, e00900p, e00900s, e02100p, e02100s, k1bx14p,
+                  k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
                   sey, earned, earned_p, earned_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
@@ -126,11 +126,22 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
 
+    # compute additional OASDI taxes on the sum of gross wage-and-salary income
+    # and taxable self employment income
+    sey_frac = 1.0 - 0.5 * FICA_ss_trt
+    was_plus_sey_p = gross_was_p + max(0., sey_p * sey_frac)
+    was_plus_sey_s = gross_was_s + max(0., sey_s * sey_frac)
+    additional_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
+    additional_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
+    additional_payrolltax = (additional_ss_income_p * FICA_ss_trt +
+                             additional_ss_income_s * FICA_ss_trt)
+
     # compute part of total regular payroll taxes for filing unit
-    payrolltax = ptax_was + setax
+    payrolltax = ptax_was + setax + additional_payrolltax
 
     # compute OASDI part of payroll taxes
-    ptax_oasdi = ptax_ss_was_p + ptax_ss_was_s + setax_ss_p + setax_ss_s
+    ptax_oasdi = (ptax_ss_was_p + ptax_ss_was_s + setax_ss_p + setax_ss_s +
+                  additional_payrolltax)
 
     # compute earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
