@@ -10,7 +10,7 @@ Tax-Calculator federal income and payroll tax Calculator class.
 import os
 import re
 import copy
-import urllib
+import requests
 import numpy as np
 import pandas as pd
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
@@ -1102,7 +1102,9 @@ class Calculator():
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
             elif assump.startswith('http'):
-                txt = urllib.request.urlopen(assump).read().decode()
+                req = requests.get(assump)
+                req.raise_for_status()
+                txt = req.text
             else:
                 txt = assump
             (cons_dict,
@@ -1117,7 +1119,9 @@ class Calculator():
             if os.path.isfile(reform):
                 txt = open(reform, 'r').read()
             elif reform.startswith('http'):
-                txt = urllib.request.urlopen(reform).read().decode()
+                req = requests.get(reform)
+                req.raise_for_status()
+                txt = req.text
             else:
                 txt = reform
             rpol_dict = (
@@ -1159,7 +1163,9 @@ class Calculator():
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
             elif assump.startswith('http'):
-                txt = urllib.request.urlopen(assump).read().decode()
+                req = requests.get(assump)
+                req.raise_for_status()
+                txt = req.text
             else:
                 txt = assump
             # strip out //-comments without changing line numbers

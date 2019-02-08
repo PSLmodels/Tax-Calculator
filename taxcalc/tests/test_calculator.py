@@ -12,8 +12,8 @@ import json
 from io import StringIO
 import tempfile
 import copy
-import urllib
 import pytest
+import requests
 import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Consumption
@@ -1213,7 +1213,7 @@ def test_read_json_assumptions(assumption_file):
     assert isinstance(Calculator.read_json_assumptions(None), dict)
     with pytest.raises(ValueError):
         Calculator.read_json_assumptions(list())
-    with pytest.raises(urllib.request.URLError):
+    with pytest.raises(requests.exceptions.ConnectionError):
         Calculator.read_json_assumptions('http://unknown-url')
     assump_filename = assumption_file.name
     file_dict = Calculator.read_json_assumptions(assump_filename)

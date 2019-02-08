@@ -12,6 +12,7 @@ requirements:
     - "numpy>=1.13"
     - "pandas>=0.23"
     - "bokeh>=0.13"
+    - requests
     - numba
 
   run:
@@ -19,6 +20,7 @@ requirements:
     - "numpy>=1.13"
     - "pandas>=0.23"
     - "bokeh>=0.13"
+    - requests
     - numba
 
 test:
