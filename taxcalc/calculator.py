@@ -10,7 +10,7 @@ Tax-Calculator federal income and payroll tax Calculator class.
 import os
 import re
 import copy
-import urllib
+import requests
 import numpy as np
 import pandas as pd
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
@@ -1102,7 +1102,9 @@ class Calculator():
             if os.path.isfile(assump):
                 txt = open(assump, 'r').read()
             elif assump.startswith('http'):
-                txt = urllib.request.urlopen(assump).read().decode()
+                req = requests.get(assump)
+                req.raise_for_status()
+                txt = req.text
             else:
                 txt = assump
             (cons_dict,
@@ -1117,7 +1119,9 @@ class Calculator():
             if os.path.isfile(reform):
                 txt = open(reform, 'r').read()
             elif reform.startswith('http'):
-                txt = urllib.request.urlopen(reform).read().decode()
+                req = requests.get(reform)
+                req.raise_for_status()
+                txt = req.text
             else:
                 txt = reform
             rpol_dict = (
@@ -1137,38 +1141,42 @@ class Calculator():
         return param_dict
 
     @staticmethod
-    def read_json_assumptions(assump):
+    def read_json_parameters(param):
         """
-        Read JSON assump object and return one dictionary that has
+        Read JSON param object and return one dictionary that has
         the same structure as each subdictionary returned by the
         Calculator.read_json_param_objects method.
 
-        Note that the assump argument can be None, in which case
+        Note that the param argument can be None, in which case
         the returned dictionary is empty.  Also note that the
-        assump argument can be a string containing a local file name,
+        param argument can be a string containing a local file name,
         URL beginning with 'http', or valid JSON string.
 
-        The assump file/URL contents or JSON string must be like the
+        The param file/URL contents or JSON string must be like the
         structure required for each subsection of the assump argument
-        of the Calculator.read_json_param_objects method.
+        of the Calculator.read_json_param_objects method EXCEPT FOR
+        ONE THING: the parameter values are NOT enclosed in [] brackets.
         """
         # construct returned dictionary from specified assump
-        if assump is None:
+        if param is None:
             returned_dict = dict()
-        elif isinstance(assump, str):
-            if os.path.isfile(assump):
-                txt = open(assump, 'r').read()
-            elif assump.startswith('http'):
-                txt = urllib.request.urlopen(assump).read().decode()
+        elif isinstance(param, str):
+            if os.path.isfile(param):
+                txt = open(param, 'r').read()
+            elif param.startswith('http'):
+                req = requests.get(param)
+                req.raise_for_status()
+                txt = req.text
+                print(txt)
             else:
-                txt = assump
+                txt = param
             # strip out //-comments without changing line numbers
             json_text = re.sub('//.*', ' ', txt)
             # convert JSON text into a Python dictionary
             raw_dict = json_to_dict(json_text)
             returned_dict = Calculator._convert_parameter_dict(raw_dict)
         else:
-            raise ValueError('assump is neither None nor string')
+            raise ValueError('param is neither None nor string')
         return returned_dict
 
     @staticmethod
@@ -1577,15 +1585,15 @@ class Calculator():
         year_param = dict()
         for pkey, sdict in param_key_dict.items():
             if not isinstance(pkey, str):
-                msg = 'pkey {} in reform is not a string'
+                msg = 'pkey {} in param JSON is not a string'
                 raise ValueError(msg.format(pkey))
             rdict = dict()
             if not isinstance(sdict, dict):
-                msg = 'pkey {} in reform is not paired with a dict'
+                msg = 'pkey {} in param JSON is not paired with a dict'
                 raise ValueError(msg.format(pkey))
             for skey, val in sdict.items():
                 if not isinstance(skey, str):
-                    msg = 'skey {} in reform is not a string'
+                    msg = 'skey {} in param JSON is not a string'
                     raise ValueError(msg.format(skey))
                 else:
                     year = int(skey)

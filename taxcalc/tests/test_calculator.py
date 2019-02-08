@@ -12,8 +12,8 @@ import json
 from io import StringIO
 import tempfile
 import copy
-import urllib
 import pytest
+import requests
 import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Consumption
@@ -1179,8 +1179,9 @@ def test_ce_aftertax_income(cps_subsample):
     assert isinstance(res, dict)
 
 
-ASSUMPTION_FILE_CONTENT = """
-// Example of JSON assump file suitable for read_json_assumptions().
+PARAMETER_FILE_CONTENT = """
+// Example of JSON parameter file suitable for read_json_parameters().
+// Notice the lack of [] brackets around the parameter values.
 {
   "BE_sub": {"2018": -0.05, "2021": -0.25},
   "BE_inc": {"2020": 0.10},
@@ -1189,35 +1190,42 @@ ASSUMPTION_FILE_CONTENT = """
 """
 
 
-@pytest.fixture(scope='module', name='assumption_file')
-def fixture_assumption_file():
+@pytest.fixture(scope='module', name='parameter_file')
+def fixture_parameter_file():
     """
-    Temporary assumption file for read_json_assumptions() function.
+    Temporary parameter file for read_json_parameters() function.
     """
-    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    afile.write(ASSUMPTION_FILE_CONTENT)
-    afile.close()
+    pfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
+    pfile.write(PARAMETER_FILE_CONTENT)
+    pfile.close()
     # must close and then yield for Windows platform
-    yield afile
-    if os.path.isfile(afile.name):
+    yield pfile
+    if os.path.isfile(pfile.name):
         try:
-            os.remove(afile.name)
+            os.remove(pfile.name)
         except OSError:
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_read_json_assumptions(assumption_file):
+def test_read_json_parameters(parameter_file):
     """
-    Test Calculator.read_json_assumptions() function.
+    Test the Calculator.read_json_() function that is used by
+    other PSLmodels models to read simple parameter schema that
+    do not involve the use of [] brackets around parameter values.
     """
-    assert isinstance(Calculator.read_json_assumptions(None), dict)
+    assert isinstance(Calculator.read_json_parameters(None), dict)
     with pytest.raises(ValueError):
-        Calculator.read_json_assumptions(list())
-    with pytest.raises(urllib.request.URLError):
-        Calculator.read_json_assumptions('http://unknown-url')
-    assump_filename = assumption_file.name
-    file_dict = Calculator.read_json_assumptions(assump_filename)
+        Calculator.read_json_parameters(list())
+    param_filename = parameter_file.name
+    file_dict = Calculator.read_json_parameters(param_filename)
     assert isinstance(file_dict, dict)
-    text_dict = Calculator.read_json_assumptions(ASSUMPTION_FILE_CONTENT)
+    text_dict = Calculator.read_json_parameters(PARAMETER_FILE_CONTENT)
     assert isinstance(text_dict, dict)
     assert text_dict == file_dict
+    with pytest.raises(requests.exceptions.ConnectionError):
+        Calculator.read_json_parameters('http://unknown-url')
+    params_url = ('https://raw.githubusercontent.com/'
+                  'PSLmodels/Tax-Calculator/master/taxcalc/'
+                  'assumptions/simple_parameters_template.json')
+    # TODO: file_dict = Calculator.read_json_parameters(params_url)
+    # TODO: assert isinstance(file_dict, dict)

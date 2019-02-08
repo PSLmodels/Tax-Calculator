@@ -31,7 +31,7 @@ itax_rev2sa = calc2.weighted_total('iitax')
 
 # specify behavioral-response assumptions
 behresp_json = '{"BE_sub": {"2018": 0.25}}'
-behresp_dict = Calculator.read_json_assumptions(behresp_json)
+behresp_dict = Calculator.read_json_parameters(behresp_json)
 
 # specify Calculator object for analysis of reform with behavioral response
 calc2 = Calculator(policy=pol, records=recs)
