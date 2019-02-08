@@ -163,11 +163,11 @@ def test_reform_json_and_output(tests_path):
     # embedded function used only in test_reform_json_and_output
     def res_and_out_are_same(base):
         """
-        Return True if base.res and base.out file contents are the same;
-        return False if base.res and base.out file contents differ.
+        Return True if base.res.csv and base.out.csv file contents are same;
+        return False if base.res.csv and base.out.csv file contents differ.
         """
-        resdf = pd.read_csv(base + '.res')
-        outdf = pd.read_csv(base + '.out')
+        resdf = pd.read_csv(base + '.res.csv')
+        outdf = pd.read_csv(base + '.out.csv')
         diffs = False
         for col in resdf:
             if col in outdf:
@@ -191,9 +191,9 @@ def test_reform_json_and_output(tests_path):
     calc = Calculator(policy=Policy(), records=cases, verbose=False)
     calc.advance_to_year(tax_year)
     calc.calc_all()
-    res_path = cases_path.replace('cases.csv', 'clp.res')
+    res_path = cases_path.replace('cases.csv', 'clp.res.csv')
     write_res_file(calc, res_path)
-    if res_and_out_are_same(res_path.replace('.res', '')):
+    if res_and_out_are_same(res_path.replace('.res.csv', '')):
         os.remove(res_path)
     else:
         failures.append(res_path)
@@ -220,9 +220,9 @@ def test_reform_json_and_output(tests_path):
         calc = Calculator(policy=pol, records=cases, verbose=False)
         calc.advance_to_year(tax_year)
         calc.calc_all()
-        res_path = jrf.replace('.json', '.res')
+        res_path = jrf.replace('.json', '.res.csv')
         write_res_file(calc, res_path)
-        if res_and_out_are_same(res_path.replace('.res', '')):
+        if res_and_out_are_same(res_path.replace('.res.csv', '')):
             os.remove(res_path)
         else:
             failures.append(res_path)
