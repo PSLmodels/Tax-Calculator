@@ -21,6 +21,9 @@ from taxcalc import Policy, Records, Calculator, nonsmall_diffs
 from taxcalc import run_nth_year_taxcalc_model
 
 
+START_YEAR = 2017
+
+
 def test_agg(tests_path, cps_fullsample):
     """
     Test current-law aggregate taxes using cps.csv file.
@@ -33,29 +36,28 @@ def test_agg(tests_path, cps_fullsample):
     recs = Records.cps_constructor(data=cps_fullsample)
     # create a Calculator object using baseline policy and cps records
     calc = Calculator(policy=baseline_policy, records=recs)
+    calc.advance_to_year(START_YEAR)
     calc_start_year = calc.current_year
     # create aggregate diagnostic table (adt) as a Pandas DataFrame object
-    adt = calc.diagnostic_table(nyrs)
+    adt = calc.diagnostic_table(nyrs).round(1)  # column labels are int
     taxes_fullsample = adt.loc["Combined Liability ($b)"]
-    # convert adt to a string with a trailing EOL character
-    actual_results = adt.to_string(float_format='%8.1f') + '\n'
-    # read expected results from file
-    aggres_path = os.path.join(tests_path, 'cpscsv_agg_expect.txt')
-    with open(aggres_path, 'r') as expected_file:
-        txt = expected_file.read()
-    expected_results = txt.rstrip('\n\t ') + '\n'  # cleanup end of file txt
-    # ensure actual and expected results have no nonsmall differences
-    diffs = nonsmall_diffs(actual_results.splitlines(True),
-                           expected_results.splitlines(True))
+    # compare actual DataFrame, adt, with the expected DataFrame, edt
+    aggres_path = os.path.join(tests_path, 'cpscsv_agg_expect.csv')
+    edt = pd.read_csv(aggres_path, index_col=False)  # column labels are str
+    edt.drop('Unnamed: 0', axis='columns', inplace=True)
+    assert len(adt.columns.values) == len(edt.columns.values)
+    diffs = False
+    for icol in adt.columns.values:
+        if not np.allclose(adt[icol], edt[str(icol)]):
+            diffs = True
     if diffs:
-        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.txt')
-        with open(new_filename, 'w') as new_file:
-            new_file.write(actual_results)
+        new_filename = '{}{}'.format(aggres_path[:-10], 'actual.csv')
+        adt.to_csv(new_filename, float_format='%.1f')
         msg = 'CPSCSV AGG RESULTS DIFFER\n'
         msg += '-------------------------------------------------\n'
-        msg += '--- NEW RESULTS IN cpscsv_agg_actual.txt FILE ---\n'
-        msg += '--- if new OK, copy cpscsv_agg_actual.txt to  ---\n'
-        msg += '---                 cpscsv_agg_expect.txt     ---\n'
+        msg += '--- NEW RESULTS IN cpscsv_agg_actual.csv FILE ---\n'
+        msg += '--- if new OK, copy cpscsv_agg_actual.csv to  ---\n'
+        msg += '---                 cpscsv_agg_expect.csv     ---\n'
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
@@ -65,6 +67,7 @@ def test_agg(tests_path, cps_fullsample):
     subsample = cps_fullsample.sample(frac=subfrac, random_state=rn_seed)
     recs_subsample = Records.cps_constructor(data=subsample)
     calc_subsample = Calculator(policy=baseline_policy, records=recs_subsample)
+    calc_subsample.advance_to_year(START_YEAR)
     adt_subsample = calc_subsample.diagnostic_table(nyrs)
     # compare combined tax liability from full and sub samples for each year
     taxes_subsample = adt_subsample.loc["Combined Liability ($b)"]
@@ -73,7 +76,7 @@ def test_agg(tests_path, cps_fullsample):
         if cyr == calc_start_year:
             reltol = 0.0141
         else:
-            reltol = 0.007
+            reltol = 0.0095
         if not np.allclose(taxes_subsample[cyr], taxes_fullsample[cyr],
                            atol=0.0, rtol=reltol):
             reldiff = (taxes_subsample[cyr] / taxes_fullsample[cyr]) - 1.
