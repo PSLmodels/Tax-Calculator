@@ -1224,8 +1224,8 @@ def test_read_json_parameters(parameter_file):
     assert text_dict == file_dict
     with pytest.raises(requests.exceptions.ConnectionError):
         Calculator.read_json_parameters('http://unknown-url')
-    param_url = ('https://raw.githubusercontent.com/'
+    params_url = ('https://raw.githubusercontent.com/'
                   'PSLmodels/Tax-Calculator/master/taxcalc/'
                   'assumptions/simple_parameters_template.json')
-    # TODO: file_dict = Calculator.read_json_parameters(param_url)
+    # TODO: file_dict = Calculator.read_json_parameters(params_url)
     # TODO: assert isinstance(file_dict, dict)
