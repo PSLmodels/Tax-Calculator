@@ -1227,5 +1227,5 @@ def test_read_json_parameters(parameter_file):
     params_url = ('https://raw.githubusercontent.com/'
                   'PSLmodels/Tax-Calculator/master/taxcalc/'
                   'assumptions/simple_parameters_template.json')
-    # TODO: file_dict = Calculator.read_json_parameters(params_url)
-    # TODO: assert isinstance(file_dict, dict)
+    file_dict = Calculator.read_json_parameters(params_url)
+    assert isinstance(file_dict, dict)
