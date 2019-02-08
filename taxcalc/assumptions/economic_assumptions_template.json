@@ -7,6 +7,10 @@
 // <http://PSLmodels.github.io/Tax-Calculator/#params>.
 {
     "consumption": {
+        "_MPC_e17500": {"2017": [0.0]},
+        "_MPC_e18400": {"2017": [0.0]},
+        "_MPC_e19800": {"2017": [0.0]},
+        "_MPC_e20400": {"2017": [0.0]},
         "_BEN_housing_value": {"2017": [1.0]},
         "_BEN_snap_value": {"2017": [1.0]},
         "_BEN_tanf_value": {"2017": [1.0]},
@@ -14,11 +18,7 @@
         "_BEN_wic_value": {"2017": [1.0]},
         "_BEN_mcare_value": {"2017": [1.0]},
         "_BEN_mcaid_value": {"2017": [1.0]},
-        "_BEN_other_value": {"2017": [1.0]},
-        "_MPC_e17500": {"2017": [0.0]},
-        "_MPC_e18400": {"2017": [0.0]},
-        "_MPC_e19800": {"2017": [0.0]},
-        "_MPC_e20400": {"2017": [0.0]}
+        "_BEN_other_value": {"2017": [1.0]}
     },
     "growdiff_baseline": {
         "_ABOOK": {"2017": [0.0]},
