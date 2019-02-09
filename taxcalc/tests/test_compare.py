@@ -9,7 +9,7 @@ import os
 import pytest
 import numpy as np
 # pylint: disable=import-error,pointless-string-statement
-from taxcalc import Policy, Records, Calculator, nonsmall_diffs
+from taxcalc import Policy, Records, Calculator
 from taxcalc import add_income_table_row_variable, SOI_AGI_BINS
 
 
@@ -227,6 +227,54 @@ def comparison(cname, calc, cmpdata, ofile):
         idx += 1
     pct_diff = 100. * ((txc_tot / soi_tot) - 1.)
     ofile.write(results.format('ALL', txc_tot, soi_tot, pct_diff))
+
+
+def nonsmall_diffs(linelist1, linelist2, small=0.0):
+    """
+    Return True if line lists differ significantly; otherwise return False.
+    Significant numerical difference means one or more numbers differ (between
+    linelist1 and linelist2) by more than the specified small amount.
+    """
+    # embedded function used only in nonsmall_diffs function
+    def isfloat(value):
+        """
+        Return True if value can be cast to float; otherwise return False.
+        """
+        try:
+            float(value)
+            return True
+        except ValueError:
+            return False
+    # begin nonsmall_diffs logic
+    assert isinstance(linelist1, list)
+    assert isinstance(linelist2, list)
+    if len(linelist1) != len(linelist2):
+        return True
+    assert 0.0 <= small <= 1.0
+    epsilon = 1e-6
+    smallamt = small + epsilon
+    for line1, line2 in zip(linelist1, linelist2):
+        if line1 == line2:
+            continue
+        else:
+            tokens1 = line1.replace(',', '').split()
+            tokens2 = line2.replace(',', '').split()
+            for tok1, tok2 in zip(tokens1, tokens2):
+                tok1_isfloat = isfloat(tok1)
+                tok2_isfloat = isfloat(tok2)
+                if tok1_isfloat and tok2_isfloat:
+                    if abs(float(tok1) - float(tok2)) <= smallamt:
+                        continue
+                    else:
+                        return True
+                elif not tok1_isfloat and not tok2_isfloat:
+                    if tok1 == tok2:
+                        continue
+                    else:
+                        return True
+                else:
+                    return True
+        return False
 
 
 def differences(afilename, efilename):

@@ -989,3 +989,15 @@ def test_reform_with_cpi_offset():
     pol = Policy()  # current-law policy
     pol.implement_reform(indexing_reform)
     assert not pol.parameter_errors
+
+
+def test_reform_with_bad_CTC_levels():
+    """
+    Implement a reform with _ACTC > _CTC_c values.
+    """
+    child_credit_reform = {
+        2020: {'_CTC_c': [2200], '_ACTC_c': [2500]}
+    }
+    pol = Policy()
+    with pytest.raises(ValueError):
+        pol.implement_reform(child_credit_reform)

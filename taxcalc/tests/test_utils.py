@@ -33,7 +33,6 @@ from taxcalc.utils import (DIST_VARIABLES,
                            bootstrap_se_ci,
                            certainty_equivalent,
                            ce_aftertax_expanded_income,
-                           nonsmall_diffs,
                            quantity_response)
 
 
@@ -845,15 +844,6 @@ def test_dec_graph_plots(cps_subsample):
                          include_zero_incomes=False,
                          include_negative_incomes=False)
     assert isinstance(dta, dict)
-
-
-def test_nonsmall_diffs():
-    assert nonsmall_diffs(['AAA'], ['AAA', 'BBB'])
-    assert nonsmall_diffs(['AaA'], ['AAA'])
-    assert not nonsmall_diffs(['AAA'], ['AAA'])
-    assert nonsmall_diffs(['12.3'], ['12.2'])
-    assert not nonsmall_diffs(['12.3 AAA'], ['12.2 AAA'], small=0.1)
-    assert nonsmall_diffs(['12.3'], ['AAA'])
 
 
 def test_quantity_response():
