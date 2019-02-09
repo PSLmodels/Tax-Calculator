@@ -4,6 +4,60 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-??-?? Release 1.0.0
+------------------------
+(last merged pull request is
+[#xxxx](https://github.com/PSLmodels/Tax-Calculator/pull/xxxx))
+
+**This is a major release with changes that make Tax-Calculator
+incompatible with earlier releases.**
+
+**API Changes**
+- Remove the Behavior class from Tax-Calculator
+  [[#2182](https://github.com/PSLmodels/Tax-Calculator/pull/2182)
+  by Martin Holmer]
+- Redefine the meaning of the `_CTC_c` policy parameter and remove five old reform parameters that are incompatible with current law
+  [[#2223](https://github.com/PSLmodels/Tax-Calculator/pull/2223)
+  by Martin Holmer with the assistance of Cody Kallen]
+- Remove the `quantity_response` function from Tax-Calculator
+  [[#22xx](https://github.com/PSLmodels/Tax-Calculator/pull/22xx)
+  by Martin Holmer]
+
+**New Features**
+- Add `ppp.py` developer-only script and create FAQ issue #2183 to describe its use
+  [[#2181](https://github.com/PSLmodels/Tax-Calculator/pull/2181)
+  by Martin Holmer]
+- Move read-the-docs documentation into several Tax-Calculator/*.md files
+  [[#2184](https://github.com/PSLmodels/Tax-Calculator/pull/2184)
+  by Martin Holmer]
+- Incorporate slightly different CPS and PUF input data files
+  [[#2185](https://github.com/PSLmodels/Tax-Calculator/pull/2185)
+  by Martin Holmer with data from Anderson Frailey], which requires new `puf.csv` input file (see [taxdata pull request 296](https://github.com/PSLmodels/taxdata/pull/296) for details) with this information:
+  * Byte size: 56415704
+  * MD5 checksum: 4aa15435c319bf5e4d3427faf52384c0
+- Add new data files generated in [taxdata pull request 297](https://github.com/PSLmodels/taxdata/pull/297) using the August-2018 CBO ten-year projection
+  [[#2196](https://github.com/PSLmodels/Tax-Calculator/pull/2196)
+  by Martin Holmer with data from Anderson Frailey]
+- Add actual 2018 values for all policy parameters
+  [[#2212](https://github.com/PSLmodels/Tax-Calculator/pull/2212)
+  by Peter Metz]
+- Revise specification of `2017_law.json` and `TCJA.json` reform files to work when last known parameter values are for 2018
+  [[#2218](https://github.com/PSLmodels/Tax-Calculator/pull/2218)
+  by Martin Holmer]
+- Add policy parameter that allows specification of the payroll tax aspects of the Larson Social Security 2100 Act
+  [[#2222](https://github.com/PSLmodels/Tax-Calculator/pull/2222)
+  by Anderson Frailey]
+
+**Bug Fixes**
+- Fix negative/zero/positive split of bottom decile in distribution and difference tables
+  [[#2192](https://github.com/PSLmodels/Tax-Calculator/pull/2192)
+  by Martin Holmer]
+- Fix CTC+ODC logic for 2018+
+  [[#2211](https://github.com/PSLmodels/Tax-Calculator/pull/2211)
+   [#2205](https://github.com/PSLmodels/Tax-Calculator/pull/2205)
+  by Martin Holmer with need pointed out by Peter Metz]
+
+
 2018-12-14 Release 0.24.0
 -------------------------
 (last merged pull request is
