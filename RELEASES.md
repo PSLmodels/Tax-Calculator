@@ -19,8 +19,8 @@ incompatible with earlier releases.**
 - Redefine the meaning of the `_CTC_c` policy parameter and remove five old reform parameters that are incompatible with current law
   [[#2223](https://github.com/PSLmodels/Tax-Calculator/pull/2223)
   by Martin Holmer with the assistance of Cody Kallen]
-- Remove the `quantity_response` function from Tax-Calculator
-  [[#22xx](https://github.com/PSLmodels/Tax-Calculator/pull/22xx)
+- Remove from Tax-Calculator the `quantity_response` function, which is now in Behavioral-Responses
+  [[#2233](https://github.com/PSLmodels/Tax-Calculator/pull/2233)
   by Martin Holmer]
 
 **New Features**
