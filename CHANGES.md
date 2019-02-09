@@ -10,7 +10,7 @@ incompatible with earlier releases.**
 
 - Redefine the meaning of the `_CTC_c` policy parameter and remove five old reform parameters that are incompatible with current law
 
-- Remove the Behavior class from Tax-Calculator and rely instead on the Behavioral-Responses behresp package
+- Remove the Behavior class from Tax-Calculator and rely instead on the `response` function in the Behavioral-Responses behresp package
 
 - Move the `quantity_response` function to the Behavioral-Responses behresp package
 

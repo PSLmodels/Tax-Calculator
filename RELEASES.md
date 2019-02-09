@@ -13,7 +13,7 @@ for a complete commit history.
 incompatible with earlier releases.**
 
 **API Changes**
-- Remove the Behavior class from Tax-Calculator
+- Remove from Tax-Calculator the Behavior class; same capabilities now in Behavioral-Responses
   [[#2182](https://github.com/PSLmodels/Tax-Calculator/pull/2182)
   by Martin Holmer]
 - Redefine the meaning of the `_CTC_c` policy parameter and remove five old reform parameters that are incompatible with current law
