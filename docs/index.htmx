@@ -13,14 +13,17 @@ div { max-width: 19cm }
 <h1 id="top">Tax-Calculator User Guide</h1>
 
 <p>This document tells you how to use Tax-Calculator, an open-source
-federal income and payroll tax simulation model.  The two ways of
-using Tax-Calculator described here require no computer programming.
-If you are interested in Python programming with Tax-Calculator, you
-should read the tested recipes in our
+federal income and payroll tax simulation model.  It assumes that you
+have already read the
+<a href="https://github.com/PSLmodels/Tax-Calculator#tax-calculator">
+documentation introduction</a>.  The two ways of using Tax-Calculator
+described here require no computer programming.  If you are interested
+in Python programming with Tax-Calculator, you should read the tested
+recipes in our
 <a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html">
 Tax-Calculator Cookbook</a>. If you want ask a question, report a bug
-or request an enhancement, do that by creating a new issue at
-the <a href="https://github.com/PSLmodels/Tax-Calculator/issues">
+or request an enhancement, do that by creating a new issue at the
+<a href="https://github.com/PSLmodels/Tax-Calculator/issues">
 Tax-Calculator website</a>.</p>
 
 <p>Please cite the source of your analysis as <q>Tax-Calculator
