@@ -32,8 +32,7 @@ from taxcalc.utils import (DIST_VARIABLES,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
                            certainty_equivalent,
-                           ce_aftertax_expanded_income,
-                           quantity_response)
+                           ce_aftertax_expanded_income)
 
 
 DATA = [[1.0, 2, 'a'],
@@ -844,24 +843,3 @@ def test_dec_graph_plots(cps_subsample):
                          include_zero_incomes=False,
                          include_negative_incomes=False)
     assert isinstance(dta, dict)
-
-
-def test_quantity_response():
-    quantity = np.array([1.0] * 10)
-    res = quantity_response(quantity,
-                            price_elasticity=0,
-                            aftertax_price1=None,
-                            aftertax_price2=None,
-                            income_elasticity=0,
-                            aftertax_income1=None,
-                            aftertax_income2=None)
-    assert np.allclose(res, np.zeros(quantity.shape))
-    one = np.ones(quantity.shape)
-    res = quantity_response(quantity,
-                            price_elasticity=-0.2,
-                            aftertax_price1=one,
-                            aftertax_price2=one,
-                            income_elasticity=0.1,
-                            aftertax_income1=one,
-                            aftertax_income2=(one + one))
-    assert not np.allclose(res, np.zeros(quantity.shape))
