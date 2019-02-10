@@ -326,8 +326,13 @@ def fixture_defaultpolicyfile():
 
 
 def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
-    # pytest monkeypatch sets the temporary file path as the default path;
-    # after the test completes, monkeypatch restores the default settings.
+    """
+    Test Policy constructor with alternative Policy.DEFAULTS_FILENAME.
+
+    Note: pytest monkeypatch resets the Policy.DEFAULTS_FILENAME temporarily
+    and then restores the original value of Policy.DEFAULTS_FILENAME after
+    the test completes.
+    """
     monkeypatch.setattr(Policy, 'DEFAULTS_FILENAME', defaultpolicyfile.name)
     ppo = Policy()
     inf_rates = ppo.inflation_rates()
@@ -426,75 +431,58 @@ def test_Policy_reform_makes_no_changes_before_year():
     assert ppo.II_em == 4400
 
 
-REFORM_CONTENTS = """
-// Example of reform file suitable for Calculator read_json_param_objects().
-// This JSON file can contain any number of trailing //-style comments, which
-// will be removed before the contents are converted from JSON to a dictionary.
-// The primary keys are policy parameters and secondary keys are years.
-// Both the primary and secondary key values must be enclosed in quotes (").
-// Boolean variables are specified as true or false (no quotes; all lowercase).
-// Parameter code in the policy object is enclosed inside a pair of double
-// pipe characters (||).
-{
-"policy": {
-    "_AMT_brk1": // top of first AMT tax bracket
-    {"2015": [200000],
-     "2017": [300000]
-    },
-    "_EITC_c": // maximum EITC amount by number of qualifying kids (0,1,2,3+)
-    {"2016": [[ 900, 5000,  8000,  9000]],
-     "2019": [[1200, 7000, 10000, 12000]]
-    },
-    "_II_em": // personal exemption amount (see indexing changes below)
-    {"2016": [6000],
-     "2018": [7500],
-     "2020": [9000]
-    },
-    "_II_em_cpi": // personal exemption amount indexing status
-    {"2016": false, // values in future years are same as this year value
-     "2018": true   // values in future years indexed with this year as base
-    },
-    "_SS_Earnings_c": // social security (OASDI) maximum taxable earnings
-    {"2016": [300000],
-     "2018": [500000],
-     "2020": [700000]
-    },
-    "_AMT_em_cpi": // AMT exemption amount indexing status
-    {"2017": false, // values in future years are same as this year value
-     "2020": true   // values in future years indexed with this year as base
-    }
-}
-}
-"""
-
-
-@pytest.fixture(scope='module', name='reform_file')
-def fixture_reform_file():
-    """
-    Temporary reform file for Calculator read_json_param_objects() function.
-    """
-    with tempfile.NamedTemporaryFile(mode='a', delete=False) as rfile:
-        rfile.write(REFORM_CONTENTS)
-    # must close and then yield for Windows platform
-    yield rfile
-    if os.path.isfile(rfile.name):
-        try:
-            os.remove(rfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
 @pytest.mark.parametrize("set_year", [False, True])
-def test_read_json_param_and_implement_reform(reform_file, set_year):
+def test_read_json_param_and_implement_reform(set_year):
     """
     Test reading and translation of reform file into a reform dictionary
     that is then used to call implement_reform method.
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
+    reform_json = """
+    // Example of JSON reform text suitable for the
+    // Calculator.read_json_param_objects() method.
+    // This JSON text can contain any number of trailing //-style comments,
+    // which will be removed before the contents are converted from JSON to
+    // a dictionary.
+    // The primary keys are policy parameters and secondary keys are years.
+    // Both the primary & secondary key values must be enclosed in quotes (").
+    // Boolean variables are specified as true or false with no quotes and all
+    // lowercase characters.
+    {
+    "policy": {
+        "_AMT_brk1": // top of first AMT tax bracket
+        {"2015": [200000],
+         "2017": [300000]
+        },
+        "_EITC_c": // max EITC amount by number of qualifying kids (0,1,2,3+)
+        {"2016": [[ 900, 5000,  8000,  9000]],
+         "2019": [[1200, 7000, 10000, 12000]]
+        },
+        "_II_em": // personal exemption amount (see indexing changes below)
+        {"2016": [6000],
+         "2018": [7500],
+         "2020": [9000]
+        },
+        "_II_em_cpi": // personal exemption amount indexing status
+        {"2016": false, // values in future years are same as this year value
+         "2018": true   // vals in future years indexed with this year as base
+        },
+        "_SS_Earnings_c": // Social Security (OASDI) maximum taxable earnings
+        {"2016": [300000],
+         "2018": [500000],
+         "2020": [700000]
+        },
+        "_AMT_em_cpi": // AMT exemption amount indexing status
+        {"2017": false, // values in future years are same as this year value
+         "2020": true   // vals in future years indexed with this year as base
+        }
+    }
+    }
+    """
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    param_dict = Calculator.read_json_param_objects(reform_file.name, None)
+    param_dict = Calculator.read_json_param_objects(reform_json, None)
     policy.implement_reform(param_dict['policy'])
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1

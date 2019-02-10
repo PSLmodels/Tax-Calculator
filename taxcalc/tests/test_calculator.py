@@ -10,7 +10,6 @@ Tests of Calculator class.
 import os
 import json
 from io import StringIO
-import tempfile
 import copy
 import pytest
 import requests
