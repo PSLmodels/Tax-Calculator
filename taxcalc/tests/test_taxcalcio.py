@@ -8,34 +8,20 @@ Tests for Tax-Calculator TaxCalcIO class.
 # pylint: disable=too-many-lines
 
 import os
+from io import StringIO
 import tempfile
 import pytest
 import pandas as pd
 from taxcalc import TaxCalcIO  # pylint: disable=import-error
 
 
-@pytest.fixture(scope='module', name='rawinputfile')
-def fixture_rawinputfile():
-    """
-    Temporary input file that contains minimum required input variables.
-    """
-    ifile = tempfile.NamedTemporaryFile(suffix='.csv', mode='a', delete=False)
-    contents = (
-        u'RECID,MARS\n'
-        u'    1,   2\n'
-        u'    2,   1\n'
-        u'    3,   4\n'
-        u'    4,   3\n'
-    )
-    ifile.write(contents)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
+RAWINPUT = (
+    'RECID,MARS\n'
+    '    1,   2\n'
+    '    2,   1\n'
+    '    3,   4\n'
+    '    4,   3\n'
+)
 
 
 @pytest.fixture(scope='module', name='reformfile0')
@@ -320,18 +306,18 @@ def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
     assert tcio.errmsg
 
 
-def test_creation_with_aging(rawinputfile, reformfile0):
+def test_creation_with_aging(reformfile0):
     """
     Test TaxCalcIO instantiation with/without no policy reform and with aging.
     """
     taxyear = 2021
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=taxyear,
                      baseline=None,
                      reform=reformfile0.name,
                      assump=None)
     assert not tcio.errmsg
-    tcio.init(input_data=rawinputfile.name,
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
               baseline=None,
               reform=reformfile0.name,
@@ -341,13 +327,13 @@ def test_creation_with_aging(rawinputfile, reformfile0):
     assert not tcio.errmsg
     assert tcio.tax_year() == taxyear
     taxyear = 2016
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=taxyear,
                      baseline=None,
                      reform=None,
                      assump=None)
     assert not tcio.errmsg
-    tcio.init(input_data=rawinputfile.name,
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
               baseline=None,
               reform=None,
@@ -416,18 +402,18 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
         assert len(varset) == num_vars
 
 
-def test_output_options(rawinputfile, reformfile1, assumpfile1):
+def test_output_options(reformfile1, assumpfile1):
     """
     Test TaxCalcIO output_dump options when writing_output_file.
     """
     taxyear = 2021
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=taxyear,
                      baseline=None,
                      reform=reformfile1.name,
                      assump=assumpfile1.name)
     assert not tcio.errmsg
-    tcio.init(input_data=rawinputfile.name,
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
               baseline=None,
               reform=reformfile1.name,
@@ -476,19 +462,19 @@ def test_output_options(rawinputfile, reformfile1, assumpfile1):
         os.remove(outfilepath)
 
 
-def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):
+def test_write_doc_file(reformfile1, assumpfile1):
     """
     Test write_doc_file with compound reform.
     """
     taxyear = 2021
     compound_reform = '{}+{}'.format(reformfile1.name, reformfile1.name)
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=taxyear,
                      baseline=None,
                      reform=compound_reform,
                      assump=assumpfile1.name)
     assert not tcio.errmsg
-    tcio.init(input_data=rawinputfile.name,
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
               baseline=None,
               reform=compound_reform,
@@ -503,18 +489,18 @@ def test_write_doc_file(rawinputfile, reformfile1, assumpfile1):
         os.remove(docfilepath)
 
 
-def test_sqldb_option(rawinputfile, reformfile1, assumpfile1):
+def test_sqldb_option(reformfile1, assumpfile1):
     """
     Test TaxCalcIO output_sqldb option when not writing_output_file.
     """
     taxyear = 2021
-    tcio = TaxCalcIO(input_data=rawinputfile.name,
+    tcio = TaxCalcIO(input_data=pd.read_csv(StringIO(RAWINPUT)),
                      tax_year=taxyear,
                      baseline=None,
                      reform=reformfile1.name,
                      assump=assumpfile1.name)
     assert not tcio.errmsg
-    tcio.init(input_data=rawinputfile.name,
+    tcio.init(input_data=pd.read_csv(StringIO(RAWINPUT)),
               tax_year=taxyear,
               baseline=None,
               reform=reformfile1.name,
