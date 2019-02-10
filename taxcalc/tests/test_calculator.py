@@ -19,34 +19,6 @@ import pandas as pd
 from taxcalc import Policy, Records, Calculator, Consumption
 
 
-RAWINPUTFILE_FUNITS = 4
-RAWINPUTFILE_YEAR = 2015
-RAWINPUTFILE_CONTENTS = (
-    'RECID,MARS\n'
-    '1,2\n'
-    '2,1\n'
-    '3,4\n'
-    '4,3\n'
-)
-
-
-@pytest.fixture(scope='module', name='rawinputfile')
-def fixture_rawinputfile():
-    """
-    Temporary input file that contains the minimum required input varaibles.
-    """
-    ifile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    ifile.write(RAWINPUTFILE_CONTENTS)
-    ifile.close()
-    # must close and then yield for Windows platform
-    yield ifile
-    if os.path.isfile(ifile.name):
-        try:
-            os.remove(ifile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
 def test_make_calculator(cps_subsample):
     """
     Test Calculator class ctor.
@@ -223,8 +195,8 @@ def test_calculator_mtr_when_PT_rates_differ():
                      '_PT_rt6': [0.30],
                      '_PT_rt7': [0.30]}}
     funit = (
-        u'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
-        u'1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
+        'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
+        '1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
     )
     rec = Records(pd.read_csv(StringIO(funit)))
     pol = Policy()
@@ -358,31 +330,42 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
                        crt_calc.array('iitax'))
 
 
-def test_calculator_using_nonstd_input(rawinputfile):
+RAWINPUT_FUNITS = 4
+RAWINPUT_YEAR = 2015
+RAWINPUT_CONTENTS = (
+    'RECID,MARS\n'
+    '    1,   2\n'
+    '    2,   1\n'
+    '    3,   4\n'
+    '    4,   3\n'
+)
+
+
+def test_calculator_using_nonstd_input():
     """
     Test Calculator using non-standard input records.
     """
     # check Calculator handling of raw, non-standard input data with no aging
     pol = Policy()
-    pol.set_year(RAWINPUTFILE_YEAR)  # set policy params to input data year
-    nonstd = Records(data=rawinputfile.name,
-                     start_year=RAWINPUTFILE_YEAR,  # set raw input data year
+    pol.set_year(RAWINPUT_YEAR)  # set policy params to input data year
+    nonstd = Records(data=pd.read_csv(StringIO(RAWINPUT_CONTENTS)),
+                     start_year=RAWINPUT_YEAR,  # set raw input data year
                      gfactors=None,  # keeps raw data unchanged
                      weights=None)
-    assert nonstd.array_length == RAWINPUTFILE_FUNITS
+    assert nonstd.array_length == RAWINPUT_FUNITS
     calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
-    assert calc.current_year == RAWINPUTFILE_YEAR
+    assert calc.current_year == RAWINPUT_YEAR
     calc.calc_all()
     assert calc.weighted_total('e00200') == 0
     assert calc.total_weight() == 0
     varlist = ['RECID', 'MARS']
     dframe = calc.dataframe(varlist)
     assert isinstance(dframe, pd.DataFrame)
-    assert dframe.shape == (RAWINPUTFILE_FUNITS, len(varlist))
+    assert dframe.shape == (RAWINPUT_FUNITS, len(varlist))
     mars = calc.array('MARS')
     assert isinstance(mars, np.ndarray)
-    assert mars.shape == (RAWINPUTFILE_FUNITS,)
+    assert mars.shape == (RAWINPUT_FUNITS,)
     exp_iitax = np.zeros((nonstd.array_length,))
     assert np.allclose(calc.array('iitax'), exp_iitax)
     mtr_ptax, _, _ = calc.mtr(wrt_full_compensation=False)
@@ -391,7 +374,7 @@ def test_calculator_using_nonstd_input(rawinputfile):
     assert np.allclose(mtr_ptax, exp_mtr_ptax)
 
 
-REFORM_CONTENTS = """
+REFORM_JSON = """
 // Example of a reform file suitable for read_json_param_objects().
 // This JSON file can contain any number of trailing //-style comments, which
 // will be removed before the contents are converted from JSON to a dictionary.
@@ -434,70 +417,17 @@ REFORM_CONTENTS = """
 """
 
 
-@pytest.fixture(scope='module', name='reform_file')
-def fixture_reform_file():
-    """
-    Temporary reform file for read_json_param_objects() function.
-    """
-    rfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    rfile.write(REFORM_CONTENTS)
-    rfile.close()
-    # must close and then yield for Windows platform
-    yield rfile
-    if os.path.isfile(rfile.name):
-        try:
-            os.remove(rfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-ASSUMP_CONTENTS = """
-// Example of JSON assump file suitable for read_json_param_objects().
-// This JSON file can contain any number of trailing //-style comments, which
-// will be removed before the contents are converted from JSON to a dictionary.
-// Within each "consumption" and "grow" object, the primary keys are
-// parameters and the secondary keys are years.
-// Both the primary and secondary key values must be enclosed in quotes (").
-// Boolean variables are specified as true or false (no quotes; all lowercase).
-{
-  "consumption": { "_MPC_e18400": {"2018": [0.05]} },
-  "growdiff_baseline": {},
-  "growdiff_response": {}
-}
-"""
-
-
-@pytest.fixture(scope='module', name='assump_file')
-def fixture_assump_file():
-    """
-    Temporary assumption file for read_json_params_files() function.
-    """
-    afile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    afile.write(ASSUMP_CONTENTS)
-    afile.close()
-    # must close and then yield for Windows platform
-    yield afile
-    if os.path.isfile(afile.name):
-        try:
-            os.remove(afile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
 @pytest.mark.parametrize("set_year", [False, True])
-def test_read_json_reform_file_and_implement_reform(reform_file,
-                                                    assump_file,
-                                                    set_year):
+def test_read_json_reform_file_and_implement_reform(set_year):
     """
-    Test reading and translation of reform file into a reform dictionary
+    Test reading and translation of reform JSON into a reform dictionary
     that is then used to call implement_reform method and Calculate.calc_all()
     NOTE: implement_reform called when policy.current_year == policy.start_year
     """
     pol = Policy()
     if set_year:
         pol.set_year(2015)
-    param_dict = Calculator.read_json_param_objects(reform_file.name,
-                                                    assump_file.name)
+    param_dict = Calculator.read_json_param_objects(REFORM_JSON, None)
     pol.implement_reform(param_dict['policy'])
     syr = pol.start_year
     # pylint: disable=protected-access,no-member
@@ -554,34 +484,18 @@ def test_json_reform_url():
     assert params_str == params_url
 
 
-@pytest.fixture(scope='module', name='bad1reformfile')
-def fixture_bad1reformfile():
+def test_read_bad_json_reform_file():
     """
-    Specify invalid JSON reform file.
+    Test invalid JSON reform files.
     """
-    # specify JSON text for reform
-    txt = """
+    badreform1 = """
     {
       "policy": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [4000]}
       }
     }
     """
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
-@pytest.fixture(scope='module', name='bad2reformfile')
-def fixture_bad2reformfile():
-    """
-    Specify invalid JSON reform file.
-    """
-    # specify JSON text for reform
-    txt = """
+    badreform2 = """
     {
       "title": "",
       "policyx": { // example of reform file not containing "policy" key
@@ -589,21 +503,7 @@ def fixture_bad2reformfile():
       }
     }
     """
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
-@pytest.fixture(scope='module', name='bad3reformfile')
-def fixture_bad3reformfile():
-    """
-    Specify invalid JSON reform file.
-    """
-    # specify JSON text for reform
-    txt = """
+    badreform3 = """
     {
       "title": "",
       "policy": {
@@ -613,25 +513,12 @@ def fixture_bad3reformfile():
       }
     }
     """
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
-def test_read_bad_json_reform_file(bad1reformfile, bad2reformfile,
-                                   bad3reformfile):
-    """
-    Test invalid JSON reform files.
-    """
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(bad1reformfile.name, None)
+        Calculator.read_json_param_objects(badreform1, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(bad2reformfile.name, None)
+        Calculator.read_json_param_objects(badreform2, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(bad3reformfile.name, None)
+        Calculator.read_json_param_objects(badreform3, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(list(), None)
     with pytest.raises(ValueError):
@@ -722,15 +609,15 @@ def test_json_assump_url():
     params_str = Calculator.read_json_param_objects(None, assump_str)
     assert params_str
     params_url = Calculator.read_json_param_objects(None, assump_url)
-    assert params_str == params_url
+    assert params_url
+    assert params_url == params_str
 
 
-@pytest.fixture(scope='module', name='bad1assumpfile')
-def fixture_bad1assumpfile():
+def test_read_bad_json_assump_file():
     """
-    Specify invalid JSON assumption file.
+    Test invalid JSON assumption files.
     """
-    txt = """
+    badassump1 = """
     {
       "consumption": { // example of incorrect JSON because 'x' must be "x"
         'x': {"2014": [0.25]}
@@ -739,40 +626,14 @@ def fixture_bad1assumpfile():
       "growdiff_response": {}
     }
     """
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
-@pytest.fixture(scope='module', name='bad2assumpfile')
-def fixture_bad2assumpfile():
-    """
-    Specify invalid JSON assumption file.
-    """
-    txt = """
+    badassump2 = """
     {
       "consumptionx": {}, // example of file not containing "consumption" key
       "growdiff_baseline": {},
       "growdiff_response": {}
     }
     """
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
-@pytest.fixture(scope='module', name='bad3assumpfile')
-def fixture_bad3assumpfile():
-    """
-    Specify invalid JSON assumption file.
-    """
-    txt = """
+    badassump3 = """
     {
       "consumption": {},
       "growdiff_baseline": {},
@@ -782,25 +643,12 @@ def fixture_bad3assumpfile():
       }
     }
     """
-    f = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    f.write(txt + '\n')
-    f.close()
-    # Must close and then yield for Windows platform
-    yield f
-    os.remove(f.name)
-
-
-def test_read_bad_json_assump_file(bad1assumpfile, bad2assumpfile,
-                                   bad3assumpfile):
-    """
-    Test invalid JSON assumption files.
-    """
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, bad1assumpfile.name)
+        Calculator.read_json_param_objects(None, badassump1)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, bad2assumpfile.name)
+        Calculator.read_json_param_objects(None, badassump2)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, bad3assumpfile.name)
+        Calculator.read_json_param_objects(None, badassump3)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
@@ -824,18 +672,18 @@ def test_convert_parameter_dict():
     assert isinstance(rdict, dict)
 
 
-def test_calc_all(reform_file, rawinputfile):
+def test_calc_all():
     """
     Test calc_all method.
     """
     cyr = 2016
     pol = Policy()
-    param_dict = Calculator.read_json_param_objects(reform_file.name, None)
+    param_dict = Calculator.read_json_param_objects(REFORM_JSON, None)
     pol.implement_reform(param_dict['policy'])
     pol.set_year(cyr)
-    nonstd = Records(data=rawinputfile.name, start_year=cyr,
-                     gfactors=None, weights=None)
-    assert nonstd.array_length == RAWINPUTFILE_FUNITS
+    nonstd = Records(data=pd.read_csv(StringIO(RAWINPUT_CONTENTS)),
+                     start_year=cyr, gfactors=None, weights=None)
+    assert nonstd.array_length == RAWINPUT_FUNITS
     calc = Calculator(policy=pol, records=nonstd,
                       sync_years=False)  # keeps raw data unchanged
     assert calc.current_year == cyr
@@ -1179,47 +1027,29 @@ def test_ce_aftertax_income(cps_subsample):
     assert isinstance(res, dict)
 
 
-PARAMETER_FILE_CONTENT = """
-// Example of JSON parameter file suitable for read_json_parameters().
-// Notice the lack of [] brackets around the parameter values.
-{
-  "BE_sub": {"2018": -0.05, "2021": -0.25},
-  "BE_inc": {"2020": 0.10},
-  "BE_cg": {"2022": -0.70}
-}
-"""
-
-
-@pytest.fixture(scope='module', name='parameter_file')
-def fixture_parameter_file():
+def test_read_json_parameters(tests_path):
     """
-    Temporary parameter file for read_json_parameters() function.
-    """
-    pfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
-    pfile.write(PARAMETER_FILE_CONTENT)
-    pfile.close()
-    # must close and then yield for Windows platform
-    yield pfile
-    if os.path.isfile(pfile.name):
-        try:
-            os.remove(pfile.name)
-        except OSError:
-            pass  # sometimes we can't remove a generated temporary file
-
-
-def test_read_json_parameters(parameter_file):
-    """
-    Test the Calculator.read_json_() function that is used by
-    other PSLmodels models to read simple parameter schema that
-    do not involve the use of [] brackets around parameter values.
+    Test the Calculator.read_json_parameters() function that is used by
+    other PSL models to read simple parameter schema that do not involve
+    the use of [] brackets around scalar parameter values.
     """
     assert isinstance(Calculator.read_json_parameters(None), dict)
     with pytest.raises(ValueError):
         Calculator.read_json_parameters(list())
-    param_filename = parameter_file.name
-    file_dict = Calculator.read_json_parameters(param_filename)
+    filename = os.path.join(tests_path, '..', 'assumptions',
+                            'simple_parameters_template.json')
+    file_dict = Calculator.read_json_parameters(filename)
     assert isinstance(file_dict, dict)
-    text_dict = Calculator.read_json_parameters(PARAMETER_FILE_CONTENT)
+    parameter_json = """
+    // Example of JSON parameter file suitable for read_json_parameters().
+    // Notice the lack of [] brackets around the parameter values.
+    {
+    "BE_sub": {"2018": -0.05, "2021": -0.25},
+    "BE_inc": {"2020": 0.10},
+    "BE_cg": {"2022": -0.70}
+    }
+    """
+    text_dict = Calculator.read_json_parameters(parameter_json)
     assert isinstance(text_dict, dict)
     assert text_dict == file_dict
     with pytest.raises(requests.exceptions.ConnectionError):
@@ -1227,5 +1057,6 @@ def test_read_json_parameters(parameter_file):
     params_url = ('https://raw.githubusercontent.com/'
                   'PSLmodels/Tax-Calculator/master/taxcalc/'
                   'assumptions/simple_parameters_template.json')
-    file_dict = Calculator.read_json_parameters(params_url)
-    assert isinstance(file_dict, dict)
+    url_dict = Calculator.read_json_parameters(params_url)
+    assert isinstance(url_dict, dict)
+    assert url_dict == file_dict
