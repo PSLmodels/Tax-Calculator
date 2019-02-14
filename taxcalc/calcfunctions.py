@@ -1858,8 +1858,6 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     """
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
-        pencon_p +  # tax-advantaged DC pension contributions for taxpayer
-        pencon_s +  # tax-advantaged DC pension contributions for spouse
         e00300 +  # taxable interest income
         e00400 +  # non-taxable interest income
         e00600 +  # dividends
