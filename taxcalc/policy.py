@@ -558,6 +558,9 @@ class Policy(Parameters):
         for pname in parameters:
             if pname.endswith('_cpi'):
                 continue  # *_cpi parameter values validated elsewhere
+            if pname == '_ctc_c':  # TODO: remove this warning at end of 2019
+                msg = '_ctc_c was redefined in release 1.0.0 (2019-Q1)'
+                self.parameter_warnings += msg + '\n'
             pvalue = getattr(self, pname)
             for vop, vval in self._vals[pname]['range'].items():
                 if isinstance(vval, str):
