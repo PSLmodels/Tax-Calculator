@@ -28,7 +28,9 @@ def test_2017_law_reform(tests_path):
         rtext = rfile.read()
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
-    assert not pol.parameter_warnings
+    # TODO activate: assert not pol.parameter_warnings
+    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-Q1)\n'
+    assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     pol.set_year(2018)
     pre_mdata = pol.metadata()
@@ -98,14 +100,17 @@ def test_round_trip_tcja_reform(tests_path):
         rtext = rfile.read()
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
-    assert not pol.parameter_warnings
+    # TODO activate: assert not pol.parameter_warnings
+    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-Q1)\n'
+    assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
-    assert not pol.parameter_warnings
+    # TODO activate: assert not pol.parameter_warnings
+    assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     pol.set_year(fyear)
     rtr_mdata = pol.metadata()
