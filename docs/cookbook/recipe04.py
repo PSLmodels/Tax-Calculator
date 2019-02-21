@@ -1,4 +1,5 @@
 from taxcalc import *
+import behresp
 
 # use publicly-available CPS input file
 recs = Records.cps_constructor()
@@ -34,7 +35,7 @@ calc2.calc_all()
 (_, _, mtr2) = calc2.mtr('e19800', calc_all_already_called=True,
                          wrt_full_compensation=False)
 
-# extract variables needed for quantity_response utility function
+# extract variables needed for quantity_response function
 # (note the aftertax price is 1+mtr because mtr wrt charity is non-positive)
 vdf = calc1.dataframe(['s006', 'e19800', 'e00200'])
 vdf['price1'] = 1.0 + mtr1
@@ -63,13 +64,13 @@ idx = 0
 for grp_interval, grp in gbydf:
     funits = grp['s006'].sum() * 1e-6
     tot_funits += funits
-    response = quantity_response(grp['e19800'],
-                                 price_elasticity[idx],
-                                 grp['price1'],
-                                 grp['price2'],
-                                 income_elasticity[idx],
-                                 grp['atinc1'],
-                                 grp['atinc2'])
+    response = behresp.quantity_response(grp['e19800'],
+                                         price_elasticity[idx],
+                                         grp['price1'],
+                                         grp['price2'],
+                                         income_elasticity[idx],
+                                         grp['atinc1'],
+                                         grp['atinc2'])
     grp_response = (response * grp['s006']).sum() * 1e-9
     tot_response += grp_response
     grp_baseline = (grp['e19800'] * grp['s006']).sum() * 1e-9
