@@ -136,7 +136,7 @@ def fixture_sorted_param_names(allparams):
     return sorted(list(allparams.keys()))
 
 
-NPARAMS = 219  # hard-code NPARAMS to len(allparams)
+NPARAMS = 217  # hard-code NPARAMS to len(allparams)
 BATCHSIZE = 10
 BATCHES = int(np.floor(NPARAMS / BATCHSIZE)) + 1
 
@@ -240,8 +240,11 @@ def test_compatible_data(cps_subsample, puf_subsample,
     # These parameters are exempt because they are not active under
     # current law and activating them would deactivate other parameters,
     # or if it is difficult to devise a test for them.
-    exempt_from_testing = ['_CG_ec', '_CG_reinvest_ec_rt',
-                           '_ACTC_ChildNum', '_CR_SchR_hc']
+    exempt_from_testing = [
+        '_CG_ec', '_CG_reinvest_ec_rt',
+        '_II_prt', '_ID_prt', '_ID_crt',
+        '_CR_SchR_hc', '_ACTC_ChildNum'
+    ]
 
     # Loop through the parameters in allparams_batch
     errmsg = 'ERROR: {} {}\n'
@@ -251,22 +254,22 @@ def test_compatible_data(cps_subsample, puf_subsample,
         max_listed = param['range']['max']
         # handle links to other params or self
         if isinstance(max_listed, str):
-            if max_listed == 'default':
-                max_val = param['value'][-1]
-            else:
+            if isinstance(allparams[max_listed]['value'][0], list):
                 max_val = allparams[max_listed]['value'][0]
-        if not isinstance(max_listed, str):
+            else:
+                max_val = float(allparams[max_listed]['value'][0])
+        else:
             if isinstance(param['value'][0], list):
                 max_val = [max_listed] * len(param['value'][0])
             else:
                 max_val = max_listed
         min_listed = param['range']['min']
         if isinstance(min_listed, str):
-            if min_listed == 'default':
-                min_val = param['value'][-1]
-            else:
+            if isinstance(allparams[min_listed]['value'][0], list):
                 min_val = allparams[min_listed]['value'][0]
-        if not isinstance(min_listed, str):
+            else:
+                min_val = float(allparams[min_listed]['value'][0])
+        else:
             if isinstance(param['value'][0], list):
                 min_val = [min_listed] * len(param['value'][0])
             else:
