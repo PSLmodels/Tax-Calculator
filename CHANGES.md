@@ -2,6 +2,27 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 1.0.0 on 2019-02-22
+--------------------------------------
+
+**This is a major release with changes that make Tax-Calculator
+incompatible with earlier releases.**
+
+- Redefine the meaning of the `_CTC_c` policy parameter and remove five old reform parameters that are incompatible with current law
+
+- Remove the Behavior class from Tax-Calculator and rely instead on the `response` function in the Behavioral-Responses behresp package
+
+- Move the `quantity_response` function to the Behavioral-Responses behresp package
+
+- Add new economic-variable growth factors and sample weights based on using the August-2018 CBO ten-year projection
+
+- Fix logic of computing nonrefundable tax credits for children under 17 and for other dependents in years starting with 2018
+
+- Add actual 2018 values for all tax policy parameters
+
+- Add a [reform file](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/Larson2019.json) that characterizes the payroll and income tax aspects of the Larson Social Security 2100 Act
+
+
 Changes in release 0.24.0 on 2018-12-14
 ---------------------------------------
 

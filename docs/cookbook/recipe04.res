@@ -1,14 +1,10 @@
 You loaded data for 2014.
-Your data include the following unused variables that will be ignored:
-  filer
 Tax-Calculator startup automatically extrapolated your data to 2014.
 You loaded data for 2014.
-Your data include the following unused variables that will be ignored:
-  filer
 Tax-Calculator startup automatically extrapolated your data to 2014.
 
 Response in Charitable Giving by Earnings Group
 Earnings Group    	 Num(#M)	Resp($B)	 Resp(%)
-[-9e+99, 50000)   	 110.061	   0.704	    0.56
-[50000, 9e+99)    	  57.451	   3.600	    2.18
-ALL               	 167.512	   4.304	    1.48
+[-9e+99, 50000)   	 108.881	   0.689	    0.56
+[50000, 9e+99)    	  58.632	   3.694	    2.18
+ALL               	 167.512	   4.384	    1.50

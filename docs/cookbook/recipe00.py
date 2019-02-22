@@ -43,7 +43,7 @@ print('')
 print(Calculator.reform_documentation(params))
 
 # print total revenue estimates for cyr
-# (estimates in billons of dollars rounded to nearest hundredth of a billion)
+# (estimates in billons of dollars)
 print('{}_CLP_itax_rev($B)= {:.3f}'.format(cyr, itax_rev1 * 1e-9))
 print('{}_REF_itax_rev($B)= {:.3f}'.format(cyr, itax_rev2 * 1e-9))
 print('')
