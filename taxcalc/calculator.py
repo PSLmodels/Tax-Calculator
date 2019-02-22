@@ -1143,6 +1143,9 @@ class Calculator():
     @staticmethod
     def read_json_parameters(param):
         """
+        A convenience function for other PSL models that have only
+        scalar parameters that are not inflation indexed.
+
         Read JSON param object and return one dictionary that has
         the same structure as each subdictionary returned by the
         Calculator.read_json_param_objects method.
@@ -1157,7 +1160,7 @@ class Calculator():
         of the Calculator.read_json_param_objects method EXCEPT FOR
         ONE THING: the parameter values are NOT enclosed in [] brackets.
         """
-        # construct returned dictionary from specified assump
+        # construct returned dictionary from specified param argument
         if param is None:
             returned_dict = dict()
         elif isinstance(param, str):
@@ -1167,7 +1170,6 @@ class Calculator():
                 req = requests.get(param)
                 req.raise_for_status()
                 txt = req.text
-                print(txt)
             else:
                 txt = param
             # strip out //-comments without changing line numbers
