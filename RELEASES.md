@@ -4,10 +4,10 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
-2019-??-?? Release 1.0.0
+2019-02-22 Release 1.0.0
 ------------------------
 (last merged pull request is
-[#xxxx](https://github.com/PSLmodels/Tax-Calculator/pull/xxxx))
+[#2241](https://github.com/PSLmodels/Tax-Calculator/pull/2241))
 
 **This is a major release with changes that make Tax-Calculator
 incompatible with earlier releases.**

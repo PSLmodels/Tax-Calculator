@@ -42,7 +42,7 @@ _, df2br = behresp.response(calc1, calc2, behresp_dict)
 itax_rev2br = (df2br['iitax'] * df2br['s006']).sum()
 
 # print total income tax revenue estimates for cyr
-# (estimates in billons of dollars rounded to nearest hundredth of a billion)
+# (estimates in billons of dollars)
 print('{}_CURRENT_LAW_P__itax_rev($B)= {:.3f}'.format(cyr, itax_rev1 * 1e-9))
 print('{}_REFORM_STATIC__itax_rev($B)= {:.3f}'.format(cyr, itax_rev2sa * 1e-9))
 print('{}_REFORM_DYNAMIC_itax_rev($B)= {:.3f}'.format(cyr, itax_rev2br * 1e-9))
