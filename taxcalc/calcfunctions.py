@@ -524,7 +524,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
 def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
             e19800_capped, e20100_capped, e20400_capped, g20500_capped,
             MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
-            c17000, c18300, c18400, c18500, c19200, c19700, c20500, c20800,
+            c17000, c18300, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
@@ -670,7 +670,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         c21040 = 0.
         c04470 = c21060
     c04470 = min(c04470, ID_c[MARS - 1])
-    return (c17000, c18300, c18400, c18500, c19200, c19700, c20500, c20800,
+    return (c17000, c18300, c19200, c19700, c20500, c20800,
             c21040, c21060, c04470)
 
 

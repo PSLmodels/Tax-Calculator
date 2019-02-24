@@ -881,19 +881,9 @@
       "desc": "Sch A: State and local taxes plus real estate taxes deducted",
       "form": {"2013-20??": "calculated variable"}
     },
-    "c18400": {
-      "type": "float",
-      "desc": "Sch A: State and local taxes deducted",
-      "form": {"2013-20??": "calculated variable"}
-    },
     "e18400_capped": {
       "type": "float",
       "desc": "Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "c18500": {
-      "type": "float",
-      "desc": "Sch A: State and local real estate taxes deducted",
       "form": {"2013-20??": "calculated variable"}
     },
     "e18500_capped": {
