@@ -1062,28 +1062,40 @@ def test_read_json_parameters(tests_path):
     assert url_dict == file_dict
 
 
+@pytest.mark.itmded_vars
 @pytest.mark.pre_release
 @pytest.mark.requires_pufcsv
-@pytest.mark.parametrize("cvname, hcname",
-                         [("c17000", "_ID_Medical_hc"),
-                          ("c18300", "_ID_AllTaxes_hc"),
-                          ("c18400", "_ID_StateLocalTax_hc"),
-                          ("c18500", "_ID_RealEstate_hc"),
-                          ("c19200", "_ID_InterestPaid_hc"),
-                          ("c19700", "_ID_Charity_hc"),
-                          ("c20500", "_ID_Casualty_hc"),
-                          ("c20800", "_ID_Miscellaneous_hc")])
-def test_itemded_component_amounts(cvname, hcname, puf_fullsample):
+@pytest.mark.parametrize('year, cvname, hcname',
+                         [(2018, 'c17000', '_ID_Medical_hc'),
+                          (2018, 'c18300', '_ID_AllTaxes_hc'),
+                          (2018, 'c18400', '_ID_StateLocalTax_hc'),
+                          (2018, 'c18500', '_ID_RealEstate_hc'),
+                          (2018, 'c19200', '_ID_InterestPaid_hc'),
+                          (2018, 'c19700', '_ID_Charity_hc'),
+                          (2018, 'c20500', '_ID_Casualty_hc'),
+                          (2018, 'c20800', '_ID_Miscellaneous_hc'),
+                          (2017, 'c17000', '_ID_Medical_hc'),
+                          (2017, 'c18300', '_ID_AllTaxes_hc'),
+                          (2017, 'c18400', '_ID_StateLocalTax_hc'),
+                          (2017, 'c18500', '_ID_RealEstate_hc'),
+                          (2017, 'c19200', '_ID_InterestPaid_hc'),
+                          (2017, 'c19700', '_ID_Charity_hc'),
+                          (2017, 'c20500', '_ID_Casualty_hc'),
+                          (2017, 'c20800', '_ID_Miscellaneous_hc')])
+def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     """
     Check that all c04470 components are adjusted to reflect the filing
-    unit's standard-vs-itemized-deduction decision.
+    unit's standard-vs-itemized-deduction decision.  Check for both 2018
+    (when current law has no Pease phaseout of itemized deductions and
+    already has complete haircuts for Casualty and Miscellaneous deductions)
+    and 2017 (when current law has a Pease phaseout of itemized deductions
+    and has no haircuts).
     """
     # pylint: disable=too-many-locals
     recs = Records(data=puf_fullsample)
-    reform_year = 2018
     # policy1 such that everybody itemizes deductions and all are allowed
     reform1 = {
-        reform_year: {
+        year: {
             '_STD_Aged': [[0.0, 0.0, 0.0, 0.0, 0.0]],
             '_STD': [[0.0, 0.0, 0.0, 0.0, 0.0]],
         }
@@ -1093,7 +1105,7 @@ def test_itemded_component_amounts(cvname, hcname, puf_fullsample):
     assert not policy1.parameter_errors
     # policy2 such that everybody itemizes deductions but one is disallowed
     reform2 = {
-        reform_year: {
+        year: {
             '_STD_Aged': [[0.0, 0.0, 0.0, 0.0, 0.0]],
             '_STD': [[0.0, 0.0, 0.0, 0.0, 0.0]],
             hcname: [1.0]
@@ -1102,12 +1114,12 @@ def test_itemded_component_amounts(cvname, hcname, puf_fullsample):
     policy2 = Policy()
     policy2.implement_reform(reform2)
     assert not policy2.parameter_errors
-    # compute tax liability in reform_year
+    # compute tax liability in specified year
     calc1 = Calculator(policy=policy1, records=recs, verbose=False)
-    calc1.advance_to_year(reform_year)
+    calc1.advance_to_year(year)
     calc1.calc_all()
     calc2 = Calculator(policy=policy2, records=recs, verbose=False)
-    calc2.advance_to_year(reform_year)
+    calc2.advance_to_year(year)
     calc2.calc_all()
     # confirm that nobody is taking the standard deduction
     assert np.allclose(calc1.array('standard'), 0.)
