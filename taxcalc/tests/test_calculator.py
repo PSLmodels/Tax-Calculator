@@ -1030,7 +1030,8 @@ def test_read_json_parameters(tests_path):
     """
     Test the Calculator.read_json_parameters() function that is used by
     other PSL models to read simple parameter schema that do not involve
-    the use of [] brackets around scalar parameter values.
+    the use of [] brackets around scalar non-inflation-indexed parameter
+    values.
     """
     assert isinstance(Calculator.read_json_parameters(None), dict)
     with pytest.raises(ValueError):
@@ -1059,3 +1060,66 @@ def test_read_json_parameters(tests_path):
     url_dict = Calculator.read_json_parameters(params_url)
     assert isinstance(url_dict, dict)
     assert url_dict == file_dict
+
+
+@pytest.mark.pre_release
+@pytest.mark.requires_pufcsv
+@pytest.mark.parametrize("cvname, hcname",
+                         [("c17000", "_ID_Medical_hc"),
+                          ("c18300", "_ID_AllTaxes_hc"),
+                          ("c18400", "_ID_StateLocalTax_hc"),
+                          ("c18500", "_ID_RealEstate_hc"),
+                          ("c19200", "_ID_InterestPaid_hc"),
+                          ("c19700", "_ID_Charity_hc"),
+                          ("c20500", "_ID_Casualty_hc"),
+                          ("c20800", "_ID_Miscellaneous_hc")])
+def test_itemded_component_amounts(cvname, hcname, puf_fullsample):
+    """
+    Check that all c04470 components are adjusted to reflect the filing
+    unit's standard-vs-itemized-deduction decision.
+    """
+    # pylint: disable=too-many-locals
+    recs = Records(data=puf_fullsample)
+    reform_year = 2018
+    # policy1 such that everybody itemizes deductions and all are allowed
+    reform1 = {
+        reform_year: {
+            '_STD_Aged': [[0.0, 0.0, 0.0, 0.0, 0.0]],
+            '_STD': [[0.0, 0.0, 0.0, 0.0, 0.0]],
+        }
+    }
+    policy1 = Policy()
+    policy1.implement_reform(reform1)
+    assert not policy1.parameter_errors
+    # policy2 such that everybody itemizes deductions but one is disallowed
+    reform2 = {
+        reform_year: {
+            '_STD_Aged': [[0.0, 0.0, 0.0, 0.0, 0.0]],
+            '_STD': [[0.0, 0.0, 0.0, 0.0, 0.0]],
+            hcname: [1.0]
+        }
+    }
+    policy2 = Policy()
+    policy2.implement_reform(reform2)
+    assert not policy2.parameter_errors
+    # compute tax liability in reform_year
+    calc1 = Calculator(policy=policy1, records=recs, verbose=False)
+    calc1.advance_to_year(reform_year)
+    calc1.calc_all()
+    calc2 = Calculator(policy=policy2, records=recs, verbose=False)
+    calc2.advance_to_year(reform_year)
+    calc2.calc_all()
+    # confirm that nobody is taking the standard deduction
+    assert np.allclose(calc1.array('standard'), 0.)
+    assert np.allclose(calc2.array('standard'), 0.)
+    # calculate different in total itemized deductions
+    c04470_1 = calc1.weighted_total('c04470') * 1e-9
+    c04470_2 = calc2.weighted_total('c04470') * 1e-9
+    difference_in_total_itmded = c04470_1 - c04470_2
+    # calculate itemized component amount
+    component_amt = calc1.weighted_total(cvname) * 1e-9
+    # confirm that component amount is equal to difference in total deductions
+    if not np.allclose(component_amt, difference_in_total_itmded):
+        txt = '\n{}={:.3f}  !=  {:.3f}=difference_in_total_itemized_deductions'
+        msg = txt.format(cvname, component_amt, difference_in_total_itmded)
+        raise ValueError(msg)

@@ -47,7 +47,7 @@ def puf_subsample(puf_fullsample):
     return puf_fullsample.sample(frac=0.05, random_state=2222)
 
 
-@pytest.yield_fixture(scope='session', name='test_reforms_init')
+@pytest.fixture(scope='session', name='test_reforms_init')
 def fixture_test_reforms(tests_path):
     """
     Execute logic only once rather than on each pytest-xdist node.
@@ -60,7 +60,7 @@ def fixture_test_reforms(tests_path):
     actfile_path = os.path.join(tests_path, 'reforms_actual.csv')
     afiles = os.path.join(tests_path, 'reform_actual_*.csv')
     wait_secs = 1
-    max_waits = 60
+    max_waits = 90
     # test_reforms setup
     if handling_logic:
         # remove reforms_actual.csv file if exists

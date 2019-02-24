@@ -466,7 +466,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         e20400_capped : Total miscellaneous expenses, capped by ItemDedCap
 
         g20500_capped : Gross casualty or theft loss (before disregard),
-        capped by ItemDedCap
+                        capped by ItemDedCap
     """
     # pylint: disable=too-many-branches
 
@@ -521,11 +521,10 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
 
 
 @iterate_jit(nopython=True)
-def ItemDed(e17500_capped, e18400_capped, e18500_capped,
-            g20500_capped, e20400_capped, e19200_capped, e19800_capped,
-            e20100_capped, MARS, age_head, age_spouse,
-            c00100, c04470, c17000, c18300, c20500, c19200,
-            c20800, c21040, c21060, c19700,
+def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
+            e19800_capped, e20100_capped, e20400_capped, g20500_capped,
+            MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
+            c17000, c18300, c18400, c18500, c19200, c19700, c20500, c20800,
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
@@ -533,8 +532,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
             ID_Charity_hc, ID_InterestPaid_hc, ID_RealEstate_hc,
             ID_Medical_c, ID_StateLocalTax_c, ID_RealEstate_c,
             ID_InterestPaid_c, ID_Charity_c, ID_Casualty_c,
-            ID_Miscellaneous_c, ID_AllTaxes_c, ID_StateLocalTax_crt,
-            ID_RealEstate_crt, ID_Charity_f):
+            ID_Miscellaneous_c, ID_AllTaxes_c, ID_AllTaxes_hc,
+            ID_StateLocalTax_crt, ID_RealEstate_crt, ID_Charity_f):
     """
     Calculates itemized deductions, Form 1040, Schedule A.
 
@@ -612,11 +611,11 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
         e20400_capped : Total miscellaneous expenses, capped by ItemDedCap
 
         g20500_capped : Gross casualty or theft loss (before disregard),
-        capped by ItemDedCap
+                        capped by ItemDedCap
 
     Returns
     -------
-    c04470 : Itemized deduction amount (and other intermediate variables)
+    c04470 : total itemized deduction amount (and other intermediate variables)
     """
     posagi = max(c00100, 0.)
     # Medical
@@ -636,7 +635,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
     # hence the 0.0001 rather than zero
     c18400 = min(c18400, ID_StateLocalTax_crt * max(c00100, 0.0001))
     c18500 = min(c18500, ID_RealEstate_crt * max(c00100, 0.0001))
-    c18300 = min(c18400 + c18500, ID_AllTaxes_c[MARS - 1])
+    c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)
+    c18300 = min(c18300, ID_AllTaxes_c[MARS - 1])
     # Interest paid
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
     c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
@@ -670,8 +670,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped,
         c21040 = 0.
         c04470 = c21060
     c04470 = min(c04470, ID_c[MARS - 1])
-    return (c17000, c18300, c19200, c20500, c20800, c21040, c21060, c04470,
-            c19700)
+    return (c17000, c18300, c18400, c18500, c19200, c19700, c20500, c20800,
+            c21040, c21060, c04470)
 
 
 @iterate_jit(nopython=True)
