@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-02-26 Release 1.0.1
+------------------------
+(last merged pull request is
+[#2243](https://github.com/PSLmodels/Tax-Calculator/pull/2243))
+
+**This is a bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Make the six components of total itemized deductions add up to pre-limitation total itemized deductions
+  [[#2243](https://github.com/PSLmodels/Tax-Calculator/pull/2243)
+  by Martin Holmer with bug reported by Erin Melly]
+
+
 2019-02-22 Release 1.0.0
 ------------------------
 (last merged pull request is
