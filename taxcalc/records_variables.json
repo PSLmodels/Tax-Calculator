@@ -868,7 +868,7 @@
     },
     "c17000": {
       "type": "float",
-      "desc": "Sch A: Medical expenses deducted",
+      "desc": "Sch A: Medical expenses deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
     "e17500_capped": {
@@ -878,7 +878,7 @@
     },
     "c18300": {
       "type": "float",
-      "desc": "Sch A: State and local taxes plus real estate taxes deducted",
+      "desc": "Sch A: State and local taxes plus real estate taxes deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
     "e18400_capped": {
@@ -893,7 +893,7 @@
     },
     "c19200": {
       "type": "float",
-      "desc": "Sch A: Interest deducted",
+      "desc": "Sch A: Interest deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
     "e19200_capped": {
@@ -903,7 +903,7 @@
     },
     "c19700": {
       "type": "float",
-      "desc": "Sch A: Charity contributions deducted",
+      "desc": "Sch A: Charity contributions deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
     "e19800_capped": {
@@ -918,7 +918,7 @@
     },
     "c20500": {
       "type": "float",
-      "desc": "Sch A: Net casualty or theft loss deducted",
+      "desc": "Sch A: Net casualty or theft loss deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
     "g20500_capped": {
@@ -928,7 +928,7 @@
     },
     "c20800": {
       "type": "float",
-      "desc": "Sch A: Net limited miscellaneous deductions deducted",
+      "desc": "Sch A: Net limited miscellaneous deductions deducted (component of pre-limitation c21060 total)",
       "form": {"2013-20??": "calculated variable"}
     },
     "e20400_capped": {

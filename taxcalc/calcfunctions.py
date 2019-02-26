@@ -543,32 +543,33 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         ID_ps : Itemized deduction phaseout AGI start (Pease)
 
         ID_crt : Itemized deduction maximum phaseout
-        as a decimal fraction of total itemized deduction (Pease)
+                 as a decimal fraction of total itemized deduction (Pease)
 
         ID_prt : Itemized deduction phaseout rate (Pease)
 
         ID_c: Dollar limit on itemized deductions
 
         ID_Medical_frt : Deduction for medical expenses;
-        floor as a decimal fraction of AGI
+                         floor as a decimal fraction of AGI
 
         ID_Medical_frt_add4aged : Addon for medical expenses deduction for
-        elderly; addon as a decimal fraction of AGI
+                                  elderly; addon as a decimal fraction of AGI
 
         ID_Casualty_frt : Deduction for casualty loss;
-        floor as a decimal fraction of AGI
+                          floor as a decimal fraction of AGI
 
         ID_Miscellaneous_frt : Deduction for miscellaneous expenses;
-        floor as a decimal fraction of AGI
+                               floor as a decimal fraction of AGI
 
         ID_Charity_crt_all : Deduction for all charitable contributions;
-        ceiling as a decimal fraction of AGI
+                             ceiling as a decimal fraction of AGI
 
         ID_Charity_crt_noncash : Deduction for noncash charitable
-        contributions; ceiling as a decimal fraction of AGI
+                                 contributions; ceiling as a decimal
+                                 fraction of AGI
 
         ID_Charity_frt : Disregard for charitable contributions;
-        floor as a decimal fraction of AGI
+                         floor as a decimal fraction of AGI
 
         ID_Medical_c : Ceiling on medical expense deduction
 
@@ -577,7 +578,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         ID_RealEstate_c : Ceiling on real estate tax deduction
 
         ID_AllTaxes_c: Ceiling combined state and local income/sales and
-        real estate tax deductions
+                       real estate tax deductions
 
         ID_InterestPaid_c : Ceiling on interest paid deduction
 
@@ -590,10 +591,10 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         ID_Miscellaneous_c : Ceiling on miscellaneous expense deduction
 
         ID_StateLocalTax_crt : Deduction for state and local taxes;
-        ceiling as a decimal fraction of AGI
+                               ceiling as a decimal fraction of AGI
 
         ID_RealEstate_crt : Deduction for real estate taxes;
-        ceiling as a decimal fraction of AGI
+                            ceiling as a decimal fraction of AGI
 
     Taxpayer Characteristics:
         e17500_capped : Medical expenses, capped by ItemDedCap
@@ -617,6 +618,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     -------
     c04470 : total itemized deduction amount (and other intermediate variables)
     """
+    # pylint: disable=too-many-statements
     posagi = max(c00100, 0.)
     # Medical
     medical_frt = ID_Medical_frt
@@ -656,9 +658,10 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c20750 = ID_Miscellaneous_frt * posagi
     c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
     c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
-    # Gross Itemized Deductions
+    # Gross total itemized deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
-    # Limitation on total itemized deductions
+    # Limitations on total itemized deductions
+    # (no attempt to adjust c04470 components for limitations)
     nonlimited = c17000 + c20500
     limitstart = ID_ps[MARS - 1]
     if c21060 > nonlimited and c00100 > limitstart:
@@ -670,6 +673,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         c21040 = 0.
         c04470 = c21060
     c04470 = min(c04470, ID_c[MARS - 1])
+    # Return total itemized deduction amounts and components
     return (c17000, c18300, c19200, c19700, c20500, c20800,
             c21040, c21060, c04470)
 

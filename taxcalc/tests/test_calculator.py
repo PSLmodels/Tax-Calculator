@@ -1081,11 +1081,14 @@ def test_read_json_parameters(tests_path):
 def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     """
     Check that all c04470 components are adjusted to reflect the filing
-    unit's standard-vs-itemized-deduction decision.  Check for both 2018
+    unit's standard-vs-itemized-deduction decision.  Check for 2018
     (when current law has no Pease phaseout of itemized deductions and
     already has complete haircuts for Casualty and Miscellaneous deductions)
     and 2017 (when current law has a Pease phaseout of itemized deductions
-    and has no haircuts).
+    and has no haircuts).  The calcfunctions.py code makes no attempt to
+    adjust the components for the effects of Pease-like phaseout or any other
+    type of limitation on total itemized deductions, so the pre-2018 tests
+    here use c21060, instead of c04470, as the itemized deductions total.
     """
     # pylint: disable=too-many-locals
     recs = Records(data=puf_fullsample)
@@ -1121,13 +1124,25 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     assert np.allclose(calc1.array('standard'), 0.)
     assert np.allclose(calc2.array('standard'), 0.)
     # calculate different in total itemized deductions
-    c04470_1 = calc1.weighted_total('c04470') * 1e-9
-    c04470_2 = calc2.weighted_total('c04470') * 1e-9
-    difference_in_total_itmded = c04470_1 - c04470_2
+    if year == 2017:
+        # pre-Pease limitation total itemized deductions
+        itmded1 = calc1.weighted_total('c21060') * 1e-9
+        itmded2 = calc2.weighted_total('c21060') * 1e-9
+    elif year == 2018:
+        # total itemized deductions (no Pease-like limitation)
+        itmded1 = calc1.weighted_total('c04470') * 1e-9
+        itmded2 = calc2.weighted_total('c04470') * 1e-9
+    else:
+        raise ValueError('illegal year value = {}'.format(year))
+    difference_in_total_itmded = itmded1 - itmded2
     # calculate itemized component amount
     component_amt = calc1.weighted_total(cvname) * 1e-9
     # confirm that component amount is equal to difference in total deductions
-    if not np.allclose(component_amt, difference_in_total_itmded):
+    if year == 2017 and cvname == 'c19700':
+        atol = 0.003
+    else:
+        atol = 0.000001
+    if not np.allclose(component_amt, difference_in_total_itmded, atol=atol):
         txt = '\n{}={:.3f}  !=  {:.3f}=difference_in_total_itemized_deductions'
         msg = txt.format(cvname, component_amt, difference_in_total_itmded)
         raise ValueError(msg)
