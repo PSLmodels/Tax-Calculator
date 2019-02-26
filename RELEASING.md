@@ -14,13 +14,9 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> run `make package`  [to make taxcalc package available in docs]
 
---> run `conda install -c PSLmodels behresp --yes`  [to make behresp available]
-
---> cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
-
 --> cd .. ; ./index_results.sh ; .fix. ; python make_index.py
 
---> cd .. ; make clean  [to remove taxcalc and behresp packages]
+--> cd .. ; make clean  [to remove taxcalc package]
 
 --> commit X-Y-Z branch and push to origin
 
@@ -31,6 +27,18 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 --> create release X.Y.Z on GitHub using master branch
 
 --> `pbrelease Tax-Calculator taxcalc X.Y.Z --also37` [to build/upload packages]
+
+--> run `conda install -c PSLmodels behresp --yes`  [to make behresp available]
+
+--> on new branch X-Y-Z-cookbook
+
+--> cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
+
+--> merge X-Y-Z-cookbook branch and push to origin
+
+--> merge X-Y-Z-cookbook branch into master branch on GitHub
+
+--> on local master branch, ./gitsync
 
 --> email policybrain-modelers list about the new release and packages
 ```
