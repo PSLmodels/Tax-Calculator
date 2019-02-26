@@ -1410,6 +1410,7 @@ class Calculator():
         """
         Call all the functions except those in the calc_all() method.
         """
+        # pylint: disable=too-many-statements
         if zero_out_calc_vars:
             self.__records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
@@ -1431,9 +1432,16 @@ class Calculator():
         item = self.array('c04470').copy()
         item_no_limit = self.array('c21060').copy()
         item_phaseout = self.array('c21040').copy()
+        item_component_variable_names = ['c17000', 'c18300', 'c19200',
+                                         'c19700', 'c20500', 'c20800']
+        item_cvar = dict()
+        for cvname in item_component_variable_names:
+            item_cvar[cvname] = self.array(cvname).copy()
         self.zeroarray('c04470')
         self.zeroarray('c21060')
         self.zeroarray('c21040')
+        for cvname in item_component_variable_names:
+            self.zeroarray(cvname)
         self._taxinc_to_amt()
         std_taxes = self.array('c05800').copy()
         # Set standard deduction to zero, calculate taxes w/o
@@ -1444,8 +1452,8 @@ class Calculator():
         self.array('c04470', item)
         self._taxinc_to_amt()
         item_taxes = self.array('c05800').copy()
-        # Replace standard deduction with zero where the taxpayer
-        # would be better off itemizing
+        # Replace standard deduction with zero so the filing unit
+        # would always be better off itemizing
         self.array('standard', np.where(item_taxes < std_taxes,
                                         0., std))
         self.array('c04470', np.where(item_taxes < std_taxes,
@@ -1454,6 +1462,14 @@ class Calculator():
                                       item_no_limit, 0.))
         self.array('c21040', np.where(item_taxes < std_taxes,
                                       item_phaseout, 0.))
+        for cvname in item_component_variable_names:
+            self.array(cvname, np.where(item_taxes < std_taxes,
+                                        item_cvar[cvname], 0.))
+        del std
+        del item
+        del item_no_limit
+        del item_phaseout
+        del item_cvar
         # Calculate taxes with optimal itemized deduction
         self._taxinc_to_amt()
         F2441(self.__policy, self.__records)

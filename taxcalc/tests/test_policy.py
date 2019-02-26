@@ -713,6 +713,7 @@ def test_section_titles(tests_path):
             'Medical Expenses': 0,
             'State And Local Income And Sales Taxes': 0,
             'State, Local, And Foreign Real Estate Taxes': 0,
+            'State And Local Taxes And Real Estate Taxes': 0,
             'Interest Paid': 0,
             'Charity': 0,
             'Casualty': 0,
