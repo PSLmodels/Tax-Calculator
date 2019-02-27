@@ -35,7 +35,7 @@ def create_base_table(test_path):
                  'c07180': 'Child care credit',
                  'c09600': 'Federal AMT liability'}
     # specify read variable names and descriptions
-    unused_var_set = set(['AGIR1', 'DSI', 'EFI', 'EIC', 'ELECT', 'FDED',
+    unused_var_set = set(['DSI', 'EIC',
                           'h_seq', 'a_lineno', 'ffpos', 'fips', 'agi_bin',
                           'FLPDYR', 'FLPDMO', 'f2441', 'f3800', 'f6251',
                           'f8582', 'f8606', 'f8829', 'f8910', 'f8936', 'n20',
@@ -45,7 +45,7 @@ def create_base_table(test_path):
                           'RECID', 'gender', 'wage_head', 'wage_spouse',
                           'earnsplit', 'agedp1', 'agedp2', 'agedp3',
                           's006', 's008', 's009', 'WSAMP', 'TXRT',
-                          'filer', 'matched_weight', 'e00200p', 'e00200s',
+                          'matched_weight', 'e00200p', 'e00200s',
                           'e00900p', 'e00900s', 'e02100p', 'e02100s',
                           'age_head', 'age_spouse',
                           'nu18', 'n1820', 'n21',
