@@ -5,7 +5,7 @@ TAX-CALCULATOR CHANGE HISTORY
 Changes in release 1.0.1 on 2019-02-26
 --------------------------------------
 
-**This is a bug-file release.**
+**This is a bug-fix release.**
 
 - Fix logic so that the six components of total itemized deductions add up to pre-limitation total itemized deductions
 
