@@ -618,7 +618,6 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     -------
     c04470 : total itemized deduction amount (and other intermediate variables)
     """
-    # pylint: disable=too-many-statements
     posagi = max(c00100, 0.)
     # Medical
     medical_frt = ID_Medical_frt
