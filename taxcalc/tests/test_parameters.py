@@ -19,7 +19,7 @@ def test_instantiation_and_usage():
     Test Parameters instantiation and usage.
     """
     pbase = Parameters()
-    assert pbase
+    assert isinstance(pbase, Parameters)
     assert pbase.inflation_rates() is None
     assert pbase.wage_growth_rates() is None
     syr = 2010

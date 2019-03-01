@@ -35,9 +35,9 @@ def test_correct_Records_instantiation(cps_subsample):
     rec1.set_current_year(rec1.data_year + 1)
     sum_e00200_in_cps_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
-    wghts_path = os.path.join(Records.CUR_PATH, Records.CPS_WEIGHTS_FILENAME)
+    wghts_path = os.path.join(Records.CODE_PATH, Records.CPS_WEIGHTS_FILENAME)
     wghts_df = pd.read_csv(wghts_path)
-    ratios_path = os.path.join(Records.CUR_PATH, Records.PUF_RATIOS_FILENAME)
+    ratios_path = os.path.join(Records.CODE_PATH, Records.PUF_RATIOS_FILENAME)
     ratios_df = pd.read_csv(ratios_path, index_col=0).transpose()
     rec2 = Records(data=cps_subsample,
                    start_year=Records.CPSCSV_YEAR,

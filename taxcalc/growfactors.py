@@ -36,9 +36,8 @@ class GrowFactors():
     containing the default grow factors in the GrowFactors.FILENAME file.
     """
 
-    CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     FILENAME = 'growfactors.csv'
-    FILE_PATH = os.path.join(CUR_PATH, FILENAME)
+    FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
                        'ADIVS', 'AINTS',
@@ -49,16 +48,15 @@ class GrowFactors():
                        'ABENSSI', 'ABENSNAP', 'ABENWIC',
                        'ABENHOUSING', 'ABENTANF', 'ABENVET'])
 
-    def __init__(self, growfactors_filename=FILE_PATH):
+    def __init__(self, growfactors_filename=FILENAME):
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
         if isinstance(growfactors_filename, str):
-            assert os.path.isabs(growfactors_filename)
-            if os.path.isfile(growfactors_filename):
-                gfdf = pd.read_csv(growfactors_filename,
-                                   index_col='YEAR')
-            else:
-                # cannot call read_egg_ function in unit tests
+            full_filename = os.path.join(GrowFactors.FILE_PATH,
+                                         growfactors_filename)
+            if os.path.isfile(full_filename):
+                gfdf = pd.read_csv(full_filename, index_col='YEAR')
+            else:  # find file in conda package
                 gfdf = read_egg_csv(os.path.basename(growfactors_filename),
                                     index_col='YEAR')  # pragma: no cover
         else:

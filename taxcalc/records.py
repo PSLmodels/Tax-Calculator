@@ -98,12 +98,12 @@ class Records():
     PUFCSV_YEAR = 2011
     CPSCSV_YEAR = 2014
 
-    CUR_PATH = os.path.abspath(os.path.dirname(__file__))
     PUF_WEIGHTS_FILENAME = 'puf_weights.csv.gz'
     PUF_RATIOS_FILENAME = 'puf_ratios.csv'
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
     VAR_INFO_FILENAME = 'records_variables.json'
+    CODE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self,
                  data='puf.csv',
@@ -200,7 +200,7 @@ class Records():
         data.
         """
         if data is None:
-            data = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
+            data = os.path.join(Records.CODE_PATH, 'cps.csv.gz')
         return Records(data=data,
                        exact_calculations=exact_calculations,
                        gfactors=gfactors,
@@ -261,14 +261,13 @@ class Records():
         Read Records variables metadata from JSON file;
         returns dictionary and specifies static varname sets listed below.
         """
-        var_info_path = os.path.join(Records.CUR_PATH,
+        var_info_path = os.path.join(Records.CODE_PATH,
                                      Records.VAR_INFO_FILENAME)
-        if os.path.exists(var_info_path):
+        if os.path.isfile(var_info_path):
             with open(var_info_path) as vfile:
                 json_text = vfile.read()
             vardict = json_to_dict(json_text)
-        else:
-            # cannot call read_egg_ function in unit tests
+        else:  # find file in conda package
             vardict = read_egg_json(
                 Records.VAR_INFO_FILENAME)  # pragma: no cover
         Records.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
@@ -304,11 +303,10 @@ class Records():
         """
         Return data in cps.csv.gz as a Pandas DataFrame.
         """
-        fname = os.path.join(Records.CUR_PATH, 'cps.csv.gz')
+        fname = os.path.join(Records.CODE_PATH, 'cps.csv.gz')
         if os.path.isfile(fname):
             cpsdf = pd.read_csv(fname)
-        else:
-            # cannot call read_egg_ function in unit tests
+        else:  # find file in conda package
             cpsdf = read_egg_csv(fname)  # pragma: no cover
         return cpsdf
 
@@ -445,8 +443,7 @@ class Records():
         elif isinstance(data, str):
             if os.path.isfile(data):
                 taxdf = pd.read_csv(data)
-            else:
-                # cannot call read_egg_ function in unit tests
+            else:  # find file in conda package
                 taxdf = read_egg_csv(data)  # pragma: no cover
         else:
             msg = 'data is neither a string nor a Pandas DataFrame'
@@ -523,11 +520,10 @@ class Records():
         if isinstance(weights, pd.DataFrame):
             WT = weights
         elif isinstance(weights, str):
-            weights_path = os.path.join(Records.CUR_PATH, weights)
+            weights_path = os.path.join(Records.CODE_PATH, weights)
             if os.path.isfile(weights_path):
                 WT = pd.read_csv(weights_path)
-            else:
-                # cannot call read_egg_ function in unit tests
+            else:  # find file in conda package
                 WT = read_egg_csv(
                     os.path.basename(weights_path))  # pragma: no cover
         else:
@@ -551,12 +547,11 @@ class Records():
             assert ratios.index.name is None  # check for no-index
             ADJ = ratios
         elif isinstance(ratios, str):
-            ratios_path = os.path.join(Records.CUR_PATH, ratios)
+            ratios_path = os.path.join(Records.CODE_PATH, ratios)
             if os.path.isfile(ratios_path):
                 ADJ = pd.read_csv(ratios_path,
                                   index_col=0)
-            else:
-                # cannot call read_egg_ function in unit tests
+            else:  # find file in conda package
                 ADJ = read_egg_csv(os.path.basename(ratios_path),
                                    index_col=0)  # pragma: no cover
             ADJ = ADJ.transpose()

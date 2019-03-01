@@ -5,6 +5,7 @@ Tax-Calculator Consumption class.
 # pycodestyle consumption.py
 # pylint --disable=locally-disabled consumption.py
 
+import os
 from taxcalc.parameters import Parameters
 from taxcalc.policy import Policy
 from taxcalc.records import Records
@@ -27,8 +28,9 @@ class Consumption(Parameters):
     """
 
     JSON_START_YEAR = Policy.JSON_START_YEAR
-    DEFAULTS_FILENAME = 'consumption.json'
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
+    DEFAULTS_FILENAME = 'consumption.json'
+    DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self):
         super(Consumption, self).__init__()

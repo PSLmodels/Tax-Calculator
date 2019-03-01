@@ -4,7 +4,7 @@ Tax-Calculator GrowDiff class that is used to modify GrowFactors.
 # CODING-STYLE CHECKS:
 # pycodestyle growdiff.py
 # pylint --disable=locally-disabled growdiff.py
-
+import os
 import numpy as np
 from taxcalc.parameters import Parameters
 
@@ -26,8 +26,9 @@ class GrowDiff(Parameters):
     """
 
     JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
-    DEFAULTS_FILENAME = 'growdiff.json'
     DEFAULT_NUM_YEARS = 16  # must be same as Policy.DEFAULT_NUM_YEARS
+    DEFAULTS_FILENAME = 'growdiff.json'
+    DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self):
         super(GrowDiff, self).__init__()
