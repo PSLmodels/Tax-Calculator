@@ -315,12 +315,13 @@ class Parameters():
         params: dictionary
             containing complete contents of DEFAULTS_FILENAME file.
         """
-        if cls.DEFAULTS_FILENAME is None:
-            msg = 'DEFAULTS_FILENAME must be overridden by inheriting class'
-            raise NotImplementedError(msg)
-        if cls.DEFAULTS_FILE_PATH is None:
-            msg = 'DEFAULTS_FILE_PATH must be overridden by inheriting class'
-            raise NotImplementedError(msg)
+        not_implemented = (cls.DEFAULTS_FILENAME is None or
+                           cls.DEFAULTS_FILE_PATH is None)
+        if not_implemented:
+            msg = '{} and {} must be overridden by inheriting class'
+            raise NotImplementedError(msg.format(
+                'DEFAULTS_FILENAME', 'DEFAULTS_FILE_PATH'
+            ))
         file_path = os.path.join(cls.DEFAULTS_FILE_PATH, cls.DEFAULTS_FILENAME)
         if os.path.isfile(file_path):
             with open(file_path) as pfile:
