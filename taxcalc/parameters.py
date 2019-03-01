@@ -15,11 +15,13 @@ class Parameters():
     """
     Inherit from this class for Policy, Consumption, GrowDiff, and
     other groups of parameters that need to have a set_year method.
-    Override this __init__ method and DEFAULTS_FILENAME.
+    Override this __init__ method and DEFAULTS_FILENAME and
+    DEFAULTS_FILE_PATH in the inheriting class.
     """
     __metaclass__ = abc.ABCMeta
 
     DEFAULTS_FILENAME = None
+    DEFAULTS_FILE_PATH = None
 
     def __init__(self):
         pass
@@ -316,14 +318,15 @@ class Parameters():
         if cls.DEFAULTS_FILENAME is None:
             msg = 'DEFAULTS_FILENAME must be overridden by inheriting class'
             raise NotImplementedError(msg)
-        path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                            cls.DEFAULTS_FILENAME)
-        if os.path.exists(path):
-            with open(path) as pfile:
+        if cls.DEFAULTS_FILE_PATH is None:
+            msg = 'DEFAULTS_FILE_PATH must be overridden by inheriting class'
+            raise NotImplementedError(msg)
+        file_path = os.path.join(cls.DEFAULTS_FILE_PATH, cls.DEFAULTS_FILENAME)
+        if os.path.isfile(file_path):
+            with open(file_path) as pfile:
                 json_text = pfile.read()
             params_dict = json_to_dict(json_text)
-        else:
-            # cannot call read_egg_ function in unit tests
+        else:  # find file in conda package
             params_dict = read_egg_json(
                 cls.DEFAULTS_FILENAME)  # pragma: no cover
         return params_dict
