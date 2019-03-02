@@ -15,12 +15,12 @@ class Parameters():
     """
     Inherit from this class for Policy, Consumption, GrowDiff, and
     other groups of parameters that need to have a set_year method.
-    Override this __init__ method and DEFAULTS_FILENAME and
+    Override this __init__ method and DEFAULTS_FILE_NAME and
     DEFAULTS_FILE_PATH in the inheriting class.
     """
     __metaclass__ = abc.ABCMeta
 
-    DEFAULTS_FILENAME = None
+    DEFAULTS_FILE_NAME = None
     DEFAULTS_FILE_PATH = None
 
     def __init__(self):
@@ -304,7 +304,7 @@ class Parameters():
     @classmethod
     def _params_dict_from_json_file(cls):
         """
-        Read DEFAULTS_FILENAME file and return complete dictionary.
+        Read DEFAULTS_FILE_NAME file and return complete dictionary.
 
         Parameters
         ----------
@@ -313,23 +313,24 @@ class Parameters():
         Returns
         -------
         params: dictionary
-            containing complete contents of DEFAULTS_FILENAME file.
+            containing complete contents of DEFAULTS_FILE_NAME file.
         """
-        not_implemented = (cls.DEFAULTS_FILENAME is None or
+        not_implemented = (cls.DEFAULTS_FILE_NAME is None or
                            cls.DEFAULTS_FILE_PATH is None)
         if not_implemented:
             msg = '{} and {} must be overridden by inheriting class'
             raise NotImplementedError(msg.format(
-                'DEFAULTS_FILENAME', 'DEFAULTS_FILE_PATH'
+                'DEFAULTS_FILE_NAME', 'DEFAULTS_FILE_PATH'
             ))
-        file_path = os.path.join(cls.DEFAULTS_FILE_PATH, cls.DEFAULTS_FILENAME)
+        file_path = os.path.join(cls.DEFAULTS_FILE_PATH,
+                                 cls.DEFAULTS_FILE_NAME)
         if os.path.isfile(file_path):
             with open(file_path) as pfile:
                 json_text = pfile.read()
             params_dict = json_to_dict(json_text)
         else:  # find file in conda package
             params_dict = read_egg_json(
-                cls.DEFAULTS_FILENAME)  # pragma: no cover
+                cls.DEFAULTS_FILE_NAME)  # pragma: no cover
         return params_dict
 
     def _update(self, year_mods):
@@ -366,14 +367,14 @@ class Parameters():
         calendar year for which the reform provisions in the MODS
         dictionary are implemented.  The MODS dictionary contains
         PARAM:VALUE pairs in which the PARAM is a string specifying
-        the policy parameter (as used in the DEFAULTS_FILENAME default
+        the policy parameter (as used in the DEFAULTS_FILE_NAME default
         parameter file) and the VALUE is a Python list of post-reform
         values for that PARAM in that YEAR.  Beginning in the year
         following the implementation of a reform provision, the
         parameter whose value has been changed by the reform continues
         to be inflation indexed, if relevant, or not be inflation indexed
         according to that parameter's cpi_inflated value loaded from
-        DEFAULTS_FILENAME.  For a cpi-related parameter, a reform can change
+        DEFAULTS_FILE_NAME.  For a cpi-related parameter, a reform can change
         the indexing status of a parameter by including in the MODS dictionary
         a term that is a PARAM_cpi:BOOLEAN pair specifying the post-reform
         indexing status of the parameter.

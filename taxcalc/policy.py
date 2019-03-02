@@ -35,7 +35,7 @@ class Policy(Parameters):
     class instance: Policy
     """
 
-    DEFAULTS_FILENAME = 'policy_current_law.json'
+    DEFAULTS_FILE_NAME = 'policy_current_law.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
     LAST_KNOWN_YEAR = 2018  # last year for which indexed param vals are known
@@ -45,15 +45,14 @@ class Policy(Parameters):
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     def __init__(self, gfactors=None):
-        super(Policy, self).__init__()
-
+        # pylint: disable=super-init-not-called
+        # handle gfactors argument
         if gfactors is None:
             self._gfactors = GrowFactors()
         elif isinstance(gfactors, GrowFactors):
             self._gfactors = gfactors
         else:
             raise ValueError('gfactors is not None or a GrowFactors instance')
-
         # read default parameters and initialize
         self._vals = self._params_dict_from_json_file()
         syr = Policy.JSON_START_YEAR
@@ -63,7 +62,7 @@ class Policy(Parameters):
         self._apply_clp_cpi_offset(self._vals['_cpi_offset'], nyrs)
         self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
         self.initialize(syr, nyrs)
-
+        # initialize parameter warning/error variables
         self.parameter_warnings = ''
         self.parameter_errors = ''
         self._ignore_errors = False

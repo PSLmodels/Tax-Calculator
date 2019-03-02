@@ -354,13 +354,13 @@ def fixture_defaultpolicyfile():
 
 def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
     """
-    Test Policy constructor with alternative Policy.DEFAULTS_FILENAME.
+    Test Policy constructor with alternative Policy.DEFAULTS_FILE_NAME.
 
-    Note: pytest monkeypatch resets the Policy.DEFAULTS_FILENAME temporarily
-    and then restores the original value of Policy.DEFAULTS_FILENAME after
+    Note: pytest monkeypatch resets the Policy.DEFAULTS_FILE_NAME temporarily
+    and then restores the original value of Policy.DEFAULTS_FILE_NAME after
     the test completes.
     """
-    monkeypatch.setattr(Policy, 'DEFAULTS_FILENAME', defaultpolicyfile.name)
+    monkeypatch.setattr(Policy, 'DEFAULTS_FILE_NAME', defaultpolicyfile.name)
     ppo = Policy()
     inf_rates = ppo.inflation_rates()
     assert np.allclose(ppo._almdep,
