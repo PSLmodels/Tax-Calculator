@@ -1269,8 +1269,7 @@ class Calculator():
                         pval = pval[0]
                         if basevals[param]['boolean_value']:
                             if isinstance(pval, list):
-                                pval = [True if item else
-                                        False for item in pval]
+                                pval = [bool(item) for item in pval]
                             else:
                                 pval = bool(pval)
                     doc += ' {} : {}\n'.format(param, pval)
@@ -1303,8 +1302,7 @@ class Calculator():
                             if isinstance(bval, np.ndarray):
                                 bval = bval.tolist()
                                 if basevals[param]['boolean_value']:
-                                    bval = [True if item else
-                                            False for item in bval]
+                                    bval = [bool(item) for item in bval]
                             elif basevals[param]['boolean_value']:
                                 bval = bool(bval)
                         doc += '  baseline_value: {}\n'.format(bval)

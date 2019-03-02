@@ -140,6 +140,7 @@ class Records():
         if not np.allclose(self.e02100s[nospouse], zeros):
             raise ValueError(msg.format('e02100s'))
         # check that ordinary dividends are no less than qualified dividends
+        # pylint: disable=assignment-from-no-return
         other_dividends = np.maximum(0., self.e00600 - self.e00650)
         if not np.allclose(self.e00600, self.e00650 + other_dividends,
                            rtol=0.0, atol=tol):

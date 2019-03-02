@@ -190,8 +190,10 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
         assert bin_edges[1] > 1e-9  # bin_edges[1] is top of bottom decile
         neg_im = np.less_equal(dframe[income_measure], -1e-9)
         neg_wght = dframe['s006'][neg_im].sum()
-        zer_im = np.logical_and(np.greater(dframe[income_measure], -1e-9),
-                                np.less(dframe[income_measure], 1e-9))
+        zer_im = np.logical_and(  # pylint: disable=assignment-from-no-return
+            np.greater(dframe[income_measure], -1e-9),
+            np.less(dframe[income_measure], 1e-9)
+        )
         zer_wght = dframe['s006'][zer_im].sum()
         bin_edges.insert(1, neg_wght + zer_wght)  # top of zeros
         bin_edges.insert(1, neg_wght)  # top of negatives
@@ -924,6 +926,7 @@ def atr_graph_data(vdf, year,
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates for each included income percentile
+    # pylint: disable=unsupported-assignment-operation
     atr1_series = np.zeros_like(avginc_series)
     atr1_series[included] = avgtax1_series[included] / avginc_series[included]
     atr2_series = np.zeros_like(avginc_series)
@@ -1086,6 +1089,7 @@ def pch_graph_data(vdf, year):
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     change_series = gdfx.apply(weighted_mean, 'chg_aftinc')
     # compute percentage change statistic each included income percentile
+    # pylint: disable=unsupported-assignment-operation
     pch_series = np.zeros_like(avginc_series)
     pch_series[included] = change_series[included] / avginc_series[included]
     # construct DataFrame containing the pch_series expressed as percent
@@ -1341,10 +1345,13 @@ def ce_aftertax_expanded_income(df1, df2,
     cedict['inc1'] = weighted_sum(df1, 'expanded_income') * billion
     cedict['inc2'] = weighted_sum(df2, 'expanded_income') * billion
     # calculate sample-weighted probability of each filing unit
-    prob_raw = np.divide(df1['s006'],  # pylint: disable=no-member
-                         df1['s006'].sum())
-    prob = np.divide(prob_raw,  # pylint: disable=no-member
-                     prob_raw.sum())  # handle any rounding error
+    prob_raw = np.divide(  # pylint: disable=assignment-from-no-return
+        df1['s006'], df1['s006'].sum()
+    )
+    # handle any rounding error in probability calculation
+    prob = np.divide(  # pylint: disable=assignment-from-no-return
+        prob_raw, prob_raw.sum()
+    )
     # calculate after-tax income of each filing unit in df1 and df2
     ati1 = df1['expanded_income'] - df1['combined']
     ati2 = df2['expanded_income'] - df2['combined']

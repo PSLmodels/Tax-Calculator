@@ -121,6 +121,7 @@ def constrain_data(xdf):
     # constraint: e02100 = e02100p + e02100s
     xdf['e02100'] = xdf['e02100p'] + xdf['e02100s']
     # constraint: e00600 >= e00650
+    # pylint: disable=assignment-from-no-return
     xdf['e00600'] = np.maximum(xdf['e00600'], xdf['e00650'])
     # constraint: e01500 >= e01700
     xdf['e01500'] = np.maximum(xdf['e01500'], xdf['e01700'])
