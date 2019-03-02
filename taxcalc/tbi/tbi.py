@@ -124,6 +124,7 @@ def run_nth_year_taxcalc_model(year_n, start_year,
         print('fuzzing_seed={}'.format(seed))
         np.random.seed(seed)
         # make bool array marking which filing units are affected by the reform
+        # pylint: disable=assignment-from-no-return
         reform_affected = np.logical_not(
             np.isclose(dv1['combined'], dv2['combined'], atol=0.01, rtol=0.0)
         )
