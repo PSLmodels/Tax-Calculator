@@ -27,11 +27,11 @@ class GrowDiff(Parameters):
 
     JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
     DEFAULT_NUM_YEARS = 16  # must be same as Policy.DEFAULT_NUM_YEARS
-    DEFAULTS_FILENAME = 'growdiff.json'
+    DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self):
-        super(GrowDiff, self).__init__()
+        # pylint: disable=super-init-not-called
         self._vals = self._params_dict_from_json_file()
         start_year = GrowDiff.JSON_START_YEAR
         num_years = GrowDiff.DEFAULT_NUM_YEARS

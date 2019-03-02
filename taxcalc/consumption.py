@@ -29,11 +29,11 @@ class Consumption(Parameters):
 
     JSON_START_YEAR = Policy.JSON_START_YEAR
     DEFAULT_NUM_YEARS = Policy.DEFAULT_NUM_YEARS
-    DEFAULTS_FILENAME = 'consumption.json'
+    DEFAULTS_FILE_NAME = 'consumption.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self):
-        super(Consumption, self).__init__()
+        # pylint: disable=super-init-not-called
         self._vals = self._params_dict_from_json_file()
         start_year = Consumption.JSON_START_YEAR
         num_years = Consumption.DEFAULT_NUM_YEARS
