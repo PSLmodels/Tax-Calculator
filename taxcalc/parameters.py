@@ -69,8 +69,7 @@ class Parameters():
             raise ValueError('known_years is neither an int nor a dict')
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                intg_val = data.get('integer_value')
-                bool_val = data.get('boolean_value')
+                valtype = data.get('value_type')
                 values = data.get('value')
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
@@ -84,7 +83,7 @@ class Parameters():
                     else:
                         index_rates = None
                     setattr(self, name,
-                            self._expand_array(values, intg_val, bool_val,
+                            self._expand_array(values, valtype,
                                                inflate=cpi_inflated,
                                                inflation_rates=index_rates,
                                                num_years=self._num_years))
@@ -232,8 +231,7 @@ class Parameters():
                     # check parameter value type avoiding use of isinstance
                     # because isinstance(True, (int,float)) is True, which
                     # makes it impossible to check float parameters
-                    bool_param_type = self._vals[name]['boolean_value']
-                    int_param_type = self._vals[name]['integer_value']
+                    valtype = self._vals[name]['value_type']
                     assert isinstance(revision[year][name], list)
                     pvalue = revision[year][name][0]
                     assert not isinstance(pvalue, list)
@@ -243,28 +241,33 @@ class Parameters():
                         pname = name
                         pval = pvalue[idx]
                         # pylint: disable=unidiomatic-typecheck
-                        pval_is_bool = type(pval) == bool
-                        pval_is_int = type(pval) == int
-                        pval_is_float = type(pval) == float
-                        if bool_param_type:
-                            if not pval_is_bool:  # pragma: no cover
+                        if valtype == 'real':
+                            if type(pval) != float and type(pval) != int:
+                                msg = '{} {} value {} is not a number'
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
+                                )
+                        elif valtype == 'boolean':
+                            if type(pval) != bool:  # pragma: no cover
                                 msg = '{} {} value {} is not boolean'
                                 self.parameter_errors += (
                                     'ERROR: ' +
                                     msg.format(year, pname, pval) +
                                     '\n'
                                 )
-                        elif int_param_type:
-                            if not pval_is_int:  # pragma: no cover
+                        elif valtype == 'integer':
+                            if type(pval) != int:  # pragma: no cover
                                 msg = '{} {} value {} is not integer'
                                 self.parameter_errors += (
                                     'ERROR: ' +
                                     msg.format(year, pname, pval) +
                                     '\n'
                                 )
-                        else:  # param is float type
-                            if not (pval_is_int or pval_is_float):
-                                msg = '{} {} value {} is not a number'
+                        elif valtype == 'string':
+                            if type(pval) != str:
+                                msg = '{} {} value {} is not a string'
                                 self.parameter_errors += (
                                     'ERROR: ' +
                                     msg.format(year, pname, pval) +
@@ -279,7 +282,7 @@ class Parameters():
         parameters = sorted(parameters_set)
         for pname in parameters:
             pvalue = getattr(self, pname)
-            for vop, vval in self._vals[pname]['range'].items():
+            for vop, vval in self._vals[pname]['valid_values'].items():
                 vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
                 assert len(pvalue.shape) == 1  # parameter value is a scalar
@@ -429,8 +432,7 @@ class Parameters():
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
             vals_indexed = self._vals[name].get('cpi_inflated', False)
-            intg_val = self._vals[name].get('integer_value')
-            bool_val = self._vals[name].get('boolean_value')
+            valtype = self._vals[name].get('value_type')
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
@@ -443,7 +445,7 @@ class Parameters():
             cval = getattr(self, name, None)
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            nval = self._expand_array(values, intg_val, bool_val,
+            nval = self._expand_array(values, valtype,
                                       inflate=indexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -460,9 +462,8 @@ class Parameters():
             pvalues = [cval[year - self.start_year]]
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            intg_val = self._vals[pname].get('integer_value')
-            bool_val = self._vals[pname].get('boolean_value')
-            nval = self._expand_array(pvalues, intg_val, bool_val,
+            valtype = self._vals[pname].get('value_type')
+            nval = self._expand_array(pvalues, valtype,
                                       inflate=pindexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -473,7 +474,7 @@ class Parameters():
         self.set_year(year)
 
     @staticmethod
-    def _expand_array(x, x_int, x_bool, inflate, inflation_rates, num_years):
+    def _expand_array(x, x_type, inflate, inflation_rates, num_years):
         """
         Private method called only within this abstract base class.
         Dispatch to either _expand_1D or _expand_2D given dimension of x.
@@ -484,13 +485,7 @@ class Parameters():
             x must be either a scalar list or a 1D numpy array, or
             x must be either a list of scalar lists or a 2D numpy array
 
-        x_int : boolean
-            True implies x has dtype=np.int8;
-            False implies x has dtype=np.float64 or dtype=np.bool_
-
-        x_bool : boolean
-            True implies x has dtype=np.bool_;
-            False implies x has dtype=np.float64 or dtype=np.int8
+        x_type : string ('boolean', 'integer', 'real', 'string')
 
         inflate: boolean
             As we expand, inflate values if this is True, otherwise, just copy
@@ -503,19 +498,22 @@ class Parameters():
 
         Returns
         -------
-        expanded numpy array with specified dtype
+        expanded numpy array with specified type
         """
-        assert not (x_int and x_bool)
         if not isinstance(x, list) and not isinstance(x, np.ndarray):
             msg = '_expand_array expects x to be a list or numpy array'
             raise ValueError(msg)
         if isinstance(x, list):
-            if x_int:
-                x = np.array(x, np.int8)
-            elif x_bool:
-                x = np.array(x, np.bool_)
-            else:
+            if x_type == 'real':
                 x = np.array(x, np.float64)
+            elif x_type == 'boolean':
+                x = np.array(x, np.bool_)
+            elif x_type == 'integer':
+                x = np.array(x, np.int8)
+            elif x_type == 'string':
+                x = np.array(x, np.dtype('U7'))
+                assert len(x.shape) == 1, \
+                    'string parameters must be scalar (not vector)'
         if len(x.shape) == 1:
             return Parameters._expand_1D(x, inflate, inflation_rates,
                                          num_years)
@@ -538,18 +536,26 @@ class Parameters():
         if len(x) >= num_years:
             return x
         else:
-            ans = np.zeros(num_years, dtype=x.dtype)
+            if x.dtype == 'U7':
+                ans = np.array(['' for i in range(0, num_years)],
+                               dtype=x.dtype)
+            else:  # x.dtype is not string
+                ans = np.zeros(num_years, dtype=x.dtype)
             ans[:len(x)] = x
-            if inflate:
-                extra = []
-                cur = x[-1]
-                for i in range(0, num_years - len(x)):
-                    cur *= (1. + inflation_rates[i + len(x) - 1])
-                    cur = round(cur, 2) if cur < 9e99 else 9e99
-                    extra.append(cur)
-            else:
-                extra = [float(x[-1]) for i in
+            if x.dtype == 'U7':
+                extra = [str(x[-1]) for i in
                          range(1, num_years - len(x) + 1)]
+            else:  # x.dtype is not string
+                if inflate:
+                    extra = []
+                    cur = x[-1]
+                    for i in range(0, num_years - len(x)):
+                        cur *= (1. + inflation_rates[i + len(x) - 1])
+                        cur = round(cur, 2) if cur < 9e99 else 9e99
+                        extra.append(cur)
+                else:
+                    extra = [float(x[-1]) for i in
+                             range(1, num_years - len(x) + 1)]
             ans[len(x):] = extra
             return ans
 

@@ -500,8 +500,7 @@ class Policy(Parameters):
                         # check parameter value type avoiding use of isinstance
                         # because isinstance(True, (int,float)) is True, which
                         # makes it impossible to check float parameters
-                        bool_param_type = self._vals[name]['boolean_value']
-                        int_param_type = self._vals[name]['integer_value']
+                        valtype = self._vals[name]['value_type']
                         assert isinstance(reform[year][name], list)
                         pvalue = reform[year][name][0]
                         if isinstance(pvalue, list):
@@ -517,28 +516,33 @@ class Policy(Parameters):
                                 pname = '{}_{}'.format(name, idx)
                             pval = pvalue[idx]
                             # pylint: disable=unidiomatic-typecheck
-                            pval_is_bool = type(pval) == bool
-                            pval_is_int = type(pval) == int
-                            pval_is_float = type(pval) == float
-                            if bool_param_type:
-                                if not pval_is_bool:
+                            if valtype == 'real':
+                                if type(pval) != float and type(pval) != int:
+                                    msg = '{} {} value {} is not a number'
+                                    self.parameter_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pval) +
+                                        '\n'
+                                    )
+                            elif valtype == 'boolean':
+                                if type(pval) != bool:
                                     msg = '{} {} value {} is not boolean'
                                     self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pval) +
                                         '\n'
                                     )
-                            elif int_param_type:
-                                if not pval_is_int:
+                            elif valtype == 'integer':
+                                if type(pval) != int:
                                     msg = '{} {} value {} is not integer'
                                     self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pval) +
                                         '\n'
                                     )
-                            else:  # param is float type
-                                if not (pval_is_int or pval_is_float):
-                                    msg = '{} {} value {} is not a number'
+                            elif valtype == 'string':
+                                if type(pval) != str:
+                                    msg = '{} {} value {} is not a string'
                                     self.parameter_errors += (
                                         'ERROR: ' +
                                         msg.format(year, pname, pval) +
@@ -551,9 +555,8 @@ class Policy(Parameters):
         Check values of parameters in specified parameter_set using
         range information from the policy_current_law.json file.
         """
-        # pylint: disable=too-many-locals
-        # pylint: disable=too-many-branches
-        # pylint: disable=too-many-nested-blocks
+        # pylint: disable=too-many-statements,too-many-locals
+        # pylint: disable=too-many-branches,too-many-nested-blocks
         parameters = sorted(parameters_set)
         syr = Policy.JSON_START_YEAR
         for pname in parameters:
@@ -563,49 +566,69 @@ class Policy(Parameters):
                 msg = '_CTC_c was redefined in release 1.0.0 (2019-Q1)'
                 self.parameter_warnings += msg + '\n'
             pvalue = getattr(self, pname)
-            for vop, vval in self._vals[pname]['range'].items():
-                if isinstance(vval, str):
-                    vvalue = getattr(self, vval)
-                else:
-                    vvalue = np.full(pvalue.shape, vval)
-                assert pvalue.shape == vvalue.shape
-                assert len(pvalue.shape) <= 2
-                if len(pvalue.shape) == 2:
-                    scalar = False  # parameter value is a list
-                else:
-                    scalar = True  # parameter value is a scalar
+            if self._vals[pname]['value_type'] == 'string':
+                valid_options = self._vals[pname]['valid_values']['options']
                 for idx in np.ndindex(pvalue.shape):
-                    out_of_range = False
-                    if vop == 'min' and pvalue[idx] < vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} {} value {} < min value {}'
-                        extra = self._vals[pname]['out_of_range_minmsg']
-                        if extra:
-                            msg += ' {}'.format(extra)
-                    if vop == 'max' and pvalue[idx] > vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} {} value {} > max value {}'
-                        extra = self._vals[pname]['out_of_range_maxmsg']
-                        if extra:
-                            msg += ' {}'.format(extra)
-                    if out_of_range:
-                        action = self._vals[pname]['out_of_range_action']
-                        if scalar:
-                            name = pname
-                        else:
-                            name = '{}_{}'.format(pname, idx[1])
+                    if pvalue[idx] not in valid_options:
+                        msg = "{} {} value '{}' not in {}"
+                        fullmsg = '{}: {}\n'.format(
+                            'ERROR',
+                            msg.format(idx[0] + syr,
+                                       pname,
+                                       pvalue[idx],
+                                       valid_options)
+                        )
+                        self.parameter_errors += fullmsg
+            else:  # parameter does not have string type
+                for vop, vval in self._vals[pname]['valid_values'].items():
+                    if isinstance(vval, str):
+                        vvalue = getattr(self, vval)
+                    else:
+                        vvalue = np.full(pvalue.shape, vval)
+                    assert pvalue.shape == vvalue.shape
+                    assert len(pvalue.shape) <= 2
+                    if len(pvalue.shape) == 2:
+                        scalar = False  # parameter value is a list (vector)
+                    else:
+                        scalar = True  # parameter value is a scalar
+                    for idx in np.ndindex(pvalue.shape):
+                        out_of_range = False
+                        if vop == 'min' and pvalue[idx] < vvalue[idx]:
+                            out_of_range = True
+                            msg = '{} {} value {} < min value {}'
+                            extra = self._vals[pname]['out_of_range_minmsg']
                             if extra:
-                                msg += '_{}'.format(idx[1])
-                        if action == 'warn':
-                            self.parameter_warnings += (
-                                'WARNING: ' + msg.format(idx[0] + syr, name,
-                                                         pvalue[idx],
-                                                         vvalue[idx]) + '\n'
-                            )
-                        if action == 'stop':
-                            self.parameter_errors += (
-                                'ERROR: ' + msg.format(idx[0] + syr, name,
-                                                       pvalue[idx],
-                                                       vvalue[idx]) + '\n'
-                            )
+                                msg += ' {}'.format(extra)
+                        if vop == 'max' and pvalue[idx] > vvalue[idx]:
+                            out_of_range = True
+                            msg = '{} {} value {} > max value {}'
+                            extra = self._vals[pname]['out_of_range_maxmsg']
+                            if extra:
+                                msg += ' {}'.format(extra)
+                        if out_of_range:
+                            action = self._vals[pname]['out_of_range_action']
+                            if scalar:
+                                name = pname
+                            else:
+                                name = '{}_{}'.format(pname, idx[1])
+                                if extra:
+                                    msg += '_{}'.format(idx[1])
+                            if action == 'warn':
+                                fullmsg = '{}: {}\n'.format(
+                                    'WARNING',
+                                    msg.format(idx[0] + syr,
+                                               name,
+                                               pvalue[idx],
+                                               vvalue[idx])
+                                )
+                                self.parameter_warnings += fullmsg
+                            if action == 'stop':
+                                fullmsg = '{}: {}\n'.format(
+                                    'ERROR',
+                                    msg.format(idx[0] + syr,
+                                               name,
+                                               pvalue[idx],
+                                               vvalue[idx])
+                                )
+                                self.parameter_errors += fullmsg
         del parameters

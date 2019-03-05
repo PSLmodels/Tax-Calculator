@@ -3,7 +3,7 @@ Test Policy class and its methods.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_policy.py
-# pylint --disable=locally-disabled test_reforms.py
+# pylint --disable=locally-disabled test_policy.py
 #
 # pylint: disable=too-many-lines
 
@@ -148,7 +148,7 @@ def test_multi_year_reform():
                                      [510, 3400, 5616, 6318],
                                      [519, 3461, 5716, 6431]],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=iratelist,
                            num_years=nyrs),
@@ -157,7 +157,7 @@ def test_multi_year_reform():
                        Policy._expand_array(
                            np.array([1000, 1000, 1050, 1050, 1050, 1050],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=iratelist,
                            num_years=nyrs),
@@ -166,7 +166,7 @@ def test_multi_year_reform():
                        Policy._expand_array(
                            np.array([1000] * 5 + [2000] * 8 + [1000],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=False,
                            inflation_rates=iratelist,
                            num_years=nyrs),
@@ -177,7 +177,7 @@ def test_multi_year_reform():
                            np.array([113700, 117000, 118500, 118500, 127200,
                                      128400],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=wratelist,
                            num_years=nyrs),
@@ -336,14 +336,19 @@ def fixture_defaultpolicyfile():
     Define alternative default policy parameter file.
     """
     # specify JSON text for alternative to policy_current_law.json file
-    txt = """{"_almdep": {"value": [7150, 7250, 7400],
+    txt = """{"_almdep": {"value_type": "real",
+                          "value": [7150, 7250, 7400],
                           "cpi_inflated": true},
-              "_cpi_offset": {"value": [0]},
-              "_almsep": {"value": [40400, 41050],
+              "_cpi_offset": {"value_type": "real",
+                              "value": [0]},
+              "_almsep": {"value_type": "real",
+                          "value": [40400, 41050],
                           "cpi_inflated": true},
-              "_rt5": {"value": [0.33 ],
+              "_rt5": {"value_type": "real",
+                       "value": [0.33 ],
                        "cpi_inflated": false},
-              "_rt7": {"value": [0.396],
+              "_rt7": {"value_type": "real",
+                       "value": [0.396],
                        "cpi_inflated": false}}"""
     with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
         pfile.write(txt + '\n')
@@ -367,7 +372,7 @@ def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
                        Policy._expand_array(
                            np.array([7150, 7250, 7400],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=inf_rates,
                            num_years=ppo.num_years),
@@ -376,7 +381,7 @@ def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
                        Policy._expand_array(
                            np.array([40400, 41050],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=inf_rates,
                            num_years=ppo.num_years),
@@ -384,7 +389,7 @@ def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
     assert np.allclose(ppo._rt5,
                        Policy._expand_array(
                            np.array([0.33]),
-                           False, False,
+                           'real',
                            inflate=False,
                            inflation_rates=inf_rates,
                            num_years=ppo.num_years),
@@ -392,7 +397,7 @@ def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
     assert np.allclose(ppo._rt7,
                        Policy._expand_array(
                            np.array([0.396]),
-                           False, False,
+                           'real',
                            inflate=False,
                            inflation_rates=inf_rates,
                            num_years=ppo.num_years),
@@ -841,9 +846,9 @@ def test_description_punctuation(tests_path):
     assert all_desc_ok
 
 
-def test_range_infomation(tests_path):
+def test_valid_value_infomation(tests_path):
     """
-    Check consistency of range-related info in policy_current_law.json file.
+    Check consistency of valid_values info in policy_current_law.json file.
     """
     # pylint: disable=too-many-branches,too-many-nested-blocks,too-many-locals
     # read policy_current_law.json file into a dictionary
@@ -851,14 +856,14 @@ def test_range_infomation(tests_path):
     with open(path, 'r') as clpfile:
         clpdict = json.load(clpfile)
     parameters = set(clpdict.keys())
-    # construct set of parameter names with "range" field in clpdict
+    # construct set of parameter names with "valid_values" field in clpdict
     min_max_list = ['min', 'max']
     warn_stop_list = ['warn', 'stop']
     json_range_params = set()
     for pname in parameters:
         param = clpdict[pname]
         assert isinstance(param, dict)
-        prange = param.get('range', None)
+        prange = param.get('valid_values', None)
         if prange:
             json_range_params.add(pname)
             oor_action = param['out_of_range_action']

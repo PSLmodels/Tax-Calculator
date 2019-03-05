@@ -12,10 +12,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ACGNS": {
@@ -31,10 +30,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ACPIM": {
@@ -50,10 +48,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ACPIU": {
@@ -69,10 +66,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ADIVS": {
@@ -88,10 +84,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_AINTS": {
@@ -107,10 +102,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_AIPD": {
@@ -126,10 +120,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ASCHCI": {
@@ -145,10 +138,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ASCHCL": {
@@ -164,10 +156,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ASCHEI": {
@@ -183,10 +174,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ASCHEL": {
@@ -202,10 +192,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ASCHF": {
@@ -221,10 +210,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ASOCSEC": {
@@ -240,10 +228,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ATXPY": {
@@ -259,10 +246,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_AUCOMP": {
@@ -278,10 +264,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_AWAGE": {
@@ -297,10 +282,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ABENOTHER": {
@@ -316,10 +300,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ABENMCARE": {
@@ -335,10 +318,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
 
@@ -355,10 +337,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
 
@@ -375,10 +356,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
 
@@ -395,10 +375,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
 
@@ -415,10 +394,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
 
@@ -435,10 +413,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
 
@@ -455,10 +432,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     },
 
     "_ABENVET": {
@@ -474,10 +450,9 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": -1, "max": 1}
+        "valid_values": {"min": -1, "max": 1}
     }
 
 }

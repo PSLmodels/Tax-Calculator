@@ -42,10 +42,10 @@ def test_instantiation_and_usage():
         pbase._update({syr: []})
     # pylint: disable=no-member
     with pytest.raises(ValueError):
-        Parameters._expand_array({}, False, False, True, [0.02], 1)
+        Parameters._expand_array({}, 'real', True, [0.02], 1)
     arr3d = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
     with pytest.raises(ValueError):
-        Parameters._expand_array(arr3d, False, False, True, [0.02], 1)
+        Parameters._expand_array(arr3d, 'real', True, [0.02], 1)
 
 
 @pytest.mark.parametrize("fname",
@@ -63,7 +63,8 @@ def test_json_file_contents(tests_path, fname):
                'row_var', 'row_label',
                'start_year', 'cpi_inflated', 'cpi_inflatable',
                'col_var', 'col_label',
-               'value']
+               'value_type', 'value', 'valid_values']
+    valid_value_types = ['boolean', 'integer', 'real', 'string']
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
@@ -118,19 +119,22 @@ def test_json_file_contents(tests_path, fname):
             fail = msg.format(pname, param['cpi_inflated'],
                               param['cpi_inflatable'])
             failures += fail + '\n'
-        # check that cpi_inflatable param is not boolean or integer
-        nonfloat_value = param['integer_value'] or param['boolean_value']
-        if param['cpi_inflatable'] and nonfloat_value:
-            msg = ('param:<{}>; boolean_value={}; integer_value={}; '
-                   'cpi_inflatable={}')
-            fail = msg.format(pname, param['boolean_value'],
-                              param['integer_value'], param['cpi_inflatable'])
+        # check that value_type is correct string
+        if not param['value_type'] in valid_value_types:
+            msg = 'param:<{}>; value_type={}'
+            fail = msg.format(pname, param['value_type'])
             failures += fail + '\n'
-        # ensure that cpi_inflatable is False when integer_value is True
-        if param['integer_value'] and param['cpi_inflatable']:
-            msg = 'param:<{}>; integer_value={}; cpi_inflatable={}'
-            fail = msg.format(pname, param['integer_value'],
+        # check that cpi_inflatable param has value_type real
+        if param['cpi_inflatable'] and param['value_type'] != 'real':
+            msg = 'param:<{}>; value_type={}; cpi_inflatable={}'
+            fail = msg.format(pname, param['value_type'],
                               param['cpi_inflatable'])
+            failures += fail + '\n'
+        # ensure that cpi_inflatable is False when value_type is not real
+        if param['cpi_inflatable'] and param['value_type'] != 'real':
+            msg = 'param:<{}>; cpi_inflatable={}; value_type={}'
+            fail = msg.format(pname, param['cpi_inflatable'],
+                              param['value_type'])
             failures += fail + '\n'
         # check that row_label is list
         rowlabel = param['row_label']
@@ -340,21 +344,13 @@ def test_expand_2d_partial_expand():
                           'growdiff.json'])
 def test_bool_int_value_info(tests_path, json_filename):
     """
-    Check consistency of boolean_value and integer_value info in
-    JSON parameter files.
+    Check consistency of boolean and integer info in JSON parameter files.
     """
     path = os.path.join(tests_path, '..', json_filename)
     with open(path, 'r') as pfile:
         pdict = json.load(pfile)
     maxint = np.iinfo(np.int8).max
     for param in sorted(pdict.keys()):
-        # check that boolean_value is never integer_value
-        if pdict[param]['boolean_value'] and pdict[param]['integer_value']:
-            msg = 'param,boolean_value,integer_value,= {} {} {}'
-            msg = msg.format(str(param),
-                             pdict[param]['boolean_value'],
-                             pdict[param]['integer_value'])
-            assert msg == 'ERROR: boolean_value is integer_value'
         # find param type based on value
         val = pdict[param]['value']
         while isinstance(val, list):
@@ -363,18 +359,20 @@ def test_bool_int_value_info(tests_path, json_filename):
         val_is_boolean = valstr in ('True', 'False')
         val_is_integer = (not bool('.' in valstr or abs(val) > maxint) and
                           not val_is_boolean)
-        # check that val_is_integer is consistent with integer_value
-        if val_is_integer != pdict[param]['integer_value']:
-            msg = 'param,integer_value,valstr= {} {} {}'
+        # check that val_is_integer is consistent with integer type
+        integer_type = pdict[param]['value_type'] == 'integer'
+        if val_is_integer != integer_type:
+            msg = 'param,value_type,valstr= {} {} {}'
             msg = msg.format(str(param),
-                             pdict[param]['integer_value'],
+                             pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: integer_value param has non-integer value'
         # check that val_is_boolean is consistent with boolean_value
-        if val_is_boolean != pdict[param]['boolean_value']:
-            msg = 'param,boolean_value,valstr= {} {} {}'
+        boolean_type = pdict[param]['value_type'] == 'boolean'
+        if val_is_boolean != boolean_type:
+            msg = 'param,value_type,valstr= {} {} {}'
             msg = msg.format(str(param),
-                             pdict[param]['boolean_value'],
+                             pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
 
