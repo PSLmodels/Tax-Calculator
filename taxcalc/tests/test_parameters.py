@@ -8,6 +8,7 @@ Tests for Tax-Calculator Parameters class and JSON parameter files.
 import os
 import json
 import math
+import tempfile
 import numpy as np
 import pytest
 # pylint: disable=import-error
@@ -418,3 +419,64 @@ def test_param_dict_for_year():
     assert ydict['pname2'] == -0.5
     with pytest.raises(AssertionError):
         Parameters.param_dict_for_year(2024, param_dict, param_info)
+
+
+@pytest.fixture(scope='module', name='defaults_json_file')
+def fixture_defaultsjsonfile():
+    """
+    Define alternative JSON assumption parameter defaults file.
+    """
+    json_text = """
+{
+"_param4": {
+    "value_type": "string",
+    "value": ["linear", "linear", "linear"],
+    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
+}
+}
+"""
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
+        pfile.write(json_text + '\n')
+    pfile.close()
+    yield pfile
+    os.remove(pfile.name)
+
+
+def test_alternative_defaults_file(defaults_json_file):
+    """
+    Test Parameter._validate_assump_paramter_values method using
+    alternative Parameters.DEFAULTS_FILE_NAME.
+    """
+    # pylint: disable=too-many-statements
+    class Params(Parameters):
+        """
+        Params is a subclass of the Parameter class.
+        """
+        DEFAULTS_FILE_NAME = defaults_json_file.name
+        DEFAULTS_FILE_PATH = ''
+        JSON_START_YEAR = Policy.JSON_START_YEAR
+        LAST_KNOWN_YEAR = Policy.LAST_KNOWN_YEAR
+        LAST_BUDGET_YEAR = Policy.LAST_BUDGET_YEAR
+        DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
+
+        def __init__(self):
+            # pylint: disable=super-init-not-called
+            # read default parameters and initialize
+            self._vals = self._params_dict_from_json_file()
+            self.initialize(Params.JSON_START_YEAR, Params.DEFAULT_NUM_YEARS)
+            # specify no parameter indexing rates
+            self._inflation_rates = None
+            self._wage_growth_rates = None
+            # specify warning/error handling variables
+            self.parameter_warnings = ''
+            self.parameter_errors = ''
+            self._ignore_errors = False
+        # end of Params class definition
+
+    prms = Params()
+    assert isinstance(prms, Params)
+    assert prms.start_year == 2013
+    assert prms.current_year == 2013
+    paramsreform = {2014: {'_param4': [9]}}
+    prms._validate_assump_parameter_names_types(paramsreform)
+    assert prms.parameter_errors

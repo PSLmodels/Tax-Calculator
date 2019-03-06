@@ -22,7 +22,6 @@ def fixture_bad_gf_file():
     tfile = tempfile.NamedTemporaryFile(mode='a', delete=False)
     tfile.write(txt)
     tfile.close()
-    # Must close and then yield for Windows platform
     yield tfile
     os.remove(tfile.name)
 

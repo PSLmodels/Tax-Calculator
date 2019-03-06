@@ -371,6 +371,7 @@ def fixture_defaultsjsonfile():
 """
     with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
         pfile.write(json_text + '\n')
+    pfile.close()
     yield pfile
     os.remove(pfile.name)
 
@@ -427,6 +428,8 @@ def test_alternative_defaults_file(defaults_json_file):
         }
     }
     xpol.implement_reform(xpolreform)
+    assert not xpol.parameter_errors
+    assert not xpol.parameter_warnings
     xpol.set_year(2014)
     assert xpol.param1 == 6000
     assert xpol.param2 == 2
@@ -462,6 +465,20 @@ def test_alternative_defaults_file(defaults_json_file):
     assert xpol.param2 == 4
     assert xpol.param3
     assert xpol.param4 == 'cubic'
+    del xpol
+    del xpolreform
+    # test string parameter checking
+    xpol = Policyx()
+    xpolreform = {2014: {'_param4': [3]}}
+    with pytest.raises(ValueError):
+        xpol.implement_reform(xpolreform)
+    del xpol
+    del xpolreform
+    xpol = Policyx()
+    xpolreform = {2014: {'_param4': ['spline']}}
+    xpol.implement_reform(xpolreform, raise_errors=False)
+    assert xpol.parameter_errors
+    assert not xpol.parameter_warnings
 
 
 def test_policy_metadata():
