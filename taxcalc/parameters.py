@@ -254,7 +254,7 @@ class Parameters():
                                     '\n'
                                 )
                         elif valtype == 'boolean':
-                            if type(pval) != bool:  # pragma: no cover
+                            if type(pval) != bool:
                                 msg = '{} {} value {} is not boolean'
                                 self.parameter_errors += (
                                     'ERROR: ' +
@@ -262,7 +262,7 @@ class Parameters():
                                     '\n'
                                 )
                         elif valtype == 'integer':
-                            if type(pval) != int:  # pragma: no cover
+                            if type(pval) != int:
                                 msg = '{} {} value {} is not integer'
                                 self.parameter_errors += (
                                     'ERROR: ' +

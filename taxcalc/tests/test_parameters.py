@@ -428,6 +428,22 @@ def fixture_defaultsjsonfile():
     """
     json_text = """
 {
+"_param2": {
+    "value_type": "integer",
+    "value": [2, 2, 2],
+    "valid_values": {"min": 0, "max": 9},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"_param3": {
+    "value_type": "boolean",
+    "value": [true, true, true],
+    "valid_values": {"min": false, "max": true},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
 "_param4": {
     "value_type": "string",
     "value": ["linear", "linear", "linear"],
@@ -478,5 +494,17 @@ def test_alternative_defaults_file(defaults_json_file):
     assert prms.start_year == 2013
     assert prms.current_year == 2013
     paramsreform = {2014: {'_param4': [9]}}
+    prms._validate_assump_parameter_names_types(paramsreform)
+    assert prms.parameter_errors
+    del prms
+    del paramsreform
+    prms = Params()
+    paramsreform = {2014: {'_param2': [3.6]}}
+    prms._validate_assump_parameter_names_types(paramsreform)
+    assert prms.parameter_errors
+    del prms
+    del paramsreform
+    prms = Params()
+    paramsreform = {2014: {'_param3': [3.6]}}
     prms._validate_assump_parameter_names_types(paramsreform)
     assert prms.parameter_errors
