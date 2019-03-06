@@ -24,9 +24,9 @@
                   0.0,
                   -0.0025],
         "valid_values": {"min": -0.005, "max": 0.005},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -47,9 +47,9 @@
         "value_type": "real",
         "value": [0.124],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -80,9 +80,9 @@
                   127200.0,
                   128400.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -103,9 +103,9 @@
         "value_type": "real",
         "value": [9e99],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -126,9 +126,9 @@
         "value_type": "real",
         "value": [0.029],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -149,9 +149,9 @@
         "value_type": "real",
         "value": [[200000.0, 250000.0, 125000.0, 200000.0, 200000.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -172,9 +172,9 @@
         "value_type": "real",
         "value": [0.009],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -195,9 +195,9 @@
         "value_type": "real",
         "value": [[25000.0, 32000.0, 25000.0, 25000.0, 25000.0]],
         "valid_values": {"min": 0, "max": "_SS_thd85"},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "for _SS_thd85",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "for _SS_thd85",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -218,9 +218,9 @@
         "value_type": "real",
         "value": [0.5],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -241,9 +241,9 @@
         "value_type": "real",
         "value": [[34000.0, 44000.0, 34000.0, 34000.0, 34000.0]],
         "valid_values": {"min": "_SS_thd50", "max": 9e99},
-        "out_of_range_minmsg": "for _SS_thd50",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _SS_thd50",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -264,9 +264,9 @@
         "value_type": "real",
         "value": [0.85],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -287,9 +287,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -310,9 +310,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -333,9 +333,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -356,9 +356,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -379,9 +379,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -428,9 +428,9 @@
                   1.0,
                   0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -477,9 +477,9 @@
                   0.0,
                   1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -500,9 +500,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -523,9 +523,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -546,9 +546,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -595,9 +595,9 @@
                   1.0,
                   0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -618,9 +618,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -641,9 +641,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -664,9 +664,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -697,9 +697,9 @@
                   0.0,
                   0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -730,9 +730,9 @@
                   0.0,
                   0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -753,9 +753,9 @@
         "value_type": "real",
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -802,9 +802,9 @@
                   [290992.98, 581985.95, 290992.98, 290992.98, 581985.95],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -851,9 +851,9 @@
                   0.00,
                   4905.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -884,9 +884,9 @@
                   [261500.0, 313800.0, 156900.0, 287650.0, 313800.0],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -907,9 +907,9 @@
         "value_type": "real",
         "value": [0.02],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -930,9 +930,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -979,9 +979,9 @@
                   [13967.66, 27935.33, 13967.66, 20951.49, 27935.33],
                   [7690.0, 15380.0, 7690.0, 11323.0, 15380.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1012,9 +1012,9 @@
                   1050.0,
                   1050.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1045,9 +1045,9 @@
                   [1550.0, 1250.0, 1250.0, 1550.0, 1550.0],
                   [1600.0, 1300.0, 1300.0, 1600.0, 1300.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1068,9 +1068,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1101,9 +1101,9 @@
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1134,9 +1134,9 @@
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1157,9 +1157,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1190,9 +1190,9 @@
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1223,9 +1223,9 @@
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1246,9 +1246,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1281,9 +1281,9 @@
                   0.075,
                   0.100],
         "valid_values": {"min": 0.075, "max": 0.100},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "warn",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "warn",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1312,9 +1312,9 @@
                   -0.025,
                   0.0],
         "valid_values": {"min": -0.025, "max": 0.0},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "warn",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "warn",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1335,9 +1335,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1368,9 +1368,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1391,9 +1391,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1414,9 +1414,9 @@
         "value_type": "real",
         "value": [9e99],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1447,9 +1447,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1470,9 +1470,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1493,9 +1493,9 @@
         "value_type": "real",
         "value": [9e99],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1526,9 +1526,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1549,9 +1549,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1598,9 +1598,9 @@
                   [11639.72, 11639.72, 5819.86, 11639.72, 11639.72],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1621,9 +1621,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1654,9 +1654,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1703,9 +1703,9 @@
                   0.6,
                   0.5],
         "valid_values": {"min": 0, "max": 0.6},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "warn",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "warn",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1726,9 +1726,9 @@
         "value_type": "real",
         "value": [0.3],
         "valid_values": {"min": 0, "max": 0.3},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "warn",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "warn",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1749,9 +1749,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1772,9 +1772,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1805,9 +1805,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1828,9 +1828,9 @@
         "value_type": "real",
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -1851,9 +1851,9 @@
         "value_type": "real",
         "value": [0.1],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -1900,9 +1900,9 @@
                   1.0,
                   0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -1933,9 +1933,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -1956,9 +1956,9 @@
         "value_type": "real",
         "value": [0.02],
         "valid_values": {"min": 0.02, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "warn",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "warn",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2005,9 +2005,9 @@
                   1.0,
                   0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2038,9 +2038,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2087,9 +2087,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [316675.0, 380010.0, 190005.0, 348343.0, 380010.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2136,9 +2136,9 @@
                   0.0,
                   0.03],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2185,9 +2185,9 @@
                   1.0,
                   0.8],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2208,9 +2208,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2231,9 +2231,9 @@
         "value_type": "real",
         "value": [1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2264,9 +2264,9 @@
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2287,9 +2287,9 @@
         "value_type": "boolean",
         "value": [[true, true, true, true, true, true, true]],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2310,9 +2310,9 @@
         "value_type": "real",
         "value": [1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2333,9 +2333,9 @@
         "value_type": "boolean",
         "value": [[true, true, true, true, true, true, true]],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2366,9 +2366,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2389,9 +2389,9 @@
         "value_type": "real",
         "value": [9e99],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2412,9 +2412,9 @@
         "value_type": "boolean",
         "value": [[true, true, true, true, true, true, true]],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2435,9 +2435,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2468,9 +2468,9 @@
                   [37950.0, 75900.0, 37950.0, 50800.0, 75900.0],
                   [38600.0, 77200.0, 38600.0, 51700.0, 77200.0]],
         "valid_values": {"min": 0, "max": "_CG_brk2"},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "for _CG_brk2",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "for _CG_brk2",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2491,9 +2491,9 @@
         "value_type": "real",
         "value": [0.15],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2524,9 +2524,9 @@
                   [418400.0, 470700.0, 235350.0, 444550.0, 470700.0],
                   [425800.0, 479000.0, 239500.0, 452400.0, 479000.0]],
         "valid_values": {"min": "_CG_brk1", "max": "_CG_brk3"},
-        "out_of_range_minmsg": "for _CG_brk1",
-        "out_of_range_maxmsg": "for _CG_brk3",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _CG_brk1",
+        "invalid_maxmsg": "for _CG_brk3",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2547,9 +2547,9 @@
         "value_type": "real",
         "value": [0.20],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2580,9 +2580,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": "_CG_brk2", "max": 9e99},
-        "out_of_range_minmsg": "for _CG_brk2",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _CG_brk2",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2603,9 +2603,9 @@
         "value_type": "real",
         "value": [1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2626,9 +2626,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2659,9 +2659,9 @@
                   [37950.0, 75900.0, 37950.0, 50800.0, 75900.0],
                   [38600.0, 77200.0, 38600.0, 51700.0, 77200.0]],
         "valid_values": {"min": 0, "max": "_AMT_CG_brk2"},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "for _AMT_CG_brk2",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "for _AMT_CG_brk2",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2682,9 +2682,9 @@
         "value_type": "real",
         "value": [0.15],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2715,9 +2715,9 @@
                   [418400.0, 470700.0, 235350.0, 444550.0, 470700.0],
                   [425800.0, 479000.0, 239500.0, 452400.0, 479000.0]],
         "valid_values": {"min": "_AMT_CG_brk1", "max": "_AMT_CG_brk3"},
-        "out_of_range_minmsg": "for _AMT_CG_brk1",
-        "out_of_range_maxmsg": "for _AMT_CG_brk3",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _AMT_CG_brk1",
+        "invalid_maxmsg": "for _AMT_CG_brk3",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2738,9 +2738,9 @@
         "value_type": "real",
         "value": [0.20],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2771,9 +2771,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": "_AMT_CG_brk2", "max": 9e99},
-        "out_of_range_minmsg": "for _AMT_CG_brk2",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _AMT_CG_brk2",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2794,9 +2794,9 @@
         "value_type": "real",
         "value": [1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -2817,9 +2817,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2850,9 +2850,9 @@
                   0.0,
                   0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2873,9 +2873,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2922,9 +2922,9 @@
                   0.10,
                   0.10],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -2971,9 +2971,9 @@
                   [11086.83, 22173.66, 11086.83, 15830.02, 22173.66],
                   [11293.0, 22585.0, 11293.0, 16167.0, 22585.0]],
         "valid_values": {"min": 0, "max": "_II_brk2"},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "for _II_brk2",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "for _II_brk2",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3020,9 +3020,9 @@
                   0.12,
                   0.15],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3069,9 +3069,9 @@
                   [45045.71, 90091.43, 45045.71, 60293.74, 90091.43],
                   [45957.0, 91915.0, 45957.0, 61519.0, 91915.0]],
         "valid_values": {"min": "_II_brk1", "max": "_II_brk3"},
-        "out_of_range_minmsg": "for _II_brk1",
-        "out_of_range_maxmsg": "for _II_brk3",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _II_brk1",
+        "invalid_maxmsg": "for _II_brk3",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3118,9 +3118,9 @@
                   0.22,
                   0.25],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3167,9 +3167,9 @@
                   [96027.68, 192055.36, 96027.68, 96027.68, 192055.36],
                   [111290.0, 185403.0, 92702.0, 158883.0, 185403.0]],
         "valid_values": {"min": "_II_brk2", "max": "_II_brk4"},
-        "out_of_range_minmsg": "for _II_brk2",
-        "out_of_range_maxmsg": "for _II_brk4",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _II_brk2",
+        "invalid_maxmsg": "for _II_brk4",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3216,9 +3216,9 @@
                   0.24,
                   0.28],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3265,9 +3265,9 @@
                   [183325.57, 366651.15, 183325.57, 183325.57, 366651.15],
                   [232087.0, 282586.0, 141293.0, 257336.0, 282586.0]],
         "valid_values": {"min": "_II_brk3", "max": "_II_brk5"},
-        "out_of_range_minmsg": "for _II_brk3",
-        "out_of_range_maxmsg": "for _II_brk5",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _II_brk3",
+        "invalid_maxmsg": "for _II_brk5",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3314,9 +3314,9 @@
                   0.32,
                   0.33],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3363,9 +3363,9 @@
                   [232794.38, 465588.76, 232794.38, 232794.38, 465588.76],
                   [504622.0, 504622.0, 252311.0, 504622.0, 504622.0]],
         "valid_values": {"min": "_II_brk4", "max": "_II_brk6"},
-        "out_of_range_minmsg": "for _II_brk4",
-        "out_of_range_maxmsg": "for _II_brk6",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _II_brk4",
+        "invalid_maxmsg": "for _II_brk6",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3412,9 +3412,9 @@
                   0.35,
                   0.35],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3461,9 +3461,9 @@
                   [581985.95, 698383.14, 349191.57, 581985.95, 698383.14],
                   [506680.0, 570015.0, 285008.0, 538348.0, 570015.0]],
         "valid_values": {"min": "_II_brk5", "max": "_II_brk7"},
-        "out_of_range_minmsg": "for _II_brk5",
-        "out_of_range_maxmsg": "for _II_brk7",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _II_brk5",
+        "invalid_maxmsg": "for _II_brk7",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3510,9 +3510,9 @@
                   0.37,
                   0.396],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3559,9 +3559,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": "_II_brk6", "max": 9e99},
-        "out_of_range_minmsg": "for _II_brk6",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _II_brk6",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3582,9 +3582,9 @@
         "value_type": "real",
         "value": [1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3631,9 +3631,9 @@
                   0.10,
                   0.10],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3680,9 +3680,9 @@
                   [11086.83, 22173.66, 11086.83, 15830.02, 22173.66],
                   [11293.0, 22585.0, 11293.0, 16167.0, 22585.0]],
         "valid_values": {"min": 0, "max": "_PT_brk2"},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "for _PT_brk2",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "for _PT_brk2",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3729,9 +3729,9 @@
                   0.12,
                   0.15],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3778,9 +3778,9 @@
                   [45045.71, 90091.43, 45045.71, 60293.74, 90091.43],
                   [45957.0, 91915.0, 45957.0, 61519.0, 91915.0]],
         "valid_values": {"min": "_PT_brk1", "max": "_PT_brk3"},
-        "out_of_range_minmsg": "for _PT_brk1",
-        "out_of_range_maxmsg": "for _PT_brk3",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _PT_brk1",
+        "invalid_maxmsg": "for _PT_brk3",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3827,9 +3827,9 @@
                   0.22,
                   0.25],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3876,9 +3876,9 @@
                   [96027.68, 192055.36, 96027.68, 96027.68, 192055.36],
                   [111290.0, 185403.0, 92702.0, 158883.0, 185403.0]],
         "valid_values": {"min": "_PT_brk2", "max": "_PT_brk4"},
-        "out_of_range_minmsg": "for _PT_brk2",
-        "out_of_range_maxmsg": "for _PT_brk4",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _PT_brk2",
+        "invalid_maxmsg": "for _PT_brk4",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3925,9 +3925,9 @@
                   0.24,
                   0.28],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -3974,9 +3974,9 @@
                   [183325.57, 366651.15, 183325.57, 183325.57, 366651.15],
                   [232087.0, 282586.0, 141293.0, 257336.0, 282586.0]],
         "valid_values": {"min": "_PT_brk3", "max": "_PT_brk5"},
-        "out_of_range_minmsg": "for _PT_brk3",
-        "out_of_range_maxmsg": "for _PT_brk5",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _PT_brk3",
+        "invalid_maxmsg": "for _PT_brk5",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4023,9 +4023,9 @@
                   0.32,
                   0.33],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4072,9 +4072,9 @@
                   [232794.38, 465588.76, 232794.38, 232794.38, 465588.76],
                   [504622.0, 504622.0, 252311.0, 504622.0, 504622.0]],
         "valid_values": {"min": "_PT_brk4", "max": "_PT_brk6"},
-        "out_of_range_minmsg": "for _PT_brk4",
-        "out_of_range_maxmsg": "for _PT_brk6",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _PT_brk4",
+        "invalid_maxmsg": "for _PT_brk6",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4121,9 +4121,9 @@
                   0.35,
                   0.35],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4170,9 +4170,9 @@
                   [581985.95, 698383.14, 349191.57, 581985.95, 698383.14],
                   [506680.0, 570015.0, 285008.0, 538348.0, 570015.0]],
         "valid_values": {"min": "_PT_brk5", "max": "_PT_brk7"},
-        "out_of_range_minmsg": "for _PT_brk5",
-        "out_of_range_maxmsg": "for _PT_brk7",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _PT_brk5",
+        "invalid_maxmsg": "for _PT_brk7",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4219,9 +4219,9 @@
                   0.37,
                   0.396],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4268,9 +4268,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": "_PT_brk6", "max": 9e99},
-        "out_of_range_minmsg": "for _PT_brk6",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _PT_brk6",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4291,9 +4291,9 @@
         "value_type": "real",
         "value": [1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4314,9 +4314,9 @@
         "value_type": "real",
         "value": [1.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4337,9 +4337,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -4360,9 +4360,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": false}
     },
 
@@ -4383,9 +4383,9 @@
         "value_type": "boolean",
         "value": [true],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4432,9 +4432,9 @@
                   0.2,
                   0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4481,9 +4481,9 @@
                   0.5,
                   9e99],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4530,9 +4530,9 @@
                   [183325.57, 366651.15, 183325.57, 183325.57, 366651.15],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4579,9 +4579,9 @@
                   [0.00002, 0.00001, 0.00002, 0.00002, 0.00001],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4629,9 +4629,9 @@
                   [81827.22, 127338.53, 63669.26, 81827.22, 127338.53],
                   [65757.0, 102329.0, 51165.0, 65757.0, 102329.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4653,9 +4653,9 @@
         "value_type": "real",
         "value": [0.25],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4703,9 +4703,9 @@
                   [581985.95, 1163971.9, 581985.95, 581985.95, 1163971.9],
                   [146167.0, 194849.0, 97425.0, 146167.0, 194849.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4736,9 +4736,9 @@
                   7500.0,
                   7600.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4759,9 +4759,9 @@
         "value_type": "integer",
         "value": [18],
         "valid_values": {"min": 0, "max": 30},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4783,9 +4783,9 @@
         "value_type": "real",
         "value": [0.26],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4817,9 +4817,9 @@
                   187800.0,
                   191100.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4841,9 +4841,9 @@
         "value_type": "real",
         "value": [0.02],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4890,9 +4890,9 @@
                   836663.00,
                   302083.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -4913,9 +4913,9 @@
         "value_type": "real",
         "value": [3000.0],
         "valid_values": {"min": 0, "max": 3000},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4935,9 +4935,9 @@
         "value_type": "real",
         "value": [15000.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -4958,9 +4958,9 @@
         "value_type": "real",
         "value": [35.0],
         "valid_values": {"min": 0, "max": 100},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5007,9 +5007,9 @@
                   2000.0,
                   1000.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5030,9 +5030,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5079,9 +5079,9 @@
                   [200000.0, 400000.0, 200000.0, 200000.0, 400000.0],
                   [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5102,9 +5102,9 @@
         "value_type": "real",
         "value": [0.05],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5151,9 +5151,9 @@
                   1600.0,
                   1000.0],
         "valid_values": {"min": 0, "max": "_CTC_c"},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "for _CTC_c",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "for _CTC_c",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5200,9 +5200,9 @@
                   500.0,
                   0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5223,9 +5223,9 @@
         "value_type": "real",
         "value": [[200000.0, 250000.0, 125000.0, 200000.0, 250000.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5246,9 +5246,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -5269,9 +5269,9 @@
         "value_type": "real",
         "value": [0.038],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5302,9 +5302,9 @@
                   [510.0, 3400.0, 5616.0, 6318.0],
                   [519.0, 3461.0, 5716.0, 6431.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5325,9 +5325,9 @@
         "value_type": "real",
         "value": [[0.0765, 0.3400, 0.4000, 0.4500]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5358,9 +5358,9 @@
                   0.0,
                   0.0],
         "valid_values": {"min": 0.0, "max": 1.0},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5381,9 +5381,9 @@
         "value_type": "real",
         "value": [[0.0765, 0.1598, 0.2106, 0.2106]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5414,9 +5414,9 @@
                   [8340.0, 18340.0, 18340.0, 18340.0],
                   [8490.0, 18660.0, 18660.0, 18660.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5447,9 +5447,9 @@
                   [5590.0, 5590.0, 5590.0, 5590.0],
                   [5680.0, 5690.0, 5690.0, 5690.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5470,9 +5470,9 @@
         "value_type": "integer",
         "value": [25],
         "valid_values": {"min": 0, "max": 125},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5493,9 +5493,9 @@
         "value_type": "integer",
         "value": [64],
         "valid_values": {"min": 0, "max": 125},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5526,9 +5526,9 @@
                   3450.0,
                   3500.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5549,9 +5549,9 @@
         "value_type": "real",
         "value": [9e99],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5572,9 +5572,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5595,9 +5595,9 @@
         "value_type": "real",
         "value": [10000.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -5628,9 +5628,9 @@
                   66.0,
                   67.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -5661,9 +5661,9 @@
                   132.0,
                   134.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -5684,9 +5684,9 @@
         "value_type": "real",
         "value": [0.15],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5707,9 +5707,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5756,9 +5756,9 @@
                   2500.0,
                   3000.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5779,9 +5779,9 @@
         "value_type": "integer",
         "value": [3],
         "valid_values": {"min": 0, "max": 99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5802,9 +5802,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5825,9 +5825,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5848,9 +5848,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5871,9 +5871,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5904,9 +5904,9 @@
                   [0.0, 0.0, 0.0, 0.0, 0.0],
                   [0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5927,9 +5927,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5950,9 +5950,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5973,9 +5973,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -5996,9 +5996,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6019,9 +6019,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6052,9 +6052,9 @@
                   [1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6],
                   [1.0e6, 1.0e6, 0.5e6, 1.0e6, 1.0e6]],
         "valid_values": {"min": 0, "max": "_FST_AGI_thd_hi"},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "for _FST_AGI_thd_hi",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "for _FST_AGI_thd_hi",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6085,9 +6085,9 @@
                   [2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6],
                   [2.0e6, 2.0e6, 1.0e6, 2.0e6, 2.0e6]],
         "valid_values": {"min": "_FST_AGI_thd_lo", "max": 9e99},
-        "out_of_range_minmsg": "for _FST_AGI_thd_lo",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "for _FST_AGI_thd_lo",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6108,9 +6108,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6141,9 +6141,9 @@
                   [9e99, 9e99, 9e99, 9e99, 9e99],
                   [9e99, 9e99, 9e99, 9e99, 9e99]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6164,9 +6164,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": -9e99, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6197,9 +6197,9 @@
                   0.0,
                   0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6230,9 +6230,9 @@
                   0.0,
                   0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6263,9 +6263,9 @@
                   0.0,
                   0.0],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6286,9 +6286,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6309,9 +6309,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6332,9 +6332,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6355,9 +6355,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6378,9 +6378,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6401,9 +6401,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6424,9 +6424,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6447,9 +6447,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6470,9 +6470,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6493,9 +6493,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6516,9 +6516,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
@@ -6539,9 +6539,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6562,9 +6562,9 @@
         "value_type": "real",
         "value": [[0.0, 0.0, 0.0, 0.0, 0.0]],
         "valid_values": {"min": 0, "max": 9e99},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6585,9 +6585,9 @@
         "value_type": "real",
         "value": [0.0],
         "valid_values": {"min": 0, "max": 1},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6608,9 +6608,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6631,9 +6631,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6654,9 +6654,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6677,9 +6677,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6700,9 +6700,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6723,9 +6723,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6746,9 +6746,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6769,9 +6769,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     },
 
@@ -6792,9 +6792,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6815,9 +6815,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
     },
 
@@ -6838,9 +6838,9 @@
         "value_type": "boolean",
         "value": [false],
         "valid_values": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": false, "cps": true}
     }
 }

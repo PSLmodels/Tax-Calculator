@@ -596,17 +596,17 @@ class Policy(Parameters):
                         if vop == 'min' and pvalue[idx] < vvalue[idx]:
                             out_of_range = True
                             msg = '{} {} value {} < min value {}'
-                            extra = self._vals[pname]['out_of_range_minmsg']
+                            extra = self._vals[pname]['invalid_minmsg']
                             if extra:
                                 msg += ' {}'.format(extra)
                         if vop == 'max' and pvalue[idx] > vvalue[idx]:
                             out_of_range = True
                             msg = '{} {} value {} > max value {}'
-                            extra = self._vals[pname]['out_of_range_maxmsg']
+                            extra = self._vals[pname]['invalid_maxmsg']
                             if extra:
                                 msg += ' {}'.format(extra)
                         if out_of_range:
-                            action = self._vals[pname]['out_of_range_action']
+                            action = self._vals[pname]['invalid_action']
                             if scalar:
                                 name = pname
                             else:

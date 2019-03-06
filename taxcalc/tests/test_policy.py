@@ -863,10 +863,12 @@ def test_valid_value_infomation(tests_path):
     for pname in parameters:
         param = clpdict[pname]
         assert isinstance(param, dict)
+        if param['value_type'] == 'string':
+            continue  # because string parameters have no invalid_* keys
         prange = param.get('valid_values', None)
         if prange:
             json_range_params.add(pname)
-            oor_action = param['out_of_range_action']
+            oor_action = param['invalid_action']
             assert oor_action in warn_stop_list
             range_items = prange.items()
             assert len(range_items) == 2
@@ -880,9 +882,9 @@ def test_valid_value_infomation(tests_path):
                         continue
                     elif vval in clpdict:
                         if vop == 'min':
-                            extra_msg = param['out_of_range_minmsg']
+                            extra_msg = param['invalid_minmsg']
                         if vop == 'max':
-                            extra_msg = param['out_of_range_maxmsg']
+                            extra_msg = param['invalid_maxmsg']
                         assert vval in extra_msg
                     else:
                         assert vval == 'ILLEGAL RANGE STRING VALUE'

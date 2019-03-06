@@ -58,13 +58,14 @@ def test_json_file_contents(tests_path, fname):
     """
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
-    reqkeys = ['long_name', 'description',
-               'section_1', 'section_2', 'notes',
-               'row_var', 'row_label',
-               'start_year', 'cpi_inflated', 'cpi_inflatable',
-               'col_var', 'col_label',
-               'value_type', 'value', 'valid_values']
+    required_keys = ['long_name', 'description',
+                     'section_1', 'section_2', 'notes',
+                     'row_var', 'row_label',
+                     'start_year', 'cpi_inflated', 'cpi_inflatable',
+                     'col_var', 'col_label',
+                     'value_type', 'value', 'valid_values']
     valid_value_types = ['boolean', 'integer', 'real', 'string']
+    invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
@@ -77,7 +78,7 @@ def test_json_file_contents(tests_path, fname):
                    '_STD', '_II_em',
                    '_AMT_em', '_AMT_em_ps', '_AMT_em_pe',
                    '_ID_ps', '_ID_AllTaxes_c']
-    long_known_years = 2026 - first_year + 1  # for TCJA-revised long_params
+    long_known_years = 2026 - first_year + 1  # for TCJA-reverting long_params
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
     pfile = open(path, 'r')
@@ -92,8 +93,16 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
-        for key in reqkeys:
+        for key in required_keys:
             assert key in param
+        if param['value_type'] == 'string':
+            for key in invalid_keys:
+                assert key not in param
+            assert isinstance(param['valid_values']['options'], list)
+        else:
+            for key in invalid_keys:
+                assert key in param
+            assert param['invalid_action'] in ['stop', 'warn']
         # check for non-empty long_name and description strings
         assert isinstance(param['long_name'], str)
         if not param['long_name']:
