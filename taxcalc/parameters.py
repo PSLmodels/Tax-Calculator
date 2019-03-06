@@ -3,9 +3,11 @@ Tax-Calculator abstract base parameters class.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle parameters.py
+# pylint --disable=locally-disabled parameters.py
+#
+# pylint: disable=attribute-defined-outside-init,no-member
 
 import os
-import json
 import abc
 import numpy as np
 from taxcalc.utils import read_egg_json, json_to_dict
@@ -40,12 +42,14 @@ class Parameters():
         """
         Override this method in subclass when appropriate.
         """
+        # pylint: disable=no-self-use
         return None
 
     def wage_growth_rates(self):
         """
         Override this method in subclass when appropriate.
         """
+        # pylint: disable=no-self-use
         return None
 
     def indexing_rates(self, param_name):
@@ -54,13 +58,13 @@ class Parameters():
         """
         if param_name == '_SS_Earnings_c':
             return self.wage_growth_rates()
-        else:
-            return self.inflation_rates()
+        return self.inflation_rates()
 
     def set_default_vals(self, known_years=999999):
         """
         Called by initialize method and from some subclass methods.
         """
+        # pylint: disable=too-many-nested-blocks
         if isinstance(known_years, int):
             known_years_is_int = True
         elif isinstance(known_years, dict):
@@ -408,6 +412,7 @@ class Parameters():
         for 2019.  The one-dimensional parameters above require only a pair
         of single square brackets.
         """
+        # pylint: disable=too-many-locals
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
             msg = 'year_mods is not a dictionary'
@@ -473,11 +478,15 @@ class Parameters():
         # implement updated parameters for year
         self.set_year(year)
 
+    STRING_DTYPE = 'U9'
+
+    # pylint: disable=invalid-name
+
     @staticmethod
     def _expand_array(x, x_type, inflate, inflation_rates, num_years):
         """
         Private method called only within this abstract base class.
-        Dispatch to either _expand_1D or _expand_2D given dimension of x.
+        Dispatch to either _expand_1d or _expand_2d given dimension of x.
 
         Parameters
         ----------
@@ -511,20 +520,19 @@ class Parameters():
             elif x_type == 'integer':
                 x = np.array(x, np.int8)
             elif x_type == 'string':
-                x = np.array(x, np.dtype('U7'))
+                x = np.array(x, np.dtype(Parameters.STRING_DTYPE))
                 assert len(x.shape) == 1, \
                     'string parameters must be scalar (not vector)'
-        if len(x.shape) == 1:
-            return Parameters._expand_1D(x, inflate, inflation_rates,
+        dim = len(x.shape)
+        assert dim in (1, 2)
+        if dim == 1:
+            return Parameters._expand_1d(x, inflate, inflation_rates,
                                          num_years)
-        elif len(x.shape) == 2:
-            return Parameters._expand_2D(x, inflate, inflation_rates,
-                                         num_years)
-        else:
-            raise ValueError('_expand_array expects a 1D or 2D array')
+        return Parameters._expand_2d(x, inflate, inflation_rates,
+                                     num_years)
 
     @staticmethod
-    def _expand_1D(x, inflate, inflation_rates, num_years):
+    def _expand_1d(x, inflate, inflation_rates, num_years):
         """
         Private method called only from _expand_array method.
         Expand the given data x to account for given number of budget years.
@@ -532,35 +540,35 @@ class Parameters():
         year using the given inflation_rates list.
         """
         if not isinstance(x, np.ndarray):
-            raise ValueError('_expand_1D expects x to be a numpy array')
+            raise ValueError('_expand_1d expects x to be a numpy array')
         if len(x) >= num_years:
             return x
+        string_type = x.dtype == Parameters.STRING_DTYPE
+        if string_type:
+            ans = np.array(['' for i in range(0, num_years)],
+                           dtype=x.dtype)
         else:
-            if x.dtype == 'U7':
-                ans = np.array(['' for i in range(0, num_years)],
-                               dtype=x.dtype)
-            else:  # x.dtype is not string
-                ans = np.zeros(num_years, dtype=x.dtype)
-            ans[:len(x)] = x
-            if x.dtype == 'U7':
-                extra = [str(x[-1]) for i in
+            ans = np.zeros(num_years, dtype=x.dtype)
+        ans[:len(x)] = x
+        if string_type:
+            extra = [str(x[-1]) for i in
+                     range(1, num_years - len(x) + 1)]
+        else:
+            if inflate:
+                extra = []
+                cur = x[-1]
+                for i in range(0, num_years - len(x)):
+                    cur *= (1. + inflation_rates[i + len(x) - 1])
+                    cur = round(cur, 2) if cur < 9e99 else 9e99
+                    extra.append(cur)
+            else:
+                extra = [float(x[-1]) for i in
                          range(1, num_years - len(x) + 1)]
-            else:  # x.dtype is not string
-                if inflate:
-                    extra = []
-                    cur = x[-1]
-                    for i in range(0, num_years - len(x)):
-                        cur *= (1. + inflation_rates[i + len(x) - 1])
-                        cur = round(cur, 2) if cur < 9e99 else 9e99
-                        extra.append(cur)
-                else:
-                    extra = [float(x[-1]) for i in
-                             range(1, num_years - len(x) + 1)]
-            ans[len(x):] = extra
-            return ans
+        ans[len(x):] = extra
+        return ans
 
     @staticmethod
-    def _expand_2D(x, inflate, inflation_rates, num_years):
+    def _expand_2d(x, inflate, inflation_rates, num_years):
         """
         Private method called only from _expand_array method.
         Expand the given data to account for the given number of budget years.
@@ -569,28 +577,28 @@ class Parameters():
         inflation rates list.
         """
         if not isinstance(x, np.ndarray):
-            raise ValueError('_expand_2D expects x to be a numpy array')
+            raise ValueError('_expand_2d expects x to be a numpy array')
         if x.shape[0] >= num_years:
             return x
-        else:
-            ans = np.zeros((num_years, x.shape[1]), dtype=x.dtype)
-            ans[:len(x), :] = x
-            for i in range(x.shape[0], ans.shape[0]):
-                for j in range(ans.shape[1]):
-                    if inflate:
-                        cur = (ans[i - 1, j] *
-                               (1. + inflation_rates[i - 1]))
-                        cur = round(cur, 2) if cur < 9e99 else 9e99
-                        ans[i, j] = cur
-                    else:
-                        ans[i, j] = ans[i - 1, j]
-            return ans
+        ans = np.zeros((num_years, x.shape[1]), dtype=x.dtype)
+        ans[:len(x), :] = x
+        for i in range(x.shape[0], ans.shape[0]):
+            for j in range(ans.shape[1]):
+                if inflate:
+                    cur = (ans[i - 1, j] *
+                           (1. + inflation_rates[i - 1]))
+                    cur = round(cur, 2) if cur < 9e99 else 9e99
+                    ans[i, j] = cur
+                else:
+                    ans[i, j] = ans[i - 1, j]
+        return ans
 
     def _indexing_rates_for_update(self, param_name,
                                    calyear, num_years_to_expand):
         """
         Private method called only in the _update method.
         """
+        # pylint: disable=assignment-from-none
         if param_name == '_SS_Earnings_c':
             rates = self.wage_growth_rates()
         else:
@@ -599,5 +607,4 @@ class Parameters():
             expanded_rates = [rates[(calyear - self.start_year) + i]
                               for i in range(0, num_years_to_expand)]
             return expanded_rates
-        else:
-            return None
+        return None
