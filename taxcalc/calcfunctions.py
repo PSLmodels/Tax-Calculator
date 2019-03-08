@@ -1192,8 +1192,8 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         if not EITC_indiv:
             # filing unit EITC rather than individual EITC
             eitc = EITCamount(EITC_basic_frac,
-                          EITC_rt[EIC], earned, EITC_c[EIC],
-                          po_start, c00100, EITC_prt[EIC])
+                              EITC_rt[EIC], earned, EITC_c[EIC],
+                              po_start, c00100, EITC_prt[EIC])
         if EITC_indiv:
             # individual EITC rather than a filing-unit EITC
             eitc_p = EITCamount(EITC_basic_frac,
@@ -1205,14 +1205,13 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             eitc = eitc_p + eitc_s
 
         if EIC == 0:
-            h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge    
+            h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
             s_age_elig = EITC_MinEligAge <= age_spouse <= EITC_MaxEligAge
-            if (age_head == 0 or age_spouse == 0 or
-                h_age_elig or s_age_elig):
+            if (age_head == 0 or age_spouse == 0 or h_age_elig or s_age_elig):
                 c59660 = eitc
             else:
-                c59660 = 0. 
-        else: 
+                c59660 = 0.
+        else:
             c59660 = eitc
 
     if (MARS == 3 and not EITC_sep_filers_elig) or DSI == 1:
@@ -1221,11 +1220,11 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     # reduce positive EITC if investment income exceeds ceiling
     if c59660 > 0.:
         invinc = (e00400 + e00300 + e00600 +
-                    max(0., c01000) + max(0., e27200))
+                  max(0., c01000) + max(0., e27200))
         if invinc > EITC_InvestIncome_c:
             eitc = (c59660 - EITC_excess_InvestIncome_rt *
                     (invinc - EITC_InvestIncome_c))
-            c59660 = max(0., eitc)    
+            c59660 = max(0., eitc)
     return c59660
 
 
