@@ -8,6 +8,7 @@ Tests for Tax-Calculator Parameters class and JSON parameter files.
 import os
 import json
 import math
+import tempfile
 import numpy as np
 import pytest
 # pylint: disable=import-error
@@ -42,10 +43,10 @@ def test_instantiation_and_usage():
         pbase._update({syr: []})
     # pylint: disable=no-member
     with pytest.raises(ValueError):
-        Parameters._expand_array({}, False, False, True, [0.02], 1)
+        Parameters._expand_array({}, 'real', True, [0.02], 1)
     arr3d = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
-    with pytest.raises(ValueError):
-        Parameters._expand_array(arr3d, False, False, True, [0.02], 1)
+    with pytest.raises(AssertionError):
+        Parameters._expand_array(arr3d, 'real', True, [0.02], 1)
 
 
 @pytest.mark.parametrize("fname",
@@ -58,12 +59,14 @@ def test_json_file_contents(tests_path, fname):
     """
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
-    reqkeys = ['long_name', 'description',
-               'section_1', 'section_2', 'notes',
-               'row_var', 'row_label',
-               'start_year', 'cpi_inflated', 'cpi_inflatable',
-               'col_var', 'col_label',
-               'value']
+    required_keys = ['long_name', 'description',
+                     'section_1', 'section_2', 'notes',
+                     'row_var', 'row_label',
+                     'start_year', 'cpi_inflated', 'cpi_inflatable',
+                     'col_var', 'col_label',
+                     'value_type', 'value', 'valid_values']
+    valid_value_types = ['boolean', 'integer', 'real', 'string']
+    invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
@@ -76,7 +79,7 @@ def test_json_file_contents(tests_path, fname):
                    '_STD', '_II_em',
                    '_AMT_em', '_AMT_em_ps', '_AMT_em_pe',
                    '_ID_ps', '_ID_AllTaxes_c']
-    long_known_years = 2026 - first_year + 1  # for TCJA-revised long_params
+    long_known_years = 2026 - first_year + 1  # for TCJA-reverting long_params
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
     pfile = open(path, 'r')
@@ -91,8 +94,16 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
-        for key in reqkeys:
+        for key in required_keys:
             assert key in param
+        if param['value_type'] == 'string':
+            for key in invalid_keys:
+                assert key not in param
+            assert isinstance(param['valid_values']['options'], list)
+        else:
+            for key in invalid_keys:
+                assert key in param
+            assert param['invalid_action'] in ['stop', 'warn']
         # check for non-empty long_name and description strings
         assert isinstance(param['long_name'], str)
         if not param['long_name']:
@@ -118,19 +129,22 @@ def test_json_file_contents(tests_path, fname):
             fail = msg.format(pname, param['cpi_inflated'],
                               param['cpi_inflatable'])
             failures += fail + '\n'
-        # check that cpi_inflatable param is not boolean or integer
-        nonfloat_value = param['integer_value'] or param['boolean_value']
-        if param['cpi_inflatable'] and nonfloat_value:
-            msg = ('param:<{}>; boolean_value={}; integer_value={}; '
-                   'cpi_inflatable={}')
-            fail = msg.format(pname, param['boolean_value'],
-                              param['integer_value'], param['cpi_inflatable'])
+        # check that value_type is correct string
+        if not param['value_type'] in valid_value_types:
+            msg = 'param:<{}>; value_type={}'
+            fail = msg.format(pname, param['value_type'])
             failures += fail + '\n'
-        # ensure that cpi_inflatable is False when integer_value is True
-        if param['integer_value'] and param['cpi_inflatable']:
-            msg = 'param:<{}>; integer_value={}; cpi_inflatable={}'
-            fail = msg.format(pname, param['integer_value'],
+        # check that cpi_inflatable param has value_type real
+        if param['cpi_inflatable'] and param['value_type'] != 'real':
+            msg = 'param:<{}>; value_type={}; cpi_inflatable={}'
+            fail = msg.format(pname, param['value_type'],
                               param['cpi_inflatable'])
+            failures += fail + '\n'
+        # ensure that cpi_inflatable is False when value_type is not real
+        if param['cpi_inflatable'] and param['value_type'] != 'real':
+            msg = 'param:<{}>; cpi_inflatable={}; value_type={}'
+            fail = msg.format(pname, param['cpi_inflatable'],
+                              param['value_type'])
             failures += fail + '\n'
         # check that row_label is list
         rowlabel = param['row_label']
@@ -230,10 +244,10 @@ def test_expand_xd_errors():
     """
     dct = dict()
     with pytest.raises(ValueError):
-        Parameters._expand_1D(dct, inflate=False, inflation_rates=[],
+        Parameters._expand_1d(dct, inflate=False, inflation_rates=[],
                               num_years=10)
     with pytest.raises(ValueError):
-        Parameters._expand_2D(dct, inflate=False, inflation_rates=[],
+        Parameters._expand_2d(dct, inflate=False, inflation_rates=[],
                               num_years=10)
 
 
@@ -244,11 +258,11 @@ def test_expand_1d_scalar():
     yrs = 12
     val = 10.0
     exp = np.array([val * math.pow(1.02, i) for i in range(0, yrs)])
-    res = Parameters._expand_1D(np.array([val]),
+    res = Parameters._expand_1d(np.array([val]),
                                 inflate=True, inflation_rates=[0.02] * yrs,
                                 num_years=yrs)
     assert np.allclose(exp, res, atol=0.01, rtol=0.0)
-    res = Parameters._expand_1D(np.array([val]),
+    res = Parameters._expand_1d(np.array([val]),
                                 inflate=True, inflation_rates=[0.02] * yrs,
                                 num_years=1)
     assert np.allclose(np.array([val]), res, atol=0.01, rtol=0.0)
@@ -265,7 +279,7 @@ def test_expand_2d_short_array():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = Parameters._expand_2D(ary, inflate=True,
+    res = Parameters._expand_2d(ary, inflate=True,
                                 inflation_rates=[0.02] * 5, num_years=5)
     assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
@@ -287,7 +301,7 @@ def test_expand_2d_variable_rates():
     exp = np.zeros((5, 3))
     exp[:1] = exp1
     exp[1:] = exp2
-    res = Parameters._expand_2D(ary, inflate=True,
+    res = Parameters._expand_2d(ary, inflate=True,
                                 inflation_rates=irates, num_years=5)
     assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
@@ -300,7 +314,7 @@ def test_expand_2d_already_filled():
     _II_brk2 = [[36000., 72250., 36500., 48600., 72500., 36250.],
                 [38000., 74000., 36900., 49400., 73800., 36900.],
                 [40000., 74900., 37450., 50200., 74900., 37450.]]
-    res = Parameters._expand_2D(np.array(_II_brk2),
+    res = Parameters._expand_2d(np.array(_II_brk2),
                                 inflate=True, inflation_rates=[0.02] * 5,
                                 num_years=3)
     np.allclose(res, np.array(_II_brk2), atol=0.01, rtol=0.0)
@@ -328,7 +342,7 @@ def test_expand_2d_partial_expand():
            [38000.0, 74000.0, 36900.0, 49400.0, 73800.0, 36900.0],
            [40000.0, 74900.0, 37450.0, 50200.0, 74900.0, 37450.0],
            [exp1, exp2, exp3, exp4, exp5, exp6]]
-    res = Parameters._expand_2D(np.array(_II_brk2),
+    res = Parameters._expand_2d(np.array(_II_brk2),
                                 inflate=True, inflation_rates=inf_rates,
                                 num_years=4)
     assert np.allclose(res, exp, atol=0.01, rtol=0.0)
@@ -340,21 +354,13 @@ def test_expand_2d_partial_expand():
                           'growdiff.json'])
 def test_bool_int_value_info(tests_path, json_filename):
     """
-    Check consistency of boolean_value and integer_value info in
-    JSON parameter files.
+    Check consistency of boolean and integer info in JSON parameter files.
     """
     path = os.path.join(tests_path, '..', json_filename)
     with open(path, 'r') as pfile:
         pdict = json.load(pfile)
     maxint = np.iinfo(np.int8).max
     for param in sorted(pdict.keys()):
-        # check that boolean_value is never integer_value
-        if pdict[param]['boolean_value'] and pdict[param]['integer_value']:
-            msg = 'param,boolean_value,integer_value,= {} {} {}'
-            msg = msg.format(str(param),
-                             pdict[param]['boolean_value'],
-                             pdict[param]['integer_value'])
-            assert msg == 'ERROR: boolean_value is integer_value'
         # find param type based on value
         val = pdict[param]['value']
         while isinstance(val, list):
@@ -363,18 +369,20 @@ def test_bool_int_value_info(tests_path, json_filename):
         val_is_boolean = valstr in ('True', 'False')
         val_is_integer = (not bool('.' in valstr or abs(val) > maxint) and
                           not val_is_boolean)
-        # check that val_is_integer is consistent with integer_value
-        if val_is_integer != pdict[param]['integer_value']:
-            msg = 'param,integer_value,valstr= {} {} {}'
+        # check that val_is_integer is consistent with integer type
+        integer_type = pdict[param]['value_type'] == 'integer'
+        if val_is_integer != integer_type:
+            msg = 'param,value_type,valstr= {} {} {}'
             msg = msg.format(str(param),
-                             pdict[param]['integer_value'],
+                             pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: integer_value param has non-integer value'
         # check that val_is_boolean is consistent with boolean_value
-        if val_is_boolean != pdict[param]['boolean_value']:
-            msg = 'param,boolean_value,valstr= {} {} {}'
+        boolean_type = pdict[param]['value_type'] == 'boolean'
+        if val_is_boolean != boolean_type:
+            msg = 'param,value_type,valstr= {} {} {}'
             msg = msg.format(str(param),
-                             pdict[param]['boolean_value'],
+                             pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
 
@@ -411,3 +419,92 @@ def test_param_dict_for_year():
     assert ydict['pname2'] == -0.5
     with pytest.raises(AssertionError):
         Parameters.param_dict_for_year(2024, param_dict, param_info)
+
+
+@pytest.fixture(scope='module', name='defaults_json_file')
+def fixture_defaultsjsonfile():
+    """
+    Define alternative JSON assumption parameter defaults file.
+    """
+    json_text = """
+{
+"_param2": {
+    "value_type": "integer",
+    "value": [2, 2, 2],
+    "valid_values": {"min": 0, "max": 9},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"_param3": {
+    "value_type": "boolean",
+    "value": [true, true, true],
+    "valid_values": {"min": false, "max": true},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"_param4": {
+    "value_type": "string",
+    "value": ["linear", "linear", "linear"],
+    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
+}
+}
+"""
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
+        pfile.write(json_text + '\n')
+    pfile.close()
+    yield pfile
+    os.remove(pfile.name)
+
+
+def test_alternative_defaults_file(defaults_json_file):
+    """
+    Test Parameter._validate_assump_paramter_values method using
+    alternative Parameters.DEFAULTS_FILE_NAME.
+    """
+    # pylint: disable=too-many-statements
+    class Params(Parameters):
+        """
+        Params is a subclass of the Parameter class.
+        """
+        DEFAULTS_FILE_NAME = defaults_json_file.name
+        DEFAULTS_FILE_PATH = ''
+        JSON_START_YEAR = Policy.JSON_START_YEAR
+        LAST_KNOWN_YEAR = Policy.LAST_KNOWN_YEAR
+        LAST_BUDGET_YEAR = Policy.LAST_BUDGET_YEAR
+        DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
+
+        def __init__(self):
+            # pylint: disable=super-init-not-called
+            # read default parameters and initialize
+            self._vals = self._params_dict_from_json_file()
+            self.initialize(Params.JSON_START_YEAR, Params.DEFAULT_NUM_YEARS)
+            # specify no parameter indexing rates
+            self._inflation_rates = None
+            self._wage_growth_rates = None
+            # specify warning/error handling variables
+            self.parameter_warnings = ''
+            self.parameter_errors = ''
+            self._ignore_errors = False
+        # end of Params class definition
+
+    prms = Params()
+    assert isinstance(prms, Params)
+    assert prms.start_year == 2013
+    assert prms.current_year == 2013
+    paramsreform = {2014: {'_param4': [9]}}
+    prms._validate_assump_parameter_names_types(paramsreform)
+    assert prms.parameter_errors
+    del prms
+    del paramsreform
+    prms = Params()
+    paramsreform = {2014: {'_param2': [3.6]}}
+    prms._validate_assump_parameter_names_types(paramsreform)
+    assert prms.parameter_errors
+    del prms
+    del paramsreform
+    prms = Params()
+    paramsreform = {2014: {'_param3': [3.6]}}
+    prms._validate_assump_parameter_names_types(paramsreform)
+    assert prms.parameter_errors

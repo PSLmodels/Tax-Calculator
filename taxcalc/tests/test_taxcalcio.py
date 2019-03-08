@@ -40,7 +40,6 @@ def fixture_reformfile0():
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     rfile.write(txt + '\n')
     rfile.close()
-    # Must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -64,7 +63,6 @@ def fixture_assumpfile0():
     """
     afile.write(contents)
     afile.close()
-    # must close and then yield for Windows platform
     yield afile
     if os.path.isfile(afile.name):
         try:
@@ -108,7 +106,6 @@ def fixture_reformfile1():
     """
     rfile.write(contents)
     rfile.close()
-    # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -126,7 +123,6 @@ def fixture_baselinebad():
     contents = '{ "policy": {"_AMT_brk1": {"2011": [0.0]}}}'
     rfile.write(contents)
     rfile.close()
-    # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -144,7 +140,6 @@ def fixture_errorreformfile():
     contents = '{ "policy": {"_xxx": {"2015": [0]}}}'
     rfile.write(contents)
     rfile.close()
-    # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -168,7 +163,6 @@ def fixture_errorassumpfile():
     """
     rfile.write(contents)
     rfile.close()
-    # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -192,7 +186,6 @@ def fixture_assumpfile1():
     """
     afile.write(contents)
     afile.close()
-    # must close and then yield for Windows platform
     yield afile
     if os.path.isfile(afile.name):
         try:
@@ -210,7 +203,6 @@ def fixture_lumpsumreformfile():
     lumpsum_reform_contents = '{"policy": {"_LST": {"2013": [200]}}}'
     rfile.write(lumpsum_reform_contents)
     rfile.close()
-    # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -234,7 +226,6 @@ def fixture_assumpfile2():
     """
     afile.write(assump2_contents)
     afile.close()
-    # must close and then yield for Windows platform
     yield afile
     if os.path.isfile(afile.name):
         try:
@@ -662,7 +653,6 @@ def fixture_warnreformfile():
     contents = '{"policy": {"_STD_Dep": {"2015": [0]}}}'
     rfile.write(contents)
     rfile.close()
-    # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:
@@ -713,7 +703,6 @@ def fixture_reformfile9():
     """
     rfile.write(contents)
     rfile.close()
-    # must close and then yield for Windows platform
     yield rfile
     if os.path.isfile(rfile.name):
         try:

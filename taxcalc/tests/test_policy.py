@@ -3,7 +3,7 @@ Test Policy class and its methods.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_policy.py
-# pylint --disable=locally-disabled test_reforms.py
+# pylint --disable=locally-disabled test_policy.py
 #
 # pylint: disable=too-many-lines
 
@@ -148,7 +148,7 @@ def test_multi_year_reform():
                                      [510, 3400, 5616, 6318],
                                      [519, 3461, 5716, 6431]],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=iratelist,
                            num_years=nyrs),
@@ -157,7 +157,7 @@ def test_multi_year_reform():
                        Policy._expand_array(
                            np.array([1000, 1000, 1050, 1050, 1050, 1050],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=iratelist,
                            num_years=nyrs),
@@ -166,7 +166,7 @@ def test_multi_year_reform():
                        Policy._expand_array(
                            np.array([1000] * 5 + [2000] * 8 + [1000],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=False,
                            inflation_rates=iratelist,
                            num_years=nyrs),
@@ -177,7 +177,7 @@ def test_multi_year_reform():
                            np.array([113700, 117000, 118500, 118500, 127200,
                                      128400],
                                     dtype=np.float64),
-                           False, False,
+                           'real',
                            inflate=True,
                            inflation_rates=wratelist,
                            num_years=nyrs),
@@ -330,73 +330,155 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
 
 
-@pytest.fixture(scope='module', name='defaultpolicyfile')
-def fixture_defaultpolicyfile():
+@pytest.fixture(scope='module', name='defaults_json_file')
+def fixture_defaultsjsonfile():
     """
-    Define alternative default policy parameter file.
+    Define alternative JSON policy parameter defaults file.
     """
     # specify JSON text for alternative to policy_current_law.json file
-    txt = """{"_almdep": {"value": [7150, 7250, 7400],
-                          "cpi_inflated": true},
-              "_cpi_offset": {"value": [0]},
-              "_almsep": {"value": [40400, 41050],
-                          "cpi_inflated": true},
-              "_rt5": {"value": [0.33 ],
-                       "cpi_inflated": false},
-              "_rt7": {"value": [0.396],
-                       "cpi_inflated": false}}"""
+    json_text = """
+{
+"_param1": {
+    "value_type": "real",
+    "value": [5000, 6000, 7000],
+    "valid_values": {"min": 0, "max": 9e99},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"_param2": {
+    "value_type": "integer",
+    "value": [2, 2, 2],
+    "valid_values": {"min": 0, "max": 9},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"_param3": {
+    "value_type": "boolean",
+    "value": [true, true, true],
+    "valid_values": {"min": false, "max": true},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"_param4": {
+    "value_type": "string",
+    "value": ["linear", "linear", "linear"],
+    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
+}
+}
+"""
     with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
-        pfile.write(txt + '\n')
-    # Must close and then yield for Windows platform
+        pfile.write(json_text + '\n')
+    pfile.close()
     yield pfile
     os.remove(pfile.name)
 
 
-def test_create_parameters_from_file(monkeypatch, defaultpolicyfile):
+def test_alternative_defaults_file(defaults_json_file):
     """
-    Test Policy constructor with alternative Policy.DEFAULTS_FILE_NAME.
+    Test Policy constructor and implement_reform method with an
+    alternative Policy.DEFAULTS_FILE_NAME.
+    """
+    # pylint: disable=too-many-statements
+    class Policyx(Policy):
+        """
+        Policyx is a subclass of the Policy class.
+        """
+        DEFAULTS_FILE_NAME = defaults_json_file.name
+        DEFAULTS_FILE_PATH = ''
+        JSON_START_YEAR = Policy.JSON_START_YEAR
+        LAST_KNOWN_YEAR = Policy.LAST_KNOWN_YEAR
+        LAST_BUDGET_YEAR = Policy.LAST_BUDGET_YEAR
+        DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
-    Note: pytest monkeypatch resets the Policy.DEFAULTS_FILE_NAME temporarily
-    and then restores the original value of Policy.DEFAULTS_FILE_NAME after
-    the test completes.
-    """
-    monkeypatch.setattr(Policy, 'DEFAULTS_FILE_NAME', defaultpolicyfile.name)
-    ppo = Policy()
-    inf_rates = ppo.inflation_rates()
-    assert np.allclose(ppo._almdep,
-                       Policy._expand_array(
-                           np.array([7150, 7250, 7400],
-                                    dtype=np.float64),
-                           False, False,
-                           inflate=True,
-                           inflation_rates=inf_rates,
-                           num_years=ppo.num_years),
-                       atol=0.01, rtol=0.0)
-    assert np.allclose(ppo._almsep,
-                       Policy._expand_array(
-                           np.array([40400, 41050],
-                                    dtype=np.float64),
-                           False, False,
-                           inflate=True,
-                           inflation_rates=inf_rates,
-                           num_years=ppo.num_years),
-                       atol=0.01, rtol=0.0)
-    assert np.allclose(ppo._rt5,
-                       Policy._expand_array(
-                           np.array([0.33]),
-                           False, False,
-                           inflate=False,
-                           inflation_rates=inf_rates,
-                           num_years=ppo.num_years),
-                       atol=0.01, rtol=0.0)
-    assert np.allclose(ppo._rt7,
-                       Policy._expand_array(
-                           np.array([0.396]),
-                           False, False,
-                           inflate=False,
-                           inflation_rates=inf_rates,
-                           num_years=ppo.num_years),
-                       atol=0.01, rtol=0.0)
+        def __init__(self):
+            # pylint: disable=super-init-not-called
+            # read default parameters and initialize
+            self._vals = self._params_dict_from_json_file()
+            self.initialize(Policyx.JSON_START_YEAR, Policyx.DEFAULT_NUM_YEARS)
+            # specify no parameter indexing rates
+            self._inflation_rates = None
+            self._wage_growth_rates = None
+            # specify warning/error handling variables
+            self.parameter_warnings = ''
+            self.parameter_errors = ''
+            self._ignore_errors = False
+        # end of Policyx class definition
+
+    xpol = Policyx()
+    assert isinstance(xpol, Policyx)
+    assert xpol.start_year == 2013
+    assert xpol.current_year == 2013
+    xpolreform = {
+        2015: {
+            '_param1': [8000],
+            '_param2': [3],
+            '_param3': [False],
+            '_param4': ['nonlinear']
+        },
+        2017: {
+            '_param1': [9000],
+            '_param2': [4],
+        },
+        2019: {
+            '_param3': [True],
+            '_param4': ['cubic']
+        }
+    }
+    xpol.implement_reform(xpolreform)
+    assert not xpol.parameter_errors
+    assert not xpol.parameter_warnings
+    xpol.set_year(2014)
+    assert xpol.param1 == 6000
+    assert xpol.param2 == 2
+    assert xpol.param3
+    assert xpol.param4 == 'linear'
+    xpol.set_year(2015)
+    assert xpol.param1 == 8000
+    assert xpol.param2 == 3
+    assert not xpol.param3
+    assert xpol.param4 == 'nonlinear'
+    xpol.set_year(2016)
+    assert xpol.param1 == 8000
+    assert xpol.param2 == 3
+    assert not xpol.param3
+    assert xpol.param4 == 'nonlinear'
+    xpol.set_year(2017)
+    assert xpol.param1 == 9000
+    assert xpol.param2 == 4
+    assert not xpol.param3
+    assert xpol.param4 == 'nonlinear'
+    xpol.set_year(2018)
+    assert xpol.param1 == 9000
+    assert xpol.param2 == 4
+    assert not xpol.param3
+    assert xpol.param4 == 'nonlinear'
+    xpol.set_year(2019)
+    assert xpol.param1 == 9000
+    assert xpol.param2 == 4
+    assert xpol.param3
+    assert xpol.param4 == 'cubic'
+    xpol.set_year(2020)
+    assert xpol.param1 == 9000
+    assert xpol.param2 == 4
+    assert xpol.param3
+    assert xpol.param4 == 'cubic'
+    del xpol
+    del xpolreform
+    # test string parameter checking
+    xpol = Policyx()
+    xpolreform = {2014: {'_param4': [3]}}
+    with pytest.raises(ValueError):
+        xpol.implement_reform(xpolreform)
+    del xpol
+    del xpolreform
+    xpol = Policyx()
+    xpolreform = {2014: {'_param4': ['spline']}}
+    xpol.implement_reform(xpolreform, raise_errors=False)
+    assert xpol.parameter_errors
+    assert not xpol.parameter_warnings
 
 
 def test_policy_metadata():
@@ -841,9 +923,9 @@ def test_description_punctuation(tests_path):
     assert all_desc_ok
 
 
-def test_range_infomation(tests_path):
+def test_valid_value_infomation(tests_path):
     """
-    Check consistency of range-related info in policy_current_law.json file.
+    Check consistency of valid_values info in policy_current_law.json file.
     """
     # pylint: disable=too-many-branches,too-many-nested-blocks,too-many-locals
     # read policy_current_law.json file into a dictionary
@@ -851,17 +933,19 @@ def test_range_infomation(tests_path):
     with open(path, 'r') as clpfile:
         clpdict = json.load(clpfile)
     parameters = set(clpdict.keys())
-    # construct set of parameter names with "range" field in clpdict
+    # construct set of parameter names with "valid_values" field in clpdict
     min_max_list = ['min', 'max']
     warn_stop_list = ['warn', 'stop']
     json_range_params = set()
     for pname in parameters:
         param = clpdict[pname]
         assert isinstance(param, dict)
-        prange = param.get('range', None)
+        if param['value_type'] == 'string':
+            continue  # because string parameters have no invalid_* keys
+        prange = param.get('valid_values', None)
         if prange:
             json_range_params.add(pname)
-            oor_action = param['out_of_range_action']
+            oor_action = param['invalid_action']
             assert oor_action in warn_stop_list
             range_items = prange.items()
             assert len(range_items) == 2
@@ -875,9 +959,9 @@ def test_range_infomation(tests_path):
                         continue
                     elif vval in clpdict:
                         if vop == 'min':
-                            extra_msg = param['out_of_range_minmsg']
+                            extra_msg = param['invalid_minmsg']
                         if vop == 'max':
-                            extra_msg = param['out_of_range_maxmsg']
+                            extra_msg = param['invalid_maxmsg']
                         assert vval in extra_msg
                     else:
                         assert vval == 'ILLEGAL RANGE STRING VALUE'
