@@ -1171,12 +1171,10 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     Computes EITC amount, c59660.
     """
     # pylint: disable=too-many-branches
-
     if MARS != 2:
-        po_start = EITC_ps[EIC]
         eitc = EITCamount(EITC_basic_frac,
                           EITC_rt[EIC], earned, EITC_c[EIC],
-                          EITC_ps[EIC], earned, EITC_prt[EIC])
+                          EITC_ps[EIC], c00100, EITC_prt[EIC])
         if EIC == 0:
             # enforce age eligibility rule for those with no EITC-eligible
             # kids assuming that an unknown age_* value implies EITC age
@@ -1186,11 +1184,11 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
                 c59660 = eitc
             else:
                 c59660 = 0.
-        else: 
-            c59660 = 0.
+        else:  # if EIC != 0
+            c59660 = eitc
 
     if MARS == 2:
-        po_start += EITC_ps_MarriedJ[EIC]
+        po_start = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
         if not EITC_indiv:
             # filing unit EITC rather than individual EITC
             eitc = EITCamount(EITC_basic_frac,
