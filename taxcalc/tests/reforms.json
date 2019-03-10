@@ -624,5 +624,14 @@
       "name": "Add EITC basic credit equal to half the maximum credit with half the phasein rate (as described in Tax-Calculator issue 2092)",
       "output_type": "iitax",
       "compare_with": {}
+  },
+
+  "63": {
+      "baseline": "policy_current_law.json",
+      "start_year": 2019,
+      "value": {"_EITC_indiv": [true]},
+      "name": "Individualize the EITC",
+      "output_type": "iitax",
+      "compare_with": {}
   }
 }
