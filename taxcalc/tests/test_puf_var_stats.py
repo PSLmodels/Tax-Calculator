@@ -112,13 +112,15 @@ def differences(new_filename, old_filename, stat_kind):
     """
     new_df = pd.read_csv(new_filename)
     old_df = pd.read_csv(old_filename)
-    assert len(new_df.columns) == len(old_df.columns)
     diffs = False
-    for col in new_df.columns[1:]:
-        if col == 'description':
-            continue  # skip description column
-        if not np.allclose(new_df[col], old_df[col]):
-            diffs = True
+    if list(new_df.columns.values) == list(old_df.columns.values):
+        for col in new_df.columns[1:]:
+            if col == 'description':
+                continue  # skip description column
+            if not np.allclose(new_df[col], old_df[col]):
+                diffs = True
+    else:
+        diffs = True
     if diffs:
         new_name = os.path.basename(new_filename)
         old_name = os.path.basename(old_filename)
