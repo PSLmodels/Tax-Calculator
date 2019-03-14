@@ -32,11 +32,11 @@ help:
 clean:
 	@find . -name *pyc -exec rm {} \;
 	@find . -name *cache -maxdepth 1 -exec rm -r {} \;
-	@./conda.recipe/remove_local_package.sh
+	@conda uninstall taxcalc --yes --quiet 2>&1 > /dev/null
 
 .PHONY=package
 package:
-	@cd conda.recipe ; ./install_local_package.sh
+	@pbrelease Tax-Calculator taxcalc 0.0.0 --local .
 
 define pytest-setup
 rm -f taxcalc/tests/reforms_actual_init
