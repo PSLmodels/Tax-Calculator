@@ -5592,13 +5592,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": true,
-        "integer_value": false,
+        "value_type": "boolean",
         "value": [false],
-        "range": {"min": false, "max": true},
-        "out_of_range_minmsg": "",
-        "out_of_range_maxmsg": "",
-        "out_of_range_action": "stop",
+        "valid_values": {"min": false, "max": true},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": false}
     },
 
