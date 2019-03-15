@@ -102,10 +102,10 @@ def test_boolean_value_infomation(tests_path):
             val_is_boolean = True
         else:
             val_is_boolean = False
-        if gdd[param]['boolean_value'] != val_is_boolean:
-            print('param,boolean_value,val,val_is_boolean=',
+        type_is_boolean = gdd[param]['value_type'] == 'boolean'
+        if val_is_boolean and not type_is_boolean:
+            print('param,value_type,val,val_is_boolean=',
                   str(param),
-                  gdd[param]['boolean_value'],
+                  gdd[param]['value_type'],
                   val,
                   val_is_boolean)
-            assert gdd[param]['boolean_value'] == val_is_boolean

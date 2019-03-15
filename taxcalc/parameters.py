@@ -3,9 +3,11 @@ Tax-Calculator abstract base parameters class.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle parameters.py
+# pylint --disable=locally-disabled parameters.py
+#
+# pylint: disable=attribute-defined-outside-init,no-member
 
 import os
-import json
 import abc
 import numpy as np
 from taxcalc.utils import read_egg_json, json_to_dict
@@ -40,12 +42,14 @@ class Parameters():
         """
         Override this method in subclass when appropriate.
         """
+        # pylint: disable=no-self-use
         return None
 
     def wage_growth_rates(self):
         """
         Override this method in subclass when appropriate.
         """
+        # pylint: disable=no-self-use
         return None
 
     def indexing_rates(self, param_name):
@@ -54,13 +58,13 @@ class Parameters():
         """
         if param_name == '_SS_Earnings_c':
             return self.wage_growth_rates()
-        else:
-            return self.inflation_rates()
+        return self.inflation_rates()
 
     def set_default_vals(self, known_years=999999):
         """
         Called by initialize method and from some subclass methods.
         """
+        # pylint: disable=too-many-nested-blocks
         if isinstance(known_years, int):
             known_years_is_int = True
         elif isinstance(known_years, dict):
@@ -69,8 +73,7 @@ class Parameters():
             raise ValueError('known_years is neither an int nor a dict')
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
-                intg_val = data.get('integer_value')
-                bool_val = data.get('boolean_value')
+                valtype = data.get('value_type')
                 values = data.get('value')
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
@@ -84,7 +87,7 @@ class Parameters():
                     else:
                         index_rates = None
                     setattr(self, name,
-                            self._expand_array(values, intg_val, bool_val,
+                            self._expand_array(values, valtype,
                                                inflate=cpi_inflated,
                                                inflation_rates=index_rates,
                                                num_years=self._num_years))
@@ -232,8 +235,7 @@ class Parameters():
                     # check parameter value type avoiding use of isinstance
                     # because isinstance(True, (int,float)) is True, which
                     # makes it impossible to check float parameters
-                    bool_param_type = self._vals[name]['boolean_value']
-                    int_param_type = self._vals[name]['integer_value']
+                    valtype = self._vals[name]['value_type']
                     assert isinstance(revision[year][name], list)
                     pvalue = revision[year][name][0]
                     assert not isinstance(pvalue, list)
@@ -243,28 +245,33 @@ class Parameters():
                         pname = name
                         pval = pvalue[idx]
                         # pylint: disable=unidiomatic-typecheck
-                        pval_is_bool = type(pval) == bool
-                        pval_is_int = type(pval) == int
-                        pval_is_float = type(pval) == float
-                        if bool_param_type:
-                            if not pval_is_bool:  # pragma: no cover
+                        if valtype == 'real':
+                            if type(pval) != float and type(pval) != int:
+                                msg = '{} {} value {} is not a number'
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, pname, pval) +
+                                    '\n'
+                                )
+                        elif valtype == 'boolean':
+                            if type(pval) != bool:
                                 msg = '{} {} value {} is not boolean'
                                 self.parameter_errors += (
                                     'ERROR: ' +
                                     msg.format(year, pname, pval) +
                                     '\n'
                                 )
-                        elif int_param_type:
-                            if not pval_is_int:  # pragma: no cover
+                        elif valtype == 'integer':
+                            if type(pval) != int:
                                 msg = '{} {} value {} is not integer'
                                 self.parameter_errors += (
                                     'ERROR: ' +
                                     msg.format(year, pname, pval) +
                                     '\n'
                                 )
-                        else:  # param is float type
-                            if not (pval_is_int or pval_is_float):
-                                msg = '{} {} value {} is not a number'
+                        elif valtype == 'string':
+                            if type(pval) != str:
+                                msg = '{} {} value {} is not a string'
                                 self.parameter_errors += (
                                     'ERROR: ' +
                                     msg.format(year, pname, pval) +
@@ -279,7 +286,7 @@ class Parameters():
         parameters = sorted(parameters_set)
         for pname in parameters:
             pvalue = getattr(self, pname)
-            for vop, vval in self._vals[pname]['range'].items():
+            for vop, vval in self._vals[pname]['valid_values'].items():
                 vvalue = np.full(pvalue.shape, vval)
                 assert pvalue.shape == vvalue.shape
                 assert len(pvalue.shape) == 1  # parameter value is a scalar
@@ -405,6 +412,7 @@ class Parameters():
         for 2019.  The one-dimensional parameters above require only a pair
         of single square brackets.
         """
+        # pylint: disable=too-many-locals
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
             msg = 'year_mods is not a dictionary'
@@ -429,8 +437,7 @@ class Parameters():
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
             vals_indexed = self._vals[name].get('cpi_inflated', False)
-            intg_val = self._vals[name].get('integer_value')
-            bool_val = self._vals[name].get('boolean_value')
+            valtype = self._vals[name].get('value_type')
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
@@ -443,7 +450,7 @@ class Parameters():
             cval = getattr(self, name, None)
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            nval = self._expand_array(values, intg_val, bool_val,
+            nval = self._expand_array(values, valtype,
                                       inflate=indexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -460,9 +467,8 @@ class Parameters():
             pvalues = [cval[year - self.start_year]]
             index_rates = self._indexing_rates_for_update(name, year,
                                                           num_years_to_expand)
-            intg_val = self._vals[pname].get('integer_value')
-            bool_val = self._vals[pname].get('boolean_value')
-            nval = self._expand_array(pvalues, intg_val, bool_val,
+            valtype = self._vals[pname].get('value_type')
+            nval = self._expand_array(pvalues, valtype,
                                       inflate=pindexed,
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
@@ -472,11 +478,15 @@ class Parameters():
         # implement updated parameters for year
         self.set_year(year)
 
+    STRING_DTYPE = 'U9'
+
+    # pylint: disable=invalid-name
+
     @staticmethod
-    def _expand_array(x, x_int, x_bool, inflate, inflation_rates, num_years):
+    def _expand_array(x, x_type, inflate, inflation_rates, num_years):
         """
         Private method called only within this abstract base class.
-        Dispatch to either _expand_1D or _expand_2D given dimension of x.
+        Dispatch to either _expand_1d or _expand_2d given dimension of x.
 
         Parameters
         ----------
@@ -484,13 +494,7 @@ class Parameters():
             x must be either a scalar list or a 1D numpy array, or
             x must be either a list of scalar lists or a 2D numpy array
 
-        x_int : boolean
-            True implies x has dtype=np.int8;
-            False implies x has dtype=np.float64 or dtype=np.bool_
-
-        x_bool : boolean
-            True implies x has dtype=np.bool_;
-            False implies x has dtype=np.float64 or dtype=np.int8
+        x_type : string ('boolean', 'integer', 'real', 'string')
 
         inflate: boolean
             As we expand, inflate values if this is True, otherwise, just copy
@@ -503,30 +507,32 @@ class Parameters():
 
         Returns
         -------
-        expanded numpy array with specified dtype
+        expanded numpy array with specified type
         """
-        assert not (x_int and x_bool)
         if not isinstance(x, list) and not isinstance(x, np.ndarray):
             msg = '_expand_array expects x to be a list or numpy array'
             raise ValueError(msg)
         if isinstance(x, list):
-            if x_int:
-                x = np.array(x, np.int8)
-            elif x_bool:
-                x = np.array(x, np.bool_)
-            else:
+            if x_type == 'real':
                 x = np.array(x, np.float64)
-        if len(x.shape) == 1:
-            return Parameters._expand_1D(x, inflate, inflation_rates,
+            elif x_type == 'boolean':
+                x = np.array(x, np.bool_)
+            elif x_type == 'integer':
+                x = np.array(x, np.int8)
+            elif x_type == 'string':
+                x = np.array(x, np.dtype(Parameters.STRING_DTYPE))
+                assert len(x.shape) == 1, \
+                    'string parameters must be scalar (not vector)'
+        dim = len(x.shape)
+        assert dim in (1, 2)
+        if dim == 1:
+            return Parameters._expand_1d(x, inflate, inflation_rates,
                                          num_years)
-        elif len(x.shape) == 2:
-            return Parameters._expand_2D(x, inflate, inflation_rates,
-                                         num_years)
-        else:
-            raise ValueError('_expand_array expects a 1D or 2D array')
+        return Parameters._expand_2d(x, inflate, inflation_rates,
+                                     num_years)
 
     @staticmethod
-    def _expand_1D(x, inflate, inflation_rates, num_years):
+    def _expand_1d(x, inflate, inflation_rates, num_years):
         """
         Private method called only from _expand_array method.
         Expand the given data x to account for given number of budget years.
@@ -534,12 +540,20 @@ class Parameters():
         year using the given inflation_rates list.
         """
         if not isinstance(x, np.ndarray):
-            raise ValueError('_expand_1D expects x to be a numpy array')
+            raise ValueError('_expand_1d expects x to be a numpy array')
         if len(x) >= num_years:
             return x
+        string_type = x.dtype == Parameters.STRING_DTYPE
+        if string_type:
+            ans = np.array(['' for i in range(0, num_years)],
+                           dtype=x.dtype)
         else:
             ans = np.zeros(num_years, dtype=x.dtype)
-            ans[:len(x)] = x
+        ans[:len(x)] = x
+        if string_type:
+            extra = [str(x[-1]) for i in
+                     range(1, num_years - len(x) + 1)]
+        else:
             if inflate:
                 extra = []
                 cur = x[-1]
@@ -550,11 +564,11 @@ class Parameters():
             else:
                 extra = [float(x[-1]) for i in
                          range(1, num_years - len(x) + 1)]
-            ans[len(x):] = extra
-            return ans
+        ans[len(x):] = extra
+        return ans
 
     @staticmethod
-    def _expand_2D(x, inflate, inflation_rates, num_years):
+    def _expand_2d(x, inflate, inflation_rates, num_years):
         """
         Private method called only from _expand_array method.
         Expand the given data to account for the given number of budget years.
@@ -563,28 +577,28 @@ class Parameters():
         inflation rates list.
         """
         if not isinstance(x, np.ndarray):
-            raise ValueError('_expand_2D expects x to be a numpy array')
+            raise ValueError('_expand_2d expects x to be a numpy array')
         if x.shape[0] >= num_years:
             return x
-        else:
-            ans = np.zeros((num_years, x.shape[1]), dtype=x.dtype)
-            ans[:len(x), :] = x
-            for i in range(x.shape[0], ans.shape[0]):
-                for j in range(ans.shape[1]):
-                    if inflate:
-                        cur = (ans[i - 1, j] *
-                               (1. + inflation_rates[i - 1]))
-                        cur = round(cur, 2) if cur < 9e99 else 9e99
-                        ans[i, j] = cur
-                    else:
-                        ans[i, j] = ans[i - 1, j]
-            return ans
+        ans = np.zeros((num_years, x.shape[1]), dtype=x.dtype)
+        ans[:len(x), :] = x
+        for i in range(x.shape[0], ans.shape[0]):
+            for j in range(ans.shape[1]):
+                if inflate:
+                    cur = (ans[i - 1, j] *
+                           (1. + inflation_rates[i - 1]))
+                    cur = round(cur, 2) if cur < 9e99 else 9e99
+                    ans[i, j] = cur
+                else:
+                    ans[i, j] = ans[i - 1, j]
+        return ans
 
     def _indexing_rates_for_update(self, param_name,
                                    calyear, num_years_to_expand):
         """
         Private method called only in the _update method.
         """
+        # pylint: disable=assignment-from-none
         if param_name == '_SS_Earnings_c':
             rates = self.wage_growth_rates()
         else:
@@ -593,5 +607,4 @@ class Parameters():
             expanded_rates = [rates[(calyear - self.start_year) + i]
                               for i in range(0, num_years_to_expand)]
             return expanded_rates
-        else:
-            return None
+        return None

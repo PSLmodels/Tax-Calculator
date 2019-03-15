@@ -1267,7 +1267,7 @@ class Calculator():
                     pval = change[year][param]
                     if isinstance(pval, list):
                         pval = pval[0]
-                        if basevals[param]['boolean_value']:
+                        if basevals[param]['value_type'] == 'boolean':
                             if isinstance(pval, list):
                                 pval = [bool(item) for item in pval]
                             else:
@@ -1301,9 +1301,9 @@ class Calculator():
                             bval = getattr(basex, param[1:], None)
                             if isinstance(bval, np.ndarray):
                                 bval = bval.tolist()
-                                if basevals[param]['boolean_value']:
+                                if basevals[param]['value_type'] == 'boolean':
                                     bval = [bool(item) for item in bval]
-                            elif basevals[param]['boolean_value']:
+                            elif basevals[param]['value_type'] == 'boolean':
                                 bval = bool(bval)
                         doc += '  baseline_value: {}\n'.format(bval)
                     else:  # if basex is GrowDiff object

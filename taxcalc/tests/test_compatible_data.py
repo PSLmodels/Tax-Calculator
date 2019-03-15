@@ -251,7 +251,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
     errors = ''
     for pname in allparams_batch:
         param = allparams_batch[pname]
-        max_listed = param['range']['max']
+        max_listed = param['valid_values']['max']
         # handle links to other params or self
         if isinstance(max_listed, str):
             if isinstance(allparams[max_listed]['value'][0], list):
@@ -263,7 +263,7 @@ def test_compatible_data(cps_subsample, puf_subsample,
                 max_val = [max_listed] * len(param['value'][0])
             else:
                 max_val = max_listed
-        min_listed = param['range']['min']
+        min_listed = param['valid_values']['min']
         if isinstance(min_listed, str):
             if isinstance(allparams[min_listed]['value'][0], list):
                 min_val = allparams[min_listed]['value'][0]

@@ -12,10 +12,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_MPC_e18400": {
@@ -32,10 +34,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_MPC_e19800": {
@@ -52,10 +56,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_MPC_e20400": {
@@ -72,10 +78,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [0.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_housing_value": {
@@ -91,10 +99,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_snap_value": {
@@ -110,10 +120,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_tanf_value": {
@@ -129,10 +141,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_vet_value": {
@@ -148,10 +162,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 2}
+        "valid_values": {"min": 0, "max": 2},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_wic_value": {
@@ -167,10 +183,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_mcare_value": {
@@ -186,10 +204,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 2}
+        "valid_values": {"min": 0, "max": 2},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_mcaid_value": {
@@ -205,10 +225,12 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 2}
+        "valid_values": {"min": 0, "max": 2},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     },
 
     "_BEN_other_value": {
@@ -224,9 +246,11 @@
         "cpi_inflated": false,
         "col_var": "",
         "col_label": "",
-        "boolean_value": false,
-        "integer_value": false,
+        "value_type": "real",
         "value": [1.0],
-        "range": {"min": 0, "max": 1}
+        "valid_values": {"min": 0, "max": 1},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop"
     }
 }
