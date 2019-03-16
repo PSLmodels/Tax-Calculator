@@ -1054,7 +1054,7 @@ class Calculator():
     def read_json_param_objects(reform, assump):
         """
         Read JSON reform and assump objects and
-        return a single dictionary containing 6 key:dict pairs:
+        return a single dictionary containing four key:dict pairs:
         'policy':dict, 'consumption':dict,
         'growdiff_baseline':dict, and 'growdiff_response':dict.
 
@@ -1100,8 +1100,14 @@ class Calculator():
             gdiff_resp_dict = dict()
         elif isinstance(assump, str):
             if os.path.isfile(assump):
+                if not assump.endswith('.json'):
+                    msg = "assump does not end with '.json': {}"
+                    raise ValueError(msg.format(assump))
                 txt = open(assump, 'r').read()
             elif assump.startswith('http'):
+                if not assump.endswith('.json'):
+                    msg = "assump does not end with '.json': {}"
+                    raise ValueError(msg.format(assump))
                 req = requests.get(assump)
                 req.raise_for_status()
                 txt = req.text
@@ -1117,8 +1123,14 @@ class Calculator():
             rpol_dict = dict()
         elif isinstance(reform, str):
             if os.path.isfile(reform):
+                if not reform.endswith('.json'):
+                    msg = "reform does not end with '.json': {}"
+                    raise ValueError(msg.format(reform))
                 txt = open(reform, 'r').read()
             elif reform.startswith('http'):
+                if not reform.endswith('.json'):
+                    msg = "reform does not end with '.json': {}"
+                    raise ValueError(msg.format(reform))
                 req = requests.get(reform)
                 req.raise_for_status()
                 txt = req.text

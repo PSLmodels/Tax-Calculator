@@ -381,8 +381,6 @@ REFORM_JSON = """
 // the secondary keys are years.
 // Both the primary and secondary key values must be enclosed in quotes (").
 // Boolean variables are specified as true or false (no quotes; all lowercase).
-// Parameter code in the policy object is enclosed inside a pair of double
-// pipe characters (||).
 {
   "policy": {
     "_AMT_brk1": // top of first AMT tax bracket
@@ -481,6 +479,21 @@ def test_json_reform_url():
     params_str = Calculator.read_json_param_objects(reform_str, None)
     params_url = Calculator.read_json_param_objects(reform_url, None)
     assert params_str == params_url
+
+
+def test_bad_json_names(tests_path):
+    """
+    Test that ValueError raised with assump or reform do not end in '.json'
+    """
+    csvname = os.path.join(tests_path, '..', 'growfactors.csv')
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects(csvname, None)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects('http://name.json.html', None)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects(None, csvname)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects(None, 'http://name.json.html')
 
 
 def test_read_bad_json_reform_file():
