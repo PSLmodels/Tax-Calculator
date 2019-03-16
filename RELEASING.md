@@ -28,7 +28,9 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> create release X.Y.Z on GitHub using master branch
 
---> `pbrelease Tax-Calculator taxcalc X.Y.Z --also37` [to build/upload packages]
+--> `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build/upload packages]
+
+--> create corresponding Behavioral-Responses package
 
 --> run `conda install -c PSLmodels behresp --yes`  [to make behresp available]
 
