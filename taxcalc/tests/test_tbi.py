@@ -35,7 +35,7 @@ USER_MODS = {
 @pytest.mark.parametrize('start_year, year_n',
                          [(2000, 0),
                           (2013, -1),
-                          (2018, 11)])
+                          (2018, 12)])
 def test_check_years_errors(start_year, year_n):
     with pytest.raises(ValueError):
         check_years_return_first_year(year_n, start_year, use_puf_not_cps=True)
