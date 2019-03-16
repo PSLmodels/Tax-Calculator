@@ -14,7 +14,9 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> run `make package`  [to make taxcalc package available in docs]
 
---> cd .. ; ./index_results.sh ; .fix. ; python make_index.py
+--> cd docs ; ./index_results.sh ; .fix. ; python make_index.py
+
+--> update T-C version in cookbook.html to X.Y.Z
 
 --> cd .. ; make clean  [to remove taxcalc package]
 

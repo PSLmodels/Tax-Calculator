@@ -4,6 +4,31 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-03-xx Release 1.1.0
+------------------------
+(last merged pull request is
+[#2261](https://github.com/PSLmodels/Tax-Calculator/pull/2261))
+
+**This is an enhancement release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Provide more flexibility in specifying structural EITC reforms that make the credit more individualized
+  [[#2254](https://github.com/PSLmodels/Tax-Calculator/pull/2254)
+  by Matt Jensen]
+- Use new data input files from [taxdata pull request 307](https://github.com/PSLmodels/taxdata/pull/307#issue-257784078) that are generated using January 2019 CBO economic projection; extend budget years through 2029
+  [[#2255](https://github.com/PSLmodels/Tax-Calculator/pull/2255)
+  by Martin Holmer using data files produced by Anderson Frailey]
+- Add error messages the stop use of file names (or strings beginning with 'http') in `Calculator.read_json_param_objects` method that do not end in '.json'
+  [[#2261](https://github.com/PSLmodels/Tax-Calculator/pull/2261)
+  by Martin Holmer based on report by Max Ghenis]
+
+**Bug Fixes**
+- None
+
+
 2019-02-26 Release 1.0.1
 ------------------------
 (last merged pull request is

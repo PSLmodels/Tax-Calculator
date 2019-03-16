@@ -2,6 +2,16 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 1.1.0 on 2019-03-xx
+--------------------------------------
+
+**This is an enhancement release.**
+
+- Provide more flexibility in specifying structural EITC reforms that make the credit more individualized
+
+- Use new data input files that are based on the January 2019 CBO economic projection and that extend budget years through 2029
+
+
 Changes in release 1.0.1 on 2019-02-26
 --------------------------------------
 
