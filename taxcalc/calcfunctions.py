@@ -1165,65 +1165,66 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
-         EITC_indiv,
+         EITC_indiv, EITC_sep_filers_elig,
          c59660):
     """
     Computes EITC amount, c59660.
     """
     # pylint: disable=too-many-branches
-    if not EITC_indiv:
-        # filing-unit and number-of-kids based EITC (rather than indiv EITC)
-        if MARS == 3 or DSI == 1:
-            c59660 = 0.
-        else:
-            po_start = EITC_ps[EIC]
-            if MARS == 2:
-                po_start += EITC_ps_MarriedJ[EIC]
+    if MARS != 2:
+        eitc = EITCamount(EITC_basic_frac,
+                          EITC_rt[EIC], earned, EITC_c[EIC],
+                          EITC_ps[EIC], c00100, EITC_prt[EIC])
+        if EIC == 0:
+            # enforce age eligibility rule for those with no EITC-eligible
+            # kids assuming that an unknown age_* value implies EITC age
+            # eligibility
+            h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
+            if (age_head == 0 or h_age_elig):
+                c59660 = eitc
+            else:
+                c59660 = 0.
+        else:  # if EIC != 0
+            c59660 = eitc
+
+    if MARS == 2:
+        po_start = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
+        if not EITC_indiv:
+            # filing unit EITC rather than individual EITC
             eitc = EITCamount(EITC_basic_frac,
                               EITC_rt[EIC], earned, EITC_c[EIC],
                               po_start, c00100, EITC_prt[EIC])
-            if EIC == 0:
-                # enforce age eligibility rule for those with no EITC-eligible
-                # kids assuming that an unknown age_* value implies EITC age
-                # eligibility
-                h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
-                s_age_elig = EITC_MinEligAge <= age_spouse <= EITC_MaxEligAge
-                if MARS == 2:
-                    if (age_head == 0 or age_spouse == 0 or
-                            h_age_elig or s_age_elig):
-                        c59660 = eitc
-                    else:
-                        c59660 = 0.
-                else:  # if MARS != 2
-                    if (age_head == 0 or h_age_elig):
-                        c59660 = eitc
-                    else:
-                        c59660 = 0.
-            else:  # if EIC != 0
-                c59660 = eitc
-            # reduce positive EITC if investment income exceeds ceiling
-            if c59660 > 0.:
-                invinc = (e00400 + e00300 + e00600 +
-                          max(0., c01000) + max(0., e27200))
-                if invinc > EITC_InvestIncome_c:
-                    eitc = (c59660 - EITC_excess_InvestIncome_rt *
-                            (invinc - EITC_InvestIncome_c))
-                    c59660 = max(0., eitc)
-    else:
-        # individual EITC rather than a filing-unit EITC
-        # .. calculate eitc amount for taxpayer
-        eitc_p = EITCamount(EITC_basic_frac,
-                            EITC_rt[EIC], earned_p, EITC_c[EIC],
-                            EITC_ps[EIC], earned_p, EITC_prt[EIC])
-        # .. calculate eitc amount for spouse
-        if MARS == 2:
+        if EITC_indiv:
+            # individual EITC rather than a filing-unit EITC
+            eitc_p = EITCamount(EITC_basic_frac,
+                                EITC_rt[EIC], earned_p, EITC_c[EIC],
+                                po_start, earned_p, EITC_prt[EIC])
             eitc_s = EITCamount(EITC_basic_frac,
                                 EITC_rt[EIC], earned_s, EITC_c[EIC],
-                                EITC_ps[EIC], earned_s, EITC_prt[EIC])
+                                po_start, earned_s, EITC_prt[EIC])
+            eitc = eitc_p + eitc_s
+
+        if EIC == 0:
+            h_age_elig = EITC_MinEligAge <= age_head <= EITC_MaxEligAge
+            s_age_elig = EITC_MinEligAge <= age_spouse <= EITC_MaxEligAge
+            if (age_head == 0 or age_spouse == 0 or h_age_elig or s_age_elig):
+                c59660 = eitc
+            else:
+                c59660 = 0.
         else:
-            eitc_s = 0.
-        # .. combine taxpayer and spouse individual EITC amounts
-        c59660 = eitc_p + eitc_s
+            c59660 = eitc
+
+    if (MARS == 3 and not EITC_sep_filers_elig) or DSI == 1:
+        c59660 = 0.
+
+    # reduce positive EITC if investment income exceeds ceiling
+    if c59660 > 0.:
+        invinc = (e00400 + e00300 + e00600 +
+                  max(0., c01000) + max(0., e27200))
+        if invinc > EITC_InvestIncome_c:
+            eitc = (c59660 - EITC_excess_InvestIncome_rt *
+                    (invinc - EITC_InvestIncome_c))
+            c59660 = max(0., eitc)
     return c59660
 
 

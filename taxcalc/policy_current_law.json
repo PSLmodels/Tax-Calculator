@@ -5556,8 +5556,8 @@
     },
 
     "_EITC_indiv": {
-        "long_name": "EITC is individual-based rather than filing-unit based",
-        "description": "Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The phase-out of the credit works slightly differently between the two.  Individual-based calculation ignore investment income and age eligibilty rules used in filing-unit-based calculations.",
+        "long_name": "EITC is computed for each spouse based on individual earnings",
+        "description": "Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The additional phaseout start for joint filers is not affecected by this parameter, nor are investment income and age eligibilty rules. Often used when separate filers are eligible for the EITC (EITC_sep_filers_elig == True).",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "",
@@ -5576,6 +5576,29 @@
         "invalid_maxmsg": "",
         "invalid_action": "stop",
         "compatible_data": {"puf": true, "cps": true}
+    },
+
+    "_EITC_sep_filers_elig": {
+        "long_name": "Separate filers are eligibile for the EITC",
+        "description": "Current-law value is false, implying ineligibility. Often used when EITC is computed for each spouse based on individual earnings (EITC_indiv == True).",
+        "section_1": "Refundable Credits",
+        "section_2": "Earned Income Tax Credit",
+        "irs_ref": "",
+        "notes": "",
+        "row_var": "FLPDYR",
+        "row_label": ["2013"],
+        "start_year": 2013,
+        "cpi_inflatable": false,
+        "cpi_inflated": false,
+        "col_var": "",
+        "col_label": "",
+        "value_type": "boolean",
+        "value": [false],
+        "valid_values": {"min": false, "max": true},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
+        "compatible_data": {"puf": true, "cps": false}
     },
 
     "_LLC_Expense_c": {
