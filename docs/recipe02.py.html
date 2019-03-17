@@ -30,14 +30,13 @@ calc2.advance_to_year(cyr)
 calc2.calc_all()
 itax_rev2sa = calc2.weighted_total('iitax')
 
-# specify behavioral-response assumptions
-behresp_json = '{"BE_sub": {"2018": 0.25}}'
-behresp_dict = Calculator.read_json_parameters(behresp_json)
+# specify assumed non-zero response-function substitution elasticity
+response_elasticities = {'sub': 0.25}
 
-# specify Calculator object for analysis of reform with behavioral response
+# specify Calculator object for analysis of reform with behavioral responses
 calc2 = Calculator(policy=pol, records=recs)
 calc2.advance_to_year(cyr)
-_, df2br = behresp.response(calc1, calc2, behresp_dict)
+_, df2br = behresp.response(calc1, calc2, response_elasticities)
 
 # calculate reform income tax liabilities for cyr with behavioral response
 itax_rev2br = (df2br['iitax'] * df2br['s006']).sum()
@@ -60,7 +59,7 @@ year_list3 = list()
 for year in range(cyr, cyr + num_years):
     calc1.advance_to_year(year)
     calc2.advance_to_year(year)
-    _, df2br = behresp.response(calc1, calc2, behresp_dict)
+    _, df2br = behresp.response(calc1, calc2, response_elasticities)
     dvar_list3.append(df2br)
     year_list3.append(year)
 dtable3 = create_diagnostic_table(dvar_list3, year_list3)
