@@ -21,7 +21,7 @@ for a complete commit history.
 - Use new data input files from [taxdata pull request 307](https://github.com/PSLmodels/taxdata/pull/307#issue-257784078) that are generated using January 2019 CBO economic projection; extend budget years through 2029
   [[#2255](https://github.com/PSLmodels/Tax-Calculator/pull/2255)
   by Martin Holmer using data files produced by Anderson Frailey]
-- Add error messages the stop use of file names (or strings beginning with 'http') in `Calculator.read_json_param_objects` method that do not end in '.json'
+- Add error messages that stop use of file names (or strings beginning with 'http') in `Calculator.read_json_param_objects` method that do not end in '.json'
   [[#2261](https://github.com/PSLmodels/Tax-Calculator/pull/2261)
   by Martin Holmer based on report by Max Ghenis]
 
