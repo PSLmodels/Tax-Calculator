@@ -30,7 +30,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> create release X.Y.Z on GitHub using master branch
 
---> `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
+--> run `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
 
 ====> CREATE NEW BEHRESP PACKAGES (if necessary) <====
 
