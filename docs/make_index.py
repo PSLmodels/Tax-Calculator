@@ -99,16 +99,7 @@ def policy_param_text(pname, param):
         txt += 'True'
     else:
         txt += 'False'
-    txt += '<br><i>Integer Value:</i> '
-    if param['integer_value']:
-        txt += 'True'
-    else:
-        txt += 'False'
-    txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Boolean Value:</i> '
-    if param['boolean_value']:
-        txt += 'True'
-    else:
-        txt += 'False'
+    txt += '<br><i>Value Type:</i> {}'.format(param['value_type'])
     txt += '<br><i>Known Values:</i>'
     if len(param['col_label']) > 0:
         cols = ', '.join(param['col_label'])
@@ -124,17 +115,11 @@ def policy_param_text(pname, param):
             for cyr in range(fcyr + 1, Policy.LAST_KNOWN_YEAR + 1):
                 txt += '<br>{}: {}'.format(cyr, final_val)
     txt += '<br><i>Valid Range:</i>'
-    if param['range']['min'] == 'default':
-        minval = 'known_value'
-    else:
-        minval = param['range']['min']
-    if param['range']['max'] == 'default':
-        maxval = 'known_value'
-    else:
-        maxval = param['range']['max']
+    minval = param['valid_values']['min']
+    maxval = param['valid_values']['max']
     txt += ' min = {} and max = {}'.format(minval, maxval)
     txt += '<br><i>Out-of-Range Action:</i> {}'.format(
-        param['out_of_range_action'])
+        param['invalid_action'])
     txt += '</p>'
     return txt
 
@@ -248,8 +233,8 @@ def assumption_param_text(pname, ptype, param):
     for cyr, val in zip(param['row_label'], param['value']):
         txt += '<br>{}: {}'.format(cyr, val)
     txt += '<br><i>Valid Range:</i>'
-    minval = param['range']['min']
-    maxval = param['range']['max']
+    minval = param['valid_values']['min']
+    maxval = param['valid_values']['max']
     txt += ' min = {} and max = {}'.format(minval, maxval)
     txt += '</p>'
     return txt

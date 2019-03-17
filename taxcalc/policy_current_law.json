@@ -5558,7 +5558,7 @@
 
     "_EITC_indiv": {
         "long_name": "EITC is computed for each spouse based on individual earnings",
-        "description": "Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The additional phaseout start for joint filers is not affecected by this parameter, nor are investment income and age eligibilty rules. Often used when separate filers are eligible for the EITC (EITC_sep_filers_elig == True).",
+        "description": "Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The additional phaseout start for joint filers is not affecected by this parameter, nor are investment income and age eligibilty rules.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "",
@@ -5581,7 +5581,7 @@
 
     "_EITC_sep_filers_elig": {
         "long_name": "Separate filers are eligibile for the EITC",
-        "description": "Current-law value is false, implying ineligibility. Often used when EITC is computed for each spouse based on individual earnings (EITC_indiv == True).",
+        "description": "Current-law value is false, implying ineligibility.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "",

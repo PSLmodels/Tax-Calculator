@@ -2,6 +2,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 =======================================
 
 ```
+====> CREATE NEW TAXCALC PACKAGES <====
+
 --> on branch X-Y-Z, edit RELEASES.md and CHANGES.md to finalize X.Y.Z info
 
 --> merge master branch into X-Y-Z branch
@@ -12,9 +14,11 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc]
 
---> run `make package`  [to make taxcalc package available in docs]
+--> run `make package`  [to make local taxcalc package available]
 
---> cd .. ; ./index_results.sh ; .fix. ; python make_index.py
+--> cd taxcalc/validation/taxsim ; .tests. ; .fix. ; cd ../../..
+
+--> cd docs ; ./index_results.sh ; .fix. ; python make_index.py
 
 --> cd .. ; make clean  [to remove taxcalc package]
 
@@ -26,13 +30,21 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> create release X.Y.Z on GitHub using master branch
 
---> `pbrelease Tax-Calculator taxcalc X.Y.Z --also37` [to build/upload packages]
+--> run `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
+
+====> CREATE NEW BEHRESP PACKAGES (if necessary) <====
+
+--> create corresponding Behavioral-Responses packages
+
+====> CREATE NEW DOCUMENTATION <====
 
 --> run `conda install -c PSLmodels behresp --yes`  [to make behresp available]
 
 --> on new branch X-Y-Z-cookbook
 
---> cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
+--> cd docs ; update T-C & B-R versions in cookbook.html to whatever and higher
+
+--> cd cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
 
 --> merge X-Y-Z-cookbook branch and push to origin
 
@@ -40,11 +52,10 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> on local master branch, ./gitsync
 
+====> NOTIFY OTHER DEVELOPERS <====
+
 --> email policybrain-modelers list about the new release and packages
 ```
-
-LATER: create new X-Y-Z branch that will hold RELEASES.md info for next release
-
 
 
 CREATING NEW BRANCH TO FIX BUG IN OLD RELEASE
