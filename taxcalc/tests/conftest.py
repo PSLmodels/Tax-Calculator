@@ -60,7 +60,7 @@ def fixture_test_reforms(tests_path):
     actfile_path = os.path.join(tests_path, 'reforms_actual.csv')
     afiles = os.path.join(tests_path, 'reform_actual_*.csv')
     wait_secs = 1
-    max_waits = 90
+    max_waits = 120
     # test_reforms setup
     if handling_logic:
         # remove reforms_actual.csv file if exists
