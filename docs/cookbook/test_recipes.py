@@ -17,11 +17,10 @@ import difflib
 print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 # make list of recipeNN.py filenames
-RECIPES = glob.glob('./recipe[0-9][0-9].py')
+RECIPES = glob.glob('recipe[0-9][0-9].py')
 
 # execute each recipe in RECIPES list and compare output with expected output
-for recipe_path in sorted(RECIPES):
-    recipe = recipe_path.replace('./', '')
+for recipe in sorted(RECIPES):
     out_filename = recipe.replace('.py', '.out')
     if os.path.isfile(out_filename):
         os.remove(out_filename)
