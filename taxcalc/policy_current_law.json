@@ -55,7 +55,7 @@
 
     "_SS_Earnings_c": {
         "long_name": "Maximum taxable earnings (MTE) for Social Security",
-        "description": "Only individual earnings below this maximum amount are subjected to Social Security (OASDI) payroll tax.",
+        "description": "Individual earnings below this amount are subjected to Social Security (OASDI) payroll tax.",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "irs_ref": "W-2, Box 4, instructions",
@@ -88,7 +88,7 @@
 
     "_SS_Earnings_thd": {
         "long_name": "Additional Taxable Earnings Threshold for Social Security",
-        "description": "Wages and self-employment income above this threshold are subjected to Social Security (OASDI) payroll tax in addition to earnings below the maximum taxable earnings threshold.",
+        "description": "Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.",
         "section_1": "Payroll Taxes",
         "section_2": "Social Security FICA",
         "irs_ref": "",

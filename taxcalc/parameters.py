@@ -56,7 +56,7 @@ class Parameters():
         """
         Return appropriate indexing rates for specified param_name.
         """
-        if param_name == '_SS_Earnings_c':
+        if param_name in ('_SS_Earnings_c', '_SS_Earnings_thd'):
             return self.wage_growth_rates()
         return self.inflation_rates()
 
@@ -79,7 +79,9 @@ class Parameters():
                     cpi_inflated = data.get('cpi_inflated', False)
                     if cpi_inflated:
                         index_rates = self.indexing_rates(name)
-                        if name != '_SS_Earnings_c':
+                        wage_indexed = name in ('_SS_Earnings_c',
+                                                '_SS_Earnings_thd')
+                        if not wage_indexed:
                             if known_years_is_int:
                                 values = values[:known_years]
                             else:
@@ -599,7 +601,8 @@ class Parameters():
         Private method called only in the _update method.
         """
         # pylint: disable=assignment-from-none
-        if param_name == '_SS_Earnings_c':
+        wage_indexed = param_name in ('_SS_Earnings_c', '_SS_Earnings_thd')
+        if wage_indexed:
             rates = self.wage_growth_rates()
         else:
             rates = self.inflation_rates()
