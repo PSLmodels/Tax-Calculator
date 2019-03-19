@@ -601,8 +601,7 @@ class Parameters():
         Private method called only in the _update method.
         """
         # pylint: disable=assignment-from-none
-        wage_indexed = param_name in ('_SS_Earnings_c', '_SS_Earnings_thd')
-        if wage_indexed:
+        if param_name in ('_SS_Earnings_c', '_SS_Earnings_thd'):
             rates = self.wage_growth_rates()
         else:
             rates = self.inflation_rates()
