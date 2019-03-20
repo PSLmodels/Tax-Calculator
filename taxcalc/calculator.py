@@ -1623,8 +1623,7 @@ class Calculator():
                 if not isinstance(skey, str):
                     msg = 'skey {} in param JSON is not a string'
                     raise ValueError(msg.format(skey))
-                else:
-                    year = int(skey)
+                year = int(skey)
                 rdict[year] = val
             year_param[pkey] = rdict
         # convert year_param dictionary to year_key_dict dictionary

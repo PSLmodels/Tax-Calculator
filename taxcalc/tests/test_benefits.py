@@ -83,5 +83,4 @@ def test_benefits(tests_path, cps_fullsample):
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
-    else:
-        os.remove(ben_act_path)
+    os.remove(ben_act_path)

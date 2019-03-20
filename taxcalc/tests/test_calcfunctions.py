@@ -120,9 +120,9 @@ def test_calc_and_used_vars(tests_path):
     # Report errors for the two tests:
     if found_error1 and found_error2:
         raise ValueError('{}\n{}'.format(msg1, msg2))
-    elif found_error1:
+    if found_error1:
         raise ValueError(msg1)
-    elif found_error2:
+    if found_error2:
         raise ValueError(msg2)
 
 
@@ -149,10 +149,9 @@ def test_function_args_usage(tests_path):
             msg += '{}\n'.format(fcode)
             msg += '--------------------------------------------------------\n'
             raise ValueError(msg)
-        else:
-            fname = match.group(1)
-            fargs = match.group(2).split(',')  # list of function arguments
-            fbody = match.group(3)
+        fname = match.group(1)
+        fargs = match.group(2).split(',')  # list of function arguments
+        fbody = match.group(3)
         if fname == 'Taxes':
             continue  # because Taxes has part of fbody in return statement
         for farg in fargs:
