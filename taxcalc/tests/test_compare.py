@@ -298,8 +298,7 @@ def differences(afilename, efilename):
         msg += '---            and rerun test.                ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg.format(afname, afname, efname))
-    else:
-        os.remove(afilename)
+    os.remove(afilename)
 
 
 @pytest.mark.pre_release
