@@ -14,10 +14,10 @@ import difflib
 
 
 # print start time
-print('{}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 # make list of recipeNN.py filenames
-RECIPES = glob.glob('./recipe[0-9][0-9].py')
+RECIPES = glob.glob('recipe[0-9][0-9].py')
 
 # execute each recipe in RECIPES list and compare output with expected output
 for recipe in sorted(RECIPES):
@@ -29,7 +29,8 @@ for recipe in sorted(RECIPES):
     except subprocess.CalledProcessError as err:
         print('{} FAIL with error rtncode={}'.format(recipe, err.returncode))
         continue  # to next recipe
-    with open(recipe.replace('.py', '.res'), 'r') as resfile:
+    res_filename = recipe.replace('.py', '.res')
+    with open(res_filename, 'r') as resfile:
         exp = resfile.read()
     # check for differences between out and exp results
     actual = out.splitlines(True)
@@ -41,12 +42,12 @@ for recipe in sorted(RECIPES):
         diff_lines.append(line)
     # write actual output to file if any differences; else report PASS
     if diff_lines:
-        print('{} FAIL with output differences'.format(recipe))
-        outfilename = recipe.replace('.py', '.out')
-        with open(outfilename, 'w') as outfile:
+        with open(out_filename, 'w') as outfile:
             outfile.write(out)
+        msg = '{} FAIL : actual in {} & expected in {}'
+        print(msg.format(recipe, out_filename, res_filename))
     else:
         print('{} PASS'.format(recipe))
 
 # print finish time
-print('{}'.format(datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
+print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))

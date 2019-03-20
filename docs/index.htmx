@@ -59,7 +59,7 @@ assumptions</p>
 <h2 id="gui">TaxBrain GUI</h2>
 
 <p>You can use Tax-Calculator via a graphical user interface (GUI)
-provided by the <a href="https://www.ospc.org/taxbrain/">TaxBrain web
+provided by the <a href="https://apps.ospc.org/taxbrain/">TaxBrain web
 application</a>.  This approach requires only an Internet connection
 and web browser on your computer.  TaxBrain (TB) uses a micro dataset
 to produce both aggregate and distributional reform estimates for each
@@ -253,7 +253,7 @@ report your experience by creating a new issue at
 <a href="https://github.com/PSLmodels/Tax-Calculator/issues">
 this website</a> or by sending an email to one of the core maintainers
 of Tax-Calculator listed at the bottom of the <i>What is TaxBrain?</i>
-page at <a href="https://www.ospc.org/taxbrain/">this website</a>.
+page at <a href="https://apps.ospc.org/taxbrain/">this website</a>.
 
 <p>If your installation passes the test, you are ready to begin using
 tc to analyze your tax reforms.  Continue reading this section for
@@ -929,7 +929,7 @@ can be downloaded to your computer for storage or for additional
 analysis.</p>
 
 <p>The files on your computer can be uploaded
-at <a href="https://www.ospc.org/taxbrain/file/">the TaxBrain
+at <a href="https://apps.ospc.org/taxbrain/file/">the TaxBrain
 file-upload page</a>.</p>
 
 <p>An extended example of how preliminary tax analysis on your

@@ -65,28 +65,40 @@ following an existing recipe</p>
 <h2 id="setup">Preliminaries: Kitchen Setup</h2>
 
 <p>You need to setup your computer in certain ways in order to follow
-these recipes.  First, follow
-<a href="https://PSLmodels.github.io/Tax-Calculator/#cli-install-test">these instructions</a> on installing Anaconda and a taxcalc package on
-your computer. And second, install the recipes and ingredients in this
-cookbook on your computer.  There are several ways to do this.  If you
-have cloned the Tax-Calculator repository (see the
+these recipes.</p>
+
+<p><b>First</b>, follow
+<a href="https://PSLmodels.github.io/Tax-Calculator/#cli-install-test">these
+instructions</a> on installing Anaconda and a taxcalc package on
+your computer.  Also, install the behresp package by executing this
+command: <kbd>conda install -c PSLmodels behresp</kbd>.  If you already
+have these pacakges installed do <kbd>conda update -c PSLmodels taxcalc</kbd>
+and <kbd>conda update -c PSLmodels behresp</kbd> to ensure you have the
+most recent releases.</p>
+
+<p><b>Second</b>, install the recipes, ingredients, and expected results
+in this cookbook on your computer.  There are several ways to do this.
+If you have cloned the Tax-Calculator repository (see the
 <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide">
-contributor guide</a>), then the recipes are located in the
-<kbd>Tax-Calculator/docs/cookbook</kbd> directory.  If you haven't
-cloned the repository, you have a couple of choices. You can download
-the source code as a zip file by clicking on the green <q>Clone or
-download</q> button on
-<a href="https://github.com/PSLmodels/Tax-Calculator">
-this page</a>. This choice has the advantage of replicating the
-directory structure and file names that we use in our test kitchen.
-To comfirm your unzipped installation is valid, execute
-<kbd>python test_recipes.py</kbd> in the
-<kbd>Tax-Calculator/docs/cookbook</kbd> directory to make sure all the
-recipes <kbd>PASS</kbd>.  Or you can copy and paste the recipes and
-ingredients, as needed, to your local computer.  If you make this
-second choice, you may need to edit file paths in the recipes
-depending on how you've organized and named the copied-and-pasted
-files.</p>
+contributor guide</a>), then the recipes, ingredients, and expected results,
+are already located in the <kbd>Tax-Calculator/docs/cookbook</kbd> directory.
+
+If you haven't cloned the repository, your best option, by far, is to
+download all the Tax-Calculator source code as a zip file by
+clicking on the green <q>Clone or download</q> button on
+<a href="https://github.com/PSLmodels/Tax-Calculator">this web page</a>.
+Your browser will download a file named <kbd>Tax-Calculator-master.zip</kbd>,
+which you can unzip anywhere on your local disk drive.  Then change
+directories so that you are in the
+<kbd>Tax-Calculator-master/docs/cookbook</kbd>
+directory in the unzipped directory tree.</p>
+
+<p>Once in that <kbd>Tax-Calculator[-master]/docs/cookbook</kbd>
+directory, confirm that your cookbook installation is valid by executing
+the <kbd>python test_recipes.py</kbd> command and observing that all the
+recipes <kbd>PASS</kbd>.  Regardless of which method you use, be sure
+to upgrade periodically because the packages, recipes, and expected
+results, will change over time.</p>
 
 <p><a href="#toc">Back to Cookbook Contents</a></p>
 
@@ -149,7 +161,7 @@ system.</p>
 <h2 id="ingredients">Preliminaries: Recipe Ingredients</h2>
 
 <p>All the ingredients needed for the recipes are included in
-the <kbd>Tax-Calculator/docs/cookbook/ingredients</kbd> directory.  If
+the <kbd>Tax-Calculator/docs/cookbook</kbd> directory.  If
 you organize the recipes and ingredients in a different way than they
 are organized in our test kitchen, you will need to change the file
 path for each ingredient in each recipe.</p>
@@ -181,21 +193,21 @@ is a prerequisite for all the other recipes in this cookbook.</p>
 
 <p><b>Ingredients</b></p>
 
-<p><a href="reformA.json.html" target="_blank">Policy reform</a> in
-the <kbd>ingredients/reformA.json</kbd> file.</p>
+<p><a href="reformA_json.html" target="_blank">Policy reform</a> in
+the <kbd>reformA.json</kbd> file.</p>
  
 <p><b>Instructions</b></p>
 
-<p><a href="recipe00.py.html" target="_blank">Step-by-step
+<p><a href="recipe00_py.html" target="_blank">Step-by-step
 instructions</a> in the <kbd>recipe00.py</kbd> file.</p>
 
 <p><b>Results</b></p>
 
-<p><a href="recipe00.res.html" target="_blank">Expected text
+<p><a href="recipe00_res.html" target="_blank">Expected text
 results</a> from executing <kbd>python recipe00.py > recipe00.out</kbd> at
 the command prompt as shown <a href="#execution">above</a>.</p>
 
-<p><a href="recipe00.graph.html" target="_blank">Expected graph</a> (located
+<p><a href="recipe00_graph.html" target="_blank">Expected graph</a> (located
 in the same directory as <kbd>recipe00.py</kbd> and named
 <kbd>recipe00.graph.html</kbd>) from executing
 <kbd>python recipe00.py > recipe00.out</kbd> at the command prompt as
@@ -224,12 +236,12 @@ Tax-Calculator website.</p>
 
 <p><b>Instructions</b></p>
 
-<p><a href="recipe01.py.html" target="_blank">Step-by-step
+<p><a href="recipe01_py.html" target="_blank">Step-by-step
 instructions</a> in the <kbd>recipe01.py</kbd> file.</p>
 
 <p><b>Results</b></p>
 
-<p><a href="recipe01.res.html" target="_blank">Expected text
+<p><a href="recipe01_res.html" target="_blank">Expected text
 results</a> from executing <kbd>python recipe01.py > recipe01.out</kbd> at
 the command prompt as illustrated <a href="#execution">above</a>.</p>
 
@@ -249,17 +261,17 @@ compter by executing this at the command prompt:
 
 <p><b>Ingredients</b></p>
 
-<p><a href="reformA.json.html" target="_blank">Policy reform</a> in
-the <kbd>ingredients/reformA.json</kbd> file.</p>
+<p><a href="reformA_json.html" target="_blank">Policy reform</a> in
+the <kbd>reformA.json</kbd> file.</p>
 
 <p><b>Instructions</b></p>
 
-<p><a href="recipe02.py.html" target="_blank">Step-by-step
+<p><a href="recipe02_py.html" target="_blank">Step-by-step
 instructions</a> in the <kbd>recipe02.py</kbd> file.</p>
 
 <p><b>Results</b></p>
 
-<p><a href="recipe02.res.html" target="_blank">Expected text
+<p><a href="recipe02_res.html" target="_blank">Expected text
 results</a> from executing <kbd>python recipe02.py > recipe02.out</kbd> at
 the command prompt as illustrated <a href="#execution">above</a>.</p>
 
@@ -279,12 +291,12 @@ current-law policy.</p>
 
 <p><b>Instructions</b></p>
 
-<p><a href="recipe03.py.html" target="_blank">Step-by-step
+<p><a href="recipe03_py.html" target="_blank">Step-by-step
 instructions</a> in the <kbd>recipe03.py</kbd> file.</p>
 
 <p><b>Results</b></p>
 
-<p><a href="recipe03.res.html" target="_blank">Expected text
+<p><a href="recipe03_res.html" target="_blank">Expected text
 results</a> from executing <kbd>python recipe03.py > recipe03.out</kbd> at
 the command prompt as illustrated <a href="#execution">above</a>.</p>
 
@@ -302,8 +314,8 @@ recipe, so you might want to read that recipe first.</p>
 
 <p><b>Ingredients</b></p>
 
-<p><a href="reformB.json.html" target="_blank">Policy reform</a> in
-the <kbd>ingredients/reformA.json</kbd> file.  Note that this reform
+<p><a href="reformB_json.html" target="_blank">Policy reform</a> in
+the <kbd>reformA.json</kbd> file.  Note that this reform
 increases the personal exemption amount (from zero where it is under
 current-law policy) and decreases the standard deduction amounts (so
 they are approximately where they were before the TCJA reform that is
@@ -311,12 +323,12 @@ now current-law policy).</p>
 
 <p><b>Instructions</b></p>
 
-<p><a href="recipe04.py.html" target="_blank">Step-by-step
+<p><a href="recipe04_py.html" target="_blank">Step-by-step
 instructions</a> in the <kbd>recipe04.py</kbd> file.</p>
 
 <p><b>Results</b></p>
 
-<p><a href="recipe04.res.html" target="_blank">Expected text
+<p><a href="recipe04_res.html" target="_blank">Expected text
 results</a> from executing <kbd>python recipe04.py > recipe04.out</kbd> at
 the command prompt as illustrated <a href="#execution">above</a>.</p>
 
