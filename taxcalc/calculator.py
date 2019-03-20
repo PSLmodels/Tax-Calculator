@@ -649,7 +649,12 @@ class Calculator():
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         mtr_on_earnings = variable_str in ('e00200p', 'e00200s')
         if wrt_full_compensation and mtr_on_earnings:
-            adj = np.where(variable < self.policy_param('SS_Earnings_c'),
+            # pylint: disable=assignment-from-no-return
+            oasdi_taxed = np.logical_or(
+                variable < self.policy_param('SS_Earnings_c'),
+                variable >= self.policy_param('SS_Earnings_thd')
+            )
+            adj = np.where(oasdi_taxed,
                            0.5 * (self.policy_param('FICA_ss_trt') +
                                   self.policy_param('FICA_mc_trt')),
                            0.5 * self.policy_param('FICA_mc_trt'))

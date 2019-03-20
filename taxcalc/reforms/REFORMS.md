@@ -23,6 +23,8 @@ documentation](https://PSLmodels.github.io/Tax-Calculator/index.html#pol).
 
 - [Larson Social Security 2100 Act](Larson2019.json)
 
+- [Sanders-DeFazio Social Security Expansion Act](SandersDeFazio.json)
+
 ## Tax Reforms Defined Relative to pre-TCJA Policy
 
 Read the answer to [Question 1 in this

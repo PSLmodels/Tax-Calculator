@@ -1,6 +1,7 @@
 // Title: The Social Security 2100 Act: Rep. John Larson
 // Reform_File_Author: Anderson Frailey
 // Reform_Reference: https://larson.house.gov/social-security-2100
+// SSA Analysis: https://www.ssa.gov/OACT/solvency/LarsonBlumenthalVanHollen_20190130.pdf
 // Reform_Baseline: policy_current_law.json
 // Reform_Description:
 // - Raise threshold for Social Security benefit taxability to (1)
