@@ -359,7 +359,7 @@ def test_bool_int_value_info(tests_path, json_filename):
     path = os.path.join(tests_path, '..', json_filename)
     with open(path, 'r') as pfile:
         pdict = json.load(pfile)
-    maxint = np.iinfo(np.int8).max
+    maxint = np.iinfo(np.int16).max
     for param in sorted(pdict.keys()):
         # find param type based on value
         val = pdict[param]['value']
