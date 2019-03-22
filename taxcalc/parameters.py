@@ -520,7 +520,7 @@ class Parameters():
             elif x_type == 'boolean':
                 x = np.array(x, np.bool_)
             elif x_type == 'integer':
-                x = np.array(x, np.int8)
+                x = np.array(x, np.int16)
             elif x_type == 'string':
                 x = np.array(x, np.dtype(Parameters.STRING_DTYPE))
                 assert len(x.shape) == 1, \
