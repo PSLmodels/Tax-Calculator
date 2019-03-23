@@ -112,7 +112,7 @@ incompatible with earlier releases.**
 - Revise specification of `2017_law.json` and `TCJA.json` reform files to work when last known parameter values are for 2018
   [[#2218](https://github.com/PSLmodels/Tax-Calculator/pull/2218)
   by Martin Holmer]
-- Add policy parameter that allows specification of the payroll tax aspects of the Larson Social Security 2100 Act
+- Add policy parameter that allows specification of the payroll tax aspects of the Larson "Social Security 2100 Act"
   [[#2222](https://github.com/PSLmodels/Tax-Calculator/pull/2222)
   by Anderson Frailey]
 
