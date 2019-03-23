@@ -2,6 +2,16 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 1.2.0 on 2019-03-24
+--------------------------------------
+
+**This is an enhancement and bug-fix release.**
+
+- Add JSON reform file for tax provisions in Sanders-DeFazio "Social Security Expansion Act"
+
+- Fix minor bugs related to the new `_SS_Earnings_thd` policy parameter used in several payroll tax reforms
+
+
 Changes in release 1.1.0 on 2019-03-17
 --------------------------------------
 
