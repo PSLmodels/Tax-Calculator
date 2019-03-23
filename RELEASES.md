@@ -4,6 +4,30 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-03-24 Release 1.2.0
+------------------------
+(last merged pull request is
+[#2269](https://github.com/PSLmodels/Tax-Calculator/pull/2269))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Add JSON reform file for tax provisions in Sanders-DeFazio "Social Security Expansion Act"
+  [[#2266](https://github.com/PSLmodels/Tax-Calculator/pull/2266)
+  by Duncan Hobbs]
+- Add ability to handle larger values of integer parameters in Parameter class
+  [[#2269](https://github.com/PSLmodels/Tax-Calculator/pull/2269)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Fix minor bugs related to the `_SS_Earnings_thd` policy parameter added in [#2222](https://github.com/PSLmodels/Tax-Calculator/pull/2222)
+  [[#2267](https://github.com/PSLmodels/Tax-Calculator/pull/2267)
+  by Martin Holmer]
+
+
 2019-03-17 Release 1.1.0
 ------------------------
 (last merged pull request is
