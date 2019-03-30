@@ -25,7 +25,6 @@
 //     the magnitude of model-calculated marginal tax rates with respect to
 //     investment income in cases where a marginal increase in investment
 //     income takes a filing unit above the ceiling.
-//     (This change was introduced for assumption set b and higher.)
 //
 {
     "policy": {

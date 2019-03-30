@@ -21,7 +21,7 @@ The following results are for INPUT files containing 100,000
 randomly-generated filing units for a given year.  The random sampling
 is such that a different sample is drawn for each year.  In each INPUT
 file three state-related variables are set to zero for every filing
-unit, one variable specifies the year, and another specifies an filing
+unit, one variable specifies the year, and another specifies a filing
 unit id, which leaves twenty-two input variables that are set to
 randomly-generated values.
 
@@ -46,7 +46,7 @@ input variables, which include demographic variables and labor income,
 but sets to zero all the TAXSIM-27 input variables numbered from 13
 through 27.
 
-Validation results using then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
@@ -63,7 +63,7 @@ does not affect federal income tax liability.  Three of the remaining
 four input variables are itemized expense amounts and the fourth is
 child-care expenses.
 
-Validation results using then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
@@ -73,7 +73,7 @@ Validation results using then current-version of TAXSIM-27 on these dates:
 2017 INPUT file that specifies all the non-state TAXSIM-27 input
 variables to be randomly generated values.
 
-Validation results using then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
@@ -87,7 +87,7 @@ through 27.  (This is the same logic as used to generate the **a17**
 sample except that a different stream of random numbers is used so that
 the 100,000 filing units are completely different.)
 
-Validation results using then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2019-01-29 : same results (other dependent credit not included in ovar 22)
 2. 2019-03-30 : same results (other dependent credit now included in ovar 22)
 
@@ -105,7 +105,7 @@ child-care expenses.  (This is the same logic as used to generate the
 **b17** sample except that a different stream of random numbers is
 used so that the 100,000 filing units are completely different.)
 
-Validation results using then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2019-03-30 : same results except for 422 itax diffs with largest being $13.00
 
 **c18 ASSUMPTION SET**:
@@ -116,5 +116,5 @@ used to generate the **c17** sample except that a different stream of
 random numbers is used so that the 100,000 filing units are completely
 different.)
 
-Validation results using then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2019-03-30 : same results except for 327 itax diffs with largest being $13.00
