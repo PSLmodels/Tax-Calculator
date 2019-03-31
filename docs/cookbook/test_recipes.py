@@ -10,7 +10,7 @@ from datetime import datetime
 import os
 import glob
 import subprocess
-import difflib
+import re
 
 
 # print start time
@@ -32,16 +32,12 @@ for recipe in sorted(RECIPES):
     res_filename = recipe.replace('.py', '.res')
     with open(res_filename, 'r') as resfile:
         exp = resfile.read()
-    # check for differences between out and exp results
-    actual = out.splitlines(True)
-    expect = exp.splitlines(True)
-    diff_lines = list()
-    diff = difflib.unified_diff(expect, actual,
-                                fromfile='expect', tofile='actual', n=0)
-    for line in diff:
-        diff_lines.append(line)
+    # check for differences between out and exp results ignoring whitespace
+    actual = re.sub(r'\s', '', out)
+    expect = re.sub(r'\s', '', exp)
+    differences = actual != expect
     # write actual output to file if any differences; else report PASS
-    if diff_lines:
+    if differences:
         with open(out_filename, 'w') as outfile:
             outfile.write(out)
         msg = '{} FAIL : actual in {} & expected in {}'
