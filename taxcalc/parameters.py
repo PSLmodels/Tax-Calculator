@@ -218,21 +218,21 @@ class Parameters():
 
     # ----- begin private methods of Parameters class -----
 
-    def _validate_names_types(self, revision):
+    def _validate_names_types(self, revision, removed_names=None):
         """
         Check validity of parameter names and parameter types used
-        in the specified revision dictionary.
+        in the specified revision dictionary.  The optional
+        removed_names list contains parameter names that were once valid
+        but are no longer valid.
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
         # pylint: disable=too-many-statements,too-many-locals
-        removed_param_names = set([
-            # following 5 parameters removed in PR 2223 merged on 2019-02-06
-            '_DependentCredit_Child_c',
-            '_DependentCredit_Nonchild_c',
-            '_DependentCredit_before_CTC',
-            '_FilerCredit_c',
-            '_ALD_InvInc_ec_base_RyanBrady'
-        ])
+        if removed_names is None:
+            removed_param_names = set()
+        else:
+            assert isinstance(removed_names, list)
+            removed_param_names = set(removed_names)
+        assert isinstance(self._vals, dict)
         param_names = set(self._vals.keys())
         for year in sorted(revision.keys()):
             for name in revision[year]:
@@ -322,20 +322,30 @@ class Parameters():
                                     )
         del param_names
 
-    def _validate_values(self, parameters_set):
+    def _validate_values(self, parameters_set, redefined_info=None):
         """
         Check values of parameters in specified parameter_set using
-        range information from DEFAULTS_FILE_NAME JSON file.
+        range information from DEFAULTS_FILE_NAME JSON file.  The
+        optional redefined_info argument is a dictionary of parameter
+        name:message pairs for parameters whose meaning has been changed
+        recently and for whom warning messages are to be issued.
         """
         # pylint: disable=too-many-statements,too-many-locals
         # pylint: disable=too-many-branches,too-many-nested-blocks
+        assert isinstance(parameters_set, set)
         parameters = sorted(parameters_set)
+        if redefined_info is None:
+            redefined_pinfo = dict()
+        else:
+            redefined_pinfo = redefined_info
+        assert isinstance(redefined_pinfo, dict)
+        redefined_pnames = redefined_pinfo.keys()
         syr = self.start_year
         for pname in parameters:
             if pname.endswith('_cpi'):
                 continue  # *_cpi parameter values validated elsewhere
-            if pname == '_CTC_c':  # TODO: remove this warning at end of 2019
-                msg = '_CTC_c was redefined in release 1.0.0 (2019-Q1)'
+            if pname in redefined_pnames:
+                msg = redefined_pinfo[pname]
                 self.parameter_warnings += msg + '\n'
             pvalue = getattr(self, pname)
             if self._vals[pname]['value_type'] == 'string':

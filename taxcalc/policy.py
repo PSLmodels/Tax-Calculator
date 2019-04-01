@@ -161,6 +161,7 @@ class Policy(Parameters):
         catch this error, so be careful to specify reform dictionaries
         correctly.
         """
+        # pylint: disable=too-many-locals
         # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
@@ -187,7 +188,15 @@ class Policy(Parameters):
         # validate reform parameter names and types
         self.parameter_warnings = ''
         self.parameter_errors = ''
-        self._validate_names_types(reform)
+        removed_param_names = [
+            # following 5 parameters removed in PR 2223 merged on 2019-02-06
+            '_DependentCredit_Child_c',
+            '_DependentCredit_Nonchild_c',
+            '_DependentCredit_before_CTC',
+            '_FilerCredit_c',
+            '_ALD_InvInc_ec_base_RyanBrady'
+        ]
+        self._validate_names_types(reform, removed_names=removed_param_names)
         if not self._ignore_errors and self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # optionally apply cpi_offset to inflation_rates and re-initialize
@@ -203,7 +212,11 @@ class Policy(Parameters):
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
         # validate reform parameter values
-        self._validate_values(reform_parameters)
+        redefined = {
+            # TODO: remove the following later in 2019
+            '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-02-22)'
+        }
+        self._validate_values(reform_parameters, redefined_info=redefined)
         if self.parameter_warnings and print_warnings:
             print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
