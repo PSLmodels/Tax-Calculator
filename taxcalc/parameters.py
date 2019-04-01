@@ -218,96 +218,191 @@ class Parameters():
 
     # ----- begin private methods of Parameters class -----
 
-    def _validate_assump_parameter_names_types(self, revision):
+    def _validate_names_types(self, revision):
         """
-        Check validity of assumption parameter names and parameter types
-        used in the specified revision dictionary.
+        Check validity of parameter names and parameter types used
+        in the specified revision dictionary.
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-statements,too-many-locals
+        removed_param_names = set([
+            # following 5 parameters removed in PR 2223 merged on 2019-02-06
+            '_DependentCredit_Child_c',
+            '_DependentCredit_Nonchild_c',
+            '_DependentCredit_before_CTC',
+            '_FilerCredit_c',
+            '_ALD_InvInc_ec_base_RyanBrady'
+        ])
         param_names = set(self._vals.keys())
         for year in sorted(revision.keys()):
             for name in revision[year]:
-                if name not in param_names:
-                    msg = '{} {} unknown parameter name'
-                    self.parameter_errors += (
-                        'ERROR: ' + msg.format(year, name) + '\n'
-                    )
-                else:
-                    # check parameter value type avoiding use of isinstance
-                    # because isinstance(True, (int,float)) is True, which
-                    # makes it impossible to check float parameters
-                    valtype = self._vals[name]['value_type']
-                    assert isinstance(revision[year][name], list)
-                    pvalue = revision[year][name][0]
-                    assert not isinstance(pvalue, list)
-                    pvalue = [pvalue]  # make scalar a single-item list
-                    # pylint: disable=consider-using-enumerate
-                    for idx in range(0, len(pvalue)):
-                        pname = name
-                        pval = pvalue[idx]
-                        # pylint: disable=unidiomatic-typecheck
-                        if valtype == 'real':
-                            if type(pval) != float and type(pval) != int:
-                                msg = '{} {} value {} is not a number'
+                if name.endswith('_cpi'):
+                    if isinstance(revision[year][name], bool):
+                        pname = name[:-4]  # root parameter name
+                        if pname not in param_names:
+                            if pname in removed_param_names:
+                                msg = '{} {} is a removed parameter name'
+                            else:
+                                msg = '{} {} is an unknown parameter name'
+                            self.parameter_errors += (
+                                'ERROR: ' + msg.format(year, name) + '\n'
+                            )
+                        else:
+                            # check if root parameter is cpi inflatable
+                            if not self._vals[pname]['cpi_inflatable']:
+                                msg = '{} {} parameter is not cpi inflatable'
                                 self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname, pval) +
-                                    '\n'
+                                    'ERROR: ' + msg.format(year, pname) + '\n'
                                 )
-                        elif valtype == 'boolean':
-                            if type(pval) != bool:
-                                msg = '{} {} value {} is not boolean'
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname, pval) +
-                                    '\n'
-                                )
-                        elif valtype == 'integer':
-                            if type(pval) != int:
-                                msg = '{} {} value {} is not integer'
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname, pval) +
-                                    '\n'
-                                )
-                        elif valtype == 'string':
-                            if type(pval) != str:
-                                msg = '{} {} value {} is not a string'
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname, pval) +
-                                    '\n'
-                                )
+                    else:
+                        msg = '{} {} parameter is not true or false'
+                        self.parameter_errors += (
+                            'ERROR: ' + msg.format(year, name) + '\n'
+                        )
+                else:  # if name does not end with '_cpi'
+                    if name not in param_names:
+                        if name in removed_param_names:
+                            msg = '{} {} is a removed parameter name'
+                        else:
+                            msg = '{} {} is an unknown parameter name'
+                        self.parameter_errors += (
+                            'ERROR: ' + msg.format(year, name) + '\n'
+                        )
+                    else:
+                        # check parameter value type avoiding use of isinstance
+                        # because isinstance(True, (int,float)) is True, which
+                        # makes it impossible to check float parameters
+                        valtype = self._vals[name]['value_type']
+                        assert isinstance(revision[year][name], list)
+                        pvalue = revision[year][name][0]
+                        if isinstance(pvalue, list):
+                            scalar = False  # parameter value is a list
+                        else:
+                            scalar = True  # parameter value is a scalar
+                            pvalue = [pvalue]  # make scalar a single-item list
+                        # pylint: disable=consider-using-enumerate
+                        for idx in range(0, len(pvalue)):
+                            if scalar:
+                                pname = name
+                            else:
+                                pname = '{}_{}'.format(name, idx)
+                            pval = pvalue[idx]
+                            # pylint: disable=unidiomatic-typecheck
+                            if valtype == 'real':
+                                if type(pval) != float and type(pval) != int:
+                                    msg = '{} {} value {} is not a number'
+                                    self.parameter_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pval) +
+                                        '\n'
+                                    )
+                            elif valtype == 'boolean':
+                                if type(pval) != bool:
+                                    msg = '{} {} value {} is not boolean'
+                                    self.parameter_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pval) +
+                                        '\n'
+                                    )
+                            elif valtype == 'integer':
+                                if type(pval) != int:
+                                    msg = '{} {} value {} is not integer'
+                                    self.parameter_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pval) +
+                                        '\n'
+                                    )
+                            elif valtype == 'string':
+                                if type(pval) != str:
+                                    msg = '{} {} value {} is not a string'
+                                    self.parameter_errors += (
+                                        'ERROR: ' +
+                                        msg.format(year, pname, pval) +
+                                        '\n'
+                                    )
         del param_names
 
-    def _validate_assump_parameter_values(self, parameters_set):
+    def _validate_values(self, parameters_set):
         """
-        Check values of assumption parameters in specified parameter_set.
+        Check values of parameters in specified parameter_set using
+        range information from DEFAULTS_FILE_NAME JSON file.
         """
+        # pylint: disable=too-many-statements,too-many-locals
+        # pylint: disable=too-many-branches,too-many-nested-blocks
         parameters = sorted(parameters_set)
+        syr = self.start_year
         for pname in parameters:
+            if pname.endswith('_cpi'):
+                continue  # *_cpi parameter values validated elsewhere
+            if pname == '_CTC_c':  # TODO: remove this warning at end of 2019
+                msg = '_CTC_c was redefined in release 1.0.0 (2019-Q1)'
+                self.parameter_warnings += msg + '\n'
             pvalue = getattr(self, pname)
-            for vop, vval in self._vals[pname]['valid_values'].items():
-                vvalue = np.full(pvalue.shape, vval)
-                assert pvalue.shape == vvalue.shape
-                assert len(pvalue.shape) == 1  # parameter value is a scalar
+            if self._vals[pname]['value_type'] == 'string':
+                valid_options = self._vals[pname]['valid_values']['options']
                 for idx in np.ndindex(pvalue.shape):
-                    out_of_range = False
-                    if vop == 'min' and pvalue[idx] < vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} {} value {} < min value {}'
-                    if vop == 'max' and pvalue[idx] > vvalue[idx]:
-                        out_of_range = True
-                        msg = '{} {} value {} > max value {}'
-                    if out_of_range:
-                        name = pname
-                        self.parameter_errors += (
-                            'ERROR: ' + msg.format(idx[0] + self.start_year,
-                                                   name,
-                                                   pvalue[idx],
-                                                   vvalue[idx]) + '\n'
+                    if pvalue[idx] not in valid_options:
+                        msg = "{} {} value '{}' not in {}"
+                        fullmsg = '{}: {}\n'.format(
+                            'ERROR',
+                            msg.format(idx[0] + syr,
+                                       pname,
+                                       pvalue[idx],
+                                       valid_options)
                         )
+                        self.parameter_errors += fullmsg
+            else:  # parameter does not have string type
+                for vop, vval in self._vals[pname]['valid_values'].items():
+                    if isinstance(vval, str):
+                        vvalue = getattr(self, vval)
+                    else:
+                        vvalue = np.full(pvalue.shape, vval)
+                    assert pvalue.shape == vvalue.shape
+                    assert len(pvalue.shape) <= 2
+                    if len(pvalue.shape) == 2:
+                        scalar = False  # parameter value is a list (vector)
+                    else:
+                        scalar = True  # parameter value is a scalar
+                    for idx in np.ndindex(pvalue.shape):
+                        out_of_range = False
+                        if vop == 'min' and pvalue[idx] < vvalue[idx]:
+                            out_of_range = True
+                            msg = '{} {} value {} < min value {}'
+                            extra = self._vals[pname]['invalid_minmsg']
+                            if extra:
+                                msg += ' {}'.format(extra)
+                        if vop == 'max' and pvalue[idx] > vvalue[idx]:
+                            out_of_range = True
+                            msg = '{} {} value {} > max value {}'
+                            extra = self._vals[pname]['invalid_maxmsg']
+                            if extra:
+                                msg += ' {}'.format(extra)
+                        if out_of_range:
+                            action = self._vals[pname]['invalid_action']
+                            if scalar:
+                                name = pname
+                            else:
+                                name = '{}_{}'.format(pname, idx[1])
+                                if extra:
+                                    msg += '_{}'.format(idx[1])
+                            if action == 'warn':
+                                fullmsg = '{}: {}\n'.format(
+                                    'WARNING',
+                                    msg.format(idx[0] + syr,
+                                               name,
+                                               pvalue[idx],
+                                               vvalue[idx])
+                                )
+                                self.parameter_warnings += fullmsg
+                            if action == 'stop':
+                                fullmsg = '{}: {}\n'.format(
+                                    'ERROR',
+                                    msg.format(idx[0] + syr,
+                                               name,
+                                               pvalue[idx],
+                                               vvalue[idx])
+                                )
+                                self.parameter_errors += fullmsg
         del parameters
 
     @classmethod

@@ -460,7 +460,7 @@ def fixture_defaultsjsonfile():
 
 def test_alternative_defaults_file(defaults_json_file):
     """
-    Test Parameter._validate_assump_paramter_values method using
+    Test Parameter._validate_values method using
     alternative Parameters.DEFAULTS_FILE_NAME.
     """
     # pylint: disable=too-many-statements
@@ -494,17 +494,17 @@ def test_alternative_defaults_file(defaults_json_file):
     assert prms.start_year == 2013
     assert prms.current_year == 2013
     paramsreform = {2014: {'_param4': [9]}}
-    prms._validate_assump_parameter_names_types(paramsreform)
+    prms._validate_names_types(paramsreform)
     assert prms.parameter_errors
     del prms
     del paramsreform
     prms = Params()
     paramsreform = {2014: {'_param2': [3.6]}}
-    prms._validate_assump_parameter_names_types(paramsreform)
+    prms._validate_names_types(paramsreform)
     assert prms.parameter_errors
     del prms
     del paramsreform
     prms = Params()
     paramsreform = {2014: {'_param3': [3.6]}}
-    prms._validate_assump_parameter_names_types(paramsreform)
+    prms._validate_names_types(paramsreform)
     assert prms.parameter_errors

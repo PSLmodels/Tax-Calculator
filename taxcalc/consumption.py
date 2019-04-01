@@ -74,7 +74,7 @@ class Consumption(Parameters):
             msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_revision_year, self.end_year))
         # validate revision parameter names and types
-        self._validate_assump_parameter_names_types(revision)
+        self._validate_names_types(revision)
         if self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # implement the revision year by year
@@ -85,7 +85,7 @@ class Consumption(Parameters):
             self._update({year: revision[year]})
         self.set_year(precall_current_year)
         # validate revision parameter values
-        self._validate_assump_parameter_values(revision_parameters)
+        self._validate_values(revision_parameters)
         if self.parameter_errors:
             raise ValueError('\n' + self.parameter_errors)
 
