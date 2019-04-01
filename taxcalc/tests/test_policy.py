@@ -395,6 +395,7 @@ def test_alternative_defaults_file(defaults_json_file):
 
         def __init__(self):
             # pylint: disable=super-init-not-called
+            # DO NOT CALL super().__init__() TO AVOID NO _cpi_offset ERROR
             # read default parameters and initialize
             self._vals = self._params_dict_from_json_file()
             self.initialize(Policyx.JSON_START_YEAR, Policyx.DEFAULT_NUM_YEARS)

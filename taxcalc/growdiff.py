@@ -31,7 +31,7 @@ class GrowDiff(Parameters):
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self):
-        # pylint: disable=super-init-not-called
+        super().__init__()
         self._vals = self._params_dict_from_json_file()
         start_year = GrowDiff.JSON_START_YEAR
         num_years = GrowDiff.DEFAULT_NUM_YEARS

@@ -476,7 +476,7 @@ def test_alternative_defaults_file(defaults_json_file):
         DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
         def __init__(self):
-            # pylint: disable=super-init-not-called
+            super().__init__()
             # read default parameters and initialize
             self._vals = self._params_dict_from_json_file()
             self.initialize(Params.JSON_START_YEAR, Params.DEFAULT_NUM_YEARS)

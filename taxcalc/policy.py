@@ -45,7 +45,7 @@ class Policy(Parameters):
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     def __init__(self, gfactors=None):
-        # pylint: disable=super-init-not-called
+        super().__init__()
         # handle gfactors argument
         if gfactors is None:
             self._gfactors = GrowFactors()
