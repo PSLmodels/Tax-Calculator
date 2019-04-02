@@ -52,7 +52,7 @@ class Parameters():
         self._start_year = start_year
         self._num_years = num_years
         self._end_year = start_year + num_years - 1
-        self.set_default_vals()
+        self._set_default_vals()
 
     def inflation_rates(self):
         """
@@ -75,41 +75,6 @@ class Parameters():
         if param_name in ('_SS_Earnings_c', '_SS_Earnings_thd'):
             return self.wage_growth_rates()
         return self.inflation_rates()
-
-    def set_default_vals(self, known_years=999999):
-        """
-        Called by initialize method and from some subclass methods.
-        """
-        # pylint: disable=too-many-nested-blocks
-        if isinstance(known_years, int):
-            known_years_is_int = True
-        elif isinstance(known_years, dict):
-            known_years_is_int = False
-        else:
-            raise ValueError('known_years is neither an int nor a dict')
-        if hasattr(self, '_vals'):
-            for name, data in self._vals.items():
-                valtype = data.get('value_type')
-                values = data.get('value')
-                if values:
-                    cpi_inflated = data.get('cpi_inflated', False)
-                    if cpi_inflated:
-                        index_rates = self.indexing_rates(name)
-                        wage_indexed = name in ('_SS_Earnings_c',
-                                                '_SS_Earnings_thd')
-                        if not wage_indexed:
-                            if known_years_is_int:
-                                values = values[:known_years]
-                            else:
-                                values = values[:known_years[name]]
-                    else:
-                        index_rates = None
-                    setattr(self, name,
-                            self._expand_array(values, valtype,
-                                               inflate=cpi_inflated,
-                                               inflation_rates=index_rates,
-                                               num_years=self._num_years))
-        self.set_year(self._start_year)
 
     @property
     def num_years(self):
@@ -233,6 +198,180 @@ class Parameters():
         return pvalue
 
     # ----- begin private methods of Parameters class -----
+
+    def _set_default_vals(self, known_years=999999):
+        """
+        Called by initialize method and from some subclass methods.
+        """
+        # pylint: disable=too-many-nested-blocks
+        if isinstance(known_years, int):
+            known_years_is_int = True
+        elif isinstance(known_years, dict):
+            known_years_is_int = False
+        else:
+            raise ValueError('known_years is neither an int nor a dict')
+        if hasattr(self, '_vals'):
+            for name, data in self._vals.items():
+                valtype = data.get('value_type')
+                values = data.get('value')
+                if values:
+                    cpi_inflated = data.get('cpi_inflated', False)
+                    if cpi_inflated:
+                        index_rates = self.indexing_rates(name)
+                        wage_indexed = name in ('_SS_Earnings_c',
+                                                '_SS_Earnings_thd')
+                        if not wage_indexed:
+                            if known_years_is_int:
+                                values = values[:known_years]
+                            else:
+                                values = values[:known_years[name]]
+                    else:
+                        index_rates = None
+                    setattr(self, name,
+                            self._expand_array(values, valtype,
+                                               inflate=cpi_inflated,
+                                               inflation_rates=index_rates,
+                                               num_years=self._num_years))
+        self.set_year(self._start_year)
+
+    def _update(self, year_mods):
+        """
+        Private method used by public implement_reform and update_* methods
+        in inheriting classes.
+
+        Parameters
+        ----------
+        year_mods: dictionary containing a single YEAR:MODS pair
+            see Notes below for details on dictionary structure.
+
+        Raises
+        ------
+        ValueError:
+            if year_mods is not a dictionary of the expected structure.
+
+        Returns
+        -------
+        nothing: void
+
+        Notes
+        -----
+        This is a private method that should **NEVER** be used by clients
+        of the inheriting classes.  Instead, always use the public
+        implement_reform or update_consumption-like methods defined by
+        the inheriting class.  This is a private method that helps the
+        public methods work.
+
+        This method implements a policy reform or assumption modification,
+        the provisions of which are specified in the year_mods dictionary,
+        that changes the values of some parameters in objects of the
+        inheriting class.  This year_mods dictionary contains exactly one
+        YEAR:MODS pair, where the integer YEAR key indicates the
+        calendar year for which the parameter revisions in the MODS
+        dictionary are implemented.  The MODS dictionary contains
+        PARAM:VALUE pairs in which the PARAM is a string specifying
+        the parameter (as used in the DEFAULTS_FILE_NAME default
+        parameter file) and the VALUE is a Python list of post-update
+        values for that PARAM in that YEAR.  Beginning in the year
+        following the implementation of a revision provision, the
+        parameter whose value has been changed by the revision continues
+        to be inflation indexed, if relevant, or not be inflation indexed
+        according to that parameter's cpi_inflated value loaded from
+        DEFAULTS_FILE_NAME.  For a cpi-related parameter, a reform can change
+        the indexing status of a parameter by including in the MODS dictionary
+        a term that is a PARAM_cpi:BOOLEAN pair specifying the post-reform
+        indexing status of the parameter.
+
+        So, for example, to raise the OASDI (i.e., Old-Age, Survivors,
+        and Disability Insurance) maximum taxable earnings beginning
+        in 2018 to $500,000 and to continue indexing it in subsequent
+        years as in current-law policy, the YEAR:MODS dictionary would
+        be as follows::
+
+            {2018: {"_SS_Earnings_c":[500000]}}
+
+        But to raise the maximum taxable earnings in 2018 to $500,000
+        without any indexing in subsequent years, the YEAR:MODS
+        dictionary would be as follows::
+
+            {2018: {"_SS_Earnings_c":[500000], "_SS_Earnings_c_cpi":False}}
+
+        And to raise in 2019 the starting AGI for EITC phaseout for
+        married filing jointly filing status (which is a two-dimensional
+        policy parameter that varies by the number of children from zero
+        to three or more and is inflation indexed), the YEAR:MODS dictionary
+        would be as follows::
+
+            {2019: {"_EITC_ps_MarriedJ":[[8000, 8500, 9000, 9500]]}}
+
+        Notice the pair of double square brackets around the four values
+        for 2019.  The one-dimensional parameters above require only a pair
+        of single square brackets.
+        """
+        # pylint: disable=too-many-locals
+        # check YEAR value in the single YEAR:MODS dictionary parameter
+        if not isinstance(year_mods, dict):
+            msg = 'year_mods is not a dictionary'
+            raise ValueError(msg)
+        if len(year_mods.keys()) != 1:
+            msg = 'year_mods dictionary must contain a single YEAR:MODS pair'
+            raise ValueError(msg)
+        year = list(year_mods.keys())[0]
+        if year != self.current_year:
+            msg = 'YEAR={} in year_mods is not equal to current_year={}'
+            raise ValueError(msg.format(year, self.current_year))
+        # check that MODS is a dictionary
+        if not isinstance(year_mods[year], dict):
+            msg = 'mods in year_mods is not a dictionary'
+            raise ValueError(msg)
+        # implement reform provisions included in the single YEAR:MODS pair
+        num_years_to_expand = (self.start_year + self.num_years) - year
+        all_names = set(year_mods[year].keys())  # no duplicate keys in a dict
+        used_names = set()  # set of used parameter names in MODS dict
+        for name, values in year_mods[year].items():
+            # determine indexing status of parameter with name for year
+            if name.endswith('_cpi'):
+                continue  # handle elsewhere in this method
+            vals_indexed = self._vals[name].get('cpi_inflated', False)
+            valtype = self._vals[name].get('value_type')
+            name_plus_cpi = name + '_cpi'
+            if name_plus_cpi in year_mods[year].keys():
+                used_names.add(name_plus_cpi)
+                indexed = year_mods[year].get(name_plus_cpi)
+                self._vals[name]['cpi_inflated'] = indexed  # remember status
+            else:
+                indexed = vals_indexed
+            # set post-reform values of parameter with name
+            used_names.add(name)
+            cval = getattr(self, name, None)
+            index_rates = self._indexing_rates_for_update(name, year,
+                                                          num_years_to_expand)
+            nval = self._expand_array(values, valtype,
+                                      inflate=indexed,
+                                      inflation_rates=index_rates,
+                                      num_years=num_years_to_expand)
+            cval[(year - self.start_year):] = nval
+        # handle unused parameter names, all of which end in _cpi, but some
+        # parameter names ending in _cpi were handled above
+        unused_names = all_names - used_names
+        for name in unused_names:
+            used_names.add(name)
+            pname = name[:-4]  # root parameter name
+            pindexed = year_mods[year][name]
+            self._vals[pname]['cpi_inflated'] = pindexed  # remember status
+            cval = getattr(self, pname, None)
+            pvalues = [cval[year - self.start_year]]
+            index_rates = self._indexing_rates_for_update(name, year,
+                                                          num_years_to_expand)
+            valtype = self._vals[pname].get('value_type')
+            nval = self._expand_array(pvalues, valtype,
+                                      inflate=pindexed,
+                                      inflation_rates=index_rates,
+                                      num_years=num_years_to_expand)
+            cval[(year - self.start_year):] = nval
+        # confirm that all names have been used
+        assert len(used_names) == len(all_names)
+        # implement updated parameters for year
+        self.set_year(year)
 
     def _validate_names_types(self, revision, removed_names=None):
         """
@@ -430,144 +569,6 @@ class Parameters():
                                 )
                                 self.parameter_errors += fullmsg
         del parameters
-
-    def _update(self, year_mods):
-        """
-        Private method used by public implement_reform and update_* methods
-        in inheriting classes.
-
-        Parameters
-        ----------
-        year_mods: dictionary containing a single YEAR:MODS pair
-            see Notes below for details on dictionary structure.
-
-        Raises
-        ------
-        ValueError:
-            if year_mods is not a dictionary of the expected structure.
-
-        Returns
-        -------
-        nothing: void
-
-        Notes
-        -----
-        This is a private method that should **never** be used by clients
-        of the inheriting classes.  Instead, always use the public
-        implement_reform or update_consumption-like methods.
-        This is a private method that helps the public methods work.
-
-        This method implements a policy reform or consumption modification,
-        the provisions of which are specified in the year_mods dictionary,
-        that changes the values of some policy parameters in objects of
-        inheriting classes.  This year_mods dictionary contains exactly one
-        YEAR:MODS pair, where the integer YEAR key indicates the
-        calendar year for which the reform provisions in the MODS
-        dictionary are implemented.  The MODS dictionary contains
-        PARAM:VALUE pairs in which the PARAM is a string specifying
-        the policy parameter (as used in the DEFAULTS_FILE_NAME default
-        parameter file) and the VALUE is a Python list of post-reform
-        values for that PARAM in that YEAR.  Beginning in the year
-        following the implementation of a reform provision, the
-        parameter whose value has been changed by the reform continues
-        to be inflation indexed, if relevant, or not be inflation indexed
-        according to that parameter's cpi_inflated value loaded from
-        DEFAULTS_FILE_NAME.  For a cpi-related parameter, a reform can change
-        the indexing status of a parameter by including in the MODS dictionary
-        a term that is a PARAM_cpi:BOOLEAN pair specifying the post-reform
-        indexing status of the parameter.
-
-        So, for example, to raise the OASDI (i.e., Old-Age, Survivors,
-        and Disability Insurance) maximum taxable earnings beginning
-        in 2018 to $500,000 and to continue indexing it in subsequent
-        years as in current-law policy, the YEAR:MODS dictionary would
-        be as follows::
-
-            {2018: {"_SS_Earnings_c":[500000]}}
-
-        But to raise the maximum taxable earnings in 2018 to $500,000
-        without any indexing in subsequent years, the YEAR:MODS
-        dictionary would be as follows::
-
-            {2018: {"_SS_Earnings_c":[500000], "_SS_Earnings_c_cpi":False}}
-
-        And to raise in 2019 the starting AGI for EITC phaseout for
-        married filing jointly filing status (which is a two-dimensional
-        policy parameter that varies by the number of children from zero
-        to three or more and is inflation indexed), the YEAR:MODS dictionary
-        would be as follows::
-
-            {2019: {"_EITC_ps_MarriedJ":[[8000, 8500, 9000, 9500]]}}
-
-        Notice the pair of double square brackets around the four values
-        for 2019.  The one-dimensional parameters above require only a pair
-        of single square brackets.
-        """
-        # pylint: disable=too-many-locals
-        # check YEAR value in the single YEAR:MODS dictionary parameter
-        if not isinstance(year_mods, dict):
-            msg = 'year_mods is not a dictionary'
-            raise ValueError(msg)
-        if len(year_mods.keys()) != 1:
-            msg = 'year_mods dictionary must contain a single YEAR:MODS pair'
-            raise ValueError(msg)
-        year = list(year_mods.keys())[0]
-        if year != self.current_year:
-            msg = 'YEAR={} in year_mods is not equal to current_year={}'
-            raise ValueError(msg.format(year, self.current_year))
-        # check that MODS is a dictionary
-        if not isinstance(year_mods[year], dict):
-            msg = 'mods in year_mods is not a dictionary'
-            raise ValueError(msg)
-        # implement reform provisions included in the single YEAR:MODS pair
-        num_years_to_expand = (self.start_year + self.num_years) - year
-        all_names = set(year_mods[year].keys())  # no duplicate keys in a dict
-        used_names = set()  # set of used parameter names in MODS dict
-        for name, values in year_mods[year].items():
-            # determine indexing status of parameter with name for year
-            if name.endswith('_cpi'):
-                continue  # handle elsewhere in this method
-            vals_indexed = self._vals[name].get('cpi_inflated', False)
-            valtype = self._vals[name].get('value_type')
-            name_plus_cpi = name + '_cpi'
-            if name_plus_cpi in year_mods[year].keys():
-                used_names.add(name_plus_cpi)
-                indexed = year_mods[year].get(name_plus_cpi)
-                self._vals[name]['cpi_inflated'] = indexed  # remember status
-            else:
-                indexed = vals_indexed
-            # set post-reform values of parameter with name
-            used_names.add(name)
-            cval = getattr(self, name, None)
-            index_rates = self._indexing_rates_for_update(name, year,
-                                                          num_years_to_expand)
-            nval = self._expand_array(values, valtype,
-                                      inflate=indexed,
-                                      inflation_rates=index_rates,
-                                      num_years=num_years_to_expand)
-            cval[(year - self.start_year):] = nval
-        # handle unused parameter names, all of which end in _cpi, but some
-        # parameter names ending in _cpi were handled above
-        unused_names = all_names - used_names
-        for name in unused_names:
-            used_names.add(name)
-            pname = name[:-4]  # root parameter name
-            pindexed = year_mods[year][name]
-            self._vals[pname]['cpi_inflated'] = pindexed  # remember status
-            cval = getattr(self, pname, None)
-            pvalues = [cval[year - self.start_year]]
-            index_rates = self._indexing_rates_for_update(name, year,
-                                                          num_years_to_expand)
-            valtype = self._vals[pname].get('value_type')
-            nval = self._expand_array(pvalues, valtype,
-                                      inflate=pindexed,
-                                      inflation_rates=index_rates,
-                                      num_years=num_years_to_expand)
-            cval[(year - self.start_year):] = nval
-        # confirm that all names have been used
-        assert len(used_names) == len(all_names)
-        # implement updated parameters for year
-        self.set_year(year)
 
     STRING_DTYPE = 'U9'
 

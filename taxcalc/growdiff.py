@@ -47,7 +47,7 @@ class GrowDiff(Parameters):
         if not revision:
             return  # no revision to update
         precall_current_year = self.current_year
-        self.set_default_vals()
+        self._set_default_vals()
         # check that revisions keys are integers
         revision_years = sorted(list(revision.keys()))
         for year in revision_years:

@@ -204,7 +204,7 @@ class Policy(Parameters):
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
             known_years = self._apply_reform_cpi_offset(reform)
-            self.set_default_vals(known_years=known_years)
+            self._set_default_vals(known_years=known_years)
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()
