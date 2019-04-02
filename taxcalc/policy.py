@@ -44,9 +44,11 @@ class Policy(Parameters):
     # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
-    def __init__(self, gfactors=None):
+    def __init__(self, gfactors=None, only_reading_defaults=False):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
+        if only_reading_defaults:
+            return
         # handle gfactors argument
         if gfactors is None:
             self._gfactors = GrowFactors()
@@ -375,7 +377,7 @@ class Policy(Parameters):
         """
         Returns list of parameter names in the policy_current_law.json file.
         """
-        policy = Policy()
+        policy = Policy(only_reading_defaults=True)
         plist = list(policy._vals.keys())  # pylint: disable=protected-access
         del policy
         return plist
