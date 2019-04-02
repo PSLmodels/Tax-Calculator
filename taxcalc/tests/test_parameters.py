@@ -15,40 +15,6 @@ import pytest
 from taxcalc import Parameters, Policy, Consumption
 
 
-def test_instantiation_and_usage():
-    """
-    Test Parameters instantiation and usage.
-    """
-    pbase = Parameters()
-    assert isinstance(pbase, Parameters)
-    assert pbase.inflation_rates() is None
-    assert pbase.wage_growth_rates() is None
-    syr = 2010
-    nyrs = 10
-    pbase.initialize(start_year=syr, num_years=nyrs)
-    with pytest.raises(ValueError):
-        pbase.set_default_vals(known_years=list())
-    # pylint: disable=protected-access
-    with pytest.raises(ValueError):
-        pbase.set_year(syr - 1)
-    with pytest.raises(NotImplementedError):
-        pbase._params_dict_from_json_file()
-    with pytest.raises(ValueError):
-        pbase._update([])
-    with pytest.raises(ValueError):
-        pbase._update({})
-    with pytest.raises(ValueError):
-        pbase._update({(syr + nyrs): {}})
-    with pytest.raises(ValueError):
-        pbase._update({syr: []})
-    # pylint: disable=no-member
-    with pytest.raises(ValueError):
-        Parameters._expand_array({}, 'real', True, [0.02], 1)
-    arr3d = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
-    with pytest.raises(AssertionError):
-        Parameters._expand_array(arr3d, 'real', True, [0.02], 1)
-
-
 @pytest.mark.parametrize("fname",
                          [("consumption.json"),
                           ("policy_current_law.json"),
@@ -476,9 +442,8 @@ def test_alternative_defaults_file(defaults_json_file):
         DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
         def __init__(self):
-            super().__init__()
             # read default parameters and initialize
-            self._vals = self._params_dict_from_json_file()
+            super().__init__()
             self.initialize(Params.JSON_START_YEAR, Params.DEFAULT_NUM_YEARS)
             # specify no parameter indexing rates
             self._inflation_rates = None

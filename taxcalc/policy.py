@@ -45,6 +45,7 @@ class Policy(Parameters):
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     def __init__(self, gfactors=None):
+        # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
         # handle gfactors argument
         if gfactors is None:
@@ -54,7 +55,6 @@ class Policy(Parameters):
         else:
             raise ValueError('gfactors is not None or a GrowFactors instance')
         # read default parameters and initialize
-        self._vals = self._params_dict_from_json_file()
         syr = Policy.JSON_START_YEAR
         lyr = Policy.LAST_BUDGET_YEAR
         nyrs = Policy.DEFAULT_NUM_YEARS
@@ -375,9 +375,9 @@ class Policy(Parameters):
         """
         Returns list of parameter names in the policy_current_law.json file.
         """
-        pdict = Policy._params_dict_from_json_file()
-        plist = list(pdict.keys())
-        del pdict
+        policy = Policy()
+        plist = list(policy._vals.keys())  # pylint: disable=protected-access
+        del policy
         return plist
 
     # ----- begin private methods of Policy class -----

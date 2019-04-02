@@ -26,7 +26,23 @@ class Parameters():
     DEFAULTS_FILE_PATH = None
 
     def __init__(self):
-        pass
+        # convert JSON in DEFAULTS_FILE_NAME into self._vals dictionary
+        not_implemented = (self.DEFAULTS_FILE_NAME is None or
+                           self.DEFAULTS_FILE_PATH is None)
+        if not_implemented:
+            msg = '{} and {} must be overridden by inheriting class'
+            raise NotImplementedError(msg.format(
+                'DEFAULTS_FILE_NAME', 'DEFAULTS_FILE_PATH'
+            ))
+        file_path = os.path.join(self.DEFAULTS_FILE_PATH,
+                                 self.DEFAULTS_FILE_NAME)
+        if os.path.isfile(file_path):
+            with open(file_path) as pfile:
+                json_text = pfile.read()
+            self._vals = json_to_dict(json_text)
+        else:  # find file in conda package
+            self._vals = read_egg_json(
+                self.DEFAULTS_FILE_NAME)  # pragma: no cover
 
     def initialize(self, start_year, num_years):
         """
@@ -414,38 +430,6 @@ class Parameters():
                                 )
                                 self.parameter_errors += fullmsg
         del parameters
-
-    @classmethod
-    def _params_dict_from_json_file(cls):
-        """
-        Read DEFAULTS_FILE_NAME file and return complete dictionary.
-
-        Parameters
-        ----------
-        nothing: void
-
-        Returns
-        -------
-        params: dictionary
-            containing complete contents of DEFAULTS_FILE_NAME file.
-        """
-        not_implemented = (cls.DEFAULTS_FILE_NAME is None or
-                           cls.DEFAULTS_FILE_PATH is None)
-        if not_implemented:
-            msg = '{} and {} must be overridden by inheriting class'
-            raise NotImplementedError(msg.format(
-                'DEFAULTS_FILE_NAME', 'DEFAULTS_FILE_PATH'
-            ))
-        file_path = os.path.join(cls.DEFAULTS_FILE_PATH,
-                                 cls.DEFAULTS_FILE_NAME)
-        if os.path.isfile(file_path):
-            with open(file_path) as pfile:
-                json_text = pfile.read()
-            params_dict = json_to_dict(json_text)
-        else:  # find file in conda package
-            params_dict = read_egg_json(
-                cls.DEFAULTS_FILE_NAME)  # pragma: no cover
-        return params_dict
 
     def _update(self, year_mods):
         """

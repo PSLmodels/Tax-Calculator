@@ -34,10 +34,8 @@ class Consumption(Parameters):
 
     def __init__(self):
         super().__init__()
-        self._vals = self._params_dict_from_json_file()
-        start_year = Consumption.JSON_START_YEAR
-        num_years = Consumption.DEFAULT_NUM_YEARS
-        self.initialize(start_year, num_years)
+        self.initialize(Consumption.JSON_START_YEAR,
+                        Consumption.DEFAULT_NUM_YEARS)
         self.parameter_errors = ''
 
     def update_consumption(self, revision):
