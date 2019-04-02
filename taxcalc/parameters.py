@@ -162,6 +162,7 @@ class Parameters():
                 values = data.get('value')
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
+                    # pylint: disable=assignment-from-none
                     if cpi_inflated:
                         if name in wage_indexed_param_list:
                             index_rates = self.wage_growth_rates()
