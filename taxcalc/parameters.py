@@ -27,13 +27,8 @@ class Parameters():
 
     def __init__(self):
         # convert JSON in DEFAULTS_FILE_NAME into self._vals dictionary
-        not_implemented = (self.DEFAULTS_FILE_NAME is None or
-                           self.DEFAULTS_FILE_PATH is None)
-        if not_implemented:
-            msg = '{} and {} must be overridden by inheriting class'
-            raise NotImplementedError(msg.format(
-                'DEFAULTS_FILE_NAME', 'DEFAULTS_FILE_PATH'
-            ))
+        assert self.DEFAULTS_FILE_NAME is not None
+        assert self.DEFAULTS_FILE_PATH is not None
         file_path = os.path.join(self.DEFAULTS_FILE_PATH,
                                  self.DEFAULTS_FILE_NAME)
         if os.path.isfile(file_path):
@@ -150,12 +145,11 @@ class Parameters():
         else:
             assert isinstance(wage_indexed_params, list)
             wage_indexed_param_list = wage_indexed_params
+        assert isinstance(known_years, (int, dict))
         if isinstance(known_years, int):
             known_years_is_int = True
         elif isinstance(known_years, dict):
             known_years_is_int = False
-        else:
-            raise ValueError('known_years is neither an int nor a dict')
         if hasattr(self, '_vals'):
             for name, data in self._vals.items():
                 valtype = data.get('value_type')
@@ -256,20 +250,12 @@ class Parameters():
         """
         # pylint: disable=too-many-statements,too-many-locals
         # check YEAR value in the single YEAR:MODS dictionary parameter
-        if not isinstance(year_mods, dict):
-            msg = 'year_mods is not a dictionary'
-            raise ValueError(msg)
-        if len(year_mods.keys()) != 1:
-            msg = 'year_mods dictionary must contain a single YEAR:MODS pair'
-            raise ValueError(msg)
+        assert isinstance(year_mods, dict)
+        assert len(year_mods.keys()) == 1
         year = list(year_mods.keys())[0]
-        if year != self.current_year:
-            msg = 'YEAR={} in year_mods is not equal to current_year={}'
-            raise ValueError(msg.format(year, self.current_year))
+        assert year == self.current_year
         # check that MODS is a dictionary
-        if not isinstance(year_mods[year], dict):
-            msg = 'mods in year_mods is not a dictionary'
-            raise ValueError(msg)
+        assert isinstance(year_mods[year], dict)
         # specify wage_indexed_param_list
         if wage_indexed_params is None:
             wage_indexed_param_list = list()
@@ -558,9 +544,7 @@ class Parameters():
         -------
         expanded numpy array with specified type
         """
-        if not isinstance(x, list) and not isinstance(x, np.ndarray):
-            msg = '_expand_array expects x to be a list or numpy array'
-            raise ValueError(msg)
+        assert isinstance(x, (list, np.ndarray))
         if isinstance(x, list):
             if x_type == 'real':
                 x = np.array(x, np.float64)

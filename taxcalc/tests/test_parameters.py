@@ -353,7 +353,7 @@ def test_bool_int_value_info(tests_path, json_filename):
             assert msg == 'ERROR: boolean_value param has non-boolean value'
 
 
-@pytest.fixture(scope='module', name='defaults_json_file')
+@pytest.fixture(scope='module', name='params_defaults_json_file')
 def fixture_defaultsjsonfile():
     """
     Define alternative JSON assumption parameter defaults file.
@@ -390,52 +390,86 @@ def fixture_defaultsjsonfile():
     os.remove(pfile.name)
 
 
-def test_alternative_defaults_file(defaults_json_file):
+def test_alternative_defaults_file(params_defaults_json_file):
     """
-    Test Parameter._validate_values method using
-    alternative Parameters.DEFAULTS_FILE_NAME.
+    Test Params class derived from Parameters base class.
     """
     # pylint: disable=too-many-statements
     class Params(Parameters):
         """
         Params is a subclass of the Parameter class.
         """
-        DEFAULTS_FILE_NAME = defaults_json_file.name
+        DEFAULTS_FILE_NAME = params_defaults_json_file.name
         DEFAULTS_FILE_PATH = ''
-        JSON_START_YEAR = Policy.JSON_START_YEAR
-        LAST_KNOWN_YEAR = Policy.LAST_KNOWN_YEAR
-        LAST_BUDGET_YEAR = Policy.LAST_BUDGET_YEAR
-        DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
+        START_YEAR = Policy.JSON_START_YEAR
+        LAST_YEAR = Policy.LAST_BUDGET_YEAR
+        NUM_YEARS = LAST_YEAR - START_YEAR + 1
 
         def __init__(self):
             # read default parameters and initialize
             super().__init__()
-            self.initialize(Params.JSON_START_YEAR, Params.DEFAULT_NUM_YEARS)
-            # specify no parameter indexing rates
-            self._inflation_rates = None
-            self._wage_growth_rates = None
+            self.initialize(Params.START_YEAR, Params.NUM_YEARS)
             # specify warning/error handling variables
-            self.parameter_warnings = ''
             self.parameter_errors = ''
             self._ignore_errors = False
-        # end of Params class definition
+    # end of Params class definition
 
+    # test illegal instantiation of base Parameters class
+    with pytest.raises(AssertionError):
+        Parameters()
+    # test Params class derived from Parameters class
+    # ... (0) test call to wage_growth_rates method
     prms = Params()
     assert isinstance(prms, Params)
     assert prms.start_year == 2013
     assert prms.current_year == 2013
-    paramsreform = {2014: {'_param4': [9]}}
-    prms._validate_names_types(paramsreform)
+    assert prms.wage_growth_rates() is None
+    del prms
+    # ... (1) test invalid set_year call
+    prms = Params()
+    with pytest.raises(ValueError):
+        prms.set_year(9999)
+    del prms
+    # ... (2) test a _validate_names_types error
+    prms = Params()
+    paramschange = {2014: {'_param4': [9]}}
+    prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
-    del paramsreform
+    del paramschange
+    # ... (3) test a _validate_names_types error
     prms = Params()
-    paramsreform = {2014: {'_param2': [3.6]}}
-    prms._validate_names_types(paramsreform)
+    paramschange = {2014: {'_param2': [3.6]}}
+    prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
-    del paramsreform
+    del paramschange
+    # ... (4) test a _validate_names_types error
     prms = Params()
-    paramsreform = {2014: {'_param3': [3.6]}}
-    prms._validate_names_types(paramsreform)
+    paramschange = {2014: {'_param3': [4.9]}}
+    prms._validate_names_types(paramschange)
     assert prms.parameter_errors
+    del prms
+    del paramschange
+    # ... (5) test a valid change in string parameter value
+    prms = Params()
+    paramschange = {2014: {'_param4': ['nonlinear']}}
+    prms.set_year(2014)
+    prms._update(paramschange)
+    changed_params = set()
+    changed_params.add('_param4')
+    prms._validate_values(changed_params)
+    assert not prms.parameter_errors
+    del prms
+    del paramschange
+    # ... (6) test an invalid change in string parameter value
+    prms = Params()
+    paramschange = {2014: {'_param4': ['unknownvalue']}}
+    prms.set_year(2014)
+    prms._update(paramschange)
+    changed_params = set()
+    changed_params.add('_param4')
+    prms._validate_values(changed_params)
+    assert prms.parameter_errors
+    del prms
+    del paramschange
