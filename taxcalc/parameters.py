@@ -44,7 +44,7 @@ class Parameters():
             self._vals = read_egg_json(
                 self.DEFAULTS_FILE_NAME)  # pragma: no cover
 
-    def initialize(self, start_year, num_years):
+    def initialize(self, start_year, num_years, wage_indexed_params=None):
         """
         Called from subclass __init__ function.
         """
@@ -52,7 +52,12 @@ class Parameters():
         self._start_year = start_year
         self._num_years = num_years
         self._end_year = start_year + num_years - 1
-        self._set_default_vals()
+        if wage_indexed_params is None:
+            wage_indexed_param_list = list()
+        else:
+            assert isinstance(wage_indexed_params, list)
+            wage_indexed_param_list = wage_indexed_params
+        self._set_default_vals(wage_indexed_params=wage_indexed_param_list)
 
     def inflation_rates(self):
         """
@@ -67,14 +72,6 @@ class Parameters():
         """
         # pylint: disable=no-self-use
         return None
-
-    def indexing_rates(self, param_name):
-        """
-        Return appropriate indexing rates for specified param_name.
-        """
-        if param_name in ('_SS_Earnings_c', '_SS_Earnings_thd'):
-            return self.wage_growth_rates()
-        return self.inflation_rates()
 
     @property
     def num_years(self):
@@ -141,69 +138,18 @@ class Parameters():
                     arr = getattr(self, name)
                     setattr(self, name[1:], arr[year_zero_indexed])
 
-    @staticmethod
-    def param_dict_for_year(cyear, param_dict, param_info):
-        """
-        Set parameters to their values for the specified calendar year.
-
-        Parameters
-        ----------
-        cyear: int
-            calendar year for which to set parameter values
-
-        param_dict: dict
-            dictionary returned by the Calculator.read_json_assumptions method
-
-        param_info: dict
-            dictionary of information about each parameter that can be used in
-            param_dict, where information about each parameter must include at
-            a minimum the following key-value pairs:
-            'default_value': <number>
-            'minimum_value': <number>
-            'maximum_value': <number>
-
-        Note
-        ----
-        This method may not be used by Tax-Calculator, but it is used by
-        other PSL models that work with Tax-Calculator.
-
-        Returns
-        -------
-        param_values_for_year: dict
-            dictionary containing a key:value pair for each parameter in the
-            param_info dictionary, where each pair looks like this:
-            '<param_name>': <number>
-        """
-        assert isinstance(cyear, int)
-        assert isinstance(param_dict, dict)
-        assert isinstance(param_info, dict)
-        # set each parameter to its default value
-        pvalue = dict()
-        for pname in param_info:
-            pvalue[pname] = param_info[pname]['default_value']
-        # update pvalue using param_dict contents
-        for year in sorted(param_dict.keys()):
-            assert isinstance(year, int)
-            if year > cyear:
-                break  # out of the for year loop
-            ydict = param_dict[year]
-            assert isinstance(ydict, dict)
-            for pname in ydict:
-                assert pname in param_info
-                pval = ydict[pname]
-                assert isinstance(pval, float)
-                assert pval >= param_info[pname]['minimum_value']
-                assert pval <= param_info[pname]['maximum_value']
-                pvalue[pname] = pval
-        return pvalue
-
     # ----- begin private methods of Parameters class -----
 
-    def _set_default_vals(self, known_years=999999):
+    def _set_default_vals(self, wage_indexed_params=None, known_years=999999):
         """
         Called by initialize method and from some subclass methods.
         """
-        # pylint: disable=too-many-nested-blocks
+        # pylint: disable=too-many-branches,too-many-nested-blocks
+        if wage_indexed_params is None:
+            wage_indexed_param_list = list()
+        else:
+            assert isinstance(wage_indexed_params, list)
+            wage_indexed_param_list = wage_indexed_params
         if isinstance(known_years, int):
             known_years_is_int = True
         elif isinstance(known_years, dict):
@@ -217,10 +163,10 @@ class Parameters():
                 if values:
                     cpi_inflated = data.get('cpi_inflated', False)
                     if cpi_inflated:
-                        index_rates = self.indexing_rates(name)
-                        wage_indexed = name in ('_SS_Earnings_c',
-                                                '_SS_Earnings_thd')
-                        if not wage_indexed:
+                        if name in wage_indexed_param_list:
+                            index_rates = self.wage_growth_rates()
+                        else:
+                            index_rates = self.inflation_rates()
                             if known_years_is_int:
                                 values = values[:known_years]
                             else:
@@ -234,7 +180,7 @@ class Parameters():
                                                num_years=self._num_years))
         self.set_year(self._start_year)
 
-    def _update(self, year_mods):
+    def _update(self, year_mods, wage_indexed_params=None):
         """
         Private method used by public implement_reform and update_* methods
         in inheriting classes.
@@ -307,7 +253,7 @@ class Parameters():
         for 2019.  The one-dimensional parameters above require only a pair
         of single square brackets.
         """
-        # pylint: disable=too-many-locals
+        # pylint: disable=too-many-statements,too-many-locals
         # check YEAR value in the single YEAR:MODS dictionary parameter
         if not isinstance(year_mods, dict):
             msg = 'year_mods is not a dictionary'
@@ -323,6 +269,12 @@ class Parameters():
         if not isinstance(year_mods[year], dict):
             msg = 'mods in year_mods is not a dictionary'
             raise ValueError(msg)
+        # specify wage_indexed_param_list
+        if wage_indexed_params is None:
+            wage_indexed_param_list = list()
+        else:
+            assert isinstance(wage_indexed_params, list)
+            wage_indexed_param_list = wage_indexed_params
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.num_years) - year
         all_names = set(year_mods[year].keys())  # no duplicate keys in a dict
@@ -343,7 +295,9 @@ class Parameters():
             # set post-reform values of parameter with name
             used_names.add(name)
             cval = getattr(self, name, None)
-            index_rates = self._indexing_rates_for_update(name, year,
+            wage_indexed_param = name in wage_indexed_param_list
+            index_rates = self._indexing_rates_for_update(wage_indexed_param,
+                                                          year,
                                                           num_years_to_expand)
             nval = self._expand_array(values, valtype,
                                       inflate=indexed,
@@ -360,7 +314,9 @@ class Parameters():
             self._vals[pname]['cpi_inflated'] = pindexed  # remember status
             cval = getattr(self, pname, None)
             pvalues = [cval[year - self.start_year]]
-            index_rates = self._indexing_rates_for_update(name, year,
+            wage_indexed_param = pname in wage_indexed_param_list
+            index_rates = self._indexing_rates_for_update(wage_indexed_param,
+                                                          year,
                                                           num_years_to_expand)
             valtype = self._vals[pname].get('value_type')
             nval = self._expand_array(pvalues, valtype,
@@ -685,13 +641,13 @@ class Parameters():
                     ans[i, j] = ans[i - 1, j]
         return ans
 
-    def _indexing_rates_for_update(self, param_name,
+    def _indexing_rates_for_update(self, param_is_wage_indexed,
                                    calyear, num_years_to_expand):
         """
-        Private method called only in the _update method.
+        Private method called only by the private Parameter._update method.
         """
         # pylint: disable=assignment-from-none
-        if param_name in ('_SS_Earnings_c', '_SS_Earnings_thd'):
+        if param_is_wage_indexed:
             rates = self.wage_growth_rates()
         else:
             rates = self.inflation_rates()

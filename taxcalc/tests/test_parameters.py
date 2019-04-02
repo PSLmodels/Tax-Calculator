@@ -353,40 +353,6 @@ def test_bool_int_value_info(tests_path, json_filename):
             assert msg == 'ERROR: boolean_value param has non-boolean value'
 
 
-def test_param_dict_for_year():
-    """
-    Check logic of param_dict_for_year staticmethod.
-    """
-    param_info = {
-        'pname1': {
-            'default_value': 0.0,
-            'minimum_value': 0.0,
-            'maximum_value': 9e99
-        },
-        'pname2': {
-            'default_value': 0.0,
-            'minimum_value': -9e99,
-            'maximum_value': 0.0
-        }
-    }
-    param_dict = {
-        2019: {'pname1': 0.05},
-        2021: {'pname2': -0.5},
-        2023: {'pname2': 0.5}
-    }
-    ydict = Parameters.param_dict_for_year(2018, param_dict, param_info)
-    assert ydict['pname1'] == 0.0
-    assert ydict['pname2'] == 0.0
-    ydict = Parameters.param_dict_for_year(2020, param_dict, param_info)
-    assert ydict['pname1'] == 0.05
-    assert ydict['pname2'] == 0.0
-    ydict = Parameters.param_dict_for_year(2022, param_dict, param_info)
-    assert ydict['pname1'] == 0.05
-    assert ydict['pname2'] == -0.5
-    with pytest.raises(AssertionError):
-        Parameters.param_dict_for_year(2024, param_dict, param_info)
-
-
 @pytest.fixture(scope='module', name='defaults_json_file')
 def fixture_defaultsjsonfile():
     """

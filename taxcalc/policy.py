@@ -44,6 +44,12 @@ class Policy(Parameters):
     # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
+    # specify which Policy parameters are wage (rather than price) indexed
+    WAGE_INDEXED = [
+        '_SS_Earnings_c',
+        '_SS_Earnings_thd'
+    ]
+
     def __init__(self, gfactors=None, only_reading_defaults=False):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
@@ -63,7 +69,7 @@ class Policy(Parameters):
         self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
         self._apply_clp_cpi_offset(self._vals['_cpi_offset'], nyrs)
         self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
-        self.initialize(syr, nyrs)
+        self.initialize(syr, nyrs, Policy.WAGE_INDEXED)
         # initialize parameter warning/error variables
         self.parameter_warnings = ''
         self.parameter_errors = ''
@@ -204,14 +210,15 @@ class Policy(Parameters):
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
             known_years = self._apply_reform_cpi_offset(reform)
-            self._set_default_vals(known_years=known_years)
+            self._set_default_vals(wage_indexed_params=Policy.WAGE_INDEXED,
+                                   known_years=known_years)
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()
         for year in reform_years:
             self.set_year(year)
             reform_parameters.update(reform[year].keys())
-            self._update({year: reform[year]})
+            self._update({year: reform[year]}, Policy.WAGE_INDEXED)
         self.set_year(precall_current_year)
         # validate reform parameter values
         redefined = {
@@ -431,7 +438,7 @@ class Policy(Parameters):
                 if first_cpi_offset_year == 0:
                     first_cpi_offset_year = year
                 oreform = {'_cpi_offset': reform[year]['_cpi_offset']}
-                self._update({year: oreform})
+                self._update({year: oreform}, Policy.WAGE_INDEXED)
         self.set_year(self.start_year)
         assert first_cpi_offset_year > 0
         # adjust inflation rates
