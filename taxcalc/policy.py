@@ -45,10 +45,24 @@ class Policy(Parameters):
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
     # specify which Policy parameters are wage (rather than price) indexed
-    WAGE_INDEXED = [
+    WAGE_INDEXED_PARAMS = [
         '_SS_Earnings_c',
         '_SS_Earnings_thd'
     ]
+    # specify which Policy parameters have been removed
+    REMOVED_PARAMS = [
+        # following five parameters removed in PR 2223 merged on 2019-02-06
+        '_DependentCredit_Child_c',
+        '_DependentCredit_Nonchild_c',
+        '_DependentCredit_before_CTC',
+        '_FilerCredit_c',
+        '_ALD_InvInc_ec_base_RyanBrady'
+    ]
+    # specify which Policy parameters havve been redefined recently
+    REDEFINED_PARAMS = {
+        # TODO: remove the _CTC_c name:message pair sometime later in 2019
+        '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-02-22)'
+    }
 
     def __init__(self, gfactors=None, only_reading_defaults=False):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
@@ -69,7 +83,7 @@ class Policy(Parameters):
         self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
         self._apply_clp_cpi_offset(self._vals['_cpi_offset'], nyrs)
         self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
-        self.initialize(syr, nyrs, Policy.WAGE_INDEXED)
+        self.initialize(syr, nyrs, Policy.WAGE_INDEXED_PARAMS)
         # initialize parameter warning/error variables
         self.parameter_warnings = ''
         self.parameter_errors = ''
@@ -196,36 +210,28 @@ class Policy(Parameters):
         # validate reform parameter names and types
         self.parameter_warnings = ''
         self.parameter_errors = ''
-        removed_param_names = [
-            # following 5 parameters removed in PR 2223 merged on 2019-02-06
-            '_DependentCredit_Child_c',
-            '_DependentCredit_Nonchild_c',
-            '_DependentCredit_before_CTC',
-            '_FilerCredit_c',
-            '_ALD_InvInc_ec_base_RyanBrady'
-        ]
-        self._validate_names_types(reform, removed_names=removed_param_names)
-        if not self._ignore_errors and self.parameter_errors:
+        self._validate_names_types(reform,
+                                   removed_names=Policy.REMOVED_PARAMS)
+        if self.parameter_errors and not self._ignore_errors:
             raise ValueError(self.parameter_errors)
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
             known_years = self._apply_reform_cpi_offset(reform)
-            self._set_default_vals(wage_indexed_params=Policy.WAGE_INDEXED,
-                                   known_years=known_years)
+            self._set_default_vals(
+                wage_indexed_params=Policy.WAGE_INDEXED_PARAMS,
+                known_years=known_years
+            )
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()
         for year in reform_years:
             self.set_year(year)
             reform_parameters.update(reform[year].keys())
-            self._update({year: reform[year]}, Policy.WAGE_INDEXED)
+            self._update({year: reform[year]}, Policy.WAGE_INDEXED_PARAMS)
         self.set_year(precall_current_year)
         # validate reform parameter values
-        redefined = {
-            # TODO: remove the following later in 2019
-            '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-02-22)'
-        }
-        self._validate_values(reform_parameters, redefined_info=redefined)
+        self._validate_values(reform_parameters,
+                              redefined_info=Policy.REDEFINED_PARAMS)
         if self.parameter_warnings and print_warnings:
             print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
@@ -438,7 +444,7 @@ class Policy(Parameters):
                 if first_cpi_offset_year == 0:
                     first_cpi_offset_year = year
                 oreform = {'_cpi_offset': reform[year]['_cpi_offset']}
-                self._update({year: oreform}, Policy.WAGE_INDEXED)
+                self._update({year: oreform}, Policy.WAGE_INDEXED_PARAMS)
         self.set_year(self.start_year)
         assert first_cpi_offset_year > 0
         # adjust inflation rates

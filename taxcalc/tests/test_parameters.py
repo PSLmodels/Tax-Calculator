@@ -360,7 +360,7 @@ def fixture_defaultsjsonfile():
     """
     json_text = """
 {
-"_param2": {
+"_int_param": {
     "value_type": "integer",
     "value": [2, 2, 2],
     "valid_values": {"min": 0, "max": 9},
@@ -368,7 +368,7 @@ def fixture_defaultsjsonfile():
     "invalid_maxmsg": "",
     "invalid_action": "stop"
 },
-"_param3": {
+"_bool_param": {
     "value_type": "boolean",
     "value": [true, true, true],
     "valid_values": {"min": false, "max": true},
@@ -376,7 +376,7 @@ def fixture_defaultsjsonfile():
     "invalid_maxmsg": "",
     "invalid_action": "stop"
 },
-"_param4": {
+"_str_param": {
     "value_type": "string",
     "value": ["linear", "linear", "linear"],
     "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
@@ -397,12 +397,12 @@ def test_alternative_defaults_file(params_defaults_json_file):
     # pylint: disable=too-many-statements
     class Params(Parameters):
         """
-        Params is a subclass of the Parameter class.
+        Params is derived from the Parameter class.
         """
         DEFAULTS_FILE_NAME = params_defaults_json_file.name
         DEFAULTS_FILE_PATH = ''
-        START_YEAR = Policy.JSON_START_YEAR
-        LAST_YEAR = Policy.LAST_BUDGET_YEAR
+        START_YEAR = 2001
+        LAST_YEAR = 2099
         NUM_YEARS = LAST_YEAR - START_YEAR + 1
 
         def __init__(self):
@@ -414,61 +414,61 @@ def test_alternative_defaults_file(params_defaults_json_file):
             self._ignore_errors = False
     # end of Params class definition
 
-    # test illegal instantiation of base Parameters class
+    # test illegal instantiation of abstract Parameters class
     with pytest.raises(AssertionError):
         Parameters()
     # test Params class derived from Parameters class
     # ... (0) test call to wage_growth_rates method
     prms = Params()
     assert isinstance(prms, Params)
-    assert prms.start_year == 2013
-    assert prms.current_year == 2013
+    assert prms.start_year == 2001
+    assert prms.current_year == 2001
     assert prms.wage_growth_rates() is None
     del prms
     # ... (1) test invalid set_year call
     prms = Params()
     with pytest.raises(ValueError):
-        prms.set_year(9999)
+        prms.set_year(2100)
     del prms
     # ... (2) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_param4': [9]}}
+    paramschange = {2014: {'_str_param': [9]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
     del paramschange
     # ... (3) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_param2': [3.6]}}
+    paramschange = {2014: {'_int_param': [3.6]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
     del paramschange
     # ... (4) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_param3': [4.9]}}
+    paramschange = {2014: {'_bool_param': [4.9]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
     del paramschange
     # ... (5) test a valid change in string parameter value
     prms = Params()
-    paramschange = {2014: {'_param4': ['nonlinear']}}
+    paramschange = {2014: {'_str_param': ['nonlinear']}}
     prms.set_year(2014)
     prms._update(paramschange)
     changed_params = set()
-    changed_params.add('_param4')
+    changed_params.add('_str_param')
     prms._validate_values(changed_params)
     assert not prms.parameter_errors
     del prms
     del paramschange
     # ... (6) test an invalid change in string parameter value
     prms = Params()
-    paramschange = {2014: {'_param4': ['unknownvalue']}}
+    paramschange = {2014: {'_str_param': ['unknownvalue']}}
     prms.set_year(2014)
     prms._update(paramschange)
     changed_params = set()
-    changed_params.add('_param4')
+    changed_params.add('_str_param')
     prms._validate_values(changed_params)
     assert prms.parameter_errors
     del prms

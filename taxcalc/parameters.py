@@ -513,7 +513,7 @@ class Parameters():
                                 self.parameter_errors += fullmsg
         del parameters
 
-    STRING_DTYPE = 'U9'
+    STRING_DTYPE = 'U16'
 
     # pylint: disable=invalid-name
 

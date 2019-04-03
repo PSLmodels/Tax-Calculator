@@ -880,7 +880,7 @@ def test_valid_value_infomation(tests_path):
         '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-Q1)'
     }
     clp._validate_values(parameters, redefined_info=redefined)
-    # TODO activate: assert not clp.parameter_warnings
+    # eventually activate: assert not clp.parameter_warnings
     ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-Q1)\n'
     assert clp.parameter_warnings == ctc_c_warning
     assert not clp.parameter_errors
