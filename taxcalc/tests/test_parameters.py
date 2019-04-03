@@ -27,8 +27,8 @@ def test_json_file_contents(tests_path, fname):
     # specify test information
     required_keys = ['long_name', 'description',
                      'section_1', 'section_2', 'notes',
-                     'row_var', 'row_label',
-                     'start_year', 'cpi_inflated', 'cpi_inflatable',
+                     'row_label',
+                     'cpi_inflated', 'cpi_inflatable',
                      'col_var', 'col_label',
                      'value_type', 'value', 'valid_values']
     valid_value_types = ['boolean', 'integer', 'real', 'string']
@@ -77,11 +77,6 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(param['description'], str)
         if not param['description']:
             assert '{} description'.format(pname) == 'empty string'
-        # check that row_var is FLPDYR
-        assert param['row_var'] == 'FLPDYR'
-        # check that start_year equals first_year
-        syr = param['start_year']
-        assert isinstance(syr, int) and syr == first_year
         # check that cpi_inflatable and cpi_inflated are boolean
         assert isinstance(param['cpi_inflatable'], bool)
         assert isinstance(param['cpi_inflated'], bool)
