@@ -36,9 +36,12 @@ class Consumption(Parameters):
         super().__init__()
         self.initialize(Consumption.JSON_START_YEAR,
                         Consumption.DEFAULT_NUM_YEARS)
+        self.parameter_warnings = ''
         self.parameter_errors = ''
+        self._ignore_errors = False
 
-    def update_consumption(self, revision):
+    def update_consumption(self, revision,
+                           print_warnings=False, raise_errors=True):
         """
         Update consumption for given revision, a dictionary consisting
         of one or more year:modification dictionaries.
@@ -72,8 +75,10 @@ class Consumption(Parameters):
             msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_revision_year, self.end_year))
         # validate revision parameter names and types
+        self.parameter_warnings = ''
+        self.parameter_errors = ''
         self._validate_names_types(revision)
-        if self.parameter_errors:
+        if self.parameter_errors and not self._ignore_errors:
             raise ValueError(self.parameter_errors)
         # implement the revision year by year
         revision_parameters = set()
@@ -84,7 +89,9 @@ class Consumption(Parameters):
         self.set_year(precall_current_year)
         # validate revision parameter values
         self._validate_values(revision_parameters)
-        if self.parameter_errors:
+        if self.parameter_warnings and print_warnings:
+            print(self.parameter_warnings)  # pragma: no cover
+        if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
 
     RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
@@ -124,3 +131,9 @@ class Consumption(Parameters):
         """
         return [getattr(self, 'BEN_{}_value'.format(var))
                 for var in Consumption.BENEFIT_VARS]
+
+    def ignore_update_errors(self):
+        """
+        Sets self._ignore_errors to True.
+        """
+        self._ignore_errors = True
