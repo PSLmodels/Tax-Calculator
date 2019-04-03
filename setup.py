@@ -16,7 +16,7 @@ config = {
     'long_description': longdesc,
     'version': version,
     'license': 'CC0 1.0 Universal public domain dedication',
-    'packages': ['taxcalc', 'taxcalc.tbi', 'taxcalc.cli'],
+    'packages': ['taxcalc', 'taxcalc.cli'],
     'include_package_data': True,
     'name': 'taxcalc',
     'install_requires': ['numpy', 'pandas', 'bokeh', 'numba'],
