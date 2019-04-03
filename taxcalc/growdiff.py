@@ -34,9 +34,12 @@ class GrowDiff(Parameters):
         super().__init__()
         self.initialize(GrowDiff.JSON_START_YEAR,
                         GrowDiff.DEFAULT_NUM_YEARS)
+        self.parameter_warnings = ''
         self.parameter_errors = ''
+        self._ignore_errors = False
 
-    def update_growdiff(self, revision):
+    def update_growdiff(self, revision,
+                        print_warnings=False, raise_errors=True):
         """
         Update growdiff default values using specified revision, which is
         a dictionary containing one or more year:modification dictionaries.
@@ -65,8 +68,10 @@ class GrowDiff(Parameters):
             msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_revision_year, self.end_year))
         # validate revision parameter names and types
+        self.parameter_warnings = ''
+        self.parameter_errors = ''
         self._validate_names_types(revision)
-        if self.parameter_errors:
+        if self.parameter_errors and not self._ignore_errors:
             raise ValueError(self.parameter_errors)
         # implement the revision year by year
         revision_parameters = set()
@@ -77,7 +82,9 @@ class GrowDiff(Parameters):
         self.set_year(precall_current_year)
         # validate revision parameter values
         self._validate_values(revision_parameters)
-        if self.parameter_errors:
+        if self.parameter_warnings and print_warnings:
+            print(self.parameter_warnings)  # pragma: no cover
+        if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
 
     def has_any_response(self):
@@ -92,6 +99,12 @@ class GrowDiff(Parameters):
                 if val != 0.0:
                     return True
         return False
+
+    def ignore_update_errors(self):
+        """
+        Sets self._ignore_errors to True.
+        """
+        self._ignore_errors = True
 
     def apply_to(self, growfactors):
         """
