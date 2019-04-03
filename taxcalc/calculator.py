@@ -1158,47 +1158,6 @@ class Calculator():
         return param_dict
 
     @staticmethod
-    def read_json_parameters(param):
-        """
-        A convenience function for other PSL models that have only
-        scalar parameters that are not inflation indexed.
-
-        Read JSON param object and return one dictionary that has
-        the same structure as each subdictionary returned by the
-        Calculator.read_json_param_objects method.
-
-        Note that the param argument can be None, in which case
-        the returned dictionary is empty.  Also note that the
-        param argument can be a string containing a local file name,
-        URL beginning with 'http', or valid JSON string.
-
-        The param file/URL contents or JSON string must be like the
-        structure required for each subsection of the assump argument
-        of the Calculator.read_json_param_objects method EXCEPT FOR
-        ONE THING: the parameter values are NOT enclosed in [] brackets.
-        """
-        # construct returned dictionary from specified param argument
-        if param is None:
-            returned_dict = dict()
-        elif isinstance(param, str):
-            if os.path.isfile(param):
-                txt = open(param, 'r').read()
-            elif param.startswith('http'):
-                req = requests.get(param)
-                req.raise_for_status()
-                txt = req.text
-            else:
-                txt = param
-            # strip out //-comments without changing line numbers
-            json_text = re.sub('//.*', ' ', txt)
-            # convert JSON text into a Python dictionary
-            raw_dict = json_to_dict(json_text)
-            returned_dict = Calculator._convert_parameter_dict(raw_dict)
-        else:
-            raise ValueError('param is neither None nor string')
-        return returned_dict
-
-    @staticmethod
     def reform_documentation(params, policy_dicts=None):
         """
         Generate reform documentation.

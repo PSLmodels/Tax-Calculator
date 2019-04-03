@@ -18,7 +18,6 @@ import numpy as np
 import pandas as pd
 # pylint: disable=import-error
 from taxcalc import Policy, Records, Calculator
-from taxcalc import run_nth_year_taxcalc_model
 
 
 START_YEAR = 2017
@@ -157,57 +156,3 @@ def nonsmall_diffs(linelist1, linelist2, small=0.0):
                 else:
                     return True
         return False
-
-
-def test_run_taxcalc_model(tests_path):
-    """
-    Test tbi.run_nth_year_taxcalc_model function using CPS data.
-    """
-    user_modifications = {
-        'policy': {
-            2016: {'_II_rt3': [0.33],
-                   '_PT_rt3': [0.33],
-                   '_II_rt4': [0.33],
-                   '_PT_rt4': [0.33]}
-        },
-        'consumption': {
-            2016: {'_MPC_e20400': [0.01]}
-        },
-        'growdiff_baseline': {
-        },
-        'growdiff_response': {
-        }
-    }
-    res = run_nth_year_taxcalc_model(year_n=2, start_year=2018,
-                                     use_puf_not_cps=False,
-                                     use_full_sample=False,
-                                     user_mods=user_modifications,
-                                     return_dict=True)
-    assert isinstance(res, dict)
-    # put actual results in a multiline string
-    actual_results = ''
-    for tbl in sorted(res.keys()):
-        actual_results += 'TABLE {} RESULTS:\n'.format(tbl)
-        actual_results += json.dumps(res[tbl], sort_keys=True,
-                                     indent=4, separators=(',', ': ')) + '\n'
-    # read expected results from file
-    expect_fname = 'tbi_cps_expect.txt'
-    expect_path = os.path.join(tests_path, expect_fname)
-    with open(expect_path, 'r') as expect_file:
-        expect_results = expect_file.read()
-    # ensure actual and expect results have no differences
-    diffs = nonsmall_diffs(actual_results.splitlines(True),
-                           expect_results.splitlines(True))
-    if diffs:
-        actual_fname = '{}{}'.format(expect_fname[:-10], 'actual.txt')
-        actual_path = os.path.join(tests_path, actual_fname)
-        with open(actual_path, 'w') as actual_file:
-            actual_file.write(actual_results)
-        msg = 'TBI RESULTS DIFFER\n'
-        msg += '----------------------------------------------\n'
-        msg += '--- NEW RESULTS IN {} FILE ---\n'
-        msg += '--- if new OK, copy {} to  ---\n'
-        msg += '---                 {}     ---\n'
-        msg += '---            and rerun test.             ---\n'
-        msg += '----------------------------------------------\n'
-        raise ValueError(msg.format(actual_fname, actual_fname, expect_fname))
