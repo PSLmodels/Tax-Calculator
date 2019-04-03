@@ -46,12 +46,11 @@ def test_policy_json_content():
     """
     Test contents of Policy object.
     """
-    ppo = Policy()
-    policy = getattr(ppo, '_vals')
-    for _, data in policy.items():
-        start_year = data.get('start_year')
-        assert isinstance(start_year, int)
-        assert start_year == Policy.JSON_START_YEAR
+    policy = Policy()
+    start_year = policy.start_year
+    assert start_year == Policy.JSON_START_YEAR
+    policy_vals = getattr(policy, '_vals')
+    for _, data in policy_vals.items():
         row_label = data.get('row_label')
         assert isinstance(row_label, list)
         value = data.get('value')
