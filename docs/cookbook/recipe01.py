@@ -15,15 +15,18 @@ reform2_url = REFORMS_URL + reform2_name
 
 # specify Policy object for pre-TCJA policy
 bpolicy = Policy()
-bpolicy.implement_reform(reform1['policy'], print_warnings=False)
+bpolicy.implement_reform(reform1['policy'],
+                         print_warnings=False, raise_errors=False)
 assert not bpolicy.parameter_errors
 
 # specify Policy object for static analysis of reform relative to pre-TCJA
 reform2 = Calculator.read_json_param_objects(reform2_url, None)
 rpolicy = Policy()
-rpolicy.implement_reform(reform1['policy'], print_warnings=False)
+rpolicy.implement_reform(reform1['policy'],
+                         print_warnings=False, raise_errors=False)
 assert not rpolicy.parameter_errors
-rpolicy.implement_reform(reform2['policy'], print_warnings=False)
+rpolicy.implement_reform(reform2['policy'],
+                         print_warnings=False, raise_errors=False)
 assert not rpolicy.parameter_errors
 
 cyr = 2018
