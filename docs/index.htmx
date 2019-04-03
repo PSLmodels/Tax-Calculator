@@ -357,8 +357,8 @@ lower income family and a higher income family.  You can use the
 <kbd>test.csv</kbd> file as tc input to analyze your tax reforms.
 Before creating your own input files be sure to read the short set of
 guidelines that appear after this list of three choices.  Some people
-pursue approach using a statistical pacakge like R or Stata, in which
-case the tc CLI program can be invoked from within the statistical
+pursue this approach using a statistical pacakge like R or Stata, in
+which case the tc CLI program can be invoked from within the statistical
 package.  There may be a need (especially on Windows) to
 <a href="https://github.com/PSLmodels/Tax-Calculator/issues/2273#issuecomment-479572287">add
 to the system PATH</a> in order to do this.</p>
