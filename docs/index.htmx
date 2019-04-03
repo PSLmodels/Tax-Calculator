@@ -181,7 +181,7 @@ Anaconda Python and the taxcalc package on your computer as well as
 the use of a text editor to prepare simple files that are read by tc.
 Computer programming knowledge is not required, but if you are
 prevented from doing the easy installation or you are not willing to
-work at the command line (Terminal on Mac or Command Prompt on
+work at the command line (Terminal on Mac or Anaconda Prompt on
 Windows) and use an editor (for example, TextEdit on Mac or Notepad on
 Windows), then you should probably use the TaxBrain GUI.</p>
 
@@ -336,8 +336,8 @@ specify tax filing units used in the analysis.</p>
 <h3 id="cli-spec-funits">Specify Filing Units</h3>
 
 <p>The taxcalc package containing the tc CLI to Tax-Calculator does
-not include the microsimulation sample used by TaxBrain.  This is
-because, unlike Census survey public-use files, the IRS-SOI Public Use
+not include the IRS-based microsimulation sample used by TaxBrain.  This
+is because, unlike Census survey public-use files, the IRS-SOI Public Use
 File (PUF) is proprietary.  If you or your organization has paid IRS
 to use the PUF version being used by TaxBrain, then it may be possible
 for us to share with you our TaxBrain sample, which we
@@ -356,7 +356,12 @@ and contains two filing units with only wage and salary income: a
 lower income family and a higher income family.  You can use the
 <kbd>test.csv</kbd> file as tc input to analyze your tax reforms.
 Before creating your own input files be sure to read the short set of
-guidelines that appear after this list of three choices.</p>
+guidelines that appear after this list of three choices.  Some people
+pursue approach using a statistical pacakge like R or Stata, in which
+case the tc CLI program can be invoked from within the statistical
+package.  There may be a need (especially on Windows) to
+<a href="https://github.com/PSLmodels/Tax-Calculator/issues/2273#issuecomment-479572287">add
+to the system PATH</a> in order to do this.</p>
 
 <p><b>Second</b>, recently we made freely
 available a public-use file containing only filing units derived from
