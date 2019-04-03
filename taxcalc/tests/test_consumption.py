@@ -21,6 +21,7 @@ def test_validity_of_consumption_vars_set():
 
 def test_update_consumption():
     consump = Consumption()
+    consump.ignore_update_errors()
     consump.update_consumption({})
     consump.update_consumption({2014: {'_MPC_e20400': [0.05],
                                        '_BEN_mcare_value': [0.75]},
