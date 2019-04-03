@@ -376,111 +376,6 @@ def fixture_defaultsjsonfile():
     os.remove(pfile.name)
 
 
-def test_alternative_defaults_file(defaults_json_file):
-    """
-    Test Policy constructor and implement_reform method with an
-    alternative Policy.DEFAULTS_FILE_NAME.
-    """
-    # pylint: disable=too-many-statements
-    class Policyx(Policy):
-        """
-        Policyx is a subclass of the Policy class.
-        """
-        DEFAULTS_FILE_NAME = defaults_json_file.name
-        DEFAULTS_FILE_PATH = ''
-        JSON_START_YEAR = Policy.JSON_START_YEAR
-        LAST_KNOWN_YEAR = Policy.LAST_KNOWN_YEAR
-        LAST_BUDGET_YEAR = Policy.LAST_BUDGET_YEAR
-        DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
-
-        def __init__(self):
-            # pylint: disable=super-init-not-called
-            # read default parameters and initialize
-            self._vals = self._params_dict_from_json_file()
-            self.initialize(Policyx.JSON_START_YEAR, Policyx.DEFAULT_NUM_YEARS)
-            # specify no parameter indexing rates
-            self._inflation_rates = None
-            self._wage_growth_rates = None
-            # specify warning/error handling variables
-            self.parameter_warnings = ''
-            self.parameter_errors = ''
-            self._ignore_errors = False
-        # end of Policyx class definition
-
-    xpol = Policyx()
-    assert isinstance(xpol, Policyx)
-    assert xpol.start_year == 2013
-    assert xpol.current_year == 2013
-    xpolreform = {
-        2015: {
-            '_param1': [8000],
-            '_param2': [3],
-            '_param3': [False],
-            '_param4': ['nonlinear']
-        },
-        2017: {
-            '_param1': [9000],
-            '_param2': [4],
-        },
-        2019: {
-            '_param3': [True],
-            '_param4': ['cubic']
-        }
-    }
-    xpol.implement_reform(xpolreform)
-    assert not xpol.parameter_errors
-    assert not xpol.parameter_warnings
-    xpol.set_year(2014)
-    assert xpol.param1 == 6000
-    assert xpol.param2 == 2
-    assert xpol.param3
-    assert xpol.param4 == 'linear'
-    xpol.set_year(2015)
-    assert xpol.param1 == 8000
-    assert xpol.param2 == 3
-    assert not xpol.param3
-    assert xpol.param4 == 'nonlinear'
-    xpol.set_year(2016)
-    assert xpol.param1 == 8000
-    assert xpol.param2 == 3
-    assert not xpol.param3
-    assert xpol.param4 == 'nonlinear'
-    xpol.set_year(2017)
-    assert xpol.param1 == 9000
-    assert xpol.param2 == 4
-    assert not xpol.param3
-    assert xpol.param4 == 'nonlinear'
-    xpol.set_year(2018)
-    assert xpol.param1 == 9000
-    assert xpol.param2 == 4
-    assert not xpol.param3
-    assert xpol.param4 == 'nonlinear'
-    xpol.set_year(2019)
-    assert xpol.param1 == 9000
-    assert xpol.param2 == 4
-    assert xpol.param3
-    assert xpol.param4 == 'cubic'
-    xpol.set_year(2020)
-    assert xpol.param1 == 9000
-    assert xpol.param2 == 4
-    assert xpol.param3
-    assert xpol.param4 == 'cubic'
-    del xpol
-    del xpolreform
-    # test string parameter checking
-    xpol = Policyx()
-    xpolreform = {2014: {'_param4': [3]}}
-    with pytest.raises(ValueError):
-        xpol.implement_reform(xpolreform)
-    del xpol
-    del xpolreform
-    xpol = Policyx()
-    xpolreform = {2014: {'_param4': ['spline']}}
-    xpol.implement_reform(xpolreform, raise_errors=False)
-    assert xpol.parameter_errors
-    assert not xpol.parameter_warnings
-
-
 def test_policy_metadata():
     """
     Test that metadata() method returns expected dictionary.
@@ -927,7 +822,8 @@ def test_valid_value_infomation(tests_path):
     """
     Check consistency of valid_values info in policy_current_law.json file.
     """
-    # pylint: disable=too-many-branches,too-many-nested-blocks,too-many-locals
+    # pylint: disable=too-many-statements,too-many-locals
+    # pylint: disable=too-many-branches,too-many-nested-blocks
     # read policy_current_law.json file into a dictionary
     path = os.path.join(tests_path, '..', 'policy_current_law.json')
     with open(path, 'r') as clpfile:
@@ -980,8 +876,11 @@ def test_valid_value_infomation(tests_path):
         assert unmatched == 'UNMATCHED RANGE PARAMETERS'
     # check all current-law-policy parameters for range validity
     clp = Policy()
-    clp._validate_parameter_values(parameters)
-    # TODO activate: assert not clp.parameter_warnings
+    redefined = {
+        '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-Q1)'
+    }
+    clp._validate_values(parameters, redefined_info=redefined)
+    # eventually activate: assert not clp.parameter_warnings
     ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-Q1)\n'
     assert clp.parameter_warnings == ctc_c_warning
     assert not clp.parameter_errors

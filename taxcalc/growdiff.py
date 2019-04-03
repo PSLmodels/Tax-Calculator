@@ -31,11 +31,9 @@ class GrowDiff(Parameters):
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     def __init__(self):
-        # pylint: disable=super-init-not-called
-        self._vals = self._params_dict_from_json_file()
-        start_year = GrowDiff.JSON_START_YEAR
-        num_years = GrowDiff.DEFAULT_NUM_YEARS
-        self.initialize(start_year, num_years)
+        super().__init__()
+        self.initialize(GrowDiff.JSON_START_YEAR,
+                        GrowDiff.DEFAULT_NUM_YEARS)
         self.parameter_errors = ''
 
     def update_growdiff(self, revision):
@@ -49,7 +47,7 @@ class GrowDiff(Parameters):
         if not revision:
             return  # no revision to update
         precall_current_year = self.current_year
-        self.set_default_vals()
+        self._set_default_vals()
         # check that revisions keys are integers
         revision_years = sorted(list(revision.keys()))
         for year in revision_years:
@@ -67,7 +65,7 @@ class GrowDiff(Parameters):
             msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_revision_year, self.end_year))
         # validate revision parameter names and types
-        self._validate_assump_parameter_names_types(revision)
+        self._validate_names_types(revision)
         if self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # implement the revision year by year
@@ -78,7 +76,7 @@ class GrowDiff(Parameters):
             self._update({year: revision[year]})
         self.set_year(precall_current_year)
         # validate revision parameter values
-        self._validate_assump_parameter_values(revision_parameters)
+        self._validate_values(revision_parameters)
         if self.parameter_errors:
             raise ValueError('\n' + self.parameter_errors)
 

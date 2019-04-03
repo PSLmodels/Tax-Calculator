@@ -44,8 +44,31 @@ class Policy(Parameters):
     # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
-    def __init__(self, gfactors=None):
-        # pylint: disable=super-init-not-called
+    # specify which Policy parameters are wage (rather than price) indexed
+    WAGE_INDEXED_PARAMS = [
+        '_SS_Earnings_c',
+        '_SS_Earnings_thd'
+    ]
+    # specify which Policy parameters have been removed
+    REMOVED_PARAMS = [
+        # following five parameters removed in PR 2223 merged on 2019-02-06
+        '_DependentCredit_Child_c',
+        '_DependentCredit_Nonchild_c',
+        '_DependentCredit_before_CTC',
+        '_FilerCredit_c',
+        '_ALD_InvInc_ec_base_RyanBrady'
+    ]
+    # specify which Policy parameters havve been redefined recently
+    REDEFINED_PARAMS = {
+        # TODO: remove the _CTC_c name:message pair sometime later in 2019
+        '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-02-22)'
+    }
+
+    def __init__(self, gfactors=None, only_reading_defaults=False):
+        # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
+        super().__init__()
+        if only_reading_defaults:
+            return
         # handle gfactors argument
         if gfactors is None:
             self._gfactors = GrowFactors()
@@ -54,14 +77,13 @@ class Policy(Parameters):
         else:
             raise ValueError('gfactors is not None or a GrowFactors instance')
         # read default parameters and initialize
-        self._vals = self._params_dict_from_json_file()
         syr = Policy.JSON_START_YEAR
         lyr = Policy.LAST_BUDGET_YEAR
         nyrs = Policy.DEFAULT_NUM_YEARS
         self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
         self._apply_clp_cpi_offset(self._vals['_cpi_offset'], nyrs)
         self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
-        self.initialize(syr, nyrs)
+        self.initialize(syr, nyrs, Policy.WAGE_INDEXED_PARAMS)
         # initialize parameter warning/error variables
         self.parameter_warnings = ''
         self.parameter_errors = ''
@@ -108,8 +130,8 @@ class Policy(Parameters):
             if minimum YEAR in the YEAR:MODS pairs is less than current_year.
             if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
             if raise_errors is True AND
-              _validate_parameter_names_types generates errors OR
-              _validate_parameter_values generates errors.
+              _validate_names_types generates errors OR
+              _validate_values generates errors.
 
         Returns
         -------
@@ -161,6 +183,7 @@ class Policy(Parameters):
         catch this error, so be careful to specify reform dictionaries
         correctly.
         """
+        # pylint: disable=too-many-locals
         # check that all reform dictionary keys are integers
         if not isinstance(reform, dict):
             raise ValueError('ERROR: YYYY PARAM reform is not a dictionary')
@@ -187,23 +210,28 @@ class Policy(Parameters):
         # validate reform parameter names and types
         self.parameter_warnings = ''
         self.parameter_errors = ''
-        self._validate_parameter_names_types(reform)
-        if not self._ignore_errors and self.parameter_errors:
+        self._validate_names_types(reform,
+                                   removed_names=Policy.REMOVED_PARAMS)
+        if self.parameter_errors and not self._ignore_errors:
             raise ValueError(self.parameter_errors)
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
             known_years = self._apply_reform_cpi_offset(reform)
-            self.set_default_vals(known_years=known_years)
+            self._set_default_vals(
+                wage_indexed_params=Policy.WAGE_INDEXED_PARAMS,
+                known_years=known_years
+            )
         # implement the reform year by year
         precall_current_year = self.current_year
         reform_parameters = set()
         for year in reform_years:
             self.set_year(year)
             reform_parameters.update(reform[year].keys())
-            self._update({year: reform[year]})
+            self._update({year: reform[year]}, Policy.WAGE_INDEXED_PARAMS)
         self.set_year(precall_current_year)
         # validate reform parameter values
-        self._validate_parameter_values(reform_parameters)
+        self._validate_values(reform_parameters,
+                              redefined_info=Policy.REDEFINED_PARAMS)
         if self.parameter_warnings and print_warnings:
             print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
@@ -362,9 +390,9 @@ class Policy(Parameters):
         """
         Returns list of parameter names in the policy_current_law.json file.
         """
-        pdict = Policy._params_dict_from_json_file()
-        plist = list(pdict.keys())
-        del pdict
+        policy = Policy(only_reading_defaults=True)
+        plist = list(policy._vals.keys())  # pylint: disable=protected-access
+        del policy
         return plist
 
     # ----- begin private methods of Policy class -----
@@ -416,7 +444,7 @@ class Policy(Parameters):
                 if first_cpi_offset_year == 0:
                     first_cpi_offset_year = year
                 oreform = {'_cpi_offset': reform[year]['_cpi_offset']}
-                self._update({year: oreform})
+                self._update({year: oreform}, Policy.WAGE_INDEXED_PARAMS)
         self.set_year(self.start_year)
         assert first_cpi_offset_year > 0
         # adjust inflation rates
@@ -445,190 +473,3 @@ class Policy(Parameters):
                 if name not in known_years:
                     known_years[name] = kyrs_not_in_reform
         return known_years
-
-    def _validate_parameter_names_types(self, reform):
-        """
-        Check validity of parameter names and parameter types used
-        in the specified reform dictionary.
-        """
-        # pylint: disable=too-many-branches,too-many-nested-blocks
-        # pylint: disable=too-many-statements,too-many-locals
-        removed_param_names = set([
-            # following 5 parameters removed in PR 2223 merged on 2019-02-06
-            '_DependentCredit_Child_c',
-            '_DependentCredit_Nonchild_c',
-            '_DependentCredit_before_CTC',
-            '_FilerCredit_c',
-            '_ALD_InvInc_ec_base_RyanBrady'
-        ])
-        param_names = set(self._vals.keys())
-        for year in sorted(reform.keys()):
-            for name in reform[year]:
-                if name.endswith('_cpi'):
-                    if isinstance(reform[year][name], bool):
-                        pname = name[:-4]  # root parameter name
-                        if pname not in param_names:
-                            if pname in removed_param_names:
-                                msg = '{} {} is a removed parameter name'
-                            else:
-                                msg = '{} {} is an unknown parameter name'
-                            self.parameter_errors += (
-                                'ERROR: ' + msg.format(year, name) + '\n'
-                            )
-                        else:
-                            # check if root parameter is cpi inflatable
-                            if not self._vals[pname]['cpi_inflatable']:
-                                msg = '{} {} parameter is not cpi inflatable'
-                                self.parameter_errors += (
-                                    'ERROR: ' + msg.format(year, pname) + '\n'
-                                )
-                    else:
-                        msg = '{} {} parameter is not true or false'
-                        self.parameter_errors += (
-                            'ERROR: ' + msg.format(year, name) + '\n'
-                        )
-                else:  # if name does not end with '_cpi'
-                    if name not in param_names:
-                        if name in removed_param_names:
-                            msg = '{} {} is a removed parameter name'
-                        else:
-                            msg = '{} {} is an unknown parameter name'
-                        self.parameter_errors += (
-                            'ERROR: ' + msg.format(year, name) + '\n'
-                        )
-                    else:
-                        # check parameter value type avoiding use of isinstance
-                        # because isinstance(True, (int,float)) is True, which
-                        # makes it impossible to check float parameters
-                        valtype = self._vals[name]['value_type']
-                        assert isinstance(reform[year][name], list)
-                        pvalue = reform[year][name][0]
-                        if isinstance(pvalue, list):
-                            scalar = False  # parameter value is a list
-                        else:
-                            scalar = True  # parameter value is a scalar
-                            pvalue = [pvalue]  # make scalar a single-item list
-                        # pylint: disable=consider-using-enumerate
-                        for idx in range(0, len(pvalue)):
-                            if scalar:
-                                pname = name
-                            else:
-                                pname = '{}_{}'.format(name, idx)
-                            pval = pvalue[idx]
-                            # pylint: disable=unidiomatic-typecheck
-                            if valtype == 'real':
-                                if type(pval) != float and type(pval) != int:
-                                    msg = '{} {} value {} is not a number'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname, pval) +
-                                        '\n'
-                                    )
-                            elif valtype == 'boolean':
-                                if type(pval) != bool:
-                                    msg = '{} {} value {} is not boolean'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname, pval) +
-                                        '\n'
-                                    )
-                            elif valtype == 'integer':
-                                if type(pval) != int:
-                                    msg = '{} {} value {} is not integer'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname, pval) +
-                                        '\n'
-                                    )
-                            elif valtype == 'string':
-                                if type(pval) != str:
-                                    msg = '{} {} value {} is not a string'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname, pval) +
-                                        '\n'
-                                    )
-        del param_names
-
-    def _validate_parameter_values(self, parameters_set):
-        """
-        Check values of parameters in specified parameter_set using
-        range information from the policy_current_law.json file.
-        """
-        # pylint: disable=too-many-statements,too-many-locals
-        # pylint: disable=too-many-branches,too-many-nested-blocks
-        parameters = sorted(parameters_set)
-        syr = Policy.JSON_START_YEAR
-        for pname in parameters:
-            if pname.endswith('_cpi'):
-                continue  # *_cpi parameter values validated elsewhere
-            if pname == '_CTC_c':  # TODO: remove this warning at end of 2019
-                msg = '_CTC_c was redefined in release 1.0.0 (2019-Q1)'
-                self.parameter_warnings += msg + '\n'
-            pvalue = getattr(self, pname)
-            if self._vals[pname]['value_type'] == 'string':
-                valid_options = self._vals[pname]['valid_values']['options']
-                for idx in np.ndindex(pvalue.shape):
-                    if pvalue[idx] not in valid_options:
-                        msg = "{} {} value '{}' not in {}"
-                        fullmsg = '{}: {}\n'.format(
-                            'ERROR',
-                            msg.format(idx[0] + syr,
-                                       pname,
-                                       pvalue[idx],
-                                       valid_options)
-                        )
-                        self.parameter_errors += fullmsg
-            else:  # parameter does not have string type
-                for vop, vval in self._vals[pname]['valid_values'].items():
-                    if isinstance(vval, str):
-                        vvalue = getattr(self, vval)
-                    else:
-                        vvalue = np.full(pvalue.shape, vval)
-                    assert pvalue.shape == vvalue.shape
-                    assert len(pvalue.shape) <= 2
-                    if len(pvalue.shape) == 2:
-                        scalar = False  # parameter value is a list (vector)
-                    else:
-                        scalar = True  # parameter value is a scalar
-                    for idx in np.ndindex(pvalue.shape):
-                        out_of_range = False
-                        if vop == 'min' and pvalue[idx] < vvalue[idx]:
-                            out_of_range = True
-                            msg = '{} {} value {} < min value {}'
-                            extra = self._vals[pname]['invalid_minmsg']
-                            if extra:
-                                msg += ' {}'.format(extra)
-                        if vop == 'max' and pvalue[idx] > vvalue[idx]:
-                            out_of_range = True
-                            msg = '{} {} value {} > max value {}'
-                            extra = self._vals[pname]['invalid_maxmsg']
-                            if extra:
-                                msg += ' {}'.format(extra)
-                        if out_of_range:
-                            action = self._vals[pname]['invalid_action']
-                            if scalar:
-                                name = pname
-                            else:
-                                name = '{}_{}'.format(pname, idx[1])
-                                if extra:
-                                    msg += '_{}'.format(idx[1])
-                            if action == 'warn':
-                                fullmsg = '{}: {}\n'.format(
-                                    'WARNING',
-                                    msg.format(idx[0] + syr,
-                                               name,
-                                               pvalue[idx],
-                                               vvalue[idx])
-                                )
-                                self.parameter_warnings += fullmsg
-                            if action == 'stop':
-                                fullmsg = '{}: {}\n'.format(
-                                    'ERROR',
-                                    msg.format(idx[0] + syr,
-                                               name,
-                                               pvalue[idx],
-                                               vvalue[idx])
-                                )
-                                self.parameter_errors += fullmsg
-        del parameters

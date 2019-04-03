@@ -15,40 +15,6 @@ import pytest
 from taxcalc import Parameters, Policy, Consumption
 
 
-def test_instantiation_and_usage():
-    """
-    Test Parameters instantiation and usage.
-    """
-    pbase = Parameters()
-    assert isinstance(pbase, Parameters)
-    assert pbase.inflation_rates() is None
-    assert pbase.wage_growth_rates() is None
-    syr = 2010
-    nyrs = 10
-    pbase.initialize(start_year=syr, num_years=nyrs)
-    with pytest.raises(ValueError):
-        pbase.set_default_vals(known_years=list())
-    # pylint: disable=protected-access
-    with pytest.raises(ValueError):
-        pbase.set_year(syr - 1)
-    with pytest.raises(NotImplementedError):
-        pbase._params_dict_from_json_file()
-    with pytest.raises(ValueError):
-        pbase._update([])
-    with pytest.raises(ValueError):
-        pbase._update({})
-    with pytest.raises(ValueError):
-        pbase._update({(syr + nyrs): {}})
-    with pytest.raises(ValueError):
-        pbase._update({syr: []})
-    # pylint: disable=no-member
-    with pytest.raises(ValueError):
-        Parameters._expand_array({}, 'real', True, [0.02], 1)
-    arr3d = np.array([[[1, 1]], [[1, 1]], [[1, 1]]])
-    with pytest.raises(AssertionError):
-        Parameters._expand_array(arr3d, 'real', True, [0.02], 1)
-
-
 @pytest.mark.parametrize("fname",
                          [("consumption.json"),
                           ("policy_current_law.json"),
@@ -387,48 +353,14 @@ def test_bool_int_value_info(tests_path, json_filename):
             assert msg == 'ERROR: boolean_value param has non-boolean value'
 
 
-def test_param_dict_for_year():
-    """
-    Check logic of param_dict_for_year staticmethod.
-    """
-    param_info = {
-        'pname1': {
-            'default_value': 0.0,
-            'minimum_value': 0.0,
-            'maximum_value': 9e99
-        },
-        'pname2': {
-            'default_value': 0.0,
-            'minimum_value': -9e99,
-            'maximum_value': 0.0
-        }
-    }
-    param_dict = {
-        2019: {'pname1': 0.05},
-        2021: {'pname2': -0.5},
-        2023: {'pname2': 0.5}
-    }
-    ydict = Parameters.param_dict_for_year(2018, param_dict, param_info)
-    assert ydict['pname1'] == 0.0
-    assert ydict['pname2'] == 0.0
-    ydict = Parameters.param_dict_for_year(2020, param_dict, param_info)
-    assert ydict['pname1'] == 0.05
-    assert ydict['pname2'] == 0.0
-    ydict = Parameters.param_dict_for_year(2022, param_dict, param_info)
-    assert ydict['pname1'] == 0.05
-    assert ydict['pname2'] == -0.5
-    with pytest.raises(AssertionError):
-        Parameters.param_dict_for_year(2024, param_dict, param_info)
-
-
-@pytest.fixture(scope='module', name='defaults_json_file')
+@pytest.fixture(scope='module', name='params_defaults_json_file')
 def fixture_defaultsjsonfile():
     """
     Define alternative JSON assumption parameter defaults file.
     """
     json_text = """
 {
-"_param2": {
+"_int_param": {
     "value_type": "integer",
     "value": [2, 2, 2],
     "valid_values": {"min": 0, "max": 9},
@@ -436,7 +368,7 @@ def fixture_defaultsjsonfile():
     "invalid_maxmsg": "",
     "invalid_action": "stop"
 },
-"_param3": {
+"_bool_param": {
     "value_type": "boolean",
     "value": [true, true, true],
     "valid_values": {"min": false, "max": true},
@@ -444,7 +376,7 @@ def fixture_defaultsjsonfile():
     "invalid_maxmsg": "",
     "invalid_action": "stop"
 },
-"_param4": {
+"_str_param": {
     "value_type": "string",
     "value": ["linear", "linear", "linear"],
     "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
@@ -458,53 +390,86 @@ def fixture_defaultsjsonfile():
     os.remove(pfile.name)
 
 
-def test_alternative_defaults_file(defaults_json_file):
+def test_alternative_defaults_file(params_defaults_json_file):
     """
-    Test Parameter._validate_assump_paramter_values method using
-    alternative Parameters.DEFAULTS_FILE_NAME.
+    Test Params class derived from Parameters base class.
     """
     # pylint: disable=too-many-statements
     class Params(Parameters):
         """
-        Params is a subclass of the Parameter class.
+        Params is derived from the Parameter class.
         """
-        DEFAULTS_FILE_NAME = defaults_json_file.name
+        DEFAULTS_FILE_NAME = params_defaults_json_file.name
         DEFAULTS_FILE_PATH = ''
-        JSON_START_YEAR = Policy.JSON_START_YEAR
-        LAST_KNOWN_YEAR = Policy.LAST_KNOWN_YEAR
-        LAST_BUDGET_YEAR = Policy.LAST_BUDGET_YEAR
-        DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
+        START_YEAR = 2001
+        LAST_YEAR = 2099
+        NUM_YEARS = LAST_YEAR - START_YEAR + 1
 
         def __init__(self):
-            # pylint: disable=super-init-not-called
             # read default parameters and initialize
-            self._vals = self._params_dict_from_json_file()
-            self.initialize(Params.JSON_START_YEAR, Params.DEFAULT_NUM_YEARS)
-            # specify no parameter indexing rates
-            self._inflation_rates = None
-            self._wage_growth_rates = None
+            super().__init__()
+            self.initialize(Params.START_YEAR, Params.NUM_YEARS)
             # specify warning/error handling variables
-            self.parameter_warnings = ''
             self.parameter_errors = ''
             self._ignore_errors = False
-        # end of Params class definition
+    # end of Params class definition
 
+    # test illegal instantiation of abstract Parameters class
+    with pytest.raises(AssertionError):
+        Parameters()
+    # test Params class derived from Parameters class
+    # ... (0) test call to wage_growth_rates method
     prms = Params()
     assert isinstance(prms, Params)
-    assert prms.start_year == 2013
-    assert prms.current_year == 2013
-    paramsreform = {2014: {'_param4': [9]}}
-    prms._validate_assump_parameter_names_types(paramsreform)
+    assert prms.start_year == 2001
+    assert prms.current_year == 2001
+    assert prms.wage_growth_rates() is None
+    del prms
+    # ... (1) test invalid set_year call
+    prms = Params()
+    with pytest.raises(ValueError):
+        prms.set_year(2100)
+    del prms
+    # ... (2) test a _validate_names_types error
+    prms = Params()
+    paramschange = {2014: {'_str_param': [9]}}
+    prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
-    del paramsreform
+    del paramschange
+    # ... (3) test a _validate_names_types error
     prms = Params()
-    paramsreform = {2014: {'_param2': [3.6]}}
-    prms._validate_assump_parameter_names_types(paramsreform)
+    paramschange = {2014: {'_int_param': [3.6]}}
+    prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
-    del paramsreform
+    del paramschange
+    # ... (4) test a _validate_names_types error
     prms = Params()
-    paramsreform = {2014: {'_param3': [3.6]}}
-    prms._validate_assump_parameter_names_types(paramsreform)
+    paramschange = {2014: {'_bool_param': [4.9]}}
+    prms._validate_names_types(paramschange)
     assert prms.parameter_errors
+    del prms
+    del paramschange
+    # ... (5) test a valid change in string parameter value
+    prms = Params()
+    paramschange = {2014: {'_str_param': ['nonlinear']}}
+    prms.set_year(2014)
+    prms._update(paramschange)
+    changed_params = set()
+    changed_params.add('_str_param')
+    prms._validate_values(changed_params)
+    assert not prms.parameter_errors
+    del prms
+    del paramschange
+    # ... (6) test an invalid change in string parameter value
+    prms = Params()
+    paramschange = {2014: {'_str_param': ['unknownvalue']}}
+    prms.set_year(2014)
+    prms._update(paramschange)
+    changed_params = set()
+    changed_params.add('_str_param')
+    prms._validate_values(changed_params)
+    assert prms.parameter_errors
+    del prms
+    del paramschange

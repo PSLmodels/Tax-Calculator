@@ -28,8 +28,8 @@ def test_2017_law_reform(tests_path):
         rtext = rfile.read()
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
-    # TODO activate: assert not pol.parameter_warnings
-    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-Q1)\n'
+    # eventually activate: assert not clp.parameter_warnings
+    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-02-22)\n'
     assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     pol.set_year(2018)
@@ -100,8 +100,8 @@ def test_round_trip_tcja_reform(tests_path):
         rtext = rfile.read()
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
-    # TODO activate: assert not pol.parameter_warnings
-    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-Q1)\n'
+    # eventually activate: assert not clp.parameter_warnings
+    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-02-22)\n'
     assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
@@ -109,7 +109,7 @@ def test_round_trip_tcja_reform(tests_path):
         rtext = rfile.read()
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
-    # TODO activate: assert not pol.parameter_warnings
+    # eventually activate: assert not clp.parameter_warnings
     assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     pol.set_year(fyear)
