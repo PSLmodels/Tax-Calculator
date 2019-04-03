@@ -39,7 +39,7 @@ class GrowDiff(Parameters):
         self._ignore_errors = False
 
     def update_growdiff(self, revision,
-                        print_warnings=False, raise_errors=True):
+                        print_warnings=True, raise_errors=True):
         """
         Update growdiff default values using specified revision, which is
         a dictionary containing one or more year:modification dictionaries.

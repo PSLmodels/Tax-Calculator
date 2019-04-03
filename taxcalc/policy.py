@@ -102,7 +102,7 @@ class Policy(Parameters):
         return self._wage_growth_rates
 
     def implement_reform(self, reform,
-                         print_warnings=False, raise_errors=True):
+                         print_warnings=True, raise_errors=True):
         """
         Implement multi-year policy reform and leave current_year unchanged.
 

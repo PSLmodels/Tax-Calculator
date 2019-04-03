@@ -41,7 +41,7 @@ class Consumption(Parameters):
         self._ignore_errors = False
 
     def update_consumption(self, revision,
-                           print_warnings=False, raise_errors=True):
+                           print_warnings=True, raise_errors=True):
         """
         Update consumption for given revision, a dictionary consisting
         of one or more year:modification dictionaries.
