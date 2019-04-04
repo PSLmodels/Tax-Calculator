@@ -10,7 +10,6 @@ from taxcalc.policy import *
 from taxcalc.records import *
 from taxcalc.taxcalcio import *
 from taxcalc.utils import *
-from taxcalc.tbi import *
 from taxcalc.cli import *
 
 __version__ = '0.0.0'

@@ -56,7 +56,7 @@ class Calculator():
 
     verbose: boolean
         specifies whether or not to write to stdout data-loaded and
-        data-extrapolated progress reports; default value is true.
+        data-extrapolated progress reports; default value is false.
 
     sync_years: boolean
         specifies whether or not to synchronize policy year and records year;
@@ -94,7 +94,7 @@ class Calculator():
     """
     # pylint: disable=too-many-public-methods
 
-    def __init__(self, policy=None, records=None, verbose=True,
+    def __init__(self, policy=None, records=None, verbose=False,
                  sync_years=True, consumption=None):
         # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
@@ -115,18 +115,19 @@ class Calculator():
             raise ValueError('consumption must be None or Consumption object')
         if self.__consumption.current_year < self.__policy.current_year:
             self.__consumption.set_year(self.__policy.current_year)
+        if verbose:
+            if self.__records.IGNORED_VARS:
+                print('Your data include the following unused ' +
+                      'variables that will be ignored:')
+                for var in self.__records.IGNORED_VARS:
+                    print('  ' +
+                          var)
         current_year_is_data_year = (
             self.__records.current_year == self.__records.data_year)
         if sync_years and current_year_is_data_year:
             if verbose:
                 print('You loaded data for ' +
                       str(self.__records.data_year) + '.')
-                if self.__records.IGNORED_VARS:
-                    print('Your data include the following unused ' +
-                          'variables that will be ignored:')
-                    for var in self.__records.IGNORED_VARS:
-                        print('  ' +
-                              var)
             while self.__records.current_year < self.__policy.current_year:
                 self.__records.increment_year()
             if verbose:
@@ -1156,47 +1157,6 @@ class Calculator():
         param_dict['growdiff_response'] = gdiff_resp_dict
         # return the composite dictionary
         return param_dict
-
-    @staticmethod
-    def read_json_parameters(param):
-        """
-        A convenience function for other PSL models that have only
-        scalar parameters that are not inflation indexed.
-
-        Read JSON param object and return one dictionary that has
-        the same structure as each subdictionary returned by the
-        Calculator.read_json_param_objects method.
-
-        Note that the param argument can be None, in which case
-        the returned dictionary is empty.  Also note that the
-        param argument can be a string containing a local file name,
-        URL beginning with 'http', or valid JSON string.
-
-        The param file/URL contents or JSON string must be like the
-        structure required for each subsection of the assump argument
-        of the Calculator.read_json_param_objects method EXCEPT FOR
-        ONE THING: the parameter values are NOT enclosed in [] brackets.
-        """
-        # construct returned dictionary from specified param argument
-        if param is None:
-            returned_dict = dict()
-        elif isinstance(param, str):
-            if os.path.isfile(param):
-                txt = open(param, 'r').read()
-            elif param.startswith('http'):
-                req = requests.get(param)
-                req.raise_for_status()
-                txt = req.text
-            else:
-                txt = param
-            # strip out //-comments without changing line numbers
-            json_text = re.sub('//.*', ' ', txt)
-            # convert JSON text into a Python dictionary
-            raw_dict = json_to_dict(json_text)
-            returned_dict = Calculator._convert_parameter_dict(raw_dict)
-        else:
-            raise ValueError('param is neither None nor string')
-        return returned_dict
 
     @staticmethod
     def reform_documentation(params, policy_dicts=None):

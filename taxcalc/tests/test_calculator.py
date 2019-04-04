@@ -12,7 +12,6 @@ import json
 from io import StringIO
 import copy
 import pytest
-import requests
 import numpy as np
 import pandas as pd
 from taxcalc import Policy, Records, Calculator, Consumption
@@ -30,7 +29,8 @@ def test_make_calculator(cps_subsample):
     consump = Consumption()
     consump.update_consumption({sim_year: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == start_year
-    calc = Calculator(policy=pol, records=rec, consumption=consump)
+    calc = Calculator(policy=pol, records=rec,
+                      consumption=consump, verbose=True)
     assert calc.data_year == Records.CPSCSV_YEAR
     assert calc.current_year == Records.CPSCSV_YEAR
     # test incorrect Calculator instantiation:
@@ -332,11 +332,11 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
 RAWINPUT_FUNITS = 4
 RAWINPUT_YEAR = 2015
 RAWINPUT_CONTENTS = (
-    'RECID,MARS\n'
-    '    1,   2\n'
-    '    2,   1\n'
-    '    3,   4\n'
-    '    4,   3\n'
+    'RECID,MARS,unknown\n'
+    '    1,   2,      9\n'
+    '    2,   1,      9\n'
+    '    3,   4,      9\n'
+    '    4,   3,      9\n'
 )
 
 
@@ -1037,42 +1037,6 @@ def test_ce_aftertax_income(cps_subsample):
     calc2 = Calculator(policy=pol, records=rec)
     res = calc1.ce_aftertax_income(calc2)
     assert isinstance(res, dict)
-
-
-def test_read_json_parameters(tests_path):
-    """
-    Test the Calculator.read_json_parameters() function that is used by
-    other PSL models to read simple parameter schema that do not involve
-    the use of [] brackets around scalar non-inflation-indexed parameter
-    values.
-    """
-    assert isinstance(Calculator.read_json_parameters(None), dict)
-    with pytest.raises(ValueError):
-        Calculator.read_json_parameters(list())
-    filename = os.path.join(tests_path, '..', 'assumptions',
-                            'simple_parameters_template.json')
-    file_dict = Calculator.read_json_parameters(filename)
-    assert isinstance(file_dict, dict)
-    parameter_json = """
-    // Example of JSON parameter file suitable for read_json_parameters().
-    // Notice the lack of [] brackets around the parameter values.
-    {
-    "BE_sub": {"2018": -0.05, "2021": -0.25},
-    "BE_inc": {"2020": 0.10},
-    "BE_cg": {"2022": -0.70}
-    }
-    """
-    text_dict = Calculator.read_json_parameters(parameter_json)
-    assert isinstance(text_dict, dict)
-    assert text_dict == file_dict
-    with pytest.raises(requests.exceptions.ConnectionError):
-        Calculator.read_json_parameters('http://unknown-url')
-    params_url = ('https://raw.githubusercontent.com/'
-                  'PSLmodels/Tax-Calculator/master/taxcalc/'
-                  'assumptions/simple_parameters_template.json')
-    url_dict = Calculator.read_json_parameters(params_url)
-    assert isinstance(url_dict, dict)
-    assert url_dict == file_dict
 
 
 @pytest.mark.itmded_vars
