@@ -15,7 +15,6 @@ def test_year_consistency():
 
 def test_update_and_apply_growdiff():
     gdiff = GrowDiff()
-    gdiff.ignore_update_errors()
     # update GrowDiff instance
     diffs = {2014: {'_AWAGE': [0.01]},
              2016: {'_AWAGE': [0.02]}}

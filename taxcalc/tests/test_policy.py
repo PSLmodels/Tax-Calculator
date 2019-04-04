@@ -772,33 +772,6 @@ def test_section_titles(tests_path):
             assert sec2title in htmxdict[sec1title]
 
 
-def test_json_reform_suffixes(tests_path):
-    """
-    Check "var_label" values versus Policy.JSON_REFORM_SUFFIXES set
-    """
-    # read policy_current_law.json file into a dictionary
-    path = os.path.join(tests_path, '..', 'policy_current_law.json')
-    with open(path, 'r') as clpfile:
-        clpdict = json.load(clpfile)
-    # create set of suffixes in the clpdict "col_label" lists
-    json_suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
-    clp_suffixes = set()
-    for param in clpdict:
-        suffix = param.split('_')[-1]
-        assert suffix not in json_suffixes
-        col_var = clpdict[param]['col_var']
-        col_label = clpdict[param]['col_label']
-        if col_var == '':
-            assert col_label == ''
-            continue
-        assert isinstance(col_label, list)
-        clp_suffixes.update(col_label)
-    # check that suffixes set is same as Policy.JSON_REFORM_SUFFIXES set
-    unmatched = clp_suffixes ^ set(json_suffixes)
-    if unmatched:
-        assert unmatched == 'UNMATCHED SUFFIXES'
-
-
 def test_description_punctuation(tests_path):
     """
     Check that each description ends in a period.
@@ -942,15 +915,6 @@ def test_validate_param_names_types_errors():
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
-    # this test was contributed by Hank Doupe in bug report #1980
-    json_reform = """
-    {"policy": {"_ID_BenefitSurtax_Switch_medical": {"2018": [true]}}}
-    """
-    pdict = Calculator.read_json_param_objects(json_reform, None)
-    pol = Policy()
-    pol.implement_reform(pdict["policy"], raise_errors=False)
-    assert pol.parameter_errors == ''
-    del pol
     # this test checks "is a removed parameter" error for base parameter
     pol = Policy()
     ref = {2019: {'_DependentCredit_Child_c': [400]}}
@@ -986,10 +950,9 @@ def test_validate_param_values_warnings_errors():
     pol4.implement_reform(ref4, print_warnings=False, raise_errors=False)
     assert pol4.parameter_errors
     pol5 = Policy()
-    pol5.ignore_reform_errors()
     ref5 = {2025: {'_ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
-    pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
-    assert pol5.parameter_errors
+    with pytest.raises(ValueError):
+        pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
     pol6 = Policy()
     ref6 = {2013: {'_STD': [[20000, 25000, 20000, 20000, 25000]]}}
     pol6.implement_reform(ref6, print_warnings=False, raise_errors=False)

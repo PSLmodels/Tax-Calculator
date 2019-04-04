@@ -10,7 +10,6 @@ import collections
 import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
-from taxcalc.growdiff import GrowDiff
 
 
 class Policy(Parameters):
@@ -87,7 +86,6 @@ class Policy(Parameters):
         # initialize parameter warning/error variables
         self.parameter_warnings = ''
         self.parameter_errors = ''
-        self._ignore_errors = False
 
     def inflation_rates(self):
         """
@@ -212,7 +210,7 @@ class Policy(Parameters):
         self.parameter_errors = ''
         self._validate_names_types(reform,
                                    removed_names=Policy.REMOVED_PARAMS)
-        if self.parameter_errors and not self._ignore_errors:
+        if self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # optionally apply cpi_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
@@ -236,133 +234,6 @@ class Policy(Parameters):
             print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
-
-    JSON_REFORM_SUFFIXES = {
-        # MARS-indexed suffixes and list index numbers
-        'single': 0,
-        'joint': 1,
-        'separate': 2,
-        'headhousehold': 3,
-        'widow': 4,
-        # EIC-indexed suffixes and list index numbers
-        '0kids': 0,
-        '1kid': 1,
-        '2kids': 2,
-        '3+kids': 3,
-        # idedtype-indexed suffixes and list index numbers
-        'medical': 0,
-        'statelocal': 1,
-        'realestate': 2,
-        'casualty': 3,
-        'misc': 4,
-        'interest': 5,
-        'charity': 6
-    }
-
-    @staticmethod
-    def translate_json_reform_suffixes(indict,
-                                       growdiff_baseline_dict,
-                                       growdiff_response_dict):
-        """
-        Replace any array parameters with suffixes in the specified
-        JSON-derived "policy" dictionary, indict, and
-        return a JSON-equivalent dictionary containing constructed array
-        parameters and containing no parameters with suffixes, odict.
-        """
-        # pylint: disable=too-many-statements
-        # define no_suffix function used only in this method
-        def no_suffix(idict):
-            """
-            Return param_base:year dictionary having only no-suffix parameters.
-            """
-            odict = dict()
-            suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
-            for param in idict.keys():
-                param_pieces = param.split('_')
-                suffix = param_pieces[-1]
-                if suffix not in suffixes:
-                    odict[param] = idict[param]
-            return odict
-
-        # define group_dict function used only in this method
-        def suffix_group_dict(idict):
-            """
-            Return param_base:year:suffix dictionary with each idict value.
-            """
-            gdict = dict()
-            suffixes = Policy.JSON_REFORM_SUFFIXES.keys()
-            for param in idict.keys():
-                param_pieces = param.split('_')
-                suffix = param_pieces[-1]
-                if suffix in suffixes:
-                    del param_pieces[-1]
-                    param_base = '_'.join(param_pieces)
-                    if param_base not in gdict:
-                        gdict[param_base] = dict()
-                    for year in sorted(idict[param].keys()):
-                        if year not in gdict[param_base]:
-                            gdict[param_base][year] = dict()
-                        gdict[param_base][year][suffix] = idict[param][year][0]
-            return gdict
-
-        # define with_suffix function used only in this method
-        def with_suffix(gdict, growdiff_baseline_dict, growdiff_response_dict):
-            """
-            Return param_base:year dictionary having only suffix parameters.
-            """
-            if bool(growdiff_baseline_dict) or bool(growdiff_response_dict):
-                gdiff_baseline = GrowDiff()
-                gdiff_baseline.update_growdiff(growdiff_baseline_dict)
-                gdiff_response = GrowDiff()
-                gdiff_response.update_growdiff(growdiff_response_dict)
-                growfactors = GrowFactors()
-                gdiff_baseline.apply_to(growfactors)
-                gdiff_response.apply_to(growfactors)
-            else:
-                gdiff_baseline = None
-                gdiff_response = None
-                growfactors = None
-            pol = Policy(gfactors=growfactors)
-            pol.ignore_reform_errors()
-            odict = dict()
-            for param in gdict.keys():
-                odict[param] = dict()
-                for year in sorted(gdict[param].keys()):
-                    odict[param][year] = dict()
-                    for suffix in gdict[param][year].keys():
-                        plist = getattr(pol, param).tolist()
-                        dvals = plist[int(year) - Policy.JSON_START_YEAR]
-                        odict[param][year] = [dvals]
-                        idx = Policy.JSON_REFORM_SUFFIXES[suffix]
-                        odict[param][year][0][idx] = gdict[param][year][suffix]
-                        udict = {int(year): {param: odict[param][year]}}
-                        pol.implement_reform(udict,
-                                             print_warnings=False,
-                                             raise_errors=False)
-            del gdiff_baseline
-            del gdiff_response
-            del growfactors
-            del pol
-            return odict
-
-        # high-level logic of translate_json_reform_suffixes method:
-        # - construct odict containing just parameters without a suffix
-        odict = no_suffix(indict)
-        # - group params with suffix into param_base:year:suffix dictionary
-        gdict = suffix_group_dict(indict)
-        # - add to odict the consolidated values for parameters with a suffix
-        if gdict:
-            odict.update(with_suffix(gdict,
-                                     growdiff_baseline_dict,
-                                     growdiff_response_dict))
-        # - return policy dictionary containing constructed parameter arrays
-        return odict
-
-    def ignore_reform_errors(self):
-        """
-        Sets self._ignore_errors to True.
-        """
-        self._ignore_errors = True
 
     def metadata(self):
         """

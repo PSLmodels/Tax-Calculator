@@ -36,7 +36,6 @@ class GrowDiff(Parameters):
                         GrowDiff.DEFAULT_NUM_YEARS)
         self.parameter_warnings = ''
         self.parameter_errors = ''
-        self._ignore_errors = False
 
     def update_growdiff(self, revision,
                         print_warnings=True, raise_errors=True):
@@ -71,7 +70,7 @@ class GrowDiff(Parameters):
         self.parameter_warnings = ''
         self.parameter_errors = ''
         self._validate_names_types(revision)
-        if self.parameter_errors and not self._ignore_errors:
+        if self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # implement the revision year by year
         revision_parameters = set()
@@ -99,12 +98,6 @@ class GrowDiff(Parameters):
                 if val != 0.0:
                     return True
         return False
-
-    def ignore_update_errors(self):
-        """
-        Sets self._ignore_errors to True.
-        """
-        self._ignore_errors = True
 
     def apply_to(self, growfactors):
         """
