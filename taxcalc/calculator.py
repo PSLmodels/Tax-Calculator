@@ -56,7 +56,7 @@ class Calculator():
 
     verbose: boolean
         specifies whether or not to write to stdout data-loaded and
-        data-extrapolated progress reports; default value is true.
+        data-extrapolated progress reports; default value is false.
 
     sync_years: boolean
         specifies whether or not to synchronize policy year and records year;
@@ -94,7 +94,7 @@ class Calculator():
     """
     # pylint: disable=too-many-public-methods
 
-    def __init__(self, policy=None, records=None, verbose=True,
+    def __init__(self, policy=None, records=None, verbose=False,
                  sync_years=True, consumption=None):
         # pylint: disable=too-many-arguments,too-many-branches
         if isinstance(policy, Policy):
