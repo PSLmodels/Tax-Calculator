@@ -29,7 +29,8 @@ def test_make_calculator(cps_subsample):
     consump = Consumption()
     consump.update_consumption({sim_year: {'_MPC_e20400': [0.05]}})
     assert consump.current_year == start_year
-    calc = Calculator(policy=pol, records=rec, consumption=consump)
+    calc = Calculator(policy=pol, records=rec,
+                      consumption=consump, verbose=True)
     assert calc.data_year == Records.CPSCSV_YEAR
     assert calc.current_year == Records.CPSCSV_YEAR
     # test incorrect Calculator instantiation:
@@ -331,11 +332,11 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
 RAWINPUT_FUNITS = 4
 RAWINPUT_YEAR = 2015
 RAWINPUT_CONTENTS = (
-    'RECID,MARS\n'
-    '    1,   2\n'
-    '    2,   1\n'
-    '    3,   4\n'
-    '    4,   3\n'
+    'RECID,MARS,unknown\n'
+    '    1,   2,      9\n'
+    '    2,   1,      9\n'
+    '    3,   4,      9\n'
+    '    4,   3,      9\n'
 )
 
 

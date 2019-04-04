@@ -115,18 +115,19 @@ class Calculator():
             raise ValueError('consumption must be None or Consumption object')
         if self.__consumption.current_year < self.__policy.current_year:
             self.__consumption.set_year(self.__policy.current_year)
+        if verbose:
+            if self.__records.IGNORED_VARS:
+                print('Your data include the following unused ' +
+                      'variables that will be ignored:')
+                for var in self.__records.IGNORED_VARS:
+                    print('  ' +
+                          var)
         current_year_is_data_year = (
             self.__records.current_year == self.__records.data_year)
         if sync_years and current_year_is_data_year:
             if verbose:
                 print('You loaded data for ' +
                       str(self.__records.data_year) + '.')
-                if self.__records.IGNORED_VARS:
-                    print('Your data include the following unused ' +
-                          'variables that will be ignored:')
-                    for var in self.__records.IGNORED_VARS:
-                        print('  ' +
-                              var)
             while self.__records.current_year < self.__policy.current_year:
                 self.__records.increment_year()
             if verbose:
