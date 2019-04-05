@@ -28,7 +28,7 @@ def test_json_file_contents(tests_path, fname):
     required_keys = ['long_name', 'description',
                      'section_1', 'section_2', 'notes',
                      'row_label',
-                     'cpi_inflated', 'cpi_inflatable',
+                     'indexed', 'indexable',
                      'col_var', 'col_label',
                      'value_type', 'value', 'valid_values']
     valid_value_types = ['boolean', 'integer', 'real', 'string']
@@ -60,6 +60,10 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
+        if 'indexable' not in param:
+            param['indexable'] = False
+        if 'indexed' not in param:
+            param['indexed'] = False
         for key in required_keys:
             assert key in param
         if param['value_type'] == 'string':
@@ -77,35 +81,33 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(param['description'], str)
         if not param['description']:
             assert '{} description'.format(pname) == 'empty string'
-        # check that cpi_inflatable and cpi_inflated are boolean
-        assert isinstance(param['cpi_inflatable'], bool)
-        assert isinstance(param['cpi_inflated'], bool)
-        # check that cpi_inflatable and cpi_inflated are False in many files
+        # check that indexable and indexed are boolean
+        assert isinstance(param['indexable'], bool)
+        assert isinstance(param['indexed'], bool)
+        # check that indexable and indexed are False in many files
         if fname != 'policy_current_law.json':
-            assert param['cpi_inflatable'] is False
-            assert param['cpi_inflated'] is False
-        # check that cpi_inflatable is True when cpi_inflated is True
-        if param['cpi_inflated'] and not param['cpi_inflatable']:
-            msg = 'param:<{}>; cpi_inflated={}; cpi_inflatable={}'
-            fail = msg.format(pname, param['cpi_inflated'],
-                              param['cpi_inflatable'])
+            assert param['indexable'] is False
+            assert param['indexed'] is False
+        # check that indexable is True when indexed is True
+        if param['indexed'] and not param['indexable']:
+            msg = 'param:<{}>; indexed={}; indexable={}'
+            fail = msg.format(pname, param['indexed'], param['indexable'])
             failures += fail + '\n'
         # check that value_type is correct string
         if not param['value_type'] in valid_value_types:
             msg = 'param:<{}>; value_type={}'
             fail = msg.format(pname, param['value_type'])
             failures += fail + '\n'
-        # check that cpi_inflatable param has value_type real
-        if param['cpi_inflatable'] and param['value_type'] != 'real':
-            msg = 'param:<{}>; value_type={}; cpi_inflatable={}'
+        # check that indexable param has value_type real
+        if param['indexable'] and param['value_type'] != 'real':
+            msg = 'param:<{}>; value_type={}; indexable={}'
             fail = msg.format(pname, param['value_type'],
-                              param['cpi_inflatable'])
+                              param['indexable'])
             failures += fail + '\n'
-        # ensure that cpi_inflatable is False when value_type is not real
-        if param['cpi_inflatable'] and param['value_type'] != 'real':
-            msg = 'param:<{}>; cpi_inflatable={}; value_type={}'
-            fail = msg.format(pname, param['cpi_inflatable'],
-                              param['value_type'])
+        # ensure that indexable is False when value_type is not real
+        if param['indexable'] and param['value_type'] != 'real':
+            msg = 'param:<{}>; indexable={}; value_type={}'
+            fail = msg.format(pname, param['indexable'], param['value_type'])
             failures += fail + '\n'
         # check that row_label is list
         rowlabel = param['row_label']
@@ -144,7 +146,7 @@ def test_json_file_contents(tests_path, fname):
         # check that indexed parameters have all known years in rowlabel list
         # form_parameters are those whose value is available only on IRS form
         form_parameters = []
-        if param['cpi_inflated']:
+        if param['indexed']:
             error = False
             known_years = num_known_years
             if pname in long_params:

@@ -1268,8 +1268,7 @@ class Calculator():
                     if isinstance(basex, Policy):
                         if param.endswith('_cpi'):
                             rootparam = param[:-4]
-                            bval = basevals[rootparam].get('cpi_inflated',
-                                                           False)
+                            bval = basevals[rootparam].get('indexed', False)
                         else:
                             bval = getattr(basex, param[1:], None)
                             if isinstance(bval, np.ndarray):
