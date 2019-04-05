@@ -383,7 +383,8 @@ class Parameters():
                             if scalar:
                                 pname = name
                             else:
-                                pname = '{}_{}'.format(name, idx)
+                                col = self._vals[name]['col_label'][idx]
+                                pname = '{}[{}]'.format(name, col)
                             pval = pvalue[idx]
                             # pylint: disable=unidiomatic-typecheck
                             if valtype == 'real':
