@@ -1142,11 +1142,7 @@ class Calculator():
                 txt = req.text
             else:
                 txt = reform
-            rpol_dict = (
-                Calculator._read_json_policy_reform_text(txt,
-                                                         gdiff_base_dict,
-                                                         gdiff_resp_dict)
-            )
+            rpol_dict = Calculator._read_json_policy_reform_text(txt)
         else:
             raise ValueError('reform is neither None nor string')
         # construct single composite dictionary
@@ -1462,9 +1458,7 @@ class Calculator():
         IITAX(self.__policy, self.__records)
 
     @staticmethod
-    def _read_json_policy_reform_text(text_string,
-                                      growdiff_baseline_dict,
-                                      growdiff_response_dict):
+    def _read_json_policy_reform_text(text_string):
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
 
@@ -1500,10 +1494,7 @@ class Calculator():
             msg = 'illegal key(s) "{}" in policy reform file'
             raise ValueError(msg.format(illegal_keys))
         # convert raw_dict['policy'] dictionary into prdict
-        tdict = Policy.translate_json_reform_suffixes(raw_dict['policy'],
-                                                      growdiff_baseline_dict,
-                                                      growdiff_response_dict)
-        prdict = Calculator._convert_parameter_dict(tdict)
+        prdict = Calculator._convert_parameter_dict(raw_dict['policy'])
         return prdict
 
     @staticmethod

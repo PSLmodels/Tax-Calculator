@@ -8,7 +8,6 @@ Tests of Calculator class.
 # pylint: disable=too-many-lines,invalid-name
 
 import os
-import json
 from io import StringIO
 import copy
 import pytest
@@ -702,147 +701,6 @@ def test_calc_all():
     assert calc.reform_warnings == ''
 
 
-def test_translate_json_reform_suffixes_mars_non_indexed():
-    """
-    Test read_json_param_objects method using MARS-indexed parameter suffixes.
-    """
-    json1 = """{"policy": {
-      "_II_em": {"2020": [20000], "2015": [15000]},
-      "_AMEDT_ec_joint": {"2018": [400000], "2016": [300000]},
-      "_AMEDT_ec_separate": {"2017": [150000], "2019": [200000]}
-    }}"""
-    pdict1 = Calculator.read_json_param_objects(reform=json1, assump=None)
-    rdict1 = pdict1['policy']
-    json2 = """{"policy": {
-      "_AMEDT_ec": {"2016": [[200000, 300000, 125000, 200000, 200000]],
-                    "2017": [[200000, 300000, 150000, 200000, 200000]],
-                    "2018": [[200000, 400000, 150000, 200000, 200000]],
-                    "2019": [[200000, 400000, 200000, 200000, 200000]]},
-      "_II_em": {"2015": [15000], "2020": [20000]}
-    }}"""
-    pdict2 = Calculator.read_json_param_objects(reform=json2, assump=None)
-    rdict2 = pdict2['policy']
-    assert len(rdict2) == len(rdict1)
-    for year in rdict2.keys():
-        if '_II_em' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_II_em'],
-                               rdict2[year]['_II_em'],
-                               atol=0.01, rtol=0.0)
-        if '_AMEDT_ec' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_AMEDT_ec'],
-                               rdict2[year]['_AMEDT_ec'],
-                               atol=0.01, rtol=0.0)
-
-
-def test_translate_json_reform_suffixes_eic():
-    """
-    Test read_json_param_objects method using EIC-indexed parameter suffixes.
-    """
-    json1 = """{"policy": {
-      "_II_em": {"2020": [20000], "2015": [15000]},
-      "_EITC_c_0kids": {"2018": [510], "2019": [510]},
-      "_EITC_c_1kid": {"2019": [3400], "2018": [3400]},
-      "_EITC_c_2kids": {"2018": [5616], "2019": [5616]},
-      "_EITC_c_3+kids": {"2019": [6318], "2018": [6318]}
-    }}"""
-    pdict1 = Calculator.read_json_param_objects(reform=json1, assump=None)
-    rdict1 = pdict1['policy']
-    json2 = """{"policy": {
-      "_EITC_c": {"2019": [[510, 3400, 5616, 6318]],
-                  "2018": [[510, 3400, 5616, 6318]]},
-      "_II_em": {"2020": [20000], "2015": [15000]}
-    }}"""
-    pdict2 = Calculator.read_json_param_objects(reform=json2, assump=None)
-    rdict2 = pdict2['policy']
-    assert len(rdict2) == len(rdict1)
-    for year in rdict2.keys():
-        if '_II_em' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_II_em'],
-                               rdict2[year]['_II_em'],
-                               atol=0.01, rtol=0.0)
-        if '_EITC_c' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_EITC_c'],
-                               rdict2[year]['_EITC_c'],
-                               atol=0.01, rtol=0.0)
-
-
-def test_translate_json_reform_suffixes_idedtype():
-    """
-    Test read_json_param_objects method using idedtype-indexed param suffixes.
-    """
-    # test read_json_param_objects(...)
-    # using idedtype-indexed parameter suffixes
-    json1 = """{"policy": {
-      "_ID_BenefitCap_rt": {"2019": [0.2]},
-      "_ID_BenefitCap_Switch_medical": {"2019": [false]},
-      "_ID_BenefitCap_Switch_casualty": {"2019": [false]},
-      "_ID_BenefitCap_Switch_misc": {"2019": [false]},
-      "_ID_BenefitCap_Switch_interest": {"2019": [false]},
-      "_ID_BenefitCap_Switch_charity": {"2019": [false]},
-      "_II_em": {"2020": [20000], "2015": [15000]}
-    }}"""
-    pdict1 = Calculator.read_json_param_objects(reform=json1, assump=None)
-    rdict1 = pdict1['policy']
-    json2 = """{"policy": {
-      "_II_em": {"2020": [20000], "2015": [15000]},
-      "_ID_BenefitCap_Switch": {
-        "2019": [[false, true, true, false, false, false, false]]
-      },
-      "_ID_BenefitCap_rt": {"2019": [0.2]}
-    }}"""
-    pdict2 = Calculator.read_json_param_objects(reform=json2, assump=None)
-    rdict2 = pdict2['policy']
-    assert len(rdict2) == len(rdict1)
-    for year in rdict2.keys():
-        if '_II_em' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_II_em'],
-                               rdict2[year]['_II_em'],
-                               atol=0.01, rtol=0.0)
-        if '_ID_BenefitCap_rt' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_ID_BenefitCap_rt'],
-                               rdict2[year]['_ID_BenefitCap_rt'],
-                               atol=0.01, rtol=0.0)
-        if '_ID_BenefitCap_Switch' in rdict2[year].keys():
-            assert np.allclose(rdict1[year]['_ID_BenefitCap_Switch'],
-                               rdict2[year]['_ID_BenefitCap_Switch'],
-                               atol=0.01, rtol=0.0)
-
-
-def test_read_json_param_with_suffixes_and_errors():
-    """
-    Test interaction of policy parameter suffixes and reform errors
-    (fails without 0.10.2 bug fix as reported by Hank Doupe in PB PR#641)
-    """
-    reform = {
-        u'policy': {
-            u'_II_brk4_separate': {u'2017': [5000.0]},
-            u'_STD_separate': {u'2017': [8000.0]},
-            u'_STD_single': {u'2018': [1000.0]},
-            u'_II_brk2_headhousehold': {u'2017': [1000.0]},
-            u'_II_brk4_single': {u'2017': [500.0]},
-            u'_STD_joint': {u'2017': [10000.0], u'2020': [150.0]},
-            u'_II_brk2_separate': {u'2017': [1000.0]},
-            u'_II_brk2_single': {u'2017': [1000.0]},
-            u'_II_brk2_joint': {u'2017': [1000.0]},
-            u'_FICA_ss_trt': {u'2017': [-1.0], u'2019': [0.1]},
-            u'_II_brk4_headhousehold': {u'2017': [500.0]},
-            u'_STD_headhousehold': {u'2017': [10000.0], u'2020': [150.0]},
-            u'_ID_Medical_frt': {u'2019': [0.06]},
-            u'_II_brk4_joint': {u'2017': [500.0]},
-            u'_ID_BenefitSurtax_Switch_medical': {u'2017': [True]}
-        }
-    }
-    json_reform = json.dumps(reform)
-    params = Calculator.read_json_param_objects(json_reform, None)
-    assert isinstance(params, dict)
-    pol = Policy()
-    pol.ignore_reform_errors()
-    pol.implement_reform(params['policy'],
-                         print_warnings=False, raise_errors=False)
-    assert pol.parameter_errors
-    assert pol.parameter_warnings
-
-
 def test_noreform_documentation():
     """
     Test automatic documentation creation.
@@ -877,34 +735,42 @@ def test_reform_documentation():
     Test automatic documentation creation.
     """
     reform_json = """
-    {
-    "policy": {
-      "_II_em_cpi": {"2016": false,
-                     "2018": true},
-      "_II_em": {"2016": [5000],
-                 "2018": [6000],
-                 "2020": [7000]},
-      "_EITC_indiv": {"2017": [true]},
-      "_STD_Aged_cpi": {"2016": false},
-      "_STD_Aged": {"2016": [[1600, 1300, 1300, 1600, 1600]],
-                    "2020": [[2000, 2000, 2000, 2000, 2000]]},
-      "_ID_BenefitCap_Switch_medical": {"2020": [false]},
-      "_ID_BenefitCap_Switch_casualty": {"2020": [false]},
-      "_ID_BenefitCap_Switch_misc": {"2020": [false]},
-      "_ID_BenefitCap_Switch_interest": {"2020": [false]},
-      "_ID_BenefitCap_Switch_charity": {"2020": [false]}
-      }
+{
+"policy": {
+    "_II_em_cpi": {
+        "2016": false,
+        "2018": true
+    },
+    "_II_em": {
+        "2016": [5000],
+        "2018": [6000],
+        "2020": [7000]
+    },
+    "_EITC_indiv": {
+        "2017": [true]
+    },
+    "_STD_Aged_cpi": {
+        "2016": false
+    },
+    "_STD_Aged": {
+        "2016": [[1600, 1300, 1300, 1600, 1600]],
+        "2020": [[2000, 2000, 2000, 2000, 2000]]
+    },
+    "_ID_BenefitCap_Switch": {
+        "2020": [[false, false, false, false, false, false, false]]
     }
-    """
+}
+}
+"""
     assump_json = """
-    {
-    "consumption": {},
-    // increase baseline inflation rate by one percentage point in 2014+
-    // (has no effect on known policy parameter values)
-    "growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
-    "growdiff_response": {}
-    }
-    """
+{
+"consumption": {},
+// increase baseline inflation rate by one percentage point in 2014+
+// (has no effect on known policy parameter values)
+"growdiff_baseline": {"_ACPIU": {"2014": [0.01]}},
+"growdiff_response": {}
+}
+"""
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
     doc = Calculator.reform_documentation(params)
