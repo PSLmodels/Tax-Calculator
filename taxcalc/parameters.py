@@ -102,7 +102,7 @@ class Parameters():
 
         Parameters
         ----------
-        year: int
+        year: integer
             calendar year for which to set current_year and parameter values
 
         Raises
@@ -113,24 +113,15 @@ class Parameters():
         Returns
         -------
         nothing: void
-
-        Notes
-        -----
-        To increment the current year, use the following statement::
-
-            policy.set_year(policy.current_year + 1)
-
-        where, in this example, policy is a Policy class object.
         """
         if year < self.start_year or year > self.end_year:
             msg = 'year {} passed to set_year() must be in [{},{}] range.'
             raise ValueError(msg.format(year, self.start_year, self.end_year))
         self._current_year = year
-        year_zero_indexed = year - self._start_year
+        iyr = year - self._start_year
         for name in self._vals:
-            if isinstance(name, str):
-                arr = getattr(self, name)
-                setattr(self, name[1:], arr[year_zero_indexed])
+            arr = getattr(self, name)
+            setattr(self, name[1:], arr[iyr])
 
     # ----- begin private methods of Parameters class -----
 
@@ -159,10 +150,10 @@ class Parameters():
                     index_rates = self.wage_growth_rates()
                 else:
                     index_rates = self.inflation_rates()
-                    if known_years_is_int:  # TODO: shift left?
-                        values = values[:known_years]
-                    else:
-                        values = values[:known_years[name]]
+                if known_years_is_int:
+                    values = values[:known_years]
+                else:
+                    values = values[:known_years[name]]
             else:
                 index_rates = None
             setattr(self, name,
