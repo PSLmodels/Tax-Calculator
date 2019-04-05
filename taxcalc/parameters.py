@@ -468,7 +468,7 @@ class Parameters():
                     assert pvalue.shape == vvalue.shape
                     assert len(pvalue.shape) <= 2
                     if len(pvalue.shape) == 2:
-                        scalar = False  # parameter value is a list (vector)
+                        scalar = False  # parameter value is a vector
                     else:
                         scalar = True  # parameter value is a scalar
                     for idx in np.ndindex(pvalue.shape):
@@ -490,9 +490,10 @@ class Parameters():
                             if scalar:
                                 name = pname
                             else:
-                                name = '{}_{}'.format(pname, idx[1])
+                                col = self._vals[pname]['col_label'][idx[1]]
+                                name = '{}[{}]'.format(pname, col)
                                 if extra:
-                                    msg += '_{}'.format(idx[1])
+                                    msg += '[{}]'.format(col)
                             if action == 'warn':
                                 fullmsg = '{}: {}\n'.format(
                                     'WARNING',
