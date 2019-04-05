@@ -127,11 +127,10 @@ class Parameters():
             raise ValueError(msg.format(year, self.start_year, self.end_year))
         self._current_year = year
         year_zero_indexed = year - self._start_year
-        if hasattr(self, '_vals'):
-            for name in self._vals:
-                if isinstance(name, str):
-                    arr = getattr(self, name)
-                    setattr(self, name[1:], arr[year_zero_indexed])
+        for name in self._vals:
+            if isinstance(name, str):
+                arr = getattr(self, name)
+                setattr(self, name[1:], arr[year_zero_indexed])
 
     # ----- begin private methods of Parameters class -----
 
@@ -150,29 +149,27 @@ class Parameters():
             known_years_is_int = True
         elif isinstance(known_years, dict):
             known_years_is_int = False
-        if hasattr(self, '_vals'):
-            for name, data in self._vals.items():
-                valtype = data.get('value_type')
-                values = data.get('value')
-                if values:
-                    cpi_inflated = data.get('cpi_inflated', False)
-                    # pylint: disable=assignment-from-none
-                    if cpi_inflated:
-                        if name in wage_indexed_param_list:
-                            index_rates = self.wage_growth_rates()
-                        else:
-                            index_rates = self.inflation_rates()
-                            if known_years_is_int:
-                                values = values[:known_years]
-                            else:
-                                values = values[:known_years[name]]
+        for name, data in self._vals.items():
+            valtype = data['value_type']
+            values = data['value']
+            indexed = data.get('indexed', False)
+            # pylint: disable=assignment-from-none
+            if indexed:
+                if name in wage_indexed_param_list:
+                    index_rates = self.wage_growth_rates()
+                else:
+                    index_rates = self.inflation_rates()
+                    if known_years_is_int:  # TODO: shift left?
+                        values = values[:known_years]
                     else:
-                        index_rates = None
-                    setattr(self, name,
-                            self._expand_array(values, valtype,
-                                               inflate=cpi_inflated,
-                                               inflation_rates=index_rates,
-                                               num_years=self._num_years))
+                        values = values[:known_years[name]]
+            else:
+                index_rates = None
+            setattr(self, name,
+                    self._expand_array(values, valtype,
+                                       inflate=indexed,
+                                       inflation_rates=index_rates,
+                                       num_years=self._num_years))
         self.set_year(self._start_year)
 
     def _update(self, year_mods, wage_indexed_params=None):
@@ -215,9 +212,9 @@ class Parameters():
         values for that PARAM in that YEAR.  Beginning in the year
         following the implementation of a revision provision, the
         parameter whose value has been changed by the revision continues
-        to be inflation indexed, if relevant, or not be inflation indexed
-        according to that parameter's cpi_inflated value loaded from
-        DEFAULTS_FILE_NAME.  For a cpi-related parameter, a reform can change
+        to be price or wage indexed, if relevant, or not be indexed
+        according to that parameter's indexed value loaded from the
+        DEFAULTS_FILE_NAME.  For a indexable parameter, a reform can change
         the indexing status of a parameter by including in the MODS dictionary
         a term that is a PARAM_cpi:BOOLEAN pair specifying the post-reform
         indexing status of the parameter.
@@ -270,13 +267,13 @@ class Parameters():
             # determine indexing status of parameter with name for year
             if name.endswith('_cpi'):
                 continue  # handle elsewhere in this method
-            vals_indexed = self._vals[name].get('cpi_inflated', False)
+            vals_indexed = self._vals[name].get('indexed', False)
             valtype = self._vals[name].get('value_type')
             name_plus_cpi = name + '_cpi'
             if name_plus_cpi in year_mods[year].keys():
                 used_names.add(name_plus_cpi)
                 indexed = year_mods[year].get(name_plus_cpi)
-                self._vals[name]['cpi_inflated'] = indexed  # remember status
+                self._vals[name]['indexed'] = indexed  # remember status
             else:
                 indexed = vals_indexed
             # set post-reform values of parameter with name
@@ -298,7 +295,7 @@ class Parameters():
             used_names.add(name)
             pname = name[:-4]  # root parameter name
             pindexed = year_mods[year][name]
-            self._vals[pname]['cpi_inflated'] = pindexed  # remember status
+            self._vals[pname]['indexed'] = pindexed  # remember status
             cval = getattr(self, pname, None)
             pvalues = [cval[year - self.start_year]]
             wage_indexed_param = pname in wage_indexed_param_list
@@ -346,9 +343,9 @@ class Parameters():
                                 'ERROR: ' + msg.format(year, name) + '\n'
                             )
                         else:
-                            # check if root parameter is cpi inflatable
-                            if not self._vals[pname]['cpi_inflatable']:
-                                msg = '{} {} parameter is not cpi inflatable'
+                            # check if root parameter is indexable
+                            if not self._vals[pname]['indexable']:
+                                msg = '{} {} parameter is not indexable'
                                 self.parameter_errors += (
                                     'ERROR: ' + msg.format(year, pname) + '\n'
                                 )

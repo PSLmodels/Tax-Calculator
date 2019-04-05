@@ -323,9 +323,9 @@ class Policy(Parameters):
         for idx in range(0, self.num_years):
             infrate = round(self._inflation_rates[idx] + cpi_offset[idx], 6)
             self._inflation_rates[idx] = infrate
-        # revert CPI-indexed parameter values to policy_current_law.json values
+        # revert indexed parameter values to policy_current_law.json values
         for name in self._vals.keys():
-            if self._vals[name]['cpi_inflated']:
+            if self._vals[name]['indexed']:
                 setattr(self, name, self._vals[name]['value'])
         # construct and return known_years dictionary
         known_years = dict()
@@ -336,11 +336,11 @@ class Policy(Parameters):
                               self.start_year + 1)
         for year in sorted(reform.keys()):
             for name in reform[year]:
-                if self._vals[name]['cpi_inflated']:
+                if self._vals[name]['indexed']:
                     if name not in known_years:
                         known_years[name] = kyrs_in_reform
         for name in self._vals.keys():
-            if self._vals[name]['cpi_inflated']:
+            if self._vals[name]['indexed']:
                 if name not in known_years:
                     known_years[name] = kyrs_not_in_reform
         return known_years
