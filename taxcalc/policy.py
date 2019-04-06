@@ -247,15 +247,16 @@ class Policy(Parameters):
         """
         mdata = collections.OrderedDict()
         for pname, pdata in self._vals.items():
-            mdata[pname] = pdata
-            mdata[pname]['row_label'] = ['{}'.format(self.current_year)]
-            mdata[pname]['start_year'] = '{}'.format(self.current_year)
-            valraw = getattr(self, pname[1:])
+            name = pname[1:]
+            mdata[name] = pdata
+            mdata[name]['row_label'] = ['{}'.format(self.current_year)]
+            mdata[name]['start_year'] = '{}'.format(self.current_year)
+            valraw = getattr(self, name)
             if isinstance(valraw, np.ndarray):
                 val = valraw.tolist()
             else:
                 val = valraw
-            mdata[pname]['value'] = [val]
+            mdata[name]['value'] = val
         return mdata
 
     @staticmethod

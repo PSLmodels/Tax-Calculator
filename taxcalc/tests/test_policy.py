@@ -381,7 +381,15 @@ def test_policy_metadata():
     """
     clp = Policy()
     mdata = clp.metadata()
-    assert mdata['_CDCC_ps']['value'] == [15000]
+    assert isinstance(mdata['STD']['value'], list)
+    assert np.allclose(mdata['STD']['value'],
+                       [6100, 12200, 6100, 8950, 12200])
+    assert isinstance(mdata['CDCC_ps']['value'], float)
+    assert mdata['CDCC_ps']['value'] == 15000
+    dump = False
+    if dump:
+        print(mdata)
+        assert 1 == 2
 
 
 def test_implement_reform_raises_on_no_year():

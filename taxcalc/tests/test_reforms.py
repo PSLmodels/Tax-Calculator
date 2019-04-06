@@ -39,32 +39,32 @@ def test_2017_law_reform(tests_path):
         # relation '<' implies asserting that actual < expect
         # relation '>' implies asserting that actual > expect
         # ... parameters not affected by TCJA and that are not indexed
-        '_AMEDT_ec': {'relation': '=', 'value': 200000},
-        '_SS_thd85': {'relation': '=', 'value': 34000},
+        'AMEDT_ec': {'relation': '=', 'value': 200000},
+        'SS_thd85': {'relation': '=', 'value': 34000},
         # ... parameters not affected by TCJA and that are indexed
-        '_STD_Dep': {'relation': '>', 'value': 1050},
-        '_CG_brk2': {'relation': '>', 'value': 425800},
-        '_AMT_CG_brk1': {'relation': '>', 'value': 38600},
-        '_AMT_brk1': {'relation': '>', 'value': 191100},
-        '_EITC_c': {'relation': '>', 'value': 519},
-        '_EITC_ps': {'relation': '>', 'value': 8490},
-        '_EITC_ps_MarriedJ': {'relation': '>', 'value': 5680},
-        '_EITC_InvestIncome_c': {'relation': '>', 'value': 3500},
+        'STD_Dep': {'relation': '>', 'value': 1050},
+        'CG_brk2': {'relation': '>', 'value': 425800},
+        'AMT_CG_brk1': {'relation': '>', 'value': 38600},
+        'AMT_brk1': {'relation': '>', 'value': 191100},
+        'EITC_c': {'relation': '>', 'value': 519},
+        'EITC_ps': {'relation': '>', 'value': 8490},
+        'EITC_ps_MarriedJ': {'relation': '>', 'value': 5680},
+        'EITC_InvestIncome_c': {'relation': '>', 'value': 3500},
         # ... parameters affected by TCJA and that are not indexed
-        '_ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
-        '_II_rt3': {'relation': '=', 'value': 0.25},
+        'ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
+        'II_rt3': {'relation': '=', 'value': 0.25},
         # ... parameters affected by TCJA and that are indexed
-        '_II_brk3': {'relation': '>', 'value': 91900},
-        '_STD': {'relation': '<', 'value': 7000},
-        '_II_em': {'relation': '>', 'value': 4050},
-        '_AMT_em_pe': {'relation': '<', 'value': 260000}
+        'II_brk3': {'relation': '>', 'value': 91900},
+        'STD': {'relation': '<', 'value': 7000},
+        'II_em': {'relation': '>', 'value': 4050},
+        'AMT_em_pe': {'relation': '<', 'value': 260000}
     }
     assert isinstance(pre_expect, dict)
     assert set(pre_expect.keys()).issubset(set(pre_mdata.keys()))
     for name in pre_expect:
-        aval = pre_mdata[name]['value'][0]
+        aval = pre_mdata[name]['value']
         if isinstance(aval, list):
-            act = aval[0]  # comparing only first item in a nonscalar parameter
+            act = aval[0]  # comparing only first item in a vector parameter
         else:
             act = aval
         exp = pre_expect[name]['value']
