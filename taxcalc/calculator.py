@@ -1252,22 +1252,22 @@ class Calculator():
                         pval = [str(item) for item in pval]
                         doc += ' ' * (4 + len(param)) + '{}\n'.format(pval)
                     # ... write name line
-                    if param.endswith('_cpi'):
-                        rootparam = param[:-4]
+                    if param.endswith('_indexed'):
+                        rootparam = param[:-8]
                         name = '{} inflation indexing status'.format(rootparam)
                     else:
                         name = basevals[param]['long_name']
                     for line in lines('name: ' + name, 6):
                         doc += '  ' + line
                     # ... write optional desc line
-                    if not param.endswith('_cpi'):
+                    if not param.endswith('_indexed'):
                         desc = basevals[param]['description']
                         for line in lines('desc: ' + desc, 6):
                             doc += '  ' + line
                     # ... write baseline_value line
                     if isinstance(basex, Policy):
-                        if param.endswith('_cpi'):
-                            rootparam = param[:-4]
+                        if param.endswith('_indexed'):
+                            rootparam = param[:-8]
                             bval = basevals[rootparam].get('indexed', False)
                         else:
                             bval = getattr(basex, param[1:], None)

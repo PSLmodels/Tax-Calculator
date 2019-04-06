@@ -43,12 +43,13 @@ class Policy(Parameters):
     # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
-    # specify which Policy parameters are wage (rather than price) indexed
+    # NOTE: the following three data structures use internal parameter names:
+    # (1) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = [
         '_SS_Earnings_c',
         '_SS_Earnings_thd'
     ]
-    # specify which Policy parameters have been removed
+    # (2) specify which Policy parameters have been removed
     REMOVED_PARAMS = [
         # following five parameters removed in PR 2223 merged on 2019-02-06
         '_DependentCredit_Child_c',
@@ -57,10 +58,10 @@ class Policy(Parameters):
         '_FilerCredit_c',
         '_ALD_InvInc_ec_base_RyanBrady'
     ]
-    # specify which Policy parameters havve been redefined recently
+    # (3) specify which Policy parameters havve been redefined recently
     REDEFINED_PARAMS = {
         # TODO: remove the CTC_c name:message pair sometime later in 2019
-        '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-02-22)'
+        '_CTC_c': 'CTC_c was redefined in release 1.0.0 (2019-02-22)'
     }
 
     def __init__(self, gfactors=None, only_reading_defaults=False):
@@ -159,12 +160,12 @@ class Policy(Parameters):
                     'SS_Earnings_c': [300000]
                 },
                 2017: {
-                    'SS_Earnings_c': [500000], 'SS_Earnings_c_cpi': False
+                    'SS_Earnings_c': [500000], 'SS_Earnings_c_indexed': False
                 },
                 2019: {
                     'EITC_c': [[1200, 7000, 10000, 12000]],
                     'II_em': [9000],
-                    'SS_Earnings_c': [700000], 'SS_Earnings_c_cpi': True
+                    'SS_Earnings_c': [700000], 'SS_Earnings_c_indexed': True
                 }
             }
 

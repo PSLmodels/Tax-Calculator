@@ -212,7 +212,7 @@ class Parameters():
         according to that parameter's indexed value loaded from the
         DEFAULTS_FILE_NAME.  For a indexable parameter, a reform can change
         the indexing status of a parameter by including in the MODS dictionary
-        a term that is a PARAM_cpi:BOOLEAN pair specifying the post-reform
+        a term that is a PARAM_indexed:BOOLEAN pair specifying the post-reform
         indexing status of the parameter.
 
         So, for example, to raise the OASDI (i.e., Old-Age, Survivors,
@@ -221,13 +221,13 @@ class Parameters():
         years as in current-law policy, the YEAR:MODS dictionary would
         be as follows::
 
-            {2018: {"_SS_Earnings_c":[500000]}}
+            {2018: {'_SS_Earnings_c':[500000]}}
 
         But to raise the maximum taxable earnings in 2018 to $500,000
         without any indexing in subsequent years, the YEAR:MODS
         dictionary would be as follows::
 
-            {2018: {"_SS_Earnings_c":[500000], "_SS_Earnings_c_cpi":False}}
+            {2018: {'_SS_Earnings_c':[500000], '_SS_Earnings_c_indexed':False}}
 
         And to raise in 2019 the starting AGI for EITC phaseout for
         married filing jointly filing status (which is a two-dimensional
@@ -235,7 +235,7 @@ class Parameters():
         to three or more and is inflation indexed), the YEAR:MODS dictionary
         would be as follows::
 
-            {2019: {"_EITC_ps_MarriedJ":[[8000, 8500, 9000, 9500]]}}
+            {2019: {'_EITC_ps_MarriedJ':[[8000, 8500, 9000, 9500]]}}
 
         Notice the pair of double square brackets around the four values
         for 2019.  The one-dimensional parameters above require only a pair
@@ -261,14 +261,14 @@ class Parameters():
         used_names = set()  # set of used parameter names in MODS dict
         for name, values in year_mods[year].items():
             # determine indexing status of parameter with name for year
-            if name.endswith('_cpi'):
+            if name.endswith('_indexed'):
                 continue  # handle elsewhere in this method
             vals_indexed = self._vals[name].get('indexed', False)
             valtype = self._vals[name].get('value_type')
-            name_plus_cpi = name + '_cpi'
-            if name_plus_cpi in year_mods[year].keys():
-                used_names.add(name_plus_cpi)
-                indexed = year_mods[year].get(name_plus_cpi)
+            name_plus_indexed = name + '_indexed'
+            if name_plus_indexed in year_mods[year].keys():
+                used_names.add(name_plus_indexed)
+                indexed = year_mods[year].get(name_plus_indexed)
                 self._vals[name]['indexed'] = indexed  # remember status
             else:
                 indexed = vals_indexed
@@ -284,12 +284,12 @@ class Parameters():
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
-        # handle unused parameter names, all of which end in _cpi, but some
-        # parameter names ending in _cpi were handled above
+        # handle unused parameter names, all of which end in _indexed, but
+        # some parameter names ending in _indexed were handled above
         unused_names = all_names - used_names
         for name in unused_names:
             used_names.add(name)
-            pname = name[:-4]  # root parameter name
+            pname = name[:-8]  # root parameter name
             pindexed = year_mods[year][name]
             self._vals[pname]['indexed'] = pindexed  # remember status
             cval = getattr(self, pname, None)
@@ -327,9 +327,9 @@ class Parameters():
         param_names = set(self._vals.keys())
         for year in sorted(revision.keys()):
             for name in revision[year]:
-                if name.endswith('_cpi'):
+                if name.endswith('_indexed'):
                     if isinstance(revision[year][name], bool):
-                        pname = name[:-4]  # root parameter name
+                        pname = name[:-8]  # root parameter name
                         if pname not in param_names:
                             if pname in removed_param_names:
                                 msg = '{} {} is a removed parameter name'
@@ -350,7 +350,7 @@ class Parameters():
                         self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
-                else:  # if name does not end with '_cpi'
+                else:  # if name does not end with '_indexed'
                     if name not in param_names:
                         if name in removed_param_names:
                             msg = '{} {} is a removed parameter name'
@@ -434,8 +434,8 @@ class Parameters():
         redefined_pnames = redefined_pinfo.keys()
         syr = self.start_year
         for pname in parameters:
-            if pname.endswith('_cpi'):
-                continue  # *_cpi parameter values validated elsewhere
+            if pname.endswith('_indexed'):
+                continue  # *_indexed parameter values validated elsewhere
             if pname in redefined_pnames:
                 msg = redefined_pinfo[pname]
                 self.parameter_warnings += msg + '\n'

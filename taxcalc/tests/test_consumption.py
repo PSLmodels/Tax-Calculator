@@ -142,7 +142,7 @@ def test_validate_assump_parameters_errors():
     Check detection of invalid consumption parameter names, types, values.
     """
     con0 = Consumption()
-    parm0 = {2020: {'STD_cpi': True}}  # invalid name
+    parm0 = {2020: {'STD': True}}  # invalid name
     with pytest.raises(ValueError):
         con0.update_consumption(parm0)
     con1 = Consumption()

@@ -89,7 +89,7 @@ def fixture_reformfile1():
           "2016": [6000],
           "2018": [7500],
           "2020": [9000]},
-        "II_em_cpi": { // personal exemption amount indexing status
+        "II_em_indexed": { // personal exemption amount indexing status
           "2016": false, // values in future years are same as this year value
           "2018": true // values in future years indexed with this year as base
           },
@@ -97,7 +97,7 @@ def fixture_reformfile1():
           "2016": [300000],
           "2018": [500000],
           "2020": [700000]},
-        "AMT_em_cpi": { // AMT exemption amount indexing status
+        "AMT_em_indexed": { // AMT exemption amount indexing status
           "2017": false, // values in future years are same as this year value
           "2020": true // values in future years indexed with this year as base
         }

@@ -60,9 +60,10 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
-    reform = {2013: {'II_em': [4000], 'II_em_cpi': False,
+    reform = {2013: {'II_em': [4000],
+                     'II_em_indexed': False,
                      'STD_Aged': [[1600, 1300, 1300, 1600, 1600]],
-                     'STD_Aged_cpi': False}}
+                     'STD_Aged_indexed': False}}
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
     calc = Calculator(policy=pol, records=rec)
@@ -89,7 +90,7 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     pol = Policy()
     reform = {2015: {}, 2016: {}}
     reform[2015]['II_em'] = [5000, 6000]  # reform values for 2015 and 2016
-    reform[2015]['II_em_cpi'] = False
+    reform[2015]['II_em_indexed'] = False
     reform[2016]['STD_Aged'] = [[1600, 1300, 1600, 1300, 1600]]
     pol.implement_reform(reform)
     # create a Calculator object using this policy-reform
@@ -218,7 +219,7 @@ def test_make_calculator_increment_years_first(cps_subsample):
     reform[2015]['STD_Aged'] = [[std5, std5, std5, std5, std5]]
     reform[2015]['II_em'] = [5000]
     reform[2016]['II_em'] = [6000]
-    reform[2016]['II_em_cpi'] = False
+    reform[2016]['II_em_indexed'] = False
     pol.implement_reform(reform)
     # create Calculator object with Policy object as modified by reform
     rec = Records.cps_constructor(data=cps_subsample)
@@ -395,7 +396,7 @@ REFORM_JSON = """
      "2018": [7500],
      "2020": [9000]
     },
-    "II_em_cpi": // personal exemption amount indexing status
+    "II_em_indexed": // personal exemption amount indexing status
     {"2016": false, // values in future years are same as this year value
      "2018": true   // values in future years indexed with this year as base
     },
@@ -404,7 +405,7 @@ REFORM_JSON = """
      "2018": [500000],
      "2020": [700000]
     },
-    "AMT_em_cpi": // AMT exemption amount indexing status
+    "AMT_em_indexed": // AMT exemption amount indexing status
     {"2017": false, // values in future years are same as this year value
      "2020": true   // values in future years indexed with this year as base
     }
@@ -737,7 +738,7 @@ def test_reform_documentation():
     reform_json = """
 {
 "policy": {
-    "II_em_cpi": {
+    "II_em_indexed": {
         "2016": false,
         "2018": true
     },
@@ -749,7 +750,7 @@ def test_reform_documentation():
     "EITC_indiv": {
         "2017": [true]
     },
-    "STD_Aged_cpi": {
+    "STD_Aged_indexed": {
         "2016": false
     },
     "STD_Aged": {
