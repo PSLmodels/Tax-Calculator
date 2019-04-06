@@ -59,7 +59,7 @@ class Policy(Parameters):
     ]
     # specify which Policy parameters havve been redefined recently
     REDEFINED_PARAMS = {
-        # TODO: remove the _CTC_c name:message pair sometime later in 2019
+        # TODO: remove the CTC_c name:message pair sometime later in 2019
         '_CTC_c': '_CTC_c was redefined in release 1.0.0 (2019-02-22)'
     }
 
@@ -154,17 +154,17 @@ class Policy(Parameters):
 
             reform = {
                 2016: {
-                    '_EITC_c': [[900, 5000, 8000, 9000]],
-                    '_II_em': [7000],
-                    '_SS_Earnings_c': [300000]
+                    'EITC_c': [[900, 5000, 8000, 9000]],
+                    'II_em': [7000],
+                    'SS_Earnings_c': [300000]
                 },
                 2017: {
-                    '_SS_Earnings_c': [500000], '_SS_Earnings_c_cpi': False
+                    'SS_Earnings_c': [500000], 'SS_Earnings_c_cpi': False
                 },
                 2019: {
-                    '_EITC_c': [[1200, 7000, 10000, 12000]],
-                    '_II_em': [9000],
-                    '_SS_Earnings_c': [700000], '_SS_Earnings_c_cpi': True
+                    'EITC_c': [[1200, 7000, 10000, 12000]],
+                    'II_em': [9000],
+                    'SS_Earnings_c': [700000], 'SS_Earnings_c_cpi': True
                 }
             }
 
@@ -205,6 +205,8 @@ class Policy(Parameters):
         if last_reform_year > self.end_year:
             msg = 'ERROR: {} YEAR reform provision in YEAR > end_year={}'
             raise ValueError(msg.format(last_reform_year, self.end_year))
+        # add leading underscore character to each parameter name in reform
+        reform = Parameters._add_underscores(reform)
         # validate reform parameter names and types
         self.parameter_warnings = ''
         self.parameter_errors = ''

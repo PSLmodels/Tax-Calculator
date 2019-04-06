@@ -16,21 +16,21 @@
 // -  5: NIIT_PT_taxed
 {
   "policy": {
-        "_AGI_surtax_trt":
+        "AGI_surtax_trt":
             {"2017": [0.04]},
-        "_AGI_surtax_thd":
+        "AGI_surtax_thd":
             {"2017": [[5.0e6, 5.0e6, 2.5e6, 5.0e6, 5.0e6]]},
-        "_FST_AGI_trt":
+        "FST_AGI_trt":
             {"2017": [0.3]},
-        "_ID_BenefitCap_Switch":
+        "ID_BenefitCap_Switch":
             {"2017": [[true, true, true, true, true, true, false]]},
-        "_ID_BenefitCap_rt":
+        "ID_BenefitCap_rt":
             {"2017": [0.28]},
-        "_CTC_c_under5_bonus":
+        "CTC_c_under5_bonus":
             {"2017": [1000]},
-        "_ACTC_rt_bonus_under5family":
+        "ACTC_rt_bonus_under5family":
             {"2017": [0.3]},
-        "_NIIT_PT_taxed":
+        "NIIT_PT_taxed":
             {"2017": [true]}
   }
 }

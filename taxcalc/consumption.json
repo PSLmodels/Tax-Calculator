@@ -1,5 +1,5 @@
 {
-    "_MPC_e17500": {
+    "MPC_e17500": {
         "long_name": "Marginal propensity to consume medical expenses",
         "description": "Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.",
         "section_1": "",
@@ -16,7 +16,7 @@
         "invalid_action": "stop"
     },
 
-    "_MPC_e18400": {
+    "MPC_e18400": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume state-and-local taxes",
         "description": "Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range.",
@@ -34,7 +34,7 @@
         "invalid_action": "stop"
     },
 
-    "_MPC_e19800": {
+    "MPC_e19800": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume charity cash contributions",
         "description": "Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range.",
@@ -52,7 +52,7 @@
         "invalid_action": "stop"
     },
 
-    "_MPC_e20400": {
+    "MPC_e20400": {
         "start_year": 2013,
         "long_name": "Marginal propensity to consume miscellaneous deduction expenses",
         "description": "Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.",
@@ -70,7 +70,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_housing_value": {
+    "BEN_housing_value": {
         "long_name": "Consumption value of housing benefits",
         "description": "Consumption value per dollar of housing benefits, all of which are in-kind benefits.",
         "section_1": "",
@@ -87,7 +87,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_snap_value": {
+    "BEN_snap_value": {
         "long_name": "Consumption value of SNAP benefits",
         "description": "Consumption value per dollar of SNAP benefits, all of which are in-kind benefits.",
         "section_1": "",
@@ -104,7 +104,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_tanf_value": {
+    "BEN_tanf_value": {
         "long_name": "Consumption value of TANF benefits",
         "description": "Consumption value per dollar of TANF benefits, some of which are cash benefits and some of which are in-kind benefits.",
         "section_1": "",
@@ -121,7 +121,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_vet_value": {
+    "BEN_vet_value": {
         "long_name": "Consumption value of veterans benefits",
         "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (only about 48% are cash benefits).",
         "section_1": "",
@@ -138,7 +138,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_wic_value": {
+    "BEN_wic_value": {
         "long_name": "Consumption value of WIC benefits",
         "description": "Consumption value per dollar of WIC benefits, all of which are in-kind benefits.",
         "section_1": "",
@@ -155,7 +155,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_mcare_value": {
+    "BEN_mcare_value": {
         "long_name": "Consumption value of Medicare benefits",
         "description": "Consumption value per dollar of Medicare benefits, all of which are in-kind benefits.",
         "section_1": "",
@@ -172,7 +172,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_mcaid_value": {
+    "BEN_mcaid_value": {
         "long_name": "Consumption value of Medicaid benefits",
         "description": "Consumption value per dollar of Medicaid benefits, all of which are in-kind benefits.",
         "section_1": "",
@@ -189,7 +189,7 @@
         "invalid_action": "stop"
     },
 
-    "_BEN_other_value": {
+    "BEN_other_value": {
         "long_name": "Consumption value of other benefits",
         "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between 52% and 76% are in-kind benefits).",
         "section_1": "",

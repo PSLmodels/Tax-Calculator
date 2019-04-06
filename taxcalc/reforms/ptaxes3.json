@@ -17,13 +17,13 @@
 //       2020:  0.010  ...... price indexed 2019 values .....
 {
   "policy": {
-    "_AMEDT_rt": {
+    "AMEDT_rt": {
         "2019": [0.010]
     },
-    "_AMEDT_ec": {
+    "AMEDT_ec": {
         "2019": [[250000, 300000, 150000, 250000, 250000]]
     },
-    "_AMEDT_ec_cpi": {
+    "AMEDT_ec_cpi": {
         "2019": true
     }
   }

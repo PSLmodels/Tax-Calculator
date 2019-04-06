@@ -74,7 +74,7 @@ def test_create_tables(cps_subsample):
     calc1 = Calculator(policy=pol, records=rec)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator object calc2
-    reform = {2013: {'_II_rt1': [0.15]}}
+    reform = {2013: {'II_rt1': [0.15]}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
@@ -592,7 +592,7 @@ def test_diff_table_sum_row(cps_subsample):
     calc1 = Calculator(policy=pol, records=rec)
     calc1.calc_all()
     # create a policy-reform Policy object and Calculator calc2
-    reform = {2013: {'_II_rt4': [0.56]}}
+    reform = {2013: {'II_rt4': [0.56]}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
@@ -744,7 +744,7 @@ def test_ce_aftertax_income(cps_subsample):
     calc1.advance_to_year(cyr)
     calc1.calc_all()
     # specify calc2 and calc_all() for cyr
-    reform = {2019: {'_II_em': [1000]}}
+    reform = {2019: {'II_em': [1000]}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(cyr)
@@ -817,8 +817,8 @@ def test_dec_graph_plots(cps_subsample):
     calc1.advance_to_year(year)
     reform = {
         year: {
-            '_SS_Earnings_c': [9e99],  # OASDI FICA tax on all earnings
-            '_FICA_ss_trt': [0.107484]  # lower rate to keep revenue unchanged
+            'SS_Earnings_c': [9e99],  # OASDI FICA tax on all earnings
+            'FICA_ss_trt': [0.107484]  # lower rate to keep revenue unchanged
 
         }
     }

@@ -36,15 +36,15 @@ def test_json_file_contents(tests_path, fname):
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
-    long_params = ['_II_brk1', '_II_brk2', '_II_brk3', '_II_brk4',
-                   '_II_brk5', '_II_brk6', '_II_brk7',
-                   '_PT_brk1', '_PT_brk2', '_PT_brk3', '_PT_brk4',
-                   '_PT_brk5', '_PT_brk6', '_PT_brk7',
-                   '_PT_excl_wagelim_thd',
-                   '_ALD_BusinessLosses_c',
-                   '_STD', '_II_em',
-                   '_AMT_em', '_AMT_em_ps', '_AMT_em_pe',
-                   '_ID_ps', '_ID_AllTaxes_c']
+    long_params = ['II_brk1', 'II_brk2', 'II_brk3', 'II_brk4',
+                   'II_brk5', 'II_brk6', 'II_brk7',
+                   'PT_brk1', 'PT_brk2', 'PT_brk3', 'PT_brk4',
+                   'PT_brk5', 'PT_brk6', 'PT_brk7',
+                   'PT_excl_wagelim_thd',
+                   'ALD_BusinessLosses_c',
+                   'STD', 'II_em',
+                   'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
+                   'ID_ps', 'ID_AllTaxes_c']
     long_known_years = 2026 - first_year + 1  # for TCJA-reverting long_params
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
@@ -357,7 +357,7 @@ def fixture_defaultsjsonfile():
     """
     json_text = """
 {
-"_int_param": {
+"int_param": {
     "value_type": "integer",
     "value": [2, 2, 2],
     "valid_values": {"min": 0, "max": 9},
@@ -365,7 +365,7 @@ def fixture_defaultsjsonfile():
     "invalid_maxmsg": "",
     "invalid_action": "stop"
 },
-"_bool_param": {
+"bool_param": {
     "value_type": "boolean",
     "value": [true, true, true],
     "valid_values": {"min": false, "max": true},
@@ -373,7 +373,7 @@ def fixture_defaultsjsonfile():
     "invalid_maxmsg": "",
     "invalid_action": "stop"
 },
-"_str_param": {
+"str_param": {
     "value_type": "string",
     "value": ["linear", "linear", "linear"],
     "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
@@ -429,21 +429,21 @@ def test_alternative_defaults_file(params_defaults_json_file):
     del prms
     # ... (2) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_str_param': [9]}}
+    paramschange = {2014: {'str_param': [9]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
     del paramschange
     # ... (3) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_int_param': [3.6]}}
+    paramschange = {2014: {'int_param': [3.6]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
     del paramschange
     # ... (4) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_bool_param': [4.9]}}
+    paramschange = {2014: {'bool_param': [4.9]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms

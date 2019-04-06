@@ -1,5 +1,5 @@
 {
-    "_ABOOK": {
+    "ABOOK": {
         "long_name": "ABOOK additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABOOK extrapolates input variables: e07300 and e07400.",
         "section_1": "",
@@ -16,7 +16,7 @@
         "invalid_action": "stop"
     },
 
-    "_ACGNS": {
+    "ACGNS": {
         "long_name": "ACGNS additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ACGNS extrapolates input variables: e01200, p22250, p23250, e24515 and e24518.",
         "section_1": "",
@@ -33,7 +33,7 @@
         "invalid_action": "stop"
     },
 
-    "_ACPIM": {
+    "ACPIM": {
         "long_name": "ACPIM additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ACPIM extrapolates input variables: e03270, e03290 and e17500.",
         "section_1": "",
@@ -50,7 +50,7 @@
         "invalid_action": "stop"
     },
 
-    "_ACPIU": {
+    "ACPIU": {
         "long_name": "ACPIU additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.  Note that non-zero values of this parameter will not affect historically known values of policy parameters.",
         "section_1": "",
@@ -67,7 +67,7 @@
         "invalid_action": "stop"
     },
 
-    "_ADIVS": {
+    "ADIVS": {
         "long_name": "ADIVS additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ADIVS extrapolates input variables: e00600 and e00650.",
         "section_1": "",
@@ -84,7 +84,7 @@
         "invalid_action": "stop"
     },
 
-    "_AINTS": {
+    "AINTS": {
         "long_name": "AINTS additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AINTS extrapolates input variables: e00300 and e00400.",
         "section_1": "",
@@ -101,7 +101,7 @@
         "invalid_action": "stop"
     },
 
-    "_AIPD": {
+    "AIPD": {
         "long_name": "AIPD additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AIPD extrapolates input variables: e19200.",
         "section_1": "",
@@ -118,7 +118,7 @@
         "invalid_action": "stop"
     },
 
-    "_ASCHCI": {
+    "ASCHCI": {
         "long_name": "ASCHCI additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHCI extrapolates input variables: e00900, e00900p and e00900s when they are positive.",
         "section_1": "",
@@ -135,7 +135,7 @@
         "invalid_action": "stop"
     },
 
-    "_ASCHCL": {
+    "ASCHCL": {
         "long_name": "ASCHCL additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHCL extrapolates input variables: e00900, e00900p and e00900s when they are negative.",
         "section_1": "",
@@ -152,7 +152,7 @@
         "invalid_action": "stop"
     },
 
-    "_ASCHEI": {
+    "ASCHEI": {
         "long_name": "ASCHEI additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: e02000 when positive, and e26270, k1bx14p, k1bx14s and e27200 for all values.",
         "section_1": "",
@@ -169,7 +169,7 @@
         "invalid_action": "stop"
     },
 
-    "_ASCHEL": {
+    "ASCHEL": {
         "long_name": "ASCHEL additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHEL extrapolates input variable: e02000 when negative.",
         "section_1": "",
@@ -186,7 +186,7 @@
         "invalid_action": "stop"
     },
 
-    "_ASCHF": {
+    "ASCHF": {
         "long_name": "ASCHF additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHF extrapolates input variables: e02100, e02100p and e02100s.",
         "section_1": "",
@@ -203,7 +203,7 @@
         "invalid_action": "stop"
     },
 
-    "_ASOCSEC": {
+    "ASOCSEC": {
         "long_name": "ASOCSEC additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASOCSEC extrapolates input variable: e02400.",
         "section_1": "",
@@ -220,7 +220,7 @@
         "invalid_action": "stop"
     },
 
-    "_ATXPY": {
+    "ATXPY": {
         "long_name": "ATXPY additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, g20500, e07600, e32800, e58990, e62900, e87530, e87521 and cmbtp.",
         "section_1": "",
@@ -237,7 +237,7 @@
         "invalid_action": "stop"
     },
 
-    "_AUCOMP": {
+    "AUCOMP": {
         "long_name": "AUCOMP additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AUCOMP extrapolates input variable: e02300.",
         "section_1": "",
@@ -254,7 +254,7 @@
         "invalid_action": "stop"
     },
 
-    "_AWAGE": {
+    "AWAGE": {
         "long_name": "AWAGE additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.",
         "section_1": "",
@@ -271,7 +271,7 @@
         "invalid_action": "stop"
     },
 
-    "_ABENOTHER": {
+    "ABENOTHER": {
         "long_name": "ABENOTHER additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENOTHER extrapolates input variable other_ben.",
         "section_1": "",
@@ -288,7 +288,7 @@
         "invalid_action": "stop"
     },
 
-    "_ABENMCARE": {
+    "ABENMCARE": {
         "long_name": "ABENMCARE additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENMCARE extrapolates input variable mcare_ben.",
         "section_1": "",
@@ -306,7 +306,7 @@
     },
 
 
-    "_ABENMCAID": {
+    "ABENMCAID": {
         "long_name": "ABENMCAID additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENMCAID extrapolates input variable mcaid_ben.",
         "section_1": "",
@@ -324,7 +324,7 @@
     },
 
 
-    "_ABENSSI": {
+    "ABENSSI": {
         "long_name": "ABENSSI additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENSSI extrapolates input variable ssi_ben.",
         "section_1": "",
@@ -342,7 +342,7 @@
     },
 
 
-    "_ABENSNAP": {
+    "ABENSNAP": {
         "long_name": "ABENSNAP additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENSNAP extrapolates input variable snap_ben.",
         "section_1": "",
@@ -360,7 +360,7 @@
     },
 
 
-    "_ABENWIC": {
+    "ABENWIC": {
         "long_name": "ABENWIC additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENWIC extrapolates input variable wic_ben.",
         "section_1": "",
@@ -378,7 +378,7 @@
     },
 
 
-    "_ABENHOUSING": {
+    "ABENHOUSING": {
         "long_name": "ABENHOUSING additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENHOUSING extrapolates input variable housing_ben.",
         "section_1": "",
@@ -396,7 +396,7 @@
     },
 
 
-    "_ABENTANF": {
+    "ABENTANF": {
         "long_name": "ABENTANF additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENTANF extrapolates input variable tanf_ben.",
         "section_1": "",
@@ -413,7 +413,7 @@
         "invalid_action": "stop"
     },
 
-    "_ABENVET": {
+    "ABENVET": {
         "long_name": "ABENVET additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENVET extrapolates input variable vet_ben.",
         "section_1": "",

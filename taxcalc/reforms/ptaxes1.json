@@ -14,7 +14,7 @@
 //       2021:  wage-indexed 250000
 {
   "policy": {
-    "_SS_Earnings_c": {
+    "SS_Earnings_c": {
         "2018": [200000],
         "2020": [250000]
     }

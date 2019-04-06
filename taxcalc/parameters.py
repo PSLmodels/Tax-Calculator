@@ -9,6 +9,7 @@ Tax-Calculator abstract base parameters class.
 
 import os
 import abc
+from collections import OrderedDict
 import numpy as np
 from taxcalc.utils import read_egg_json, json_to_dict
 
@@ -34,10 +35,14 @@ class Parameters():
         if os.path.isfile(file_path):
             with open(file_path) as pfile:
                 json_text = pfile.read()
-            self._vals = json_to_dict(json_text)
+            vals = json_to_dict(json_text)
         else:  # find file in conda package
-            self._vals = read_egg_json(
-                self.DEFAULTS_FILE_NAME)  # pragma: no cover
+            vals = read_egg_json(self.DEFAULTS_FILE_NAME)  # pragma: no cover
+        # add leading underscore character to each parameter name
+        self._vals = OrderedDict()
+        for pname in vals:
+            self._vals['_' + pname] = vals[pname]
+        del vals
 
     def initialize(self, start_year, num_years, wage_indexed_params=None):
         """
@@ -451,7 +456,7 @@ class Parameters():
             else:  # parameter does not have string type
                 for vop, vval in self._vals[pname]['valid_values'].items():
                     if isinstance(vval, str):
-                        vvalue = getattr(self, vval)
+                        vvalue = getattr(self, '_' + vval)
                     else:
                         vvalue = np.full(pvalue.shape, vval)
                     assert pvalue.shape == vvalue.shape
@@ -631,3 +636,16 @@ class Parameters():
                               for i in range(0, num_years_to_expand)]
             return expanded_rates
         return None
+
+    @staticmethod
+    def _add_underscores(update_dict):
+        """
+        Returns dictionary that adds leading underscore character to
+        each parameter name in specified update_dict.
+        """
+        updict = dict()
+        for year, yeardata in update_dict.items():
+            updict[year] = dict()
+            for pname in yeardata:
+                updict[year]['_' + pname] = yeardata[pname]
+        return updict
