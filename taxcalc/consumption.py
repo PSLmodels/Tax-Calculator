@@ -75,6 +75,8 @@ class Consumption(Parameters):
             raise ValueError(msg.format(last_revision_year, self.end_year))
         # add leading underscore character to each parameter name in revision
         revision = Parameters._add_underscores(revision)
+        # add brackets around each data element in revision
+        revision = Parameters._add_brackets(revision)
         # validate revision parameter names and types
         self.parameter_warnings = ''
         self.parameter_errors = ''

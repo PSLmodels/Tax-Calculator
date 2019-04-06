@@ -7,11 +7,11 @@
 // - Apply the combined OASDI payroll tax rate on earnings above $250,000, effective 2020 (1)
 // - Apply a separate 6.2 percent tax on investment income above ACA threshold (2)
 // Reform_Parameter_Map:
-// - 1: _SS_Earnings_thd
-// - 2: _NIIT_rt
+// - 1: SS_Earnings_thd
+// - 2: NIIT_rt
 {
     "policy": {
-        "SS_Earnings_thd": {"2020": [250000]},
-        "NIIT_rt": {"2020": [0.100]}
+        "SS_Earnings_thd": {"2020": 250000},
+        "NIIT_rt": {"2020": 0.100}
    }
 }

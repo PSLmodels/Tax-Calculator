@@ -1,6 +1,12 @@
 """
 Command-line tool that converts Tax-Calculator JSON reform/assumption file
 from the old (1.x) format to the new (2.0) format.
+------------------------------------------------------------------------
+WARNING: This program make certain assumptions about how the JSON file
+         is formatted, so it will not work correctly on a JSON file
+         that is not formatted in the assumed way.  There is no risk
+         in trying it because a copy of the original JSON file is made.
+------------------------------------------------------------------------
 """
 # CODING-STYLE CHECKS:
 # pycodestyle new_json.py
@@ -50,8 +56,8 @@ def main():
         txt = re.sub(r'(^\s*")_', r'\g<1>', txt, flags=re.MULTILINE)
     else:
         txt = re.sub(r'(\s*")_', r'\g<1>', txt, flags=re.MULTILINE)
-        # txt = re.sub(r'\[([0-9tf])', r'\g<1>', txt, flags=re.MULTILINE)
-        # txt = re.sub(r'([0-9e])\]', r'\g<1>', txt, flags=re.MULTILINE)
+        txt = re.sub(r'\[([0-9tf\-])', r'\g<1>', txt, flags=re.MULTILINE)
+        txt = re.sub(r'([0-9e])\]', r'\g<1>', txt, flags=re.MULTILINE)
     # write converted txt to FILENAME
     with open(args.FILENAME, 'w') as newfile:
         newfile.write(txt)

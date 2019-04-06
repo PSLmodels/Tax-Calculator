@@ -649,3 +649,19 @@ class Parameters():
             for pname in yeardata:
                 updict[year]['_' + pname] = yeardata[pname]
         return updict
+
+    @staticmethod
+    def _add_brackets(update_dict):
+        """
+        Returns dictionary that adds brackets around
+        each data element in specified update_dict.
+        """
+        updict = dict()
+        for year, yeardata in update_dict.items():
+            updict[year] = dict()
+            for pname in yeardata:
+                if pname.endswith('_indexed'):
+                    updict[year][pname] = yeardata[pname]  # no extra brackets
+                else:
+                    updict[year][pname] = [yeardata[pname]]
+        return updict

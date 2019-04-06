@@ -34,12 +34,12 @@ def test_correct_class_instantiation():
     with pytest.raises(ValueError):
         pol.implement_reform(list())
     with pytest.raises(ValueError):
-        pol.implement_reform({2099: {'II_em': [99000]}})
+        pol.implement_reform({2099: {'II_em': 99000}})
     pol.set_year(2019)
     with pytest.raises(ValueError):
-        pol.implement_reform({2018: {'II_em': [99000]}})
+        pol.implement_reform({2018: {'II_em': 99000}})
     with pytest.raises(ValueError):
-        pol.implement_reform({2020: {'II_em': [-1000]}})
+        pol.implement_reform({2020: {'II_em': -1000}})
 
 
 def test_policy_json_content():
@@ -73,8 +73,8 @@ def test_constant_inflation_rate_with_reform():
     fyr = Policy.LAST_BUDGET_YEAR
     ryr = fyr - 1
     reform = {
-        (ryr - 3): {'II_em': [1000]},  # to avoid divide-by-zero under TCJA
-        ryr: {'II_em': [20000]}
+        (ryr - 3): {'II_em': 1000},  # to avoid divide-by-zero under TCJA
+        ryr: {'II_em': 20000}
     }
     pol.implement_reform(reform)
     # extract price inflation rates
@@ -99,8 +99,8 @@ def test_variable_inflation_rate_with_reform():
     assert pol._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
     reform = {
-        2018: {'II_em': [1000]},  # to avoid divide-by-zero under TCJA
-        2020: {'II_em': [20000]}
+        2018: {'II_em': 1000},  # to avoid divide-by-zero under TCJA
+        2020: {'II_em': 20000}
     }
     pol.implement_reform(reform)
     pol.set_year(2020)
@@ -184,20 +184,20 @@ def test_multi_year_reform():
     # specify multi-year reform using a dictionary of year_provisions dicts
     reform = {
         2015: {
-            'CTC_c': [2000]
+            'CTC_c': 2000
         },
         2016: {
-            'EITC_c': [[900, 5000, 8000, 9000]],
-            'II_em': [7000],
-            'SS_Earnings_c': [300000]
+            'EITC_c': [900, 5000, 8000, 9000],
+            'II_em': 7000,
+            'SS_Earnings_c': 300000
         },
         2017: {
-            'SS_Earnings_c': [500000], 'SS_Earnings_c_indexed': False
+            'SS_Earnings_c': 500000, 'SS_Earnings_c_indexed': False
         },
         2019: {
-            'EITC_c': [[1200, 7000, 10000, 12000]],
-            'II_em': [9000],
-            'SS_Earnings_c': [700000], 'SS_Earnings_c_indexed': True
+            'EITC_c': [1200, 7000, 10000, 12000],
+            'II_em': 9000,
+            'SS_Earnings_c': 700000, 'SS_Earnings_c_indexed': True
         }
     }
     # implement multi-year reform
@@ -229,7 +229,7 @@ def check_ctc_c(ppo, reform):
         actual[ppo.start_year + i] = arr[i]
     assert actual[2013] == 1000
     assert actual[2014] == 1000
-    e2015 = reform[2015]['CTC_c'][0]
+    e2015 = reform[2015]['CTC_c']
     assert actual[2015] == e2015
     e2016 = actual[2015]
     assert actual[2016] == e2016
@@ -257,13 +257,13 @@ def check_eitc_c(ppo, reform, ifactor):
                        atol=0.01, rtol=0.0)
     assert np.allclose(actual[2015], [503, 3359, 5548, 6242],
                        atol=0.01, rtol=0.0)
-    e2016 = reform[2016]['EITC_c'][0]
+    e2016 = reform[2016]['EITC_c']
     assert np.allclose(actual[2016], e2016, atol=0.01, rtol=0.0)
     e2017 = [ifactor[2016] * actual[2016][j] for j in range(0, alen)]
     assert np.allclose(actual[2017], e2017, atol=0.01, rtol=0.0)
     e2018 = [ifactor[2017] * actual[2017][j] for j in range(0, alen)]
     assert np.allclose(actual[2018], e2018, atol=0.01, rtol=0.0)
-    e2019 = reform[2019]['EITC_c'][0]
+    e2019 = reform[2019]['EITC_c']
     assert np.allclose(actual[2019], e2019, atol=0.01, rtol=0.0)
     e2020 = [ifactor[2019] * actual[2019][j] for j in range(0, alen)]
     assert np.allclose(actual[2020], e2020, atol=0.01, rtol=0.0)
@@ -285,13 +285,13 @@ def check_ii_em(ppo, reform, ifactor):
     assert actual[2013] == 3900
     assert actual[2014] == 3950
     assert actual[2015] == 4000
-    e2016 = reform[2016]['II_em'][0]
+    e2016 = reform[2016]['II_em']
     assert actual[2016] == e2016
     e2017 = ifactor[2016] * actual[2016]
     assert np.allclose([actual[2017]], [e2017], atol=0.01, rtol=0.0)
     e2018 = ifactor[2017] * actual[2017]
     assert np.allclose([actual[2018]], [e2018], atol=0.01, rtol=0.0)
-    e2019 = reform[2019]['II_em'][0]
+    e2019 = reform[2019]['II_em']
     assert actual[2019] == e2019
     e2020 = ifactor[2019] * actual[2019]
     assert np.allclose([actual[2020]], [e2020], atol=0.01, rtol=0.0)
@@ -313,13 +313,13 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     assert actual[2013] == 113700
     assert actual[2014] == 117000
     assert actual[2015] == 118500
-    e2016 = reform[2016]['SS_Earnings_c'][0]
+    e2016 = reform[2016]['SS_Earnings_c']
     assert actual[2016] == e2016
-    e2017 = reform[2017]['SS_Earnings_c'][0]
+    e2017 = reform[2017]['SS_Earnings_c']
     assert actual[2017] == e2017
     e2018 = actual[2017]  # no indexing after 2017
     assert actual[2018] == e2018
-    e2019 = reform[2019]['SS_Earnings_c'][0]
+    e2019 = reform[2019]['SS_Earnings_c']
     assert actual[2019] == e2019
     e2020 = wfactor[2019] * actual[2019]  # indexing after 2019
     assert actual[2020] == e2020
@@ -396,7 +396,7 @@ def test_implement_reform_raises_on_no_year():
     """
     Test that implement_reform raises error for missing year.
     """
-    reform = {'STD_Aged': [[1400, 1200]]}
+    reform = {'STD_Aged': [1400, 1200, 1400, 1400, 1400]}
     ppo = Policy()
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
@@ -407,7 +407,7 @@ def test_reform_in_start_year():
     Test that implement_reform handles multiple-year reform.
     """
     ppo = Policy()
-    reform = {2013: {'STD': [[16000, 13000, 13000, 16000, 16000]]}}
+    reform = {2013: {'STD': [16000, 13000, 13000, 16000, 16000]}}
     ppo.implement_reform(reform)
     assert np.allclose(ppo.STD,
                        np.array([16000, 13000, 13000, 16000, 16000]),
@@ -419,7 +419,7 @@ def test_implement_reform_raises_on_early_year():
     Test that implement_reform raises error for early year.
     """
     ppo = Policy()
-    reform = {2010: {'STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
+    reform = {2010: {'STD_Aged': [1400, 1100, 1100, 1400, 1400]}}
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
@@ -429,7 +429,7 @@ def test_reform_with_default_indexed():
     Test that implement_reform indexes after first reform year.
     """
     ppo = Policy()
-    reform = {2015: {'II_em': [4300]}}
+    reform = {2015: {'II_em': 4300}}
     ppo.implement_reform(reform)
     # II_em has a default indexing status of true, so
     # in 2016 its value should be greater than 4300
@@ -442,7 +442,7 @@ def test_reform_after_start_year():
     Test that implement_reform makes changes in years after first reform year.
     """
     ppo = Policy()
-    reform = {2015: {'STD_Aged': [[1400, 1100, 1100, 1400, 1400]]}}
+    reform = {2015: {'STD_Aged': [1400, 1100, 1100, 1400, 1400]}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
     assert np.allclose(ppo.STD_Aged,
@@ -455,7 +455,7 @@ def test_reform_makes_no_changes_before_year():
     Test that implement_reform makes no changes before first reform year.
     """
     ppo = Policy()
-    reform = {2015: {'II_em': [4400], 'II_em_indexed': True}}
+    reform = {2015: {'II_em': 4400, 'II_em_indexed': True}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
     assert np.allclose(ppo._II_em[:3], np.array([3900, 3950, 4400]),
@@ -483,26 +483,26 @@ def test_read_json_param_and_implement_reform(set_year):
     {
     "policy": {
         "AMT_brk1": // top of first AMT tax bracket
-        {"2015": [200000],
-         "2017": [300000]
+        {"2015": 200000,
+         "2017": 300000
         },
         "EITC_c": // max EITC amount by number of qualifying kids (0,1,2,3+)
-        {"2016": [[ 900, 5000,  8000,  9000]],
-         "2019": [[1200, 7000, 10000, 12000]]
+        {"2016": [ 900, 5000,  8000,  9000],
+         "2019": [1200, 7000, 10000, 12000]
         },
         "II_em": // personal exemption amount (see indexing changes below)
-        {"2016": [6000],
-         "2018": [7500],
-         "2020": [9000]
+        {"2016": 6000,
+         "2018": 7500,
+         "2020": 9000
         },
         "II_em_indexed": // personal exemption amount indexing status
         {"2016": false, // values in future years are same as this year value
          "2018": true   // vals in future years indexed with this year as base
         },
         "SS_Earnings_c": // Social Security (OASDI) maximum taxable earnings
-        {"2016": [300000],
-         "2018": [500000],
-         "2020": [700000]
+        {"2016": 300000,
+         "2018": 500000,
+         "2020": 700000
         },
         "AMT_em_indexed": // AMT exemption amount indexing status
         {"2017": false, // values in future years are same as this year value
@@ -558,7 +558,7 @@ def test_pop_the_cap_reform():
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 118500
     # specify a "pop the cap" reform that eliminates MTE cap in 2016
-    reform = {2016: {'SS_Earnings_c': [9e99]}}
+    reform = {2016: {'SS_Earnings_c': 9e99}}
     ppo.implement_reform(reform)
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 9e99
@@ -571,11 +571,11 @@ def test_order_of_indexing_and_level_reforms():
     make no difference to the post-reform policy parameter values.
     """
     # specify two reforms that raises the MTE and stops its indexing in 2015
-    reform = [{2015: {'SS_Earnings_c': [500000],
+    reform = [{2015: {'SS_Earnings_c': 500000,
                       'SS_Earnings_c_indexed': False}},
               # now reverse the order of the two reform provisions
               {2015: {'SS_Earnings_c_indexed': False,
-                      'SS_Earnings_c': [500000]}}]
+                      'SS_Earnings_c': 500000}}]
     # specify two Policy objects
     ppo = [Policy(), Policy()]
     # apply reforms to corresponding Policy object & check post-reform values
@@ -603,11 +603,11 @@ def test_misspecified_reforms():
     """
     # specify apparently the same reform in two different ways, forgetting
     # that Python dictionaries have unique keys
-    reform1 = {2016: {'SS_Earnings_c': [500000],
-                      'II_em': [9000]}}
+    reform1 = {2016: {'SS_Earnings_c': 500000,
+                      'II_em': 9000}}
     # pylint: disable=duplicate-key
-    reform2 = {2016: {'SS_Earnings_c': [500000]},
-               2016: {'II_em': [9000]}}
+    reform2 = {2016: {'SS_Earnings_c': 500000},
+               2016: {'II_em': 9000}}
     # these two reform dictionaries are not the same: the second
     # 2016 key:value pair in reform2 (2016:{'_II_em...}) overwrites and
     # replaces the first 2016 key:value pair in reform2 (2016:{'_SS_E...})
@@ -890,22 +890,22 @@ def test_validate_param_names_types_errors():
         pol.implement_reform(ref)
     del pol
     pol = Policy()
-    ref = {2020: {'badname': [0.4]}}
+    ref = {2020: {'badname': 0.4}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
     pol = Policy()
-    ref = {2020: {'EITC_MinEligAge': [21.4]}}
+    ref = {2020: {'EITC_MinEligAge': 21.4}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
     pol = Policy()
-    ref = {2025: {'ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
+    ref = {2025: {'ID_BenefitSurtax_Switch': [False, True, 0, 1, 0, 1, 0]}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
     pol = Policy()
-    ref = {2021: {'II_em': ['not-a-number']}}
+    ref = {2021: {'II_em': 'not-a-number'}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
@@ -916,19 +916,19 @@ def test_validate_param_names_types_errors():
     del pol
     # this test was contributed by Hank Doupe in bug report #1956
     pol = Policy()
-    ref = {2019: {'AMEDT_rt': [True]}}
+    ref = {2019: {'AMEDT_rt': True}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
     # this test extends the prior test to integer parameters
     pol = Policy()
-    ref = {2019: {'AMT_KT_c_Age': [True]}}
+    ref = {2019: {'AMT_KT_c_Age': True}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
     # this test checks "is a removed parameter" error for base parameter
     pol = Policy()
-    ref = {2019: {'DependentCredit_Child_c': [400]}}
+    ref = {2019: {'DependentCredit_Child_c': 400}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
@@ -945,27 +945,27 @@ def test_validate_param_values_warnings_errors():
     Check detection of out_of_range policy parameters in reforms.
     """
     pol1 = Policy()
-    ref1 = {2020: {'ID_Medical_frt': [0.05]}}
+    ref1 = {2020: {'ID_Medical_frt': 0.05}}
     pol1.implement_reform(ref1, print_warnings=True, raise_errors=False)
     assert pol1.parameter_warnings
     pol2 = Policy()
-    ref2 = {2021: {'ID_Charity_crt_all': [0.61]}}
+    ref2 = {2021: {'ID_Charity_crt_all': 0.61}}
     pol2.implement_reform(ref2, print_warnings=False, raise_errors=False)
     assert pol2.parameter_warnings
     pol3 = Policy()
-    ref3 = {2024: {'II_brk4': [[0, 0, 0, 0, 0]]}}
+    ref3 = {2024: {'II_brk4': [0, 0, 0, 0, 0]}}
     pol3.implement_reform(ref3, print_warnings=False, raise_errors=False)
     assert pol3.parameter_errors
     pol4 = Policy()
-    ref4 = {2024: {'II_brk4': [[0, 9e9, 0, 0, 0]]}}
+    ref4 = {2024: {'II_brk4': [0, 9e9, 0, 0, 0]}}
     pol4.implement_reform(ref4, print_warnings=False, raise_errors=False)
     assert pol4.parameter_errors
     pol5 = Policy()
-    ref5 = {2025: {'ID_BenefitSurtax_Switch': [[False, True, 0, 1, 0, 1, 0]]}}
+    ref5 = {2025: {'ID_BenefitSurtax_Switch': [False, True, 0, 1, 0, 1, 0]}}
     with pytest.raises(ValueError):
         pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
     pol6 = Policy()
-    ref6 = {2013: {'STD': [[20000, 25000, 20000, 20000, 25000]]}}
+    ref6 = {2013: {'STD': [20000, 25000, 20000, 20000, 25000]}}
     pol6.implement_reform(ref6, print_warnings=False, raise_errors=False)
     assert pol6.parameter_errors == ''
     assert pol6.parameter_warnings == ''
@@ -985,7 +985,7 @@ def test_reform_with_cpi_offset():
     """
     Implement a reform that includes the _cpi_offset policy parameter.
     """
-    indexing_reform = {2020: {'cpi_offset': [-0.0025]}}
+    indexing_reform = {2020: {'cpi_offset': -0.0025}}
     pol = Policy()  # current-law policy
     pol.implement_reform(indexing_reform)
     assert not pol.parameter_errors
@@ -996,7 +996,7 @@ def test_reform_with_bad_ctc_levels():
     Implement a reform with _ACTC > _CTC_c values.
     """
     child_credit_reform = {
-        2020: {'CTC_c': [2200], 'ACTC_c': [2500]}
+        2020: {'CTC_c': 2200, 'ACTC_c': 2500}
     }
     pol = Policy()
     with pytest.raises(ValueError):

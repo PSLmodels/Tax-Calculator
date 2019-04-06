@@ -9,17 +9,17 @@
 // - Increase EITC phase-out start for childless filing units (4)
 // - Lower EITC minimim eligibility age for childless f.units from 25 to 21 (5)
 // Reform_Parameter_Map:
-// - 1: _EITC_c
-// - 2: _EITC_rt
-// - 3: _EITC_prt
-// - 4: _EITC_ps
-// - 5: _EITC_MinEligAge
+// - 1: EITC_c
+// - 2: EITC_rt
+// - 3: EITC_prt
+// - 4: EITC_ps
+// - 5: EITC_MinEligAge
 {
   "policy": {
-      "EITC_c": {"2017": [[3000, 6528, 10783, 12131]]},
-      "EITC_rt": {"2017": [[0.3, 0.6258, 0.768, 0.864]]},
-      "EITC_prt": {"2017": [[0.1598, 0.1598, 0.2106, 0.2106]]},
-      "EITC_ps": {"2017": [[18340, 18340, 18340, 18340]]},
-      "EITC_MinEligAge": {"2017": [21]}
+      "EITC_c": {"2017": [3000, 6528, 10783, 12131]},
+      "EITC_rt": {"2017": [0.3, 0.6258, 0.768, 0.864]},
+      "EITC_prt": {"2017": [0.1598, 0.1598, 0.2106, 0.2106]},
+      "EITC_ps": {"2017": [18340, 18340, 18340, 18340]},
+      "EITC_MinEligAge": {"2017": 21}
     }
 }

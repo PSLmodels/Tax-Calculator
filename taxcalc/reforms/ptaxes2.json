@@ -4,7 +4,7 @@
 // Reform_Description:
 // -  raise MTE to essentially infinity in 2020 and wage index after that
 // Reform_Parameter_Map:
-// - 1: _SS_Earnings_c
+// - 1: SS_Earnings_c
 // NOTE: this reform produces the following MTE by year:
 //       2017:  127200
 //       2018:  wage-indexed 127200
@@ -14,7 +14,7 @@
 {
   "policy": {
     "SS_Earnings_c": {
-        "2020": [9e99]
+        "2020": 9e99
     }
   }
 }

@@ -151,27 +151,23 @@ class Policy(Parameters):
         current_year to the value of current_year when implement_reform
         was called with parameters set for that pre-call year.
 
-        An example of a multi-year, multi-parameter reform is as follows::
+        An example of a multi-year, multi-parameter reform is as follows:
 
             reform = {
                 2016: {
-                    'EITC_c': [[900, 5000, 8000, 9000]],
-                    'II_em': [7000],
-                    'SS_Earnings_c': [300000]
+                    'EITC_c': [900, 5000, 8000, 9000],
+                    'II_em': 7000,
+                    'SS_Earnings_c': 300000
                 },
                 2017: {
-                    'SS_Earnings_c': [500000], 'SS_Earnings_c_indexed': False
+                    'SS_Earnings_c': 500000, 'SS_Earnings_c_indexed': False
                 },
                 2019: {
-                    'EITC_c': [[1200, 7000, 10000, 12000]],
-                    'II_em': [9000],
-                    'SS_Earnings_c': [700000], 'SS_Earnings_c_indexed': True
+                    'EITC_c': [1200, 7000, 10000, 12000],
+                    'II_em': 9000,
+                    'SS_Earnings_c': 700000, 'SS_Earnings_c_indexed': True
                 }
             }
-
-        Notice that each of the four YEAR:MODS pairs is specified as
-        required by the private _update method, whose documentation
-        provides several MODS dictionary examples.
 
         IMPORTANT NOTICE: when specifying a reform dictionary always group
         all reform provisions for a specified year into one YEAR:MODS pair.
@@ -208,6 +204,8 @@ class Policy(Parameters):
             raise ValueError(msg.format(last_reform_year, self.end_year))
         # add leading underscore character to each parameter name in reform
         reform = Parameters._add_underscores(reform)
+        # add brackets around each data element in reform
+        reform = Parameters._add_brackets(reform)
         # validate reform parameter names and types
         self.parameter_warnings = ''
         self.parameter_errors = ''

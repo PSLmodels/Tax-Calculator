@@ -16,8 +16,8 @@ def test_year_consistency():
 def test_update_and_apply_growdiff():
     gdiff = GrowDiff()
     # update GrowDiff instance
-    diffs = {2014: {'AWAGE': [0.01]},
-             2016: {'AWAGE': [0.02]}}
+    diffs = {2014: {'AWAGE': 0.01},
+             2016: {'AWAGE': 0.02}}
     gdiff.update_growdiff(diffs)
     expected_wage_diffs = [0.00, 0.01, 0.01, 0.02, 0.02]
     extra_years = GrowDiff.DEFAULT_NUM_YEARS - len(expected_wage_diffs)
@@ -44,15 +44,15 @@ def test_incorrect_update_growdiff():
     with pytest.raises(ValueError):
         GrowDiff().update_growdiff([])
     with pytest.raises(ValueError):
-        GrowDiff().update_growdiff({'xyz': {'ABOOK': [0.02]}})
+        GrowDiff().update_growdiff({'xyz': {'ABOOK': 0.02}})
     with pytest.raises(ValueError):
-        GrowDiff().update_growdiff({2012: {'ABOOK': [0.02]}})
+        GrowDiff().update_growdiff({2012: {'ABOOK': 0.02}})
     with pytest.raises(ValueError):
-        GrowDiff().update_growdiff({2052: {'ABOOK': [0.02]}})
+        GrowDiff().update_growdiff({2052: {'ABOOK': 0.02}})
     with pytest.raises(ValueError):
-        GrowDiff().update_growdiff({2014: {'MPC_exxxxx': [0.02]}})
+        GrowDiff().update_growdiff({2014: {'MPC_exxxxx': 0.02}})
     with pytest.raises(ValueError):
-        GrowDiff().update_growdiff({2014: {'ABOOK': [-1.1]}})
+        GrowDiff().update_growdiff({2014: {'ABOOK': -1.1}})
 
 
 def test_has_any_response():
@@ -60,7 +60,7 @@ def test_has_any_response():
     gdiff = GrowDiff()
     assert gdiff.current_year == start_year
     assert gdiff.has_any_response() is False
-    gdiff.update_growdiff({2020: {'AWAGE': [0.01]}})
+    gdiff.update_growdiff({2020: {'AWAGE': 0.01}})
     assert gdiff.current_year == start_year
     assert gdiff.has_any_response() is True
 
