@@ -160,12 +160,12 @@ class Policy(Parameters):
                     'SS_Earnings_c': 300000
                 },
                 2017: {
-                    'SS_Earnings_c': 500000, 'SS_Earnings_c_indexed': False
+                    'SS_Earnings_c': 500000, 'SS_Earnings_c-indexed': False
                 },
                 2019: {
                     'EITC_c': [1200, 7000, 10000, 12000],
                     'II_em': 9000,
-                    'SS_Earnings_c': 700000, 'SS_Earnings_c_indexed': True
+                    'SS_Earnings_c': 700000, 'SS_Earnings_c-indexed': True
                 }
             }
 

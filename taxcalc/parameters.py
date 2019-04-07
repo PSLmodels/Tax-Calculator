@@ -227,7 +227,7 @@ class Parameters():
         without any indexing in subsequent years, the YEAR:MODS
         dictionary would be as follows::
 
-            {2018: {'_SS_Earnings_c':[500000], '_SS_Earnings_c_indexed':False}}
+            {2018: {'_SS_Earnings_c':[500000], '_SS_Earnings_c-indexed':False}}
 
         And to raise in 2019 the starting AGI for EITC phaseout for
         married filing jointly filing status (which is a two-dimensional
@@ -261,11 +261,11 @@ class Parameters():
         used_names = set()  # set of used parameter names in MODS dict
         for name, values in year_mods[year].items():
             # determine indexing status of parameter with name for year
-            if name.endswith('_indexed'):
+            if name.endswith('-indexed'):
                 continue  # handle elsewhere in this method
             vals_indexed = self._vals[name].get('indexed', False)
             valtype = self._vals[name].get('value_type')
-            name_plus_indexed = name + '_indexed'
+            name_plus_indexed = name + '-indexed'
             if name_plus_indexed in year_mods[year].keys():
                 used_names.add(name_plus_indexed)
                 indexed = year_mods[year].get(name_plus_indexed)
@@ -284,8 +284,8 @@ class Parameters():
                                       inflation_rates=index_rates,
                                       num_years=num_years_to_expand)
             cval[(year - self.start_year):] = nval
-        # handle unused parameter names, all of which end in _indexed, but
-        # some parameter names ending in _indexed were handled above
+        # handle unused parameter names, all of which end in -indexed, but
+        # some parameter names ending in -indexed were handled above
         unused_names = all_names - used_names
         for name in unused_names:
             used_names.add(name)
@@ -327,7 +327,7 @@ class Parameters():
         param_names = set(self._vals.keys())
         for year in sorted(revision.keys()):
             for name in revision[year]:
-                if name.endswith('_indexed'):
+                if name.endswith('-indexed'):
                     if isinstance(revision[year][name], bool):
                         pname = name[:-8]  # root parameter name
                         if pname not in param_names:
@@ -340,7 +340,8 @@ class Parameters():
                             )
                         else:
                             # check if root parameter is indexable
-                            if not self._vals[pname]['indexable']:
+                            idxable = self._vals[pname].get('indexable', False)
+                            if not idxable:
                                 msg = '{} {} parameter is not indexable'
                                 self.parameter_errors += (
                                     'ERROR: ' + msg.format(year, pname) + '\n'
@@ -350,7 +351,7 @@ class Parameters():
                         self.parameter_errors += (
                             'ERROR: ' + msg.format(year, name) + '\n'
                         )
-                else:  # if name does not end with '_indexed'
+                else:  # if name does not end with '-indexed'
                     if name not in param_names:
                         if name in removed_param_names:
                             msg = '{} {} is a removed parameter name'
@@ -434,8 +435,8 @@ class Parameters():
         redefined_pnames = redefined_pinfo.keys()
         syr = self.start_year
         for pname in parameters:
-            if pname.endswith('_indexed'):
-                continue  # *_indexed parameter values validated elsewhere
+            if pname.endswith('-indexed'):
+                continue  # *-indexed parameter values validated elsewhere
             if pname in redefined_pnames:
                 msg = redefined_pinfo[pname]
                 self.parameter_warnings += msg + '\n'
@@ -660,8 +661,8 @@ class Parameters():
         for year, yeardata in update_dict.items():
             updict[year] = dict()
             for pname in yeardata:
-                if pname.endswith('_indexed'):
-                    updict[year][pname] = yeardata[pname]  # no extra brackets
+                if pname.endswith('-indexed'):
+                    updict[year][pname] = yeardata[pname]  # no added brackets
                 else:
                     updict[year][pname] = [yeardata[pname]]
         return updict

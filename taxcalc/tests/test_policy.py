@@ -192,12 +192,12 @@ def test_multi_year_reform():
             'SS_Earnings_c': 300000
         },
         2017: {
-            'SS_Earnings_c': 500000, 'SS_Earnings_c_indexed': False
+            'SS_Earnings_c': 500000, 'SS_Earnings_c-indexed': False
         },
         2019: {
             'EITC_c': [1200, 7000, 10000, 12000],
             'II_em': 9000,
-            'SS_Earnings_c': 700000, 'SS_Earnings_c_indexed': True
+            'SS_Earnings_c': 700000, 'SS_Earnings_c-indexed': True
         }
     }
     # implement multi-year reform
@@ -455,7 +455,7 @@ def test_reform_makes_no_changes_before_year():
     Test that implement_reform makes no changes before first reform year.
     """
     ppo = Policy()
-    reform = {2015: {'II_em': 4400, 'II_em_indexed': True}}
+    reform = {2015: {'II_em': 4400, 'II_em-indexed': True}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
     assert np.allclose(ppo._II_em[:3], np.array([3900, 3950, 4400]),
@@ -495,7 +495,7 @@ def test_read_json_param_and_implement_reform(set_year):
          "2018": 7500,
          "2020": 9000
         },
-        "II_em_indexed": // personal exemption amount indexing status
+        "II_em-indexed": // personal exemption amount indexing status
         {"2016": false, // values in future years are same as this year value
          "2018": true   // vals in future years indexed with this year as base
         },
@@ -504,7 +504,7 @@ def test_read_json_param_and_implement_reform(set_year):
          "2018": 500000,
          "2020": 700000
         },
-        "AMT_em_indexed": // AMT exemption amount indexing status
+        "AMT_em-indexed": // AMT exemption amount indexing status
         {"2017": false, // values in future years are same as this year value
          "2020": true   // vals in future years indexed with this year as base
         }
@@ -572,9 +572,9 @@ def test_order_of_indexing_and_level_reforms():
     """
     # specify two reforms that raises the MTE and stops its indexing in 2015
     reform = [{2015: {'SS_Earnings_c': 500000,
-                      'SS_Earnings_c_indexed': False}},
+                      'SS_Earnings_c-indexed': False}},
               # now reverse the order of the two reform provisions
-              {2015: {'SS_Earnings_c_indexed': False,
+              {2015: {'SS_Earnings_c-indexed': False,
                       'SS_Earnings_c': 500000}}]
     # specify two Policy objects
     ppo = [Policy(), Policy()]
@@ -870,7 +870,7 @@ def test_validate_param_names_types_errors():
     """
     # pylint: disable=too-many-statements
     pol = Policy()
-    ref = {2020: {'STD_indexed': 2}}
+    ref = {2020: {'STD-indexed': 2}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
@@ -880,12 +880,12 @@ def test_validate_param_names_types_errors():
         pol.implement_reform(ref)
     del pol
     pol = Policy()
-    ref = {2020: {'badname_indexed': True}}
+    ref = {2020: {'badname-indexed': True}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
     pol = Policy()
-    ref = {2020: {'II_em_indexed': 5}}
+    ref = {2020: {'II_em-indexed': 5}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
@@ -914,6 +914,11 @@ def test_validate_param_names_types_errors():
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
+    pol = Policy()
+    ref = {2019: {'FICA_ss_trt-indexed': True}}
+    with pytest.raises(ValueError):
+        pol.implement_reform(ref)
+    del pol
     # this test was contributed by Hank Doupe in bug report #1956
     pol = Policy()
     ref = {2019: {'AMEDT_rt': True}}
@@ -932,9 +937,9 @@ def test_validate_param_names_types_errors():
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
-    # this test checks "is a removed parameter" error for _indexed parameter
+    # this test checks "is a removed parameter" error for -indexed parameter
     pol = Policy()
-    ref = {2019: {'DependentCredit_Child_c_indexed': False}}
+    ref = {2019: {'DependentCredit_Child_c-indexed': False}}
     with pytest.raises(ValueError):
         pol.implement_reform(ref)
     del pol
