@@ -128,6 +128,27 @@ class Parameters():
             arr = getattr(self, name)
             setattr(self, name[1:], arr[iyr])
 
+    def metadata(self):
+        """
+        Returns ordered dictionary of all parameter information based on
+        DEFAULTS_FILE_NAME contents with each parameter's 'start_year',
+        'row_label', and 'value' key values updated so that they contain
+        just the current_year information.
+        """
+        mdata = OrderedDict()
+        for pname, pdata in self._vals.items():
+            name = pname[1:]
+            mdata[name] = pdata
+            mdata[name]['row_label'] = ['{}'.format(self.current_year)]
+            mdata[name]['start_year'] = '{}'.format(self.current_year)
+            valraw = getattr(self, name)
+            if isinstance(valraw, np.ndarray):
+                val = valraw.tolist()
+            else:
+                val = valraw
+            mdata[name]['value'] = val
+        return mdata
+
     # ----- begin private methods of Parameters class -----
 
     def _set_default_vals(self, wage_indexed_params=None, known_years=999999):

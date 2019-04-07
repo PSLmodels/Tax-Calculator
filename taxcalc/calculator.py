@@ -1157,7 +1157,7 @@ class Calculator():
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
         """
-        Generate reform documentation.
+        Generate reform documentation versus current-law policy.
 
         Parameters
         ----------
@@ -1174,19 +1174,18 @@ class Calculator():
         Returns
         -------
         doc: String
-            the documentation for the policy reform specified in params
+            the documentation for the specified policy reform
         """
         # pylint: disable=too-many-statements,too-many-branches
 
-        # nested function used only in reform_documentation
-        def param_doc(years, change, base):
+        # nested function used only in reform_documentation function
+        def param_doc(years_list, updated, baseline):
             """
             Parameters
             ----------
-            years: list of change years
-            change: dictionary of parameter changes
-            base: Policy or GrowDiff object with baseline values
-            syear: parameter start calendar year
+            years_list: list of parameter-change years
+            updated: reform Policy or updated GrowDiff object
+            base: current-law Policy or default GrowDiff object
 
             Returns
             -------
@@ -1223,102 +1222,137 @@ class Calculator():
                     line_list.append(line)
                 return line_list
 
-            # begin main logic of param_doc
+            # begin main logic of nested function param_doc
             # pylint: disable=too-many-nested-blocks
-            assert len(years) == len(change.keys())
-            basex = copy.deepcopy(base)
-            basevals = getattr(basex, '_vals', None)
-            assert isinstance(basevals, dict)
             doc = ''
+            assert isinstance(years_list, list)
+            years = sorted(years_list)
             for year in years:
-                # write year
-                basex.set_year(year)
-                doc += '{}:\n'.format(year)
-                # write info for each param in year
-                for param in sorted(change[year].keys()):
-                    # ... write param:value line
-                    pval = change[year][param]
-                    if isinstance(pval, list):
-                        pval = pval[0]
-                        if basevals[param]['value_type'] == 'boolean':
+                baseline.set_year(year)
+                updated.set_year(year)
+                mdata_base = baseline.metadata()
+                mdata_upda = updated.metadata()
+                mdata_base_keys = mdata_base.keys()
+                mdata_upda_keys = mdata_upda.keys()
+                assert set(mdata_base_keys) == set(mdata_upda_keys)
+                params_with_diff = list()
+                for pname in mdata_base_keys:
+                    base_value = mdata_base[pname]['value']
+                    upda_value = mdata_upda[pname]['value']
+                    if upda_value != base_value:
+                        params_with_diff.append(pname)
+                if params_with_diff:
+                    # write year
+                    doc += '{}:\n'.format(year)
+                    for pname in sorted(params_with_diff):
+                        # write updated value line
+                        pval = mdata_upda[pname]['value']
+                        if mdata_base[pname]['value_type'] == 'boolean':
                             if isinstance(pval, list):
                                 pval = [bool(item) for item in pval]
                             else:
                                 pval = bool(pval)
-                    doc += ' {} : {}\n'.format(param, pval)
-                    # ... write optional param-index line
-                    if isinstance(pval, list):
-                        pval = basevals[param]['col_label']
-                        pval = [str(item) for item in pval]
-                        doc += ' ' * (4 + len(param)) + '{}\n'.format(pval)
-                    # ... write name line
-                    if param.endswith('-indexed'):
-                        rootparam = param[:-8]
-                        name = '{} inflation indexing status'.format(rootparam)
-                    else:
-                        name = basevals[param]['long_name']
-                    for line in lines('name: ' + name, 6):
-                        doc += '  ' + line
-                    # ... write optional desc line
-                    if not param.endswith('-indexed'):
-                        desc = basevals[param]['description']
-                        for line in lines('desc: ' + desc, 6):
-                            doc += '  ' + line
-                    # ... write baseline_value line
-                    if isinstance(basex, Policy):
-                        if param.endswith('-indexed'):
-                            rootparam = param[:-8]
-                            bval = basevals[rootparam].get('indexed', False)
+                        doc += ' {} : {}\n'.format(pname, pval)
+                        # ... write optional param-vector-index line
+                        if isinstance(pval, list):
+                            pval = mdata_base[pname]['col_label']
+                            pval = [str(item) for item in pval]
+                            doc += ' ' * (4 + len(pname)) + '{}\n'.format(pval)
+                        # ... write param-name line
+                        if pname.endswith('-indexed'):
+                            root = pname[:-8]
+                            name = '{} inflation indexing status'.format(root)
                         else:
-                            bval = getattr(basex, param[1:], None)
-                            if isinstance(bval, np.ndarray):
-                                bval = bval.tolist()
-                                if basevals[param]['value_type'] == 'boolean':
-                                    bval = [bool(item) for item in bval]
-                            elif basevals[param]['value_type'] == 'boolean':
-                                bval = bool(bval)
-                        doc += '  baseline_value: {}\n'.format(bval)
-                    else:  # if basex is GrowDiff object
-                        # all GrowDiff parameters have zero as default value
-                        doc += '  baseline_value: 0.0\n'
+                            name = mdata_base[pname]['long_name']
+                        for line in lines('name: ' + name, 6):
+                            doc += '  ' + line
+                        # ... write optional param-description line
+                        if not pname.endswith('-indexed'):
+                            desc = mdata_base[pname]['description']
+                            for line in lines('desc: ' + desc, 6):
+                                doc += '  ' + line
+                        # ... write param-baseline-value line
+                        if isinstance(baseline, Policy):
+                            if pname.endswith('-indexed'):
+                                root = pname[:-8]
+                                pval = mdata_base[root].get('indexed', False)
+                            else:
+                                pval = mdata_base[pname]['value']
+                                ptype = mdata_base[pname]['value_type']
+                                if isinstance(pval, list):
+                                    if ptype == 'boolean':
+                                        pval = [bool(item) for item in pval]
+                                elif ptype == 'boolean':
+                                    pval = bool(pval)
+                            doc += '  baseline_value: {}\n'.format(pval)
+                        else:  # if baseline is GrowDiff object
+                            # each GrowDiff parameter has zero as default value
+                            doc += '  baseline_value: 0.0\n'
+            del mdata_base
+            del mdata_upda
+            del mdata_base_keys
+            del mdata_upda_keys
             return doc
 
         # begin main logic of reform_documentation
-        # create Policy object with pre-reform (i.e., baseline) values
-        # ... create gdiff_baseline object
-        gdb = GrowDiff()
-        gdb.update_growdiff(params['growdiff_baseline'])
-        # ... create GrowFactors object that will incorporate gdiff_baseline
+        # create Policy object with current-law-policy values
+        gdiff_base = GrowDiff()
+        gdiff_base.update_growdiff(params['growdiff_baseline'])
         gfactors_clp = GrowFactors()
-        gdb.apply_to(gfactors_clp)
-        # ... create Policy object containing pre-reform parameter values
+        gdiff_base.apply_to(gfactors_clp)
         clp = Policy(gfactors=gfactors_clp)
-        # generate documentation text
-        doc = 'REFORM DOCUMENTATION\n'
-        doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
-        years = sorted(params['growdiff_baseline'].keys())
-        if years:
-            doc += param_doc(years, params['growdiff_baseline'], gdb)
-        else:
-            doc += 'none: using default baseline growth assumptions\n'
-        doc += 'Policy Reform Parameter Values by Year:\n'
-        years = sorted(params['policy'].keys())
-        if years:
-            doc += param_doc(years, params['policy'], clp)
-        else:
-            doc += 'none: using current-law policy parameters\n'
-        if policy_dicts is not None:
+        # create Policy object with post-reform values
+        gdiff_resp = GrowDiff()
+        gdiff_resp.update_growdiff(params['growdiff_response'])
+        gfactors_ref = GrowFactors()
+        gdiff_base.apply_to(gfactors_ref)
+        gdiff_resp.apply_to(gfactors_ref)
+        ref = Policy(gfactors=gfactors_ref)
+        reform_years = list(params['policy'].keys())
+        ref.implement_reform(params['policy'])
+        if policy_dicts is not None:  # compound reform has been specified
             assert isinstance(policy_dicts, list)
-            base = clp
-            base.implement_reform(params['policy'])
-            assert not base.parameter_errors
             for policy_dict in policy_dicts:
                 assert isinstance(policy_dict, dict)
-                doc += 'Policy Reform Parameter Values by Year:\n'
-                years = sorted(policy_dict.keys())
-                doc += param_doc(years, policy_dict, base)
-                base.implement_reform(policy_dict)
-                assert not base.parameter_errors
+                for year in policy_dict.keys():
+                    if year not in reform_years:
+                        reform_years.append(year)
+                ref.implement_reform(policy_dict)
+        # generate documentation text
+        doc = 'REFORM DOCUMENTATION\n'
+        # ... documentation for baseline growdiff assumptions
+        doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
+        years = list(params['growdiff_baseline'].keys())
+        if years:
+            doc += param_doc(years, gdiff_base, GrowDiff())
+        else:
+            doc += 'none: using default growth assumptions\n'
+        # ... documentation for reform growdiff assumptions
+        doc += 'Response Growth-Difference Assumption Values by Year:\n'
+        years = list(params['growdiff_response'].keys())
+        if years:
+            doc += param_doc(years, gdiff_resp, GrowDiff())
+        else:
+            doc += 'none: using default growth assumptions\n'
+        # ... documentation for (possibly compound) policy reform
+        if policy_dicts is None:
+            doc += 'Policy Reform Parameter Values by Year:\n'
+        else:
+            doc += 'Compound Policy Reform Parameter Values by Year:\n'
+        # ... use clp and ref Policy objects to generate documentation
+        if reform_years:
+            doc += param_doc(reform_years, ref, clp)
+        else:
+            doc += 'none: using current-law policy parameters\n'
+        # cleanup local objects
+        del gdiff_base
+        del gfactors_clp
+        del gdiff_resp
+        del gfactors_ref
+        del clp
+        del ref
+        del years
+        # return documentation string
         return doc
 
     def ce_aftertax_income(self, calc,

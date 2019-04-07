@@ -725,13 +725,15 @@ def test_noreform_documentation():
     expected_doc = (
         'REFORM DOCUMENTATION\n'
         'Baseline Growth-Difference Assumption Values by Year:\n'
-        'none: using default baseline growth assumptions\n'
+        'none: using default growth assumptions\n'
+        'Response Growth-Difference Assumption Values by Year:\n'
+        'none: using default growth assumptions\n'
         'Policy Reform Parameter Values by Year:\n'
         'none: using current-law policy parameters\n'
     )
     assert actual_doc == expected_doc
 
-@pytest.mark.skip
+
 def test_reform_documentation():
     """
     Test automatic documentation creation.
@@ -744,22 +746,22 @@ def test_reform_documentation():
         "2018": true
     },
     "II_em": {
-        "2016": 5000],
-        "2018": 6000],
-        "2020": 7000]
+        "2016": 5000,
+        "2018": 6000,
+        "2020": 7000
     },
     "EITC_indiv": {
-        "2017": true]
+        "2017": true
     },
     "STD_Aged-indexed": {
         "2016": false
     },
     "STD_Aged": {
-        "2016": [1600, 1300, 1300, 1600, 1600]],
-        "2020": [2000, 2000, 2000, 2000, 2000]]
+        "2016": [1600, 1300, 1300, 1600, 1600],
+        "2020": [2000, 2000, 2000, 2000, 2000]
     },
     "ID_BenefitCap_Switch": {
-        "2020": [false, false, false, false, false, false, false]]
+        "2020": [false, false, false, false, false, false, false]
     }
 }
 }
@@ -769,7 +771,7 @@ def test_reform_documentation():
 "consumption": {},
 // increase baseline inflation rate by one percentage point in 2014+
 // (has no effect on known policy parameter values)
-"growdiff_baseline": {"ACPIU": {"2014": 0.01]}},
+"growdiff_baseline": {"ACPIU": {"2014": 0.01}},
 "growdiff_response": {}
 }
 """

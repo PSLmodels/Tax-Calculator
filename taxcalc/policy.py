@@ -6,8 +6,6 @@ Tax-Calculator federal tax policy Policy class.
 # pylint --disable=locally-disabled policy.py
 
 import os
-import collections
-import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -81,7 +79,7 @@ class Policy(Parameters):
         lyr = Policy.LAST_BUDGET_YEAR
         nyrs = Policy.DEFAULT_NUM_YEARS
         self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
-        self._apply_clp_cpi_offset(self._vals['_cpi_offset'], nyrs)
+        self._apply_clp_cpi_offset(self._vals['_CPI_offset'], nyrs)
         self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
         self.initialize(syr, nyrs, Policy.WAGE_INDEXED_PARAMS)
         # initialize parameter warning/error variables
@@ -213,7 +211,7 @@ class Policy(Parameters):
                                    removed_names=Policy.REMOVED_PARAMS)
         if self.parameter_errors:
             raise ValueError(self.parameter_errors)
-        # optionally apply cpi_offset to inflation_rates and re-initialize
+        # optionally apply CPI_offset to inflation_rates and re-initialize
         if Policy._cpi_offset_in_reform(reform):
             known_years = self._apply_reform_cpi_offset(reform)
             self._set_default_vals(
@@ -235,28 +233,6 @@ class Policy(Parameters):
             print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
             raise ValueError('\n' + self.parameter_errors)
-
-    def metadata(self):
-        """
-        Returns ordered dictionary of parameter information based on
-        the contents of the policy_current_law.json file with updates
-        to each parameter's 'start_year', 'row_label', and 'value' key
-        values so that the updated values contain just the current_year
-        information for this instance of the Policy class.
-        """
-        mdata = collections.OrderedDict()
-        for pname, pdata in self._vals.items():
-            name = pname[1:]
-            mdata[name] = pdata
-            mdata[name]['row_label'] = ['{}'.format(self.current_year)]
-            mdata[name]['start_year'] = '{}'.format(self.current_year)
-            valraw = getattr(self, name)
-            if isinstance(valraw, np.ndarray):
-                val = valraw.tolist()
-            else:
-                val = valraw
-            mdata[name]['value'] = val
-        return mdata
 
     @staticmethod
     def parameter_list():
@@ -287,11 +263,11 @@ class Policy(Parameters):
     @staticmethod
     def _cpi_offset_in_reform(reform):
         """
-        Return true if cpi_offset is in reform; otherwise return false.
+        Return true if CPI_offset is in reform; otherwise return false.
         """
         for year in reform:
             for name in reform[year]:
-                if name == '_cpi_offset':
+                if name == '_CPI_offset':
                     return True
         return False
 
@@ -308,20 +284,20 @@ class Policy(Parameters):
         (max(first_cpi_offset_year, Policy.LAST_KNOWN_YEAR) - start_year + 1).
         """
         # pylint: disable=too-many-branches
-        # extrapolate cpi_offset reform
+        # extrapolate CPI_offset reform
         self.set_year(self.start_year)
         first_cpi_offset_year = 0
         for year in sorted(reform.keys()):
             self.set_year(year)
-            if '_cpi_offset' in reform[year]:
+            if '_CPI_offset' in reform[year]:
                 if first_cpi_offset_year == 0:
                     first_cpi_offset_year = year
-                oreform = {'_cpi_offset': reform[year]['_cpi_offset']}
+                oreform = {'_CPI_offset': reform[year]['_CPI_offset']}
                 self._update({year: oreform}, Policy.WAGE_INDEXED_PARAMS)
         self.set_year(self.start_year)
         assert first_cpi_offset_year > 0
         # adjust inflation rates
-        cpi_offset = getattr(self, '_cpi_offset')
+        cpi_offset = getattr(self, '_CPI_offset')
         for idx in range(0, self.num_years):
             infrate = round(self._inflation_rates[idx] + cpi_offset[idx], 6)
             self._inflation_rates[idx] = infrate

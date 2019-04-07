@@ -22,7 +22,7 @@
 // - 6: AMT_em*
 // - 7: ALD_*
 // - 8: ID_* (can safely ignore WARNINGs about values for several parameters)
-// - 9: cpi_offset
+// - 9: CPI_offset
 // Note: II_brk*, PT_brk*, STD, II_em are rounded to nearest integer value
 {
     "policy": {
@@ -184,7 +184,7 @@
         "ID_Medical_frt":
             {"2017": 0.075,
              "2019": 0.100},
-        "cpi_offset":
+        "CPI_offset":
             {"2017": -0.0025}  
     }
 }

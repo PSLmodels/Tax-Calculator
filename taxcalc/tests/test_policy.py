@@ -988,9 +988,9 @@ def test_indexing_rates_for_update():
 
 def test_reform_with_cpi_offset():
     """
-    Implement a reform that includes the _cpi_offset policy parameter.
+    Implement a reform that includes the CPI_offset policy parameter.
     """
-    indexing_reform = {2020: {'cpi_offset': -0.0025}}
+    indexing_reform = {2020: {'CPI_offset': -0.0025}}
     pol = Policy()  # current-law policy
     pol.implement_reform(indexing_reform)
     assert not pol.parameter_errors

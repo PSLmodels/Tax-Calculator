@@ -392,7 +392,7 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
     if valid:
         assert len(varset) == num_vars
 
-@pytest.mark.skip
+
 def test_output_options(reformfile1, assumpfile1):
     """
     Test TaxCalcIO output_dump options when writing_output_file.
@@ -452,7 +452,7 @@ def test_output_options(reformfile1, assumpfile1):
     if os.path.isfile(outfilepath):
         os.remove(outfilepath)
 
-@pytest.mark.skip
+
 def test_write_doc_file(reformfile1, assumpfile1):
     """
     Test write_doc_file with compound reform.
