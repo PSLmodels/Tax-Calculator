@@ -450,8 +450,9 @@ def test_alternative_defaults_file(params_defaults_json_file):
     del paramschange
     # ... (5) test a valid change in string parameter value
     prms = Params()
-    paramschange = {2014: {'_str_param': ['nonlinear']}}
     prms.set_year(2014)
+    paramschange = {2014: {'_str_param': ['nonlinear']}}
+    prms._validate_names_types(paramschange)
     prms._update(paramschange)
     changed_params = set()
     changed_params.add('_str_param')

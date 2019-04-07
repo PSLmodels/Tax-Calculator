@@ -652,8 +652,16 @@ def test_read_bad_json_assump_file():
       "growdiff_baseline": {},
       "growdiff_response": {},
       "policy": { // example of misplaced policy key
-        "_SS_Earnings_c": {"2018": 9e99]}
+        "SS_Earnings_c": {"2018": 9e99]}
       }
+    }
+    """
+    badassump4 = """
+    {
+      "consumption": {},
+      "growdiff_baseline": {},
+      "growdiff_response": {},
+      "illegal_key": {}
     }
     """
     with pytest.raises(ValueError):
@@ -662,6 +670,8 @@ def test_read_bad_json_assump_file():
         Calculator.read_json_param_objects(None, badassump2)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, badassump3)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects(None, badassump4)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
@@ -771,8 +781,8 @@ def test_reform_documentation():
 "consumption": {},
 // increase baseline inflation rate by one percentage point in 2014+
 // (has no effect on known policy parameter values)
-"growdiff_baseline": {"ACPIU": {"2014": 0.01}},
-"growdiff_response": {}
+"growdiff_baseline": {"ACPIU": {"2014": 0.010}},
+"growdiff_response": {"ACPIU": {"2014": 0.015}}
 }
 """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
