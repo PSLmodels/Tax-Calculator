@@ -855,11 +855,11 @@ def test_valid_value_infomation():
     # check all current-law-policy parameters for range validity
     clp = Policy()
     redefined = {
-        '_CTC_c': 'CTC_c was redefined in release 1.0.0 (2019-Q1)'
+        '_CTC_c': 'CTC_c was redefined in release 1.0.0'
     }
     clp._validate_values(parameters, redefined_info=redefined)
     # eventually activate: assert not clp.parameter_warnings
-    ctc_c_warning = 'CTC_c was redefined in release 1.0.0 (2019-Q1)\n'
+    ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
     assert clp.parameter_warnings == ctc_c_warning
     assert not clp.parameter_errors
 

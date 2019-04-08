@@ -47,19 +47,21 @@ class Policy(Parameters):
         '_SS_Earnings_c',
         '_SS_Earnings_thd'
     ]
-    # (2) specify which Policy parameters have been removed
-    REMOVED_PARAMS = [
+    # (2) specify which Policy parameters have been removed or renamed
+    REMOVED_PARAMS = {
         # following five parameters removed in PR 2223 merged on 2019-02-06
-        '_DependentCredit_Child_c',
-        '_DependentCredit_Nonchild_c',
-        '_DependentCredit_before_CTC',
-        '_FilerCredit_c',
-        '_ALD_InvInc_ec_base_RyanBrady'
-    ]
+        '_DependentCredit_Child_c': '',
+        '_DependentCredit_Nonchild_c': '',
+        '_DependentCredit_before_CTC': '',
+        '_FilerCredit_c': '',
+        '_ALD_InvInc_ec_base_RyanBrady': '',
+        # TODO: following parameter renamed in PR 22?? merged on 2019-04-??
+        '_cpi_offset': 'was renamed CPI_offset in release 2.0.0'
+    }
     # (3) specify which Policy parameters havve been redefined recently
     REDEFINED_PARAMS = {
         # TODO: remove the CTC_c name:message pair sometime later in 2019
-        '_CTC_c': 'CTC_c was redefined in release 1.0.0 (2019-02-22)'
+        '_CTC_c': 'CTC_c was redefined in release 1.0.0'
     }
 
     def __init__(self, gfactors=None, only_reading_defaults=False):

@@ -340,10 +340,10 @@ class Parameters():
         # pylint: disable=too-many-branches,too-many-nested-blocks
         # pylint: disable=too-many-statements,too-many-locals
         if removed_names is None:
-            removed_param_names = set()
+            removed_param_names = dict()
         else:
-            assert isinstance(removed_names, list)
-            removed_param_names = set(removed_names)
+            assert isinstance(removed_names, dict)
+            removed_param_names = removed_names
         assert isinstance(self._vals, dict)
         param_names = set(self._vals.keys())
         for year in sorted(revision.keys()):
@@ -353,33 +353,42 @@ class Parameters():
                         pname = name[:-8]  # root parameter name
                         if pname not in param_names:
                             if pname in removed_param_names:
-                                msg = '{} {} is a removed parameter name'
+                                if removed_param_names[pname]:
+                                    msg = removed_param_names[pname]
+                                else:
+                                    msg = 'is a removed parameter name'
                             else:
-                                msg = '{} {} is an unknown parameter name'
+                                msg = 'is an unknown parameter name'
                             self.parameter_errors += (
-                                'ERROR: ' + msg.format(year, name) + '\n'
+                                'ERROR: {} {} '.format(year, name[1:]) +
+                                msg + '\n'
                             )
                         else:
                             # check if root parameter is indexable
-                            idxable = self._vals[pname].get('indexable', False)
-                            if not idxable:
+                            indexable = self._vals[pname].get('indexable',
+                                                              False)
+                            if not indexable:
                                 msg = '{} {} parameter is not indexable'
                                 self.parameter_errors += (
-                                    'ERROR: ' + msg.format(year, pname) + '\n'
+                                    'ERROR: ' + msg.format(year, pname[1:])
+                                    + '\n'
                                 )
                     else:
                         msg = '{} {} parameter is not true or false'
                         self.parameter_errors += (
-                            'ERROR: ' + msg.format(year, name) + '\n'
+                            'ERROR: ' + msg.format(year, name[1:]) + '\n'
                         )
                 else:  # if name does not end with '-indexed'
                     if name not in param_names:
                         if name in removed_param_names:
-                            msg = '{} {} is a removed parameter name'
+                            if removed_param_names[name]:
+                                msg = removed_param_names[name]
+                            else:
+                                msg = 'is a removed parameter name'
                         else:
-                            msg = '{} {} is an unknown parameter name'
+                            msg = 'is an unknown parameter name'
                         self.parameter_errors += (
-                            'ERROR: ' + msg.format(year, name) + '\n'
+                            'ERROR: {} {} '.format(year, name[1:]) + msg + '\n'
                         )
                     else:
                         # check parameter value type avoiding use of isinstance
@@ -407,7 +416,7 @@ class Parameters():
                                     msg = '{} {} value {} is not a number'
                                     self.parameter_errors += (
                                         'ERROR: ' +
-                                        msg.format(year, pname, pval) +
+                                        msg.format(year, pname[1:], pval) +
                                         '\n'
                                     )
                             elif valtype == 'boolean':
@@ -415,7 +424,7 @@ class Parameters():
                                     msg = '{} {} value {} is not boolean'
                                     self.parameter_errors += (
                                         'ERROR: ' +
-                                        msg.format(year, pname, pval) +
+                                        msg.format(year, pname[1:], pval) +
                                         '\n'
                                     )
                             elif valtype == 'integer':
@@ -423,7 +432,7 @@ class Parameters():
                                     msg = '{} {} value {} is not integer'
                                     self.parameter_errors += (
                                         'ERROR: ' +
-                                        msg.format(year, pname, pval) +
+                                        msg.format(year, pname[1:], pval) +
                                         '\n'
                                     )
                             elif valtype == 'string':
@@ -431,7 +440,7 @@ class Parameters():
                                     msg = '{} {} value {} is not a string'
                                     self.parameter_errors += (
                                         'ERROR: ' +
-                                        msg.format(year, pname, pval) +
+                                        msg.format(year, pname[1:], pval) +
                                         '\n'
                                     )
         del param_names
@@ -470,7 +479,7 @@ class Parameters():
                         fullmsg = '{}: {}\n'.format(
                             'ERROR',
                             msg.format(idx[0] + syr,
-                                       pname,
+                                       pname[1:],
                                        pvalue[idx],
                                        valid_options)
                         )
@@ -523,7 +532,7 @@ class Parameters():
                                 fullmsg = '{}: {}\n'.format(
                                     'ERROR',
                                     msg.format(idx[0] + syr,
-                                               name,
+                                               name[1:],
                                                pvalue[idx],
                                                vvalue[idx])
                                 )
