@@ -367,8 +367,8 @@ class Parameters():
                             if not indexable:
                                 msg = '{} {} parameter is not indexable'
                                 self.parameter_errors += (
-                                    'ERROR: ' + msg.format(year, pname[1:])
-                                    + '\n'
+                                    'ERROR: ' +
+                                    msg.format(year, pname[1:]) + '\n'
                                 )
                     else:
                         msg = '{} {} parameter is not true or false'

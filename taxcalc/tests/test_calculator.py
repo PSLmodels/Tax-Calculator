@@ -455,6 +455,7 @@ def test_read_json_reform_file_and_implement_reform(set_year):
     assert add4aged[2017 - syr] == 0.0
     assert add4aged[2022 - syr] == 0.0
 
+
 @pytest.mark.skip
 def test_json_reform_url():
     """
@@ -538,6 +539,7 @@ def test_read_bad_json_reform_file():
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, list())
+
 
 @pytest.mark.skip
 def test_json_assump_url():
