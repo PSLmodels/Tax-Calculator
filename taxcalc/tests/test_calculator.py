@@ -787,7 +787,8 @@ def test_reform_documentation():
 """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
-    doc = Calculator.reform_documentation(params)
+    second_reform = {2019: {'II_em': 6500}}
+    doc = Calculator.reform_documentation(params, [second_reform])
     assert isinstance(doc, str)
     dump = False  # set to True to print documentation and force test failure
     if dump:

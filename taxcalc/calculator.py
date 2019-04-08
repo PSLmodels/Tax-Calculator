@@ -1259,31 +1259,22 @@ class Calculator():
                             pval = [str(item) for item in pval]
                             doc += ' ' * (4 + len(pname)) + '{}\n'.format(pval)
                         # ... write param-name line
-                        if pname.endswith('-indexed'):
-                            root = pname[:-8]
-                            name = '{} inflation indexing status'.format(root)
-                        else:
-                            name = mdata_base[pname]['long_name']
+                        name = mdata_base[pname]['long_name']
                         for line in lines('name: ' + name, 6):
                             doc += '  ' + line
-                        # ... write optional param-description line
-                        if not pname.endswith('-indexed'):
-                            desc = mdata_base[pname]['description']
-                            for line in lines('desc: ' + desc, 6):
-                                doc += '  ' + line
+                        # ... write param-description line
+                        desc = mdata_base[pname]['description']
+                        for line in lines('desc: ' + desc, 6):
+                            doc += '  ' + line
                         # ... write param-baseline-value line
                         if isinstance(baseline, Policy):
-                            if pname.endswith('-indexed'):
-                                root = pname[:-8]
-                                pval = mdata_base[root].get('indexed', False)
-                            else:
-                                pval = mdata_base[pname]['value']
-                                ptype = mdata_base[pname]['value_type']
-                                if isinstance(pval, list):
-                                    if ptype == 'boolean':
-                                        pval = [bool(item) for item in pval]
-                                elif ptype == 'boolean':
-                                    pval = bool(pval)
+                            pval = mdata_base[pname]['value']
+                            ptype = mdata_base[pname]['value_type']
+                            if isinstance(pval, list):
+                                if ptype == 'boolean':
+                                    pval = [bool(item) for item in pval]
+                            elif ptype == 'boolean':
+                                pval = bool(pval)
                             doc += '  baseline_value: {}\n'.format(pval)
                         else:  # if baseline is GrowDiff object
                             # each GrowDiff parameter has zero as default value

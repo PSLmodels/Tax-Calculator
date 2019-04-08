@@ -50,11 +50,11 @@ class Policy(Parameters):
     # (2) specify which Policy parameters have been removed or renamed
     REMOVED_PARAMS = {
         # following five parameters removed in PR 2223 merged on 2019-02-06
-        '_DependentCredit_Child_c': '',
-        '_DependentCredit_Nonchild_c': '',
-        '_DependentCredit_before_CTC': '',
-        '_FilerCredit_c': '',
-        '_ALD_InvInc_ec_base_RyanBrady': '',
+        '_DependentCredit_Child_c': 'is a removed parameter name',
+        '_DependentCredit_Nonchild_c': 'is a removed parameter name',
+        '_DependentCredit_before_CTC': 'is a removed parameter name',
+        '_FilerCredit_c': 'is a removed parameter name',
+        '_ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
         # TODO: following parameter renamed in PR 22?? merged on 2019-04-??
         '_cpi_offset': 'was renamed CPI_offset in release 2.0.0'
     }

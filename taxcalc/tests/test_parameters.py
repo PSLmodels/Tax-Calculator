@@ -429,21 +429,21 @@ def test_alternative_defaults_file(params_defaults_json_file):
     del prms
     # ... (2) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'str_param': [9]}}
+    paramschange = {2014: {'_str_param': [9]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
     del paramschange
     # ... (3) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'int_param': [3.6]}}
+    paramschange = {2014: {'_int_param': [3.6]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms
     del paramschange
     # ... (4) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'bool_param': [4.9]}}
+    paramschange = {2014: {'_bool_param': [4.9]}}
     prms._validate_names_types(paramschange)
     assert prms.parameter_errors
     del prms

@@ -353,10 +353,7 @@ class Parameters():
                         pname = name[:-8]  # root parameter name
                         if pname not in param_names:
                             if pname in removed_param_names:
-                                if removed_param_names[pname]:
-                                    msg = removed_param_names[pname]
-                                else:
-                                    msg = 'is a removed parameter name'
+                                msg = removed_param_names[pname]
                             else:
                                 msg = 'is an unknown parameter name'
                             self.parameter_errors += (
@@ -381,10 +378,7 @@ class Parameters():
                 else:  # if name does not end with '-indexed'
                     if name not in param_names:
                         if name in removed_param_names:
-                            if removed_param_names[name]:
-                                msg = removed_param_names[name]
-                            else:
-                                msg = 'is a removed parameter name'
+                            msg = removed_param_names[name]
                         else:
                             msg = 'is an unknown parameter name'
                         self.parameter_errors += (
