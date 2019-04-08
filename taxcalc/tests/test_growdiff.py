@@ -56,6 +56,7 @@ def test_incorrect_update_growdiff():
     with pytest.raises(ValueError):
         GrowDiff().update_growdiff({2014: {'ABOOK-indexed': True}})
 
+
 def test_has_any_response():
     start_year = GrowDiff.JSON_START_YEAR
     gdiff = GrowDiff()
