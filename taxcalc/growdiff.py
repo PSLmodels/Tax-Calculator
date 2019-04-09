@@ -34,15 +34,13 @@ class GrowDiff(Parameters):
         super().__init__()
         self.initialize(GrowDiff.JSON_START_YEAR,
                         GrowDiff.DEFAULT_NUM_YEARS)
-        self.parameter_warnings = ''
-        self.parameter_errors = ''
 
     def update_growdiff(self, revision,
                         print_warnings=True, raise_errors=True):
         """
         Update growdiff default values using specified revision, which is
         a dictionary containing one or more year:modification dictionaries.
-        For example: {2014: {'_AWAGE': [0.01]}}.
+        For example: {2014: {'AWAGE': 0.01}}.
         """
         if not isinstance(revision, dict):
             raise ValueError('ERROR: revision is not a dictionary')

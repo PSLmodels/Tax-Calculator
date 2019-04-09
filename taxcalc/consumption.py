@@ -36,8 +36,6 @@ class Consumption(Parameters):
         super().__init__()
         self.initialize(Consumption.JSON_START_YEAR,
                         Consumption.DEFAULT_NUM_YEARS)
-        self.parameter_warnings = ''
-        self.parameter_errors = ''
 
     def update_consumption(self, revision,
                            print_warnings=True, raise_errors=True):

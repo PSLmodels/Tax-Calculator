@@ -406,9 +406,6 @@ def test_alternative_defaults_file(params_defaults_json_file):
             # read default parameters and initialize
             super().__init__()
             self.initialize(Params.START_YEAR, Params.NUM_YEARS)
-            # specify warning/error handling variables
-            self.parameter_errors = ''
-            self._ignore_errors = False
     # end of Params class definition
 
     # test illegal instantiation of abstract Parameters class

@@ -21,6 +21,8 @@ class Parameters():
     Override this __init__ method and DEFAULTS_FILE_NAME and
     DEFAULTS_FILE_PATH in the inheriting class.
     """
+    # pylint: disable=too-many-instance-attributes
+
     __metaclass__ = abc.ABCMeta
 
     DEFAULTS_FILE_NAME = None
@@ -43,21 +45,49 @@ class Parameters():
         for pname in vals:
             self._vals['_' + pname] = vals[pname]
         del vals
+        # initialize parameter warning/error variables
+        self.parameter_warnings = ''
+        self.parameter_errors = ''
 
-    def initialize(self, start_year, num_years, wage_indexed_params=None):
+    def initialize(self, start_year, num_years, last_known_year=None,
+                   removed=None, redefined=None, wage_indexed=None):
         """
         Called from subclass __init__ function.
         """
+        # pylint: disable=too-many-arguments
+        # check arguments
+        assert start_year >= 0
+        assert num_years >= 1
+        end_year = start_year + num_years - 1
+        assert last_known_year is None or isinstance(last_known_year, int)
+        assert removed is None or isinstance(removed, dict)
+        assert redefined is None or isinstance(redefined, dict)
+        assert wage_indexed is None or isinstance(wage_indexed, list)
+        # remember arguments
         self._current_year = start_year
         self._start_year = start_year
         self._num_years = num_years
-        self._end_year = start_year + num_years - 1
-        if wage_indexed_params is None:
-            wage_indexed_param_list = list()
+        self._end_year = end_year
+        if last_known_year is None:
+            self._last_known_year = start_year
         else:
-            assert isinstance(wage_indexed_params, list)
-            wage_indexed_param_list = wage_indexed_params
-        self._set_default_vals(wage_indexed_params=wage_indexed_param_list)
+            assert last_known_year >= start_year
+            assert last_known_year <= end_year
+            self._last_known_year = last_known_year
+        if removed is None:
+            self._removed = dict()
+        else:
+            self._removed = removed
+        if redefined is None:
+            self._redefined = dict()
+        else:
+            self._redefined = redefined
+        if wage_indexed is None:
+            self._wage_indexed = list()
+        else:
+            self._wage_indexed = wage_indexed
+        # set default parameter values
+        self._set_default_vals()
 
     def inflation_rates(self):
         """
@@ -151,16 +181,11 @@ class Parameters():
 
     # ----- begin private methods of Parameters class -----
 
-    def _set_default_vals(self, wage_indexed_params=None, known_years=999999):
+    def _set_default_vals(self, known_years=999999):
         """
         Called by initialize method and from some subclass methods.
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
-        if wage_indexed_params is None:
-            wage_indexed_param_list = list()
-        else:
-            assert isinstance(wage_indexed_params, list)
-            wage_indexed_param_list = wage_indexed_params
         assert isinstance(known_years, (int, dict))
         if isinstance(known_years, int):
             known_years_is_int = True
@@ -172,7 +197,7 @@ class Parameters():
             indexed = data.get('indexed', False)
             # pylint: disable=assignment-from-none
             if indexed:
-                if name in wage_indexed_param_list:
+                if name in self._wage_indexed:
                     index_rates = self.wage_growth_rates()
                 else:
                     index_rates = self.inflation_rates()
@@ -189,7 +214,7 @@ class Parameters():
                                        num_years=self._num_years))
         self.set_year(self._start_year)
 
-    def _update(self, year_mods, wage_indexed_params=None):
+    def _update(self, year_mods):
         """
         Private method used by public implement_reform and update_* methods
         in inheriting classes.
@@ -270,12 +295,6 @@ class Parameters():
         assert year == self.current_year
         # check that MODS is a dictionary
         assert isinstance(year_mods[year], dict)
-        # specify wage_indexed_param_list
-        if wage_indexed_params is None:
-            wage_indexed_param_list = list()
-        else:
-            assert isinstance(wage_indexed_params, list)
-            wage_indexed_param_list = wage_indexed_params
         # implement reform provisions included in the single YEAR:MODS pair
         num_years_to_expand = (self.start_year + self.num_years) - year
         all_names = set(year_mods[year].keys())  # no duplicate keys in a dict
@@ -296,7 +315,7 @@ class Parameters():
             # set post-reform values of parameter with name
             used_names.add(name)
             cval = getattr(self, name, None)
-            wage_indexed_param = name in wage_indexed_param_list
+            wage_indexed_param = name in self._wage_indexed
             index_rates = self._indexing_rates_for_update(wage_indexed_param,
                                                           year,
                                                           num_years_to_expand)
@@ -315,7 +334,7 @@ class Parameters():
             self._vals[pname]['indexed'] = pindexed  # remember status
             cval = getattr(self, pname, None)
             pvalues = [cval[year - self.start_year]]
-            wage_indexed_param = pname in wage_indexed_param_list
+            wage_indexed_param = pname in self._wage_indexed
             index_rates = self._indexing_rates_for_update(wage_indexed_param,
                                                           year,
                                                           num_years_to_expand)
