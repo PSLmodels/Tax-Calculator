@@ -81,7 +81,6 @@ class Policy(Parameters):
         lyr = Policy.LAST_BUDGET_YEAR
         nyrs = Policy.DEFAULT_NUM_YEARS
         self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
-        self._apply_clp_cpi_offset(self._vals['_CPI_offset'], nyrs)
         self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
         self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
                         Policy.REMOVED_PARAMS,
@@ -213,7 +212,7 @@ class Policy(Parameters):
         if self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # optionally apply CPI_offset to inflation_rates and re-initialize
-        if Policy._cpi_offset_in_reform(reform):
+        if self._cpi_offset_in_reform(reform):
             known_years = self._apply_reform_cpi_offset(reform)
             self._set_default_vals(known_years=known_years)
         # implement the reform year by year
@@ -240,82 +239,3 @@ class Policy(Parameters):
         plist = list(policy._vals.keys())  # pylint: disable=protected-access
         del policy
         return plist
-
-    # ----- begin private methods of Policy class -----
-
-    def _apply_clp_cpi_offset(self, cpi_offset_clp_data, num_years):
-        """
-        Call this method from Policy constructor
-        after self._inflation_rates has been set and
-        before base class initialize method is called.
-        (num_years is number of years for which inflation rates are specified)
-        """
-        ovalues = cpi_offset_clp_data['value']
-        if len(ovalues) < num_years:  # extrapolate last known value
-            ovalues = ovalues + ovalues[-1:] * (num_years - len(ovalues))
-        for idx in range(0, num_years):
-            infrate = round(self._inflation_rates[idx] + ovalues[idx], 6)
-            self._inflation_rates[idx] = infrate
-
-    @staticmethod
-    def _cpi_offset_in_reform(reform):
-        """
-        Return true if CPI_offset is in reform; otherwise return false.
-        """
-        for year in reform:
-            for name in reform[year]:
-                if name == '_CPI_offset':
-                    return True
-        return False
-
-    def _apply_reform_cpi_offset(self, reform):
-        """
-        Call this method ONLY if _cpi_offset_in_reform returns True.
-        Apply CPI offset to inflation rates and
-        revert indexed parameter values in preparation for re-indexing.
-        Also, return known_years which is dictionary with indexed policy
-        parameter names as keys and known_years as values.  For indexed
-        parameters included in reform, the known_years value is equal to:
-        (first_cpi_offset_year - start_year + 1).  For indexed parameters
-        not included in reform, the known_years value is equal to:
-        (max(first_cpi_offset_year, Policy.LAST_KNOWN_YEAR) - start_year + 1).
-        """
-        # pylint: disable=too-many-branches
-        # extrapolate CPI_offset reform
-        self.set_year(self.start_year)
-        first_cpi_offset_year = 0
-        for year in sorted(reform.keys()):
-            self.set_year(year)
-            if '_CPI_offset' in reform[year]:
-                if first_cpi_offset_year == 0:
-                    first_cpi_offset_year = year
-                oreform = {'_CPI_offset': reform[year]['_CPI_offset']}
-                self._update({year: oreform})
-        self.set_year(self.start_year)
-        assert first_cpi_offset_year > 0
-        # adjust inflation rates
-        cpi_offset = getattr(self, '_CPI_offset')
-        for idx in range(0, self.num_years):
-            infrate = round(self._inflation_rates[idx] + cpi_offset[idx], 6)
-            self._inflation_rates[idx] = infrate
-        # revert indexed parameter values to policy_current_law.json values
-        for name in self._vals.keys():
-            if self._vals[name]['indexed']:
-                setattr(self, name, self._vals[name]['value'])
-        # construct and return known_years dictionary
-        known_years = dict()
-        kyrs_in_reform = (first_cpi_offset_year -
-                          self.start_year + 1)
-        kyrs_not_in_reform = (max(first_cpi_offset_year,
-                                  Policy.LAST_KNOWN_YEAR) -
-                              self.start_year + 1)
-        for year in sorted(reform.keys()):
-            for name in reform[year]:
-                if self._vals[name]['indexed']:
-                    if name not in known_years:
-                        known_years[name] = kyrs_in_reform
-        for name in self._vals.keys():
-            if self._vals[name]['indexed']:
-                if name not in known_years:
-                    known_years[name] = kyrs_not_in_reform
-        return known_years
