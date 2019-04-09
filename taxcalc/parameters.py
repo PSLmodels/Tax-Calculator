@@ -222,80 +222,101 @@ class Parameters():
                                        num_years=self._num_years))
         self.set_year(self._start_year)
 
-    def _update(self, year_mods):
+    def _update(self, revision, print_warnings=False, raise_errors=False):
         """
-        Private method used by public implement_reform and update_* methods
-        in inheriting classes.
+        Update parameters using specified revision and
+        leave current_year unchanged.
 
         Parameters
         ----------
-        year_mods: dictionary containing a single YEAR:MODS pair
-            see Notes below for details on dictionary structure.
+        revision: dictionary of one or more YEAR:MODS pairs
+            see Notes to Parameters _update method for info on MODS structure
+
+        print_warnings: boolean
+            if True, prints warnings when parameter_warnings exists;
+            if False, does not print warnings when parameter_warnings exists
+                    and leaves warning handling to caller of _update method.
+
+        raise_errors: boolean
+            if True, raises ValueError when parameter_errors exists;
+            if False, does not raise ValueError when parameter_errors exists
+                    and leaves error handling to caller of _update method.
 
         Raises
         ------
         ValueError:
-            if year_mods is not a dictionary of the expected structure.
+            if revision is not a dictionary.
+            if each YEAR in revision is not an integer.  TODO: fix this & below
+            if minimum YEAR in the YEAR:MODS pairs is less than start_year.
+            if minimum YEAR in the YEAR:MODS pairs is less than current_year.
+            if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
+            if raise_errors is True AND
+              _validate_names_types generates errors OR
+              _validate_values generates errors.
 
         Returns
         -------
         nothing: void
-
-        Notes
-        -----
-        This is a private method that should **NEVER** be used by clients
-        of the inheriting classes.  Instead, always use the public
-        implement_reform or update_consumption-like methods defined by
-        the inheriting class.  This is a private method that helps the
-        public methods work.
-
-        This method implements a policy reform or assumption modification,
-        the provisions of which are specified in the year_mods dictionary,
-        that changes the values of some parameters in objects of the
-        inheriting class.  This year_mods dictionary contains exactly one
-        YEAR:MODS pair, where the integer YEAR key indicates the
-        calendar year for which the parameter revisions in the MODS
-        dictionary are implemented.  The MODS dictionary contains
-        PARAM:VALUE pairs in which the PARAM is a string specifying
-        the parameter (as used in the DEFAULTS_FILE_NAME default
-        parameter file) and the VALUE is a Python list of post-update
-        values for that PARAM in that YEAR.  Beginning in the year
-        following the implementation of a revision provision, the
-        parameter whose value has been changed by the revision continues
-        to be price or wage indexed, if relevant, or not be indexed
-        according to that parameter's indexed value loaded from the
-        DEFAULTS_FILE_NAME.  For a indexable parameter, a reform can change
-        the indexing status of a parameter by including in the MODS dictionary
-        a term that is a PARAM_indexed:BOOLEAN pair specifying the post-reform
-        indexing status of the parameter.
-
-        So, for example, to raise the OASDI (i.e., Old-Age, Survivors,
-        and Disability Insurance) maximum taxable earnings beginning
-        in 2018 to $500,000 and to continue indexing it in subsequent
-        years as in current-law policy, the YEAR:MODS dictionary would
-        be as follows::
-
-            {2018: {'_SS_Earnings_c':[500000]}}
-
-        But to raise the maximum taxable earnings in 2018 to $500,000
-        without any indexing in subsequent years, the YEAR:MODS
-        dictionary would be as follows::
-
-            {2018: {'_SS_Earnings_c':[500000], '_SS_Earnings_c-indexed':False}}
-
-        And to raise in 2019 the starting AGI for EITC phaseout for
-        married filing jointly filing status (which is a two-dimensional
-        policy parameter that varies by the number of children from zero
-        to three or more and is inflation indexed), the YEAR:MODS dictionary
-        would be as follows::
-
-            {2019: {'_EITC_ps_MarriedJ':[[8000, 8500, 9000, 9500]]}}
-
-        Notice the pair of double square brackets around the four values
-        for 2019.  The one-dimensional parameters above require only a pair
-        of single square brackets.
         """
-        # pylint: disable=too-many-statements,too-many-locals
+        # check that all revision dictionary keys are integers
+        if not isinstance(revision, dict):
+            raise ValueError('ERROR: YYYY PARAM revision is not a dictionary')
+        if not revision:
+            return  # no revision to implement
+        revision_years = sorted(list(revision.keys()))
+        for year in revision_years:
+            if not isinstance(year, int):
+                msg = 'ERROR: {} KEY {}'
+                details = 'KEY in revision is not an integer calendar year'
+                raise ValueError(msg.format(year, details))
+        # check range of revision_years
+        first_revision_year = min(revision_years)
+        if first_revision_year < self.start_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
+            raise ValueError(msg.format(first_revision_year,
+                                        self.start_year))
+        if first_revision_year < self.current_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR < current_year={}'
+            raise ValueError(msg.format(first_revision_year,
+                                        self.current_year))
+        last_revision_year = max(revision_years)
+        if last_revision_year > self.end_year:
+            msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
+            raise ValueError(msg.format(last_revision_year, self.end_year))
+        # add leading underscore character to each parameter name in revision
+        revision = Parameters._add_underscores(revision)
+        # add brackets around each data element in revision
+        revision = Parameters._add_brackets(revision)
+        # validate revision parameter names and types
+        self.parameter_warnings = ''
+        self.parameter_errors = ''
+        self._validate_names_types(revision)
+        if self.parameter_errors:
+            raise ValueError(self.parameter_errors)
+        # optionally apply CPI_offset to inflation_rates and re-initialize
+        known_years = self._apply_cpi_offset_in_revision(revision)
+        if known_years is not None:
+            self._set_default_vals(known_years=known_years)
+        # implement the revision year by year
+        precall_current_year = self.current_year
+        revision_parameters = set()
+        for year in revision_years:
+            self.set_year(year)
+            revision_parameters.update(revision[year].keys())
+            self._update_for_year({year: revision[year]})
+        self.set_year(precall_current_year)
+        # validate revision parameter values
+        self._validate_values(revision_parameters)
+        if self.parameter_warnings and print_warnings:
+            print(self.parameter_warnings)
+        if self.parameter_errors and raise_errors:
+            raise ValueError('\n' + self.parameter_errors)
+
+    def _update_for_year(self, year_mods):
+        """
+        Private method used by Parameters._update method.
+        """
+        # pylint: disable=too-many-locals
         # check YEAR value in the single YEAR:MODS dictionary parameter
         assert isinstance(year_mods, dict)
         assert len(year_mods.keys()) == 1
@@ -413,6 +434,17 @@ class Parameters():
                         pvalue = revision[year][name][0]
                         if isinstance(pvalue, list):
                             scalar = False  # parameter value is a list
+                            if self._vals[name].get('col_label', '') == '':
+                                msg = ('{} {} with value {} '
+                                       'is not a vector parameter')
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, name[1:], pvalue) +
+                                    '\n'
+                                )
+                                # following is not true but is needed to
+                                # avoid errors below
+                                scalar = True
                         else:
                             scalar = True  # parameter value is a scalar
                             pvalue = [pvalue]  # make scalar a single-item list
@@ -707,49 +739,47 @@ class Parameters():
         Called from Parameters.initialize method.
         Does nothing if CPI_offset parameter is not in self._vals dictionary.
         """
-        if '_CPI_offset' in self._vals:
-            nyrs = self.num_years
-            ovalues = self._vals['_CPI_offset']['value']
-            if len(ovalues) < nyrs:  # extrapolate last known value
-                ovalues = ovalues + ovalues[-1:] * (nyrs - len(ovalues))
-            for idx in range(0, nyrs):
-                infrate = round(self._inflation_rates[idx] + ovalues[idx], 6)
-                self._inflation_rates[idx] = infrate
+        if '_CPI_offset' not in self._vals:
+            return
+        nyrs = self.num_years
+        ovalues = self._vals['_CPI_offset']['value']
+        if len(ovalues) < nyrs:  # extrapolate last known value
+            ovalues = ovalues + ovalues[-1:] * (nyrs - len(ovalues))
+        for idx in range(0, nyrs):
+            infrate = round(self._inflation_rates[idx] + ovalues[idx], 6)
+            self._inflation_rates[idx] = infrate
 
-    @staticmethod
-    def _cpi_offset_in_reform(reform):
+    def _apply_cpi_offset_in_revision(self, revision):
         """
-        Return true if CPI_offset is in reform; otherwise return false.
-        """
-        for year in reform:
-            for name in reform[year]:
-                if name == '_CPI_offset':
-                    return True
-        return False
-
-    def _apply_reform_cpi_offset(self, reform):
-        """
-        Call this method ONLY if Parameters._cpi_offset_in_reform returns True.
         Apply CPI offset to inflation rates and
         revert indexed parameter values in preparation for re-indexing.
         Also, return known_years which is dictionary with indexed policy
         parameter names as keys and known_years as values.  For indexed
-        parameters included in reform, the known_years value is equal to:
+        parameters included in revision, the known_years value is equal to:
         (first_cpi_offset_year - start_year + 1).  For indexed parameters
-        not included in reform, the known_years value is equal to:
+        not included in revision, the known_years value is equal to:
         (max(first_cpi_offset_year, last_known_year) - start_year + 1).
         """
         # pylint: disable=too-many-branches
-        # extrapolate CPI_offset reform
+        # determine if CPI_offset is in specified revision; if not, return
+        cpi_offset_in_revision = False
+        for year in revision:
+            for name in revision[year]:
+                if name == '_CPI_offset':
+                    cpi_offset_in_revision = True
+                    break  # out of loop
+        if not cpi_offset_in_revision:
+            return None
+        # extrapolate CPI_offset revision
         self.set_year(self.start_year)
         first_cpi_offset_year = 0
-        for year in sorted(reform.keys()):
+        for year in sorted(revision.keys()):
             self.set_year(year)
-            if '_CPI_offset' in reform[year]:
+            if '_CPI_offset' in revision[year]:
                 if first_cpi_offset_year == 0:
                     first_cpi_offset_year = year
-                oreform = {'_CPI_offset': reform[year]['_CPI_offset']}
-                self._update({year: oreform})
+                orevision = {'_CPI_offset': revision[year]['_CPI_offset']}
+                self._update_for_year({year: orevision})
         self.set_year(self.start_year)
         assert first_cpi_offset_year > 0
         # adjust inflation rates
@@ -763,18 +793,18 @@ class Parameters():
                 setattr(self, name, self._vals[name]['value'])
         # construct and return known_years dictionary
         known_years = dict()
-        kyrs_in_reform = (first_cpi_offset_year -
-                          self.start_year + 1)
-        kyrs_not_in_reform = (max(first_cpi_offset_year,
-                                  self.last_known_year) -
-                              self.start_year + 1)
-        for year in sorted(reform.keys()):
-            for name in reform[year]:
+        kyrs_in_revision = (first_cpi_offset_year - self.start_year + 1)
+        kyrs_not_in_revision = (
+            max(first_cpi_offset_year, self.last_known_year) -
+            self.start_year + 1
+        )
+        for year in sorted(revision.keys()):
+            for name in revision[year]:
                 if self._vals[name]['indexed']:
                     if name not in known_years:
-                        known_years[name] = kyrs_in_reform
+                        known_years[name] = kyrs_in_revision
         for name in self._vals.keys():
             if self._vals[name]['indexed']:
                 if name not in known_years:
-                    known_years[name] = kyrs_not_in_reform
+                    known_years[name] = kyrs_not_in_revision
         return known_years

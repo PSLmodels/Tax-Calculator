@@ -86,7 +86,7 @@ class Consumption(Parameters):
         for year in revision_years:
             self.set_year(year)
             revision_parameters.update(revision[year].keys())
-            self._update({year: revision[year]})
+            self._update_for_year({year: revision[year]})
         self.set_year(precall_current_year)
         # validate revision parameter values
         self._validate_values(revision_parameters)

@@ -426,45 +426,36 @@ def test_alternative_defaults_file(params_defaults_json_file):
     del prms
     # ... (2) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_str_param': [9]}}
-    prms._validate_names_types(paramschange)
+    revision = {2014: {'_str_param': [9]}}
+    prms._validate_names_types(revision)
     assert prms.parameter_errors
     del prms
-    del paramschange
+    del revision
     # ... (3) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_int_param': [3.6]}}
-    prms._validate_names_types(paramschange)
+    revision = {2014: {'_int_param': [3.6]}}
+    prms._validate_names_types(revision)
     assert prms.parameter_errors
     del prms
-    del paramschange
+    del revision
     # ... (4) test a _validate_names_types error
     prms = Params()
-    paramschange = {2014: {'_bool_param': [4.9]}}
-    prms._validate_names_types(paramschange)
+    revision = {2014: {'_bool_param': [4.9]}}
+    prms._validate_names_types(revision)
     assert prms.parameter_errors
     del prms
-    del paramschange
+    del revision
     # ... (5) test a valid change in string parameter value
     prms = Params()
-    prms.set_year(2014)
-    paramschange = {2014: {'_str_param': ['nonlinear']}}
-    prms._validate_names_types(paramschange)
-    prms._update(paramschange)
-    changed_params = set()
-    changed_params.add('_str_param')
-    prms._validate_values(changed_params)
+    revision = {2014: {'str_param': 'nonlinear'}}
+    prms._update(revision)
     assert not prms.parameter_errors
     del prms
-    del paramschange
+    del revision
     # ... (6) test an invalid change in string parameter value
     prms = Params()
-    paramschange = {2014: {'_str_param': ['unknownvalue']}}
-    prms.set_year(2014)
-    prms._update(paramschange)
-    changed_params = set()
-    changed_params.add('_str_param')
-    prms._validate_values(changed_params)
+    revision = {2014: {'str_param': 'unknownvalue'}}
+    prms._update(revision)
     assert prms.parameter_errors
     del prms
-    del paramschange
+    del revision
