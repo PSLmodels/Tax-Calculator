@@ -1099,7 +1099,7 @@ class Calculator():
         suitable as input into the GrowDiff.update_growdiff method.
         """
         # pylint: disable=too-many-branches
-        # first process second assump parameter
+        # first process the second assump argument
         if assump is None:
             cons_dict = dict()
             gdiff_base_dict = dict()
@@ -1124,7 +1124,7 @@ class Calculator():
              gdiff_resp_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
             raise ValueError('assump is neither None nor string')
-        # next process first reform parameter
+        # next process the first reform argument
         if reform is None:
             rpol_dict = dict()
         elif isinstance(reform, str):

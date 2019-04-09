@@ -222,15 +222,14 @@ class Parameters():
                                        num_years=self._num_years))
         self.set_year(self._start_year)
 
-    def _update(self, revision, print_warnings, raise_errors):
+    def _update(self, revision_, print_warnings, raise_errors):
         """
-        Update parameters using specified revision and
+        Update parameters using specified revision_ dictionary and
         leave current_year unchanged.
 
         Parameters
         ----------
-        revision: dictionary of one or more YEAR:MODS pairs
-            see Notes to Parameters _update method for info on MODS structure
+        revision_: parameter-changes dictionary in param:year:value format
 
         print_warnings: boolean
             if True, prints warnings when parameter_warnings exists;
@@ -245,36 +244,42 @@ class Parameters():
         Raises
         ------
         ValueError:
-            if revision is not a dictionary.
-            if each YEAR in revision is not an integer.  TODO: fix this & below
-            if minimum YEAR in the YEAR:MODS pairs is less than start_year.
-            if minimum YEAR in the YEAR:MODS pairs is less than current_year.
-            if maximum YEAR in the YEAR:MODS pairs is greater than end_year.
-            if raise_errors is True AND
-              _validate_names_types generates errors OR
-              _validate_values generates errors.
+            if revision_ is not a dictionary.
+            if each revision_ key is not a valid parameter name
+            if minimum YEAR in revision_ is less than current_year.
+            if maximum YEAR in revision_ is greater than end_year.
+            if _validate_names_types generates errors
+            if _validate_values generates errors and raise_errors is True
 
         Returns
         -------
         nothing: void
         """
-        # check that all revision dictionary keys are integers
-        if not isinstance(revision, dict):
-            raise ValueError('ERROR: YYYY PARAM revision is not a dictionary')
-        if not revision:
-            return  # no revision to implement
-        revision_years = sorted(list(revision.keys()))
-        for year in revision_years:
-            if not isinstance(year, int):
-                msg = 'ERROR: {} KEY {}'
-                details = 'KEY in revision is not an integer calendar year'
-                raise ValueError(msg.format(year, details))
-        # check range of revision_years
+        # pylint: disable=too-many-locals,too-many-branches
+        # check revisions_ type and whether empty
+        if not isinstance(revision_, dict):
+            raise ValueError('ERROR: YYYY PARAM revision_ is not a dictionary')
+        if not revision_:
+            return  # no revisions provided to update parameters
+        # convert revision_ to revision with year:param:value format
+        revision = dict()
+        for name, namedata in revision_.items():
+            if not isinstance(name, str):
+                msg = 'ERROR: KEY {} is not a string parameter name'
+                raise ValueError(msg.format(name))
+            if not isinstance(namedata, dict):
+                msg = 'ERROR: KEY {} VAL {} is not a year:value dictionary'
+                raise ValueError(msg.format(name, namedata))
+            for year, yeardata in namedata.items():
+                if not isinstance(year, int):
+                    msg = 'ERROR: KEY {} YEAR {} is not an integer year'
+                    raise ValueError(msg.format(name, year))
+                if year not in revision:
+                    revision[year] = dict()
+                revision[year][name] = yeardata
+        # check range of revision years
+        revision_years = list(revision.keys())
         first_revision_year = min(revision_years)
-        if first_revision_year < self.start_year:
-            msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
-            raise ValueError(msg.format(first_revision_year,
-                                        self.start_year))
         if first_revision_year < self.current_year:
             msg = 'ERROR: {} YEAR revision provision in YEAR < current_year={}'
             raise ValueError(msg.format(first_revision_year,
@@ -285,7 +290,7 @@ class Parameters():
             raise ValueError(msg.format(last_revision_year, self.end_year))
         # add leading underscore character to each parameter name in revision
         revision = Parameters._add_underscores(revision)
-        # add brackets around each data element in revision
+        # add brackets around each value element in revision
         revision = Parameters._add_brackets(revision)
         # validate revision parameter names and types
         self.parameter_warnings = ''
@@ -381,7 +386,8 @@ class Parameters():
     def _validate_names_types(self, revision):
         """
         Check validity of parameter names and parameter types used
-        in the specified revision dictionary.
+        in the specified revision dictionary, which is assumed to
+        have a year:param:value format
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
         # pylint: disable=too-many-statements,too-many-locals
@@ -709,29 +715,31 @@ class Parameters():
     def _add_underscores(update_dict):
         """
         Returns dictionary that adds leading underscore character to
-        each parameter name in specified update_dict.
+        each parameter name in specified update_dict, which is assumed
+        to have a year:param:value format.
         """
         updict = dict()
         for year, yeardata in update_dict.items():
             updict[year] = dict()
-            for pname in yeardata:
-                updict[year]['_' + pname] = yeardata[pname]
+            for pname, pvalue in yeardata.items():
+                updict[year]['_' + pname] = pvalue
         return updict
 
     @staticmethod
     def _add_brackets(update_dict):
         """
-        Returns dictionary that adds brackets around
-        each data element in specified update_dict.
+        Returns dictionary that adds brackets around each
+        data element (value) in specified update_dict, which
+        is assumed to have a year:param:value format.
         """
         updict = dict()
         for year, yeardata in update_dict.items():
             updict[year] = dict()
-            for pname in yeardata:
+            for pname, pvalue in yeardata.items():
                 if pname.endswith('-indexed'):
-                    updict[year][pname] = yeardata[pname]  # no added brackets
+                    updict[year][pname] = pvalue  # no added brackets
                 else:
-                    updict[year][pname] = [yeardata[pname]]
+                    updict[year][pname] = [pvalue]
         return updict
 
     def _apply_cpi_offset_to_inflation_rates(self):

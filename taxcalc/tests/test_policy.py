@@ -9,7 +9,6 @@ Test Policy class and its methods.
 
 import os
 import json
-import tempfile
 import numpy as np
 import pytest
 # pylint: disable=import-error
@@ -120,7 +119,7 @@ def test_variable_inflation_rate_with_reform():
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
     assert round(grate - 1.0, 5) == round(irate2021, 5)
 
-
+@pytest.mark.one
 def test_multi_year_reform():
     """
     Test multi-year reform involving 1D and 2D parameters.
@@ -181,31 +180,25 @@ def test_multi_year_reform():
                            inflation_rates=wratelist,
                            num_years=nyrs),
                        atol=0.01, rtol=0.0)
-    # specify multi-year reform using a dictionary of year_provisions dicts
+    # specify multi-year reform using a param:year:value-fomatted dictionary
     reform = {
-        2015: {
-            'CTC_c': 2000
-        },
-        2016: {
-            'EITC_c': [900, 5000, 8000, 9000],
-            'II_em': 7000,
-            'SS_Earnings_c': 300000
-        },
-        2017: {
-            'SS_Earnings_c': 500000, 'SS_Earnings_c-indexed': False
-        },
-        2019: {
-            'EITC_c': [1200, 7000, 10000, 12000],
-            'II_em': 9000,
-            'SS_Earnings_c': 700000, 'SS_Earnings_c-indexed': True
-        }
+        'SS_Earnings_c': {2016: 300000,
+                          2017: 500000,
+                          2019: 700000},
+        'SS_Earnings_c-indexed': {2017: False,
+                                  2019: True},
+        'CTC_c': {2015: 2000},
+        'EITC_c': {2016: [900, 5000, 8000, 9000],
+                   2019: [1200, 7000, 10000, 12000]},
+        'II_em': {2016: 7000,
+                  2019: 9000}
     }
     # implement multi-year reform
     pol.implement_reform(reform)
     assert pol.current_year == syr
     # move policy Policy object forward in time so current_year is syr+2
     #   Note: this would be typical usage because the first budget year
-    #         is greater than Policy start_year.
+    #         is typically greater than Policy start_year.
     pol.set_year(pol.start_year + 2)
     assert pol.current_year == syr + 2
     # confirm that actual parameters have expected post-reform values
@@ -229,7 +222,7 @@ def check_ctc_c(ppo, reform):
         actual[ppo.start_year + i] = arr[i]
     assert actual[2013] == 1000
     assert actual[2014] == 1000
-    e2015 = reform[2015]['CTC_c']
+    e2015 = reform['CTC_c'][2015]
     assert actual[2015] == e2015
     e2016 = actual[2015]
     assert actual[2016] == e2016
@@ -257,13 +250,13 @@ def check_eitc_c(ppo, reform, ifactor):
                        atol=0.01, rtol=0.0)
     assert np.allclose(actual[2015], [503, 3359, 5548, 6242],
                        atol=0.01, rtol=0.0)
-    e2016 = reform[2016]['EITC_c']
+    e2016 = reform['EITC_c'][2016]
     assert np.allclose(actual[2016], e2016, atol=0.01, rtol=0.0)
     e2017 = [ifactor[2016] * actual[2016][j] for j in range(0, alen)]
     assert np.allclose(actual[2017], e2017, atol=0.01, rtol=0.0)
     e2018 = [ifactor[2017] * actual[2017][j] for j in range(0, alen)]
     assert np.allclose(actual[2018], e2018, atol=0.01, rtol=0.0)
-    e2019 = reform[2019]['EITC_c']
+    e2019 = reform['EITC_c'][2019]
     assert np.allclose(actual[2019], e2019, atol=0.01, rtol=0.0)
     e2020 = [ifactor[2019] * actual[2019][j] for j in range(0, alen)]
     assert np.allclose(actual[2020], e2020, atol=0.01, rtol=0.0)
@@ -285,13 +278,13 @@ def check_ii_em(ppo, reform, ifactor):
     assert actual[2013] == 3900
     assert actual[2014] == 3950
     assert actual[2015] == 4000
-    e2016 = reform[2016]['II_em']
+    e2016 = reform['II_em'][2016]
     assert actual[2016] == e2016
     e2017 = ifactor[2016] * actual[2016]
     assert np.allclose([actual[2017]], [e2017], atol=0.01, rtol=0.0)
     e2018 = ifactor[2017] * actual[2017]
     assert np.allclose([actual[2018]], [e2018], atol=0.01, rtol=0.0)
-    e2019 = reform[2019]['II_em']
+    e2019 = reform['II_em'][2019]
     assert actual[2019] == e2019
     e2020 = ifactor[2019] * actual[2019]
     assert np.allclose([actual[2020]], [e2020], atol=0.01, rtol=0.0)
@@ -313,13 +306,13 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     assert actual[2013] == 113700
     assert actual[2014] == 117000
     assert actual[2015] == 118500
-    e2016 = reform[2016]['SS_Earnings_c']
+    e2016 = reform['SS_Earnings_c'][2016]
     assert actual[2016] == e2016
-    e2017 = reform[2017]['SS_Earnings_c']
+    e2017 = reform['SS_Earnings_c'][2017]
     assert actual[2017] == e2017
     e2018 = actual[2017]  # no indexing after 2017
     assert actual[2018] == e2018
-    e2019 = reform[2019]['SS_Earnings_c']
+    e2019 = reform['SS_Earnings_c'][2019]
     assert actual[2019] == e2019
     e2020 = wfactor[2019] * actual[2019]  # indexing after 2019
     assert actual[2020] == e2020
@@ -327,52 +320,6 @@ def check_ss_earnings_c(ppo, reform, wfactor):
     assert np.allclose([actual[2021]], [e2021], atol=0.01, rtol=0.0)
     e2022 = wfactor[2021] * actual[2021]
     assert np.allclose([actual[2022]], [e2022], atol=0.01, rtol=0.0)
-
-
-@pytest.fixture(scope='module', name='defaults_json_file')
-def fixture_defaultsjsonfile():
-    """
-    Define alternative JSON policy parameter defaults file.
-    """
-    # specify JSON text for alternative to policy_current_law.json file
-    json_text = """
-{
-"param1": {
-    "value_type": "real",
-    "value": [5000, 6000, 7000],
-    "valid_values": {"min": 0, "max": 9e99},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
-},
-"param2": {
-    "value_type": "integer",
-    "value": [2, 2, 2],
-    "valid_values": {"min": 0, "max": 9},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
-},
-"param3": {
-    "value_type": "boolean",
-    "value": [true, true, true],
-    "valid_values": {"min": false, "max": true},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
-},
-"param4": {
-    "value_type": "string",
-    "value": ["linear", "linear", "linear"],
-    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
-}
-}
-"""
-    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
-        pfile.write(json_text + '\n')
-    pfile.close()
-    yield pfile
-    os.remove(pfile.name)
 
 
 def test_policy_metadata():
@@ -391,7 +338,7 @@ def test_policy_metadata():
         print(mdata)
         assert 1 == 2
 
-
+@pytest.mark.one
 def test_implement_reform_raises_on_no_year():
     """
     Test that implement_reform raises error for missing year.
@@ -401,61 +348,36 @@ def test_implement_reform_raises_on_no_year():
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
-
-def test_reform_in_start_year():
-    """
-    Test that implement_reform handles multiple-year reform.
-    """
-    ppo = Policy()
-    reform = {2013: {'STD': [16000, 13000, 13000, 16000, 16000]}}
-    ppo.implement_reform(reform)
-    assert np.allclose(ppo.STD,
-                       np.array([16000, 13000, 13000, 16000, 16000]),
-                       atol=0.01, rtol=0.0)
-
-
+@pytest.mark.one
 def test_implement_reform_raises_on_early_year():
     """
     Test that implement_reform raises error for early year.
     """
     ppo = Policy()
-    reform = {2010: {'STD_Aged': [1400, 1100, 1100, 1400, 1400]}}
+    reform = {'STD_Aged': {2010: [1400, 1100, 1100, 1400, 1400]}}
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
-
+@pytest.mark.one
 def test_reform_with_default_indexed():
     """
     Test that implement_reform indexes after first reform year.
     """
     ppo = Policy()
-    reform = {2015: {'II_em': 4300}}
+    reform = {'II_em': {2015: 4300}}
     ppo.implement_reform(reform)
     # II_em has a default indexing status of true, so
     # in 2016 its value should be greater than 4300
     ppo.set_year(2016)
     assert ppo.II_em > 4300
 
-
-def test_reform_after_start_year():
-    """
-    Test that implement_reform makes changes in years after first reform year.
-    """
-    ppo = Policy()
-    reform = {2015: {'STD_Aged': [1400, 1100, 1100, 1400, 1400]}}
-    ppo.implement_reform(reform)
-    ppo.set_year(2015)
-    assert np.allclose(ppo.STD_Aged,
-                       np.array([1400, 1100, 1100, 1400, 1400]),
-                       atol=0.01, rtol=0.0)
-
-
+@pytest.mark.one
 def test_reform_makes_no_changes_before_year():
     """
     Test that implement_reform makes no changes before first reform year.
     """
     ppo = Policy()
-    reform = {2015: {'II_em': 4400, 'II_em-indexed': True}}
+    reform = {'II_em': {2015: 4400}, 'II_em-indexed': {2015: True}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
     assert np.allclose(ppo._II_em[:3], np.array([3900, 3950, 4400]),
