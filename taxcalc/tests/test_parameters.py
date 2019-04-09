@@ -448,14 +448,14 @@ def test_alternative_defaults_file(params_defaults_json_file):
     # ... (5) test a valid change in string parameter value
     prms = Params()
     revision = {2014: {'str_param': 'nonlinear'}}
-    prms._update(revision, raise_errors=False)
+    prms._update(revision, False, False)
     assert not prms.parameter_errors
     del prms
     del revision
     # ... (6) test an invalid change in string parameter value
     prms = Params()
     revision = {2014: {'str_param': 'unknownvalue'}}
-    prms._update(revision, raise_errors=False)
+    prms._update(revision, False, False)
     assert prms.parameter_errors
     del prms
     del revision
@@ -463,6 +463,6 @@ def test_alternative_defaults_file(params_defaults_json_file):
     prms = Params()
     revision = {2014: {'str_param': ['nonlinear']}}
     with pytest.raises(ValueError):
-        prms._update(revision, raise_errors=False)
+        prms._update(revision, False, False)
     del prms
     del revision
