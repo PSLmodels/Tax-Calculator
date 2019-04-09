@@ -102,7 +102,7 @@ class Policy(Parameters):
     def implement_reform(self, reform,
                          print_warnings=True, raise_errors=True):
         """
-        Implement multi-year policy reform and leave current_year unchanged.
+        Implement specified policy reform and leave current_year unchanged.
         (see Parameters._update for argument documentation.)
         """
         self._update(reform, print_warnings, raise_errors)

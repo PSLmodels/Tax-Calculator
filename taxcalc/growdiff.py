@@ -38,55 +38,10 @@ class GrowDiff(Parameters):
     def update_growdiff(self, revision,
                         print_warnings=True, raise_errors=True):
         """
-        Update growdiff default values using specified revision, which is
-        a dictionary containing one or more year:modification dictionaries.
-        For example: {2014: {'AWAGE': 0.01}}.
+        Update growdiff default values using specified revision dictionary.
+        (see Parameters._update for argument documentation.)
         """
-        if not isinstance(revision, dict):
-            raise ValueError('ERROR: revision is not a dictionary')
-        if not revision:
-            return  # no revision to update
-        precall_current_year = self.current_year
-        self._set_default_vals()
-        # check that revisions keys are integers
-        revision_years = sorted(list(revision.keys()))
-        for year in revision_years:
-            if not isinstance(year, int):
-                msg = 'ERROR: {} KEY {}'
-                details = 'KEY in revision is not an integer calendar year'
-                raise ValueError(msg.format(year, details))
-        # check range of revision_years
-        first_revision_year = min(revision_years)
-        if first_revision_year < self.start_year:
-            msg = 'ERROR: {} YEAR revision provision in YEAR < start_year={}'
-            raise ValueError(msg.format(first_revision_year, self.start_year))
-        last_revision_year = max(revision_years)
-        if last_revision_year > self.end_year:
-            msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
-            raise ValueError(msg.format(last_revision_year, self.end_year))
-        # add leading underscore character to each parameter name in revision
-        revision = Parameters._add_underscores(revision)
-        # add brackets around each data element in revision
-        revision = Parameters._add_brackets(revision)
-        # validate revision parameter names and types
-        self.parameter_warnings = ''
-        self.parameter_errors = ''
-        self._validate_names_types(revision)
-        if self.parameter_errors:
-            raise ValueError(self.parameter_errors)
-        # implement the revision year by year
-        revision_parameters = set()
-        for year in revision_years:
-            self.set_year(year)
-            revision_parameters.update(revision[year].keys())
-            self._update_for_year({year: revision[year]})
-        self.set_year(precall_current_year)
-        # validate revision parameter values
-        self._validate_values(revision_parameters)
-        if self.parameter_warnings and print_warnings:
-            print(self.parameter_warnings)  # pragma: no cover
-        if self.parameter_errors and raise_errors:
-            raise ValueError('\n' + self.parameter_errors)
+        self._update(revision, print_warnings, raise_errors)
 
     def has_any_response(self):
         """
