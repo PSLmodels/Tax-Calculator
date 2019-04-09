@@ -349,20 +349,13 @@ class Parameters():
         # implement updated parameters for year
         self.set_year(year)
 
-    def _validate_names_types(self, revision, removed_names=None):
+    def _validate_names_types(self, revision):
         """
         Check validity of parameter names and parameter types used
-        in the specified revision dictionary.  The optional
-        removed_names list contains parameter names that were once valid
-        but are no longer valid.
+        in the specified revision dictionary.
         """
         # pylint: disable=too-many-branches,too-many-nested-blocks
         # pylint: disable=too-many-statements,too-many-locals
-        if removed_names is None:
-            removed_param_names = dict()
-        else:
-            assert isinstance(removed_names, dict)
-            removed_param_names = removed_names
         assert isinstance(self._vals, dict)
         param_names = set(self._vals.keys())
         for year in sorted(revision.keys()):
@@ -371,8 +364,8 @@ class Parameters():
                     if isinstance(revision[year][name], bool):
                         pname = name[:-8]  # root parameter name
                         if pname not in param_names:
-                            if pname in removed_param_names:
-                                msg = removed_param_names[pname]
+                            if pname in self._removed:
+                                msg = self._removed[pname]
                             else:
                                 msg = 'is an unknown parameter name'
                             self.parameter_errors += (
@@ -396,8 +389,8 @@ class Parameters():
                         )
                 else:  # if name does not end with '-indexed'
                     if name not in param_names:
-                        if name in removed_param_names:
-                            msg = removed_param_names[name]
+                        if name in self._removed:
+                            msg = self._removed[name]
                         else:
                             msg = 'is an unknown parameter name'
                         self.parameter_errors += (
@@ -458,30 +451,21 @@ class Parameters():
                                     )
         del param_names
 
-    def _validate_values(self, parameters_set, redefined_info=None):
+    def _validate_values(self, parameters_set):
         """
         Check values of parameters in specified parameter_set using
-        range information from DEFAULTS_FILE_NAME JSON file.  The
-        optional redefined_info argument is a dictionary of parameter
-        name:message pairs for parameters whose meaning has been changed
-        recently and for whom warning messages are to be issued.
+        range information from DEFAULTS_FILE_NAME JSON file.
         """
         # pylint: disable=too-many-statements,too-many-locals
         # pylint: disable=too-many-branches,too-many-nested-blocks
         assert isinstance(parameters_set, set)
         parameters = sorted(parameters_set)
-        if redefined_info is None:
-            redefined_pinfo = dict()
-        else:
-            redefined_pinfo = redefined_info
-        assert isinstance(redefined_pinfo, dict)
-        redefined_pnames = redefined_pinfo.keys()
         syr = self.start_year
         for pname in parameters:
             if pname.endswith('-indexed'):
                 continue  # *-indexed parameter values validated elsewhere
-            if pname in redefined_pnames:
-                msg = redefined_pinfo[pname]
+            if pname in self._redefined:
+                msg = self._redefined[pname]
                 self.parameter_warnings += msg + '\n'
             pvalue = getattr(self, pname)
             if self._vals[pname]['value_type'] == 'string':

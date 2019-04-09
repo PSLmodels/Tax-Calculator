@@ -209,8 +209,7 @@ class Policy(Parameters):
         # validate reform parameter names and types
         self.parameter_warnings = ''
         self.parameter_errors = ''
-        self._validate_names_types(reform,
-                                   removed_names=Policy.REMOVED_PARAMS)
+        self._validate_names_types(reform)
         if self.parameter_errors:
             raise ValueError(self.parameter_errors)
         # optionally apply CPI_offset to inflation_rates and re-initialize
@@ -226,8 +225,7 @@ class Policy(Parameters):
             self._update({year: reform[year]})
         self.set_year(precall_current_year)
         # validate reform parameter values
-        self._validate_values(reform_parameters,
-                              redefined_info=Policy.REDEFINED_PARAMS)
+        self._validate_values(reform_parameters)
         if self.parameter_warnings and print_warnings:
             print(self.parameter_warnings)
         if self.parameter_errors and raise_errors:
