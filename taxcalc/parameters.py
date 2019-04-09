@@ -222,7 +222,7 @@ class Parameters():
                                        num_years=self._num_years))
         self.set_year(self._start_year)
 
-    def _update(self, revision, print_warnings=False, raise_errors=False):
+    def _update(self, revision, print_warnings=True, raise_errors=True):
         """
         Update parameters using specified revision and
         leave current_year unchanged.
