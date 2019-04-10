@@ -15,6 +15,130 @@ import pytest
 from taxcalc import Parameters, Policy, Consumption
 
 
+# Test specification and use of simple Parameters-derived class that has
+# no vector parameters and has no (wage or price) indexed parameters.
+# The following pytest fixture specifies the JSON_DEFAULTS_FILE for the class
+# and the test_simple_parameters_class function derives the simple class
+# and tests it.
+
+@pytest.fixture(scope='module', name='params_defaults_json_file')
+def fixture_defaultsjsonfile():
+    """
+    Define alternative JSON assumption parameter defaults file.
+    """
+    json_text = """
+{
+"int_param": {
+    "value_type": "integer",
+    "value": [2, 2, 2],
+    "valid_values": {"min": 0, "max": 9},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"bool_param": {
+    "value_type": "boolean",
+    "value": [true, true, true],
+    "valid_values": {"min": false, "max": true},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
+"str_param": {
+    "value_type": "string",
+    "value": ["linear", "linear", "linear"],
+    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
+}
+}
+"""
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
+        pfile.write(json_text + '\n')
+    pfile.close()
+    yield pfile
+    os.remove(pfile.name)
+
+@pytest.mark.one
+def test_simple_parameters_class(params_defaults_json_file):
+    """
+    Test Params class derived from Parameters base class.
+    """
+    class Params(Parameters):
+        """
+        Params is derived from the abstract Parameter class.
+        """
+        DEFAULTS_FILE_NAME = params_defaults_json_file.name
+        DEFAULTS_FILE_PATH = ''
+        START_YEAR = 2001
+        LAST_YEAR = 2010
+        NUM_YEARS = LAST_YEAR - START_YEAR + 1
+
+        def __init__(self):
+            # read default parameters and initialize
+            super().__init__()
+            self.initialize(Params.START_YEAR, Params.NUM_YEARS)
+
+        def update_params(self, revision,
+                          print_warnings=True, raise_errors=True):
+            self._update(revision, print_warnings, raise_errors)
+    # end of Params class definition
+
+    # test Params class derived from Parameters class
+    # ... (0) test call to wage_growth_rates method
+    prms = Params()
+    assert isinstance(prms, Params)
+    assert prms.start_year == 2001
+    assert prms.current_year == 2001
+    assert prms.wage_growth_rates() is None
+    del prms
+    # ... (1) test invalid set_year call
+    prms = Params()
+    with pytest.raises(ValueError):
+        prms.set_year(2011)
+    del prms
+    # ... (2) test a _validate_names_types error
+    prms = Params()
+    revision = {'str_param': {2004: [9]}}
+    with pytest.raises(ValueError):
+        prms.update_params(revision, False, False)
+    del prms
+    del revision
+    # ... (3) test a _validate_names_types error
+    prms = Params()
+    revision = {'int_param': {2004: [3.6]}}
+    with pytest.raises(ValueError):
+        prms.update_params(revision, False, False)
+    del prms
+    del revision
+    # ... (4) test a _validate_names_types error
+    prms = Params()
+    revision = {'bool_param': {2004: [4.9]}}
+    with pytest.raises(ValueError):
+        prms.update_params(revision, False, False)
+    del prms
+    del revision
+    # ... (5) test a valid change in string parameter value
+    prms = Params()
+    revision = {'str_param': {2004: 'nonlinear'}}
+    prms.update_params(revision, False, False)
+    assert not prms.parameter_errors
+    del prms
+    del revision
+    # ... (6) test an invalid change in string parameter value
+    prms = Params()
+    revision = {'str_param': {2004: 'unknownvalue'}}
+    prms._update(revision, False, False)
+    assert prms.parameter_errors
+    del prms
+    del revision
+    # ... (7) test a revision where changed parameter is an incorrect vector
+    prms = Params()
+    revision = {'str_param': {2004: ['nonlinear']}}
+    with pytest.raises(ValueError):
+        prms.update_params(revision, False, False)
+    del prms
+    del revision
+
+
 @pytest.mark.parametrize("fname",
                          [("consumption.json"),
                           ("policy_current_law.json"),
@@ -348,121 +472,3 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
-
-
-@pytest.fixture(scope='module', name='params_defaults_json_file')
-def fixture_defaultsjsonfile():
-    """
-    Define alternative JSON assumption parameter defaults file.
-    """
-    json_text = """
-{
-"int_param": {
-    "value_type": "integer",
-    "value": [2, 2, 2],
-    "valid_values": {"min": 0, "max": 9},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
-},
-"bool_param": {
-    "value_type": "boolean",
-    "value": [true, true, true],
-    "valid_values": {"min": false, "max": true},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
-},
-"str_param": {
-    "value_type": "string",
-    "value": ["linear", "linear", "linear"],
-    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
-}
-}
-"""
-    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
-        pfile.write(json_text + '\n')
-    pfile.close()
-    yield pfile
-    os.remove(pfile.name)
-
-
-def test_alternative_defaults_file(params_defaults_json_file):
-    """
-    Test Params class derived from Parameters base class.
-    """
-    # pylint: disable=too-many-statements
-    class Params(Parameters):
-        """
-        Params is derived from the Parameter class.
-        """
-        DEFAULTS_FILE_NAME = params_defaults_json_file.name
-        DEFAULTS_FILE_PATH = ''
-        START_YEAR = 2001
-        LAST_YEAR = 2099
-        NUM_YEARS = LAST_YEAR - START_YEAR + 1
-
-        def __init__(self):
-            # read default parameters and initialize
-            super().__init__()
-            self.initialize(Params.START_YEAR, Params.NUM_YEARS)
-    # end of Params class definition
-
-    # test illegal instantiation of abstract Parameters class
-    with pytest.raises(AssertionError):
-        Parameters()
-    # test Params class derived from Parameters class
-    # ... (0) test call to wage_growth_rates method
-    prms = Params()
-    assert isinstance(prms, Params)
-    assert prms.start_year == 2001
-    assert prms.current_year == 2001
-    assert prms.wage_growth_rates() is None
-    del prms
-    # ... (1) test invalid set_year call
-    prms = Params()
-    with pytest.raises(ValueError):
-        prms.set_year(2100)
-    del prms
-    # ... (2) test a _validate_names_types error
-    prms = Params()
-    revision = {2014: {'_str_param': [9]}}
-    prms._validate_names_types(revision)
-    assert prms.parameter_errors
-    del prms
-    del revision
-    # ... (3) test a _validate_names_types error
-    prms = Params()
-    revision = {2014: {'_int_param': [3.6]}}
-    prms._validate_names_types(revision)
-    assert prms.parameter_errors
-    del prms
-    del revision
-    # ... (4) test a _validate_names_types error
-    prms = Params()
-    revision = {2014: {'_bool_param': [4.9]}}
-    prms._validate_names_types(revision)
-    assert prms.parameter_errors
-    del prms
-    del revision
-    # ... (5) test a valid change in string parameter value
-    prms = Params()
-    revision = {2014: {'str_param': 'nonlinear'}}
-    prms._update(revision, False, False)
-    assert not prms.parameter_errors
-    del prms
-    del revision
-    # ... (6) test an invalid change in string parameter value
-    prms = Params()
-    revision = {2014: {'str_param': 'unknownvalue'}}
-    prms._update(revision, False, False)
-    assert prms.parameter_errors
-    del prms
-    del revision
-    # ... (7) test a revision where changed parameter is an incorrect vector
-    prms = Params()
-    revision = {2014: {'str_param': ['nonlinear']}}
-    with pytest.raises(ValueError):
-        prms._update(revision, False, False)
-    del prms
-    del revision
