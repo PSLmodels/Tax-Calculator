@@ -534,8 +534,7 @@ def test_misspecified_reform_dictionary():
     # that Python dictionaries have unique keys
     reform1 = {'II_em': {2019: 1000, 2020: 2000}}
     # pylint: disable=duplicate-key
-    reform2 = {'II_em': {2019: 1000}, 'II_em': {2020: 2000},
-    }
+    reform2 = {'II_em': {2019: 1000}, 'II_em': {2020: 2000}}
     # these two reform dictionaries are not the same: the second
     # 'II_em' key value for 2020 in reform2 OVERWRITES and REPLACES
     # the first 'II_em' key value for 2019 in reform2

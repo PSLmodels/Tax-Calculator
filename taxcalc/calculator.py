@@ -1176,7 +1176,7 @@ class Calculator():
         doc: String
             the documentation for the specified policy reform
         """
-        # pylint: disable=too-many-statements,too-many-branches
+        # pylint: disable=too-many-statements,too-many-branches,too-many-locals
 
         # nested function used only in reform_documentation function
         def param_doc(years_list, updated, baseline):

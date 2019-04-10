@@ -195,9 +195,9 @@ class Parameters():
         """
         assert isinstance(revision, dict)
         years = list()
-        for param, paramdata in revision.items():
+        for _, paramdata in revision.items():
             assert isinstance(paramdata, dict)
-            for year, value in paramdata.items():
+            for year, _ in paramdata.items():
                 assert isinstance(year, int)
                 if year not in years:
                     years.append(year)

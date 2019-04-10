@@ -291,7 +291,7 @@ def test_mtr_pt_active(puf_subsample):
     assert min(mtr1_e00900p) > -1
     assert min(mtr1_e26270) > -1
     # change PT rates, calc2
-    reform2 = {reform_year: {'PT_rt7': 0.35}}
+    reform2 = {'PT_rt7': {reform_year: 0.35}}
     pol2 = Policy()
     pol2.implement_reform(reform2)
     calc2 = Calculator(policy=pol2, records=rec)
@@ -302,7 +302,7 @@ def test_mtr_pt_active(puf_subsample):
     assert min(mtr2_e00900p) > -1
     assert min(mtr2_e26270) > -1
     # change PT_wages_active_income
-    reform3 = {reform_year: {'PT_wages_active_income': True}}
+    reform3 = {'PT_wages_active_income': {reform_year: True}}
     pol3 = Policy()
     pol3.implement_reform(reform3)
     calc3 = Calculator(policy=pol3, records=rec)
@@ -313,8 +313,10 @@ def test_mtr_pt_active(puf_subsample):
     assert min(mtr3_e00900p) > -1
     assert min(mtr3_e26270) > -1
     # change PT rates and PT_wages_active_income
-    reform4 = {reform_year: {'PT_wages_active_income': True,
-                             'PT_rt7': 0.35}}
+    reform4 = {
+        'PT_wages_active_income': {reform_year: True},
+        'PT_rt7': {reform_year: 0.35}
+    }
     pol4 = Policy()
     pol4.implement_reform(reform4)
     calc4 = Calculator(policy=pol4, records=rec)
@@ -340,14 +342,14 @@ def test_credit_reforms(puf_subsample):
     calc1.calc_all()
     itax1 = calc1.weighted_total('iitax')
     # create personal-refundable-credit-reform Calculator object, calc2
-    reform = {reform_year: {'II_credit': [1000, 1000, 1000, 1000, 1000]}}
+    reform = {'II_credit': {reform_year: [1000, 1000, 1000, 1000, 1000]}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.advance_to_year(reform_year)
     calc2.calc_all()
     itax2 = calc2.weighted_total('iitax')
     # create personal-nonrefundable-credit-reform Calculator object, calc3
-    reform = {reform_year: {'II_credit_nr': [1000, 1000, 1000, 1000, 1000]}}
+    reform = {'II_credit_nr': {reform_year: [1000, 1000, 1000, 1000, 1000]}}
     pol = Policy()
     pol.implement_reform(reform)
     calc3 = Calculator(policy=pol, records=rec)
