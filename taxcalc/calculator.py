@@ -1486,29 +1486,29 @@ class Calculator():
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
 
-        Specified text is JSON with at least 1 high-level key:object pair:
+        Specified text is JSON with 1 high-level key:object pair:
         a "policy": {...} pair.
 
         Other keys such as "consumption", "growdiff_baseline", or
         "growdiff_response" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
-        may contain one or more pairs with parameter string primary keys
-        and string years as secondary keys.  See tests/test_calculator.py for
-        an extended example of a commented JSON policy reform text
-        that can be read by this method.
+        may contain one or more pairs with parameter string primary keys and
+        string years as secondary keys.  See test_json_reform_url() in the
+        tests/test_calculator.py for an extended example of a commented JSON
+        policy reform text that can be read by this method.
 
-        Returned dictionary prdict has integer years as primary keys and
-        string parameters as secondary keys.  This returned dictionary is
-        suitable as the argument to the Policy implement_reform(prdict) method.
+        Returned dictionaries pr_dict has string parameters as primary keys and
+        integer years as secondary keys (that is, they have a param:year:value
+        format).  These returned dictionaries are suitable as the arguments to
+        the Policy.implement_reform(pr_dict) method.
         """
-        # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json_to_dict(json_str)
+        full_dict = json_to_dict(json_str)
         # check key contents of dictionary
-        actual_keys = set(raw_dict.keys())
+        actual_keys = set(full_dict.keys())
         missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
         if missing_keys:
             msg = 'required key(s) "{}" missing from policy reform file'
@@ -1517,16 +1517,15 @@ class Calculator():
         if illegal_keys:
             msg = 'illegal key(s) "{}" in policy reform file'
             raise ValueError(msg.format(illegal_keys))
-        # convert raw_dict['policy'] dictionary into prdict
-        prdict = Calculator._convert_parameter_dict(raw_dict['policy'])
-        return prdict
+        # return the converted full_dict['policy'] dictionary
+        return Calculator._convert_year_to_int(full_dict['policy'])
 
     @staticmethod
     def _read_json_econ_assump_text(text_string):
         """
-        Strip //-comments from text_string and return 5 dict based on the JSON.
+        Strip //-comments from text_string and return 3 dict based on the JSON.
 
-        Specified text is JSON with at least 5 high-level key:value pairs:
+        Specified text is JSON with 3 high-level key:value pairs:
         a "consumption": {...} pair,
         a "growdiff_baseline": {...} pair, and
         a "growdiff_response": {...} pair.
@@ -1534,29 +1533,24 @@ class Calculator():
         Other keys such as "policy" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
-        may contain one or more pairs with parameter string primary keys
-        and string years as secondary keys.  See tests/test_calculator.py for
-        an extended example of a commented JSON economic assumption text
-        that can be read by this method.
-
-        Note that an example is shown in the ASSUMP_CONTENTS string in
-        the tests/test_calculator.py file.
+        may contain one or more pairs with parameter string primary keys and
+        string years as secondary keys.  See test_json_assump_url() in the
+        tests/test_calculator.py for an extended example of a commented JSON
+        economic assumption text that can be read by this method.
 
         Returned dictionaries (cons_dict, gdiff_baseline_dict,
-        gdiff_respose_dict) have integer years as primary
-        keys and string parameters as secondary keys.
-
-        These returned dictionaries are suitable as the arguments to
+        gdiff_respose_dict) have string parameters as primary keys and
+        integer years as secondary keys (that is, they have a param:year:value
+        format).  These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the GrowDiff.update_growdiff(gdiff_dict) method.
         """
-        # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json_to_dict(json_str)
+        full_dict = json_to_dict(json_str)
         # check key contents of dictionary
-        actual_keys = set(raw_dict.keys())
+        actual_keys = set(full_dict.keys())
         missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys
         if missing_keys:
             msg = 'required key(s) "{}" missing from economic assumption file'
@@ -1565,54 +1559,29 @@ class Calculator():
         if illegal_keys:
             msg = 'illegal key(s) "{}" in economic assumption file'
             raise ValueError(msg.format(illegal_keys))
-        # convert the assumption dictionaries in raw_dict
-        key = 'consumption'
-        cons_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        key = 'growdiff_baseline'
-        gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        key = 'growdiff_response'
-        gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        return (cons_dict, gdiff_base_dict, gdiff_resp_dict)
+        # return the converted assumption dictionaries in full_dict as a tuple
+        return (
+            Calculator._convert_year_to_int(full_dict['consumption']),
+            Calculator._convert_year_to_int(full_dict['growdiff_baseline']),
+            Calculator._convert_year_to_int(full_dict['growdiff_response'])
+        )
 
     @staticmethod
-    def _convert_parameter_dict(param_key_dict):
+    def _convert_year_to_int(syr_dict):
         """
-        Converts specified param_key_dict into a dictionary whose primary
-        keys are calendar years, and hence, is suitable as the argument to
-        the Policy.implement_reform() method, or
-        the Consumption.update_consumption() method, or
-        the GrowDiff.update_growdiff() method.
-
-        Specified input dictionary has string parameter primary keys and
-        string years as secondary keys.
-
-        Returned dictionary has integer years as primary keys and
-        string parameters as secondary keys.
+        Converts specified syr_dict, which has string years as secondary
+        keys, into a dictionary with the same structure but having integer
+        years as secondary keys.
         """
-        # convert year skey strings into integers
-        year_param = dict()
-        for pkey, sdict in param_key_dict.items():
-            if not isinstance(pkey, str):
-                msg = 'pkey {} in param JSON is not a string'
-                raise ValueError(msg.format(pkey))
-            rdict = dict()
-            if not isinstance(sdict, dict):
-                msg = 'pkey {} in param JSON is not paired with a dict'
-                raise ValueError(msg.format(pkey))
+        iyr_dict = dict()
+        for pkey, sdict in syr_dict.items():
+            assert isinstance(pkey, str)
+            assert pkey not in iyr_dict
+            iyr_dict[pkey] = dict()
+            assert isinstance(sdict, dict)
             for skey, val in sdict.items():
-                if not isinstance(skey, str):
-                    msg = 'skey {} in param JSON is not a string'
-                    raise ValueError(msg.format(skey))
+                assert isinstance(skey, str)
                 year = int(skey)
-                rdict[year] = val
-            year_param[pkey] = rdict
-        # convert year_param dictionary to year_key_dict dictionary
-        year_key_dict = dict()
-        years = set()
-        for param, sdict in year_param.items():
-            for year, val in sdict.items():
-                if year not in years:
-                    years.add(year)
-                    year_key_dict[year] = dict()
-                year_key_dict[year][param] = val
-        return year_key_dict
+                assert year not in iyr_dict[pkey]
+                iyr_dict[pkey][year] = val
+        return iyr_dict

@@ -57,11 +57,12 @@ def fixture_defaultsjsonfile():
     yield pfile
     os.remove(pfile.name)
 
-@pytest.mark.one
+
 def test_simple_parameters_class(params_defaults_json_file):
     """
     Test Params class derived from Parameters base class.
     """
+    # pylint: disable=too-many-statements
     class Params(Parameters):
         """
         Params is derived from the abstract Parameter class.
@@ -79,6 +80,9 @@ def test_simple_parameters_class(params_defaults_json_file):
 
         def update_params(self, revision,
                           print_warnings=True, raise_errors=True):
+            """
+            Update parameters given specified revision dictionary.
+            """
             self._update(revision, print_warnings, raise_errors)
     # end of Params class definition
 
@@ -126,7 +130,7 @@ def test_simple_parameters_class(params_defaults_json_file):
     # ... (6) test an invalid change in string parameter value
     prms = Params()
     revision = {'str_param': {2004: 'unknownvalue'}}
-    prms._update(revision, False, False)
+    prms.update_params(revision, False, False)
     assert prms.parameter_errors
     del prms
     del revision

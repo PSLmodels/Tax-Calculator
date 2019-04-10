@@ -465,10 +465,12 @@ def test_json_reform_url():
     reform_str = """
     {
     "policy": {
+        // raise FICA payroll tax rate in 2018 and 2020
         "FICA_ss_trt": {
             "2018": 0.130,
             "2020": 0.140
         },
+        // raise Medicare payroll tax rate in 2019 and 2021
         "FICA_mc_trt": {
             "2019": 0.030,
             "2021": 0.032
@@ -549,6 +551,7 @@ def test_json_assump_url():
     assump_str = """
     {
         "consumption": {
+            // all BEN_*_value parameters have a default value of one
             "BEN_housing_value": {"2017": 1.0]},
             "BEN_snap_value": {"2017": 1.0]},
             "BEN_tanf_value": {"2017": 1.0]},
@@ -557,12 +560,14 @@ def test_json_assump_url():
             "BEN_mcare_value": {"2017": 1.0]},
             "BEN_mcaid_value": {"2017": 1.0]},
             "BEN_other_value": {"2017": 1.0]},
+            // all MPC_* parameters have a default value of zero
             "MPC_e17500": {"2017": 0.0]},
             "MPC_e18400": {"2017": 0.0]},
             "MPC_e19800": {"2017": 0.0]},
             "MPC_e20400": {"2017": 0.0]}
         },
         "growdiff_baseline": {
+            // all growdiff_baseline parameters have a default value of zero
             "ABOOK": {"2017": 0.0]},
             "ACGNS": {"2017": 0.0]},
             "ACPIM": {"2017": 0.0]},
@@ -590,6 +595,7 @@ def test_json_assump_url():
             "ABENVET": {"2017": 0.0]}
         },
         "growdiff_response": {
+            // all growdiff_response parameters have a default value of zero
             "ABOOK": {"2017": 0.0]},
             "ACGNS": {"2017": 0.0]},
             "ACPIM": {"2017": 0.0]},
@@ -678,23 +684,6 @@ def test_read_bad_json_assump_file():
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, list())
-
-
-def test_convert_parameter_dict():
-    """
-    Test convert_parameter_dict method.
-    """
-    # pylint: disable=protected-access
-    with pytest.raises(ValueError):
-        Calculator._convert_parameter_dict({2013: {'2013': 40000}})
-    with pytest.raises(ValueError):
-        Calculator._convert_parameter_dict({'_II_em': {2013: 40000}})
-    with pytest.raises(ValueError):
-        Calculator._convert_parameter_dict({4567: {2013: 40000}})
-    with pytest.raises(ValueError):
-        Calculator._convert_parameter_dict({'_II_em': 40000})
-    rdict = Calculator._convert_parameter_dict({'_II_em': {'2013': 40000}})
-    assert isinstance(rdict, dict)
 
 
 def test_calc_all():

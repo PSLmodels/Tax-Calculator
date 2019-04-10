@@ -119,7 +119,7 @@ def test_variable_inflation_rate_with_reform():
     grate = float(pol._II_em[2022 - syr]) / float(pol._II_em[2021 - syr])
     assert round(grate - 1.0, 5) == round(irate2021, 5)
 
-@pytest.mark.one
+
 def test_multi_year_reform():
     """
     Test multi-year reform involving 1D and 2D parameters.
@@ -338,7 +338,7 @@ def test_policy_metadata():
         print(mdata)
         assert 1 == 2
 
-@pytest.mark.one
+
 def test_implement_reform_raises_on_no_year():
     """
     Test that implement_reform raises error for missing year.
@@ -348,7 +348,7 @@ def test_implement_reform_raises_on_no_year():
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
-@pytest.mark.one
+
 def test_implement_reform_raises_on_early_year():
     """
     Test that implement_reform raises error for early year.
@@ -358,7 +358,7 @@ def test_implement_reform_raises_on_early_year():
     with pytest.raises(ValueError):
         ppo.implement_reform(reform)
 
-@pytest.mark.one
+
 def test_reform_with_default_indexed():
     """
     Test that implement_reform indexes after first reform year.
@@ -371,7 +371,7 @@ def test_reform_with_default_indexed():
     ppo.set_year(2016)
     assert ppo.II_em > 4300
 
-@pytest.mark.one
+
 def test_reform_makes_no_changes_before_year():
     """
     Test that implement_reform makes no changes before first reform year.
