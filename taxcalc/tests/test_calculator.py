@@ -26,7 +26,7 @@ def test_make_calculator(cps_subsample):
     assert pol.current_year == start_year
     rec = Records.cps_constructor(data=cps_subsample)
     consump = Consumption()
-    consump.update_consumption({sim_year: {'MPC_e20400': 0.05}})
+    consump.update_consumption({'MPC_e20400': {sim_year: 0.05}})
     assert consump.current_year == start_year
     calc = Calculator(policy=pol, records=rec,
                       consumption=consump, verbose=True)
@@ -60,10 +60,12 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
-    reform = {2013: {'II_em': 4000,
-                     'II_em-indexed': False,
-                     'STD_Aged': [1600, 1300, 1300, 1600, 1600],
-                     'STD_Aged-indexed': False}}
+    reform = {
+        'II_em': {2013: 4000},
+        'II_em-indexed': {2013: False},
+        'STD_Aged': {2013: [1600, 1300, 1300, 1600, 1600]},
+        'STD_Aged-indexed': {2013: False}
+    }
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
     calc = Calculator(policy=pol, records=rec)
@@ -88,11 +90,11 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     year = rec.current_year
     # create a Policy object and apply a policy reform
     pol = Policy()
-    reform = {2015: {}, 2016: {}}
-    reform[2015]['II_em'] = 5000
-    reform[2015]['II_em-indexed'] = False
-    reform[2016]['II_em'] = 6000
-    reform[2016]['STD_Aged'] = [1600, 1300, 1600, 1300, 1600]
+    reform = {
+        'II_em': {2015: 5000, 2016: 6000},
+        'II_em-indexed': {2015: False},
+        'STD_Aged': {2016: [1600, 1300, 1600, 1300, 1600]}
+    }
     pol.implement_reform(reform)
     # create a Calculator object using this policy-reform
     calc = Calculator(policy=pol, records=rec)
@@ -180,20 +182,22 @@ def test_calculator_mtr_when_PT_rates_differ():
     """
     Test Calculator mtr method in special case.
     """
-    reform = {2013: {'II_rt1': 0.40,
-                     'II_rt2': 0.40,
-                     'II_rt3': 0.40,
-                     'II_rt4': 0.40,
-                     'II_rt5': 0.40,
-                     'II_rt6': 0.40,
-                     'II_rt7': 0.40,
-                     'PT_rt1': 0.30,
-                     'PT_rt2': 0.30,
-                     'PT_rt3': 0.30,
-                     'PT_rt4': 0.30,
-                     'PT_rt5': 0.30,
-                     'PT_rt6': 0.30,
-                     'PT_rt7': 0.30}}
+    reform = {
+        'II_rt1': {2013: 0.40},
+        'II_rt2': {2013: 0.40},
+        'II_rt3': {2013: 0.40},
+        'II_rt4': {2013: 0.40},
+        'II_rt5': {2013: 0.40},
+        'II_rt6': {2013: 0.40},
+        'II_rt7': {2013: 0.40},
+        'PT_rt1': {2013: 0.30},
+        'PT_rt2': {2013: 0.30},
+        'PT_rt3': {2013: 0.30},
+        'PT_rt4': {2013: 0.30},
+        'PT_rt5': {2013: 0.30},
+        'PT_rt6': {2013: 0.30},
+        'PT_rt7': {2013: 0.30}
+    }
     funit = (
         'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
         '1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
@@ -215,12 +219,13 @@ def test_make_calculator_increment_years_first(cps_subsample):
     # pylint: disable=too-many-locals
     # create Policy object with policy reform
     pol = Policy()
-    reform = {2015: {}, 2016: {}}
     std5 = 2000
-    reform[2015]['STD_Aged'] = [std5, std5, std5, std5, std5]
-    reform[2015]['II_em'] = 5000
-    reform[2016]['II_em'] = 6000
-    reform[2016]['II_em-indexed'] = False
+    reform = {
+        'STD_Aged': {2015: [std5, std5, std5, std5, std5]},
+        'II_em': {2015: 5000,
+                  2016: 6000},
+        'II_em-indexed': {2016: False}
+    }
     pol.implement_reform(reform)
     # create Calculator object with Policy object as modified by reform
     rec = Records.cps_constructor(data=cps_subsample)
@@ -251,23 +256,27 @@ def test_ID_HC_vs_BS(cps_subsample):
     """
     recs = Records.cps_constructor(data=cps_subsample)
     # specify complete-haircut reform policy and Calculator object
-    hc_reform = {2013: {'ID_Medical_hc': 1.0,
-                        'ID_StateLocalTax_hc': 1.0,
-                        'ID_RealEstate_hc': 1.0,
-                        'ID_Casualty_hc': 1.0,
-                        'ID_Miscellaneous_hc': 1.0,
-                        'ID_InterestPaid_hc': 1.0,
-                        'ID_Charity_hc': 1.0}}
     hc_policy = Policy()
+    hc_reform = {
+        'ID_Medical_hc': {2013: 1.0},
+        'ID_StateLocalTax_hc': {2013: 1.0},
+        'ID_RealEstate_hc': {2013: 1.0},
+        'ID_Casualty_hc': {2013: 1.0},
+        'ID_Miscellaneous_hc': {2013: 1.0},
+        'ID_InterestPaid_hc': {2013: 1.0},
+        'ID_Charity_hc': {2013: 1.0}
+    }
     hc_policy.implement_reform(hc_reform)
     hc_calc = Calculator(policy=hc_policy, records=recs)
     hc_calc.calc_all()
     hc_taxes = hc_calc.dataframe(['iitax', 'payrolltax'])
     del hc_calc
     # specify benefit-surtax reform policy and Calculator object
-    bs_reform = {2013: {'ID_BenefitSurtax_crt': 0.0,
-                        'ID_BenefitSurtax_trt': 1.0}}
     bs_policy = Policy()
+    bs_reform = {
+        'ID_BenefitSurtax_crt': {2013: 0.0},
+        'ID_BenefitSurtax_trt': {2013: 1.0}
+    }
     bs_policy.implement_reform(bs_reform)
     bs_calc = Calculator(policy=bs_policy, records=recs)
     bs_calc.calc_all()
@@ -286,14 +295,14 @@ def test_ID_StateLocal_HC_vs_CRT(cps_subsample):
     """
     rec = Records.cps_constructor(data=cps_subsample)
     # specify state/local complete haircut reform policy and Calculator object
-    hc_reform = {2013: {'ID_StateLocalTax_hc': 1.0}}
     hc_policy = Policy()
+    hc_reform = {'ID_StateLocalTax_hc': {2013: 1.0}}
     hc_policy.implement_reform(hc_reform)
     hc_calc = Calculator(policy=hc_policy, records=rec)
     hc_calc.calc_all()
     # specify AGI cap reform policy and Calculator object
-    crt_reform = {2013: {'ID_StateLocalTax_crt': 0.0}}
     crt_policy = Policy()
+    crt_reform = {'ID_StateLocalTax_crt': {2013: 0.0}}
     crt_policy.implement_reform(crt_reform)
     crt_calc = Calculator(policy=crt_policy, records=rec)
     crt_calc.calc_all()
@@ -312,14 +321,14 @@ def test_ID_RealEstate_HC_vs_CRT(cps_subsample):
     """
     rec = Records.cps_constructor(data=cps_subsample)
     # specify real estate complete haircut reform policy and Calculator object
-    hc_reform = {2013: {'ID_RealEstate_hc': 1.0}}
     hc_policy = Policy()
+    hc_reform = {'ID_RealEstate_hc': {2013: 1.0}}
     hc_policy.implement_reform(hc_reform)
     hc_calc = Calculator(policy=hc_policy, records=rec)
     hc_calc.calc_all()
     # specify AGI cap reform policy and Calculator object
-    crt_reform = {2013: {'ID_RealEstate_crt': 0.0}}
     crt_policy = Policy()
+    crt_reform = {'ID_RealEstate_crt': {2013: 0.0}}
     crt_policy.implement_reform(crt_reform)
     crt_calc = Calculator(policy=crt_policy, records=rec)
     crt_calc.calc_all()
@@ -778,7 +787,7 @@ def test_reform_documentation():
 """
     params = Calculator.read_json_param_objects(reform_json, assump_json)
     assert isinstance(params, dict)
-    second_reform = {2019: {'II_em': 6500}}
+    second_reform = {'II_em': {2019: 6500}}
     doc = Calculator.reform_documentation(params, [second_reform])
     assert isinstance(doc, str)
     dump = False  # set to True to print documentation and force test failure
@@ -802,9 +811,11 @@ def test_distribution_tables(cps_subsample):
     dt1, dt2 = calc1.distribution_tables(calc1, 'weighted_deciles')
     assert isinstance(dt1, pd.DataFrame)
     assert isinstance(dt2, pd.DataFrame)
-    reform = {2014: {'UBI_u18': 1000,
-                     'UBI_1820': 1000,
-                     'UBI_21': 1000}}
+    reform = {
+        'UBI_u18': {2014: 1000},
+        'UBI_1820': {2014: 1000},
+        'UBI_21': {2014: 1000}
+    }
     pol.implement_reform(reform)
     assert not pol.parameter_errors
     calc2 = Calculator(policy=pol, records=recs)
@@ -823,7 +834,7 @@ def test_difference_table(cps_subsample):
     recs = Records.cps_constructor(data=cps_subsample)
     calc1 = Calculator(policy=pol, records=recs)
     assert calc1.current_year == cyr
-    reform = {cyr: {'SS_Earnings_c': 9e99}}
+    reform = {'SS_Earnings_c': {cyr: 9e99}}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=recs)
     assert calc2.current_year == cyr
@@ -905,7 +916,7 @@ def test_ce_aftertax_income(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     pol = Policy()
     calc1 = Calculator(policy=pol, records=rec)
-    pol.implement_reform({2013: {'SS_Earnings_c': 9e99}})
+    pol.implement_reform({'SS_Earnings_c': {2013: 9e99}})
     calc2 = Calculator(policy=pol, records=rec)
     res = calc1.ce_aftertax_income(calc2)
     assert isinstance(res, dict)
@@ -942,24 +953,20 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     # pylint: disable=too-many-locals
     recs = Records(data=puf_fullsample)
     # policy1 such that everybody itemizes deductions and all are allowed
-    reform1 = {
-        year: {
-            'STD_Aged': [0.0, 0.0, 0.0, 0.0, 0.0],
-            'STD': [0.0, 0.0, 0.0, 0.0, 0.0],
-        }
-    }
     policy1 = Policy()
+    reform1 = {
+        'STD_Aged': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
+        'STD': {year: [0.0, 0.0, 0.0, 0.0, 0.0]}
+    }
     policy1.implement_reform(reform1)
     assert not policy1.parameter_errors
     # policy2 such that everybody itemizes deductions but one is disallowed
-    reform2 = {
-        year: {
-            'STD_Aged': [0.0, 0.0, 0.0, 0.0, 0.0],
-            'STD': [0.0, 0.0, 0.0, 0.0, 0.0],
-            hcname: 1.0
-        }
-    }
     policy2 = Policy()
+    reform2 = {
+        'STD_Aged': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
+        'STD': {year: [0.0, 0.0, 0.0, 0.0, 0.0]},
+        hcname: {year: 1.0}
+    }
     policy2.implement_reform(reform2)
     assert not policy2.parameter_errors
     # compute tax liability in specified year

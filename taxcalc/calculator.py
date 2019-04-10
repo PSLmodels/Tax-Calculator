@@ -1163,7 +1163,7 @@ class Calculator():
         ----------
         params: dict
             dictionary is structured like dict returned from
-            the static Calculator method read_json_param_objects()
+            the static Calculator.read_json_param_objects() method
 
         policy_dicts : list of dict or None
             each dictionary in list is a params['policy'] dictionary
@@ -1299,28 +1299,28 @@ class Calculator():
         gdiff_base.apply_to(gfactors_ref)
         gdiff_resp.apply_to(gfactors_ref)
         ref = Policy(gfactors=gfactors_ref)
-        reform_years = list(params['policy'].keys())
         ref.implement_reform(params['policy'])
+        reform_years = Policy.years_in_revision(params['policy'])
         if policy_dicts is not None:  # compound reform has been specified
             assert isinstance(policy_dicts, list)
             for policy_dict in policy_dicts:
-                assert isinstance(policy_dict, dict)
-                for year in policy_dict.keys():
+                ref.implement_reform(policy_dict)
+                xyears = Policy.years_in_revision(policy_dict)
+                for year in xyears:
                     if year not in reform_years:
                         reform_years.append(year)
-                ref.implement_reform(policy_dict)
         # generate documentation text
         doc = 'REFORM DOCUMENTATION\n'
         # ... documentation for baseline growdiff assumptions
         doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
-        years = list(params['growdiff_baseline'].keys())
+        years = GrowDiff.years_in_revision(params['growdiff_baseline'])
         if years:
             doc += param_doc(years, gdiff_base, GrowDiff())
         else:
             doc += 'none: using default growth assumptions\n'
         # ... documentation for reform growdiff assumptions
         doc += 'Response Growth-Difference Assumption Values by Year:\n'
-        years = list(params['growdiff_response'].keys())
+        years = GrowDiff.years_in_revision(params['growdiff_response'])
         if years:
             doc += param_doc(years, gdiff_resp, GrowDiff())
         else:
@@ -1343,6 +1343,7 @@ class Calculator():
         del clp
         del ref
         del years
+        del reform_years
         # return documentation string
         return doc
 
@@ -1576,12 +1577,12 @@ class Calculator():
         iyr_dict = dict()
         for pkey, sdict in syr_dict.items():
             assert isinstance(pkey, str)
-            assert pkey not in iyr_dict
+            assert pkey not in iyr_dict  # will catch duplicate primary keys
             iyr_dict[pkey] = dict()
             assert isinstance(sdict, dict)
             for skey, val in sdict.items():
                 assert isinstance(skey, str)
                 year = int(skey)
-                assert year not in iyr_dict[pkey]
+                assert year not in iyr_dict[pkey]  # will catch duplicate years
                 iyr_dict[pkey][year] = val
         return iyr_dict

@@ -72,8 +72,8 @@ def test_constant_inflation_rate_with_reform():
     fyr = Policy.LAST_BUDGET_YEAR
     ryr = fyr - 1
     reform = {
-        (ryr - 3): {'II_em': 1000},  # to avoid divide-by-zero under TCJA
-        ryr: {'II_em': 20000}
+        'II_em': {(ryr - 3): 1000,  # to avoid divide-by-zero under TCJA
+                  ryr: 20000}
     }
     pol.implement_reform(reform)
     # extract price inflation rates
@@ -98,8 +98,8 @@ def test_variable_inflation_rate_with_reform():
     assert pol._II_em[2013 - syr] == 3900
     # implement reform in 2020 which is two years before the last year, 2022
     reform = {
-        2018: {'II_em': 1000},  # to avoid divide-by-zero under TCJA
-        2020: {'II_em': 20000}
+        'II_em': {2018: 1000,  # to avoid divide-by-zero under TCJA
+                  2020: 20000}
     }
     pol.implement_reform(reform)
     pol.set_year(2020)
@@ -480,7 +480,7 @@ def test_pop_the_cap_reform():
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 118500
     # specify a "pop the cap" reform that eliminates MTE cap in 2016
-    reform = {2016: {'SS_Earnings_c': 9e99}}
+    reform = {'SS_Earnings_c': {2016: 9e99}}
     ppo.implement_reform(reform)
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 9e99
@@ -493,17 +493,23 @@ def test_order_of_indexing_and_level_reforms():
     make no difference to the post-reform policy parameter values.
     """
     # specify two reforms that raises the MTE and stops its indexing in 2015
-    reform = [{2015: {'SS_Earnings_c': 500000,
-                      'SS_Earnings_c-indexed': False}},
-              # now reverse the order of the two reform provisions
-              {2015: {'SS_Earnings_c-indexed': False,
-                      'SS_Earnings_c': 500000}}]
+    reform = [
+        {
+            'SS_Earnings_c': {2015: 500000},
+            'SS_Earnings_c-indexed': {2015: False}
+        },
+        # now reverse the order of the two reform provisions
+        {
+            'SS_Earnings_c-indexed': {2015: False},
+            'SS_Earnings_c': {2015: 500000}
+        }
+    ]
     # specify two Policy objects
     ppo = [Policy(), Policy()]
     # apply reforms to corresponding Policy object & check post-reform values
     syr = Policy.JSON_START_YEAR
     for ref in range(len(reform)):  # pylint: disable=consider-using-enumerate
-        # confirm pre-reform MTE values in 2014-17
+        # confirm pre-reform MTE values in 2014-2017
         mte = ppo[ref]._SS_Earnings_c
         assert mte[2014 - syr] == 117000
         assert mte[2015 - syr] == 118500
@@ -511,7 +517,7 @@ def test_order_of_indexing_and_level_reforms():
         assert mte[2017 - syr] < 500000
         # implement reform in 2015
         ppo[ref].implement_reform(reform[ref])
-        # confirm post-reform MTE values in 2014-17
+        # confirm post-reform MTE values in 2014-2017
         mte = ppo[ref]._SS_Earnings_c
         assert mte[2014 - syr] == 117000
         assert mte[2015 - syr] == 500000
@@ -519,20 +525,20 @@ def test_order_of_indexing_and_level_reforms():
         assert mte[2017 - syr] == 500000
 
 
-def test_misspecified_reforms():
+def test_misspecified_reform_dictionary():
     """
-    Demonstrate pitfalls of careless specification of policy reforms.
+    Demonstrate pitfalls of careless specification of policy reform
+    dictionaries involving non-unique dictionary keys.
     """
     # specify apparently the same reform in two different ways, forgetting
     # that Python dictionaries have unique keys
-    reform1 = {2016: {'SS_Earnings_c': 500000,
-                      'II_em': 9000}}
+    reform1 = {'II_em': {2019: 1000, 2020: 2000}}
     # pylint: disable=duplicate-key
-    reform2 = {2016: {'SS_Earnings_c': 500000},
-               2016: {'II_em': 9000}}
+    reform2 = {'II_em': {2019: 1000}, 'II_em': {2020: 2000},
+    }
     # these two reform dictionaries are not the same: the second
-    # 2016 key:value pair in reform2 (2016:{'_II_em...}) overwrites and
-    # replaces the first 2016 key:value pair in reform2 (2016:{'_SS_E...})
+    # 'II_em' key value for 2020 in reform2 OVERWRITES and REPLACES
+    # the first 'II_em' key value for 2019 in reform2
     assert reform1 != reform2
 
 
@@ -783,118 +789,6 @@ def test_valid_value_infomation():
     assert not clp.parameter_errors
 
 
-def test_validate_param_names_types_errors():
-    """
-    Check detection of invalid policy parameter names and types in reforms.
-    """
-    # pylint: disable=too-many-statements
-    pol = Policy()
-    ref = {2020: {'STD-indexed': 2}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2020: {'STD_cpi': False}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2020: {'badname-indexed': True}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2020: {'II_em-indexed': 5}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2020: {'badname': 0.4}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2020: {'EITC_MinEligAge': 21.4}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2025: {'ID_BenefitSurtax_Switch': [False, True, 0, 1, 0, 1, 0]}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2021: {'II_em': 'not-a-number'}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2019: {'FICA_ss_trt_cpi': True}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    pol = Policy()
-    ref = {2019: {'FICA_ss_trt-indexed': True}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    # this test was contributed by Hank Doupe in bug report #1956
-    pol = Policy()
-    ref = {2019: {'AMEDT_rt': True}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    # this test extends the prior test to integer parameters
-    pol = Policy()
-    ref = {2019: {'AMT_KT_c_Age': True}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    # this test checks "is a removed parameter" error for base parameter
-    pol = Policy()
-    ref = {2019: {'DependentCredit_Child_c': 400}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-    # this test checks "is a removed parameter" error for -indexed parameter
-    pol = Policy()
-    ref = {2019: {'DependentCredit_Child_c-indexed': False}}
-    with pytest.raises(ValueError):
-        pol.implement_reform(ref)
-    del pol
-
-
-def test_validate_param_values_warnings_errors():
-    """
-    Check detection of out_of_range policy parameters in reforms.
-    """
-    pol1 = Policy()
-    ref1 = {2020: {'ID_Medical_frt': 0.05}}
-    pol1.implement_reform(ref1, print_warnings=True, raise_errors=False)
-    assert pol1.parameter_warnings
-    pol2 = Policy()
-    ref2 = {2021: {'ID_Charity_crt_all': 0.61}}
-    pol2.implement_reform(ref2, print_warnings=False, raise_errors=False)
-    assert pol2.parameter_warnings
-    pol3 = Policy()
-    ref3 = {2024: {'II_brk4': [0, 0, 0, 0, 0]}}
-    pol3.implement_reform(ref3, print_warnings=False, raise_errors=False)
-    assert pol3.parameter_errors
-    pol4 = Policy()
-    ref4 = {2024: {'II_brk4': [0, 9e9, 0, 0, 0]}}
-    pol4.implement_reform(ref4, print_warnings=False, raise_errors=False)
-    assert pol4.parameter_errors
-    pol5 = Policy()
-    ref5 = {2025: {'ID_BenefitSurtax_Switch': [False, True, 0, 1, 0, 1, 0]}}
-    with pytest.raises(ValueError):
-        pol5.implement_reform(ref5, print_warnings=False, raise_errors=False)
-    pol6 = Policy()
-    ref6 = {2013: {'STD': [20000, 25000, 20000, 20000, 25000]}}
-    pol6.implement_reform(ref6, print_warnings=False, raise_errors=False)
-    assert pol6.parameter_errors == ''
-    assert pol6.parameter_warnings == ''
-
-
 def test_indexing_rates_for_update():
     """
     Check private _indexing_rates_for_update method.
@@ -905,23 +799,14 @@ def test_indexing_rates_for_update():
     assert len(wgrates) == len(pirates)
 
 
-def test_reform_with_cpi_offset():
-    """
-    Implement a reform that includes the CPI_offset policy parameter.
-    """
-    indexing_reform = {2020: {'CPI_offset': -0.0025}}
-    pol = Policy()  # current-law policy
-    pol.implement_reform(indexing_reform)
-    assert not pol.parameter_errors
-
-
 def test_reform_with_bad_ctc_levels():
     """
     Implement a reform with _ACTC > _CTC_c values.
     """
-    child_credit_reform = {
-        2020: {'CTC_c': 2200, 'ACTC_c': 2500}
-    }
     pol = Policy()
+    child_credit_reform = {
+        'CTC_c': {2020: 2200},
+        'ACTC_c': {2020: 2500}
+    }
     with pytest.raises(ValueError):
         pol.implement_reform(child_credit_reform)

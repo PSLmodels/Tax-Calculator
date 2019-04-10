@@ -187,6 +187,22 @@ class Parameters():
             mdata[name]['value'] = val
         return mdata
 
+    @staticmethod
+    def years_in_revision(revision):
+        """
+        Return list of years in specified revision dictionary, which is
+        assumed to have a param:year:value format.
+        """
+        assert isinstance(revision, dict)
+        years = list()
+        for param, paramdata in revision.items():
+            assert isinstance(paramdata, dict)
+            for year, value in paramdata.items():
+                assert isinstance(year, int)
+                if year not in years:
+                    years.append(year)
+        return years
+
     # ----- begin private methods of Parameters class -----
 
     def _set_default_vals(self, known_years=999999):
@@ -305,7 +321,7 @@ class Parameters():
         # implement the revision year by year
         precall_current_year = self.current_year
         revision_parameters = set()
-        for year in revision_years:
+        for year in sorted(revision_years):
             self.set_year(year)
             revision_parameters.update(revision[year].keys())
             self._update_for_year({year: revision[year]})
