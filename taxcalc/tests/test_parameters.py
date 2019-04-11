@@ -17,17 +17,23 @@ from taxcalc import Parameters, Policy, Consumption
 
 # Test specification and use of simple Parameters-derived class that has
 # no vector parameters and has no (wage or price) indexed parameters.
-# The following pytest fixture specifies the JSON_DEFAULTS_FILE for the class
-# and the test_simple_parameters_class function derives the simple class
-# and tests it.
+# This derived class is called Params and it contains one of each of the
+# four types of parameters.
+#
+# The following pytest fixture specifies the JSON DEFAULTS file for the
+# Params class, which is defined in the test_params_class function.
 
-@pytest.fixture(scope='module', name='params_defaults_json_file')
-def fixture_defaultsjsonfile():
-    """
-    Define alternative JSON assumption parameter defaults file.
-    """
-    json_text = """
+
+PARAMS_JSON = """
 {
+"real_param": {
+    "value_type": "real",
+    "value": [0.5, 0.5, 0.5],
+    "valid_values": {"min": 0, "max": 1},
+    "invalid_minmsg": "",
+    "invalid_maxmsg": "",
+    "invalid_action": "stop"
+},
 "int_param": {
     "value_type": "integer",
     "value": [2, 2, 2],
@@ -51,30 +57,49 @@ def fixture_defaultsjsonfile():
 }
 }
 """
+
+
+@pytest.fixture(scope='module', name='params_json_file')
+def fixture_params_json_file():
+    """
+    Define JSON DEFAULTS file for Parameters-derived Params class.
+    """
     with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
-        pfile.write(json_text + '\n')
+        pfile.write(PARAMS_JSON + '\n')
     pfile.close()
     yield pfile
     os.remove(pfile.name)
 
 
-def test_simple_parameters_class(params_defaults_json_file):
+@pytest.mark.parametrize("revision, expect", [
+    ({}, ""),
+    ({'real_param': {2004: 1.9}}, "error"),
+    ({'int_param': {2004: [3.6]}}, "raise"),
+    ({'bool_param': {2004: [4.9]}}, "raise"),
+    ({'str_param': {2004: [9]}}, "raise"),
+    ({'str_param': {2004: 'nonlinear'}}, "noerror"),
+    ({'str_param': {2004: 'unknownvalue'}}, "error"),
+    ({'str_param': {2004: ['nonlinear']}}, "raise"),
+    ({'real_param': {2004: 'linear'}}, "raise"),
+    ({'real_param-indexed': {2004: True}}, "raise"),
+    ({'unknown_param-indexed': {2004: False}}, "raise")
+])
+def test_params_class(revision, expect, params_json_file):
     """
-    Test Params class derived from Parameters base class.
+    Specifies Params class and tests it.
     """
-    # pylint: disable=too-many-statements
+
     class Params(Parameters):
         """
-        Params is derived from the abstract Parameter class.
+        The Params class is derived from the abstract base Parameter class.
         """
-        DEFAULTS_FILE_NAME = params_defaults_json_file.name
+        DEFAULTS_FILE_NAME = params_json_file.name
         DEFAULTS_FILE_PATH = ''
         START_YEAR = 2001
         LAST_YEAR = 2010
         NUM_YEARS = LAST_YEAR - START_YEAR + 1
 
         def __init__(self):
-            # read default parameters and initialize
             super().__init__()
             self.initialize(Params.START_YEAR, Params.NUM_YEARS)
 
@@ -84,63 +109,35 @@ def test_simple_parameters_class(params_defaults_json_file):
             Update parameters given specified revision dictionary.
             """
             self._update(revision, print_warnings, raise_errors)
-    # end of Params class definition
 
-    # test Params class derived from Parameters class
-    # ... (0) test call to wage_growth_rates method
+    # test Params class
     prms = Params()
-    assert isinstance(prms, Params)
-    assert prms.start_year == 2001
-    assert prms.current_year == 2001
-    assert prms.wage_growth_rates() is None
-    del prms
-    # ... (1) test invalid set_year call
-    prms = Params()
-    with pytest.raises(ValueError):
-        prms.set_year(2011)
-    del prms
-    # ... (2) test a _validate_names_types error
-    prms = Params()
-    revision = {'str_param': {2004: [9]}}
-    with pytest.raises(ValueError):
-        prms.update_params(revision, False, False)
-    del prms
-    del revision
-    # ... (3) test a _validate_names_types error
-    prms = Params()
-    revision = {'int_param': {2004: [3.6]}}
-    with pytest.raises(ValueError):
-        prms.update_params(revision, False, False)
-    del prms
-    del revision
-    # ... (4) test a _validate_names_types error
-    prms = Params()
-    revision = {'bool_param': {2004: [4.9]}}
-    with pytest.raises(ValueError):
-        prms.update_params(revision, False, False)
-    del prms
-    del revision
-    # ... (5) test a valid change in string parameter value
-    prms = Params()
-    revision = {'str_param': {2004: 'nonlinear'}}
-    prms.update_params(revision, False, False)
-    assert not prms.parameter_errors
-    del prms
-    del revision
-    # ... (6) test an invalid change in string parameter value
-    prms = Params()
-    revision = {'str_param': {2004: 'unknownvalue'}}
-    prms.update_params(revision, False, False)
-    assert prms.parameter_errors
-    del prms
-    del revision
-    # ... (7) test a revision where changed parameter is an incorrect vector
-    prms = Params()
-    revision = {'str_param': {2004: ['nonlinear']}}
-    with pytest.raises(ValueError):
-        prms.update_params(revision, False, False)
-    del prms
-    del revision
+    if revision == {}:
+        assert isinstance(prms, Params)
+        assert prms.start_year == 2001
+        assert prms.current_year == 2001
+        assert prms.end_year == 2010
+        assert prms.inflation_rates() is None
+        assert prms.wage_growth_rates() is None
+        prms.set_year(2010)
+        assert prms.current_year == 2010
+        with pytest.raises(ValueError):
+            prms.set_year(2011)
+        return
+    if expect == 'raise':
+        with pytest.raises(ValueError):
+            prms.update_params(revision,
+                               print_warnings=False,
+                               raise_errors=False)
+    elif expect == 'noerror':
+        prms.update_params(revision, print_warnings=False, raise_errors=False)
+        assert not prms.parameter_errors
+    elif expect == 'error':
+        prms.update_params(revision, print_warnings=False, raise_errors=False)
+        assert prms.parameter_errors
+    elif expect == 'warn':
+        prms.update_params(revision, print_warnings=False, raise_errors=False)
+        assert prms.parameter_warnings
 
 
 @pytest.mark.parametrize("fname",
