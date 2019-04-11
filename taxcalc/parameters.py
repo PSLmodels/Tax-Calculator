@@ -456,7 +456,7 @@ class Parameters():
                         pvalue = revision[year][name][0]
                         if isinstance(pvalue, list):
                             scalar = False  # parameter value is a list
-                            if self._vals[name].get('col_label', '') == '':
+                            if self._vals[name].get('col_label', []) == []:
                                 msg = ('{} {} with value {} '
                                        'is not a vector parameter')
                                 self.parameter_errors += (

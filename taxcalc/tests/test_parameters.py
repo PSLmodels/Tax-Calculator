@@ -28,21 +28,25 @@ PARAMS_JSON = """
 {
 "real_param": {
     "value_type": "real",
+    "row_label": ["2001", "2002", "2003"],
     "value": [0.5, 0.5, 0.5],
     "valid_values": {"min": 0, "max": 1}
 },
 "int_param": {
     "value_type": "integer",
+    "row_label": ["2001", "2002", "2003"],
     "value": [2, 2, 2],
     "valid_values": {"min": 0, "max": 9}
 },
 "bool_param": {
     "value_type": "boolean",
+    "row_label": ["2001", "2002", "2003"],
     "value": [true, true, true],
     "valid_values": {"min": false, "max": true}
 },
 "str_param": {
     "value_type": "string",
+    "row_label": ["2001", "2002", "2003"],
     "value": ["linear", "linear", "linear"],
     "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
 }
@@ -137,14 +141,12 @@ def test_params_class(revision, expect, params_json_file):
                           ("growdiff.json")])
 def test_json_file_contents(tests_path, fname):
     """
-    Check contents of JSON parameter files.
+    Check contents of JSON parameter files in Tax-Calculator/taxcalc directory.
     """
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
     required_keys = ['long_name', 'description',
-                     'row_label',
-                     'col_var', 'col_label',
-                     'value_type', 'value', 'valid_values']
+                     'value_type', 'row_label', 'value', 'valid_values']
     valid_value_types = ['boolean', 'integer', 'real', 'string']
     if fname == 'policy_current_law.json':
         invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
@@ -239,9 +241,9 @@ def test_json_file_contents(tests_path, fname):
         assert isinstance(value, list)
         assert len(value) == len(rowlabel)
         # check that col_var and col_label are consistent
-        cvar = param['col_var']
+        cvar = param.get('col_var', '')
         assert isinstance(cvar, str)
-        clab = param['col_label']
+        clab = param.get('col_label', '')
         if cvar == '':
             assert isinstance(clab, str) and clab == ''
         else:
