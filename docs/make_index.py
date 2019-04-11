@@ -76,7 +76,7 @@ def policy_param_text(pname, param):
     else:
         txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
-    if len(param['notes']) > 0:
+    if len(param.get('notes', '')) > 0:
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
     txt += '<br><i>Has An Effect When Using:</i>'
     txt += '&nbsp;&nbsp; <i>PUF data:</i> '
@@ -118,8 +118,8 @@ def policy_param_text(pname, param):
     minval = param['valid_values']['min']
     maxval = param['valid_values']['max']
     txt += ' min = {} and max = {}'.format(minval, maxval)
-    txt += '<br><i>Out-of-Range Action:</i> {}'.format(
-        param['invalid_action'])
+    invalid_action = param.get('invalid_action', 'stop')
+    txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
     txt += '</p>'
     return txt
 

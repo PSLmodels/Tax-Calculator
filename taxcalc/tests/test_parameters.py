@@ -29,26 +29,17 @@ PARAMS_JSON = """
 "real_param": {
     "value_type": "real",
     "value": [0.5, 0.5, 0.5],
-    "valid_values": {"min": 0, "max": 1},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
+    "valid_values": {"min": 0, "max": 1}
 },
 "int_param": {
     "value_type": "integer",
     "value": [2, 2, 2],
-    "valid_values": {"min": 0, "max": 9},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
+    "valid_values": {"min": 0, "max": 9}
 },
 "bool_param": {
     "value_type": "boolean",
     "value": [true, true, true],
-    "valid_values": {"min": false, "max": true},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
+    "valid_values": {"min": false, "max": true}
 },
 "str_param": {
     "value_type": "string",
@@ -151,13 +142,14 @@ def test_json_file_contents(tests_path, fname):
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
     required_keys = ['long_name', 'description',
-                     'section_1', 'section_2', 'notes',
                      'row_label',
-                     'indexed', 'indexable',
                      'col_var', 'col_label',
                      'value_type', 'value', 'valid_values']
     valid_value_types = ['boolean', 'integer', 'real', 'string']
-    invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
+    if fname == 'policy_current_law.json':
+        invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
+    else:
+        invalid_keys = []
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
@@ -185,10 +177,6 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
-        if 'indexable' not in param:
-            param['indexable'] = False
-        if 'indexed' not in param:
-            param['indexed'] = False
         for key in required_keys:
             assert key in param
         if param['value_type'] == 'string':
@@ -198,7 +186,7 @@ def test_json_file_contents(tests_path, fname):
         else:
             for key in invalid_keys:
                 assert key in param
-            assert param['invalid_action'] in ['stop', 'warn']
+            assert param.get('invalid_action', 'stop') in ['stop', 'warn']
         # check for non-empty long_name and description strings
         assert isinstance(param['long_name'], str)
         if not param['long_name']:
@@ -207,16 +195,18 @@ def test_json_file_contents(tests_path, fname):
         if not param['description']:
             assert '{} description'.format(pname) == 'empty string'
         # check that indexable and indexed are boolean
-        assert isinstance(param['indexable'], bool)
-        assert isinstance(param['indexed'], bool)
+        assert isinstance(param.get('indexable', False), bool)
+        assert isinstance(param.get('indexed', False), bool)
         # check that indexable and indexed are False in many files
         if fname != 'policy_current_law.json':
-            assert param['indexable'] is False
-            assert param['indexed'] is False
+            assert param.get('indexable', False) is False
+            assert param.get('indexed', False) is False
         # check that indexable is True when indexed is True
-        if param['indexed'] and not param['indexable']:
+        if param.get('indexed', False) and not param.get('indexable', False):
             msg = 'param:<{}>; indexed={}; indexable={}'
-            fail = msg.format(pname, param['indexed'], param['indexable'])
+            fail = msg.format(pname,
+                              param.get('indexed', False),
+                              param.get('indexable', False))
             failures += fail + '\n'
         # check that value_type is correct string
         if not param['value_type'] in valid_value_types:
@@ -224,15 +214,17 @@ def test_json_file_contents(tests_path, fname):
             fail = msg.format(pname, param['value_type'])
             failures += fail + '\n'
         # check that indexable param has value_type real
-        if param['indexable'] and param['value_type'] != 'real':
+        if param.get('indexable', False) and param['value_type'] != 'real':
             msg = 'param:<{}>; value_type={}; indexable={}'
             fail = msg.format(pname, param['value_type'],
-                              param['indexable'])
+                              param.get('indexable', False))
             failures += fail + '\n'
         # ensure that indexable is False when value_type is not real
-        if param['indexable'] and param['value_type'] != 'real':
+        if param.get('indexable', False) and param['value_type'] != 'real':
             msg = 'param:<{}>; indexable={}; value_type={}'
-            fail = msg.format(pname, param['indexable'], param['value_type'])
+            fail = msg.format(pname,
+                              param.get('indexable', False),
+                              param['value_type'])
             failures += fail + '\n'
         # check that row_label is list
         rowlabel = param['row_label']
@@ -271,7 +263,7 @@ def test_json_file_contents(tests_path, fname):
         # check that indexed parameters have all known years in rowlabel list
         # form_parameters are those whose value is available only on IRS form
         form_parameters = []
-        if param['indexed']:
+        if param.get('indexed', False):
             error = False
             known_years = num_known_years
             if pname in long_params:

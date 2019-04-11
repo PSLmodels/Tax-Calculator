@@ -560,17 +560,18 @@ class Parameters():
                         if vop == 'min' and pvalue[idx] < vvalue[idx]:
                             out_of_range = True
                             msg = '{} {} value {} < min value {}'
-                            extra = self._vals[pname]['invalid_minmsg']
+                            extra = self._vals[pname].get('invalid_minmsg', '')
                             if extra:
                                 msg += ' {}'.format(extra)
                         if vop == 'max' and pvalue[idx] > vvalue[idx]:
                             out_of_range = True
                             msg = '{} {} value {} > max value {}'
-                            extra = self._vals[pname]['invalid_maxmsg']
+                            extra = self._vals[pname].get('invalid_maxmsg', '')
                             if extra:
                                 msg += ' {}'.format(extra)
                         if out_of_range:
-                            action = self._vals[pname]['invalid_action']
+                            action = self._vals[pname].get('invalid_action',
+                                                           'stop')
                             if scalar:
                                 name = pname
                             else:
