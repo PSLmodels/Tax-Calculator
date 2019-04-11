@@ -809,3 +809,51 @@ def test_reform_with_bad_ctc_levels():
     }
     with pytest.raises(ValueError):
         pol.implement_reform(child_credit_reform)
+
+
+def test_reform_with_removed_parameter():
+    """
+    Try to use removed parameter in a reform.
+    """
+    policy1 = Policy()
+    reform1 = {'FilerCredit_c': {2020: 1000}}
+    with pytest.raises(ValueError):
+        policy1.implement_reform(reform1)
+    policy2 = Policy()
+    reform2 = {'FilerCredit_c-indexed': {2020: True}}
+    with pytest.raises(ValueError):
+        policy2.implement_reform(reform2)
+
+
+def test_reform_with_out_of_range_error():
+    """
+    Try to use out-of-range values versus other parameter values in a reform.
+    """
+    pol = Policy()
+    reform = {'SS_thd85': {2020: [20000, 20000, 20000, 20000, 20000]}}
+    pol.implement_reform(reform, raise_errors=False)
+    assert pol.parameter_errors
+
+
+def test_reform_with_warning():
+    """
+    Try to use warned out-of-range parameter value in reform.
+    """
+    pol = Policy()
+    reform = {'ID_Medical_frt': {2020: 0.05}}
+    pol.implement_reform(reform)
+    assert pol.parameter_warnings
+
+
+def test_reform_with_scalar_vector_errors():
+    """
+    Test catching scalar-vector confusion.
+    """
+    policy1 = Policy()
+    reform1 = {'SS_thd85': {2020: 30000}}
+    with pytest.raises(ValueError):
+        policy1.implement_reform(reform1)
+    policy2 = Policy()
+    reform2 = {'ID_Medical_frt': {2020: [0.08]}}
+    with pytest.raises(ValueError):
+        policy2.implement_reform(reform2)

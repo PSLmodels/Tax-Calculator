@@ -456,9 +456,9 @@ class Parameters():
                         pvalue = revision[year][name][0]
                         if isinstance(pvalue, list):
                             scalar = False  # parameter value is a list
-                            if self._vals[name].get('col_label', []) == []:
+                            if not self._vals[name].get('col_label', []):
                                 msg = ('{} {} with value {} '
-                                       'is not a vector parameter')
+                                       'should be a scalar parameter')
                                 self.parameter_errors += (
                                     'ERROR: ' +
                                     msg.format(year, name[1:], pvalue) +
@@ -469,6 +469,14 @@ class Parameters():
                                 scalar = True
                         else:
                             scalar = True  # parameter value is a scalar
+                            if self._vals[name].get('col_label', []):
+                                msg = ('{} {} with value {} '
+                                       'should be a vector parameter')
+                                self.parameter_errors += (
+                                    'ERROR: ' +
+                                    msg.format(year, name[1:], pvalue) +
+                                    '\n'
+                                )
                             pvalue = [pvalue]  # make scalar a single-item list
                         # pylint: disable=consider-using-enumerate
                         for idx in range(0, len(pvalue)):

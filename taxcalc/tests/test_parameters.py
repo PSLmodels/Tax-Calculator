@@ -243,9 +243,9 @@ def test_json_file_contents(tests_path, fname):
         # check that col_var and col_label are consistent
         cvar = param.get('col_var', '')
         assert isinstance(cvar, str)
-        clab = param.get('col_label', '')
+        clab = param.get('col_label', [])
         if cvar == '':
-            assert isinstance(clab, str) and clab == ''
+            assert clab == []
         else:
             assert isinstance(clab, list)
             # check different possible col_var values
