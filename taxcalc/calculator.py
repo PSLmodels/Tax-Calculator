@@ -1255,7 +1255,7 @@ class Calculator():
                         doc += ' {} : {}\n'.format(pname, pval)
                         # ... write optional param-vector-index line
                         if isinstance(pval, list):
-                            pval = mdata_base[pname].get('col_label', [])
+                            pval = mdata_base[pname].get('vi_vals', [])
                             pval = [str(item) for item in pval]
                             doc += ' ' * (4 + len(pname)) + '{}\n'.format(pval)
                         # ... write param-name line

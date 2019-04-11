@@ -50,14 +50,14 @@ def test_policy_json_content():
     assert start_year == Policy.JSON_START_YEAR
     policy_vals = getattr(policy, '_vals')
     for _, data in policy_vals.items():
-        row_label = data.get('row_label')
-        assert isinstance(row_label, list)
+        value_yrs = data.get('value_yrs')
+        assert isinstance(value_yrs, list)
         value = data.get('value')
-        expected_row_label = [str(start_year + i) for i in range(len(value))]
-        if row_label != expected_row_label:
-            msg = 'name,row_label,expected_row_label: {}\n{}\n{}'
-            raise ValueError(msg.format(data.get('long_name')), row_label,
-                             expected_row_label)
+        expected_value_yrs = [(start_year + i) for i in range(len(value))]
+        if value_yrs != expected_value_yrs:
+            msg = 'name,value_yrs,expected_value_yrs: {}\n{}\n{}'
+            raise ValueError(msg.format(data.get('long_name')), value_yrs,
+                             expected_value_yrs)
 
 
 # pylint: disable=protected-access,no-member

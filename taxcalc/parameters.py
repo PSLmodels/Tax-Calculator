@@ -170,15 +170,15 @@ class Parameters():
         """
         Returns ordered dictionary of all parameter information based on
         DEFAULTS_FILE_NAME contents with each parameter's 'start_year',
-        'row_label', and 'value' key values updated so that they contain
+        'value_yrs', and 'value' key values updated so that they contain
         just the current_year information.
         """
         mdata = OrderedDict()
         for pname, pdata in self._vals.items():
             name = pname[1:]
             mdata[name] = pdata
-            mdata[name]['row_label'] = ['{}'.format(self.current_year)]
             mdata[name]['start_year'] = '{}'.format(self.current_year)
+            mdata[name]['value_yrs'] = ['{}'.format(self.current_year)]
             valraw = getattr(self, name)
             if isinstance(valraw, np.ndarray):
                 val = valraw.tolist()
@@ -456,7 +456,7 @@ class Parameters():
                         pvalue = revision[year][name][0]
                         if isinstance(pvalue, list):
                             scalar = False  # parameter value is a list
-                            if not self._vals[name].get('col_label', []):
+                            if not self._vals[name].get('vi_vals', []):
                                 msg = ('{} {} with value {} '
                                        'should be a scalar parameter')
                                 self.parameter_errors += (
@@ -469,7 +469,7 @@ class Parameters():
                                 scalar = True
                         else:
                             scalar = True  # parameter value is a scalar
-                            if self._vals[name].get('col_label', []):
+                            if self._vals[name].get('vi_vals', []):
                                 msg = ('{} {} with value {} '
                                        'should be a vector parameter')
                                 self.parameter_errors += (
@@ -483,7 +483,7 @@ class Parameters():
                             if scalar:
                                 pname = name
                             else:
-                                col = self._vals[name]['col_label'][idx]
+                                col = self._vals[name]['vi_vals'][idx]
                                 pname = '{}[{}]'.format(name, col)
                             pval = pvalue[idx]
                             # pylint: disable=unidiomatic-typecheck
@@ -583,7 +583,7 @@ class Parameters():
                             if scalar:
                                 name = pname
                             else:
-                                col = self._vals[pname]['col_label'][idx[1]]
+                                col = self._vals[pname]['vi_vals'][idx[1]]
                                 name = '{}[{}]'.format(pname, col)
                                 if extra:
                                     msg += '[{}]'.format(col)

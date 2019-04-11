@@ -28,25 +28,25 @@ PARAMS_JSON = """
 {
 "real_param": {
     "value_type": "real",
-    "row_label": ["2001", "2002", "2003"],
+    "value_yrs": [2001, 2002, 2003],
     "value": [0.5, 0.5, 0.5],
     "valid_values": {"min": 0, "max": 1}
 },
 "int_param": {
     "value_type": "integer",
-    "row_label": ["2001", "2002", "2003"],
+    "value_yrs": [2001, 2002, 2003],
     "value": [2, 2, 2],
     "valid_values": {"min": 0, "max": 9}
 },
 "bool_param": {
     "value_type": "boolean",
-    "row_label": ["2001", "2002", "2003"],
+    "value_yrs": [2001, 2002, 2003],
     "value": [true, true, true],
     "valid_values": {"min": false, "max": true}
 },
 "str_param": {
     "value_type": "string",
-    "row_label": ["2001", "2002", "2003"],
+    "value_yrs": [2001, 2002, 2003],
     "value": ["linear", "linear", "linear"],
     "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
 }
@@ -146,7 +146,7 @@ def test_json_file_contents(tests_path, fname):
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
     required_keys = ['long_name', 'description',
-                     'value_type', 'row_label', 'value', 'valid_values']
+                     'value_type', 'value_yrs', 'value', 'valid_values']
     valid_value_types = ['boolean', 'integer', 'real', 'string']
     if fname == 'policy_current_law.json':
         invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
@@ -228,42 +228,42 @@ def test_json_file_contents(tests_path, fname):
                               param.get('indexable', False),
                               param['value_type'])
             failures += fail + '\n'
-        # check that row_label is list
-        rowlabel = param['row_label']
-        assert isinstance(rowlabel, list)
-        # check all row_label values
+        # check that value_yrs is list
+        valueyrs = param['value_yrs']
+        assert isinstance(valueyrs, list)
+        # check all value_yrs values
         cyr = first_year
-        for rlabel in rowlabel:
-            assert int(rlabel) == cyr
+        for vyr in valueyrs:
+            assert vyr == cyr
             cyr += 1
         # check type and dimension of value
         value = param['value']
         assert isinstance(value, list)
-        assert len(value) == len(rowlabel)
-        # check that col_var and col_label are consistent
-        cvar = param.get('col_var', '')
-        assert isinstance(cvar, str)
-        clab = param.get('col_label', [])
-        if cvar == '':
-            assert clab == []
+        assert len(value) == len(valueyrs)
+        # check that vi_name and vi_vals are consistent
+        viname = param.get('vi_name', '')
+        assert isinstance(viname, str)
+        vivals = param.get('vi_vals', [])
+        if viname == '':
+            assert vivals == []
         else:
-            assert isinstance(clab, list)
-            # check different possible col_var values
-            if cvar == 'MARS':
-                assert len(clab) == 5
-            elif cvar == 'EIC':
-                assert len(clab) == 4
-            elif cvar == 'idedtype':
-                assert len(clab) == 7
-            elif cvar == 'c00100':
+            assert isinstance(vivals, list)
+            # check different possible vi_name values
+            if viname == 'MARS':
+                assert len(vivals) == 5
+            elif viname == 'EIC':
+                assert len(vivals) == 4
+            elif viname == 'idedtype':
+                assert len(vivals) == 7
+            elif viname == 'c00100':
                 pass
             else:
-                assert cvar == 'UNKNOWN col_var VALUE'
+                assert viname == 'UNKNOWN vi_name VALUE'
             # check length of each value row
             for valuerow in value:
-                assert len(valuerow) == len(clab)
-        # check that indexed parameters have all known years in rowlabel list
-        # form_parameters are those whose value is available only on IRS form
+                assert len(valuerow) == len(vivals)
+        # check that indexed parameters have all known years in value_yrs list
+        # (form_parameters are those whose value is available only on IRS form)
         form_parameters = []
         if param.get('indexed', False):
             error = False
@@ -271,14 +271,14 @@ def test_json_file_contents(tests_path, fname):
             if pname in long_params:
                 known_years = long_known_years
             if pname in form_parameters:
-                if len(rowlabel) != (known_years - 1):
+                if len(valueyrs) != (known_years - 1):
                     error = True
             else:
-                if len(rowlabel) != known_years:
+                if len(valueyrs) != known_years:
                     error = True
             if error:
-                msg = 'param:<{}>; len(rowlabel)={}; known_years={}'
-                fail = msg.format(pname, len(rowlabel), known_years)
+                msg = 'param:<{}>; len(value_yrs)={}; known_years={}'
+                fail = msg.format(pname, len(valueyrs), known_years)
                 failures += fail + '\n'
     if failures:
         raise ValueError(failures)
