@@ -124,7 +124,7 @@
 
     "AMEDT_ec": {
         "long_name": "Additional Medicare tax earnings exclusion",
-        "description": "The Additional Medicare Tax rate, _AMEDT_rt, applies to all earnings in excess of this excluded amount.",
+        "description": "The Additional Medicare Tax rate, AMEDT_rt, applies to all earnings in excess of this excluded amount.",
         "section_1": "Payroll Taxes",
         "section_2": "Additional Medicare FICA",
         "irs_ref": "Form 8959, line 5, in-line. ",
@@ -1064,7 +1064,7 @@
 
     "II_credit_prt": {
         "long_name": "Personal refundable credit phaseout rate",
-        "description": "The personal refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the _II_credit_ps threshold.",
+        "description": "The personal refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_ps threshold.",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "irs_ref": "",
@@ -1147,7 +1147,7 @@
 
     "II_credit_nr_prt": {
         "long_name": "Personal nonrefundable credit phaseout rate",
-        "description": "The personal nonrefundable credit amount will be reduced at this rate for each dollar of AGI exceeding the _II_credit_nr_ps threshold.",
+        "description": "The personal nonrefundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_nr_ps threshold.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Personal Nonrefundable Credit",
         "irs_ref": "",
@@ -2091,7 +2091,7 @@
 
     "ID_BenefitSurtax_em": {
         "long_name": "Exemption for itemized deduction benefit surtax (dollar AGI threshold)",
-        "description": "This amount is subtracted from itemized deduction benefits in the calculation of the itemized deduction benefit surtax. With _ID_BenefitSurtax_crt set to 0.0 and _ID_BenefitSurtax_trt set to 1.0, this amount serves as a dollar limit on the value of itemized deductions.",
+        "description": "This amount is subtracted from itemized deduction benefits in the calculation of the itemized deduction benefit surtax. With ID_BenefitSurtax_crt set to 0.0 and ID_BenefitSurtax_trt set to 1.0, this amount serves as a dollar limit on the value of itemized deductions.",
         "section_1": "Itemized Deductions",
         "section_2": "Surtax On Itemized Deduction Benefits Above An AGI Threshold",
         "irs_ref": "",
@@ -4650,7 +4650,7 @@
 
     "CDCC_crt": {
         "long_name": "Child & dependent care credit phaseout percentage rate ceiling",
-        "description": "The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the _CDCC_ps level.",
+        "description": "The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the CDCC_ps level.",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "irs_ref": "Form 2241, line 8, in-line.",
@@ -4943,7 +4943,7 @@
 
     "NIIT_rt": {
         "long_name": "Net Investment Income Tax rate",
-        "description": "If modified AGI exceeds _NIIT_thd, all net investment income is taxed at this rate.",
+        "description": "If modified AGI exceeds NIIT_thd, all net investment income is taxed at this rate.",
         "section_1": "Other Taxes",
         "section_2": "Net Investment Income Tax",
         "irs_ref": "Form 8960, line 21, in-line. ",
@@ -5016,7 +5016,7 @@
 
     "EITC_basic_frac": {
         "long_name": "Fraction of maximum earned income credit paid at zero earnings",
-        "description": "This fraction of _EITC_c is always paid as a credit and one minus this fraction is applied to the phasein rate, _EITC_rt.  This fraction is zero under current law.",
+        "description": "This fraction of EITC_c is always paid as a credit and one minus this fraction is applied to the phasein rate, EITC_rt.  This fraction is zero under current law.",
         "section_1": "Refundable Credits",
         "section_2": "Earned Income Tax Credit",
         "irs_ref": "Form 1040, line 17, instruction (table).",
@@ -5501,7 +5501,7 @@
 
     "CTC_new_for_all": {
         "long_name": "Whether or not maximum amount of the new refundable child tax credit is available to all",
-        "description": "The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see _CTC_new_rt.",
+        "description": "The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see CTC_new_rt.",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "irs_ref": "",
@@ -5522,7 +5522,7 @@
 
     "CTC_new_rt": {
         "long_name": "New refundable child tax credit amount phasein rate",
-        "description": "The maximum amount of the new child tax credit is increased at this rate per dollar of positive AGI until _CTC_new_c times the number of qualified children is reached if CTC_new_for_all is false; if CTC_new_for_all is true, there is no AGI limitation to the maximum amount.",
+        "description": "The maximum amount of the new child tax credit is increased at this rate per dollar of positive AGI until CTC_new_c times the number of qualified children is reached if CTC_new_for_all is false; if CTC_new_for_all is true, there is no AGI limitation to the maximum amount.",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "irs_ref": "",
@@ -5574,7 +5574,7 @@
 
     "CTC_new_prt": {
         "long_name": "New refundable child tax credit amount phaseout rate",
-        "description": "The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, _CTC_new_ps.",
+        "description": "The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, CTC_new_ps.",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
         "irs_ref": "",

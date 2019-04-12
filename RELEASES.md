@@ -4,6 +4,30 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-04-?? Release 1.3.0
+------------------------
+(last merged pull request is
+[#22xx](https://github.com/PSLmodels/Tax-Calculator/pull/22xx))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Revise Tax-Calculator versus TASIM-27 validation test logic
+  [[#2278](https://github.com/PSLmodels/Tax-Calculator/pull/2278)
+  by Martin Holmer]
+- Update Tax-Calculator versus TASIM-27 validation test results
+  [[#2279](https://github.com/PSLmodels/Tax-Calculator/pull/2279)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Fix Windows-related bug in `docs/cookbook/test_recipes.py` that generated FAIL messages when there were only whitespace differences
+  [[#2280](https://github.com/PSLmodels/Tax-Calculator/pull/2280)
+  by Martin Holmer with bug reported by Robert Orr and fix tested on Windows by Duncan Hobbs]
+
+
 2019-03-24 Release 1.2.0
 ------------------------
 (last merged pull request is
