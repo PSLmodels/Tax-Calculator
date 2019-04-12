@@ -4,15 +4,21 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
-2019-04-?? Release 1.3.0
+2019-04-?? Release 2.0.0
 ------------------------
 (last merged pull request is
-[#22xx](https://github.com/PSLmodels/Tax-Calculator/pull/22xx))
+[#2296](https://github.com/PSLmodels/Tax-Calculator/pull/2296))
 
-**This is an enhancement and bug-fix release.**
+**This is a major release with changes that make Tax-Calculator
+incompatible with earlier releases.**  Read
+[this document](UPGRADING.md#upgrading-to-tax-calculator-2.0)
+to understand what you need to do before using Tax-Calcualtor 2.0.
 
 **API Changes**
-- None
+
+- Revise the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
+  [[#2292](https://github.com/PSLmodels/Tax-Calculator/pull/2292)
+  by Martin Holmer]
 
 **New Features**
 - Revise Tax-Calculator versus TASIM-27 validation test logic
