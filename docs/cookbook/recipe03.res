@@ -1,5 +1,3 @@
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
 Filing Units Receiving EITC and Average Positive EITC by AGI Category
 AGI Category           	 Num(#M)	 Avg($K)
 [-9e+99, 1)            	   0.047	   1.244
