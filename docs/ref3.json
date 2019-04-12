@@ -2,6 +2,6 @@
 // after which it continues to be indexed to price inflation.
 {
     "policy": {
-        "_II_em": {"2022": [8000]}
+        "II_em": {"2022": 8000}
     }
 }
