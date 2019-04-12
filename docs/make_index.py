@@ -90,25 +90,25 @@ def policy_param_text(pname, param):
     else:
         txt += 'False'
     txt += '<br><i>Can Be Inflation Indexed:</i> '
-    if param['cpi_inflatable']:
+    if param['indexable']:
         txt += 'True'
     else:
         txt += 'False'
     txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> '
-    if param['cpi_inflated']:
+    if param['indexed']:
         txt += 'True'
     else:
         txt += 'False'
     txt += '<br><i>Value Type:</i> {}'.format(param['value_type'])
     txt += '<br><i>Known Values:</i>'
-    if len(param['col_label']) > 0:
-        cols = ', '.join(param['col_label'])
+    if len(param.get('vi_vals', [])) > 0:
+        cols = ', '.join(param['vi_name'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
-    for cyr, val in zip(param['row_label'], param['value']):
+    for cyr, val in zip(param['value_yrs'], param['value']):
         final_cyr = cyr
         final_val = val
         txt += '<br>{}: {}'.format(cyr, val)
-    if not param['cpi_inflated']:
+    if not param['indexed']:
         fcyr = int(final_cyr)
         if fcyr < Policy.LAST_KNOWN_YEAR:
             # extrapolate final_val thru Policy.LAST_KNOWN_YEAR if not indexed
@@ -212,9 +212,10 @@ def assumption_param_text(pname, ptype, param):
     Extract info from param for pname of ptype and return as HTML string.
     """
     # pylint: disable=len-as-condition
-    sec1 = param['section_1']
+    sec1 = param.get('section_1', '')
     if len(sec1) > 0:
-        txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
+        txt = '<p><b>{} &mdash; {}</b>'.format(sec1,
+                                               param.get('section_2', ''))
     else:
         txt = '<p><b>{} &mdash; {}</b>'.format('Assumption Parameter',
                                                ptype.capitalize())
@@ -224,13 +225,13 @@ def assumption_param_text(pname, ptype, param):
     else:
         txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
-    if len(param['notes']) > 0:
+    if len(param.get('notes', '')) > 0:
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
     txt += '<br><i>Default Value:</i>'
-    if len(param['col_label']) > 0:
-        cols = ', '.join(param['col_label'])
+    if len(param.get('vi_vals', [])) > 0:
+        cols = ', '.join(param['vi_vals'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
-    for cyr, val in zip(param['row_label'], param['value']):
+    for cyr, val in zip(param['value_yrs'], param['value']):
         txt += '<br>{}: {}'.format(cyr, val)
     txt += '<br><i>Valid Range:</i>'
     minval = param['valid_values']['min']
