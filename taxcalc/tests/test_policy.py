@@ -66,7 +66,7 @@ def test_policy_json_content_consistency():
         # check entries in vi_vals list
         vivals = data['vi_vals']
         if vivals:
-            assert set(vivals) == set(expected_vi_vals[data['vi_name']])
+            assert vivals == expected_vi_vals[data['vi_name']]
 
 
 # pylint: disable=protected-access,no-member
