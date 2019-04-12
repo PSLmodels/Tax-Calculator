@@ -7,7 +7,7 @@ Changes in release 2.0.0 on 2019-04-??
 
 **This is a major release with changes that make Tax-Calculator
 incompatible with earlier releases.**  Read
-[this document](UPGRADING.md#upgrading-to-tax-calculator-2.0)
+[this document](UPGRADING.md#upgrading-to-tax-calculator-20)
 to understand what you need to do before using Tax-Calcualtor 2.0.
 
 - Revise the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
