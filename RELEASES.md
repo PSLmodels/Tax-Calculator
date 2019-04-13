@@ -16,7 +16,7 @@ to understand what you need to do before using Tax-Calcualtor 2.0.
 
 **API Changes**
 
-- Revise the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
+- Simplify and standardize the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
   [[#2292](https://github.com/PSLmodels/Tax-Calculator/pull/2292)
   by Martin Holmer]
 

@@ -10,7 +10,7 @@ incompatible with earlier releases.**  Read
 [this document](UPGRADING.md#upgrading-to-tax-calculator-20)
 to understand what you need to do before using Tax-Calcualtor 2.0.
 
-- Revise the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
+- Simplify and standardize the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
 
 
 Changes in release 1.2.0 on 2019-03-24
