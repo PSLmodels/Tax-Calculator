@@ -246,6 +246,12 @@ class Parameters():
         Parameters
         ----------
         revision_: parameter-changes dictionary in param:year:value format
+            Each param primary key must be a string;
+            each year secondary key must be an integer; and
+            each value item must be either
+              a real/integer/boolean/string value for a scalar parameter
+              or
+              a list of real/integer/boolean/string values for a vector param.
 
         print_warnings: boolean
             if True, prints warnings when parameter_warnings exists;
@@ -261,9 +267,10 @@ class Parameters():
         ------
         ValueError:
             if revision_ is not a dictionary.
-            if each revision_ key is not a valid parameter name
-            if minimum YEAR in revision_ is less than current_year.
-            if maximum YEAR in revision_ is greater than end_year.
+            if each revision_ primary key is not a valid parameter name.
+            if each revision_ secondary key is not an integet.
+            if minimum year in revision_ is less than current_year.
+            if maximum year in revision_ is greater than end_year.
             if _validate_names_types generates errors
             if _validate_values generates errors and raise_errors is True
 

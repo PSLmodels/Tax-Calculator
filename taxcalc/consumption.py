@@ -41,7 +41,8 @@ class Consumption(Parameters):
                            print_warnings=True, raise_errors=True):
         """
         Update consumption default values using specified revision dictionary.
-        (see Parameters._update for argument documentation.)
+        See Parameters._update for argument documentation and details about
+        the expected structure of the revision dictionary.
         """
         self._update(revision, print_warnings, raise_errors)
 
