@@ -10,6 +10,7 @@ for a complete commit history.
 [#2297](https://github.com/PSLmodels/Tax-Calculator/pull/2297))
 
 **This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
+
 Read [this document](UPGRADING.md#upgrading-to-tax-calculator-20) to understand what you need to do before using Tax-Calcualtor 2.0.
 
 **API Changes**
