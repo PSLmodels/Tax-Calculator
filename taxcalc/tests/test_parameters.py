@@ -15,36 +15,155 @@ import pytest
 from taxcalc import Parameters, Policy, Consumption
 
 
+# Test specification and use of simple Parameters-derived class that has
+# no vector parameters and has no (wage or price) indexed parameters.
+# This derived class is called Params and it contains one of each of the
+# four types of parameters.
+#
+# The following pytest fixture specifies the JSON DEFAULTS file for the
+# Params class, which is defined in the test_params_class function.
+
+
+PARAMS_JSON = """
+{
+"real_param": {
+    "value_type": "real",
+    "value_yrs": [2001, 2002, 2003],
+    "value": [0.5, 0.5, 0.5],
+    "valid_values": {"min": 0, "max": 1}
+},
+"int_param": {
+    "value_type": "integer",
+    "value_yrs": [2001, 2002, 2003],
+    "value": [2, 2, 2],
+    "valid_values": {"min": 0, "max": 9}
+},
+"bool_param": {
+    "value_type": "boolean",
+    "value_yrs": [2001, 2002, 2003],
+    "value": [true, true, true],
+    "valid_values": {"min": false, "max": true}
+},
+"str_param": {
+    "value_type": "string",
+    "value_yrs": [2001, 2002, 2003],
+    "value": ["linear", "linear", "linear"],
+    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
+}
+}
+"""
+
+
+@pytest.fixture(scope='module', name='params_json_file')
+def fixture_params_json_file():
+    """
+    Define JSON DEFAULTS file for Parameters-derived Params class.
+    """
+    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
+        pfile.write(PARAMS_JSON + '\n')
+    pfile.close()
+    yield pfile
+    os.remove(pfile.name)
+
+
+@pytest.mark.parametrize("revision, expect", [
+    ({}, ""),
+    ({'real_param': {2004: 1.9}}, "error"),
+    ({'int_param': {2004: [3.6]}}, "raise"),
+    ({'bool_param': {2004: [4.9]}}, "raise"),
+    ({'str_param': {2004: [9]}}, "raise"),
+    ({'str_param': {2004: 'nonlinear'}}, "noerror"),
+    ({'str_param': {2004: 'unknownvalue'}}, "error"),
+    ({'str_param': {2004: ['nonlinear']}}, "raise"),
+    ({'real_param': {2004: 'linear'}}, "raise"),
+    ({'real_param-indexed': {2004: True}}, "raise"),
+    ({'unknown_param-indexed': {2004: False}}, "raise")
+])
+def test_params_class(revision, expect, params_json_file):
+    """
+    Specifies Params class and tests it.
+    """
+
+    class Params(Parameters):
+        """
+        The Params class is derived from the abstract base Parameter class.
+        """
+        DEFAULTS_FILE_NAME = params_json_file.name
+        DEFAULTS_FILE_PATH = ''
+        START_YEAR = 2001
+        LAST_YEAR = 2010
+        NUM_YEARS = LAST_YEAR - START_YEAR + 1
+
+        def __init__(self):
+            super().__init__()
+            self.initialize(Params.START_YEAR, Params.NUM_YEARS)
+
+        def update_params(self, revision,
+                          print_warnings=True, raise_errors=True):
+            """
+            Update parameters given specified revision dictionary.
+            """
+            self._update(revision, print_warnings, raise_errors)
+
+    # test Params class
+    prms = Params()
+    if revision == {}:
+        assert isinstance(prms, Params)
+        assert prms.start_year == 2001
+        assert prms.current_year == 2001
+        assert prms.end_year == 2010
+        assert prms.inflation_rates() is None
+        assert prms.wage_growth_rates() is None
+        prms.set_year(2010)
+        assert prms.current_year == 2010
+        with pytest.raises(ValueError):
+            prms.set_year(2011)
+        return
+    if expect == 'raise':
+        with pytest.raises(ValueError):
+            prms.update_params(revision,
+                               print_warnings=False,
+                               raise_errors=False)
+    elif expect == 'noerror':
+        prms.update_params(revision, print_warnings=False, raise_errors=False)
+        assert not prms.parameter_errors
+    elif expect == 'error':
+        prms.update_params(revision, print_warnings=False, raise_errors=False)
+        assert prms.parameter_errors
+    elif expect == 'warn':
+        prms.update_params(revision, print_warnings=False, raise_errors=False)
+        assert prms.parameter_warnings
+
+
 @pytest.mark.parametrize("fname",
                          [("consumption.json"),
                           ("policy_current_law.json"),
                           ("growdiff.json")])
 def test_json_file_contents(tests_path, fname):
     """
-    Check contents of JSON parameter files.
+    Check contents of JSON parameter files in Tax-Calculator/taxcalc directory.
     """
     # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     # specify test information
     required_keys = ['long_name', 'description',
-                     'section_1', 'section_2', 'notes',
-                     'row_label',
-                     'indexed', 'indexable',
-                     'col_var', 'col_label',
-                     'value_type', 'value', 'valid_values']
+                     'value_type', 'value_yrs', 'value', 'valid_values']
     valid_value_types = ['boolean', 'integer', 'real', 'string']
-    invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
+    if fname == 'policy_current_law.json':
+        invalid_keys = ['invalid_minmsg', 'invalid_maxmsg', 'invalid_action']
+    else:
+        invalid_keys = []
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     num_known_years = last_known_year - first_year + 1
-    long_params = ['_II_brk1', '_II_brk2', '_II_brk3', '_II_brk4',
-                   '_II_brk5', '_II_brk6', '_II_brk7',
-                   '_PT_brk1', '_PT_brk2', '_PT_brk3', '_PT_brk4',
-                   '_PT_brk5', '_PT_brk6', '_PT_brk7',
-                   '_PT_excl_wagelim_thd',
-                   '_ALD_BusinessLosses_c',
-                   '_STD', '_II_em',
-                   '_AMT_em', '_AMT_em_ps', '_AMT_em_pe',
-                   '_ID_ps', '_ID_AllTaxes_c']
+    long_params = ['II_brk1', 'II_brk2', 'II_brk3', 'II_brk4',
+                   'II_brk5', 'II_brk6', 'II_brk7',
+                   'PT_brk1', 'PT_brk2', 'PT_brk3', 'PT_brk4',
+                   'PT_brk5', 'PT_brk6', 'PT_brk7',
+                   'PT_excl_wagelim_thd',
+                   'ALD_BusinessLosses_c',
+                   'STD', 'II_em',
+                   'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
+                   'ID_ps', 'ID_AllTaxes_c']
     long_known_years = 2026 - first_year + 1  # for TCJA-reverting long_params
     # read JSON parameter file into a dictionary
     path = os.path.join(tests_path, '..', fname)
@@ -60,10 +179,6 @@ def test_json_file_contents(tests_path, fname):
         # check that param contains required keys
         param = allparams[pname]
         assert isinstance(param, dict)
-        if 'indexable' not in param:
-            param['indexable'] = False
-        if 'indexed' not in param:
-            param['indexed'] = False
         for key in required_keys:
             assert key in param
         if param['value_type'] == 'string':
@@ -73,7 +188,7 @@ def test_json_file_contents(tests_path, fname):
         else:
             for key in invalid_keys:
                 assert key in param
-            assert param['invalid_action'] in ['stop', 'warn']
+            assert param.get('invalid_action', 'stop') in ['stop', 'warn']
         # check for non-empty long_name and description strings
         assert isinstance(param['long_name'], str)
         if not param['long_name']:
@@ -82,16 +197,18 @@ def test_json_file_contents(tests_path, fname):
         if not param['description']:
             assert '{} description'.format(pname) == 'empty string'
         # check that indexable and indexed are boolean
-        assert isinstance(param['indexable'], bool)
-        assert isinstance(param['indexed'], bool)
+        assert isinstance(param.get('indexable', False), bool)
+        assert isinstance(param.get('indexed', False), bool)
         # check that indexable and indexed are False in many files
         if fname != 'policy_current_law.json':
-            assert param['indexable'] is False
-            assert param['indexed'] is False
+            assert param.get('indexable', False) is False
+            assert param.get('indexed', False) is False
         # check that indexable is True when indexed is True
-        if param['indexed'] and not param['indexable']:
+        if param.get('indexed', False) and not param.get('indexable', False):
             msg = 'param:<{}>; indexed={}; indexable={}'
-            fail = msg.format(pname, param['indexed'], param['indexable'])
+            fail = msg.format(pname,
+                              param.get('indexed', False),
+                              param.get('indexable', False))
             failures += fail + '\n'
         # check that value_type is correct string
         if not param['value_type'] in valid_value_types:
@@ -99,67 +216,69 @@ def test_json_file_contents(tests_path, fname):
             fail = msg.format(pname, param['value_type'])
             failures += fail + '\n'
         # check that indexable param has value_type real
-        if param['indexable'] and param['value_type'] != 'real':
+        if param.get('indexable', False) and param['value_type'] != 'real':
             msg = 'param:<{}>; value_type={}; indexable={}'
             fail = msg.format(pname, param['value_type'],
-                              param['indexable'])
+                              param.get('indexable', False))
             failures += fail + '\n'
         # ensure that indexable is False when value_type is not real
-        if param['indexable'] and param['value_type'] != 'real':
+        if param.get('indexable', False) and param['value_type'] != 'real':
             msg = 'param:<{}>; indexable={}; value_type={}'
-            fail = msg.format(pname, param['indexable'], param['value_type'])
+            fail = msg.format(pname,
+                              param.get('indexable', False),
+                              param['value_type'])
             failures += fail + '\n'
-        # check that row_label is list
-        rowlabel = param['row_label']
-        assert isinstance(rowlabel, list)
-        # check all row_label values
+        # check that value_yrs is list
+        valueyrs = param['value_yrs']
+        assert isinstance(valueyrs, list)
+        # check all value_yrs values
         cyr = first_year
-        for rlabel in rowlabel:
-            assert int(rlabel) == cyr
+        for vyr in valueyrs:
+            assert vyr == cyr
             cyr += 1
         # check type and dimension of value
         value = param['value']
         assert isinstance(value, list)
-        assert len(value) == len(rowlabel)
-        # check that col_var and col_label are consistent
-        cvar = param['col_var']
-        assert isinstance(cvar, str)
-        clab = param['col_label']
-        if cvar == '':
-            assert isinstance(clab, str) and clab == ''
+        assert len(value) == len(valueyrs)
+        # check that vi_name and vi_vals are consistent
+        viname = param.get('vi_name', '')
+        assert isinstance(viname, str)
+        vivals = param.get('vi_vals', [])
+        if viname == '':
+            assert vivals == []
         else:
-            assert isinstance(clab, list)
-            # check different possible col_var values
-            if cvar == 'MARS':
-                assert len(clab) == 5
-            elif cvar == 'EIC':
-                assert len(clab) == 4
-            elif cvar == 'idedtype':
-                assert len(clab) == 7
-            elif cvar == 'c00100':
+            assert isinstance(vivals, list)
+            # check different possible vi_name values
+            if viname == 'MARS':
+                assert len(vivals) == 5
+            elif viname == 'EIC':
+                assert len(vivals) == 4
+            elif viname == 'idedtype':
+                assert len(vivals) == 7
+            elif viname == 'c00100':
                 pass
             else:
-                assert cvar == 'UNKNOWN col_var VALUE'
+                assert viname == 'UNKNOWN vi_name VALUE'
             # check length of each value row
             for valuerow in value:
-                assert len(valuerow) == len(clab)
-        # check that indexed parameters have all known years in rowlabel list
-        # form_parameters are those whose value is available only on IRS form
+                assert len(valuerow) == len(vivals)
+        # check that indexed parameters have all known years in value_yrs list
+        # (form_parameters are those whose value is available only on IRS form)
         form_parameters = []
-        if param['indexed']:
+        if param.get('indexed', False):
             error = False
             known_years = num_known_years
             if pname in long_params:
                 known_years = long_known_years
             if pname in form_parameters:
-                if len(rowlabel) != (known_years - 1):
+                if len(valueyrs) != (known_years - 1):
                     error = True
             else:
-                if len(rowlabel) != known_years:
+                if len(valueyrs) != known_years:
                     error = True
             if error:
-                msg = 'param:<{}>; len(rowlabel)={}; known_years={}'
-                fail = msg.format(pname, len(rowlabel), known_years)
+                msg = 'param:<{}>; len(value_yrs)={}; known_years={}'
+                fail = msg.format(pname, len(valueyrs), known_years)
                 failures += fail + '\n'
     if failures:
         raise ValueError(failures)
@@ -348,125 +467,3 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
-
-
-@pytest.fixture(scope='module', name='params_defaults_json_file')
-def fixture_defaultsjsonfile():
-    """
-    Define alternative JSON assumption parameter defaults file.
-    """
-    json_text = """
-{
-"_int_param": {
-    "value_type": "integer",
-    "value": [2, 2, 2],
-    "valid_values": {"min": 0, "max": 9},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
-},
-"_bool_param": {
-    "value_type": "boolean",
-    "value": [true, true, true],
-    "valid_values": {"min": false, "max": true},
-    "invalid_minmsg": "",
-    "invalid_maxmsg": "",
-    "invalid_action": "stop"
-},
-"_str_param": {
-    "value_type": "string",
-    "value": ["linear", "linear", "linear"],
-    "valid_values": {"options": ["linear", "nonlinear", "cubic"]}
-}
-}
-"""
-    with tempfile.NamedTemporaryFile(mode='a', delete=False) as pfile:
-        pfile.write(json_text + '\n')
-    pfile.close()
-    yield pfile
-    os.remove(pfile.name)
-
-
-def test_alternative_defaults_file(params_defaults_json_file):
-    """
-    Test Params class derived from Parameters base class.
-    """
-    # pylint: disable=too-many-statements
-    class Params(Parameters):
-        """
-        Params is derived from the Parameter class.
-        """
-        DEFAULTS_FILE_NAME = params_defaults_json_file.name
-        DEFAULTS_FILE_PATH = ''
-        START_YEAR = 2001
-        LAST_YEAR = 2099
-        NUM_YEARS = LAST_YEAR - START_YEAR + 1
-
-        def __init__(self):
-            # read default parameters and initialize
-            super().__init__()
-            self.initialize(Params.START_YEAR, Params.NUM_YEARS)
-            # specify warning/error handling variables
-            self.parameter_errors = ''
-            self._ignore_errors = False
-    # end of Params class definition
-
-    # test illegal instantiation of abstract Parameters class
-    with pytest.raises(AssertionError):
-        Parameters()
-    # test Params class derived from Parameters class
-    # ... (0) test call to wage_growth_rates method
-    prms = Params()
-    assert isinstance(prms, Params)
-    assert prms.start_year == 2001
-    assert prms.current_year == 2001
-    assert prms.wage_growth_rates() is None
-    del prms
-    # ... (1) test invalid set_year call
-    prms = Params()
-    with pytest.raises(ValueError):
-        prms.set_year(2100)
-    del prms
-    # ... (2) test a _validate_names_types error
-    prms = Params()
-    paramschange = {2014: {'_str_param': [9]}}
-    prms._validate_names_types(paramschange)
-    assert prms.parameter_errors
-    del prms
-    del paramschange
-    # ... (3) test a _validate_names_types error
-    prms = Params()
-    paramschange = {2014: {'_int_param': [3.6]}}
-    prms._validate_names_types(paramschange)
-    assert prms.parameter_errors
-    del prms
-    del paramschange
-    # ... (4) test a _validate_names_types error
-    prms = Params()
-    paramschange = {2014: {'_bool_param': [4.9]}}
-    prms._validate_names_types(paramschange)
-    assert prms.parameter_errors
-    del prms
-    del paramschange
-    # ... (5) test a valid change in string parameter value
-    prms = Params()
-    paramschange = {2014: {'_str_param': ['nonlinear']}}
-    prms.set_year(2014)
-    prms._update(paramschange)
-    changed_params = set()
-    changed_params.add('_str_param')
-    prms._validate_values(changed_params)
-    assert not prms.parameter_errors
-    del prms
-    del paramschange
-    # ... (6) test an invalid change in string parameter value
-    prms = Params()
-    paramschange = {2014: {'_str_param': ['unknownvalue']}}
-    prms.set_year(2014)
-    prms._update(paramschange)
-    changed_params = set()
-    changed_params.add('_str_param')
-    prms._validate_values(changed_params)
-    assert prms.parameter_errors
-    del prms
-    del paramschange

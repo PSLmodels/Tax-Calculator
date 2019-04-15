@@ -6,8 +6,8 @@
 // -  raise OASDI payroll tax rate in 2018 and 2020 (1)
 // -  raise HI payroll tax rate in 2019 and 2021 (2)
 // Reform_Parameter_Map:
-// - 1: _FICA_ss_trt
-// - 2: _FICA_mc_trt
+// - 1: FICA_ss_trt
+// - 2: FICA_mc_trt
 // NOTE: this reform produces the following rates by year:
 //       2017:  0.124  0.029
 //       2018:  0.130  0.029
@@ -17,13 +17,13 @@
 //       2022:  0.140  0.032
 {
   "policy": {
-    "_FICA_ss_trt": {
-        "2018": [0.130],
-        "2020": [0.140]
+    "FICA_ss_trt": {
+        "2018": 0.130,
+        "2020": 0.140
     },
-    "_FICA_mc_trt": {
-        "2019": [0.030],
-        "2021": [0.032]
+    "FICA_mc_trt": {
+        "2019": 0.030,
+        "2021": 0.032
     }        
   }
 }

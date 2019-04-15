@@ -1099,7 +1099,7 @@ class Calculator():
         suitable as input into the GrowDiff.update_growdiff method.
         """
         # pylint: disable=too-many-branches
-        # first process second assump parameter
+        # first process the second assump argument
         if assump is None:
             cons_dict = dict()
             gdiff_base_dict = dict()
@@ -1124,7 +1124,7 @@ class Calculator():
              gdiff_resp_dict) = Calculator._read_json_econ_assump_text(txt)
         else:
             raise ValueError('assump is neither None nor string')
-        # next process first reform parameter
+        # next process the first reform argument
         if reform is None:
             rpol_dict = dict()
         elif isinstance(reform, str):
@@ -1157,13 +1157,13 @@ class Calculator():
     @staticmethod
     def reform_documentation(params, policy_dicts=None):
         """
-        Generate reform documentation.
+        Generate reform documentation versus current-law policy.
 
         Parameters
         ----------
         params: dict
             dictionary is structured like dict returned from
-            the static Calculator method read_json_param_objects()
+            the static Calculator.read_json_param_objects() method
 
         policy_dicts : list of dict or None
             each dictionary in list is a params['policy'] dictionary
@@ -1174,19 +1174,18 @@ class Calculator():
         Returns
         -------
         doc: String
-            the documentation for the policy reform specified in params
+            the documentation for the specified policy reform
         """
-        # pylint: disable=too-many-statements,too-many-branches
+        # pylint: disable=too-many-statements,too-many-branches,too-many-locals
 
-        # nested function used only in reform_documentation
-        def param_doc(years, change, base):
+        # nested function used only in reform_documentation function
+        def param_doc(years_list, updated, baseline):
             """
             Parameters
             ----------
-            years: list of change years
-            change: dictionary of parameter changes
-            base: Policy or GrowDiff object with baseline values
-            syear: parameter start calendar year
+            years_list: list of parameter-change years
+            updated: reform Policy or updated GrowDiff object
+            base: current-law Policy or default GrowDiff object
 
             Returns
             -------
@@ -1223,102 +1222,129 @@ class Calculator():
                     line_list.append(line)
                 return line_list
 
-            # begin main logic of param_doc
+            # begin main logic of nested function param_doc
             # pylint: disable=too-many-nested-blocks
-            assert len(years) == len(change.keys())
-            basex = copy.deepcopy(base)
-            basevals = getattr(basex, '_vals', None)
-            assert isinstance(basevals, dict)
             doc = ''
+            assert isinstance(years_list, list)
+            years = sorted(years_list)
             for year in years:
-                # write year
-                basex.set_year(year)
-                doc += '{}:\n'.format(year)
-                # write info for each param in year
-                for param in sorted(change[year].keys()):
-                    # ... write param:value line
-                    pval = change[year][param]
-                    if isinstance(pval, list):
-                        pval = pval[0]
-                        if basevals[param]['value_type'] == 'boolean':
+                baseline.set_year(year)
+                updated.set_year(year)
+                mdata_base = baseline.metadata()
+                mdata_upda = updated.metadata()
+                mdata_base_keys = mdata_base.keys()
+                mdata_upda_keys = mdata_upda.keys()
+                assert set(mdata_base_keys) == set(mdata_upda_keys)
+                params_with_diff = list()
+                for pname in mdata_base_keys:
+                    base_value = mdata_base[pname]['value']
+                    upda_value = mdata_upda[pname]['value']
+                    if upda_value != base_value:
+                        params_with_diff.append(pname)
+                if params_with_diff:
+                    # write year
+                    doc += '{}:\n'.format(year)
+                    for pname in sorted(params_with_diff):
+                        # write updated value line
+                        pval = mdata_upda[pname]['value']
+                        if mdata_base[pname]['value_type'] == 'boolean':
                             if isinstance(pval, list):
                                 pval = [bool(item) for item in pval]
                             else:
                                 pval = bool(pval)
-                    doc += ' {} : {}\n'.format(param, pval)
-                    # ... write optional param-index line
-                    if isinstance(pval, list):
-                        pval = basevals[param]['col_label']
-                        pval = [str(item) for item in pval]
-                        doc += ' ' * (4 + len(param)) + '{}\n'.format(pval)
-                    # ... write name line
-                    if param.endswith('_cpi'):
-                        rootparam = param[:-4]
-                        name = '{} inflation indexing status'.format(rootparam)
-                    else:
-                        name = basevals[param]['long_name']
-                    for line in lines('name: ' + name, 6):
-                        doc += '  ' + line
-                    # ... write optional desc line
-                    if not param.endswith('_cpi'):
-                        desc = basevals[param]['description']
+                        doc += ' {} : {}\n'.format(pname, pval)
+                        # ... write optional param-vector-index line
+                        if isinstance(pval, list):
+                            pval = mdata_base[pname].get('vi_vals', [])
+                            pval = [str(item) for item in pval]
+                            doc += ' ' * (4 + len(pname)) + '{}\n'.format(pval)
+                        # ... write param-name line
+                        name = mdata_base[pname]['long_name']
+                        for line in lines('name: ' + name, 6):
+                            doc += '  ' + line
+                        # ... write param-description line
+                        desc = mdata_base[pname]['description']
                         for line in lines('desc: ' + desc, 6):
                             doc += '  ' + line
-                    # ... write baseline_value line
-                    if isinstance(basex, Policy):
-                        if param.endswith('_cpi'):
-                            rootparam = param[:-4]
-                            bval = basevals[rootparam].get('indexed', False)
-                        else:
-                            bval = getattr(basex, param[1:], None)
-                            if isinstance(bval, np.ndarray):
-                                bval = bval.tolist()
-                                if basevals[param]['value_type'] == 'boolean':
-                                    bval = [bool(item) for item in bval]
-                            elif basevals[param]['value_type'] == 'boolean':
-                                bval = bool(bval)
-                        doc += '  baseline_value: {}\n'.format(bval)
-                    else:  # if basex is GrowDiff object
-                        # all GrowDiff parameters have zero as default value
-                        doc += '  baseline_value: 0.0\n'
+                        # ... write param-baseline-value line
+                        if isinstance(baseline, Policy):
+                            pval = mdata_base[pname]['value']
+                            ptype = mdata_base[pname]['value_type']
+                            if isinstance(pval, list):
+                                if ptype == 'boolean':
+                                    pval = [bool(item) for item in pval]
+                            elif ptype == 'boolean':
+                                pval = bool(pval)
+                            doc += '  baseline_value: {}\n'.format(pval)
+                        else:  # if baseline is GrowDiff object
+                            # each GrowDiff parameter has zero as default value
+                            doc += '  baseline_value: 0.0\n'
+            del mdata_base
+            del mdata_upda
+            del mdata_base_keys
+            del mdata_upda_keys
             return doc
 
         # begin main logic of reform_documentation
-        # create Policy object with pre-reform (i.e., baseline) values
-        # ... create gdiff_baseline object
-        gdb = GrowDiff()
-        gdb.update_growdiff(params['growdiff_baseline'])
-        # ... create GrowFactors object that will incorporate gdiff_baseline
+        # create Policy object with current-law-policy values
+        gdiff_base = GrowDiff()
+        gdiff_base.update_growdiff(params['growdiff_baseline'])
         gfactors_clp = GrowFactors()
-        gdb.apply_to(gfactors_clp)
-        # ... create Policy object containing pre-reform parameter values
+        gdiff_base.apply_to(gfactors_clp)
         clp = Policy(gfactors=gfactors_clp)
+        # create Policy object with post-reform values
+        gdiff_resp = GrowDiff()
+        gdiff_resp.update_growdiff(params['growdiff_response'])
+        gfactors_ref = GrowFactors()
+        gdiff_base.apply_to(gfactors_ref)
+        gdiff_resp.apply_to(gfactors_ref)
+        ref = Policy(gfactors=gfactors_ref)
+        ref.implement_reform(params['policy'])
+        reform_years = Policy.years_in_revision(params['policy'])
+        if policy_dicts is not None:  # compound reform has been specified
+            assert isinstance(policy_dicts, list)
+            for policy_dict in policy_dicts:
+                ref.implement_reform(policy_dict)
+                xyears = Policy.years_in_revision(policy_dict)
+                for year in xyears:
+                    if year not in reform_years:
+                        reform_years.append(year)
         # generate documentation text
         doc = 'REFORM DOCUMENTATION\n'
+        # ... documentation for baseline growdiff assumptions
         doc += 'Baseline Growth-Difference Assumption Values by Year:\n'
-        years = sorted(params['growdiff_baseline'].keys())
+        years = GrowDiff.years_in_revision(params['growdiff_baseline'])
         if years:
-            doc += param_doc(years, params['growdiff_baseline'], gdb)
+            doc += param_doc(years, gdiff_base, GrowDiff())
         else:
-            doc += 'none: using default baseline growth assumptions\n'
-        doc += 'Policy Reform Parameter Values by Year:\n'
-        years = sorted(params['policy'].keys())
+            doc += 'none: using default growth assumptions\n'
+        # ... documentation for reform growdiff assumptions
+        doc += 'Response Growth-Difference Assumption Values by Year:\n'
+        years = GrowDiff.years_in_revision(params['growdiff_response'])
         if years:
-            doc += param_doc(years, params['policy'], clp)
+            doc += param_doc(years, gdiff_resp, GrowDiff())
+        else:
+            doc += 'none: using default growth assumptions\n'
+        # ... documentation for (possibly compound) policy reform
+        if policy_dicts is None:
+            doc += 'Policy Reform Parameter Values by Year:\n'
+        else:
+            doc += 'Compound Policy Reform Parameter Values by Year:\n'
+        # ... use clp and ref Policy objects to generate documentation
+        if reform_years:
+            doc += param_doc(reform_years, ref, clp)
         else:
             doc += 'none: using current-law policy parameters\n'
-        if policy_dicts is not None:
-            assert isinstance(policy_dicts, list)
-            base = clp
-            base.implement_reform(params['policy'])
-            assert not base.parameter_errors
-            for policy_dict in policy_dicts:
-                assert isinstance(policy_dict, dict)
-                doc += 'Policy Reform Parameter Values by Year:\n'
-                years = sorted(policy_dict.keys())
-                doc += param_doc(years, policy_dict, base)
-                base.implement_reform(policy_dict)
-                assert not base.parameter_errors
+        # cleanup local objects
+        del gdiff_base
+        del gfactors_clp
+        del gdiff_resp
+        del gfactors_ref
+        del clp
+        del ref
+        del years
+        del reform_years
+        # return documentation string
         return doc
 
     def ce_aftertax_income(self, calc,
@@ -1461,29 +1487,29 @@ class Calculator():
         """
         Strip //-comments from text_string and return 1 dict based on the JSON.
 
-        Specified text is JSON with at least 1 high-level key:object pair:
+        Specified text is JSON with 1 high-level key:object pair:
         a "policy": {...} pair.
 
         Other keys such as "consumption", "growdiff_baseline", or
         "growdiff_response" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
-        may contain one or more pairs with parameter string primary keys
-        and string years as secondary keys.  See tests/test_calculator.py for
-        an extended example of a commented JSON policy reform text
-        that can be read by this method.
+        may contain one or more pairs with parameter string primary keys and
+        string years as secondary keys.  See test_json_reform_url() in the
+        tests/test_calculator.py for an extended example of a commented JSON
+        policy reform text that can be read by this method.
 
-        Returned dictionary prdict has integer years as primary keys and
-        string parameters as secondary keys.  This returned dictionary is
-        suitable as the argument to the Policy implement_reform(prdict) method.
+        Returned dictionaries pr_dict has string parameters as primary keys and
+        integer years as secondary keys (that is, they have a param:year:value
+        format).  These returned dictionaries are suitable as the arguments to
+        the Policy.implement_reform(pr_dict) method.
         """
-        # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json_to_dict(json_str)
+        full_dict = json_to_dict(json_str)
         # check key contents of dictionary
-        actual_keys = set(raw_dict.keys())
+        actual_keys = set(full_dict.keys())
         missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
         if missing_keys:
             msg = 'required key(s) "{}" missing from policy reform file'
@@ -1492,16 +1518,15 @@ class Calculator():
         if illegal_keys:
             msg = 'illegal key(s) "{}" in policy reform file'
             raise ValueError(msg.format(illegal_keys))
-        # convert raw_dict['policy'] dictionary into prdict
-        prdict = Calculator._convert_parameter_dict(raw_dict['policy'])
-        return prdict
+        # return the converted full_dict['policy'] dictionary
+        return Calculator._convert_year_to_int(full_dict['policy'])
 
     @staticmethod
     def _read_json_econ_assump_text(text_string):
         """
-        Strip //-comments from text_string and return 5 dict based on the JSON.
+        Strip //-comments from text_string and return 3 dict based on the JSON.
 
-        Specified text is JSON with at least 5 high-level key:value pairs:
+        Specified text is JSON with 3 high-level key:value pairs:
         a "consumption": {...} pair,
         a "growdiff_baseline": {...} pair, and
         a "growdiff_response": {...} pair.
@@ -1509,29 +1534,24 @@ class Calculator():
         Other keys such as "policy" will raise a ValueError.
 
         The {...}  object may be empty (that is, be {}), or
-        may contain one or more pairs with parameter string primary keys
-        and string years as secondary keys.  See tests/test_calculator.py for
-        an extended example of a commented JSON economic assumption text
-        that can be read by this method.
-
-        Note that an example is shown in the ASSUMP_CONTENTS string in
-        the tests/test_calculator.py file.
+        may contain one or more pairs with parameter string primary keys and
+        string years as secondary keys.  See test_json_assump_url() in the
+        tests/test_calculator.py for an extended example of a commented JSON
+        economic assumption text that can be read by this method.
 
         Returned dictionaries (cons_dict, gdiff_baseline_dict,
-        gdiff_respose_dict) have integer years as primary
-        keys and string parameters as secondary keys.
-
-        These returned dictionaries are suitable as the arguments to
+        gdiff_respose_dict) have string parameters as primary keys and
+        integer years as secondary keys (that is, they have a param:year:value
+        format).  These returned dictionaries are suitable as the arguments to
         the Consumption.update_consumption(cons_dict) method, or
         the GrowDiff.update_growdiff(gdiff_dict) method.
         """
-        # pylint: disable=too-many-locals
         # strip out //-comments without changing line numbers
         json_str = re.sub('//.*', ' ', text_string)
         # convert JSON text into a Python dictionary
-        raw_dict = json_to_dict(json_str)
+        full_dict = json_to_dict(json_str)
         # check key contents of dictionary
-        actual_keys = set(raw_dict.keys())
+        actual_keys = set(full_dict.keys())
         missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys
         if missing_keys:
             msg = 'required key(s) "{}" missing from economic assumption file'
@@ -1540,54 +1560,29 @@ class Calculator():
         if illegal_keys:
             msg = 'illegal key(s) "{}" in economic assumption file'
             raise ValueError(msg.format(illegal_keys))
-        # convert the assumption dictionaries in raw_dict
-        key = 'consumption'
-        cons_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        key = 'growdiff_baseline'
-        gdiff_base_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        key = 'growdiff_response'
-        gdiff_resp_dict = Calculator._convert_parameter_dict(raw_dict[key])
-        return (cons_dict, gdiff_base_dict, gdiff_resp_dict)
+        # return the converted assumption dictionaries in full_dict as a tuple
+        return (
+            Calculator._convert_year_to_int(full_dict['consumption']),
+            Calculator._convert_year_to_int(full_dict['growdiff_baseline']),
+            Calculator._convert_year_to_int(full_dict['growdiff_response'])
+        )
 
     @staticmethod
-    def _convert_parameter_dict(param_key_dict):
+    def _convert_year_to_int(syr_dict):
         """
-        Converts specified param_key_dict into a dictionary whose primary
-        keys are calendar years, and hence, is suitable as the argument to
-        the Policy.implement_reform() method, or
-        the Consumption.update_consumption() method, or
-        the GrowDiff.update_growdiff() method.
-
-        Specified input dictionary has string parameter primary keys and
-        string years as secondary keys.
-
-        Returned dictionary has integer years as primary keys and
-        string parameters as secondary keys.
+        Converts specified syr_dict, which has string years as secondary
+        keys, into a dictionary with the same structure but having integer
+        years as secondary keys.
         """
-        # convert year skey strings into integers
-        year_param = dict()
-        for pkey, sdict in param_key_dict.items():
-            if not isinstance(pkey, str):
-                msg = 'pkey {} in param JSON is not a string'
-                raise ValueError(msg.format(pkey))
-            rdict = dict()
-            if not isinstance(sdict, dict):
-                msg = 'pkey {} in param JSON is not paired with a dict'
-                raise ValueError(msg.format(pkey))
+        iyr_dict = dict()
+        for pkey, sdict in syr_dict.items():
+            assert isinstance(pkey, str)
+            assert pkey not in iyr_dict  # will catch duplicate primary keys
+            iyr_dict[pkey] = dict()
+            assert isinstance(sdict, dict)
             for skey, val in sdict.items():
-                if not isinstance(skey, str):
-                    msg = 'skey {} in param JSON is not a string'
-                    raise ValueError(msg.format(skey))
+                assert isinstance(skey, str)
                 year = int(skey)
-                rdict[year] = val
-            year_param[pkey] = rdict
-        # convert year_param dictionary to year_key_dict dictionary
-        year_key_dict = dict()
-        years = set()
-        for param, sdict in year_param.items():
-            for year, val in sdict.items():
-                if year not in years:
-                    years.add(year)
-                    year_key_dict[year] = dict()
-                year_key_dict[year][param] = val
-        return year_key_dict
+                assert year not in iyr_dict[pkey]  # will catch duplicate years
+                iyr_dict[pkey][year] = val
+        return iyr_dict

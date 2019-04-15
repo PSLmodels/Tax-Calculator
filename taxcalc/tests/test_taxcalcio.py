@@ -31,9 +31,9 @@ def fixture_reformfile0():
     """
     txt = """
     { "policy": {
-        "_SS_Earnings_c": {"2016": [300000],
-                           "2018": [500000],
-                           "2020": [700000]}
+        "SS_Earnings_c": {"2016": 300000,
+                          "2018": 500000,
+                          "2020": 700000}
       }
     }
     """
@@ -57,7 +57,7 @@ def fixture_assumpfile0():
     contents = """
     {
     "consumption": {},
-    "growdiff_baseline": {"_ABOOK": {"2015": [-0.01]}},
+    "growdiff_baseline": {"ABOOK": {"2015": -0.01}},
     "growdiff_response": {}
     }
     """
@@ -79,25 +79,25 @@ def fixture_reformfile1():
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     {"policy": {
-        "_AMT_brk1": { // top of first AMT tax bracket
-          "2015": [200000],
-          "2017": [300000]},
-        "_EITC_c": { // max EITC amount by number of qualifying kids (0,1,2,3+)
-          "2016": [[ 900, 5000,  8000,  9000]],
-          "2019": [[1200, 7000, 10000, 12000]]},
-        "_II_em": { // personal exemption amount (see indexing changes below)
-          "2016": [6000],
-          "2018": [7500],
-          "2020": [9000]},
-        "_II_em_cpi": { // personal exemption amount indexing status
+        "AMT_brk1": { // top of first AMT tax bracket
+          "2015": 200000,
+          "2017": 300000},
+        "EITC_c": { // max EITC amount by number of qualifying kids (0,1,2,3+)
+          "2016": [ 900, 5000,  8000,  9000],
+          "2019": [1200, 7000, 10000, 12000]},
+        "II_em": { // personal exemption amount (see indexing changes below)
+          "2016": 6000,
+          "2018": 7500,
+          "2020": 9000},
+        "II_em-indexed": { // personal exemption amount indexing status
           "2016": false, // values in future years are same as this year value
           "2018": true // values in future years indexed with this year as base
           },
-        "_SS_Earnings_c": { // social security (OASDI) maximum taxable earnings
-          "2016": [300000],
-          "2018": [500000],
-          "2020": [700000]},
-        "_AMT_em_cpi": { // AMT exemption amount indexing status
+        "SS_Earnings_c": { // social security (OASDI) maximum taxable earnings
+          "2016": 300000,
+          "2018": 500000,
+          "2020": 700000},
+        "AMT_em-indexed": { // AMT exemption amount indexing status
           "2017": false, // values in future years are same as this year value
           "2020": true // values in future years indexed with this year as base
         }
@@ -120,7 +120,7 @@ def fixture_baselinebad():
     Temporary baseline file with .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{ "policy": {"_AMT_brk1": {"2011": [0.0]}}}'
+    contents = '{ "policy": {"AMT_brk1": {"2011": 0.0}}}'
     rfile.write(contents)
     rfile.close()
     yield rfile
@@ -137,7 +137,7 @@ def fixture_errorreformfile():
     Temporary reform file with .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{ "policy": {"_xxx": {"2015": [0]}}}'
+    contents = '{ "policy": {"xxx": {"2015": 0}}}'
     rfile.write(contents)
     rfile.close()
     yield rfile
@@ -156,9 +156,9 @@ def fixture_errorassumpfile():
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     {
-    "consumption": {"_MPC_e18400": {"2018": [-9]}},
-    "growdiff_baseline": {"_ABOOKxx": {"2017": [0.02]}},
-    "growdiff_response": {"_ABOOKxx": {"2017": [0.02]}}
+    "consumption": {"MPC_e18400": {"2018": -9}},
+    "growdiff_baseline": {"ABOOKxx": {"2017": 0.02}},
+    "growdiff_response": {"ABOOKxx": {"2017": 0.02}}
     }
     """
     rfile.write(contents)
@@ -179,7 +179,7 @@ def fixture_assumpfile1():
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     {
-    "consumption": { "_MPC_e18400": {"2018": [0.05]} },
+    "consumption": { "MPC_e18400": {"2018": 0.05} },
     "growdiff_baseline": {},
     "growdiff_response": {}
     }
@@ -200,7 +200,7 @@ def fixture_lumpsumreformfile():
     Temporary reform file without .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    lumpsum_reform_contents = '{"policy": {"_LST": {"2013": [200]}}}'
+    lumpsum_reform_contents = '{"policy": {"LST": {"2013": 200}}}'
     rfile.write(lumpsum_reform_contents)
     rfile.close()
     yield rfile
@@ -219,7 +219,7 @@ def fixture_assumpfile2():
     afile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     assump2_contents = """
     {
-    "consumption":  {"_BEN_snap_value": {"2018": [0.90]}},
+    "consumption":  {"BEN_snap_value": {"2018": 0.90}},
     "growdiff_baseline": {},
     "growdiff_response": {}
     }
@@ -650,7 +650,7 @@ def fixture_warnreformfile():
     Temporary reform file with .json extension.
     """
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
-    contents = '{"policy": {"_STD_Dep": {"2015": [0]}}}'
+    contents = '{"policy": {"STD_Dep": {"2015": 0}}}'
     rfile.write(contents)
     rfile.close()
     yield rfile
@@ -694,10 +694,10 @@ def fixture_reformfile9():
     rfile = tempfile.NamedTemporaryFile(suffix='.json', mode='a', delete=False)
     contents = """
     { "policy": {
-        "_SS_Earnings_c": {
-          "2014": [300000],
-          "2015": [500000],
-          "2016": [700000]}
+        "SS_Earnings_c": {
+          "2014": 300000,
+          "2015": 500000,
+          "2016": 700000}
       }
     }
     """

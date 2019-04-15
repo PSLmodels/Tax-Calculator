@@ -22,10 +22,13 @@ def test_validity_of_consumption_vars_set():
 def test_update_consumption():
     consump = Consumption()
     consump.update_consumption({})
-    consump.update_consumption({2014: {'_MPC_e20400': [0.05],
-                                       '_BEN_mcare_value': [0.75]},
-                                2015: {'_MPC_e20400': [0.06],
-                                       '_BEN_mcare_value': [0.80]}})
+    revision = {
+        'MPC_e20400': {2014: 0.05,
+                       2015: 0.06},
+        'BEN_mcare_value': {2014: 0.75,
+                            2015: 0.80}
+    }
+    consump.update_consumption(revision)
     expected_mpc_e20400 = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.06)
     expected_mpc_e20400[0] = 0.0
     expected_mpc_e20400[1] = 0.05
@@ -56,15 +59,17 @@ def test_incorrect_update_consumption():
     with pytest.raises(ValueError):
         Consumption().update_consumption([])
     with pytest.raises(ValueError):
-        Consumption().update_consumption({'xyz': {'_MPC_e17500': [0.2]}})
+        Consumption().update_consumption({'MPC_e17500': {'xyz': 0.2}})
     with pytest.raises(ValueError):
-        Consumption().update_consumption({2012: {'_MPC_e17500': [0.2]}})
+        Consumption().update_consumption({'MPC_e17500': {2012: 0.2}})
     with pytest.raises(ValueError):
-        Consumption().update_consumption({2052: {'_MPC_e17500': [0.2]}})
+        Consumption().update_consumption({'MPC_e17500': {2052: 0.2}})
     with pytest.raises(ValueError):
-        Consumption().update_consumption({2014: {'_MPC_exxxxx': [0.2]}})
+        Consumption().update_consumption({'MPC_exxxxx': {2014: 0.2}})
     with pytest.raises(ValueError):
-        Consumption().update_consumption({2014: {'_MPC_e17500': [-0.1]}})
+        Consumption().update_consumption({'MPC_e17500': {2014: -0.1}})
+    with pytest.raises(ValueError):
+        Consumption().update_consumption({'MPC_e17500-indexed': {2014: 0.1}})
 
 
 def test_future_update_consumption():
@@ -73,7 +78,7 @@ def test_future_update_consumption():
     assert consump.has_response() is False
     cyr = 2020
     consump.set_year(cyr)
-    consump.update_consumption({cyr: {'_MPC_e20400': [0.01]}})
+    consump.update_consumption({'MPC_e20400': {cyr: 0.01}})
     assert consump.current_year == cyr
     assert consump.has_response() is True
     consump.set_year(cyr - 1)
@@ -83,7 +88,7 @@ def test_future_update_consumption():
     assert consump_ben.current_year == consump_ben.start_year
     assert consump_ben.has_response() is False
     consump_ben.set_year(cyr)
-    consump_ben.update_consumption({cyr: {'_BEN_vet_value': [0.95]}})
+    consump_ben.update_consumption({'BEN_vet_value': {cyr: 0.95}})
     assert consump_ben.current_year == cyr
     assert consump_ben.has_response() is True
     consump_ben.set_year(cyr - 1)
@@ -94,16 +99,16 @@ def test_consumption_default_data():
     consump = Consumption()
     pdata = consump._vals
     for pname in pdata.keys():
-        if pname.startswith('_MPC'):
+        if pname.startswith('MPC'):
             assert pdata[pname]['value'] == [0.0]
-        elif pname.startswith('_BEN'):
+        elif pname.startswith('BEN'):
             assert pdata[pname]['value'] == [1.0]
 
 
 def test_consumption_response(cps_subsample):
     consump = Consumption()
     mpc = 0.5
-    consumption_response = {2013: {'_MPC_e20400': [mpc]}}
+    consumption_response = {'MPC_e20400': {2013: mpc}}
     consump.update_consumption(consumption_response)
     # test incorrect call to response method
     with pytest.raises(ValueError):
@@ -135,25 +140,3 @@ def test_consumption_response(cps_subsample):
                                 np.around(mtr0_itax, decimals=5)))
     # confirm that some mtr with cons-resp are less than without cons-resp
     assert np.any(np.less(mtr1_itax, mtr0_itax))
-
-
-def test_validate_assump_parameters_errors():
-    """
-    Check detection of invalid consumption parameter names, types, values.
-    """
-    con0 = Consumption()
-    parm0 = {2020: {'_STD_cpi': True}}  # invalid name
-    with pytest.raises(ValueError):
-        con0.update_consumption(parm0)
-    con1 = Consumption()
-    parm1 = {2020: {'_MPC_e17500': [False]}}
-    with pytest.raises(ValueError):
-        con1.update_consumption(parm1)
-    con2 = Consumption()
-    parm2 = {2020: {'_MPC_e17500': [-0.5]}}
-    with pytest.raises(ValueError):
-        con2.update_consumption(parm2)
-    con3 = Consumption()
-    parm3 = {2020: {'_MPC_e17500': [1.5]}}
-    with pytest.raises(ValueError):
-        con3.update_consumption(parm3)

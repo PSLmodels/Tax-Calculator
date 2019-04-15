@@ -29,7 +29,7 @@ def test_2017_law_reform(tests_path):
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
     # eventually activate: assert not clp.parameter_warnings
-    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-02-22)\n'
+    ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
     assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     pol.set_year(2018)
@@ -39,32 +39,32 @@ def test_2017_law_reform(tests_path):
         # relation '<' implies asserting that actual < expect
         # relation '>' implies asserting that actual > expect
         # ... parameters not affected by TCJA and that are not indexed
-        '_AMEDT_ec': {'relation': '=', 'value': 200000},
-        '_SS_thd85': {'relation': '=', 'value': 34000},
+        'AMEDT_ec': {'relation': '=', 'value': 200000},
+        'SS_thd85': {'relation': '=', 'value': 34000},
         # ... parameters not affected by TCJA and that are indexed
-        '_STD_Dep': {'relation': '>', 'value': 1050},
-        '_CG_brk2': {'relation': '>', 'value': 425800},
-        '_AMT_CG_brk1': {'relation': '>', 'value': 38600},
-        '_AMT_brk1': {'relation': '>', 'value': 191100},
-        '_EITC_c': {'relation': '>', 'value': 519},
-        '_EITC_ps': {'relation': '>', 'value': 8490},
-        '_EITC_ps_MarriedJ': {'relation': '>', 'value': 5680},
-        '_EITC_InvestIncome_c': {'relation': '>', 'value': 3500},
+        'STD_Dep': {'relation': '>', 'value': 1050},
+        'CG_brk2': {'relation': '>', 'value': 425800},
+        'AMT_CG_brk1': {'relation': '>', 'value': 38600},
+        'AMT_brk1': {'relation': '>', 'value': 191100},
+        'EITC_c': {'relation': '>', 'value': 519},
+        'EITC_ps': {'relation': '>', 'value': 8490},
+        'EITC_ps_MarriedJ': {'relation': '>', 'value': 5680},
+        'EITC_InvestIncome_c': {'relation': '>', 'value': 3500},
         # ... parameters affected by TCJA and that are not indexed
-        '_ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
-        '_II_rt3': {'relation': '=', 'value': 0.25},
+        'ID_Charity_crt_all': {'relation': '=', 'value': 0.5},
+        'II_rt3': {'relation': '=', 'value': 0.25},
         # ... parameters affected by TCJA and that are indexed
-        '_II_brk3': {'relation': '>', 'value': 91900},
-        '_STD': {'relation': '<', 'value': 7000},
-        '_II_em': {'relation': '>', 'value': 4050},
-        '_AMT_em_pe': {'relation': '<', 'value': 260000}
+        'II_brk3': {'relation': '>', 'value': 91900},
+        'STD': {'relation': '<', 'value': 7000},
+        'II_em': {'relation': '>', 'value': 4050},
+        'AMT_em_pe': {'relation': '<', 'value': 260000}
     }
     assert isinstance(pre_expect, dict)
     assert set(pre_expect.keys()).issubset(set(pre_mdata.keys()))
     for name in pre_expect:
-        aval = pre_mdata[name]['value'][0]
+        aval = pre_mdata[name]['value']
         if isinstance(aval, list):
-            act = aval[0]  # comparing only first item in a nonscalar parameter
+            act = aval[0]  # comparing only first item in a vector parameter
         else:
             act = aval
         exp = pre_expect[name]['value']
@@ -101,7 +101,7 @@ def test_round_trip_tcja_reform(tests_path):
     reform = Calculator.read_json_param_objects(rtext, None)
     pol.implement_reform(reform['policy'])
     # eventually activate: assert not clp.parameter_warnings
-    ctc_c_warning = '_CTC_c was redefined in release 1.0.0 (2019-02-22)\n'
+    ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
     assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
@@ -257,7 +257,9 @@ def reform_results(rid, reform_dict, puf_data, reform_2017_law):
     calc1 = Calculator(policy=pol, records=rec, verbose=False)
     # create reform Calculator object, calc2
     start_year = reform_dict['start_year']
-    reform = {start_year: reform_dict['value']}
+    reform = dict()
+    for name, value in reform_dict['value'].items():
+        reform[name] = {start_year: value}
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec, verbose=False)
     # increment both Calculator objects to reform's start_year
