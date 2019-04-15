@@ -2,7 +2,7 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
-Changes in release 2.0.0 on 2019-04-??
+Changes in release 2.0.0 on 2019-04-15
 --------------------------------------
 
 **This is a major release with changes that make Tax-Calculator
