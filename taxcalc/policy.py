@@ -103,7 +103,8 @@ class Policy(Parameters):
                          print_warnings=True, raise_errors=True):
         """
         Implement specified policy reform and leave current_year unchanged.
-        (see Parameters._update for argument documentation.)
+        See Parameters._update for argument documentation and details about
+        the expected structure of the reform dictionary.
         """
         self._update(reform, print_warnings, raise_errors)
 

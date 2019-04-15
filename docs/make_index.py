@@ -102,7 +102,7 @@ def policy_param_text(pname, param):
     txt += '<br><i>Value Type:</i> {}'.format(param['value_type'])
     txt += '<br><i>Known Values:</i>'
     if len(param.get('vi_vals', [])) > 0:
-        cols = ', '.join(param['vi_name'])
+        cols = ', '.join(param['vi_vals'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
     for cyr, val in zip(param['value_yrs'], param['value']):
         final_cyr = cyr
@@ -237,6 +237,8 @@ def assumption_param_text(pname, ptype, param):
     minval = param['valid_values']['min']
     maxval = param['valid_values']['max']
     txt += ' min = {} and max = {}'.format(minval, maxval)
+    invalid_action = param.get('invalid_action', 'stop')
+    txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
     txt += '</p>'
     return txt
 

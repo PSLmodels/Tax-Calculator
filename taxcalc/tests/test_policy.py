@@ -46,7 +46,7 @@ def test_policy_json_content_consistency():
     Test contents of JSON defaults file, which is read into Policy._vals dict.
     """
     expected_vi_vals = {
-        'MARS': ['single', 'mjoint', 'marsep', 'headhh', 'widow'],
+        'MARS': ['single', 'mjoint', 'mseparate', 'headhh', 'widow'],
         'EIC': ['0kids', '1kid', '2kids', '3+kids'],
         'idedtype': ['med', 'sltx', 'retx', 'cas', 'misc', 'int', 'char']
     }

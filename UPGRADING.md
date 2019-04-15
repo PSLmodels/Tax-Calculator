@@ -24,7 +24,7 @@ In both cases you need to do the following:
 1. Remove the leading underscore character from each parameter name.
 
 2. Remove the brackets around the value of scalar parameters (i.e.,
-   those that do not vary by filing-unit type, number of EITC eligible
+   those that do not vary by filing-unit type, number of EITC-eligible
    children, or type of itemized deduction, and therefore, are just a
    single value in any year).
 

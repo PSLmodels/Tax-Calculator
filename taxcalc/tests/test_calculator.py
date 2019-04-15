@@ -465,7 +465,6 @@ def test_read_json_reform_file_and_implement_reform(set_year):
     assert add4aged[2022 - syr] == 0.0
 
 
-@pytest.mark.skip
 def test_json_reform_url():
     """
     Test reading a JSON reform from a URL. Results from the URL are expected
@@ -552,7 +551,6 @@ def test_read_bad_json_reform_file():
         Calculator.read_json_param_objects(None, list())
 
 
-@pytest.mark.skip
 def test_json_assump_url():
     """
     Test reading JSON assumption file using URL.
@@ -561,75 +559,75 @@ def test_json_assump_url():
     {
         "consumption": {
             // all BEN_*_value parameters have a default value of one
-            "BEN_housing_value": {"2017": 1.0]},
-            "BEN_snap_value": {"2017": 1.0]},
-            "BEN_tanf_value": {"2017": 1.0]},
-            "BEN_vet_value": {"2017": 1.0]},
-            "BEN_wic_value": {"2017": 1.0]},
-            "BEN_mcare_value": {"2017": 1.0]},
-            "BEN_mcaid_value": {"2017": 1.0]},
-            "BEN_other_value": {"2017": 1.0]},
+            "BEN_housing_value": {"2017": 1.0},
+            "BEN_snap_value": {"2017": 1.0},
+            "BEN_tanf_value": {"2017": 1.0},
+            "BEN_vet_value": {"2017": 1.0},
+            "BEN_wic_value": {"2017": 1.0},
+            "BEN_mcare_value": {"2017": 1.0},
+            "BEN_mcaid_value": {"2017": 1.0},
+            "BEN_other_value": {"2017": 1.0},
             // all MPC_* parameters have a default value of zero
-            "MPC_e17500": {"2017": 0.0]},
-            "MPC_e18400": {"2017": 0.0]},
-            "MPC_e19800": {"2017": 0.0]},
-            "MPC_e20400": {"2017": 0.0]}
+            "MPC_e17500": {"2017": 0.0},
+            "MPC_e18400": {"2017": 0.0},
+            "MPC_e19800": {"2017": 0.0},
+            "MPC_e20400": {"2017": 0.0}
         },
         "growdiff_baseline": {
             // all growdiff_baseline parameters have a default value of zero
-            "ABOOK": {"2017": 0.0]},
-            "ACGNS": {"2017": 0.0]},
-            "ACPIM": {"2017": 0.0]},
-            "ACPIU": {"2017": 0.0]},
-            "ADIVS": {"2017": 0.0]},
-            "AINTS": {"2017": 0.0]},
-            "AIPD": {"2017": 0.0]},
-            "ASCHCI": {"2017": 0.0]},
-            "ASCHCL": {"2017": 0.0]},
-            "ASCHEI": {"2017": 0.0]},
-            "ASCHEL": {"2017": 0.0]},
-            "ASCHF": {"2017": 0.0]},
-            "ASOCSEC": {"2017": 0.0]},
-            "ATXPY": {"2017": 0.0]},
-            "AUCOMP": {"2017": 0.0]},
-            "AWAGE": {"2017": 0.0]},
-            "ABENOTHER": {"2017": 0.0]},
-            "ABENMCARE": {"2017": 0.0]},
-            "ABENMCAID": {"2017": 0.0]},
-            "ABENSSI": {"2017": 0.0]},
-            "ABENSNAP": {"2017": 0.0]},
-            "ABENWIC": {"2017": 0.0]},
-            "ABENHOUSING": {"2017": 0.0]},
-            "ABENTANF": {"2017": 0.0]},
-            "ABENVET": {"2017": 0.0]}
+            "ABOOK": {"2017": 0.0},
+            "ACGNS": {"2017": 0.0},
+            "ACPIM": {"2017": 0.0},
+            "ACPIU": {"2017": 0.0},
+            "ADIVS": {"2017": 0.0},
+            "AINTS": {"2017": 0.0},
+            "AIPD": {"2017": 0.0},
+            "ASCHCI": {"2017": 0.0},
+            "ASCHCL": {"2017": 0.0},
+            "ASCHEI": {"2017": 0.0},
+            "ASCHEL": {"2017": 0.0},
+            "ASCHF": {"2017": 0.0},
+            "ASOCSEC": {"2017": 0.0},
+            "ATXPY": {"2017": 0.0},
+            "AUCOMP": {"2017": 0.0},
+            "AWAGE": {"2017": 0.0},
+            "ABENOTHER": {"2017": 0.0},
+            "ABENMCARE": {"2017": 0.0},
+            "ABENMCAID": {"2017": 0.0},
+            "ABENSSI": {"2017": 0.0},
+            "ABENSNAP": {"2017": 0.0},
+            "ABENWIC": {"2017": 0.0},
+            "ABENHOUSING": {"2017": 0.0},
+            "ABENTANF": {"2017": 0.0},
+            "ABENVET": {"2017": 0.0}
         },
         "growdiff_response": {
             // all growdiff_response parameters have a default value of zero
-            "ABOOK": {"2017": 0.0]},
-            "ACGNS": {"2017": 0.0]},
-            "ACPIM": {"2017": 0.0]},
-            "ACPIU": {"2017": 0.0]},
-            "ADIVS": {"2017": 0.0]},
-            "AINTS": {"2017": 0.0]},
-            "AIPD": {"2017": 0.0]},
-            "ASCHCI": {"2017": 0.0]},
-            "ASCHCL": {"2017": 0.0]},
-            "ASCHEI": {"2017": 0.0]},
-            "ASCHEL": {"2017": 0.0]},
-            "ASCHF": {"2017": 0.0]},
-            "ASOCSEC": {"2017": 0.0]},
-            "ATXPY": {"2017": 0.0]},
-            "AUCOMP": {"2017": 0.0]},
-            "AWAGE": {"2017": 0.0]},
-            "ABENOTHER": {"2017": 0.0]},
-            "ABENMCARE": {"2017": 0.0]},
-            "ABENMCAID": {"2017": 0.0]},
-            "ABENSSI": {"2017": 0.0]},
-            "ABENSNAP": {"2017": 0.0]},
-            "ABENWIC": {"2017": 0.0]},
-            "ABENHOUSING": {"2017": 0.0]},
-            "ABENTANF": {"2017": 0.0]},
-            "ABENVET": {"2017": 0.0]}
+            "ABOOK": {"2017": 0.0},
+            "ACGNS": {"2017": 0.0},
+            "ACPIM": {"2017": 0.0},
+            "ACPIU": {"2017": 0.0},
+            "ADIVS": {"2017": 0.0},
+            "AINTS": {"2017": 0.0},
+            "AIPD": {"2017": 0.0},
+            "ASCHCI": {"2017": 0.0},
+            "ASCHCL": {"2017": 0.0},
+            "ASCHEI": {"2017": 0.0},
+            "ASCHEL": {"2017": 0.0},
+            "ASCHF": {"2017": 0.0},
+            "ASOCSEC": {"2017": 0.0},
+            "ATXPY": {"2017": 0.0},
+            "AUCOMP": {"2017": 0.0},
+            "AWAGE": {"2017": 0.0},
+            "ABENOTHER": {"2017": 0.0},
+            "ABENMCARE": {"2017": 0.0},
+            "ABENMCAID": {"2017": 0.0},
+            "ABENSSI": {"2017": 0.0},
+            "ABENSNAP": {"2017": 0.0},
+            "ABENWIC": {"2017": 0.0},
+            "ABENHOUSING": {"2017": 0.0},
+            "ABENTANF": {"2017": 0.0},
+            "ABENVET": {"2017": 0.0}
         }
     }
     """
@@ -650,7 +648,7 @@ def test_read_bad_json_assump_file():
     badassump1 = """
     {
       "consumption": { // example of incorrect JSON because 'x' must be "x"
-        'x': {"2014": 0.25]}
+        'x': {"2014": 0.25}
       },
       "growdiff_baseline": {},
       "growdiff_response": {}
@@ -669,7 +667,7 @@ def test_read_bad_json_assump_file():
       "growdiff_baseline": {},
       "growdiff_response": {},
       "policy": { // example of misplaced policy key
-        "SS_Earnings_c": {"2018": 9e99]}
+        "SS_Earnings_c": {"2018": 9e99}
       }
     }
     """
