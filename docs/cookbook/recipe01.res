@@ -1,7 +1,3 @@
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
 2018_REFORM1_iitax_rev($B)= 1416.934
 2018_REFORM2_iitax_rev($B)= 1263.701
 

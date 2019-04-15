@@ -1,7 +1,3 @@
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
 
 Response in Charitable Giving by Earnings Group
 Earnings Group    	 Num(#M)	Resp($B)	 Resp(%)
