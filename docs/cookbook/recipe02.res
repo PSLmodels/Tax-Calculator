@@ -1,9 +1,3 @@
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
-You loaded data for 2014.
-Tax-Calculator startup automatically extrapolated your data to 2014.
 2020_CURRENT_LAW_P__itax_rev($B)= 1447.348
 2020_REFORM_STATIC__itax_rev($B)= 1443.743
 2020_REFORM_DYNAMIC_itax_rev($B)= 1433.640
