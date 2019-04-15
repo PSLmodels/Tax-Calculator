@@ -1,6 +1,6 @@
 """
 Command-line tool that converts Tax-Calculator JSON reform/assumption file
-from the old (1.x) format to the new (2.0) format.
+from the old (1.x) format to the new (2.0+) format.
 ------------------------------------------------------------------------
 WARNING: This program make certain assumptions about how the JSON file
          is formatted, so it will not work correctly on a JSON file

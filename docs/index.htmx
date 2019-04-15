@@ -640,7 +640,7 @@ the <kbd>ref3.json</kbd> file, the content of which is:
 // after which it continues to be indexed to price inflation.
 {
     "policy": {
-        "_II_em": {"2022": [8000]}
+        "II_em": {"2022": 8000}
     }
 }
 </pre></p>
