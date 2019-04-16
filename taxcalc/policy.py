@@ -50,7 +50,7 @@ class Policy(Parameters):
         '_DependentCredit_before_CTC': 'is a removed parameter name',
         '_FilerCredit_c': 'is a removed parameter name',
         '_ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
-        # TODO: following parameter renamed in PR 2292 merged on 2019-04-??
+        # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
         '_cpi_offset': 'was renamed CPI_offset in release 2.0.0'
     }
     # (2) specify which Policy parameters have been redefined recently

@@ -37,7 +37,7 @@ fi
 # ... calculate Tax-Calculator output
 tc $LYY_FN.csv 20$YY --reform taxsim_emulation.json --dump
 if [[ $? -ne 0 ]]; then
-    echo "ERROR: taxcalc package is not available"
+    echo "ERROR: 'tc ...' call failed"
     exit 1
 fi
 mv $LYY_FN-$YY-#-taxsim_emulation-#.csv $LYY_FN.out.csv
