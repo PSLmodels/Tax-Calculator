@@ -1161,7 +1161,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
 @iterate_jit(nopython=True)
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
-         e27200, age_head, age_spouse, earned, earned_p, earned_s,
+         e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
@@ -1220,7 +1220,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     # reduce positive EITC if investment income exceeds ceiling
     if c59660 > 0.:
         invinc = (e00400 + e00300 + e00600 +
-                  max(0., c01000) + max(0., e27200))
+                  max(0., c01000) + max(0., (e02000 - e26270)))
         if invinc > EITC_InvestIncome_c:
             eitc = (c59660 - EITC_excess_InvestIncome_rt *
                     (invinc - EITC_InvestIncome_c))

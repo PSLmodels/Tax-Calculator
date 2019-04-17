@@ -14,7 +14,6 @@ for a complete commit history.
 Read [this document](UPGRADING.md#upgrading-to-tax-calculator-20) to understand what you need to do before using Tax-Calcualtor 2.0.
 
 **API Changes**
-
 - Simplify and standardize the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies
   [[#2292](https://github.com/PSLmodels/Tax-Calculator/pull/2292)
   by Martin Holmer]
