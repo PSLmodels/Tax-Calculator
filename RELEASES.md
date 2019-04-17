@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-04-17 Release 2.0.1
+------------------------
+(last merged pull request is
+[#2306](https://github.com/PSLmodels/Tax-Calculator/pull/2306))
+
+**This is a bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Fix minor flaw in definition of EITC investment income
+  [[#2306](https://github.com/PSLmodels/Tax-Calculator/pull/2306)
+  by Martin Holmer]
+
+
 2019-04-15 Release 2.0.0
 ------------------------
 (last merged pull request is
