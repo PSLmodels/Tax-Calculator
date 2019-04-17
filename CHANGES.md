@@ -2,6 +2,14 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.0.1 on 2019-04-17
+--------------------------------------
+
+**This is a bug-fix release.**
+
+- Fix minor flaw in definition of EITC investment income
+
+
 Changes in release 2.0.0 on 2019-04-15
 --------------------------------------
 
