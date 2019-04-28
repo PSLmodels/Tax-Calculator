@@ -1,10 +1,10 @@
 """
-Reads skeletal index.htmx file and writes fleshed-out index.html file
+Reads skeletal uguide.htmy file and writes fleshed-out uguide.htmx file
 containing information from several JSON files.
 """
 # CODING-STYLE CHECKS:
-# pycodestyle --ignore=E402 make_index.py
-# pylint --disable=locally-disabled make_index.py
+# pycodestyle --ignore=E402 make_uguide.py
+# pylint --disable=locally-disabled make_uguide.py
 
 import os
 import sys
@@ -15,8 +15,8 @@ sys.path.append(os.path.join(CUR_PATH, '..'))
 from taxcalc import Policy, json_to_dict
 
 
-INPUT_FILENAME = 'index.htmx'
-OUTPUT_FILENAME = 'index.html'
+INPUT_FILENAME = 'uguide.htmy'
+OUTPUT_FILENAME = 'uguide.htmx'
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
@@ -40,7 +40,7 @@ def main():
     # augment text variable with do-not-edit warning
     old = '<!-- #WARN# -->'
     new = ('<!-- *** NEVER EDIT THIS FILE BY HAND *** -->\n'
-           '<!-- *** INSTEAD EDIT index.htmx FILE *** -->')
+           '<!-- *** INSTEAD EDIT uguide.htmy FILE *** -->')
     text = text.replace(old, new)
 
     # augment text variable with information from JSON files
