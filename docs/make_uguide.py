@@ -1,5 +1,5 @@
 """
-Reads skeletal uguide.htmy file and writes fleshed-out uguide.htmx file
+Reads skeletal uguide.htmx file and writes fleshed-out uguide.html file
 containing information from several JSON files.
 """
 # CODING-STYLE CHECKS:
