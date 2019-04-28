@@ -15,8 +15,8 @@ sys.path.append(os.path.join(CUR_PATH, '..'))
 from taxcalc import Policy, json_to_dict
 
 
-INPUT_FILENAME = 'uguide.htmy'
-OUTPUT_FILENAME = 'uguide.htmx'
+INPUT_FILENAME = 'uguide.htmx'
+OUTPUT_FILENAME = 'uguide.html'
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
