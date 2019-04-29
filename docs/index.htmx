@@ -41,11 +41,19 @@
 </p>
 
 <p>
+  Tax-Calculator is transparent because its Python source code and
+  embedded documentation are publicly available at the
+  <a href="https://github.com/PSLmodels/Tax-Calculator" target="_blank">
+  Tax-Calculator GitHub repository</a>.
+</p>
+
+<p>
   Tax-Calculator can simulate an enormous number of tax reforms
   because tax policy is parameterized using over 200 parameters that
-  can be changed by users.  And even a reform that is not able to be
-  characterized using currently-available parameters can be simulated
-  by writing supplementary Python code that characterizes the reform.
+  can be changed by users without doing any programming.  And even a
+  reform that is not able to be characterized using
+  currently-available parameters can be simulated by writing
+  supplementary Python code that characterizes the reform.
 </p>
 
 <p>
@@ -68,14 +76,15 @@
 </p>
 
 <p>
-  If already using Tax-Calculator, upgrade using the following command:
+  If you are already using Tax-Calculator, upgrade using the following
+  command:
+  <pre>
+    conda update -c PSLmodels taxcalc
+  </pre>
 </p>
-<pre>
-  conda update -c PSLmodels taxcalc
-</pre>
 
 <p>
-  If just getting started, read
+  If you just getting started, read
   <a href="tc_starting.html">these instructions</a>.
 </p>
   
@@ -96,7 +105,7 @@
   Please cite the source of your analysis as <q>Tax-Calculator release
   #.#.#, author's calculations</q>. If you wish to provide a link to
   Tax-Calculator, the preferred URL is:<br />
-  <kbd>https://PSLmodels.github.io/Tax-Calculator/</kbd><br />
+  <kbd>https://PSLmodels.github.io/Tax-Calculator</kbd><br />
   Additionally, we strongly recommend that you describe the input data
   used, and provide a link to the materials required to replicate your
   analysis or, at least, note that those materials are available upon
