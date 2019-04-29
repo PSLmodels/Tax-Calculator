@@ -17,10 +17,15 @@ def main():
     """
     curdir_path = os.path.abspath(os.path.dirname(__file__))
 
-    # read navbar code into navbar variable
+    # read navigation-menu code into navbar variable
     navbar_filename = os.path.join(curdir_path, 'navbar.htmx')
     with open(navbar_filename, 'r') as navbar_file:
             navbar = navbar_file.read()
+
+    # read top-button code into topbtn variable
+    topbtn_filename = os.path.join(curdir_path, 'topbtn.htmx')
+    with open(topbtn_filename, 'r') as topbtn_file:
+            topbtn = topbtn_file.read()
 
     # process index.htmx and each tc_*.htmx file
     input_filenames = ['index.htmx']
@@ -37,6 +42,9 @@ def main():
         # ... augment text variable with navbar menu code
         old = '<!-- #NAVBAR# -->'
         text = text.replace(old, navbar)
+        # ... augment text variable with top button code
+        old = '<!-- #TOP# -->'
+        text = text.replace(old, topbtn)
         # ... write text variable to output file
         with open(ifile.replace('.htmx', '.html'), 'w') as outfile:
             outfile.write(text)

@@ -64,8 +64,6 @@
   author or the affirmer.
 </p>
 
-<button onclick="topFunction()" id="topbutton" title="Go to top">Top</button>
-<script src="docs.js"></script>
-<br /><br />
+<!-- #TOP# -->
 </body>
 </html>
