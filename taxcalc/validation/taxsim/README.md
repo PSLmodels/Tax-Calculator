@@ -1,5 +1,5 @@
-Validation of Tax-Calculator against Internet TAXSIM version 27
-===============================================================
+Validation of Tax-Calculator against Internet TAXSIM-27
+=======================================================
 
 The general cross-model validation process described
 [here](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/README.md#validation-of-tax-calculator-logic)

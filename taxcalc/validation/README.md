@@ -49,7 +49,7 @@ four-step process are provided in a different sub-directory for each
 other model.  Here are links to the cross-model validation results
 that are currently available:
 
-[Internet TAXSIM version 27](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+[Internet TAXSIM-27](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-27)
 
 [...]()
 
