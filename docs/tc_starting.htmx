@@ -27,15 +27,16 @@
 
 <p>
   Download and install the free Anaconda distribution of Python 3.6 or
-  3.7 from <a href="https://www.anaconda.com/download/">Anaconda</a>.
-  You must do this even if you already have Python installed on your
-  computer because the Anaconda distribution contains all the
-  additional Python packages that Tax-Calculator uses to conduct its
-  calculations (many of which are not included in other Python
-  installations).  You can install the Anaconda distribution without
-  having administrative privileges on your computer and the Anaconda
-  distribution will not interfere with any Python installation that
-  came as part of your computer's operating system.
+  3.7 from <a href="https://www.anaconda.com/download/"
+  target="_blank">Anaconda</a>.  You must do this even if you already
+  have Python installed on your computer because the Anaconda
+  distribution contains all the additional Python packages that
+  Tax-Calculator uses to conduct its calculations (many of which are
+  not included in other Python installations).  You can install the
+  Anaconda distribution without having administrative privileges on
+  your computer and the Anaconda distribution will not interfere with
+  any Python installation that came as part of your computer's
+  operating system.
 </p>
 
 <h5>2. Download Tax-Calculator Package</h5>
@@ -53,10 +54,10 @@
 <h5>3. Read Tax-Calculator User Guide</h5>
 
 <p>
-  Read the <a href="uguide.html">user guide</a> about how to conduct
-  tax analysis with Tax-Calculator and how to join the Tax-Calculator
-  community so that you can ask questions, report bugs, and request
-  enhancements.
+  Read the <a href="uguide.html" target="_blank">user guide</a> about
+  how to conduct tax analysis with Tax-Calculator and how to join the
+  Tax-Calculator community so that you can ask questions, report bugs,
+  and request enhancements.
 </p>
 
 <!-- #TOP# -->

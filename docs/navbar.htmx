@@ -3,7 +3,6 @@
   <div class="dropdown">
     <button class="dropbtn">About</button>
     <div class="dropdown-content">
-      <a href="tc_features.html">Notable Features</a>
       <a href="tc_starting.html">Getting Started</a>
       <a href="tc_license.html">Open-Source License</a>
       <a href="tc_history.html">Origins &amp; History</a>
