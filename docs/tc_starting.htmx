@@ -23,7 +23,7 @@
   Tax-Calculator to run.  Take the following steps to get started.
 </p>
 
-<h5>1. Install Anaconda Python</h5>
+<h4>1. Install Anaconda Python</h4>
 
 <p>
   Download and install the free Anaconda distribution of Python 3.6 or
@@ -39,7 +39,7 @@
   operating system.
 </p>
 
-<h5>2. Download Tax-Calculator Package</h5>
+<h4>2. Download Tax-Calculator Package</h4>
 
 <p>
   Download a Tax-Calculator <kbd>taxcalc</kbd> package for your
@@ -51,7 +51,7 @@
   Tax-Calculator.
 </p>
 
-<h5>3. Read Tax-Calculator User Guide</h5>
+<h4>3. Read Tax-Calculator User Guide</h4>
 
 <p>
   Read the <a href="uguide.html" target="_blank">user guide</a> about
