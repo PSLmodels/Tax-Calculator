@@ -1,6 +1,7 @@
 body {
-  margin-top: 0;
-  margin-right: 2;
+  max-width: 19cm;
+  margin: 0 auto;
+  padding: 0px 4px 0px 4px;
   font-family: Verdana, sans-serif;
 }
 
