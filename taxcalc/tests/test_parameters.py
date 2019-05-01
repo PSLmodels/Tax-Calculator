@@ -467,3 +467,45 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
+
+
+def test_read_json_revision():
+    """
+    Check _read_json_revision logic.
+    """
+    good_revision = """{ 
+      "consumption": {"BEN_mcaid_value": {"2013": 0.9}}
+    }
+    """
+    bad_revision1 = """{ 
+      2019: {"param_name": 9.9}
+    }
+    """
+    bad_revision2 = """{ 
+      "unknown_topkey": {"param_name": 9.9}
+    }
+    """
+    # pllint: disable=private-method
+    with pytest.raises(ValueError):
+        Parameters._read_json_revision(bad_revision1, '')
+    with pytest.raises(ValueError):
+        Parameters._read_json_revision(bad_revision2, '')
+    with pytest.raises(ValueError):
+        Parameters._read_json_revision(good_revision, 999)
+
+
+def test_convert_year_to_int():
+    """
+    Check _convert_year_to_int logic.
+    """
+    bad_dict1 = {  # non-string primary key
+        2019: {"param_name": 9.9}
+    }
+    bad_dict2 = {  # non-string secondary key
+        "BEN_mcaid_value": {2013: 0.9}
+    }
+    # pllint: disable=private-method
+    with pytest.raises(ValueError):
+        Parameters._convert_year_to_int(bad_dict1)
+    with pytest.raises(ValueError):
+        Parameters._convert_year_to_int(bad_dict2)

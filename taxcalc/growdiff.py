@@ -35,6 +35,17 @@ class GrowDiff(Parameters):
         self.initialize(GrowDiff.JSON_START_YEAR,
                         GrowDiff.DEFAULT_NUM_YEARS)
 
+    @staticmethod
+    def read_json_update(obj, topkey):
+        """
+        Return a revision dictionary suitable for use with update_growdiff
+        method generated from the specified JSON object, which can be None or
+        a string containing a local filename, a URL beginning with 'http'
+        pointing to a valid JSON file hosted online, or a valid JSON text.
+        """
+        assert topkey in ('growdiff_baseline', 'growdiff_response')
+        return Parameters._read_json_revision(obj, topkey)
+
     def update_growdiff(self, revision,
                         print_warnings=True, raise_errors=True):
         """

@@ -37,6 +37,16 @@ class Consumption(Parameters):
         self.initialize(Consumption.JSON_START_YEAR,
                         Consumption.DEFAULT_NUM_YEARS)
 
+    @staticmethod
+    def read_json_update(obj):
+        """
+        Return a revision dictionary suitable for use with update_consumption
+        method derived from the specified JSON object, which can be None or
+        a string containing a local filename, a URL beginning with 'http'
+        pointing to a valid JSON file hosted online, or a valid JSON text.
+        """
+        return Parameters._read_json_revision(obj, 'consumption')
+
     def update_consumption(self, revision,
                            print_warnings=True, raise_errors=True):
         """

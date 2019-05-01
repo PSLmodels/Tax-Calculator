@@ -527,22 +527,10 @@ def test_read_bad_json_reform_file():
       }
     }
     """
-    badreform3 = """
-    {
-      "title": "",
-      "policy": {
-        "SS_Earnings_c": {"2018": 9e99}
-      },
-      "consumption": { // example of misplaced "consumption" key
-      }
-    }
-    """
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(badreform1, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(badreform2, None)
-    with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(badreform3, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(list(), None)
     with pytest.raises(ValueError):
@@ -654,39 +642,8 @@ def test_read_bad_json_assump_file():
       "growdiff_response": {}
     }
     """
-    badassump2 = """
-    {
-      "consumptionx": {}, // example of file not containing "consumption" key
-      "growdiff_baseline": {},
-      "growdiff_response": {}
-    }
-    """
-    badassump3 = """
-    {
-      "consumption": {},
-      "growdiff_baseline": {},
-      "growdiff_response": {},
-      "policy": { // example of misplaced policy key
-        "SS_Earnings_c": {"2018": 9e99}
-      }
-    }
-    """
-    badassump4 = """
-    {
-      "consumption": {},
-      "growdiff_baseline": {},
-      "growdiff_response": {},
-      "illegal_key": {}
-    }
-    """
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, badassump1)
-    with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, badassump2)
-    with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, badassump3)
-    with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, badassump4)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
