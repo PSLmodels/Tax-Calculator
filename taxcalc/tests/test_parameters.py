@@ -473,15 +473,15 @@ def test_read_json_revision():
     """
     Check _read_json_revision logic.
     """
-    good_revision = """{ 
+    good_revision = """{
       "consumption": {"BEN_mcaid_value": {"2013": 0.9}}
     }
     """
-    bad_revision1 = """{ 
+    bad_revision1 = """{
       2019: {"param_name": 9.9}
     }
     """
-    bad_revision2 = """{ 
+    bad_revision2 = """{
       "unknown_topkey": {"param_name": 9.9}
     }
     """
