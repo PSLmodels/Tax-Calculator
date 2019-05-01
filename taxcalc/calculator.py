@@ -184,16 +184,24 @@ class Calculator():
         """
         return self.array('s006').sum()
 
-    def dataframe(self, variable_list):
+    def dataframe(self, variable_list, all_vars=False):
         """
-        Return Pandas DataFrame containing the listed variables from embedded
-        Records object.
+        Return Pandas DataFrame containing the listed variables from the
+        embedded Records object.  If all_vars is True, then the variable_list
+        is ignored and all variables used as input to and calculated by the
+        Calculator.calc_all() method (which does not include marginal tax
+        rates) are included in the returned Pandas DataFrame.
         """
-        assert isinstance(variable_list, list)
-        arys = [self.array(vname) for vname in variable_list]
-        dframe = pd.DataFrame(data=np.column_stack(arys),
-                              columns=variable_list)
+        if all_vars:
+            varlist = list(self.__records.USABLE_READ_VARS |
+                           self.__records.CALCULATED_VARS)
+        else:
+            assert isinstance(variable_list, list)
+            varlist = variable_list
+        arys = [self.array(varname) for varname in varlist]
+        dframe = pd.DataFrame(data=np.column_stack(arys), columns=varlist)
         del arys
+        del varlist
         return dframe
 
     def distribution_table_dataframe(self):
@@ -302,6 +310,13 @@ class Calculator():
         in embedded Consumption object.
         """
         return self.__consumption.benval_params()
+
+    @property
+    def reform_warnings(self):
+        """
+        Calculator class embedded Policy object's parameter_warnings.
+        """
+        return self.__policy.parameter_warnings
 
     @property
     def current_year(self):
