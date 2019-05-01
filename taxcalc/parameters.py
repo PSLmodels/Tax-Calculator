@@ -869,7 +869,25 @@ class Parameters():
         the top-level JSON keys, the obj is assumed to be a
         non-compound-revision JSON text for the specified topkey.
         """
-        # process the function arguments
+        # embedded function used only in _read_json_revision staticmethod
+        def convert_year_to_int(syr_dict):
+            """
+            Converts specified syr_dict, which has string years as secondary
+            keys, into a dictionary with the same structure but having integer
+            years as secondary keys.
+            """
+            iyr_dict = dict()
+            for pkey, sdict in syr_dict.items():
+                assert isinstance(pkey, str)
+                iyr_dict[pkey] = dict()
+                assert isinstance(sdict, dict)
+                for skey, val in sdict.items():
+                    assert isinstance(skey, str)
+                    year = int(skey)
+                    iyr_dict[pkey][year] = val
+            return iyr_dict
+        # end of embedded function
+        # process the main function arguments
         if obj is None:
             return dict()
         if not isinstance(obj, str):
@@ -909,28 +927,4 @@ class Parameters():
         else:
             single_dict = full_dict
         # convert string year to integer year in dictionary and return
-        return Parameters._convert_year_to_int(single_dict)
-
-    @staticmethod
-    def _convert_year_to_int(syr_dict):
-        """
-        Converts specified syr_dict, which has string years as secondary
-        keys, into a dictionary with the same structure but having integer
-        years as secondary keys.
-        """
-        iyr_dict = dict()
-        for pkey, sdict in syr_dict.items():
-            if not isinstance(pkey, str):
-                msg = 'primary_key={} is not a string'
-                raise ValueError(msg.format(pkey))
-            iyr_dict[pkey] = dict()
-            if not isinstance(sdict, dict):
-                msg = 'primary_key={} has value that is not a dictionary'
-                raise ValueError(msg.format(pkey))
-            for skey, val in sdict.items():
-                if not isinstance(skey, str):
-                    msg = 'secondary_key={} is not a string'
-                    raise ValueError(msg.format(pkey))
-                year = int(skey)
-                iyr_dict[pkey][year] = val
-        return iyr_dict
+        return convert_year_to_int(single_dict)
