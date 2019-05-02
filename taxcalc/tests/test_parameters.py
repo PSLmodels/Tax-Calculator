@@ -486,5 +486,5 @@ def test_read_json_revision():
         # error because second topkey argument must be a string
         Parameters._read_json_revision(good_revision, 999)
     with pytest.raises(ValueError):
-        # error because second topkey argument a string but is not valid
+        # error because second topkey argument is not in good_revision
         Parameters._read_json_revision(good_revision, 'unknown_topkey')

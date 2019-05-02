@@ -894,15 +894,6 @@ class Parameters():
             raise ValueError('obj is neither None nor a string')
         if not isinstance(topkey, str):
             raise ValueError('topkey={} is not a string'.format(topkey))
-        valid_topkeys = [
-            'policy',
-            'consumption',
-            'growdiff_baseline',
-            'growdiff_response'
-        ]
-        if topkey not in valid_topkeys:
-            msg = 'topkey={} is not a valid topkey'
-            raise ValueError(msg.format(topkey))
         if os.path.isfile(obj):
             if not obj.endswith('.json'):
                 msg = 'obj does not end with ".json": {}'
