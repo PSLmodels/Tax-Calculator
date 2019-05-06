@@ -9,7 +9,7 @@ import os
 import glob
 import pytest  # pylint: disable=unused-import
 # pylint: disable=import-error
-from taxcalc import Calculator, Consumption, GrowDiff
+from taxcalc import Consumption, GrowDiff
 
 
 def test_response_json(tests_path):
@@ -28,15 +28,15 @@ def test_response_json(tests_path):
                          '"growdiff_baseline"' in jpf_text and
                          '"growdiff_response"' in jpf_text)
         if response_file:
-            # pylint: disable=protected-access
-            (con, gdiff_base,
-             gdiff_resp) = Calculator._read_json_econ_assump_text(jpf_text)
-            cons = Consumption()
-            cons.update_consumption(con)
-            growdiff_baseline = GrowDiff()
-            growdiff_baseline.update_growdiff(gdiff_base)
-            growdiff_response = GrowDiff()
-            growdiff_response.update_growdiff(gdiff_resp)
+            consumption = Consumption()
+            con_change = Consumption.read_json_update(jpf_text)
+            consumption.update_consumption(con_change)
+            del consumption
+            for topkey in['growdiff_baseline', 'growdiff_response']:
+                growdiff = GrowDiff()
+                gdiff_change = GrowDiff.read_json_update(jpf_text, topkey)
+                growdiff.update_growdiff(gdiff_change)
+                del growdiff
         else:  # jpf_text is not a valid JSON response assumption file
             print('test-failing-filename: ' +
                   jpf)

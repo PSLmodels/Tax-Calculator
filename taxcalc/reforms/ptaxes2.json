@@ -12,9 +12,7 @@
 //       2020:  9e99 (9 with 99 zeros after it, a very large MTE)
 //       2021:  wage-indexed 9e99 (an even bigger MTE value)
 {
-  "policy": {
     "SS_Earnings_c": {
         "2020": 9e99
     }
-  }
 }

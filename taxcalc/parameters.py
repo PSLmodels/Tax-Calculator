@@ -8,8 +8,10 @@ Tax-Calculator abstract base parameters class.
 # pylint: disable=attribute-defined-outside-init,no-member
 
 import os
+import re
 import abc
 from collections import OrderedDict
+import requests
 import numpy as np
 from taxcalc.utils import read_egg_json, json_to_dict
 
@@ -848,3 +850,72 @@ class Parameters():
                 if name not in known_years:
                     known_years[name] = kyrs_not_in_revision
         return known_years
+
+    @staticmethod
+    def _read_json_revision(obj, topkey):
+        """
+        Read JSON revision specified by obj and topkey
+        returning a single revision dictionary suitable for
+        use with the Parameters._update method.
+
+        The obj function argument can be None or a string, where the
+        string contains a local filename, a URL beginning with 'http'
+        pointing to a valid JSON file hosted online, or valid JSON
+        text.
+
+        The topkey argument must be a string containing the top-level
+        key in a compound-revision JSON text for which a revision
+        dictionary is returned.  If the specified topkey is not among
+        the top-level JSON keys, the obj is assumed to be a
+        non-compound-revision JSON text for the specified topkey.
+        """
+        # embedded function used only in _read_json_revision staticmethod
+        def convert_year_to_int(syr_dict):
+            """
+            Converts specified syr_dict, which has string years as secondary
+            keys, into a dictionary with the same structure but having integer
+            years as secondary keys.
+            """
+            iyr_dict = dict()
+            for pkey, sdict in syr_dict.items():
+                assert isinstance(pkey, str)
+                iyr_dict[pkey] = dict()
+                assert isinstance(sdict, dict)
+                for skey, val in sdict.items():
+                    assert isinstance(skey, str)
+                    year = int(skey)
+                    iyr_dict[pkey][year] = val
+            return iyr_dict
+        # end of embedded function
+        # process the main function arguments
+        if obj is None:
+            return dict()
+        if not isinstance(obj, str):
+            raise ValueError('obj is neither None nor a string')
+        if not isinstance(topkey, str):
+            raise ValueError('topkey={} is not a string'.format(topkey))
+        if os.path.isfile(obj):
+            if not obj.endswith('.json'):
+                msg = 'obj does not end with ".json": {}'
+                raise ValueError(msg.format(obj))
+            txt = open(obj, 'r').read()
+        elif obj.startswith('http'):
+            if not obj.endswith('.json'):
+                msg = 'obj does not end with ".json": {}'
+                raise ValueError(msg.format(obj))
+            req = requests.get(obj)
+            req.raise_for_status()
+            txt = req.text
+        else:
+            txt = obj
+        # strip out //-comments without changing line numbers
+        json_txt = re.sub('//.*', ' ', txt)
+        # convert JSON text into a Python dictionary
+        full_dict = json_to_dict(json_txt)
+        # check top-level key contents of dictionary
+        if topkey in full_dict.keys():
+            single_dict = full_dict[topkey]
+        else:
+            single_dict = full_dict
+        # convert string year to integer year in dictionary and return
+        return convert_year_to_int(single_dict)

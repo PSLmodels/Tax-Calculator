@@ -12,7 +12,7 @@ import json
 import numpy as np
 import pytest
 # pylint: disable=import-error
-from taxcalc import Policy, Calculator
+from taxcalc import Policy
 
 
 def test_incorrect_class_instantiation():
@@ -69,7 +69,110 @@ def test_policy_json_content_consistency():
             assert vivals == expected_vi_vals[data['vi_name']]
 
 
+def test_json_reform_url():
+    """
+    Test reading a JSON reform from a URL. Results from the URL are expected
+    to match the results from the string.
+    """
+    reform_str = """
+    {
+        // raise FICA payroll tax rate in 2018 and 2020
+        "FICA_ss_trt": {
+            "2018": 0.130,
+            "2020": 0.140
+        },
+        // raise Medicare payroll tax rate in 2019 and 2021
+        "FICA_mc_trt": {
+            "2019": 0.030,
+            "2021": 0.032
+        }
+    }
+    """
+    reform_url = ('https://raw.githubusercontent.com/PSLmodels/'
+                  'Tax-Calculator/master/taxcalc/reforms/ptaxes0.json')
+    params_str = Policy.read_json_reform(reform_str)
+    params_url = Policy.read_json_reform(reform_url)
+    assert params_str == params_url
+
+
+REFORM_JSON = """
+// Example of a reform file suitable for Policy.read_json_reform().
+// This JSON file can contain any number of trailing //-style comments, which
+// will be removed before the contents are converted from JSON to a dictionary.
+// The primary keys are parameters and the secondary keys are years.
+// Both the primary and secondary key values must be enclosed in quotes (").
+// Boolean variables are specified as true or false (no quotes; all lowercase).
+{
+    "AMT_brk1": // top of first AMT tax bracket
+    {"2015": 200000,
+     "2017": 300000
+    },
+    "EITC_c": // maximum EITC amount by number of qualifying kids (0,1,2,3+)
+    {"2016": [ 900, 5000,  8000,  9000],
+     "2019": [1200, 7000, 10000, 12000]
+    },
+    "II_em": // personal exemption amount (see indexing changes below)
+    {"2016": 6000,
+     "2018": 7500,
+     "2020": 9000
+    },
+    "II_em-indexed": // personal exemption amount indexing status
+    {"2016": false, // values in future years are same as this year value
+     "2018": true   // values in future years indexed with this year as base
+    },
+    "SS_Earnings_c": // social security (OASDI) maximum taxable earnings
+    {"2016": 300000,
+     "2018": 500000,
+     "2020": 700000
+    },
+    "AMT_em-indexed": // AMT exemption amount indexing status
+    {"2017": false, // values in future years are same as this year value
+     "2020": true   // values in future years indexed with this year as base
+    }
+}
+"""
+
+
 # pylint: disable=protected-access,no-member
+
+
+@pytest.mark.parametrize("set_year", [False, True])
+def test_read_json_reform_file_and_implement_reform(set_year):
+    """
+    Test reading and translation of reform JSON into a reform dictionary
+    and then using that reform dictionary to implement reform.
+    """
+    pol = Policy()
+    if set_year:
+        pol.set_year(2015)
+    pol.implement_reform(Policy.read_json_reform(REFORM_JSON))
+    syr = pol.start_year
+    # pylint: disable=protected-access,no-member
+    amt_brk1 = pol._AMT_brk1
+    assert amt_brk1[2015 - syr] == 200000
+    assert amt_brk1[2016 - syr] > 200000
+    assert amt_brk1[2017 - syr] == 300000
+    assert amt_brk1[2018 - syr] > 300000
+    ii_em = pol._II_em
+    assert ii_em[2016 - syr] == 6000
+    assert ii_em[2017 - syr] == 6000
+    assert ii_em[2018 - syr] == 7500
+    assert ii_em[2019 - syr] > 7500
+    assert ii_em[2020 - syr] == 9000
+    assert ii_em[2021 - syr] > 9000
+    amt_em = pol._AMT_em
+    assert amt_em[2016 - syr, 0] > amt_em[2015 - syr, 0]
+    assert amt_em[2017 - syr, 0] > amt_em[2016 - syr, 0]
+    assert amt_em[2018 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2019 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2020 - syr, 0] == amt_em[2017 - syr, 0]
+    assert amt_em[2021 - syr, 0] > amt_em[2020 - syr, 0]
+    assert amt_em[2022 - syr, 0] > amt_em[2021 - syr, 0]
+    add4aged = pol._ID_Medical_frt_add4aged
+    assert add4aged[2015 - syr] == -0.025
+    assert add4aged[2016 - syr] == -0.025
+    assert add4aged[2017 - syr] == 0.0
+    assert add4aged[2022 - syr] == 0.0
 
 
 def test_constant_inflation_rate_with_reform():
@@ -395,7 +498,7 @@ def test_reform_makes_no_changes_before_year():
 
 
 @pytest.mark.parametrize("set_year", [False, True])
-def test_read_json_param_and_implement_reform(set_year):
+def test_read_json_reform_and_implement_reform(set_year):
     """
     Test reading and translation of reform file into a reform dictionary
     that is then used to call implement_reform method.
@@ -403,7 +506,7 @@ def test_read_json_param_and_implement_reform(set_year):
     """
     reform_json = """
     // Example of JSON reform text suitable for the
-    // Calculator.read_json_param_objects() method.
+    // Policy.read_json_reform() method.
     // This JSON text can contain any number of trailing //-style comments,
     // which will be removed before the contents are converted from JSON to
     // a dictionary.
@@ -412,7 +515,6 @@ def test_read_json_param_and_implement_reform(set_year):
     // Boolean variables are specified as true or false with no quotes and all
     // lowercase characters.
     {
-    "policy": {
         "AMT_brk1": // top of first AMT tax bracket
         {"2015": 200000,
          "2017": 300000
@@ -440,13 +542,12 @@ def test_read_json_param_and_implement_reform(set_year):
          "2020": true   // vals in future years indexed with this year as base
         }
     }
-    }
     """
     policy = Policy()
     if set_year:
         policy.set_year(2015)
-    param_dict = Calculator.read_json_param_objects(reform_json, None)
-    policy.implement_reform(param_dict['policy'])
+    reform_dict = Policy.read_json_reform(reform_json)
+    policy.implement_reform(reform_dict)
     syr = policy.start_year
     amt_brk1 = policy._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
