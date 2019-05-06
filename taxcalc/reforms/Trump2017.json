@@ -3,12 +3,12 @@
 // Reform_Reference: 1-page hand-out from the White House briefing
 // Reform_Baseline: 2017_law.json
 // Reform_Description:
-// -  New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
-// -  New pass-through income tax schedule (2) 
-// -  Repeal Alternative Minimum Tax (3) 
-// -  Repeal Net Investment Income Tax (4) 
-// -  Double the Standard Deduction (5)
-// -  Eliminate all itemized deductions except mortgage interest and charitable contributions (6)
+// - New personal income tax schedule (regular/non-AMT/non-pass-through) (1) 
+// - New pass-through income tax schedule (2) 
+// - Repeal Alternative Minimum Tax (3) 
+// - Repeal Net Investment Income Tax (4) 
+// - Double the Standard Deduction (5)
+// - Eliminate all itemized deductions except mortgage interest and charitable contributions (6)
 // Reform_Parameter_Map:
 // - 1: II_rt*
 // - 2: PT_*
@@ -17,60 +17,35 @@
 // - 5: STD
 // - 6: ID_*
 {
-  "policy": {
-        "II_rt1":
-            {"2017": 0.10},
-        "II_rt2":
-            {"2017": 0.10},
-        "II_rt3":
-            {"2017":  0.25},
-        "II_rt4":
-            {"2017":  0.25},
-        "II_rt5":
-            {"2017": 0.25},
-        "II_rt6":
-            {"2017": 0.35},
-        "II_rt7":
-            {"2017": 0.35},
-        "PT_rt1":
-            {"2017": 0.1},
-        "PT_rt2":
-            {"2017": 0.1},
-        "PT_rt3":
-            {"2017": 0.15},
-        "PT_rt4":
-            {"2017": 0.15},
-        "PT_rt5":
-            {"2017": 0.15},
-        "PT_rt6":
-            {"2017": 0.15},
-        "PT_rt7":
-            {"2017": 0.15},
-        "AMT_rt1":
-            {"2017": 0},
-        "AMT_rt2":
-            {"2017": 0},
-        "NIIT_rt":
-            {"2017": 0},
-        "STD":
-            {"2017": [12700, 25400, 12700, 18700, 25400]},
-        "ID_StateLocalTax_hc":
-            {"2017": 1.0},
-        "ID_Medical_hc":
-            {"2017": 1.0},
-        "ID_Casualty_hc":
-            {"2017": 1.0},
-        "ID_Miscellaneous_hc":
-            {"2017": 1.0},
-        "ID_RealEstate_hc":
-            {"2017": 1.0}
-    }
+    "II_rt1": {"2017": 0.10},
+    "II_rt2": {"2017": 0.10},
+    "II_rt3": {"2017":  0.25},
+    "II_rt4": {"2017":  0.25},
+    "II_rt5": {"2017": 0.25},
+    "II_rt6": {"2017": 0.35},
+    "II_rt7": {"2017": 0.35},
+    "PT_rt1": {"2017": 0.1},
+    "PT_rt2": {"2017": 0.1},
+    "PT_rt3": {"2017": 0.15},
+    "PT_rt4": {"2017": 0.15},
+    "PT_rt5": {"2017": 0.15},
+    "PT_rt6": {"2017": 0.15},
+    "PT_rt7": {"2017": 0.15},
+    "AMT_rt1": {"2017": 0},
+    "AMT_rt2": {"2017": 0},
+    "NIIT_rt": {"2017": 0},
+    "STD": {"2017": [12700, 25400, 12700, 18700, 25400]},
+    "ID_StateLocalTax_hc": {"2017": 1.0},
+    "ID_Medical_hc": {"2017": 1.0},
+    "ID_Casualty_hc": {"2017": 1.0},
+    "ID_Miscellaneous_hc": {"2017": 1.0},
+    "ID_RealEstate_hc": {"2017": 1.0}
 }
-
-//Note: This reform file does not include several important reforms in the proposal.
-// -  Providing tax relief for families with child and dependent care expenses
-// -  15% corporate income tax rate
-// -  Switch to a territorial tax system
-// -  One-time tax on repatriated profits held overseas
-// -  Eliminate tax breaks for special interests
-// -  Repeal of the estate tax
+// Note: This reform file does not include several important provisions
+// in the proposal:
+// - Providing tax relief for families with child and dependent care expenses
+// - 15% corporate income tax rate
+// - Switch to a territorial tax system
+// - One-time tax on repatriated profits held overseas
+// - Eliminate tax breaks for special interests
+// - Repeal of the estate tax

@@ -57,16 +57,14 @@ several reform provisions.  The structure of this file is as follows:
 
 ```
 {
-  "policy": {
-     <parameter_name>: {<calyear>: <parameter-value>,
-                        ...,
-                        <calyear>: <parameter-value>},
-     <parameter_name>: {<calyear>: <parameter-value>},
-     ...,
-     <parameter_name>: {<calyear>: <parameter-value>,
-                        ...,
-                        <calyear>: <parameter-value>}
-  }
+    <parameter_name>: {<calyear>: <parameter-value>,
+                       ...,
+                       <calyear>: <parameter-value>},
+    <parameter_name>: {<calyear>: <parameter-value>},
+    ...,
+    <parameter_name>: {<calyear>: <parameter-value>,
+                       ...,
+                       <calyear>: <parameter-value>}
 }
 ```
 

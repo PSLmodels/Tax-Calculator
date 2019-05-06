@@ -99,6 +99,16 @@ class Policy(Parameters):
         """
         return self._wage_growth_rates
 
+    @staticmethod
+    def read_json_reform(obj):
+        """
+        Return a reform dictionary suitable for use with implement_reform
+        method generated from the specified JSON object, which can be None or
+        a string containing a local filename, a URL beginning with 'http'
+        pointing to a valid JSON file hosted online, or a valid JSON text.
+        """
+        return Parameters._read_json_revision(obj, 'policy')
+
     def implement_reform(self, reform,
                          print_warnings=True, raise_errors=True):
         """

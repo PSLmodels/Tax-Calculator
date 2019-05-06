@@ -26,8 +26,7 @@ def test_2017_law_reform(tests_path):
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
-    reform = Calculator.read_json_param_objects(rtext, None)
-    pol.implement_reform(reform['policy'])
+    pol.implement_reform(Policy.read_json_reform(rtext))
     # eventually activate: assert not clp.parameter_warnings
     ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
     assert pol.parameter_warnings == ctc_c_warning
@@ -98,8 +97,7 @@ def test_round_trip_tcja_reform(tests_path):
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
-    reform = Calculator.read_json_param_objects(rtext, None)
-    pol.implement_reform(reform['policy'])
+    pol.implement_reform(Policy.read_json_reform(rtext))
     # eventually activate: assert not clp.parameter_warnings
     ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
     assert pol.parameter_warnings == ctc_c_warning
@@ -107,8 +105,7 @@ def test_round_trip_tcja_reform(tests_path):
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
-    reform = Calculator.read_json_param_objects(rtext, None)
-    pol.implement_reform(reform['policy'])
+    pol.implement_reform(Policy.read_json_reform(rtext))
     # eventually activate: assert not clp.parameter_warnings
     assert pol.parameter_warnings == ctc_c_warning
     assert not pol.parameter_errors
@@ -205,7 +202,7 @@ def test_reform_json_and_output(tests_path):
     del calc
     # read 2017_law.json reform file and specify its parameters dictionary
     pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
+    pre_tcja = Policy.read_json_reform(pre_tcja_jrf)
     # check reform file contents and reform results for each reform
     reforms_path = os.path.join(tests_path, '..', 'reforms', '*.json')
     json_reform_files = glob.glob(reforms_path)
@@ -215,12 +212,12 @@ def test_reform_json_and_output(tests_path):
             jrf_text = rfile.read()
         pre_tcja_baseline = 'Reform_Baseline: 2017_law.json' in jrf_text
         # implement the reform relative to its baseline
-        reform = Calculator.read_json_param_objects(jrf_text, None)
+        reform = Policy.read_json_reform(jrf_text)
         pol = Policy()  # current-law policy
         if pre_tcja_baseline:
-            pol.implement_reform(pre_tcja['policy'])
+            pol.implement_reform(pre_tcja)
             assert not pol.parameter_errors
-        pol.implement_reform(reform['policy'])
+        pol.implement_reform(reform)
         assert not pol.parameter_errors
         calc = Calculator(policy=pol, records=cases, verbose=False)
         calc.advance_to_year(tax_year)
@@ -292,8 +289,7 @@ def fixture_baseline_2017_law(tests_path):
     Read ../reforms/2017_law.json and return its policy dictionary.
     """
     pre_tcja_jrf = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
-    pre_tcja = Calculator.read_json_param_objects(pre_tcja_jrf, None)
-    return pre_tcja['policy']
+    return Policy.read_json_reform(pre_tcja_jrf)
 
 
 @pytest.fixture(scope='module', name='reforms_dict')

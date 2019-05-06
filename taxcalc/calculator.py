@@ -7,10 +7,7 @@ Tax-Calculator federal income and payroll tax Calculator class.
 #
 # pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
 
-import os
-import re
 import copy
-import requests
 import numpy as np
 import pandas as pd
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
@@ -31,8 +28,7 @@ from taxcalc.records import Records
 from taxcalc.consumption import Consumption
 from taxcalc.growdiff import GrowDiff
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import (json_to_dict,
-                           DIST_VARIABLES, create_distribution_table,
+from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            DIFF_VARIABLES, create_difference_table,
                            create_diagnostic_table,
                            ce_aftertax_expanded_income,
@@ -188,16 +184,24 @@ class Calculator():
         """
         return self.array('s006').sum()
 
-    def dataframe(self, variable_list):
+    def dataframe(self, variable_list, all_vars=False):
         """
-        Return Pandas DataFrame containing the listed variables from embedded
-        Records object.
+        Return Pandas DataFrame containing the listed variables from the
+        embedded Records object.  If all_vars is True, then the variable_list
+        is ignored and all variables used as input to and calculated by the
+        Calculator.calc_all() method (which does not include marginal tax
+        rates) are included in the returned Pandas DataFrame.
         """
-        assert isinstance(variable_list, list)
-        arys = [self.array(vname) for vname in variable_list]
-        dframe = pd.DataFrame(data=np.column_stack(arys),
-                              columns=variable_list)
+        if all_vars:
+            varlist = list(self.__records.USABLE_READ_VARS |
+                           self.__records.CALCULATED_VARS)
+        else:
+            assert isinstance(variable_list, list)
+            varlist = variable_list
+        arys = [self.array(varname) for varname in varlist]
+        dframe = pd.DataFrame(data=np.column_stack(arys), columns=varlist)
         del arys
+        del varlist
         return dframe
 
     def distribution_table_dataframe(self):
@@ -310,7 +314,7 @@ class Calculator():
     @property
     def reform_warnings(self):
         """
-        Calculator class embedded Policy object's reform_warnings.
+        Calculator class embedded Policy object's parameter_warnings.
         """
         return self.__policy.parameter_warnings
 
@@ -1060,7 +1064,7 @@ class Calculator():
     def read_json_param_objects(reform, assump):
         """
         Read JSON reform and assump objects and
-        return a single dictionary containing four key:dict pairs:
+        return a composite dictionary containing four key:dict pairs:
         'policy':dict, 'consumption':dict,
         'growdiff_baseline':dict, and 'growdiff_response':dict.
 
@@ -1069,15 +1073,14 @@ class Calculator():
         If assump is None, the dict in all the other key:dict pairs is empty.
 
         Also note that either of the two function arguments can be strings
-        containing a valid JSON string (rather than a local filename),
-        in which case the file reading is skipped and the appropriate
-        read_json_*_text method is called.
+        containing a valid JSON string (rather than a local filename).
 
         Either of the two function arguments can also be a valid URL string
         beginning with 'http' and pointing to a valid JSON file hosted online.
 
         The reform file/URL contents or JSON string must be like this:
-        {"policy": {...}}
+        {"policy": {...}} OR {...}
+        (in other words, the top-level policy key is optional)
         and the assump file/URL contents or JSON string must be like this:
         {"consumption": {...},
          "growdiff_baseline": {...},
@@ -1098,59 +1101,12 @@ class Calculator():
         The 'growdiff_response' subdictionary of the returned dictionary is
         suitable as input into the GrowDiff.update_growdiff method.
         """
-        # pylint: disable=too-many-branches
-        # first process the second assump argument
-        if assump is None:
-            cons_dict = dict()
-            gdiff_base_dict = dict()
-            gdiff_resp_dict = dict()
-        elif isinstance(assump, str):
-            if os.path.isfile(assump):
-                if not assump.endswith('.json'):
-                    msg = "assump does not end with '.json': {}"
-                    raise ValueError(msg.format(assump))
-                txt = open(assump, 'r').read()
-            elif assump.startswith('http'):
-                if not assump.endswith('.json'):
-                    msg = "assump does not end with '.json': {}"
-                    raise ValueError(msg.format(assump))
-                req = requests.get(assump)
-                req.raise_for_status()
-                txt = req.text
-            else:
-                txt = assump
-            (cons_dict,
-             gdiff_base_dict,
-             gdiff_resp_dict) = Calculator._read_json_econ_assump_text(txt)
-        else:
-            raise ValueError('assump is neither None nor string')
-        # next process the first reform argument
-        if reform is None:
-            rpol_dict = dict()
-        elif isinstance(reform, str):
-            if os.path.isfile(reform):
-                if not reform.endswith('.json'):
-                    msg = "reform does not end with '.json': {}"
-                    raise ValueError(msg.format(reform))
-                txt = open(reform, 'r').read()
-            elif reform.startswith('http'):
-                if not reform.endswith('.json'):
-                    msg = "reform does not end with '.json': {}"
-                    raise ValueError(msg.format(reform))
-                req = requests.get(reform)
-                req.raise_for_status()
-                txt = req.text
-            else:
-                txt = reform
-            rpol_dict = Calculator._read_json_policy_reform_text(txt)
-        else:
-            raise ValueError('reform is neither None nor string')
-        # construct single composite dictionary
+        # construct the composite dictionary
         param_dict = dict()
-        param_dict['policy'] = rpol_dict
-        param_dict['consumption'] = cons_dict
-        param_dict['growdiff_baseline'] = gdiff_base_dict
-        param_dict['growdiff_response'] = gdiff_resp_dict
+        param_dict['policy'] = Policy.read_json_reform(reform)
+        param_dict['consumption'] = Consumption.read_json_update(assump)
+        for topkey in ['growdiff_baseline', 'growdiff_response']:
+            param_dict[topkey] = GrowDiff.read_json_update(assump, topkey)
         # return the composite dictionary
         return param_dict
 
@@ -1481,108 +1437,3 @@ class Calculator():
         C1040(self.__policy, self.__records)
         CTC_new(self.__policy, self.__records)
         IITAX(self.__policy, self.__records)
-
-    @staticmethod
-    def _read_json_policy_reform_text(text_string):
-        """
-        Strip //-comments from text_string and return 1 dict based on the JSON.
-
-        Specified text is JSON with 1 high-level key:object pair:
-        a "policy": {...} pair.
-
-        Other keys such as "consumption", "growdiff_baseline", or
-        "growdiff_response" will raise a ValueError.
-
-        The {...}  object may be empty (that is, be {}), or
-        may contain one or more pairs with parameter string primary keys and
-        string years as secondary keys.  See test_json_reform_url() in the
-        tests/test_calculator.py for an extended example of a commented JSON
-        policy reform text that can be read by this method.
-
-        Returned dictionaries pr_dict has string parameters as primary keys and
-        integer years as secondary keys (that is, they have a param:year:value
-        format).  These returned dictionaries are suitable as the arguments to
-        the Policy.implement_reform(pr_dict) method.
-        """
-        # strip out //-comments without changing line numbers
-        json_str = re.sub('//.*', ' ', text_string)
-        # convert JSON text into a Python dictionary
-        full_dict = json_to_dict(json_str)
-        # check key contents of dictionary
-        actual_keys = set(full_dict.keys())
-        missing_keys = Calculator.REQUIRED_REFORM_KEYS - actual_keys
-        if missing_keys:
-            msg = 'required key(s) "{}" missing from policy reform file'
-            raise ValueError(msg.format(missing_keys))
-        illegal_keys = actual_keys - Calculator.REQUIRED_REFORM_KEYS
-        if illegal_keys:
-            msg = 'illegal key(s) "{}" in policy reform file'
-            raise ValueError(msg.format(illegal_keys))
-        # return the converted full_dict['policy'] dictionary
-        return Calculator._convert_year_to_int(full_dict['policy'])
-
-    @staticmethod
-    def _read_json_econ_assump_text(text_string):
-        """
-        Strip //-comments from text_string and return 3 dict based on the JSON.
-
-        Specified text is JSON with 3 high-level key:value pairs:
-        a "consumption": {...} pair,
-        a "growdiff_baseline": {...} pair, and
-        a "growdiff_response": {...} pair.
-
-        Other keys such as "policy" will raise a ValueError.
-
-        The {...}  object may be empty (that is, be {}), or
-        may contain one or more pairs with parameter string primary keys and
-        string years as secondary keys.  See test_json_assump_url() in the
-        tests/test_calculator.py for an extended example of a commented JSON
-        economic assumption text that can be read by this method.
-
-        Returned dictionaries (cons_dict, gdiff_baseline_dict,
-        gdiff_respose_dict) have string parameters as primary keys and
-        integer years as secondary keys (that is, they have a param:year:value
-        format).  These returned dictionaries are suitable as the arguments to
-        the Consumption.update_consumption(cons_dict) method, or
-        the GrowDiff.update_growdiff(gdiff_dict) method.
-        """
-        # strip out //-comments without changing line numbers
-        json_str = re.sub('//.*', ' ', text_string)
-        # convert JSON text into a Python dictionary
-        full_dict = json_to_dict(json_str)
-        # check key contents of dictionary
-        actual_keys = set(full_dict.keys())
-        missing_keys = Calculator.REQUIRED_ASSUMP_KEYS - actual_keys
-        if missing_keys:
-            msg = 'required key(s) "{}" missing from economic assumption file'
-            raise ValueError(msg.format(missing_keys))
-        illegal_keys = actual_keys - Calculator.REQUIRED_ASSUMP_KEYS
-        if illegal_keys:
-            msg = 'illegal key(s) "{}" in economic assumption file'
-            raise ValueError(msg.format(illegal_keys))
-        # return the converted assumption dictionaries in full_dict as a tuple
-        return (
-            Calculator._convert_year_to_int(full_dict['consumption']),
-            Calculator._convert_year_to_int(full_dict['growdiff_baseline']),
-            Calculator._convert_year_to_int(full_dict['growdiff_response'])
-        )
-
-    @staticmethod
-    def _convert_year_to_int(syr_dict):
-        """
-        Converts specified syr_dict, which has string years as secondary
-        keys, into a dictionary with the same structure but having integer
-        years as secondary keys.
-        """
-        iyr_dict = dict()
-        for pkey, sdict in syr_dict.items():
-            assert isinstance(pkey, str)
-            assert pkey not in iyr_dict  # will catch duplicate primary keys
-            iyr_dict[pkey] = dict()
-            assert isinstance(sdict, dict)
-            for skey, val in sdict.items():
-                assert isinstance(skey, str)
-                year = int(skey)
-                assert year not in iyr_dict[pkey]  # will catch duplicate years
-                iyr_dict[pkey][year] = val
-        return iyr_dict

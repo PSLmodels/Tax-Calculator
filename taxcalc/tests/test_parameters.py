@@ -467,3 +467,24 @@ def test_bool_int_value_info(tests_path, json_filename):
                              pdict[param]['value_type'],
                              valstr)
             assert msg == 'ERROR: boolean_value param has non-boolean value'
+
+
+def test_read_json_revision():
+    """
+    Check _read_json_revision logic.
+    """
+    good_revision = """
+    {
+      "consumption": {"BEN_mcaid_value": {"2013": 0.9}}
+    }
+    """
+    # pllint: disable=private-method
+    with pytest.raises(ValueError):
+        # error because first obj argument is neither None nor a string
+        Parameters._read_json_revision(list(), '')
+    with pytest.raises(ValueError):
+        # error because second topkey argument must be a string
+        Parameters._read_json_revision(good_revision, 999)
+    with pytest.raises(ValueError):
+        # error because second topkey argument is not in good_revision
+        Parameters._read_json_revision(good_revision, 'unknown_topkey')
