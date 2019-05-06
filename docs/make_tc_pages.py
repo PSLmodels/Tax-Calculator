@@ -20,12 +20,12 @@ def main():
     # read navigation-menu code into navbar variable
     navbar_filename = os.path.join(curdir_path, 'navbar.htmx')
     with open(navbar_filename, 'r') as navbar_file:
-            navbar = navbar_file.read()
+        navbar = navbar_file.read()
 
     # read top-button code into topbtn variable
     topbtn_filename = os.path.join(curdir_path, 'topbtn.htmx')
     with open(topbtn_filename, 'r') as topbtn_file:
-            topbtn = topbtn_file.read()
+        topbtn = topbtn_file.read()
 
     # process index.htmx and each tc_*.htmx file
     input_filenames = ['index.htmx']

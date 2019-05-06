@@ -7,6 +7,7 @@ Tax-Calculator GrowDiff class that is used to modify GrowFactors.
 import os
 import numpy as np
 from taxcalc.parameters import Parameters
+from taxcalc.growfactors import GrowFactors
 
 
 class GrowDiff(Parameters):
@@ -72,9 +73,11 @@ class GrowDiff(Parameters):
         """
         Apply updated GrowDiff values to specified GrowFactors instance.
         """
-        # pylint: disable=no-member
+        assert isinstance(growfactors, GrowFactors)
         for i in range(0, self.num_years):
             cyr = i + self.start_year
+            # pylint: disable=no-member
+            # the pylint disable needed because _ABOOK, etc., are not visible
             growfactors.update('ABOOK', cyr, self._ABOOK[i])
             growfactors.update('ACGNS', cyr, self._ACGNS[i])
             growfactors.update('ACPIM', cyr, self._ACPIM[i])

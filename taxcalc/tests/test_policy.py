@@ -653,7 +653,7 @@ def test_misspecified_reform_dictionary():
 
 def test_section_titles(tests_path):
     """
-    Check section titles in policy_current_law.json and index.htmx files.
+    Check section titles in policy_current_law.json and uguide.htmx files.
     """
     # pylint: disable=too-many-locals
     def generate_section_dictionary(html_text):
@@ -798,8 +798,8 @@ def test_section_titles(tests_path):
         assert sec1title in clp_dict
         for sec2title in valid_dict[sec1title]:
             assert sec2title in clp_dict[sec1title]
-    # check validity of parameter section titles in docs/index.htmx skeleton
-    path = os.path.join(tests_path, '..', '..', 'docs', 'index.htmx')
+    # check validity of parameter section titles in docs/uguide.htmx skeleton
+    path = os.path.join(tests_path, '..', '..', 'docs', 'uguide.htmx')
     with open(path, 'r') as htmxfile:
         htmx_text = htmxfile.read()
     htmxdict = generate_section_dictionary(htmx_text)
