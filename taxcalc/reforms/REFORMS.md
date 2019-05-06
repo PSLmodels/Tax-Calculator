@@ -73,8 +73,8 @@ several reform provisions.  The structure of this file is as follows:
 Notice each pair of reform provision is separated by commas.
 Each reform provision may have one or multiple year-value pairs.
 Also, the <parameter_name> and <calyear> must be enclosed in quotes (").
-The <parameter_value> is enclosed in single brackets when
-the <parameter_value> is a scalar and enclosed in double brackets when
+The <parameter_value> is NOT enclosed in brackets when
+the <parameter_value> is a scalar and is enclosed in single brackets when
 the <parameter_value> is a vector.  The most common vector of values
 is one that varies by filing status (MARS) with the vector containing
 five parameter values for single, married filing joint, married filing
