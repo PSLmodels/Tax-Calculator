@@ -12,7 +12,7 @@ import tempfile
 import numpy as np
 import pytest
 # pylint: disable=import-error
-from taxcalc import Parameters, Policy, Consumption
+from taxcalc import Parameters, Policy, Consumption, GrowFactors
 
 
 # Test specification and use of simple Parameters-derived class that has
@@ -306,6 +306,11 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
             code_text += 'MPC_{}\n'.format(var)
         for var in Consumption.BENEFIT_VARS:
             code_text += 'BEN_{}_value\n'.format(var)
+    elif pfname == 'growdiff.py':
+        # growdiff.py does not explicitly name the parameters
+        code_text = ''
+        for var in GrowFactors.VALID_NAMES:
+            code_text += '{}\n'.format(var)
     else:
         # parameters are explicitly named in PYTHON file
         path = os.path.join(tests_path, '..', pfname)
