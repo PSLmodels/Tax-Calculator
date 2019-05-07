@@ -16,61 +16,55 @@
   federal income and payroll tax microsimulation model.  It assumes
   that you are already familiar with the material covered in the
   <a href="https://pslmodels.github.io/Tax-Calculator/"
-     target="_blank">introductory documentation</a> (other than the
+     target="_blank">introductory documentation</a> (except for the
   Guides and Cookbook) and that you are using the latest release of
   Tax-Calculator mentioned there.
 </p>
 
 <h3>Table of Contents</h3>
 
-
-<p><a href="#cli">tc CLI</a> to use Tax-Calculator on your computer
-via the command line</p>
-
-<p><a href="#cli-install-test">Install/Test tc CLI</a></p>
-<p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
-<p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
-<p><a href="#cli-spec-funits">Specify Filing Units</a></p>
-<p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
-<p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
-<p><a href="#cli-taxbrain-upload">Upload Files to TaxBrain</a></p>
-
-
-<p><a href="#pol">Policy Parameters</a> that specify tax reforms</p>
-
-<p><a href="#pol-parameter-indexing">Parameter Indexing</a></p>
-<p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
-<p><a href="#pol-social-security-taxability">Social Security Taxability</a></p>
-<p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
-<p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
-<p><a href="#pol-standard-deduction">Standard Deduction</a></p>
-<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
-<p><a href="#pol-childdependent-credits">Child/Dependent Credits</a></p>
-<p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
-<p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
-<p><a href="#pol-personal-income">Personal Income</a></p>
-<p><a href="#pol-other-taxes">Other Taxes</a></p>
-<p><a href="#pol-refundable-credits">Refundable Credits</a></p>
-<p><a href="#pol-surtaxes">Surtaxes</a></p>
-<p><a href="#pol-ubi">Universal Basic Income</a></p>
-<p><a href="#pol-benefits">Benefits</a></p>
-<p><a href="#pol-other-parameters">Other Parameters</a></p>
-
-
-<p><a href="#input">Input Variables</a> that specify tax filing units</p>
-
-
-<p><a href="#output">Output Variables</a> that describe tax results</p>
-
-
-<p><a href="#params">Assumption Parameters</a> that specify economic
-  assumptions</p>
-
-<p><a href="#params-consump">Consumption Parameters</a></p>
-<p><a href="#params-growdiff">Growdiff Parameters</a></p>
+<ol type="1">
+  <li><a href="#pyp"><b>Python-Progamming Usage</b></a></li>
+  <li><a href="#cli"><b>No-Programming Usage</b></a></li>
+    <ol type="a">
+      <li><a href="#cli-install-test">Test tc CLI</a></li>
+      <li><a href="#cli-spec-reform">Specify Tax Reform</a></li>
+      <li><a href="#cli-spec-assump">Specify Analysis Assumptions</a></li>
+      <li><a href="#cli-spec-funits">Specify Filing Units</a></li>
+      <li><a href="#cli-init-analysis">Initiate Reform Analysis</a></li>
+      <li><a href="#cli-tab-results">Tabulate Reform Results</a></li>
+    </ol>
+  <li><a href="#pol"><b>Policy Parameters</b></a></li>
+    <ol type="a">
+      <li><a href="#pol-parameter-indexing">Parameter Indexing</a></li>
+      <li><a href="#pol-payroll-taxes">Payroll Taxes</a></li>
+      <li><a href="#pol-social-security-taxability">Social Security Taxability</a></li>
+      <li><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></li>
+      <li><a href="#pol-personal-exemptions">Personal Exemptions</a></li>
+      <li><a href="#pol-standard-deduction">Standard Deduction</a></li>
+      <li><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></li>
+      <li><a href="#pol-childdependent-credits">Child/Dependent Credits</a></li>
+      <li><a href="#pol-itemized-deductions">Itemized Deductions</a></li>
+      <li><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></li>
+      <li><a href="#pol-personal-income">Personal Income</a></li>
+      <li><a href="#pol-other-taxes">Other Taxes</a></li>
+      <li><a href="#pol-refundable-credits">Refundable Credits</a></li>
+      <li><a href="#pol-surtaxes">Surtaxes</a></li>
+      <li><a href="#pol-ubi">Universal Basic Income</a></li>
+      <li><a href="#pol-benefits">Benefits</a></li>
+      <li><a href="#pol-other-parameters">Other Parameters</a></li>
+    </ol>
+  <li><a href="#input"><b>Input Variables</b></a></li>
+  <li><a href="#output"><b>Output Variables</b></a></li>
+  <li><a href="#params"><b>Assumption Parameters</b></a></li>
+    <ol type="a">
+      <li><a href="#params-growdiff">Growdiff Parameters</a></li>
+      <li><a href="#params-consump">Consumption Parameters</a></li>
+    </ol>
+</ol>
 
 
-
+<!-- START REVISIONS -->
 <p>
   The two ways of using Tax-Calculator
 described here require no computer programming.  If you are interested
@@ -84,7 +78,13 @@ or request an enhancement, do that by creating a new issue at the
   Tax-Calculator website</a>.
 </p>
 
-<h3 id="cli">tc CLI</h3>
+<h3 id="pyp">1. Python-Programming Usage</h3>
+
+<p>
+  text goes here.
+</p>
+
+<h3 id="cli">2. No-Programming Usage</h3>
 
 <p>You can use Tax-Calculator on your own computer via a command line
 interface (CLI) called tc.  This approach requires the installation of
@@ -105,12 +105,7 @@ this section, read the next part on how to specify policy reform
 files, and then skip to the last part of this section on how to upload
 files to TaxBrain.</p>
 
-
-
-
-
-
-<h4 id="cli-install-test">Install/Test tc CLI</h4>
+<h4 id="cli-install-test">2a. Test tc CLI</h4>
 
 <p>Installation of tc CLI involves several steps:</p>
 
@@ -178,7 +173,7 @@ specified in a text file using a simple method to describe the details
 of the reform.  Read the next part of this section to see how policy
 reform files are formatted.</p>
 
-<h4 id="cli-spec-reform">Specify Tax Reform</h4>
+<h4 id="cli-spec-reform">2b. Specify Tax Reform</h4>
 
 <p>The details of a tax reform are contained in a text file that you
 write with a text editor.  The reform is expressed by specifying which
@@ -200,7 +195,7 @@ responses to your tax reform (that is, if you want to conduct
 non-static analysis), read the next part before going to the last
 part.</p>
 
-<h4 id="cli-spec-assump">Specify Analysis Assumptions</h4>
+<h4 id="cli-spec-assump">2c. Specify Analysis Assumptions</h4>
 
 <p>This part explains how to specify economic assumption files used in
 non-static tax analysis.  If you want to start out doing static
@@ -221,7 +216,7 @@ writing JSON assumption files, go
 to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this
 page</a>.</p>
 
-<h4 id="cli-spec-funits">Specify Filing Units</h4>
+<h4 id="cli-spec-funits">2d. Specify Filing Units</h4>
 
 <p>The taxcalc package containing the tc CLI to Tax-Calculator does
 not include the IRS-based microsimulation sample used by TaxBrain.  This
@@ -346,7 +341,7 @@ reforms like a child credit bonus for children under five years of
 age.  Also, the universal basic income (UBI) reform is implemented
 using its own set of three age-count input variables.
 
-<h4 id="cli-init-analysis">Initiate Reform Analysis</h4>
+<h4 id="cli-init-analysis">2e. Initiate Reform Analysis</h4>
 
 <p>The tc CLI to Tax-Calculator requires only an input file containing
 one or more filing units.  A baseline file is optional; no baseline
@@ -614,17 +609,17 @@ browser.</p>
 <p>Here is what the average tax rate graph
 in <kbd>cps-24-#-ref3-#-atr.html</kbd> looks like.</p>
 
-<p><img src="atr.png" alt="atr graph"></p>
+<p><img class="resize" src="atr.png" alt="atr graph"></p>
 
 <p>Here is what the marginal tax rate graph
 in <kbd>cps-24-#-ref3-#-mtr.html</kbd> looks like:</p>
 
-<p><img src="mtr.png" alt="mtr graph"></p>
+<p><img class="resize" src="mtr.png" alt="mtr graph"></p>
 
 <p>Here is what the percentage change in aftertax income graph
 in <kbd>cps-24-#-ref3-#-pch.html</kbd> looks like:</p>
 
-<p><img src="pch.png" alt="pch graph"></p>
+<p><img class="resize" src="pch.png" alt="pch graph"></p>
 
 <p>There is yet another tc CLI output option that writes to the screen
 results from a normative welfare analysis of the specified policy
@@ -674,7 +669,7 @@ script or a Windows batch file, and execute one script in each
 command-prompt window.  If it still takes too long, consider splitting
 the tc runs across more than one computer.</p>
 
-<h4 id="cli-tab-results">Tabulate Reform Results</h4>
+<h4 id="cli-tab-results">2f. Tabulate Reform Results</h4>
 
 <p>Given that tc CLI output can be written to either CSV-formatted
 files or SQLite3 database files, there is an enormous range of
@@ -801,7 +796,7 @@ dump files (one for current-law policy and the other for your reform)
 and then use the SQLite3 ATTACH command to make both database files
 available in your SQLite tabulation session.</p>
 
-<h3 id="pol">Policy Parameters</h3>
+<h3 id="pol">3. Policy Parameters</h3>
 
 <p>This section contains documentation of policy parameters in a
 format that is easy to search and print.  The policy parameters are
@@ -810,11 +805,11 @@ by Tax-Calculator and the tc CLI, but not available in the TaxBrain
 GUI, are placed in an Other Parameters group at the end of the
 section.</p>
 
-<h4 id="pol-parameter-indexing"></a>Parameter Indexing</h4>
+<h4 id="pol-parameter-indexing">3a. Parameter Indexing</h4>
 
 <!-- Parameter Indexing @ Offsets -->
 
-<h4 id="pol-payroll-taxes"></a>Payroll Taxes</h4>
+<h4 id="pol-payroll-taxes">3b. Payroll Taxes</h4>
 
 <!-- Payroll Taxes @ Social Security FICA -->
 
@@ -822,13 +817,13 @@ section.</p>
 
 <!-- Payroll Taxes @ Additional Medicare FICA -->
 
-<h4 id="pol-social-security-taxability">Social Security Taxability</h4>
+<h4 id="pol-social-security-taxability">3c. Social Security Taxability</h4>
 
 <!-- Social Security Taxability @ Threshold For Social Security Benefit Taxability 1 -->
 
 <!-- Social Security Taxability @ Threshold For Social Security Benefit Taxability 2 -->
 
-<h4 id="pol-above-the-line-deductions">Above The Line Deductions</h4>
+<h4 id="pol-above-the-line-deductions">3d. Above The Line Deductions</h4>
 
 <!-- Above The Line Deductions @ Misc. Adjustment Haircuts -->
 
@@ -836,7 +831,7 @@ section.</p>
 
 <!-- Above The Line Deductions @ Child And Elderly Care -->
 
-<h4 id="pol-personal-exemptions">Personal Exemptions</h4>
+<h4 id="pol-personal-exemptions">3e. Personal Exemptions</h4>
 
 <!-- Personal Exemptions @ Personal And Dependent Exemption Amount -->
 
@@ -844,13 +839,13 @@ section.</p>
 
 <!-- Personal Exemptions @ Repeal for Dependents Under Age 18 -->
 
-<h4 id="pol-standard-deduction">Standard Deduction</h4>
+<h4 id="pol-standard-deduction">3f. Standard Deduction</h4>
 
 <!-- Standard Deduction @ Standard Deduction Amount -->
 
 <!-- Standard Deduction @ Additional Standard Deduction For Blind And Aged -->
 
-<h4 id="pol-nonrefundable-credits">Nonrefundable Credits</h4>
+<h4 id="pol-nonrefundable-credits">3g. Nonrefundable Credits</h4>
 
 <!-- Nonrefundable Credits @ Child And Dependent Care -->
 
@@ -858,7 +853,7 @@ section.</p>
 
 <!-- Nonrefundable Credits @ Personal Nonrefundable Credit -->
 
-<h4 id="pol-childdependent-credits">Child/Dependent Credits</h4>
+<h4 id="pol-childdependent-credits">3h. Child/Dependent Credits</h4>
 
 <!-- Child/Dependent Credits @ Child Tax Credit -->
 
@@ -866,7 +861,7 @@ section.</p>
 
 <!-- Child/Dependent Credits @ Other Dependent Tax Credit -->
 
-<h4 id="pol-itemized-deductions">Itemized Deductions</h4>
+<h4 id="pol-itemized-deductions">3i. Itemized Deductions</h4>
 
 <!-- Itemized Deductions @ Medical Expenses -->
 
@@ -892,7 +887,7 @@ section.</p>
 
 <!-- Itemized Deductions @ Ceiling On The Amount Of Itemized Deductions Allowed -->
 
-<h4 id="pol-capital-gains-dividends">Capital Gains And Dividends</h4>
+<h4 id="pol-capital-gains-dividends">3j. Capital Gains And Dividends</h4>
 
 <!-- Capital Gains And Dividends @ Regular - Long Term Capital Gains And Qualified Dividends -->
 
@@ -900,7 +895,7 @@ section.</p>
 
 <!-- Capital Gains And Dividends @ Tax All Capital Gains And Dividends The Same As Regular Taxable Income -->
 
-<h4 id="pol-personal-income">Personal Income</h4>
+<h4 id="pol-personal-income">3k. Personal Income</h4>
 
 <!-- Personal Income @ Regular: Non-AMT, Non-Pass-Through -->
 
@@ -908,11 +903,11 @@ section.</p>
 
 <!-- Personal Income @ Alternative Minimum Tax -->
 
-<h4 id="pol-other-taxes">Other Taxes</h4>
+<h4 id="pol-other-taxes">3l. Other Taxes</h4>
 
 <!-- Other Taxes @ Net Investment Income Tax -->
 
-<h4 id="pol-refundable-credits">Refundable Credits</h4>
+<h4 id="pol-refundable-credits">3m. Refundable Credits</h4>
 
 <!-- Refundable Credits @ Earned Income Tax Credit -->
 
@@ -920,7 +915,7 @@ section.</p>
 
 <!-- Refundable Credits @ Personal Refundable Credit -->
 
-<h4 id="pol-surtaxes">Surtaxes</h4>
+<h4 id="pol-surtaxes">3n. Surtaxes</h4>
 
 <!-- Surtaxes @ New Minimum Tax -->
 
@@ -928,21 +923,21 @@ section.</p>
 
 <!-- Surtaxes @ Lump-Sum Tax -->
 
-<h4 id="pol-ubi">Universal Basic Income</h4>
+<h4 id="pol-ubi">3o. Universal Basic Income</h4>
 
 <!-- Universal Basic Income @ UBI Benefits -->
 
 <!-- Universal Basic Income @ UBI Taxability -->
 
-<h4 id="pol-benefits">Benefits</h4>
+<h4 id="pol-benefits">3p. Benefits</h4>
 
 <!-- Benefits @ Benefit Repeal -->
 
-<h4 id="pol-other-parameters">Other Parameters</h4>
+<h4 id="pol-other-parameters">3q. Other Parameters</h4>
 
 <!--  @  -->
 
-<h3 id="input">Input Variables</h3>
+<h3 id="input">4. Input Variables</h3>
 
 <p>
   This section contains documentation of input variables in a format
@@ -955,7 +950,7 @@ section.</p>
 
 <!-- read@variables -->
 
-<h3 id="output">Output Variables</h3>
+<h3 id="output">5. Output Variables</h3>
 
 <p>
   This section contains documentation of output variables in a format
@@ -966,7 +961,7 @@ section.</p>
 
 <!-- calc@variables -->
 
-<h3 id="params">Assumption Parameters</h3>
+<h3 id="params">6. Assumption Parameters</h3>
 
 <p>
   This section contains documentation of several sets of parameters
@@ -994,13 +989,13 @@ section.</p>
   government cost of providing the benefits.
 </p>
 
-<h4 id="params-consump">Consumption Parameters</h4>
-
-<!-- consumption@parameters -->
-
-<h4 id="params-growdiff">Growdiff Parameters</h4>
+<h4 id="params-growdiff">6a. Growdiff Parameters</h4>
 
 <!-- growdiff@parameters -->
+
+<h4 id="params-consump">6b. Consumption Parameters</h4>
+
+<!-- consumption@parameters -->
 
 <!-- #TOP# -->
 </body>

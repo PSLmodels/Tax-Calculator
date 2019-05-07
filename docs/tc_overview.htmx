@@ -159,8 +159,8 @@ source code for each class and all its methods.
   </p></li>
 
   <li><p>
-    <b>Parameters</b> &rarr; Contains basic value extrapolation and
-    validation logic for time-varying parameters that can be any of
+    <b>Parameters</b> &rarr; Contains basic value extrapolation, revision,
+    and validation logic for time-varying parameters that can be any of
     four types and can be either scalar-valued or vector-valued.<br />
     Documentation and source code are in
     <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/parameters.py"
