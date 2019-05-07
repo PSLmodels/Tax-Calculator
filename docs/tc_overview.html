@@ -113,8 +113,8 @@
     by expanded-income deciles.<br />
     Created by
     <b>calc_clp.difference_table(calc_ref, 'weighted_deciles', 'iitax')</b>
-    method called the two Calculator objects after <b>calc_all()</b>
-    has been called on both.
+    method called after <b>calc_all()</b> has been called on both
+    Calculator objects.
   </p></li>
 
 </ul>
@@ -149,22 +149,94 @@
 
 <h4>Complete Story</h4>
 
+<p>
+Tax-Calculator contains seven basic classes, and a collection of
+global utility functions, that together provide the full range of
+Tax-Calculator capabilities.  Here is a description of their role in
+Tax-Calculator and a link to each the detailed documentation and
+source code for each class and all its methods.
+</p>
 
-<!--
-parameters.py:17:  class Parameters():
-  policy.py:13:      class Policy(Parameters):
-  consumption.py:14: class Consumption(Parameters):
-  growdiff.py:12:    class GrowDiff(Parameters):
+<p><b>Classes</b></p>
 
-growfactors.py:14: class GrowFactors():
+<ul>
 
-records.py:15:     class Records(): USES: GrowFactors object
+  <li><p>
+    <b>Records</b> &rarr; Contains attributes of each filing unit.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py"
+       target="_blank">records.py</a>.
+  </p></li>
 
-calculator.py:45:  class Calculator(): USES: Records and Policy objects
--->
+  <li><p>
+    <b>GrowFactors</b> &rarr; Contains CBO-derived baseline annual
+    growth factors that are used to specify price inflation and wage
+    growth rates in the <b>Policy</b> class object and to specify
+    annual growth factors that are applied to monetary attributes of
+    the filing units in the <b>Records</b> class object.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growfactors.py"
+       target="_blank">growfactors.py</a>.
+  </p></li>
 
+  <li><p>
+    <b>Parameters</b> &rarr; Contains basic value extrapolation and
+    validation logic for time-varying parameters that can be any of
+    four types and can be either scalar-valued or vector-valued.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/parameters.py"
+       target="_blank">parameters.py</a>.
+  </p></li>
 
+  <ul>
+  <li><p>
+    <b>Policy</b> &rarr; Derived from <b>Parameters</b> and contains tax
+    policy parameters.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py"
+       target="_blank">policy.py</a>.
+  </p></li>
 
+  <li><p>
+    <b>GrowDiff</b> &rarr; Derived from <b>Parameters</b> and contains
+    differences from CBO-derived baseline growth factors in
+    the <b>GrowFactors</b> class object.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growdiff.py"
+       target="_blank">growdiff.py</a>.
+  </p></li>
+
+  <li><p>
+    <b>Consumption</b> &rarr; Derived from <b>Parameters</b> and contains
+    parameters related to consumption that are used in
+    the <b>Calculator</b> class object.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/consumption.py"
+       target="_blank">consumption.py</a>.
+  </p></li>
+  </ul>
+
+  <li><p>
+    <b>Calculator</b> &rarr; Contains a <b>Policy</b> class object, a
+    <b>Records</b> class object, and a <b>Consumption</b> class object,
+    plus functions that contain the logic required to calculate income
+    and payroll tax liability for each filing unit.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py"
+       target="_blank">calculator.py</a> and in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py"
+       target="_blank">calcfunctions.py</a>.
+  </p></li>
+
+</ul>
+
+<p><b>Utilities</b></p>
+
+<p>
+  Documentation and source code for the global utility functions are in
+  <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py"
+     target="_blank">utils.py</a>.
+</p>
   
 <button onclick="topFunction()" id="topbutton" title="Go to top">Top</button>
 <script src="docs.js"></script>
