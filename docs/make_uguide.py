@@ -9,8 +9,8 @@ containing information from several JSON files.
 import os
 import sys
 from collections import OrderedDict
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..'))
+CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CURDIR_PATH, '..'))
 # pylint: disable=import-error,wrong-import-position
 from taxcalc import Policy, json_to_dict
 
@@ -18,7 +18,6 @@ from taxcalc import Policy, json_to_dict
 INPUT_FILENAME = 'uguide.htmx'
 OUTPUT_FILENAME = 'uguide.html'
 
-CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
 
 INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
@@ -40,8 +39,15 @@ def main():
     # augment text variable with do-not-edit warning
     old = '<!-- #WARN# -->'
     new = ('<!-- *** NEVER EDIT THIS FILE BY HAND *** -->\n'
-           '<!-- *** INSTEAD EDIT uguide.htmy FILE *** -->')
+           '<!-- *** INSTEAD EDIT uguide.htmx FILE *** -->')
     text = text.replace(old, new)
+
+    # augment text variable with top button code
+    topbtn_filename = os.path.join(CURDIR_PATH, 'topbtn.htmx')
+    with open(topbtn_filename, 'r') as topbtn_file:
+        topbtn = topbtn_file.read()
+    old = '<!-- #TOP# -->'
+    text = text.replace(old, topbtn)
 
     # augment text variable with information from JSON files
     text = policy_params(POLICY_PATH, text)
