@@ -11,168 +11,80 @@
 
 <h1>Tax-Calculator User Guide</h1>
 
-<p>This document tells you how to use Tax-Calculator, an open-source
-federal income and payroll tax simulation model.  It assumes that you
-have already read the
-<a href="https://github.com/PSLmodels/Tax-Calculator#tax-calculator">
-documentation introduction</a>.  The two ways of using Tax-Calculator
+<p>
+  This document tells you how to use Tax-Calculator, an open-source
+  federal income and payroll tax microsimulation model.  It assumes
+  that you are already familiar with the material covered in the
+  <a href="https://pslmodels.github.io/Tax-Calculator/"
+     target="_blank">introductory documentation</a> (other than the
+  Guides and Cookbook) and that you are using the latest release of
+  Tax-Calculator mentioned there.
+</p>
+
+<h3>Table of Contents</h3>
+
+
+<p><a href="#cli">tc CLI</a> to use Tax-Calculator on your computer
+via the command line</p>
+
+<p><a href="#cli-install-test">Install/Test tc CLI</a></p>
+<p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
+<p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
+<p><a href="#cli-spec-funits">Specify Filing Units</a></p>
+<p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
+<p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
+<p><a href="#cli-taxbrain-upload">Upload Files to TaxBrain</a></p>
+
+
+<p><a href="#pol">Policy Parameters</a> that specify tax reforms</p>
+
+<p><a href="#pol-parameter-indexing">Parameter Indexing</a></p>
+<p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
+<p><a href="#pol-social-security-taxability">Social Security Taxability</a></p>
+<p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
+<p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
+<p><a href="#pol-standard-deduction">Standard Deduction</a></p>
+<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
+<p><a href="#pol-childdependent-credits">Child/Dependent Credits</a></p>
+<p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
+<p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
+<p><a href="#pol-personal-income">Personal Income</a></p>
+<p><a href="#pol-other-taxes">Other Taxes</a></p>
+<p><a href="#pol-refundable-credits">Refundable Credits</a></p>
+<p><a href="#pol-surtaxes">Surtaxes</a></p>
+<p><a href="#pol-ubi">Universal Basic Income</a></p>
+<p><a href="#pol-benefits">Benefits</a></p>
+<p><a href="#pol-other-parameters">Other Parameters</a></p>
+
+
+<p><a href="#input">Input Variables</a> that specify tax filing units</p>
+
+
+<p><a href="#output">Output Variables</a> that describe tax results</p>
+
+
+<p><a href="#params">Assumption Parameters</a> that specify economic
+  assumptions</p>
+
+<p><a href="#params-consump">Consumption Parameters</a></p>
+<p><a href="#params-growdiff">Growdiff Parameters</a></p>
+
+
+
+<p>
+  The two ways of using Tax-Calculator
 described here require no computer programming.  If you are interested
 in Python programming with Tax-Calculator, you should read the tested
 recipes in our
-<a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html">
-Tax-Calculator Cookbook</a>. If you want ask a question, report a bug
+  <a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html"
+     target="_blank">Python Cookbook</a>.
+  If you want ask a question, report a bug
 or request an enhancement, do that by creating a new issue at the
 <a href="https://github.com/PSLmodels/Tax-Calculator/issues">
-Tax-Calculator website</a>.</p>
+  Tax-Calculator website</a>.
+</p>
 
-<p>Please cite the source of your analysis as <q>Tax-Calculator
-release #.#.#, author's calculations.</q> If you wish to link to
-Tax-Calculator, this page is preferred.  Additionally, we strongly
-recommend that you describe the input data used, and provide a link to
-the materials required to replicate your analysis or, at least, note
-that those materials are available upon request.</p>
-
-
-<h2 id="whatsnew">What's New</h2>
-
-<p>A list of recent changes to Tax-Calculator can be viewed
-<a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history">here</a>.</p>
-
-<p>To upgrade to the newest version of the Tax-Calculator package,
-execute this command:<br><kbd>conda update -c PSLmodels taxcalc</kbd></p>
-
-
-<h2 id="doc">Document Contents</h2>
-
-<p><a href="#gui">TaxBrain GUI</a> to use Tax-Calculator via an
-interactive web application</p>
-<p><a href="#cli">tc CLI</a> to use Tax-Calculator on your computer
-via the command line</p>
-<p><a href="#pol">Policy Parameters</a> that specify tax reforms</p>
-<p><a href="#input">Input Variables</a> that specify tax filing units</p>
-<p><a href="#output">Output Variables</a> that describe tax results</p>
-<p><a href="#params">Assumption Parameters</a> that specify economic
-assumptions</p>
-
-
-<h2 id="gui">TaxBrain GUI</h2>
-
-<p>You can use Tax-Calculator via a graphical user interface (GUI)
-provided by the <a href="https://apps.ospc.org/taxbrain/">TaxBrain web
-application</a>.  This approach requires only an Internet connection
-and web browser on your computer.  TaxBrain (TB) uses a micro dataset
-to produce both aggregate and distributional reform estimates for each
-of ten years for a tax reform you specify.  The calculations take just
-a couple of minutes and there is flexibility to show different kinds
-of distributional results as well as aggregate revenue results.</p>
-
-
-<h3>Section Contents</h3>
-
-<p><a href="#gui-spec-reform">Specify Tax Reform</a></p>
-<p><a href="#gui-init-static">Initiate Static Analysis</a></p>
-<p><a href="#gui-view-static">View/Download Static Results</a></p>
-<p><a href="#gui-init-dynamic">Initiate Dynamic Analysis</a></p>
-
-
-<h3 id="gui-spec-reform">Specify Tax Reform</h3>
-
-<p>The first step in using TaxBrain is to set the Start Year for the
-tax calculations.  Then specify the values of policy parameters that
-you want to change in your reform.</p>
-
-<p>By default the policy parameter boxes contain Start Year values.
-Simply replace the current-law value with the Start Year reform value.
-If some or all of your reform provisions are going to begin after the
-Start Year, simply fill in the pre-reform years with asterisks.  So,
-for example, if Start Year is 2017 and your reform calls for raising
-the social security payroll tax rate to 13 percent in 2018 and then
-to 14 percent in 2020, you would enter in that box the following:
-<pre>*,0.13,*,0.14</pre>
-This parameter is not indexed, so the 0.13 value for 2018 will be
-extrapolated to 2019, and the 0.14 value for 2020 will be in force
-in all subsequent years.</p>
-
-<p><a href="#gui">Back to Section Contents</a></p>
-
-
-<h3 id="gui-init-static">Initiate Static Analysis</h3>
-
-<p>Simply click on the Show me the results! button to start the tax
-calculations.  That button will use the full sample and take a couple
-of minutes to compute revenue and distributional results for each of
-ten years beginning with the Start Year you specified.</p>
-
-<p>There is also a Quick Calculation! button that produces results
-only for the Start Year using a sub-sample of the full sample.</p>
-
-<p><a href="#gui">Back to Section Contents</a></p>
-
-
-<h3 id="gui-view-static">View/Download Static Results</h3>
-
-<p>After the tax calculations are completed, you are shown a results
-page that presents various options: you can specify, view and download
-a total liabilities table, your can specify, view and download a
-distribution table, you can use your reform to conduct different types
-of dynamic analysis (via the button labeled Link to Dynamic
-Simulations), and finally, you can go back to the policy parameters
-page to modify your reform (via the button labeled Edit Parameters).</p>
-
-<p>There are three variants of the <b>total liabilities table</b>.
-The variant shown initially is Change, meaning the amounts are the
-difference between liabilities under your reform and the liabilities
-projected for current-law policy.  You can also elect to see the
-reform and current-law levels.</p>
-
-<p>There are many variants of the <b>distribution table</b>.  Try
-clicking on the options to the left to define the nature of the table
-and the year for which it is constructed.  Try clicking on the options
-to the right to specify which columns are included in the table.  An
-easy way to uncheck all the column boxes is to double click on the
-Select All box.</p>
-
-<p>There are three download options for each of these two tables:</p>
-
-<p><b>Print</b> creates a new page in your browser that is suitable
-for printing.</p>
-
-<p><b>Copy</b> puts the table on the clipboard of your local computer
-so that you can paste it anywhere on your computer.  The copy on the
-clipboard uses invisible tab characters to separate the table's
-columns.</p>
-
-<p><b>CSV</b> downloads to your computer a CSV-formatted file
-containing the information in the table.  CSV-formatted files can
-be easily imported into any spreadsheet program.</p>
-
-<p><a href="#gui">Back to Section Contents</a></p>
-
-
-<h3 id="gui-init-dynamic">Initiate Dynamic Analysis</h3>
-
-<p>After clicking on the Link to Dynamic Simulations on the static
-results page, you are presented with a page that allows you to choose
-different types of dynamic simulations to conduct on your tax reform:</p>
-
-<p><b>Partial Equilibrium Simulation</b> is described this way:
-<i>This approach answers the question, <q>how would taxpayer behavior
-(income and deductions) affect revenue if all other prices in the
-economy could stay the same?</q></i></p>
-
-<p><b>Overlapping Generations Simulation</b> is described this way:
-<i>This approach answers the question, <q>how does tax policy affect
-macroeconomic aggregates and prices?</q></i></p>
-
-Clicking on one of these choices will allow you to specify some
-additional economic assumption parameters and initiate the dynamic
-analysis using your economic assumptions.
-
-<p><a href="#gui">Back to Section Contents</a>&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a></p>
-
-
-<h2 id="cli">tc CLI</h2>
+<h3 id="cli">tc CLI</h3>
 
 <p>You can use Tax-Calculator on your own computer via a command line
 interface (CLI) called tc.  This approach requires the installation of
@@ -194,18 +106,11 @@ files, and then skip to the last part of this section on how to upload
 files to TaxBrain.</p>
 
 
-<h3>Section Contents</h3>
-
-<p><a href="#cli-install-test">Install/Test tc CLI</a></p>
-<p><a href="#cli-spec-reform">Specify Tax Reform</a></p>
-<p><a href="#cli-spec-assump">Specify Analysis Assumptions</a></p>
-<p><a href="#cli-spec-funits">Specify Filing Units</a></p>
-<p><a href="#cli-init-analysis">Initiate Reform Analysis</a></p>
-<p><a href="#cli-tab-results">Tabulate Reform Results</a></p>
-<p><a href="#cli-taxbrain-upload">Upload Files to TaxBrain</a></p>
 
 
-<h3 id="cli-install-test">Install/Test tc CLI</h3>
+
+
+<h4 id="cli-install-test">Install/Test tc CLI</h4>
 
 <p>Installation of tc CLI involves several steps:</p>
 
@@ -273,10 +178,7 @@ specified in a text file using a simple method to describe the details
 of the reform.  Read the next part of this section to see how policy
 reform files are formatted.</p>
 
-<p><a href="#cli">Back to Section Contents</a></p>
-
-
-<h3 id="cli-spec-reform">Specify Tax Reform</h3>
+<h4 id="cli-spec-reform">Specify Tax Reform</h4>
 
 <p>The details of a tax reform are contained in a text file that you
 write with a text editor.  The reform is expressed by specifying which
@@ -298,10 +200,7 @@ responses to your tax reform (that is, if you want to conduct
 non-static analysis), read the next part before going to the last
 part.</p>
 
-<p><a href="#cli">Back to Section Contents</a></p>
-
-
-<h3 id="cli-spec-assump">Specify Analysis Assumptions</h3>
+<h4 id="cli-spec-assump">Specify Analysis Assumptions</h4>
 
 <p>This part explains how to specify economic assumption files used in
 non-static tax analysis.  If you want to start out doing static
@@ -322,17 +221,7 @@ writing JSON assumption files, go
 to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this
 page</a>.</p>
 
-<p>If you want to upload policy reform and economic assumption files
-to TaxBrain, you can go directly to this
-section's <a href="#cli-taxbrain-upload">last part</a>, which
-discusses uploading files to TaxBrain.  If you want to analyze your
-tax reforms on your own computer, go to the next part on how to
-specify tax filing units used in the analysis.</p>
-
-<p><a href="#cli">Back to Section Contents</a></p>
-
-
-<h3 id="cli-spec-funits">Specify Filing Units</h3>
+<h4 id="cli-spec-funits">Specify Filing Units</h4>
 
 <p>The taxcalc package containing the tc CLI to Tax-Calculator does
 not include the IRS-based microsimulation sample used by TaxBrain.  This
@@ -457,10 +346,7 @@ reforms like a child credit bonus for children under five years of
 age.  Also, the universal basic income (UBI) reform is implemented
 using its own set of three age-count input variables.
 
-<p><a href="#cli">Back to Section Contents</a></p>
-
-
-<h3 id="cli-init-analysis">Initiate Reform Analysis</h3>
+<h4 id="cli-init-analysis">Initiate Reform Analysis</h4>
 
 <p>The tc CLI to Tax-Calculator requires only an input file containing
 one or more filing units.  A baseline file is optional; no baseline
@@ -638,9 +524,7 @@ the <kbd>ref3.json</kbd> file, the content of which is:
 // ref3.json raises personal exemption amount to 8000 in 2022,
 // after which it continues to be indexed to price inflation.
 {
-    "policy": {
-        "II_em": {"2022": 8000}
-    }
+    "II_em": {"2022": 8000}
 }
 </pre></p>
 
@@ -790,10 +674,7 @@ script or a Windows batch file, and execute one script in each
 command-prompt window.  If it still takes too long, consider splitting
 the tc runs across more than one computer.</p>
 
-<p><a href="#cli">Back to Section Contents</a></p>
-
-
-<h3 id="cli-tab-results">Tabulate Reform Results</h3>
+<h4 id="cli-tab-results">Tabulate Reform Results</h4>
 
 <p>Given that tc CLI output can be written to either CSV-formatted
 files or SQLite3 database files, there is an enormous range of
@@ -920,31 +801,7 @@ dump files (one for current-law policy and the other for your reform)
 and then use the SQLite3 ATTACH command to make both database files
 available in your SQLite tabulation session.</p>
 
-
-<h3 id="cli-taxbrain-upload">Upload Files to TaxBrain</h3>
-
-<p>Any policy reform or economic assumption files you can use with tc
-can be uploaded to trigger a TaxBrain run.  As mentioned above the
-main advantages of doing this is getting access to the proprietary
-<kbd>puf.csv</kbd> input file, getting fast execution of both reform
-and current-law policy runs for ten years and getting the flexibility
-to specify a variety of distributional tables.  All the TaxBrain results
-can be downloaded to your computer for storage or for additional
-analysis.</p>
-
-<p>The files on your computer can be uploaded
-at <a href="https://apps.ospc.org/taxbrain/file/">the TaxBrain
-file-upload page</a>.</p>
-
-<p>An extended example of how preliminary tax analysis on your
-computer can be combined with TaxBrain file-uploading is
-<a href="https://github.com/PSLmodels/Tax-Calculator/issues/1335">here</a>.</p>
-
-<p><a href="#cli">Back to Section Contents</a>&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a></p>
-
-
-<h2 id="pol">Policy Parameters</h2>
+<h3 id="pol">Policy Parameters</h3>
 
 <p>This section contains documentation of policy parameters in a
 format that is easy to search and print.  The policy parameters are
@@ -953,36 +810,11 @@ by Tax-Calculator and the tc CLI, but not available in the TaxBrain
 GUI, are placed in an Other Parameters group at the end of the
 section.</p>
 
-
-<h3>Section Contents</h3>
-
-<p><a href="#pol-parameter-indexing">Parameter Indexing</a></p>
-<p><a href="#pol-payroll-taxes">Payroll Taxes</a></p>
-<p><a href="#pol-social-security-taxability">Social Security Taxability</a></p>
-<p><a href="#pol-above-the-line-deductions">Above The Line Deductions</a></p>
-<p><a href="#pol-personal-exemptions">Personal Exemptions</a></p>
-<p><a href="#pol-standard-deduction">Standard Deduction</a></p>
-<p><a href="#pol-nonrefundable-credits">Nonrefundable Credits</a></p>
-<p><a href="#pol-childdependent-credits">Child/Dependent Credits</a></p>
-<p><a href="#pol-itemized-deductions">Itemized Deductions</a></p>
-<p><a href="#pol-capital-gains-dividends">Capital Gains And Dividends</a></p>
-<p><a href="#pol-personal-income">Personal Income</a></p>
-<p><a href="#pol-other-taxes">Other Taxes</a></p>
-<p><a href="#pol-refundable-credits">Refundable Credits</a></p>
-<p><a href="#pol-surtaxes">Surtaxes</a></p>
-<p><a href="#pol-ubi">Universal Basic Income</a></p>
-<p><a href="#pol-benefits">Benefits</a></p>
-<p><a href="#pol-other-parameters">Other Parameters</a></p>
-
-
-<h3 id="pol-parameter-indexing"></a>Parameter Indexing</h3>
+<h4 id="pol-parameter-indexing"></a>Parameter Indexing</h4>
 
 <!-- Parameter Indexing @ Offsets -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-payroll-taxes"></a>Payroll Taxes</h3>
+<h4 id="pol-payroll-taxes"></a>Payroll Taxes</h4>
 
 <!-- Payroll Taxes @ Social Security FICA -->
 
@@ -990,19 +822,13 @@ section.</p>
 
 <!-- Payroll Taxes @ Additional Medicare FICA -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-social-security-taxability">Social Security Taxability</h3>
+<h4 id="pol-social-security-taxability">Social Security Taxability</h4>
 
 <!-- Social Security Taxability @ Threshold For Social Security Benefit Taxability 1 -->
 
 <!-- Social Security Taxability @ Threshold For Social Security Benefit Taxability 2 -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-above-the-line-deductions">Above The Line Deductions</h3>
+<h4 id="pol-above-the-line-deductions">Above The Line Deductions</h4>
 
 <!-- Above The Line Deductions @ Misc. Adjustment Haircuts -->
 
@@ -1010,10 +836,7 @@ section.</p>
 
 <!-- Above The Line Deductions @ Child And Elderly Care -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-personal-exemptions">Personal Exemptions</h3>
+<h4 id="pol-personal-exemptions">Personal Exemptions</h4>
 
 <!-- Personal Exemptions @ Personal And Dependent Exemption Amount -->
 
@@ -1021,19 +844,13 @@ section.</p>
 
 <!-- Personal Exemptions @ Repeal for Dependents Under Age 18 -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-standard-deduction">Standard Deduction</h3>
+<h4 id="pol-standard-deduction">Standard Deduction</h4>
 
 <!-- Standard Deduction @ Standard Deduction Amount -->
 
 <!-- Standard Deduction @ Additional Standard Deduction For Blind And Aged -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-nonrefundable-credits">Nonrefundable Credits</h3>
+<h4 id="pol-nonrefundable-credits">Nonrefundable Credits</h4>
 
 <!-- Nonrefundable Credits @ Child And Dependent Care -->
 
@@ -1041,10 +858,7 @@ section.</p>
 
 <!-- Nonrefundable Credits @ Personal Nonrefundable Credit -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-childdependent-credits">Child/Dependent Credits</h3>
+<h4 id="pol-childdependent-credits">Child/Dependent Credits</h4>
 
 <!-- Child/Dependent Credits @ Child Tax Credit -->
 
@@ -1052,10 +866,7 @@ section.</p>
 
 <!-- Child/Dependent Credits @ Other Dependent Tax Credit -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-itemized-deductions">Itemized Deductions</h3>
+<h4 id="pol-itemized-deductions">Itemized Deductions</h4>
 
 <!-- Itemized Deductions @ Medical Expenses -->
 
@@ -1081,10 +892,7 @@ section.</p>
 
 <!-- Itemized Deductions @ Ceiling On The Amount Of Itemized Deductions Allowed -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-capital-gains-dividends">Capital Gains And Dividends</h3>
+<h4 id="pol-capital-gains-dividends">Capital Gains And Dividends</h4>
 
 <!-- Capital Gains And Dividends @ Regular - Long Term Capital Gains And Qualified Dividends -->
 
@@ -1092,10 +900,7 @@ section.</p>
 
 <!-- Capital Gains And Dividends @ Tax All Capital Gains And Dividends The Same As Regular Taxable Income -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-personal-income">Personal Income</h3>
+<h4 id="pol-personal-income">Personal Income</h4>
 
 <!-- Personal Income @ Regular: Non-AMT, Non-Pass-Through -->
 
@@ -1103,17 +908,11 @@ section.</p>
 
 <!-- Personal Income @ Alternative Minimum Tax -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-other-taxes">Other Taxes</h3>
+<h4 id="pol-other-taxes">Other Taxes</h4>
 
 <!-- Other Taxes @ Net Investment Income Tax -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-refundable-credits">Refundable Credits</h3>
+<h4 id="pol-refundable-credits">Refundable Credits</h4>
 
 <!-- Refundable Credits @ Earned Income Tax Credit -->
 
@@ -1121,10 +920,7 @@ section.</p>
 
 <!-- Refundable Credits @ Personal Refundable Credit -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-surtaxes">Surtaxes</h3>
+<h4 id="pol-surtaxes">Surtaxes</h4>
 
 <!-- Surtaxes @ New Minimum Tax -->
 
@@ -1132,105 +928,79 @@ section.</p>
 
 <!-- Surtaxes @ Lump-Sum Tax -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-ubi">Universal Basic Income</h3>
+<h4 id="pol-ubi">Universal Basic Income</h4>
 
 <!-- Universal Basic Income @ UBI Benefits -->
 
 <!-- Universal Basic Income @ UBI Taxability -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-benefits">Benefits</h3>
+<h4 id="pol-benefits">Benefits</h4>
 
 <!-- Benefits @ Benefit Repeal -->
 
-<p><a href="#pol">Back to Section Contents</a></p>
-
-
-<h3 id="pol-other-parameters">Other Parameters</h3>
+<h4 id="pol-other-parameters">Other Parameters</h4>
 
 <!--  @  -->
 
-<p><a href="#pol">Back to Section Contents</a>&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a></p>
+<h3 id="input">Input Variables</h3>
 
-
-<h2 id="input">Input Variables</h2>
-
-<p>This section contains documentation of input variables in a format
-that is easy to search and print. The input variables are ordered
-alphabetically by name.  There are no subsections, just a long list
-of input variables that Tax-Calculator is programmed to use in its
-calculations.  The Availability information indicates which input
-data files contain the variable.</p>
+<p>
+  This section contains documentation of input variables in a format
+  that is easy to search and print. The input variables are ordered
+  alphabetically by name.  There are no subsections, just a long list
+  of input variables that Tax-Calculator is programmed to use in its
+  calculations.  The Availability information indicates which input
+  data files contain the variable.
+</p>
 
 <!-- read@variables -->
 
-<p><a href="#input">Back to Section Contents</a>&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a></p>
+<h3 id="output">Output Variables</h3>
 
-
-<h2 id="output">Output Variables</h2>
-
-<p>This section contains documentation of output variables in a format
-that is easy to search and print. The output variables are ordered
-alphabetically by name.  There are no subsections, just a long list of
-output variables that Tax-Calculator is programmed to calculate.</p>
+<p>
+  This section contains documentation of output variables in a format
+  that is easy to search and print. The output variables are ordered
+  alphabetically by name.  There are no subsections, just a long list of
+  output variables that Tax-Calculator is programmed to calculate.
+</p>
 
 <!-- calc@variables -->
 
-<p><a href="#output">Back to Section Contents</a>&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a></p>
+<h3 id="params">Assumption Parameters</h3>
 
+<p>
+  This section contains documentation of several sets of parameters
+  that characterize responses to a tax reform.  Consumption parameters
+  are used to compute marginal tax rates and to compute the consumption
+  value of in-kind benefits.  Growdiff parameters are used to specify
+  baseline differences and/or reform responses in the annual rate of
+  growth in economic variables.  (Note that behavior parameters used to
+  compute changes in input variables caused by a tax reform in a
+  partial-equilibrium setting are not part of Tax-Calculator, but can be
+  used via the Behavioral-Response behresp package in a Python script.)
+</p>
 
-<h2 id="params">Assumption Parameters</h2>
+<p>
+  All the assumption parameters can be used by the tc CLI, but only
+  those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
+  assumption parameters control advanced features of Tax-Calculator, so
+  understanding the source code that uses them is essential.  Default
+  values of most assumption parameters are zero and are projected into
+  the future at that value, which implies no response to the reform.
+  Using the default no-reform-response assumption for all the response
+  parameters generates a static analysis of the tax reform.  The benefit
+  value consumption parameters have a default value of one, which
+  implies the consumption value of the in-kind benefits is equal to the
+  government cost of providing the benefits.
+</p>
 
-<p>This section contains documentation of several sets of parameters
-that characterize responses to a tax reform.  Consumption parameters
-are used to compute marginal tax rates and to compute the consumption
-value of in-kind benefits.  Growdiff parameters are used to specify
-baseline differences and/or reform responses in the annual rate of
-growth in economic variables.  (Note that behavior parameters used to
-compute changes in input variables caused by a tax reform in a
-partial-equilibrium setting are not part of Tax-Calculator, but can be
-used via the Behavioral-Response behresp package in a Python script.)</p>
-
-<p>All the assumption parameters can be used by the tc CLI, but only
-those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
-assumption parameters control advanced features of Tax-Calculator, so
-understanding the source code that uses them is essential.  Default
-values of most assumption parameters are zero and are projected into
-the future at that value, which implies no response to the reform.
-Using the default no-reform-response assumption for all the response
-parameters generates a static analysis of the tax reform.  The benefit
-value consumption parameters have a default value of one, which
-implies the consumption value of the in-kind benefits is equal to the
-government cost of providing the benefits.</p>
-
-<h3>Section Contents</h3>
-
-<p><a href="#params-consump">Consumption Parameters</a></p>
-<p><a href="#params-growdiff">Growdiff Parameters</a></p>
-
-
-<h3 id="params-consump">Consumption Parameters</h3>
+<h4 id="params-consump">Consumption Parameters</h4>
 
 <!-- consumption@parameters -->
 
-<p><a href="#params">Back to Section Contents</a></p>
-
-
-<h3 id="params-growdiff">Growdiff Parameters</h3>
+<h4 id="params-growdiff">Growdiff Parameters</h4>
 
 <!-- growdiff@parameters -->
-
-
-<p><a href="#params">Back to Section Contents</a>&nbsp;&nbsp;
-<a href="#doc">Back to Document Contents</a></p>
 
 <!-- #TOP# -->
 </body>
