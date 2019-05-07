@@ -39,16 +39,20 @@
 <ul>
 
   <li><p>
-    <b>rec</b> &rarr; Records class object.<br />
-    Created by <b>Records()</b> when containing IRS-SOI-PUF-derived
-    filing-unit data or created by <b>Records.cps_constructor()</b>
-    when containing CPS-derived filing-unit data.
+    <b>rec</b> &rarr; Records class object.<br />  Created
+    by <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py"
+    target="_blank"><b>Records()</b></a> when containing
+    IRS-SOI-PUF-derived filing-unit data or created
+    by <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py"
+    target="_blank"><b>Records.cps_constructor()</b></a> when
+    containing CPS-derived filing-unit data.
   </p></li>
 
   <li><p>
     <b>clp</b> &rarr; Policy class object containing parameters that
-    characterize current-law policy.<br />
-    Created by <b>Policy()</b>.
+    characterize current-law policy.<br />  Created
+    by <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py"
+    target="_blank"><b>Policy()</b></a>.
   </p></li>
 
   <li><p>
@@ -56,33 +60,41 @@
     characterize a tax reform.<br />
     Created using a Python dictionary
     <b>refdict</b> representing the reform by using the
-    <b>implement_reform(refdict)</b> method on a Policy object
-    created by <b>Policy()</b>.  Or created using a JSON file
-    <b>filename</b> representing the reform by using the
-    <b>implement_reform(Policy.read_json_reform(filename))</b> method
-    on a Policy object
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py"
+    target="_blank"><b>implement_reform(refdict)</b></a> method on a
+    Policy object created by <b>Policy()</b></a>.  Or created using a
+    JSON file <b>filename</b> representing the reform by using the
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py"
+       target="_blank"><b>implement_reform(Policy.read_json_reform(filename))</b></a>
+    method on a Policy object created by <b>Policy()</b>.
   </p></li>
 
   <li><p>
     <b>calc_clp</b> &rarr; Calculator class object for current-law policy.<br />
-    Created by <b>Calculator(records=rec, policy=clp)</b>.
+    Created by <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py"
+    target="_blank"><b>Calculator(records=rec, policy=clp)</b></a>.
   </p></li>
 
   <li><p>
     <b>calc_ref</b> &rarr; Calculator class object for reform policy.<br />
-    Created by <b>Calculator(records=rec, policy=ref)</b>.
+    Created by
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py"
+    target="_blank"><b>Calculator(records=rec, policy=ref)</b></a>.
   </p></li>
 
   <li><p>
-    <b>calc_all()</b> &rarr; Calculator class method that computes tax
-    liability (and many intermediate variables such as AGI) for each
-    filing-unit.
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py"
+    target="_blank"><b>calc_all()</b></a> &rarr; Calculator class
+    method that computes tax liability (and many intermediate
+    variables such as AGI) for each filing-unit.
   </p></li>
 
   <li><p>
-    <b>dataframe(all_vars=True)</b> &rarr; Calculator class method
-    that returns a Pandas DataFrame object containing all input and
-    all output variables produced by the <b>calc_all()</b> method.
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py"
+    target="_blank"><b>dataframe(all_vars=True)</b></a> &rarr;
+    Calculator class method that returns a Pandas DataFrame object
+    containing all input and all output variables produced by
+    the <b>calc_all()</b> method.
   </p></li>
 
 </ul>
