@@ -28,7 +28,7 @@ Setup Python
 Follow the getting started instructions
 [here](https://PSLmodels.github.io/Tax-Calculator/tc_starting.html),
 but be sure to skip step 2, because the installation of the `taxcalc`
-package will interfer with testing changes in the source code.
+package will interfer with the testing of changes in the source code.
 
 If you are new to or have limited experience with Python, you should
 read some introductory tutorials available online.  One such tutorial
