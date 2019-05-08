@@ -680,14 +680,14 @@ def test_section_titles(tests_path):
                 sdict[sec1][sec2] = 0
         return sdict
     # begin main logic of test_section_titles
-    # specify expected section titles ordered as on TaxBrain
+    # specify expected section titles ordered as on the Tax-Brain webapp
     ided_ceiling_pct = ('Ceiling On The Benefit Of Itemized Deductions '
                         'As A Percent Of Deductible Expenses')
     cgqd_tax_same = ('Tax All Capital Gains And Dividends The Same '
                      'As Regular Taxable Income')
     # pylint: disable=bad-continuation
     valid_dict = {
-        '': {  # empty section_1 implies parameter is not displayed in TaxBrain
+        '': {  # empty section_1 implies parameter not displayed in Tax-Brain
             '': 0
         },
         'Parameter Indexing': {

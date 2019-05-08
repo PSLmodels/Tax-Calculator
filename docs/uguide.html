@@ -18,7 +18,7 @@
   that you are already familiar with the material covered in the
   <a href="https://pslmodels.github.io/Tax-Calculator/"
      target="_blank">introductory documentation</a> (except for the
-  Guides and Cookbook) and that you are using the latest release of
+  guides and cookbook) and that you are using the latest release of
   Tax-Calculator mentioned there.
 </p>
 
@@ -64,476 +64,482 @@
     </ol>
 </ol>
 
-
-<!-- START REVISIONS -->
-<p>
-  The two ways of using Tax-Calculator
-described here require no computer programming.  If you are interested
-in Python programming with Tax-Calculator, you should read the tested
-recipes in our
-  <a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html"
-     target="_blank">Python Cookbook</a>.
-  If you want ask a question, report a bug
-or request an enhancement, do that by creating a new issue at the
-<a href="https://github.com/PSLmodels/Tax-Calculator/issues">
-  Tax-Calculator website</a>.
-</p>
-
 <h3 id="pyp">1. Python-Programming Usage</h3>
 
 <p>
-  text goes here.
+  Of the two ways of using Tax-Calculator described in this guide, one
+  requires writing Python programs, the other involves using a
+  command-line tool and requires no computer programming.  The
+  detailed information in this guide about policy parameters, input
+  variables, output variables, and assumption parameters, will be
+  useful to you either way you use Tax-Calculator.
+</p>
+
+<p>
+  If you want to learn more about how to write Python programs that
+  use Tax-Calculator, read the
+  <a href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html"
+     target="_blank">python cookbook</a>, which contains a collection
+  of tested recipes that employ both basic and advanced techniques.
 </p>
 
 <h3 id="cli">2. No-Programming Usage</h3>
 
-<p>You can use Tax-Calculator on your own computer via a command line
-interface (CLI) called tc.  This approach requires the installation of
-Anaconda Python and the taxcalc package on your computer as well as
-the use of a text editor to prepare simple files that are read by tc.
-Computer programming knowledge is not required, but if you are
-prevented from doing the easy installation or you are not willing to
-work at the command line (Terminal on Mac or Anaconda Prompt on
-Windows) and use an editor (for example, TextEdit on Mac or Notepad on
-Windows), then you should probably use the TaxBrain GUI.</p>
-
-<p>If you are comfortable using an editor to prepare text files that
-describe your tax reforms, but don't want to install Python and tc on
-your computer, you can upload reform files to TaxBrain where all the
-analysis is conducted (as described in the previous section).  If you
-are interested in this file-upload approach, skip the first part of
-this section, read the next part on how to specify policy reform
-files, and then skip to the last part of this section on how to upload
-files to TaxBrain.</p>
-
-<h4 id="cli-install-test">2a. Test tc CLI</h4>
-
-<p>Installation of tc CLI involves several steps:</p>
-
-<p><b>Install the free Anaconda Python distribution</b> by going to
-the <a href="https://www.anaconda.com/download/">Anaconda download
-page</a> and selecting Python 3.6 or Python 3.7.  You should install
-Python 3.6+ because we have discontinued support for Python 2.7.
-You must do this installation even if you already
-have Python installed on your computer because the Anaconda
-distribution contains all the additional Python packages that
-Tax-Calculator uses to conduct tax calculations (many of which are not
-included in other Python installations). You can install the Anaconda
-distribution without having administrative privileges on your computer
-and the Anaconda distribution will not interfere with any Python
-installation that came as part of your computer’s operating
-system.</p>
-
-<p><b>Check your Anaconda Python installation</b> by entering the
-following two commands at the operating system command prompt (which
-is shown as <kbd>$</kbd> here, but would be <kbd>></kbd> on Windows)
-in any directory:
-<pre>$ conda --version</pre>
-Expected output is something like <kbd>conda 4.5.11</kbd>
-<pre>$ python --version</pre>
-Expected output should contain the <kbd>Python 3.6</kbd> or the
-<kbd>Python 3.7</kbd> phrase as well as the <kbd>Anaconda</kbd>
-phrase, the presence of which confirm that the installation went
-smoothly.</p>
-
-<p><b>Install the free taxcalc package</b> by entering the following:
-<pre>$ conda install -c PSLmodels taxcalc</pre>
-Expected output should contain information about all the additional
-packages that Tax-Calculator needs.  After all that information has
-been shown on the screen, press the <kbd>y</kbd> key to proceed with
-the package installation.</p>
-
-<p><b>Check your installation of tc</b> (the CLI to Tax-Calculator) by
-entering the following:
-<pre>$ tc --test</pre>
-Expected output (after about twenty seconds) is <kbd>PASSED
-TEST</kbd>.  If you get <kbd>FAILED TEST</kbd>, something went wrong
-in the installation process.  If the installation test fails, please
-report your experience by creating a new issue at
-<a href="https://github.com/PSLmodels/Tax-Calculator/issues">
-this website</a> or by sending an email to one of the core maintainers
-of Tax-Calculator listed at the bottom of the <i>What is TaxBrain?</i>
-page at <a href="https://apps.ospc.org/taxbrain/">this website</a>.
-
-<p>If your installation passes the test, you are ready to begin using
-tc to analyze your tax reforms.  Continue reading this section for
-information about how to do that.  But if you want a quick hint about
-the range of tc capabilities, enter the following:
-<pre>$ tc --help</pre>
+<p>
+  You can use Tax-Calculator on your own computer via a command-line
+  interface (CLI) called <kbd>tc</kbd>.  This approach requires the
+  use of a text editor to prepare simple files that are read by
+  <kbd>tc</kbd>.  Computer programming knowledge is not required, but
+  this approach to using Tax-Calculator assumes you are willing to
+  work at the command line (Terminal on Mac or Anaconda Prompt on
+  Windows) and to use a text editor (for example, TextEdit on Mac or
+  Notepad on Windows).
 </p>
 
-<p>After you have installed the taxcalc package, keep it up to date by
-checking for new releases at
-<a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#tax-calculator-release-history">this page</a> and, when there
-is a new release, executing this command:
-<pre>$ conda update -c PSLmodels taxcalc</pre>
-The packages are usually available about an hour after the release.</p>
+<h4 id="cli-install-test">2a. Test <kbd>tc</kbd> CLI</h4>
 
-<p>The basic idea of tc tax analysis is that each tax reform is
-specified in a text file using a simple method to describe the details
-of the reform.  Read the next part of this section to see how policy
-reform files are formatted.</p>
+<p>
+  The <kbd>tc</kbd> CLI is part of the Tax-Calculator
+  <kbd>taxcalc</kbd> package you installed on your computer as part of
+  <a href="https://pslmodels.github.io/Tax-Calculator/tc_starting.html"
+     target="_blank">Getting Started</a>.
+</p>
+
+<p>
+  To check your installation of <kbd>tc</kbd>, enter the following
+  command:
+  <pre>
+    $ tc --test
+  </pre>
+  Expected output (after a number of seconds) is <kbd>PASSED TEST</kbd>.
+  If you get <kbd>FAILED TEST</kbd>, something went wrong in the
+  installation process.  If the installation test fails, please report
+  your experience by creating a new issue at
+  <a href="https://github.com/PSLmodels/Tax-Calculator/issues"
+     target="_blank">this website</a>.
+</p>
+
+<p>
+  If your installation passes the test, you are ready to begin using
+  <kbd>tc</kbd> to analyze tax reforms.  Continue reading this section
+  for information about how to do that.  But if you want a quick hint
+  about the range of <kbd>tc</kbd> capabilities, enter the following:
+  <pre>
+    $ tc --help
+  </pre>
+</p>
+
+<p>
+  The basic idea of <kbd>tc</kbd> tax analysis is that each tax reform is
+  specified in a text file using a simple method to describe the details
+  of the reform.  Read the next part of this section to see how policy
+  reform files are formatted.
+</p>
 
 <h4 id="cli-spec-reform">2b. Specify Tax Reform</h4>
 
-<p>The details of a tax reform are contained in a text file that you
-write with a text editor.  The reform is expressed by specifying which
-tax policy parameters are changed from their current-law values by the
-reform.  The timing and magnitude of these policy parameter changes
-are written in JSON, a simple and widely-used data-specification
-language.</p>
+<p>
+  The details of a tax reform are contained in a text file that you
+  write with a text editor.  The reform is expressed by specifying
+  which tax policy parameters are changed from their current-law
+  values by the reform.  The current-law values of each policy
+  parameter are documented in <a href="#pol">this section</a> of the
+  guide.  The timing and magnitude of these policy parameter changes
+  are written in JSON, a simple and widely-used data-specification
+  language.
+</p>
 
-<p>For several examples of reform files and the general rules for
-writing JSON reform files, go
-to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/README.md#policy-reform-files">this
-page</a>.</p>
-
-<p>If you want to upload a reform file to TaxBrain for static analysis
-(rather than use the tc CLI on your computer for analysis), go to this
-section's <a href="#cli-taxbrain-upload">last part</a>, which
-discusses uploading files to TaxBrain.  If you want to assume any
-responses to your tax reform (that is, if you want to conduct
-non-static analysis), read the next part before going to the last
-part.</p>
+<p>
+  For several examples of reform files and the general rules for
+  writing JSON reform files, go to
+  <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/README.md#policy-reform-files"
+     target="_blank">this page</a>.
+</p>
 
 <h4 id="cli-spec-assump">2c. Specify Analysis Assumptions</h4>
 
-<p>This part explains how to specify economic assumption files used in
-non-static tax analysis.  If you want to start out doing static
-analysis, you can skip this part now and come back to read it whenever
-you want to go beyond static analysis.
-The <a href="#cli-spec-funits">next part</a> of this section discusses
-filing-unit input files.</p>
+<p>
+  This part explains how to specify economic assumption files used in
+  static tax analysis.  This is an advanced topic, so if you want to
+  start out using the default assumptions (which are documented in
+  <a href="#params">this section</a> of the guide), you can skip this
+  part now and come back to read it whenever you want to change the
+  default assumptions.  The <a href="#cli-spec-funits">next part</a>
+  of this section discusses filing-unit input files.
+</p>
 
-<p>The details of economic assumptions are contained in a
-text file that you write with a text editor.  The assumptions are
-expressed by specifying which parameters are changed from
-their default values, all of which are zero.  The timing and magnitude of
-these parameter changes are written in JSON, a simple and
-widely-used data-specification language.</p>
+<p>
+  The details of analysis assumptions are contained in a text file
+  that you write with a text editor.  The assumptions are expressed by
+  specifying which parameters are changed from their default values.
+  The timing and magnitude of these parameter changes are written in
+  JSON, a simple and widely-used data-specification language.
+</p>
 
-<p>For examples of economic assumption files and the general rules for
-writing JSON assumption files, go
-to <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files">this
-page</a>.</p>
+<p>
+  For examples of assumption files and the general rules for
+  writing JSON assumption files, go to
+  <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/assumptions/README.md#economic-assumption-files"
+     target="_blank">this page</a>.
+</p>
 
 <h4 id="cli-spec-funits">2d. Specify Filing Units</h4>
 
-<p>The taxcalc package containing the tc CLI to Tax-Calculator does
-not include the IRS-based microsimulation sample used by TaxBrain.  This
-is because, unlike Census survey public-use files, the IRS-SOI Public Use
-File (PUF) is proprietary.  If you or your organization has paid IRS
-to use the PUF version being used by TaxBrain, then it may be possible
-for us to share with you our TaxBrain sample, which we
-call <kbd>puf.csv</kbd> even though it contains CPS records that
-represent non-filers.  Otherwise, you have three choices.</p>
+<p>
+  The <kbd>taxcalc</kbd> package containing <kbd>tc</kbd> does not
+  include an IRS-SOI-PUF-derived microsimulation sample.  This is
+  because, unlike Census public-use files, the IRS-SOI Public Use File
+  (PUF) is proprietary.  If you or your organization has paid IRS to
+  use the PUF version being by Tax-Calculator, then it may be possible
+  for us to share with you our PUF-derived sample, which we
+  call <kbd>puf.csv</kbd> even though it contains CPS records that
+  represent non-filers.  Otherwise, you have two choices.
+</p>
 
-<p><b>First</b>, you can easily create with an editor a CSV-formatted
-file containing several filing units whose experience under your tax
-reform is of interest to you.  Much of the public discussion of tax
-reforms is of this type: how is this family or that family affected by
-a reform; how do they fare under different reforms; etc.  Notice that
-this kind of analysis of a few exemplary families is something you
-cannot do on TaxBrain.  The test conducted to check the tc
-installation has left one such file.  It is called <kbd>test.csv</kbd>
-and contains two filing units with only wage and salary income: a
-lower income family and a higher income family.  You can use the
-<kbd>test.csv</kbd> file as tc input to analyze your tax reforms.
-Before creating your own input files be sure to read the short set of
-guidelines that appear after this list of three choices.  Some people
-pursue this approach using a statistical pacakge like R or Stata, in
-which case the tc CLI program can be invoked from within the statistical
-package.  There may be a need (especially on Windows) to
-<a href="https://github.com/PSLmodels/Tax-Calculator/issues/2273#issuecomment-479572287">add
-to the system PATH</a> in order to do this.</p>
+<p>
+  <b>First</b>, you can easily create with a text editor a
+  CSV-formatted file containing several filing units whose experience
+  under your tax reform is of interest to you.  Much of the public
+  discussion of tax reforms is of this type: how is this family or
+  that family affected by a reform; how do they fare under different
+  reforms; etc.  The test conducted to check the <kbd>tc</kbd>
+  installation has left one such file.  It is
+  called <kbd>test.csv</kbd> and contains two filing units with only
+  wage and salary income: a lower income family and a higher income
+  family.  You can use this <kbd>test.csv</kbd> file as <kbd>tc</kbd>
+  input to analyze your tax reforms.  Before creating your own input
+  files be sure to read the short set of guidelines that appear after
+  this list of two choices.  Some people pursue this approach using
+  a statistical pacakge like R or Stata, in which case
+  the <kbd>tc</kbd> CLI program can be invoked from within the
+  statistical package.  There may be a need (especially on Windows) to
+  <a href="https://github.com/PSLmodels/Tax-Calculator/issues/2273#issuecomment-479572287"
+     target="_blank">add to the system PATH</a> in order to do this.
+</p>
 
-<p><b>Second</b>, recently we made freely
-available a public-use file containing only filing units derived from
-several recent March CPS surveys.  For several reasons, the results generated
-by this <kbd>cps.csv</kbd> file are substantially different from the results
-generated by the <kbd>puf.csv</kbd> file.  The <kbd>cps.csv</kbd> file
-contains a sample of the population while the <kbd>puf.csv</kbd> file
-contains mostly a sample of income tax filers in which high-income
-filing units are over represented.  Also, the <kbd>cps.csv</kbd> file
-has many income variables that are missing (and assumed to be zero by
-Tax-Calculator), which causes an understating of total incomes,
-especially for those with high incomes.  All these differences
-mean that the aggregate revenue and distributional results generated
-when using the <kbd>cps.csv</kbd> file as input to Tax-Calculator can
-be substantially different from the results generated when using the
-<kbd>puf.csv</kbd> file as input.  And this is particularly true when
-analyzing reforms that change the tax treatment of high-income filers.</p>
+<p>
+  <b>Second</b>, the <kbd>taxcalc</kbd> does include a freely
+  available microsimulation sample containing only filing units
+  derived from several recent March CPS surveys.  For several reasons,
+  the results generated by this <kbd>cps.csv</kbd> file are
+  substantially different from the results generated by
+  the <kbd>puf.csv</kbd> file.  The <kbd>cps.csv</kbd> file contains a
+  sample of the population while the <kbd>puf.csv</kbd> file contains
+  mostly a sample of income tax filers in which high-income filing
+  units are over represented.  Also, the <kbd>cps.csv</kbd> file has
+  many income variables that are missing (and assumed to be zero by
+  Tax-Calculator), which causes an understating of total incomes,
+  especially for those with high incomes.  All these differences mean
+  that the aggregate revenue and distributional results generated when
+  using the <kbd>cps.csv</kbd> file as input to Tax-Calculator can be
+  substantially different from the results generated when using the
+  <kbd>puf.csv</kbd> file as input.  And this is particularly true
+  when analyzing reforms that change the tax treatment of high-income
+  filers.
+</p>
 
-<p><b>Third</b>, when you want to estimate how your reform affects
-total tax liabilities and/or the distribution of tax liabilities, you
-can always upload your policy reform and economic assumption files
-to TaxBrain.  Combining this option with the first option provides a
-complete tax analysis capability.
-The <a href="#cli-taxbrain-upload">last part</a> of this section
-describes how to upload files to TaxBrain.</p>
+<p>
+  <b>Input-File-Preparation Guidelines</b>
+</p>
 
-<p><b>Input-File-Preparation Guidelines</b></p>
+<p>
+  The <kbd>tc</kbd> CLI to Tax-Calculator is flexible enough to read
+  almost any kind of CSV-formatted input data on filing units as long
+  as the variable names correspond to those expected by
+  Tax-Calculator.  The only required input variables
+  are <kbd>RECID</kbd> (a unique filing-unit record identifier)
+  and <kbd>MARS</kbd> (a positive-valued filing-status indicator).
+  Other variables in the input file must have variable names that are
+  listed in the <a href="#input">Input Variables</a> section for them
+  to affect the tax calculations.  Any variable listed in Input
+  Variables that is not in an input file is automatically set to zero
+  for every filing unit.  Variables in the input file that are not
+  listed in Input Variables are ignored by Tax-Calculator.
+</p>
 
-<p>The tc CLI to Tax-Calculator is flexible enough to read almost any
-kind of CSV-formatted input data on filing units as long as the
-variable names correspond to those expected by Tax-Calculator.  The
-only required input variables are <kbd>RECID</kbd> (a unique
-filing-unit record identifier) and <kbd>MARS</kbd> (a positive-valued
-filing-status indicator).  Other variables in the input file must have
-variable names that are listed in the <a href="#input">Input
-Variables</a> section for them to affect the tax calculations.  Any
-variable listed in Input Variables that is not in an input file is
-automatically set to zero for every filing unit.  Variables
-in the input file that are not listed in Input Variables are ignored
-by Tax-Calculator.</p>
+<p>
+  However, there are important data-preparation issues related to the
+  fact that the payroll tax is a tax on individuals, not on income-tax
+  filing units.  Tax-Calculator expects that the filing-unit total for
+  each of several earnings-related variables is split between the
+  taxpayer and the spouse.  It is the responsibility of anyone
+  preparing data for Tax-Calculator input to do this earnings
+  splitting.  Here are the relationships between the filing-unit
+  variable and the taxpayer (<kbd>p</kbd>) and spouse (<kbd>s</kbd>)
+  variables expected by Tax-Calculator:
+  <pre>
+    e00200 = e00200p + e00200s
+    e00900 = e00900p + e00900s
+    e02100 = e02100p + e02100s
+  </pre>
+  Obviously, when <kbd>MARS</kbd> is not equal to 2 (married filing
+  jointly), the values of the three <kbd>s</kbd> variables are zero
+  and the value of each <kbd>p</kbd> variable is equal to the value of
+  its corresponding filing-unit variable.  Note that the input file
+  can omit any one, or all, of these three sets variables.  If the
+  three variables in one of these sets are omitted, the required
+  relationship will be satisfied because zero equals zero plus zero.
+</p>
 
-<p>However, there are important data-preparation issues related to the
-fact that the payroll tax is a tax on individuals, not on income-tax
-filing units.  Tax-Calculator expects that the filing-unit total for
-each of several earnings-related variables is split between the
-taxpayer and the spouse.  It is the responsibility of anyone preparing
-data for Tax-Calculator input to do this earnings splitting.  Here are
-the relationships between the filing-unit variable and the taxpayer
-(<kbd>p</kbd>) and spouse (<kbd>s</kbd>) variables expected by
-Tax-Calculator:
-<pre>
-e00200 = e00200p + e00200s
-e00900 = e00900p + e00900s
-e02100 = e02100p + e02100s
-</pre>
-Obviously, when <kbd>MARS</kbd> is not equal to 2 (married filing
-jointly), the values of the three <kbd>s</kbd> variables are zero and
-the value of each <kbd>p</kbd> variable is equal to the value of its
-corresponding filing-unit variable.  Note that the input file can
-omit any one, or all, of these three sets variables.  If the three
-variables in one of these sets are omitted, the required relationship
-will be satisfied because zero equals zero plus zero.</p>
+<p>
+  In addition to this earnings-splitting data-preparation issue,
+  Tax-Calculator expects that the value of ordinary dividends
+  (<kbd>e00600</kbd>) will be no less than the value of qualified
+  dividends (<kbd>e00650</kbd>) for each filing unit.  And it also
+  expects that the value of total pension and annuity income
+  (<kbd>e01500</kbd>) will be no less than the value of taxable
+  pension and annuity income (<kbd>e01700</kbd>) for each filing unit.
+  Tax-Calculator also expects the value of the required MARS variable
+  to be in the range from one to five, and the value of the EIC
+  variable to be in the range from zero to three. Again, it is your
+  responsibility to prepare input data for Tax-Calculator in a way
+  that ensures these relationships are true for each filing unit.
+</p>
 
-<p>But when including one of these three sets of variables, it is up
-to you to specify the taxpayer-spouse split.  You will get an error
-message from Tax-Calculator, and it will stop running, if you do not
-split the filing-unit amount between taxpayer and spouse so that the
-above equations hold for each filing unit in the input file.  Read
-<a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/DATAPREP.md#tax-calculator-input-file-preparation-guidelines">
-this document</a> for more details.</p>
-
-<p>In addition to this earnings-splitting data-preparation issue,
-Tax-Calculator expects that the value of ordinary dividends
-(<kbd>e00600</kbd>) will be no less than the value of qualified
-dividends (<kbd>e00650</kbd>) for each filing unit.  And it also
-expects that the value of total pension and annuity income
-(<kbd>e01500</kbd>) will be no less than the value of taxable pension
-and annuity income (<kbd>e01700</kbd>) for each filing unit.  Again,
-it is your responsibility to prepare input data in a way that ensures
-these relationships are true for each filing unit.</p>
-
-<p id="marskids">Here's an example of how to specify a few stylized
-filing units with and without young children.
-<pre>
-RECID,MARS,XTOT,EIC,n24,...
-   11,   1,   1,  0,  0, ... <== single person with no kids
-   12,   4,   2,  1,  1, ... <== single person with a young kid
-   13,   2,   4,  2,  2, ... <== married couple with two young kids
-</pre>
-Be sure to read the documentation of the <kbd>MARS</kbd>, <kbd>XTOT</kbd>,
-<kbd>EIC</kbd>, and <kbd>n24</kbd> input variables.  Also, there may
-be a need to add of child-age input variables if you want to simulate
-reforms like a child credit bonus for children under five years of
-age.  Also, the universal basic income (UBI) reform is implemented
-using its own set of three age-count input variables.
+<p id="marskids">
+  Here's an example of how to specify a few stylized filing units with
+  and without young children:
+  <pre>
+    RECID,MARS,XTOT,EIC,n24,...
+    11   ,  1 ,  1 , 0 , 0 ,... <== single person with no kids
+    12   ,  4 ,  2 , 1 , 1 ,... <== single person with a young kid
+    13   ,  2 ,  4 , 2 , 2 ,... <== married couple with two young kids
+  </pre>
+  Be sure to read the documentation of the <kbd>MARS</kbd>, <kbd>XTOT</kbd>,
+  <kbd>EIC</kbd>, and <kbd>n24</kbd> input variables.  Also, there may
+  be a need to add other child-age input variables if you want to
+  simulate reforms like a child credit bonus for young children.
+  Also, the universal basic income (UBI) reform is implemented using
+  its own set of three age-group-count input variables.
+</p>
 
 <h4 id="cli-init-analysis">2e. Initiate Reform Analysis</h4>
 
-<p>The tc CLI to Tax-Calculator requires only an input file containing
-one or more filing units.  A baseline file is optional; no baseline
-file implies the policy baseline is current-law policy.  A policy
-reform file is optional; no reform file implies no reform (that is,
-you want to analyze current-law policy).  An economic assumption file
-is also optional; no assumption file implies you want to conduct
-static analysis.  The output files written by tc are built-up from
-the name of the input file, baseline file, reform file, and
-assumption file using a <kbd>#</kbd> character if the option is
-not specified.</p>
-
-<p>Here we explain how to conduct tax analysis with the tc CLI by
-presenting a series of examples and explaining what output is produced
-in each example.  There are several types of output that tc can
-generate so there will be more than a few examples.  The examples are
-numbered in order to make it easier to refer to different examples.
-All the examples assume that the input file is <kbd>test.csv</kbd>,
-which was mentioned in previous part of this section.</p>
-
-<p><pre>
-(1)$ tc test.csv 2020
-</pre></p>
-
-<p>Example (1) produces a minimal output file containing 2020 tax
-liabilities for each filing unit assuming the income amounts in the
-input file are amounts for 2020 and assuming current-law tax policy
-projected to 2020.  The name of the CSV-formatted output file is
-<kbd>test-20-#-#-#.csv</kbd>.  The first <kbd>#</kbd> symbol indicates
-we did not specify a baseline file and the second <kbd>#</kbd> symbol
-indicates we did not specify a policy reform file and the
-third <kbd>#</kbd> symbol indicates we did not specify an economic
-assumption file.
-The variables included in the minimal output file include:
-<kbd>RECID</kbd> (of filing unit in the input file),
-<kbd>YEAR</kbd> (specified when executing tc CLI),
-<kbd>WEIGHT</kbd> (which is same as <kbd>s006</kbd>),
-<kbd>INCTAX</kbd> (which is same as <kbd>iitax</kbd>),
-<kbd>LSTAX</kbd> (which is same as <kbd>lumpsum_tax</kbd>) and
-<kbd>PAYTAX</kbd> (which is same as <kbd>payroll_tax</kbd>).
+<p>
+  Executing <kbd>tc</kbd> requires only two command-line arguments:
+  the name of an input file containing one or more filing units and
+  the year for which the tax calculations are done.  A baseline policy
+  file is optional; specifying no baseline file implies the baseline
+  policy is current-law policy.  A policy reform file is optional;
+  specifying no reform file implies calculations are done for the
+  baseline policy.  An economic assumption file is also optional; no
+  assumption file implies you want to use the default values of the
+  assumption parameters.  The output files written by <kbd>tc</kbd>
+  are built-up from the name of the input file, tax year, baseline
+  file, reform file, and assumption file using a <kbd>#</kbd>
+  character if an option is not specified.
 </p>
 
-<p>Also, documentation of the reform is always written to a text file
-ending in <kbd>-doc.text</kbd>, which in this example would be
-named <kbd>test-20-#-#-#-doc.text</kbd>.</p>
+<p>
+  Here we explain how to conduct tax analysis with <kbd>tc</kbd> by
+  presenting a series of examples and explaining what output is
+  produced in each example.  There are several types of output
+  that <kbd>tc</kbd> can generate so there will be more than a few
+  examples.  The examples are numbered in order to make it easier to
+  refer to different examples.  All the examples assume that the input
+  file is <kbd>test.csv</kbd>, which was mentioned earlier in this
+  guide.
+</p>
 
 <p><pre>
-(2)$ tc test.csv 2020 --dump
+    (1)$ tc test.csv 2020
 </pre></p>
 
-<p>Example (2) produces a much more complete output file with the same
-name <kbd>test-20-#-#-#.csv</kbd> as the minimal output file produced in
-example (1).  No other output is generated other than the
-<kbd>test-20-#-#-#-doc.text</kbd> file.   The
-<kbd>--dump</kbd> option causes <b>all</b> the input variables (including
-the ones understood by Tax-Calculator but not included
-in <kbd>test.csv</kbd>, which are all zero) and <b>all</b> the output
-variables calculated by Tax-Calculator to be included in the output
-file.  For a complete list of input variables, see
-the <a href="#input">Input Variables</a> section.  For a complete list
-of output variables, see the <a href="#output">Output Variables</a>
-section.  Since Tax-Calculator ignores variables in the input file
-that are not in the Input Variables section, the dump output file in
-example (2) can be used as an input file and it will produce exactly
-the same tax liabilities (apart from rounding errors of one or two
-cents) as in the original dump output.</p>
+<p>
+  Example (1) produces a minimal output file containing 2020 tax
+  liabilities for each filing unit assuming the income amounts in the
+  input file are amounts for 2020 and assuming current-law tax policy
+  projected to 2020.  The name of the CSV-formatted output file is
+  <kbd>test-20-#-#-#.csv</kbd>.  The first <kbd>#</kbd> symbol indicates
+  we did not specify a baseline file and the second <kbd>#</kbd> symbol
+  indicates we did not specify a policy reform file and the
+  third <kbd>#</kbd> symbol indicates we did not specify an economic
+  assumption file.<br />
+  The variables included in the minimal output file include:
+  <kbd>RECID</kbd> (of filing unit in the input file),
+  <kbd>YEAR</kbd> (specified when executing <kbd>tc</kbd>),
+  <kbd>WEIGHT</kbd> (which is same as <kbd>s006</kbd>),
+  <kbd>INCTAX</kbd> (which is same as <kbd>iitax</kbd>),
+  <kbd>LSTAX</kbd> (which is same as <kbd>lumpsum_tax</kbd>) and
+  <kbd>PAYTAX</kbd> (which is same as <kbd>payroll_tax</kbd>).
+</p>
 
-<p id="partdump">This full dump output can be useful for debugging and
-is small when using just a few filing units as input.  But
-when using large samples as input (for example, the <kbd>cps.csv</kbd>
-input file), the size of the dump output becomes quite large. For
-Tax-Calculator versions 0.15.0 and higher, there is a way to specify
-a <b>partial dump</b> that includes only variables of interest.  To
-have <kbd>tc</kbd> do a partial dump, create a text file that lists
-the names of the variables to be included in the partial dump.  You
-can put the varible names on separate lines and/or put several names
-on one line separated by spaces.  Then point to that file using the
-<kbd>--dvars</kbd> option.  So, for example, if your list of dump
-variables is in a file named <kbd>mydumpvars</kbd>, a partial dump
-file is created this way:
-<pre>
-$ tc cps.csv 2020 --dump --dvars mydumpvars
-</pre>
-If there is no <kbd>--dvars</kbd> option, the <kbd>--dump</kbd> option
-produces a full dump.</p>
+<p>
+  Also, documentation of the reform is always written to a text file
+  ending in <kbd>-doc.text</kbd>, which in this example would be
+  named <kbd>test-20-#-#-#-doc.text</kbd>.
+</p>
 
 <p><pre>
-(3)$ tc test.csv 2020 --sqldb
+    (2)$ tc test.csv 2020 --dump
 </pre></p>
 
-<p>Example (3) produces the same dump output as example (2) except
-that the dump output is written not to a CSV-formatted file, but to
-the dump table in an SQLite3 database file, which is
-called <kbd>test-20-#-#-#.db</kbd> in this example.  Because
-the <kbd>--dump</kbd> option is not used in example (3), minimal
-output will be written to the <kbd>test-20-#-#-#.csv</kbd> file.
-Note that use of the <kbd>--dvars</kbd> option causes
-the contents of the database file to be a partial dump.</p>
+<p>
+  Example (2) produces a much more complete output file with the same
+  name <kbd>test-20-#-#-#.csv</kbd> as the minimal output file
+  produced in example (1).  No other output is generated other than
+  the <kbd>test-20-#-#-#-doc.text</kbd> file.  The <kbd>--dump</kbd>
+  option causes <b>all</b> the input variables (including the ones
+  understood by Tax-Calculator but not included
+  in <kbd>test.csv</kbd>, which are all zero) and <b>all</b> the
+  output variables calculated by Tax-Calculator to be included in the
+  output file.  For a complete list of input variables, see
+  the <a href="#input">Input Variables</a> section.  For a complete
+  list of output variables, see the <a href="#output">Output
+  Variables</a> section.  Since Tax-Calculator ignores variables in
+  the input file that are not in the Input Variables section, the dump
+  output file in example (2) can be used as an input file and it will
+  produce exactly the same tax liabilities (apart from rounding errors
+  of one or two cents) as in the original dump output.
+</p>
 
-<p> Pros and cons of putting dump output in a CSV file or an SQLite3
-database table:  The CSV file is almost twice as large as the
-database, but it can be easily imported into a wide range of
-statistical packages.  The main advantage of the
-SQLite3 database is that the Anaconda Python distribution includes
-<a href="https://www.sqlite.org/cli.html">sqlite3</a> (or sqlite3.exe
-on Windows), a command-line tool that can be used to tabulate dump
-output using structured query language (SQL).  SQL is a language that
-you use to specify the tabulation you want and the SQL database
-figures out the procedure for generating your tabulation and then
-executes that procedure; there is no computer programming involved.
-We will give an example of SQL tabulation of dump output in the next
-part of this section.</p>
+<p id="partdump">
+  This full dump output can be useful for debugging and is small when
+  using just a few filing units as input.  But when using large
+  samples as input (for example, the <kbd>cps.csv</kbd> input file),
+  the size of the dump output becomes quite large.  There is a way to
+  specify a <b>partial dump</b> that includes only variables of
+  interest.  To have <kbd>tc</kbd> do a partial dump, create a text
+  file that lists the names of the variables to be included in the
+  partial dump.  You can put the varible names on separate lines
+  and/or put several names on one line separated by spaces.  Then
+  point to that file using the <kbd>--dvars</kbd> option.  So, for
+  example, if your list of dump variables is in a file
+  named <kbd>mydumpvars</kbd>, a partial dump file is created this
+  way:
+  <pre>
+    $ tc cps.csv 2020 --dump --dvars mydumpvars
+  </pre>
+  If there is no <kbd>--dvars</kbd> option, the <kbd>--dump</kbd> option
+  produces a full dump.
+</p>
 
 <p><pre>
-(4)$ tc test.csv 2020 --dump --sqldb
+    (3)$ tc test.csv 2020 --sqldb
 </pre></p>
 
-<p>Example (4) shows that you can get dump output in the two different
-formats from a single tc run.</p>
+<p>
+  Example (3) produces the same dump output as example (2) except that
+  the dump output is written not to a CSV-formatted file, but to the
+  dump table in an SQLite3 database file, which is
+  called <kbd>test-20-#-#-#.db</kbd> in this example.  Because
+  the <kbd>--dump</kbd> option is not used in example (3), minimal
+  output will be written to the <kbd>test-20-#-#-#.csv</kbd> file.
+  Note that use of the <kbd>--dvars</kbd> option causes the contents
+  of the database file to be a partial dump.
+</p>
 
-<p>The remaining examples use neither the <kbd>--dump</kbd> nor the
-<kbd>--sqldb</kbd> option, and thus, produce minimal output for the
-reform.  But either or both of those options could be used in all the
-subsequent examples to generate more complete output for the reform.</p>
+<p>
+  Pros and cons of putting dump output in a CSV file or an SQLite3
+  database table: The CSV file is almost twice as large as the
+  database, but it can be easily imported into a wide range of
+  statistical packages.  The main advantage of the SQLite3 database is
+  that the Anaconda Python distribution includes
+  <a href="https://www.sqlite.org/cli.html">sqlite3</a> (or
+  sqlite3.exe on Windows), a command-line tool that can be used to
+  tabulate dump output using structured query language (SQL).  SQL is
+  a language that you use to specify the tabulation you want and the
+  SQL database figures out the procedure for generating your
+  tabulation and then executes that procedure; there is no computer
+  programming involved.  We illustrate SQL tabulation of dump output
+  in a <a href="#cli-tab-results">subsequent section</a>.
+</p>
 
 <p><pre>
-(5)$ tc test.csv 2021 --reform ref3.json
+    (4)$ tc test.csv 2020 --dump --sqldb
 </pre></p>
 
-<p>Example (5) produces 2021 output for the filing units in the 
-<kbd>test.csv</kbd> file using the policy reform specified in
-the <kbd>ref3.json</kbd> file.  Because no <kbd>--assump</kbd>
-option is used, the output results are produced using static analysis.
-The name of the output file in this example is
-<kbd>test-21-#-ref3-#.csv</kbd>.</p>
+<p>
+  Example (4) shows that you can get dump output in the two different
+  formats from a single <kbd>tc</kbd> run.
+</p>
 
-<p id="compoundreform">If, in addition to <kbd>ref3.json</kbd>, there
-was a <kbd>ref4.json</kbd> reform file and analysis of the <b>compound
-reform</b> (consisting of first implementing the <kbd>ref3.json</kbd>
-reform relative to current-law policy and then implementing
-the <kbd>ref4.json</kbd> reform relative to the <kbd>ref3.json</kbd>
-reform) is desired, both reform files can be mentioned in
-the tc <kbd>--reform</kbd> option as follows:
-<pre>
-$ tc test.csv 2021 --reform ref3.json+ref4.json
-</pre>
-The above command generates an output file named
-<kbd>test-21-#-ref3+ref4-#.csv</kbd></p>
+<p>
+  The remaining examples use neither the <kbd>--dump</kbd> nor the
+  <kbd>--sqldb</kbd> option, and thus, produce minimal output for the
+  reform.  But either or both of those options could be used in all the
+  subsequent examples to generate more complete output for the
+  reform.
+</p>
 
 <p><pre>
-(6)$ tc test.csv 2021 --reform ref3.json --assump res1.json
+    (5)$ tc test.csv 2021 --reform ref3.json
 </pre></p>
 
-<p>Example (6) produces 2021 output for the filing units in the 
-<kbd>test.csv</kbd> file using the policy reform specified in
-the <kbd>ref3.json</kbd> file and the economic assumptions
-specified in the <kbd>res1.json</kbd> file.  The output results
-produced by this non-static analysis are written to the 
-<kbd>test-21-#-ref3-res1.csv</kbd> file.</p>
+<p>
+  Example (5) produces 2021 output for the filing units in the 
+  <kbd>test.csv</kbd> file using the policy reform specified in
+  the <kbd>ref3.json</kbd> file.  The name of the output file in this
+  example is <kbd>test-21-#-ref3-#.csv</kbd> because no baseline or
+  assumption options were specified.
+</p>
 
-<p id="outdir">In the preceding examples, all the output files are
-written in the directory where the tc command was executed.  If you
-want the output files to be written in a different directory, use
-the <kbd>--outdir</kbd> option.  So, for example, you have created
-the <kbd>myoutput</kbd> directory as directory at the same level as
-the directory from where you are running tc, output files will be
-written there if you use the <kbd>--outdir myoutput</kbd> option.</p>
+<p id="compoundreform">
+  If, in addition to <kbd>ref3.json</kbd>, there was
+  a <kbd>ref4.json</kbd> reform file and analysis of the <b>compound
+  reform</b> (consisting of first implementing
+  the <kbd>ref3.json</kbd> reform relative to current-law policy and
+  then implementing the <kbd>ref4.json</kbd> reform relative to
+  the <kbd>ref3.json</kbd> reform) is desired, both reform files can
+  be mentioned in the <kbd>--reform</kbd> option as follows:
+  <pre>
+    $ tc test.csv 2021 --reform ref3.json+ref4.json
+  </pre>
+  The above command generates an output file named
+  <kbd>test-21-#-ref3+ref4-#.csv</kbd>
+</p>
 
-<p>The following examples illustrate output options that work only if
-each filing unit in the input file has a positive sampling weight
-(<kbd>s006</kbd>).  So, we are going to use the <kbd>cps.csv</kbd>
-file in these examples along with the policy reform specified in
-the <kbd>ref3.json</kbd> file, the content of which is:
+<p><pre>
+    (6)$ tc test.csv 2021 --reform ref3.json --assump res1.json
+</pre></p>
+
+<p>
+  Example (6) produces 2021 output for the filing units in the 
+  <kbd>test.csv</kbd> file using the policy reform specified in
+  the <kbd>ref3.json</kbd> file and the economic assumptions specified
+  in the <kbd>eas1.json</kbd> file.  The output results produced by this
+  analysis are written to the <kbd>test-21-#-ref3-eas1.csv</kbd> file.
+</p>
+
+<p id="outdir">
+  In the preceding examples, all the output files are written in the
+  directory where the <kbd>tc</kbd> command was executed.  If you want
+  the output files to be written in a different directory, use
+  the <kbd>--outdir</kbd> option.  So, for example, if you have
+  created the <kbd>myoutput</kbd> directory as a subdirectory of the
+  directory from where you are running <kbd>tc</kbd>, output files
+  will be written there if you use the <kbd>--outdir myoutput</kbd>
+  option.
+</p>
+
+<p>
+  The following examples illustrate output options that work only if
+  each filing unit in the input file has a positive sampling weight
+  (<kbd>s006</kbd>).  So, we are going to use the <kbd>cps.csv</kbd>
+  file in these examples along with the policy reform specified in
+  the <kbd>ref3.json</kbd> file, the content of which is:
 <pre>
 // ref3.json raises personal exemption amount to 8000 in 2022,
 // after which it continues to be indexed to price inflation.
 {
     "II_em": {"2022": 8000}
 }
-</pre></p>
+</pre>
+</p>
 
-<p>The output options illustrated in the following examples generate
-tables of the post-reform level and the reform-induced change in tax
-liability by income deciles as well as graphs of marginal and average
-tax rates and percentage change in aftertax income by income percentiles.
-These tables and graphs are meant to provide
-a quick glance at the impact of a reform.  Any serious analysis of a
-reform will involve generating custom tables and graphs using
-<a href="#partdump">partial dump</a> output.  One of many examples
-of this sort of custom analysis is
-<a href="https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/?">here</a>.</p>
+<p>
+  The output options illustrated in the following examples generate
+  tables of the post-reform level and the reform-induced change in tax
+  liability by income deciles as well as graphs of marginal and
+  average tax rates and percentage change in aftertax income by income
+  percentiles.  These tables and graphs are meant to provide a quick
+  glance at the impact of a reform.  Any serious analysis of a reform
+  will involve generating custom tables and graphs using
+  <a href="#partdump">partial dump</a> output.  One of many examples
+  of this sort of custom analysis is
+  <a href="https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/?"
+     target="_blank">here</a>.
+</p>
 
 <p><pre>
 (7)$ tc cps.csv 2022 --reform ref3.json --tables
@@ -541,7 +547,8 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2022.
 
 (7)$ ls cps-22*
-cps-22-#-ref3-#-doc.text   cps-22-#-ref3-#-tab.text   cps-22-#-ref3-#.csv
+cps-22-#-ref3-#-doc.text	cps-22-#-ref3-#.csv
+cps-22-#-ref3-#-tab.text
 
 (7)$ cat cps-22-#-ref3-#-tab.text
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
@@ -575,21 +582,26 @@ Weighted Tax Differences by Baseline Expanded-Income Decile
  A   171.93   17325.2    -282.3       0.0       0.0    -282.3
 </pre></p>
 
-<p>Example (7) produces 2022 static output for the filing units in the
-<kbd>cps.csv</kbd> file using the policy reform specified in
-the <kbd>ref3.json</kbd> file.  Notice that Tax-Calculator knows to
-extrapolate (or <q>age</q>) filing unit data in the <kbd>cps.csv</kbd>
-file to the specified tax year.  It knows to do that because of the
-special input file name <kbd>cps.csv</kbd>.  The tables produced by
-this static analysis are written to the
-<kbd>cps-22-#-ref3-#-tab.text</kbd> file.  Note that on Windows
-you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and 
-<kbd>type</kbd> instead of <kbd>cat</kbd>.</p>
+<p>
+  Example (7) produces 2022 output for the filing units in the
+  <kbd>cps.csv</kbd> file using the policy reform specified in
+  the <kbd>ref3.json</kbd> file.  Notice that Tax-Calculator knows to
+  extrapolate (or <q>age</q>) filing unit data in
+  the <kbd>cps.csv</kbd> file to the specified tax year.  It knows to
+  do that because of the special input file name <kbd>cps.csv</kbd>.
+  The tables produced by this analysis are written to the
+  <kbd>cps-22-#-ref3-#-tab.text</kbd> file.  Note that on Windows
+  you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and 
+  <kbd>type</kbd> instead of <kbd>cat</kbd>.
+</p>
 
-<p>Also note that the tables above in example (7) include in the bottom
-decile some filing units who have negative or zero expanded income in
-the baseline.  If you want tables that somehow exclude those filing
-units, use the <kbd>--dump</kbd> option and tabulate your own tables.
+<p>
+  Also note that the tables above in example (7) include in the bottom
+  decile some filing units who have negative or zero expanded income
+  in the baseline.  If you want tables that somehow exclude those
+  filing units, use the <kbd>--dump</kbd> option and tabulate your own
+  tables.
+</p>
 
 <p><pre>
 (8)$ tc cps.csv 2024 --reform ref3.json --graphs
@@ -602,51 +614,67 @@ cps-24-#-ref3-#-doc.text	cps-24-#-ref3-#.csv
 cps-24-#-ref3-#-mtr.html
 </pre></p>
 
-<p>Example (8) is like example (7) except we ask for 2024 static
-output and for graphs instead of tables, although we could ask for
-both.  The HTML files containing the graphs can be viewed in your
-browser.</p>
+<p>
+  Example (8) is like example (7) except we ask for 2024 static output
+  and for graphs instead of tables, although we could ask for both.
+  The HTML files containing the graphs can be viewed in your
+  browser.
+</p>
 
-<p>Here is what the average tax rate graph
-in <kbd>cps-24-#-ref3-#-atr.html</kbd> looks like.</p>
+<p>
+  Here is what the average tax rate graph
+  in <kbd>cps-24-#-ref3-#-atr.html</kbd> looks like.
+</p>
+<p>
+  <img class="resize" src="atr.png" alt="atr graph">
+</p>
 
-<p><img class="resize" src="atr.png" alt="atr graph"></p>
+<p>
+  Here is what the marginal tax rate graph
+  in <kbd>cps-24-#-ref3-#-mtr.html</kbd> looks like:
+</p>
+<p>
+  <img class="resize" src="mtr.png" alt="mtr graph">
+</p>
 
-<p>Here is what the marginal tax rate graph
-in <kbd>cps-24-#-ref3-#-mtr.html</kbd> looks like:</p>
+<p>
+  Here is what the percentage change in aftertax income graph
+  in <kbd>cps-24-#-ref3-#-pch.html</kbd> looks like:</p>
+<p>
+  <img class="resize" src="pch.png" alt="pch graph">
+</p>
 
-<p><img class="resize" src="mtr.png" alt="mtr graph"></p>
+<p>
+  There is yet another <kbd>tc</kbd> output option that writes to the
+  screen results from a normative welfare analysis of the specified
+  policy reform.  This <kbd>--ceeu</kbd> option produces experimental
+  results that make sense only with input files that contain
+  representative samples of the population such as
+  the <kbd>cps.csv</kbd> file.  The name of this option stands for
+  certainty-equivalent expected utility.  If you want to use this
+  output option, you should read the commented Python source code for
+  the <kbd>ce_aftertax_expanded_income</kbd> function in
+  the <kbd>taxcalc/utils.py</kbd> file in the
+  <a href="https://github.com/PSLmodels/Tax-Calculator"
+     target="_blank">Tax-Calculator repository</a>.
+</p>
 
-<p>Here is what the percentage change in aftertax income graph
-in <kbd>cps-24-#-ref3-#-pch.html</kbd> looks like:</p>
-
-<p><img class="resize" src="pch.png" alt="pch graph"></p>
-
-<p>There is yet another tc CLI output option that writes to the screen
-results from a normative welfare analysis of the specified policy
-reform.  This <kbd>--ceeu</kbd> option produces experimental results
-that make sense only with input files that contain representative
-samples of the population such as the <kbd>cps.csv</kbd> file.  The
-name of this option stands for certainty-equivalent expected utility.
-If you want to use this output option, you should read the commented
-Python source code for the <kbd>ce_aftertax_expanded_income</kbd>
-function in the <kbd>taxcalc/utils.py</kbd> file at the
-<a href="https://github.com/PSLmodels/Tax-Calculator">
-developer website</a>.</p>
-
-<p id="baseline">None of the above examples use the
-<kbd>--baseline</kbd> option, which means that baseline policy in
-those examples is current-law policy.  The following example shows how
-to use the <kbd>--baseline</kbd> option to engage in counter-factual
-historical analysis.  Suppose we want to analyze what would have
-happened if some alternative to TCJA had been enacted in late 2017.
-To do this we need to have pre-TCJA policy be the baseline policy and
-we need to have the alternative reform be implemented relative to
-pre-TCJA policy.  The following tc run does exactly that using a local
-copy of
-the <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json">2017_law.json<a>
-file and the <kbd>alt_reform.json</kbd> file containing the
-alternative reform defined relative to pre-TCJA law.</p>
+<p id="baseline">
+  None of the above examples use the
+  <kbd>--baseline</kbd> option, which means that baseline policy in
+  those examples is current-law policy.  The following example shows
+  how to use the <kbd>--baseline</kbd> option to engage in
+  counter-factual historical analysis.  Suppose we want to analyze
+  what would have happened if some alternative to TCJA had been
+  enacted in late 2017.  To do this we need to have pre-TCJA policy be
+  the baseline policy and we need to have the alternative reform be
+  implemented relative to pre-TCJA policy.  The following <kbd>tc</kbd>
+  run does exactly that using a local copy of the
+  <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json"
+     target="_blank">2017_law.json<a> file and the
+  <kbd>alt_reform.json</kbd> file containing the alternative
+  reform defined relative to pre-TCJA law.
+</p>
 
 <p><pre>
 (9)$ tc cps.csv 2019 --baseline 2017_law.json --reform 2017_law.json+alt_reform.json
@@ -654,59 +682,71 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2019.
 </pre></p>
 
-<p id="fastexec">In all the examples in this section, we have executed
-one tc run at at time.  But <b>what if you want to execute many tc
-runs</b> because you want results for many years and/or for several
-different reforms.  Unless you are asking for full-dump output, a
-single tc run should take no more than one minute on your computer
-(even if you are using the large <kbd>cps.csv</kbd> input file).  The
-easiest way to speed up the execution of many tc runs is to split them
-into groups of runs and execute each group of runs in a different
-command-prompt window.  On most modern computers that have four CPU
-cores and a fast disk drive, executing four runs in different windows
-will take not much more time than executing a single tc run.  If you
-have more than one run in each group, put them in a Unix/Mac bash
-script or a Windows batch file, and execute one script in each
-command-prompt window.  If it still takes too long, consider splitting
-the tc runs across more than one computer.</p>
+<p id="fastexec">
+  In all the examples in this section, we have executed
+  one <kbd>tc</kbd> run at at time.  But <b>what if you want to
+  execute many <kbd>tc</kbd> runs</b> because you want results for
+  many years and/or for several different reforms.  Unless you are
+  asking for full-dump output, a single <kbd>tc</kbd> run should take
+  no more than one minute on your computer (even if you are using the
+  large <kbd>cps.csv</kbd> input file).  The easiest way to speed up
+  the execution of many <kbd>tc</kbd> runs is to split them into
+  groups of runs and execute each group of runs in a different
+  command-prompt window.  On most modern computers that have four CPU
+  cores and a fast disk drive, executing four runs in different
+  windows will take not much more time than executing a
+  single <kbd>tc</kbd> run.  If you have more than one run in each
+  group, put them in a Unix/Mac bash script or a Windows batch file,
+  and execute one script in each command-prompt window.  If it still
+  takes too long, consider splitting the <kbd>tc</kbd> runs across
+  more than one computer.
+</p>
 
 <h4 id="cli-tab-results">2f. Tabulate Reform Results</h4>
 
-<p>Given that tc CLI output can be written to either CSV-formatted
-files or SQLite3 database files, there is an enormous range of
-software tools that can be used to tabulate the output.  You can use
-SAS or R, Stata or MATLAB, or even import output into a spreadsheet
-(but this would seem to be the least useful option).  If you just
-want to compare the contents of two output files, you can use your
-favorite graphical diff program to view the two files <q>side by side</q>
-with highlighting of numbers that are different.  The main point
-is to use a software tool that is available to you and that you have
-experience using.</p>
+<p>
+  Given that <kbd>tc</kbd> output can be written to either
+  CSV-formatted files or SQLite3 database files, there is an enormous
+  range of software tools that can be used to tabulate the output.
+  You can use SAS or R, Stata or MATLAB, or even import output into a
+  spreadsheet (but this would seem to be the least useful option).  If
+  you just want to compare the contents of two output files, you can
+  use your favorite graphical diff program to view the two
+  files <q>side by side</q> with highlighting of numbers that are
+  different.  The main point is to use a software tool that is
+  available to you, that is appropriate for the task, and that you
+  have experience using.
+</p>
 
-<p>Here we give some examples of using the <kbd>sqlite3</kbd>
-command-line tool that is part of the Anaconda distribution (so it is
-always available when using Tax-Calculator).  The first step, of
-course, is to use the <kbd>--sqldb</kbd> option when running tc.  Then
-you can use the <kbd>sqlite3</kbd> tool interactively or use it to
-execute SQL scripts you have saved in a text file.  We'll provide
-examples of both those approaches.  There are many online tutorials on
-the SQL select command; if you want to learn more, search the
-Internet.</p>
+<p>
+  Here we give some examples of using the <kbd>sqlite3</kbd>
+  command-line tool that is part of the Anaconda distribution (so it
+  is always available when using Tax-Calculator).  The first step, of
+  course, is to use the <kbd>--sqldb</kbd> option when
+  running <kbd>tc</kbd>.  Then you can use the <kbd>sqlite3</kbd> tool
+  interactively or use it to execute SQL scripts you have saved in a
+  text file.  We'll provide examples of both those approaches.  There
+  are many online tutorials on the SQL select command; if you want to
+  learn more, search the Internet.
+</p>
 
-<p>First, we provide a simple example of using <kbd>sqlite3</kbd>
-interactively.  This approach is ideal for exploratory data analysis.
-Our example uses the <kbd>cps.csv</kbd> file as input, but you can do
-the following with the output from any input file that has weights
-(<kbd>s006</kbd>).  Also, we specify no policy reform file, so the
-output is for current-law policy.  What you cannot see from the
-following record of the analysis is that the <kbd>sqlite3</kbd> tool
-keeps a command history, so pressing the up-arrow key will bring up
-the prior command for editing.  This feature reduces substantially the
-amount of typing required to conduct exploratory data analysis.
+<p>
+  First, we provide a simple example of using <kbd>sqlite3</kbd>
+  interactively.  This approach is ideal for exploratory data
+  analysis.  Our example uses the <kbd>cps.csv</kbd> file as input,
+  but you can do the following with the output from any input file
+  that has weights (<kbd>s006</kbd>).  Also, we specify no policy
+  reform file, so the output is for current-law policy.  What you
+  cannot see from the following record of the analysis is that
+  the <kbd>sqlite3</kbd> tool keeps a command history, so pressing the
+  up-arrow key will bring up the prior command for editing.  This
+  feature reduces substantially the amount of typing required to
+  conduct exploratory data analysis.
 <pre>
 $ tc cps.csv 2016 --sqldb
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2016.
+    
 $ sqlite3 cps-16-#-#-#.db
 SQLite version 3.22.0 2018-01-22 18:45:57
 Enter ".help" for usage hints.
@@ -715,17 +755,18 @@ sqlite> YOUR SECOND SQL COMMAND GOES HERE
 sqlite> ...
 sqlite> YOUR FINAL SQL COMMAND GOES HERE
 sqlite> .quit
-$ 
+
+$
 </pre>
 </p>
 
-<p>Second, we provide a simple example of using <kbd>sqlite3</kbd>
-with SQL commands stored in a text file.  This approach is useful
-if you want to tabulate many different output files in the same way.
-This second example assumes that the first example has already
-been done.  Note that on Windows you should replace <kbd>cat</kbd>
-with <kbd>type</kbd>.
-</p>
+<p>
+  Second, we provide a simple example of using <kbd>sqlite3</kbd> with
+  SQL commands stored in a text file.  This approach is useful if you
+  want to tabulate many different output files in the same way.  This
+  second example assumes that the first example has already been done.
+  Note that on Windows you should replace <kbd>cat</kbd>
+  with <kbd>type</kbd>.
 <pre>
 $ cat tab.sql
 -- tabulate unweighted and weighted number of filing units
@@ -777,34 +818,41 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 5|0.11|55.74
 6|0.015|66.76
 </pre>
-The <kbd>cat</kbd> command writes the contents of
-the <kbd>tab.sql</kbd> file to stdout.  We do nothing but that in the
-first command in order to show you the file contents.  The second
-command pipes the contents of the <kbd>tab.sql</kbd> file into
-the <kbd>sqlite3</kbd> tool, which executes the SQL statements and
-writes the tabulation results to stdout.  (If you're wondering about
-the validity of those high marginal tax rates, rest assured that all
-filing units with marginal income tax rates greater than sixty
-percent have been checked by hand and are valid: most are
-caught in the rapid phase-out of non-refundable education credits
-or in the phase-in of taxation of social security benefits.
-The negative marginal tax rates are caused by refundable credits,
-primarily the earned income tax credit.)</p>
+  The <kbd>cat</kbd> command writes the contents of
+  the <kbd>tab.sql</kbd> file to stdout.  We do nothing but that in
+  the first command in order to show you the file contents.  The
+  second command pipes the contents of the <kbd>tab.sql</kbd> file
+  into the <kbd>sqlite3</kbd> tool, which executes the SQL statements
+  and writes the tabulation results to stdout.  (If you're wondering
+  about the validity of those high marginal tax rates, rest assured
+  that all filing units with marginal income tax rates greater than
+  sixty percent have been checked by hand and are valid: most are
+  caught in the rapid phase-out of non-refundable education credits or
+  in the phase-in of taxation of social security benefits.  The
+  negative marginal tax rates are caused by refundable credits,
+  primarily the earned income tax credit.)
+</p>
 
-<p>If you want to use the <kbd>sqlite3</kbd> tool to tabulate the
-changes caused by a reform, use the tc CLI to generate two database
-dump files (one for current-law policy and the other for your reform)
-and then use the SQLite3 ATTACH command to make both database files
-available in your SQLite tabulation session.</p>
+<p>
+  If you want to use the <kbd>sqlite3</kbd> tool to tabulate the
+  changes caused by a reform, use <kbd>tc</kbd> to generate two
+  database dump files (one for current-law policy and the other for
+  your reform) and then use the SQLite3 ATTACH command to make both
+  database files available in your SQLite tabulation session.
+</p>
 
 <h3 id="pol">3. Policy Parameters</h3>
 
-<p>This section contains documentation of policy parameters in a
-format that is easy to search and print.  The policy parameters are
-grouped here as they are are on TaxBrain (TB).  Parameters understood
-by Tax-Calculator and the tc CLI, but not available in the TaxBrain
-GUI, are placed in an Other Parameters group at the end of the
-section.</p>
+<p>
+  This section contains documentation of policy parameters in a
+  format that is easy to search and print.  The policy parameters are
+  grouped here as they are are in the
+  <a href="https://www.compmodels.org/PSLmodels/Tax-Brain/"
+     target="_blank">Tax-Brain webapp</a>.  Parameters understood by
+  Tax-Calculator and the <kbd>tc</kbd> CLI, but not available on
+  Tax-Brain, are placed in an Other Parameters group at the end of
+  the section.
+</p>
 
 <h4 id="pol-parameter-indexing">3a. Parameter Indexing</h4>
 
@@ -936,7 +984,7 @@ section.</p>
 
 <h4 id="pol-other-parameters">3q. Other Parameters</h4>
 
-<p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> SS_percentage1<br><i>Long Name:</i> Social Security taxable income decimal fraction 1<br><i>Description:</i> Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.5<br>2014: 0.5<br>2015: 0.5<br>2016: 0.5<br>2017: 0.5<br>2018: 0.5<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> SS_percentage2<br><i>Long Name:</i> Social Security taxable income decimal fraction 2<br><i>Description:</i> Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.85<br>2014: 0.85<br>2015: 0.85<br>2016: 0.85<br>2017: 0.85<br>2018: 0.85<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> II_em_ps<br><i>Long Name:</i> Personal exemption phaseout starting income<br><i>Description:</i> If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [250000.0, 300000.0, 150000.0, 275000.0, 300000.0]<br>2014: [254200.0, 305050.0, 152525.0, 279650.0, 305050.0]<br>2015: [258250.0, 309900.0, 154950.0, 284040.0, 309900.0]<br>2016: [259400.0, 311300.0, 155650.0, 285350.0, 311300.0]<br>2017: [261500.0, 313800.0, 156900.0, 287650.0, 313800.0]<br>2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> STD_Dep<br><i>Long Name:</i> Standard deduction for dependents<br><i>Description:</i> This is the maximum standard deduction for dependents.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 1000.0<br>2014: 1000.0<br>2015: 1050.0<br>2016: 1050.0<br>2017: 1050.0<br>2018: 1050.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> STD_allow_charity_ded_nonitemizers<br><i>Long Name:</i> Allow standard deduction filers to take the charitable contributions deduction<br><i>Description:</i> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> boolean<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False<br>2018: False<br><i>Valid Range:</i> min = False and max = True<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> AMT_child_em<br><i>Long Name:</i> Child AMT exemption additional income base<br><i>Description:</i> The child's AMT exemption is capped by this amount plus the child's earned income.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 7150.0<br>2014: 7250.0<br>2015: 7400.0<br>2016: 7400.0<br>2017: 7500.0<br>2018: 7600.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> AMT_child_em_c_age<br><i>Long Name:</i> Age ceiling for special AMT exemption<br><i>Description:</i> Individuals under this age must use the child AMT exemption rules.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> integer<br><i>Known Values:</i><br>2013: 18<br>2014: 18<br>2015: 18<br>2016: 18<br>2017: 18<br>2018: 18<br><i>Valid Range:</i> min = 0 and max = 30<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> AMT_em_pe<br><i>Long Name:</i> AMT exemption phaseout ending AMT taxable income for Married filling Separately<br><i>Description:</i> The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 238550.0<br>2014: 242450.0<br>2015: 246250.0<br>2016: 247450.0<br>2017: 249450.0<br>2018: 718800.0<br>2019: 734901.12<br>2020: 748570.28<br>2021: 766011.97<br>2022: 783553.64<br>2023: 801418.67<br>2024: 819130.02<br>2025: 836413.66<br>2026: 301874.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> LLC_Expense_c<br><i>Long Name:</i> Lifetime learning credit expense limit<br><i>Description:</i> The maximum expense eligible for lifetime learning credit, per child.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 10000.0<br>2014: 10000.0<br>2015: 10000.0<br>2016: 10000.0<br>2017: 10000.0<br>2018: 10000.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> ETC_pe_Single<br><i>Long Name:</i> Education tax credit phaseout ends (Single)<br><i>Description:</i> The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 63.0<br>2014: 64.0<br>2015: 65.0<br>2016: 65.0<br>2017: 66.0<br>2018: 67.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> ETC_pe_Married<br><i>Long Name:</i> Education tax credit phaseout ends (Married)<br><i>Description:</i> The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 127.0<br>2014: 128.0<br>2015: 130.0<br>2016: 131.0<br>2017: 132.0<br>2018: 134.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> CR_Charity_rt<br><i>Long Name:</i> Charity Credit rate<br><i>Description:</i> If greater than zero, this decimal fraction represents the portion of total charitable contributions provided as a nonrefundable tax credit.<br><i>Notes:</i> Credit claimed will be (rt) * (e19800 + e20100)<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0<br>2018: 0.0<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> CR_Charity_f<br><i>Long Name:</i> Charity Credit Floor<br><i>Description:</i> Only charitable giving in excess of this dollar amount is eligible for the charity credit.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2017: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2018: [0.0, 0.0, 0.0, 0.0, 0.0]<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in TaxBrain GUI</b><br><i>tc Name:</i> CR_Charity_frt<br><i>Long Name:</i> Charity Credit Floor Rate<br><i>Description:</i> Only charitable giving in excess of this decimal fraction of AGI is eligible for the charity credit.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0<br>2018: 0.0<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p>
+<p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> SS_percentage1<br><i>Long Name:</i> Social Security taxable income decimal fraction 1<br><i>Description:</i> Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.5<br>2014: 0.5<br>2015: 0.5<br>2016: 0.5<br>2017: 0.5<br>2018: 0.5<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> SS_percentage2<br><i>Long Name:</i> Social Security taxable income decimal fraction 2<br><i>Description:</i> Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.85<br>2014: 0.85<br>2015: 0.85<br>2016: 0.85<br>2017: 0.85<br>2018: 0.85<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> II_em_ps<br><i>Long Name:</i> Personal exemption phaseout starting income<br><i>Description:</i> If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [250000.0, 300000.0, 150000.0, 275000.0, 300000.0]<br>2014: [254200.0, 305050.0, 152525.0, 279650.0, 305050.0]<br>2015: [258250.0, 309900.0, 154950.0, 284040.0, 309900.0]<br>2016: [259400.0, 311300.0, 155650.0, 285350.0, 311300.0]<br>2017: [261500.0, 313800.0, 156900.0, 287650.0, 313800.0]<br>2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> STD_Dep<br><i>Long Name:</i> Standard deduction for dependents<br><i>Description:</i> This is the maximum standard deduction for dependents.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 1000.0<br>2014: 1000.0<br>2015: 1050.0<br>2016: 1050.0<br>2017: 1050.0<br>2018: 1050.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> STD_allow_charity_ded_nonitemizers<br><i>Long Name:</i> Allow standard deduction filers to take the charitable contributions deduction<br><i>Description:</i> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> boolean<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False<br>2018: False<br><i>Valid Range:</i> min = False and max = True<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> AMT_child_em<br><i>Long Name:</i> Child AMT exemption additional income base<br><i>Description:</i> The child's AMT exemption is capped by this amount plus the child's earned income.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 7150.0<br>2014: 7250.0<br>2015: 7400.0<br>2016: 7400.0<br>2017: 7500.0<br>2018: 7600.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> AMT_child_em_c_age<br><i>Long Name:</i> Age ceiling for special AMT exemption<br><i>Description:</i> Individuals under this age must use the child AMT exemption rules.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> integer<br><i>Known Values:</i><br>2013: 18<br>2014: 18<br>2015: 18<br>2016: 18<br>2017: 18<br>2018: 18<br><i>Valid Range:</i> min = 0 and max = 30<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> AMT_em_pe<br><i>Long Name:</i> AMT exemption phaseout ending AMT taxable income for Married filling Separately<br><i>Description:</i> The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 238550.0<br>2014: 242450.0<br>2015: 246250.0<br>2016: 247450.0<br>2017: 249450.0<br>2018: 718800.0<br>2019: 734901.12<br>2020: 748570.28<br>2021: 766011.97<br>2022: 783553.64<br>2023: 801418.67<br>2024: 819130.02<br>2025: 836413.66<br>2026: 301874.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> LLC_Expense_c<br><i>Long Name:</i> Lifetime learning credit expense limit<br><i>Description:</i> The maximum expense eligible for lifetime learning credit, per child.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 10000.0<br>2014: 10000.0<br>2015: 10000.0<br>2016: 10000.0<br>2017: 10000.0<br>2018: 10000.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> ETC_pe_Single<br><i>Long Name:</i> Education tax credit phaseout ends (Single)<br><i>Description:</i> The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 63.0<br>2014: 64.0<br>2015: 65.0<br>2016: 65.0<br>2017: 66.0<br>2018: 67.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> ETC_pe_Married<br><i>Long Name:</i> Education tax credit phaseout ends (Married)<br><i>Description:</i> The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> False<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 127.0<br>2014: 128.0<br>2015: 130.0<br>2016: 131.0<br>2017: 132.0<br>2018: 134.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> CR_Charity_rt<br><i>Long Name:</i> Charity Credit rate<br><i>Description:</i> If greater than zero, this decimal fraction represents the portion of total charitable contributions provided as a nonrefundable tax credit.<br><i>Notes:</i> Credit claimed will be (rt) * (e19800 + e20100)<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0<br>2018: 0.0<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> CR_Charity_f<br><i>Long Name:</i> Charity Credit Floor<br><i>Description:</i> Only charitable giving in excess of this dollar amount is eligible for the charity credit.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2014: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2015: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2016: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2017: [0.0, 0.0, 0.0, 0.0, 0.0]<br>2018: [0.0, 0.0, 0.0, 0.0, 0.0]<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p><p><b>Other Parameters &mdash; Not in Tax-Brain webapp</b><br><i>tc Name:</i> CR_Charity_frt<br><i>Long Name:</i> Charity Credit Floor Rate<br><i>Description:</i> Only charitable giving in excess of this decimal fraction of AGI is eligible for the charity credit.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.0<br>2014: 0.0<br>2015: 0.0<br>2016: 0.0<br>2017: 0.0<br>2018: 0.0<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p>
 
 <h3 id="input">4. Input Variables</h3>
 
@@ -967,27 +1015,25 @@ section.</p>
 <p>
   This section contains documentation of several sets of parameters
   that characterize responses to a tax reform.  Consumption parameters
-  are used to compute marginal tax rates and to compute the consumption
-  value of in-kind benefits.  Growdiff parameters are used to specify
-  baseline differences and/or reform responses in the annual rate of
-  growth in economic variables.  (Note that behavior parameters used to
-  compute changes in input variables caused by a tax reform in a
-  partial-equilibrium setting are not part of Tax-Calculator, but can be
-  used via the Behavioral-Response behresp package in a Python script.)
+  are used to compute marginal tax rates and to compute the
+  consumption value of in-kind benefits.  Growdiff parameters are used
+  to specify baseline differences and/or reform responses in the
+  annual rate of growth in economic variables.  (Note that behavior
+  parameters used to compute changes in input variables caused by a
+  tax reform in a partial-equilibrium setting are not part of
+  Tax-Calculator, but can be used via the Behavioral-Response
+  <kbd>behresp</kbd> package in a Python program.)
 </p>
 
 <p>
-  All the assumption parameters can be used by the tc CLI, but only
-  those with a <i>TB Name</i> appear in the TaxBrain GUI.  All these
-  assumption parameters control advanced features of Tax-Calculator, so
-  understanding the source code that uses them is essential.  Default
-  values of most assumption parameters are zero and are projected into
-  the future at that value, which implies no response to the reform.
-  Using the default no-reform-response assumption for all the response
-  parameters generates a static analysis of the tax reform.  The benefit
-  value consumption parameters have a default value of one, which
-  implies the consumption value of the in-kind benefits is equal to the
-  government cost of providing the benefits.
+  The assumption parameters control advanced features of
+  Tax-Calculator, so understanding the source code that uses them is
+  essential.  Default values of many assumption parameters are zero
+  and are projected into the future at that value, which implies no
+  response to the reform.  The benefit value consumption parameters
+  have a default value of one, which implies the consumption value of
+  the in-kind benefits is equal to the government cost of providing
+  the benefits.
 </p>
 
 <h4 id="params-growdiff">6a. Growdiff Parameters</h4>

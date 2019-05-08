@@ -75,7 +75,7 @@ def policy_param_text(pname, param):
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
     else:
         txt = '<p><b>{} &mdash; {}</b>'.format('Other Parameters',
-                                               'Not in TaxBrain GUI')
+                                               'Not in Tax-Brain webapp')
     txt += '<br><i>tc Name:</i> {}'.format(pname)
     if len(sec1) > 0:
         txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])

@@ -5,6 +5,10 @@ body {
   font-family: Verdana, sans-serif;
 }
 
+img.resize {
+  max-width: 19cm;
+}
+
 .navbar {
   overflow: hidden;
   background-color: #333;
@@ -74,8 +78,4 @@ body {
 }
 #topbutton:hover {
   background-color: #555;
-}
-
-img.resize {
-  max-width: 19cm;
 }

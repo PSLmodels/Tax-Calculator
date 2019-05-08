@@ -360,7 +360,7 @@ def test_diff_count_precision():
     A  215525
 
     STANDARD BINS:
-    0    7081 <--- negative income bin is dropped in TaxBrain display
+    0    7081 <--- negative income bin was dropped in TaxBrain display
     1   19355
     2   22722
     3   20098
