@@ -25,17 +25,10 @@ If you have already completed the [Setup Python](#setup-python) and
 Setup Python
 ------------
 
-Tax-Calculator is written in the Python programming language.
-Download and install the free Anaconda distribution of Python 3.6 or
-Python 3.7 from [Anaconda](https://www.anaconda.com/download/).  You
-must do this even if you already have Python installed on your
-computer because the Anaconda distribution contains all the additional
-Python packages that we use to conduct tax calculations (many of which
-are not included in other Python installations).  You can install the
-Anaconda distribution without having administrative privileges on your
-computer and the Anaconda distribution will not interfere with any
-Python installation that came as part of your computer's operating
-system.
+Follow the getting started instructions
+[here](https://PSLmodels.github.io/Tax-Calculator/tc_starting.html),
+but be sure to skip step 2, because the installation of the `taxcalc`
+package will interfer with testing changes in the source code.
 
 If you are new to or have limited experience with Python, you should
 read some introductory tutorials available online.  One such tutorial
@@ -315,7 +308,7 @@ Simple Usage
 
 For examples of Tax-Calculator usage, see the [Cookbook of Tested
 Recipes for Python Programming with
-Tax-Calculator](https://github.com/PSLmodels/Tax-Calculator/blob/master/docs/cookbook.html),
-which contains Python scripts that can be executed by the Python
+Tax-Calculator](https://PSLmodels.github.io/Tax-Calculator/cookbook.html),
+which contains Python programs that can be executed by the Python
 command-line interpreter or imported into a Python notebook for
 interactive execution.
