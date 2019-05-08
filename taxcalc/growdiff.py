@@ -74,32 +74,9 @@ class GrowDiff(Parameters):
         Apply updated GrowDiff values to specified GrowFactors instance.
         """
         assert isinstance(growfactors, GrowFactors)
-        for i in range(0, self.num_years):
-            cyr = i + self.start_year
-            # pylint: disable=no-member
-            # the pylint disable needed because _ABOOK, etc., are not visible
-            growfactors.update('ABOOK', cyr, self._ABOOK[i])
-            growfactors.update('ACGNS', cyr, self._ACGNS[i])
-            growfactors.update('ACPIM', cyr, self._ACPIM[i])
-            growfactors.update('ACPIU', cyr, self._ACPIU[i])
-            growfactors.update('ADIVS', cyr, self._ADIVS[i])
-            growfactors.update('AINTS', cyr, self._AINTS[i])
-            growfactors.update('AIPD', cyr, self._AIPD[i])
-            growfactors.update('ASCHCI', cyr, self._ASCHCI[i])
-            growfactors.update('ASCHCL', cyr, self._ASCHCL[i])
-            growfactors.update('ASCHEI', cyr, self._ASCHEI[i])
-            growfactors.update('ASCHEL', cyr, self._ASCHEL[i])
-            growfactors.update('ASCHF', cyr, self._ASCHF[i])
-            growfactors.update('ASOCSEC', cyr, self._ASOCSEC[i])
-            growfactors.update('ATXPY', cyr, self._ATXPY[i])
-            growfactors.update('AUCOMP', cyr, self._AUCOMP[i])
-            growfactors.update('AWAGE', cyr, self._AWAGE[i])
-            growfactors.update('ABENOTHER', cyr, self._ABENOTHER[i])
-            growfactors.update('ABENMCARE', cyr, self._ABENMCARE[i])
-            growfactors.update('ABENMCAID', cyr, self._ABENMCAID[i])
-            growfactors.update('ABENSSI', cyr, self._ABENSSI[i])
-            growfactors.update('ABENSNAP', cyr, self._ABENSNAP[i])
-            growfactors.update('ABENWIC', cyr, self._ABENWIC[i])
-            growfactors.update('ABENHOUSING', cyr, self._ABENHOUSING[i])
-            growfactors.update('ABENTANF', cyr, self._ABENTANF[i])
-            growfactors.update('ABENVET', cyr, self._ABENVET[i])
+        for gfvn in GrowFactors.VALID_NAMES:
+            _gfvn = '_{}'.format(gfvn)
+            for i in range(0, self.num_years):
+                cyr = i + self.start_year
+                diff_array = getattr(self, _gfvn)
+                growfactors.update(gfvn, cyr, diff_array[i])

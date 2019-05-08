@@ -315,111 +315,103 @@ class Records():
 
     def _extrapolate(self, year):
         """
-        Apply to variables the grow factors for specified calendar year.
+        Apply to variables the grow factor values for specified calendar year.
         """
-        # pylint: disable=too-many-locals,too-many-statements
-        AWAGE = self.gfactors.factor_value('AWAGE', year)
-        AINTS = self.gfactors.factor_value('AINTS', year)
-        ADIVS = self.gfactors.factor_value('ADIVS', year)
-        ATXPY = self.gfactors.factor_value('ATXPY', year)
-        ASCHCI = self.gfactors.factor_value('ASCHCI', year)
-        ASCHCL = self.gfactors.factor_value('ASCHCL', year)
-        ACGNS = self.gfactors.factor_value('ACGNS', year)
-        ASCHEI = self.gfactors.factor_value('ASCHEI', year)
-        ASCHEL = self.gfactors.factor_value('ASCHEL', year)
-        ASCHF = self.gfactors.factor_value('ASCHF', year)
-        AUCOMP = self.gfactors.factor_value('AUCOMP', year)
-        ASOCSEC = self.gfactors.factor_value('ASOCSEC', year)
-        ACPIM = self.gfactors.factor_value('ACPIM', year)
-        ABOOK = self.gfactors.factor_value('ABOOK', year)
-        AIPD = self.gfactors.factor_value('AIPD', year)
-        self.e00200 *= AWAGE
-        self.e00200p *= AWAGE
-        self.e00200s *= AWAGE
-        self.pencon_p *= AWAGE
-        self.pencon_s *= AWAGE
-        self.e00300 *= AINTS
-        self.e00400 *= AINTS
-        self.e00600 *= ADIVS
-        self.e00650 *= ADIVS
-        self.e00700 *= ATXPY
-        self.e00800 *= ATXPY
+        # pylint: disable=too-many-statements
+        # put values in local dictionary
+        gfv = dict()
+        for name in GrowFactors.VALID_NAMES:
+            gfv[name] = self.gfactors.factor_value(name, year)
+        # apply values to Records variables
+        self.e00200 *= gfv['AWAGE']
+        self.e00200p *= gfv['AWAGE']
+        self.e00200s *= gfv['AWAGE']
+        self.pencon_p *= gfv['AWAGE']
+        self.pencon_s *= gfv['AWAGE']
+        self.e00300 *= gfv['AINTS']
+        self.e00400 *= gfv['AINTS']
+        self.e00600 *= gfv['ADIVS']
+        self.e00650 *= gfv['ADIVS']
+        self.e00700 *= gfv['ATXPY']
+        self.e00800 *= gfv['ATXPY']
         self.e00900s[:] = np.where(self.e00900s >= 0,
-                                   self.e00900s * ASCHCI,
-                                   self.e00900s * ASCHCL)
+                                   self.e00900s * gfv['ASCHCI'],
+                                   self.e00900s * gfv['ASCHCL'])
         self.e00900p[:] = np.where(self.e00900p >= 0,
-                                   self.e00900p * ASCHCI,
-                                   self.e00900p * ASCHCL)
+                                   self.e00900p * gfv['ASCHCI'],
+                                   self.e00900p * gfv['ASCHCL'])
         self.e00900[:] = self.e00900p + self.e00900s
-        self.e01100 *= ACGNS
-        self.e01200 *= ACGNS
-        self.e01400 *= ATXPY
-        self.e01500 *= ATXPY
-        self.e01700 *= ATXPY
+        self.e01100 *= gfv['ACGNS']
+        self.e01200 *= gfv['ACGNS']
+        self.e01400 *= gfv['ATXPY']
+        self.e01500 *= gfv['ATXPY']
+        self.e01700 *= gfv['ATXPY']
         self.e02000[:] = np.where(self.e02000 >= 0,
-                                  self.e02000 * ASCHEI,
-                                  self.e02000 * ASCHEL)
-        self.e02100 *= ASCHF
-        self.e02100p *= ASCHF
-        self.e02100s *= ASCHF
-        self.e02300 *= AUCOMP
-        self.e02400 *= ASOCSEC
-        self.e03150 *= ATXPY
-        self.e03210 *= ATXPY
-        self.e03220 *= ATXPY
-        self.e03230 *= ATXPY
-        self.e03270 *= ACPIM
-        self.e03240 *= ATXPY
-        self.e03290 *= ACPIM
-        self.e03300 *= ATXPY
-        self.e03400 *= ATXPY
-        self.e03500 *= ATXPY
-        self.e07240 *= ATXPY
-        self.e07260 *= ATXPY
-        self.e07300 *= ABOOK
-        self.e07400 *= ABOOK
-        self.p08000 *= ATXPY
-        self.e09700 *= ATXPY
-        self.e09800 *= ATXPY
-        self.e09900 *= ATXPY
-        self.e11200 *= ATXPY
+                                  self.e02000 * gfv['ASCHEI'],
+                                  self.e02000 * gfv['ASCHEL'])
+        self.e02100 *= gfv['ASCHF']
+        self.e02100p *= gfv['ASCHF']
+        self.e02100s *= gfv['ASCHF']
+        self.e02300 *= gfv['AUCOMP']
+        self.e02400 *= gfv['ASOCSEC']
+        self.e03150 *= gfv['ATXPY']
+        self.e03210 *= gfv['ATXPY']
+        self.e03220 *= gfv['ATXPY']
+        self.e03230 *= gfv['ATXPY']
+        self.e03270 *= gfv['ACPIM']
+        self.e03240 *= gfv['ATXPY']
+        self.e03290 *= gfv['ACPIM']
+        self.e03300 *= gfv['ATXPY']
+        self.e03400 *= gfv['ATXPY']
+        self.e03500 *= gfv['ATXPY']
+        self.e07240 *= gfv['ATXPY']
+        self.e07260 *= gfv['ATXPY']
+        self.e07300 *= gfv['ABOOK']
+        self.e07400 *= gfv['ABOOK']
+        self.p08000 *= gfv['ATXPY']
+        self.e09700 *= gfv['ATXPY']
+        self.e09800 *= gfv['ATXPY']
+        self.e09900 *= gfv['ATXPY']
+        self.e11200 *= gfv['ATXPY']
         # ITEMIZED DEDUCTIONS
-        self.e17500 *= ACPIM
-        self.e18400 *= ATXPY
-        self.e18500 *= ATXPY
-        self.e19200 *= AIPD
-        self.e19800 *= ATXPY
-        self.e20100 *= ATXPY
-        self.e20400 *= ATXPY
-        self.g20500 *= ATXPY
+        self.e17500 *= gfv['ACPIM']
+        self.e18400 *= gfv['ATXPY']
+        self.e18500 *= gfv['ATXPY']
+        self.e19200 *= gfv['AIPD']
+        self.e19800 *= gfv['ATXPY']
+        self.e20100 *= gfv['ATXPY']
+        self.e20400 *= gfv['ATXPY']
+        self.g20500 *= gfv['ATXPY']
         # CAPITAL GAINS
-        self.p22250 *= ACGNS
-        self.p23250 *= ACGNS
-        self.e24515 *= ACGNS
-        self.e24518 *= ACGNS
+        self.p22250 *= gfv['ACGNS']
+        self.p23250 *= gfv['ACGNS']
+        self.e24515 *= gfv['ACGNS']
+        self.e24518 *= gfv['ACGNS']
         # SCHEDULE E
-        self.e26270 *= ASCHEI
-        self.e27200 *= ASCHEI
-        self.k1bx14p *= ASCHEI
-        self.k1bx14s *= ASCHEI
+        self.e26270 *= gfv['ASCHEI']
+        self.e27200 *= gfv['ASCHEI']
+        self.k1bx14p *= gfv['ASCHEI']
+        self.k1bx14s *= gfv['ASCHEI']
         # MISCELLANOUS SCHEDULES
-        self.e07600 *= ATXPY
-        self.e32800 *= ATXPY
-        self.e58990 *= ATXPY
-        self.e62900 *= ATXPY
-        self.e87530 *= ATXPY
-        self.e87521 *= ATXPY
-        self.cmbtp *= ATXPY
+        self.e07600 *= gfv['ATXPY']
+        self.e32800 *= gfv['ATXPY']
+        self.e58990 *= gfv['ATXPY']
+        self.e62900 *= gfv['ATXPY']
+        self.e87530 *= gfv['ATXPY']
+        self.e87521 *= gfv['ATXPY']
+        self.cmbtp *= gfv['ATXPY']
         # BENEFITS
-        self.other_ben *= self.gfactors.factor_value('ABENOTHER', year)
-        self.mcare_ben *= self.gfactors.factor_value('ABENMCARE', year)
-        self.mcaid_ben *= self.gfactors.factor_value('ABENMCAID', year)
-        self.ssi_ben *= self.gfactors.factor_value('ABENSSI', year)
-        self.snap_ben *= self.gfactors.factor_value('ABENSNAP', year)
-        self.wic_ben *= self.gfactors.factor_value('ABENWIC', year)
-        self.housing_ben *= self.gfactors.factor_value('ABENHOUSING', year)
-        self.tanf_ben *= self.gfactors.factor_value('ABENTANF', year)
-        self.vet_ben *= self.gfactors.factor_value('ABENVET', year)
+        self.other_ben *= gfv['ABENOTHER']
+        self.mcare_ben *= gfv['ABENMCARE']
+        self.mcaid_ben *= gfv['ABENMCAID']
+        self.ssi_ben *= gfv['ABENSSI']
+        self.snap_ben *= gfv['ABENSNAP']
+        self.wic_ben *= gfv['ABENWIC']
+        self.housing_ben *= gfv['ABENHOUSING']
+        self.tanf_ben *= gfv['ABENTANF']
+        self.vet_ben *= gfv['ABENVET']
+        # remove local dictionary
+        del gfv
 
     def _adjust(self, year):
         """
