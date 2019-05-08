@@ -2,6 +2,16 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.1.0 on 2019-05-09
+--------------------------------------
+
+**This is an enhancement release.**
+
+- Provide option to specify simpler JSON reform files
+
+- Reorganize Tax-Calculator documentation
+
+
 Changes in release 2.0.1 on 2019-04-17
 --------------------------------------
 

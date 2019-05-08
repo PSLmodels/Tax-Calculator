@@ -4,6 +4,31 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-05-09 Release 2.1.0
+------------------------
+(last merged pull request is
+[#2316](https://github.com/PSLmodels/Tax-Calculator/pull/2316))
+
+**This is an enhancement release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Provide option to specify simpler JSON reform files
+  [[#2312](https://github.com/PSLmodels/Tax-Calculator/pull/2312)
+  by Martin Holmer]
+- Streamline GrowDiff.apply_to and Records._extrapolate code
+  [[#2314](https://github.com/PSLmodels/Tax-Calculator/pull/2314)
+  by Martin Holmer]
+- Reorganize Tax-Calculator documentation
+  [[#2315](https://github.com/PSLmodels/Tax-Calculator/pull/2315)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+
 2019-04-17 Release 2.0.1
 ------------------------
 (last merged pull request is
