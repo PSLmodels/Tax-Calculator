@@ -55,7 +55,7 @@ for a complete commit history.
 
 **This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
 
-Read [this document](UPGRADING.md#upgrading-to-tax-calculator-20) to understand what you need to do before using Tax-Calcualtor 2.0.
+Read [this document](UPGRADING.md#upgrading-to-tax-calculator-20) to understand what you need to do before using Tax-Calculator 2.0.
 
 **API Changes**
 - Simplify and standardize the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies

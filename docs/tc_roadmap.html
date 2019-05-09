@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<!-- *** NEVER EDIT THIS FILE BY HAND *** -->
+<!-- *** INSTEAD EDIT /Users/mrh/work/PSL/Tax-Calculator/docs/tc_roadmap.htmx FILE *** -->
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link href="docs.css" rel="stylesheet">
+  <title>Tax-Calculator</title>
+</head>    
+<body>
+
+<h1>Tax-Calculator</h1>
+
+<div class="navbar">
+  <a href="index.html">Home</a>
+  <div class="dropdown">
+    <button class="dropbtn">About</button>
+    <div class="dropdown-content">
+      <a href="tc_starting.html">Getting Started</a>
+      <a href="tc_license.html">Open-Source License</a>
+      <a href="tc_history.html">Origins &amp; History</a>
+      <a href="tc_roadmap.html">Future Directions</a>
+    </div>
+  </div>
+  <div class="dropdown">
+    <button class="dropbtn">Documentation</button>
+    <div class="dropdown-content">
+      <a href="tc_overview.html">Structural Overview</a>
+      <a href="uguide.html" target="_blank">User Guide</a>
+      <a href="cookbook.html" target="_blank">Python Cookbook</a>
+      <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide" target="_blank">Contributor Guide</a>
+    </div>
+  </div>
+</div>
+
+<h3>Future Directions</h3>
+
+<p>
+  Tax-Calculator development has both near-term and long-term objectives.
+</p>
+
+<h4>Near-Term Objective</h4>
+
+<p>
+  The near-term objective is the development of other modules that can
+  be used along with Tax-Calculator to conduct non-static tax analysis
+  that generates both aggregate and distributional reform results.
+  Three other modules are planned:
+</p>
+
+<p>
+  1. <a href="https://github.com/PSLmodels/Behavioral-Responses#behavioral-responses"
+        target="_blank">Partial-equilibrium Behavioral-Response</a>
+  capabilities have been completed.
+</p>
+
+<p>
+  2. <a href="https://github.com/PSLmodels/Business-Taxation#business-taxation"
+        target="_blank">Business-Taxation</a> capabilities are being
+  developed that will permit the effects of reforms in (corporate
+  and pass-through) business taxes to feed back to filing-unit
+  incomes, and therefore, individual taxes, in Tax-Calculator as
+  envisioned in
+  <a href="https://github.com/PSLmodels/Tax-Calculator/issues/1515#issuecomment-329620209"
+     target="">this note</a>.
+</p>
+
+<p>
+  3. A <em>Macro-Feedback</em> capability is being planned that will
+  allow the macroeconomic growth effects of a tax reform to feed back
+  to filing-unit incomes, and therefore, individual taxes, in
+  Tax-Calculator.
+</p>
+
+<p>
+  Once Tax-Calculator can support these other modules, it is anticipated
+  that the public application programming interface (API) of
+  Tax-Calculator will be stable.
+</p>
+
+<h4>Long-Term Objectives</h4>
+
+<p>
+  Fix bugs in tax-calculation logic.
+</p>
+<p>
+  Add new policy parameters to enable parametric simulation of new reforms.
+</p>
+<p>
+  Add actual policy parameter values as they become available each year.
+</p>
+<p>
+  Update filing-unit data used by Tax-Calculator as they become available.
+</p>
+<p>
+  Improve model documentation.
+</p>
+  
+<button onclick="topFunction()" id="topbutton" title="Go to top">Top</button>
+<script src="docs.js"></script>
+<br /><br />
+</body>
+</html>

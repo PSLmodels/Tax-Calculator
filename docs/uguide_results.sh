@@ -1,8 +1,8 @@
 #!/bin/bash
-# USAGE: ./index_results.sh
+# USAGE: ./uguide_results.sh
 # ACTION: (1) check for existence of taxcalc package
-#         (2) executes several tc commands used in index.htmx
-#         (3) shows differences between index.out and index.res
+#         (2) executes several tc commands used in uguide.htmx
+#         (3) shows differences between uguide.out and uguide.res
 #         (4) prints reminder of how to create *.png files
 #         (5) delete non-HTML tc output files
 
@@ -15,9 +15,9 @@ if [[ $? -eq 0 ]]; then
     exit 1
 fi
 
-# exectue tc commands used in index.htmx
-OUT=./index.out
-echo "index.res" > $OUT
+# exectue tc commands used in uguide.htmx
+OUT=./uguide.out
+echo "uguide.res" > $OUT
 tc cps.csv 2022 --reform ref3.json --tables
 echo "$ cat cps-22-#-ref3-#-tab.text" >> $OUT
 cat cps-22-#-ref3-#-tab.text >> $OUT
@@ -27,10 +27,10 @@ tc cps.csv 2016 --sqldb
 echo "$ cat tab.sql | sqlite3 cps-16-#-#-#.db" >> $OUT
 cat tab.sql | sqlite3 cps-16-#-#-#.db >> $OUT
 
-# show differences between index.out and index.res
-echo "diff index.out index.res"
+# show differences between uguide.out and uguide.res
+echo "diff uguide.out uguide.res"
 echo "*********************************************************************"
-diff $OUT index.res
+diff $OUT uguide.res
 echo "*********************************************************************"
 
 # remind how to convert graph *.html files to *.png files

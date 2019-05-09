@@ -1,24 +1,23 @@
 """
-Reads skeletal index.htmx file and writes fleshed-out index.html file
+Reads skeletal uguide.htmx file and writes fleshed-out uguide.html file
 containing information from several JSON files.
 """
 # CODING-STYLE CHECKS:
-# pycodestyle --ignore=E402 make_index.py
-# pylint --disable=locally-disabled make_index.py
+# pycodestyle --ignore=E402 make_uguide.py
+# pylint --disable=locally-disabled make_uguide.py
 
 import os
 import sys
 from collections import OrderedDict
-CUR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CUR_PATH, '..'))
+CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(os.path.join(CURDIR_PATH, '..'))
 # pylint: disable=import-error,wrong-import-position
 from taxcalc import Policy, json_to_dict
 
 
-INPUT_FILENAME = 'index.htmx'
-OUTPUT_FILENAME = 'index.html'
+INPUT_FILENAME = 'uguide.htmx'
+OUTPUT_FILENAME = 'uguide.html'
 
-CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
 
 INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
@@ -40,8 +39,15 @@ def main():
     # augment text variable with do-not-edit warning
     old = '<!-- #WARN# -->'
     new = ('<!-- *** NEVER EDIT THIS FILE BY HAND *** -->\n'
-           '<!-- *** INSTEAD EDIT index.htmx FILE *** -->')
+           '<!-- *** INSTEAD EDIT uguide.htmx FILE *** -->')
     text = text.replace(old, new)
+
+    # augment text variable with top button code
+    topbtn_filename = os.path.join(CURDIR_PATH, 'topbtn.htmx')
+    with open(topbtn_filename, 'r') as topbtn_file:
+        topbtn = topbtn_file.read()
+    old = '<!-- #TOP# -->'
+    text = text.replace(old, topbtn)
 
     # augment text variable with information from JSON files
     text = policy_params(POLICY_PATH, text)
@@ -69,7 +75,7 @@ def policy_param_text(pname, param):
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
     else:
         txt = '<p><b>{} &mdash; {}</b>'.format('Other Parameters',
-                                               'Not in TaxBrain GUI')
+                                               'Not in Tax-Brain webapp')
     txt += '<br><i>tc Name:</i> {}'.format(pname)
     if len(sec1) > 0:
         txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])

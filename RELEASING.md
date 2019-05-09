@@ -8,8 +8,6 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> merge master branch into X-Y-Z branch
 
---> edit "version = 'X.Y.Z'" in read-the-docs/source/conf.py
-
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
 --> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc]
@@ -18,7 +16,9 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> cd taxcalc/validation/taxsim ; .tests. ; .fix. ; cd ../../..
 
---> cd docs ; ./index_results.sh ; .fix. ; python make_index.py
+--> cd docs ; ./uguide_results.sh ; .fix. ; python make_uguide.py
+
+--> set release in index.htmx ; python make_tc_pages.py
 
 --> cd .. ; make clean  [to remove taxcalc package]
 
@@ -34,17 +34,15 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 ====> CREATE NEW BEHRESP PACKAGES (if necessary) <====
 
---> create corresponding Behavioral-Responses packages
+--> create Behavioral-Responses packages
 
-====> CREATE NEW DOCUMENTATION <====
+====> CREATE NEW PYTHON COOKBOOK <====
 
 --> run `conda install -c PSLmodels behresp --yes`  [to make behresp available]
 
 --> on new branch X-Y-Z-cookbook
 
---> cd docs ; update T-C & B-R versions in cookbook.html to whatever and higher
-
---> cd cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
+--> cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
 
 --> merge X-Y-Z-cookbook branch and push to origin
 

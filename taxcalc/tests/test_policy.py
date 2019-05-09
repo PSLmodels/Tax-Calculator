@@ -653,7 +653,7 @@ def test_misspecified_reform_dictionary():
 
 def test_section_titles(tests_path):
     """
-    Check section titles in policy_current_law.json and index.htmx files.
+    Check section titles in policy_current_law.json and uguide.htmx files.
     """
     # pylint: disable=too-many-locals
     def generate_section_dictionary(html_text):
@@ -680,14 +680,14 @@ def test_section_titles(tests_path):
                 sdict[sec1][sec2] = 0
         return sdict
     # begin main logic of test_section_titles
-    # specify expected section titles ordered as on TaxBrain
+    # specify expected section titles ordered as on the Tax-Brain webapp
     ided_ceiling_pct = ('Ceiling On The Benefit Of Itemized Deductions '
                         'As A Percent Of Deductible Expenses')
     cgqd_tax_same = ('Tax All Capital Gains And Dividends The Same '
                      'As Regular Taxable Income')
     # pylint: disable=bad-continuation
     valid_dict = {
-        '': {  # empty section_1 implies parameter is not displayed in TaxBrain
+        '': {  # empty section_1 implies parameter not displayed in Tax-Brain
             '': 0
         },
         'Parameter Indexing': {
@@ -798,8 +798,8 @@ def test_section_titles(tests_path):
         assert sec1title in clp_dict
         for sec2title in valid_dict[sec1title]:
             assert sec2title in clp_dict[sec1title]
-    # check validity of parameter section titles in docs/index.htmx skeleton
-    path = os.path.join(tests_path, '..', '..', 'docs', 'index.htmx')
+    # check validity of parameter section titles in docs/uguide.htmx skeleton
+    path = os.path.join(tests_path, '..', '..', 'docs', 'uguide.htmx')
     with open(path, 'r') as htmxfile:
         htmx_text = htmxfile.read()
     htmxdict = generate_section_dictionary(htmx_text)
