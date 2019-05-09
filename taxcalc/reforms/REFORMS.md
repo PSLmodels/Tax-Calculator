@@ -3,11 +3,11 @@
 A tax reform consists of a collection of reform provisions.  There is
 a way to specify in a text file the collection of reform provisions
 that make up a reform proposal.  When stored on your local computer,
-such reform files can be used to estimate reform effects either by
-uploading to the [TaxBrain webapp](https://www.ospc.org/taxbrain/file/)
-or by using the `--reform` option of the [Tax-Calculator command-line
-tool,
-tc](https://PSLmodels.github.io/Tax-Calculator/index.html#cli).
+such reform files can be used to estimate reform effects by using the
+`--reform` option of the Tax-Calculator command-line tool `tc` or by
+using them in a Python program that imports the Tax-Calculator
+`taxcalc` package as described in the [user
+guide](https://PSLmodels.github.io/Tax-Calculator/uguide.html).
 
 Here we provide links to several reform files that specify historical
 reform proposals, and then provide a more general explanation of the

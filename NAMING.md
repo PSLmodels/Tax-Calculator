@@ -105,6 +105,8 @@ All new policy parameters should be added to the
 `policy_current_law.json` file in a location that is near conceptually
 similar parameters.  Be sure to specify the `section_1` and
 `section_2` values of each new parameter so that it appears in an
-appropriate place on the TaxBrain input page.  If the new parameter is
-not supposed to appear on the TaxBrain input page, set the value of
-`section_1` and `section_2` to an empty string.
+appropriate place on the [Tax-Brain
+webapp](https://www.compmodels.org/PSLmodels/Tax-Brain/) input page.
+If the new parameter is not supposed to appear on the input page of
+the Tax-Brain webapp, set the value of `section_1` and `section_2` to
+an empty string.

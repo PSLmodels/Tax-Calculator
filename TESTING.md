@@ -50,16 +50,15 @@ Testing with pytest
 
 There are two variants of this second testing phase depending on
 whether or not you have access to a file called `puf.csv` that
-contains a representative sample of tax filing units used by the
-[TaxBrain web application](https://www.ospc.org/taxbrain) and by core
-Tax-Calculator developers.
+contains a representative sample of tax filing units derived from
+the IRS-SOI PUF data.
 
 A brief description of the `puf.csv` file is followed by
 instructions on how to run the two variants of the second-phase tests.
 
 The Tax-Calculator `puf.csv` file has been constructed by the core
 development team by merging information from the most recent publicly
-available IRS SOI PUF file and from the Census CPS file for the
+available IRS-SOI PUF file and from the Census CPS file for the
 corresponding year.  If you have acquired from IRS the most recent SOI
 PUF file and want to execute the tests that require the `puf.csv`
 file, contact the core development team to discuss your options.

@@ -1,4 +1,4 @@
-index.res
+uguide.res
 $ cat cps-22-#-ref3-#-tab.text
 Weighted Tax Reform Totals by Baseline Expanded-Income Decile
     Returns    ExpInc    IncTax    PayTax     LSTax    AllTax
