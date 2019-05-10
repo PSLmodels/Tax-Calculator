@@ -1,6 +1,6 @@
 """
-Tests all recipes by executing each recipeNN.py script and comparing
-the script output with the expected output in the recipeNN.res file.
+Tests all recipes by executing each recipeNN.py program and comparing
+the program output with the expected output in the recipeNN.res file.
 """
 # CODING-STYLE CHECKS:
 # pycodestyle test_recipes.py
