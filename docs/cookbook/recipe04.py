@@ -18,13 +18,8 @@ calc1.calc_all()
 (_, _, mtr1) = calc1.mtr('e19800', calc_all_already_called=True,
                          wrt_full_compensation=False)
 
-# read JSON reform file and use (the default) static analysis assumptions
-reform_filename = 'reformB.json'
-params = Calculator.read_json_param_objects(reform=reform_filename,
-                                            assump=None)
-
 # specify Calculator object for static analysis of reform policy
-pol.implement_reform(params['policy'])
+pol.implement_reform(Policy.read_json_reform('reformB.json'))
 calc2 = Calculator(policy=pol, records=recs)
 
 # calculate reform tax liabilities for cyr

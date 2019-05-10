@@ -7,27 +7,22 @@ from taxcalc import *
 REFORMS_URL = ('https://raw.githubusercontent.com/'
                'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
 
-reform1_name = '2017_law.json'  # pre-TCJA policy
-reform1_url = REFORMS_URL + reform1_name
-reform1 = Calculator.read_json_param_objects(reform1_url, None)
+# specify reform dictionary for pre-TCJA policy
+reform1 = Policy.read_json_reform(REFORMS_URL + '2017_law.json')
 
-reform2_name = 'TCJA.json'  # TCJA as passed by Congress
-reform2_url = REFORMS_URL + reform2_name
+# specify reform dictionary for TCJA as passed by Congress in late 2017
+reform2 = Policy.read_json_reform(REFORMS_URL + 'TCJA.json')
 
 # specify Policy object for pre-TCJA policy
 bpolicy = Policy()
-bpolicy.implement_reform(reform1['policy'],
-                         print_warnings=False, raise_errors=False)
+bpolicy.implement_reform(reform1, print_warnings=False, raise_errors=False)
 assert not bpolicy.parameter_errors
 
-# specify Policy object for static analysis of reform relative to pre-TCJA
-reform2 = Calculator.read_json_param_objects(reform2_url, None)
+# specify Policy object for TCJA reform relative to pre-TCJA policy
 rpolicy = Policy()
-rpolicy.implement_reform(reform1['policy'],
-                         print_warnings=False, raise_errors=False)
+rpolicy.implement_reform(reform1, print_warnings=False, raise_errors=False)
 assert not rpolicy.parameter_errors
-rpolicy.implement_reform(reform2['policy'],
-                         print_warnings=False, raise_errors=False)
+rpolicy.implement_reform(reform2, print_warnings=False, raise_errors=False)
 assert not rpolicy.parameter_errors
 
 cyr = 2018
