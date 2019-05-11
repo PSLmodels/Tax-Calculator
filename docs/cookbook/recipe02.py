@@ -15,13 +15,8 @@ calc1.advance_to_year(cyr)
 calc1.calc_all()
 itax_rev1 = calc1.weighted_total('iitax')
 
-# read JSON reform file
-reform_filename = 'reformA.json'
-params = Calculator.read_json_param_objects(reform=reform_filename,
-                                            assump=None)
-
 # specify Calculator object for static analysis of reform policy
-pol.implement_reform(params['policy'])
+pol.implement_reform(Policy.read_json_reform('reformA.json'))
 calc2 = Calculator(policy=pol, records=recs)
 
 # calculate reform income tax liabilities for cyr under static assumptions

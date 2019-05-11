@@ -6,7 +6,7 @@ from taxcalc import *
 recs = Records.cps_constructor()
 # NOTE: if you have access to the restricted-use IRS-SOI PUF-based input file
 #       and you have that file (named 'puf.csv') located in the directory
-#       where this script is located, then you can substitute the following
+#       where this program is located, then you can substitute the following
 #       statement for the prior statement:
 # recs = Records()
 
@@ -15,7 +15,7 @@ pol = Policy()
 calc1 = Calculator(policy=pol, records=recs)
 
 # NOTE: calc1 now contains a PRIVATE COPY of pol and a PRIVATE COPY of recs,
-#       so we can continue to use pol and recs in this script without any
+#       so we can continue to use pol and recs in this program without any
 #       concern about side effects from Calculator method calls on calc1.
 
 cyr = 2020
@@ -25,23 +25,16 @@ calc1.advance_to_year(cyr)
 calc1.calc_all()
 itax_rev1 = calc1.weighted_total('iitax')
 
-# read JSON reform file and use (the default) static analysis assumptions
-reform_filename = 'reformA.json'
-params = Calculator.read_json_param_objects(reform=reform_filename,
-                                            assump=None)
+# specify Policy object using reform dictionary read from JSON reform file
+pol.implement_reform(Policy.read_json_reform('reformA.json'))
 
 # specify Calculator object for static analysis of reform policy
-pol.implement_reform(params['policy'])
 calc2 = Calculator(policy=pol, records=recs)
 
 # calculate reform income tax liabilities for cyr
 calc2.advance_to_year(cyr)
 calc2.calc_all()
 itax_rev2 = calc2.weighted_total('iitax')
-
-# print reform documentation
-print('')
-print(Calculator.reform_documentation(params))
 
 # print total revenue estimates for cyr
 # (estimates in billons of dollars)
