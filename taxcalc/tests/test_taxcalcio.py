@@ -611,6 +611,7 @@ def test_graphs(reformfile1):
     idict = dict()
     idict['RECID'] = [i for i in range(1, nobs + 1)]
     idict['MARS'] = [2 for i in range(1, nobs + 1)]
+    idict['XTOT'] = [3 for i in range(1, nobs + 1)]
     idict['s006'] = [10.0 for i in range(1, nobs + 1)]
     idict['e00300'] = [10000 * i for i in range(1, nobs + 1)]
     idict['expanded_income'] = idict['e00300']

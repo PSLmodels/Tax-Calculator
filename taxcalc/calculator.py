@@ -363,7 +363,8 @@ class Calculator():
         del calc
         return create_diagnostic_table(varlist, yearlist)
 
-    def distribution_tables(self, calc, groupby, scaling=True):
+    def distribution_tables(self, calc, groupby,
+                            pop_quantiles=False, scaling=True):
         """
         Get results from self and calc, sort them by expanded_income into
         table rows defined by groupby, compute grouped statistics, and
@@ -383,9 +384,13 @@ class Calculator():
             options for input: 'weighted_deciles', 'standard_income_bins'
             determines how the columns in resulting Pandas DataFrame are sorted
 
+        pop_quantiles : boolean
+            specifies whether or not weighted_deciles contain an equal number
+            of people (True) or an equal number of filing units (False)
+
         scaling : boolean
             specifies create_distribution_table utility function argument
-            that determines whether table entries are scaled or not
+            that determines whether table entry values are scaled or not
 
         Return and typical usage
         ------------------------
@@ -426,7 +431,7 @@ class Calculator():
         var_dataframe = self.distribution_table_dataframe()
         imeasure = 'expanded_income'
         dt1 = create_distribution_table(var_dataframe, groupby,
-                                        imeasure, scaling)
+                                        imeasure, pop_quantiles, scaling)
         del var_dataframe
         if calc is None:
             dt2 = None
@@ -442,11 +447,12 @@ class Calculator():
                 imeasure = 'expanded_income_baseline'
                 var_dataframe[imeasure] = self.array('expanded_income')
             dt2 = create_distribution_table(var_dataframe, groupby,
-                                            imeasure, scaling)
+                                            imeasure, pop_quantiles, scaling)
             del var_dataframe
         return (dt1, dt2)
 
-    def difference_table(self, calc, groupby, tax_to_diff):
+    def difference_table(self, calc, groupby, tax_to_diff,
+                         pop_quantiles=False):
         """
         Get results from self and calc, sort them by expanded_income into
         table rows defined by groupby, compute grouped statistics, and
@@ -468,6 +474,10 @@ class Calculator():
         tax_to_diff : String object
             options for input: 'iitax', 'payrolltax', 'combined'
             specifies which tax to difference
+
+        pop_quantiles : boolean
+            specifies whether or not weighted_deciles contain an equal number
+            of people (True) or an equal number of filing units (False)
 
         Returns and typical usage
         -------------------------
@@ -496,7 +506,7 @@ class Calculator():
         calc_var_dataframe = calc.dataframe(DIFF_VARIABLES)
         diff = create_difference_table(self_var_dataframe,
                                        calc_var_dataframe,
-                                       groupby, tax_to_diff)
+                                       groupby, tax_to_diff, pop_quantiles)
         del self_var_dataframe
         del calc_var_dataframe
         return diff
@@ -705,6 +715,7 @@ class Calculator():
                   alt_e00200p_text='',
                   mtr_wrt_full_compen=False,
                   income_measure='expanded_income',
+                  pop_quantiles=False,
                   dollar_weighting=False):
         """
         Create marginal tax rate graph that can be written to an HTML
@@ -764,6 +775,10 @@ class Calculator():
             - 'expanded_income': broader than AGI (see definition in
                                  calcfunctions.py file).
 
+        pop_quantiles : boolean
+            specifies whether or not weighted_deciles contain an equal number
+            of people (True) or an equal number of filing units (False)
+
         dollar_weighting : boolean
             False implies both income_measure percentiles on x axis
             and mtr values for each percentile on the y axis are
@@ -813,7 +828,7 @@ class Calculator():
             mtr1 = mtr1_ptax
             mtr2 = mtr2_ptax
         # extract datafames needed by mtr_graph_data utility function
-        record_variables = ['s006']
+        record_variables = ['s006', 'XTOT']
         if mars != 'ALL':
             record_variables.append('MARS')
         record_variables.append(income_variable)
@@ -831,6 +846,7 @@ class Calculator():
                               alt_e00200p_text=alt_e00200p_text,
                               mtr_wrt_full_compen=mtr_wrt_full_compen,
                               income_measure=income_measure,
+                              pop_quantiles=pop_quantiles,
                               dollar_weighting=dollar_weighting)
         # delete intermediate variables
         del vdf
@@ -856,7 +872,8 @@ class Calculator():
 
     def atr_graph(self, calc,
                   mars='ALL',
-                  atr_measure='combined'):
+                  atr_measure='combined',
+                  pop_quantiles=False):
         """
         Create average tax rate graph that can be written to an HTML
         file (using the write_graph_file utility function) or shown on
@@ -896,6 +913,10 @@ class Calculator():
 
             - 'combined': sum of average income and payroll tax rates
 
+        pop_quantiles : boolean
+            specifies whether or not weighted_deciles contain an equal number
+            of people (True) or an equal number of filing units (False)
+
         Returns
         -------
         graph that is a bokeh.plotting figure object
@@ -908,7 +929,7 @@ class Calculator():
         assert mars == 'ALL' or 1 <= mars <= 4
         assert atr_measure in ('combined', 'itax', 'ptax')
         # extract needed output that is assumed unchanged by reform from self
-        record_variables = ['s006']
+        record_variables = ['s006', 'XTOT']
         if mars != 'ALL':
             record_variables.append('MARS')
         record_variables.append('expanded_income')
@@ -930,7 +951,8 @@ class Calculator():
         data = atr_graph_data(vdf,
                               year=self.current_year,
                               mars=mars,
-                              atr_measure=atr_measure)
+                              atr_measure=atr_measure,
+                              pop_quantiles=pop_quantiles)
         # delete intermediate variables
         del vdf
         del record_variables
@@ -945,7 +967,7 @@ class Calculator():
         del data
         return fig
 
-    def pch_graph(self, calc):
+    def pch_graph(self, calc, pop_quantiles=False):
         """
         Create percentage change in after-tax expanded income graph that
         can be written to an HTML file (using the write_graph_file utility
@@ -964,6 +986,10 @@ class Calculator():
             where both self and calc have calculated taxes for this year
             before being used by this method
 
+        pop_quantiles : boolean
+            specifies whether or not weighted_deciles contain an equal number
+            of people (True) or an equal number of filing units (False)
+
         Returns
         -------
         graph that is a bokeh.plotting figure object
@@ -973,15 +999,19 @@ class Calculator():
         assert calc.current_year == self.current_year
         assert calc.array_len == self.array_len
         # extract needed output from baseline and reform Calculator objects
-        vdf1 = self.dataframe(['s006', 'expanded_income', 'aftertax_income'])
-        vdf2 = calc.dataframe(['s006', 'aftertax_income'])
+        vdf1 = self.dataframe(['s006', 'XTOT', 'aftertax_income',
+                               'expanded_income'])
+        vdf2 = calc.dataframe(['s006', 'XTOT', 'aftertax_income'])
         assert np.allclose(vdf1['s006'], vdf2['s006'])
+        assert np.allclose(vdf1['XTOT'], vdf2['XTOT'])
         vdf = pd.DataFrame()
         vdf['s006'] = vdf1['s006']
+        vdf['XTOT'] = vdf1['XTOT']
         vdf['expanded_income'] = vdf1['expanded_income']
         vdf['chg_aftinc'] = vdf2['aftertax_income'] - vdf1['aftertax_income']
         # construct data for graph
-        data = pch_graph_data(vdf, year=self.current_year)
+        data = pch_graph_data(vdf, year=self.current_year,
+                              pop_quantiles=pop_quantiles)
         del vdf
         del vdf1
         del vdf2

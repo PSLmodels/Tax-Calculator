@@ -32,7 +32,7 @@ DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                   'c05800', 'surtax', 'othertaxes', 'refund', 'c07100',
                   'iitax', 'payrolltax', 'combined', 's006', 'ubi',
-                  'benefit_cost_total', 'benefit_value_total']
+                  'benefit_cost_total', 'benefit_value_total', 'XTOT']
 
 DIST_TABLE_COLUMNS = ['s006',
                       'c00100',
@@ -90,7 +90,7 @@ DIST_TABLE_LABELS = ['Returns',
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
                   'iitax', 'payrolltax', 'combined', 's006',
-                  'ubi', 'benefit_cost_total', 'benefit_value_total']
+                  'ubi', 'benefit_cost_total', 'benefit_value_total', 'XTOT']
 
 DIFF_TABLE_COLUMNS = ['count',
                       'tax_cut',
@@ -150,34 +150,61 @@ def weighted_sum(dframe, col_name):
 
 
 def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
+                                    pop_quantiles=False,
                                     decile_details=False,
                                     weight_by_income_measure=False):
     """
-    Add a variable to specified Pandas DataFrame, dframe, that specifies the
-    table row and is called 'table_row'.  The rows hold equal number of
-    filing units when weight_by_income_measure=False or equal number of
-    income dollars when weight_by_income_measure=True.  Assumes that
-    specified dframe contains columns for the specified income_measure and
-    for sample weights, s006.  When num_quantiles is 10 and decile_details
-    is True, the bottom decile is broken up into three subgroups (neg, zero,
-    and pos income_measure ) and the top decile is broken into three subgroups
+    Add a variable to specified Pandas DataFrame, dframe, that specifies
+    the table row and is called 'table_row'.
+
+    When weight_by_income_measure=False, the rows hold an equal number of
+    people if pop_quantiles=True or an equal number of filing units if
+    pop_quantiles=False.
+
+    When weight_by_income_measure=True, the rows hold an equal number
+    of income dollars.
+
+    This function assumes that specified dframe contains columns for
+    the specified income_measure and for sample weights, s006, and when
+    pop_quantiles=True, number of exemptions, XTOT.
+
+ .  When num_quantiles is 10 and decile_details is True,
+    the bottom decile is broken up into three subgroups
+    (neg, zero, and pos income_measure)
+    and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals
     assert isinstance(dframe, pd.DataFrame)
     assert income_measure in dframe
+    assert 's006' in dframe
     if decile_details and num_quantiles != 10:
         msg = 'decile_details is True when num_quantiles is {}'
         raise ValueError(msg.format(num_quantiles))
-    dframe.sort_values(by=income_measure, inplace=True)
+    if pop_quantiles:
+        assert not weight_by_income_measure
+        assert 'XTOT' in dframe
+        # adjust income measure by square root of filing unit size
+        adj = np.sqrt(np.where(dframe['XTOT'] == 0, 1, dframe['XTOT']))
+        dframe['adj_income_measure'] = np.divide(dframe[income_measure], adj)
+    else:
+        dframe['adj_income_measure'] = dframe[income_measure]
+    dframe.sort_values(by='adj_income_measure', inplace=True)
     if weight_by_income_measure:
         dframe['cumsum_temp'] = np.cumsum(
             np.multiply(dframe[income_measure].values, dframe['s006'].values)
         )
         min_cumsum = dframe['cumsum_temp'].values[0]
     else:
-        dframe['cumsum_temp'] = np.cumsum(dframe['s006'].values)
-        min_cumsum = 0.  # because s006 values are non-negative
+        if pop_quantiles:
+            dframe['cumsum_temp'] = np.cumsum(
+                np.multiply(dframe['XTOT'].values, dframe['s006'].values)
+            )
+        else:
+            dframe['cumsum_temp'] = np.cumsum(
+                dframe['s006'].values
+            )
+        min_cumsum = 0.  # because s006 and XTOT values are non-negative
     max_cumsum = dframe['cumsum_temp'].values[-1]
     cumsum_range = max_cumsum - min_cumsum
     bin_width = cumsum_range / float(num_quantiles)
@@ -253,7 +280,8 @@ def get_sums(dframe):
     return pd.Series(sums, name='ALL')
 
 
-def create_distribution_table(vdf, groupby, income_measure, scaling=True):
+def create_distribution_table(vdf, groupby, income_measure,
+                              pop_quantiles=False, scaling=True):
     """
     Get results from vdf, sort them by expanded_income based on groupby,
     and return them as a table.
@@ -273,8 +301,12 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
         options for input: 'expanded_income' or 'expanded_income_baseline'
         determines which variable is used to sort rows
 
+    pop_quantiles : boolean
+        specifies whether or not weighted_deciles contain an equal number
+        of people (True) or an equal number of filing units (False)
+
     scaling : boolean
-        specifies whether or not table entries are scaled
+        specifies whether or not table entry values are scaled
 
     Returns
     -------
@@ -315,10 +347,13 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
     assert income_measure in ('expanded_income', 'expanded_income_baseline')
     assert income_measure in vdf
     assert 'table_row' not in list(vdf.columns.values)
+    if pop_quantiles:
+        assert groupby == 'weighted_deciles'
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        dframe = add_quantile_table_row_variable(vdf, income_measure,
-                                                 10, decile_details=True)
+        dframe = add_quantile_table_row_variable(vdf, income_measure, 10,
+                                                 pop_quantiles=pop_quantiles,
+                                                 decile_details=True)
     elif groupby == 'standard_income_bins':
         dframe = add_income_table_row_variable(vdf, income_measure,
                                                STANDARD_INCOME_BINS)
@@ -381,7 +416,8 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
     return dist_table
 
 
-def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
+def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
+                            pop_quantiles=False):
     """
     Get results from two different vdf, construct tax difference results,
     and return the difference statistics as a table.
@@ -404,6 +440,10 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
         specifies which tax to difference
+
+    pop_quantiles : boolean
+        specifies whether or not weighted_deciles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     Returns
     -------
@@ -440,16 +480,19 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
         sdf['atinc2'] = gdf.apply(weighted_sum, 'atinc2')
         return sdf
     # main logic of create_difference_table
-    assert isinstance(vdf1, pd.DataFrame)
-    assert isinstance(vdf2, pd.DataFrame)
-    assert np.allclose(vdf1['s006'], vdf2['s006'])  # check rows in same order
     assert groupby in ('weighted_deciles',
                        'standard_income_bins',
                        'soi_agi_bins')
+    if pop_quantiles:
+        assert groupby == 'weighted_deciles'
     assert 'expanded_income' in vdf1
     assert tax_to_diff in ('iitax', 'payrolltax', 'combined')
-    assert 'table_row' not in list(vdf1.columns.values)
-    assert 'table_row' not in list(vdf2.columns.values)
+    assert 'table_row' not in vdf1
+    assert 'table_row' not in vdf2
+    assert isinstance(vdf1, pd.DataFrame)
+    assert isinstance(vdf2, pd.DataFrame)
+    assert np.allclose(vdf1['XTOT'], vdf2['XTOT'])  # check rows are the same
+    assert np.allclose(vdf1['s006'], vdf2['s006'])  # units and in same order
     baseline_expanded_income = 'expanded_income_baseline'
     vdf2[baseline_expanded_income] = vdf1['expanded_income']
     vdf2['tax_diff'] = vdf2[tax_to_diff] - vdf1[tax_to_diff]
@@ -460,8 +503,9 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     # add table_row column to vdf2 given specified groupby and income_measure
     if groupby == 'weighted_deciles':
         dframe = add_quantile_table_row_variable(vdf2,
-                                                 baseline_expanded_income,
-                                                 10, decile_details=True)
+                                                 baseline_expanded_income, 10,
+                                                 pop_quantiles=pop_quantiles,
+                                                 decile_details=True)
     elif groupby == 'standard_income_bins':
         dframe = add_income_table_row_variable(vdf2,
                                                baseline_expanded_income,
@@ -681,6 +725,7 @@ def mtr_graph_data(vdf, year,
                    alt_e00200p_text='',
                    mtr_wrt_full_compen=False,
                    income_measure='expanded_income',
+                   pop_quantiles=False,
                    dollar_weighting=False):
     """
     Prepare marginal tax rate data needed by xtr_graph_plot utility function.
@@ -737,6 +782,10 @@ def mtr_graph_data(vdf, year,
         - 'expanded_income': sum of AGI, non-taxable interest income,
           non-taxable social security benefits, and employer share of
           FICA taxes.
+
+    pop_quantiles : boolean
+        specifies whether or not quantiles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     dollar_weighting : boolean
         False implies both income_measure percentiles on x axis and
@@ -805,9 +854,15 @@ def mtr_graph_data(vdf, year,
         raise ValueError(msg.format(mtr_measure))
     # . . check vdf
     assert isinstance(vdf, pd.DataFrame)
+    # . . check pop_quantiles and dollar_weighting
+    if pop_quantiles:
+        assert not dollar_weighting
     # create 'table_row' column given specified income_var and dollar_weighting
     dfx = add_quantile_table_row_variable(
-        vdf, income_var, 100, weight_by_income_measure=dollar_weighting)
+        vdf, income_var, 100,
+        pop_quantiles=pop_quantiles,
+        weight_by_income_measure=dollar_weighting
+    )
     # split dfx into groups specified by 'table_row' column
     gdfx = dfx.groupby('table_row', as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
@@ -844,7 +899,8 @@ def mtr_graph_data(vdf, year,
 
 def atr_graph_data(vdf, year,
                    mars='ALL',
-                   atr_measure='combined'):
+                   atr_measure='combined',
+                   pop_quantiles=False):
     """
     Prepare average tax rate data needed by xtr_graph_plot utility function.
 
@@ -877,6 +933,10 @@ def atr_graph_data(vdf, year,
         - 'ptax': average payroll tax rate
 
         - 'combined': sum of average income and payroll tax rates
+
+    pop_quantiles : boolean
+        specifies whether or not quantiles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     Returns
     -------
@@ -915,7 +975,8 @@ def atr_graph_data(vdf, year,
     nonpos_frac = weights[nonpos].sum() / weights.sum()
     num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
     # create 'table_row' column
-    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100)
+    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100,
+                                          pop_quantiles=pop_quantiles)
     # specify which 'table_row' are included
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
@@ -1053,7 +1114,7 @@ def xtr_graph_plot(data,
     return fig
 
 
-def pch_graph_data(vdf, year):
+def pch_graph_data(vdf, year, pop_quantiles=False):
     """
     Prepare percentage change in after-tax expanded income data needed by
     pch_graph_plot utility function.
@@ -1065,6 +1126,10 @@ def pch_graph_data(vdf, year):
 
     year : integer
         specifies calendar year of the data in vdf
+
+    pop_quantiles : boolean
+        specifies whether or not quantiles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     Returns
     -------
@@ -1079,7 +1144,8 @@ def pch_graph_data(vdf, year):
     nonpos_frac = weights[nonpos].sum() / weights.sum()
     num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
     # create 'table_row' column
-    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100)
+    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100,
+                                          pop_quantiles=pop_quantiles)
     # specify which 'table_row' are included
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)

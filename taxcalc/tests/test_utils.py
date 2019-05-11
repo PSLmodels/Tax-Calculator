@@ -59,7 +59,8 @@ DATA_FLOAT = [[1.0, 2, 'a'],
 def test_validity_of_name_lists():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     Records.read_var_info()
-    assert set(DIST_VARIABLES).issubset(Records.CALCULATED_VARS | {'s006'})
+    assert set(DIST_VARIABLES).issubset(Records.CALCULATED_VARS |
+                                        {'s006', 'XTOT'})
     extra_vars_set = set(['num_returns_StandardDed',
                           'num_returns_ItemDed',
                           'num_returns_AMT'])
@@ -578,11 +579,16 @@ def test_dist_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
+    # create three distribution tables and compare the ALL row contents
     tb1 = create_distribution_table(calc.distribution_table_dataframe(),
                                     'standard_income_bins', 'expanded_income')
     tb2 = create_distribution_table(calc.distribution_table_dataframe(),
                                     'soi_agi_bins', 'expanded_income')
-    assert np.allclose(tb1[-1:], tb2[-1:])
+    tb3 = create_distribution_table(calc.distribution_table_dataframe(),
+                                    'weighted_deciles', 'expanded_income',
+                                    pop_quantiles=True)
+    assert np.allclose(tb1.iloc[-1], tb2.iloc[-1])
+    assert np.allclose(tb1.iloc[-1], tb3.iloc[-4])
 
 
 def test_diff_table_sum_row(cps_subsample):
@@ -596,19 +602,23 @@ def test_diff_table_sum_row(cps_subsample):
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
-    # create two difference tables and compare their content
+    # create three difference tables and compare their content
     tdiff1 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                      calc2.dataframe(DIFF_VARIABLES),
                                      'standard_income_bins', 'iitax')
     tdiff2 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
                                      calc2.dataframe(DIFF_VARIABLES),
                                      'soi_agi_bins', 'iitax')
+    tdiff3 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
+                                     calc2.dataframe(DIFF_VARIABLES),
+                                     'weighted_deciles', 'iitax',
+                                     pop_quantiles=True)
     non_digit_cols = ['perc_inc', 'perc_cut']
     digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
-    assert np.allclose(tdiff1[digit_cols][-1:],
-                       tdiff2[digit_cols][-1:])
-    np.allclose(tdiff1[non_digit_cols][-1:],
-                tdiff2[non_digit_cols][-1:])
+    assert np.allclose(tdiff1[digit_cols].iloc[-1],
+                       tdiff2[digit_cols].iloc[-1])
+    assert np.allclose(tdiff1[digit_cols].iloc[-1],
+                       tdiff3[digit_cols].iloc[-4])
 
 
 def test_mtr_graph_data(cps_subsample):
