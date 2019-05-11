@@ -3,6 +3,7 @@ Specify what is available to import from the taxcalc package.
 """
 from taxcalc.calculator import *
 from taxcalc.consumption import *
+from taxcalc.decorators import iterate_jit, JIT
 from taxcalc.growfactors import *
 from taxcalc.growdiff import *
 from taxcalc.parameters import *
