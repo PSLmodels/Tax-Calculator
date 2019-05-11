@@ -96,7 +96,7 @@ assert not rpolicy.parameter_errors
 rpolicy.implement_reform(reform2, print_warnings=False, raise_errors=False)
 assert not rpolicy.parameter_errors
 
-# specify CustomizedCalculator objects using bpolicy and rpolicy
+# specify customized Calculator objects using bpolicy and rpolicy
 recs = tc.Records.cps_constructor()
 calc1 = Calculator(policy=bpolicy, records=recs)
 calc2 = Calculator(policy=rpolicy, records=recs)

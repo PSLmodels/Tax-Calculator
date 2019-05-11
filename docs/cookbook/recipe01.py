@@ -3,14 +3,14 @@ from taxcalc import *
 
 # read an "old" reform file from Tax-Calculator website
 # ("old" means the reform file is defined relative to pre-TCJA policy)
-REFORMS_URL = ('https://raw.githubusercontent.com/'
+reforms_url = ('https://raw.githubusercontent.com/'
                'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
 
 # specify reform dictionary for pre-TCJA policy
-reform1 = Policy.read_json_reform(REFORMS_URL + '2017_law.json')
+reform1 = Policy.read_json_reform(reforms_url + '2017_law.json')
 
 # specify reform dictionary for TCJA as passed by Congress in late 2017
-reform2 = Policy.read_json_reform(REFORMS_URL + 'TCJA.json')
+reform2 = Policy.read_json_reform(reforms_url + 'TCJA.json')
 
 # specify Policy object for pre-TCJA policy
 bpolicy = Policy()
@@ -24,14 +24,16 @@ assert not rpolicy.parameter_errors
 rpolicy.implement_reform(reform2, print_warnings=False, raise_errors=False)
 assert not rpolicy.parameter_errors
 
-cyr = 2018
-
-# specify Calculator objects using bpolicy and rpolicy and calculate for cyr
+# specify Calculator objects using bpolicy and rpolicy
 recs = Records.cps_constructor()
 calc1 = Calculator(policy=bpolicy, records=recs)
+calc2 = Calculator(policy=rpolicy, records=recs)
+
+cyr = 2018
+
+# calculate for specified cyr
 calc1.advance_to_year(cyr)
 calc1.calc_all()
-calc2 = Calculator(policy=rpolicy, records=recs)
 calc2.advance_to_year(cyr)
 calc2.calc_all()
 
