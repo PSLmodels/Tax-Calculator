@@ -33,7 +33,6 @@ from taxcalc.utils import (DIST_VARIABLES, create_distribution_table,
                            create_diagnostic_table,
                            ce_aftertax_expanded_income,
                            mtr_graph_data, atr_graph_data, xtr_graph_plot,
-                           dec_graph_data, dec_graph_plot,
                            pch_graph_data, pch_graph_plot)
 # import pdb
 
@@ -204,23 +203,6 @@ class Calculator():
         del varlist
         return dframe
 
-    def distribution_table_dataframe(self):
-        """
-        Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables
-        from embedded Records object.
-        """
-        dframe = self.dataframe(DIST_VARIABLES)
-        # weighted count of itemized-deduction returns
-        dframe['num_returns_ItemDed'] = dframe['s006'].where(
-            dframe['c04470'] > 0., 0.)
-        # weighted count of standard-deduction returns
-        dframe['num_returns_StandardDed'] = dframe['s006'].where(
-            dframe['standard'] > 0., 0.)
-        # weight count of returns with positive Alternative Minimum Tax (AMT)
-        dframe['num_returns_AMT'] = dframe['s006'].where(
-            dframe['c09600'] > 0., 0.)
-        return dframe
-
     def array(self, variable_name, variable_value=None):
         """
         If variable_value is None, return numpy ndarray containing the
@@ -381,7 +363,8 @@ class Calculator():
             if calc is None, the second returned table is None
 
         groupby : String object
-            options for input: 'weighted_deciles', 'standard_income_bins'
+            options for input: 'weighted_deciles', 'standard_income_bins',
+                               'soi_agi_bins'
             determines how the columns in resulting Pandas DataFrame are sorted
 
         pop_quantiles : boolean
@@ -412,7 +395,29 @@ class Calculator():
               positive (denoted by a 0-10p row label) values of the
               specified income_measure.
         """
-        # nested function used only by this method
+        # nested functions used only by this method
+        def distribution_table_dataframe():
+            """
+            Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables
+            from embedded Records object.
+            """
+            dframe = self.dataframe(DIST_VARIABLES)
+            # weighted count of all people or filing units
+            if pop_quantiles:
+                dframe['count'] = np.multiply(dframe['s006'], dframe['XTOT'])
+            else:
+                dframe['count'] = dframe['s006']
+            # weighted count of those with itemized-deduction returns
+            dframe['count_ItemDed'] = dframe['count'].where(
+                dframe['c04470'] > 0., 0.)
+            # weighted count of those with standard-deduction returns
+            dframe['count_StandardDed'] = dframe['count'].where(
+                dframe['standard'] > 0., 0.)
+            # weight count of those with positive Alternative Minimum Tax (AMT)
+            dframe['count_AMT'] = dframe['count'].where(
+                dframe['c09600'] > 0., 0.)
+            return dframe
+
         def have_same_income_measure(calc1, calc2):
             """
             Return true if calc1 and calc2 contain the same expanded_income;
@@ -424,14 +429,15 @@ class Calculator():
             return np.allclose(im1, im2, rtol=0.0, atol=0.01)
         # main logic of method
         assert calc is None or isinstance(calc, Calculator)
-        assert groupby in ('weighted_deciles', 'standard_income_bins')
+        assert groupby in ('weighted_deciles', 'standard_income_bins',
+                           'soi_agi_bins')
         if calc is not None:
             assert np.allclose(self.array('s006'),
                                calc.array('s006'))  # check rows in same order
-        var_dataframe = self.distribution_table_dataframe()
+        var_dataframe = distribution_table_dataframe()
         imeasure = 'expanded_income'
-        dt1 = create_distribution_table(var_dataframe, groupby,
-                                        imeasure, pop_quantiles, scaling)
+        dt1 = create_distribution_table(var_dataframe, groupby, imeasure,
+                                        pop_quantiles, scaling)
         del var_dataframe
         if calc is None:
             dt2 = None
@@ -440,14 +446,14 @@ class Calculator():
             assert calc.array_len == self.array_len
             assert np.allclose(self.consump_benval_params(),
                                calc.consump_benval_params())
-            var_dataframe = calc.distribution_table_dataframe()
+            var_dataframe = distribution_table_dataframe()
             if have_same_income_measure(self, calc):
                 imeasure = 'expanded_income'
             else:
                 imeasure = 'expanded_income_baseline'
                 var_dataframe[imeasure] = self.array('expanded_income')
-            dt2 = create_distribution_table(var_dataframe, groupby,
-                                            imeasure, pop_quantiles, scaling)
+            dt2 = create_distribution_table(var_dataframe, groupby, imeasure,
+                                            pop_quantiles, scaling)
             del var_dataframe
         return (dt1, dt2)
 
@@ -502,13 +508,12 @@ class Calculator():
         assert calc.array_len == self.array_len
         assert np.allclose(self.consump_benval_params(),
                            calc.consump_benval_params())
-        self_var_dataframe = self.dataframe(DIFF_VARIABLES)
-        calc_var_dataframe = calc.dataframe(DIFF_VARIABLES)
-        diff = create_difference_table(self_var_dataframe,
-                                       calc_var_dataframe,
+        self_var_dframe = self.dataframe(DIFF_VARIABLES)
+        calc_var_dframe = calc.dataframe(DIFF_VARIABLES)
+        diff = create_difference_table(self_var_dframe, calc_var_dframe,
                                        groupby, tax_to_diff, pop_quantiles)
-        del self_var_dataframe
-        del calc_var_dataframe
+        del self_var_dframe
+        del calc_var_dframe
         return diff
 
     MTR_VALID_VARIABLES = ['e00200p', 'e00200s',
@@ -1023,67 +1028,6 @@ class Calculator():
                              ylabel='',
                              title='')
         del data
-        return fig
-
-    def decile_graph(self, calc,
-                     include_zero_incomes=True,
-                     include_negative_incomes=True):
-        """
-        Create graph that shows percentage change in aftertax expanded
-        income (from going from policy in self to policy in calc) for
-        each expanded-income decile and subgroups of the top decile.
-        The graph can be written to an HTML file (using the
-        write_graph_file utility function) or shown on the screen
-        immediately in an interactive or notebook session (following
-        the instructions in the documentation of the xtr_graph_plot
-        utility function).
-        NOTE: this method calls the distribution_tables method to
-              compute the values of the graphed statistic; consult
-              that method for details on how the values are computed.
-
-        Parameters
-        ----------
-        calc : Calculator object
-            calc represents the reform while self represents the baseline,
-            where both self and calc have calculated taxes for this year
-            before being used by this method
-
-        include_zero_incomes : boolean
-            if True (which is the default), the bottom decile does contain
-            filing units with zero expanded_income;
-            if False, the bottom decile does not contain filing units with
-            zero expanded_income.
-
-        include_negative_incomes : boolean
-            if True (which is the default), the bottom decile does contain
-            filing units with negative expanded_income;
-            if False, the bottom decile does not contain filing units with
-            negative expanded_income.
-
-        Returns
-        -------
-        graph that is a bokeh.plotting figure object
-        """
-        # check that two Calculator objects are comparable
-        assert isinstance(calc, Calculator)
-        assert calc.current_year == self.current_year
-        assert calc.array_len == self.array_len
-        dt1, dt2 = self.distribution_tables(calc, 'weighted_deciles')
-        # construct data for graph
-        data = dec_graph_data(
-            dt1, dt2, year=self.current_year,
-            include_zero_incomes=include_zero_incomes,
-            include_negative_incomes=include_negative_incomes)
-        # construct figure from data
-        fig = dec_graph_plot(data,
-                             width=850,
-                             height=500,
-                             xlabel='',
-                             ylabel='',
-                             title='')
-        del data
-        del dt1
-        del dt2
         return fig
 
     REQUIRED_REFORM_KEYS = set(['policy'])
