@@ -614,7 +614,7 @@ class TaxCalcIO():
     def write_graph_files(self):
         """
         Write graphs to HTML files.
-        All graphs contain same number of people in quantiles.
+        All graphs contain same number of filing units in each quantile.
         """
         pos_wght_sum = self.calc.total_weight() > 0.0
         fig = None
@@ -622,7 +622,7 @@ class TaxCalcIO():
         atr_fname = self._output_filename.replace('.csv', '-atr.html')
         atr_title = 'ATR by Income Percentile'
         if pos_wght_sum:
-            fig = self.calc_base.atr_graph(self.calc, pop_quantiles=True)
+            fig = self.calc_base.atr_graph(self.calc, pop_quantiles=False)
             write_graph_file(fig, atr_fname, atr_title)
         else:
             reason = 'No graph because sum of weights is not positive'
@@ -634,7 +634,7 @@ class TaxCalcIO():
             fig = self.calc_base.mtr_graph(
                 self.calc,
                 alt_e00200p_text='Taxpayer Earnings',
-                pop_quantiles=True
+                pop_quantiles=False
             )
             write_graph_file(fig, mtr_fname, mtr_title)
         else:
@@ -644,7 +644,7 @@ class TaxCalcIO():
         pch_fname = self._output_filename.replace('.csv', '-pch.html')
         pch_title = 'PCH by Income Percentile'
         if pos_wght_sum:
-            fig = self.calc_base.pch_graph(self.calc, pop_quantiles=True)
+            fig = self.calc_base.pch_graph(self.calc, pop_quantiles=False)
             write_graph_file(fig, pch_fname, pch_title)
         else:
             reason = 'No graph because sum of weights is not positive'
