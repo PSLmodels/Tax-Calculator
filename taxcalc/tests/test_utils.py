@@ -550,6 +550,14 @@ def test_dist_table_sum_row(cps_subsample):
     assert np.allclose(tb1.iloc[-1], tb3.iloc[-4])
     # make sure population count is larger than filing-unit count
     assert tb4.iloc[-4, 0] > tb1.iloc[-1, 0]
+    # make sure population table has same ALL row values as filing-unit table
+    for col in [0, 2, 4, 10]:
+        tb4.iloc[-4, col] = tb1.iloc[-1, col]
+    assert np.allclose(tb1.iloc[-1], tb4.iloc[-4])
+    # make sure population table has same ALL tax liabilities as diagnostic tbl
+    dgtb = calc.diagnostic_table(1)
+    assert np.allclose([tb4.iloc[-4, 16], tb4.iloc[-4, 17]],
+                       [dgtb.iloc[17, 0], dgtb.iloc[18, 0]])
 
 
 def test_diff_table_sum_row(cps_subsample):

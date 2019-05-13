@@ -396,12 +396,12 @@ class Calculator():
               specified income_measure.
         """
         # nested functions used only by this method
-        def distribution_table_dataframe():
+        def distribution_table_dataframe(calcobj):
             """
             Return pandas DataFrame containing the DIST_TABLE_COLUMNS variables
-            from embedded Records object.
+            from specified Calculator object, calcobj.
             """
-            dframe = self.dataframe(DIST_VARIABLES)
+            dframe = calcobj.dataframe(DIST_VARIABLES)
             # weighted count of all people or filing units
             if pop_quantiles:
                 dframe['count'] = np.multiply(dframe['s006'], dframe['XTOT'])
@@ -427,14 +427,15 @@ class Calculator():
             im1 = calc1.array('expanded_income')
             im2 = calc2.array('expanded_income')
             return np.allclose(im1, im2, rtol=0.0, atol=0.01)
-        # main logic of method
+
+        # main logic of distribution_tables method
         assert calc is None or isinstance(calc, Calculator)
         assert groupby in ('weighted_deciles', 'standard_income_bins',
                            'soi_agi_bins')
         if calc is not None:
             assert np.allclose(self.array('s006'),
                                calc.array('s006'))  # check rows in same order
-        var_dataframe = distribution_table_dataframe()
+        var_dataframe = distribution_table_dataframe(self)
         imeasure = 'expanded_income'
         dt1 = create_distribution_table(var_dataframe, groupby, imeasure,
                                         pop_quantiles, scaling)
@@ -446,7 +447,7 @@ class Calculator():
             assert calc.array_len == self.array_len
             assert np.allclose(self.consump_benval_params(),
                                calc.consump_benval_params())
-            var_dataframe = distribution_table_dataframe()
+            var_dataframe = distribution_table_dataframe(calc)
             if have_same_income_measure(self, calc):
                 imeasure = 'expanded_income'
             else:
