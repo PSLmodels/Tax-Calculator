@@ -546,19 +546,21 @@ def test_dist_table_sum_row(cps_subsample):
     tb3, _ = calc.distribution_tables(None, 'weighted_deciles')
     tb4, _ = calc.distribution_tables(None, 'weighted_deciles',
                                       pop_quantiles=True)
-    assert np.allclose(tb1.iloc[-1], tb2.iloc[-1])
-    assert np.allclose(tb1.iloc[-1], tb3.iloc[-4])
+    assert np.allclose(tb1.loc['ALL'], tb2.loc['ALL'])
+    assert np.allclose(tb1.loc['ALL'], tb3.loc['ALL'])
     # make sure population count is larger than filing-unit count
-    assert tb4.iloc[-4, 0] > tb1.iloc[-1, 0]
+    assert tb4.at['ALL', 'count'] > tb1.at['ALL', 'count']
     # make sure population table has same ALL row values as filing-unit table
-    for col in [0, 2, 4, 10]:
-        tb4.iloc[-4, col] = tb1.iloc[-1, col]
-    assert np.allclose(tb1.iloc[-1], tb4.iloc[-4])
+    for col in ['count', 'count_StandardDed', 'count_ItemDed', 'count_AMT']:
+        tb4.at['ALL', col] = tb1.at['ALL', col]
+    assert np.allclose(tb1.loc['ALL'], tb4.loc['ALL'])
     # make sure population table has same ALL tax liabilities as diagnostic tbl
-    dgtb = calc.diagnostic_table(1)
-    assert np.allclose([tb4.iloc[-4, 16], tb4.iloc[-4, 17]],
-                       [dgtb.iloc[17, 0], dgtb.iloc[18, 0]])
-
+    dgt = calc.diagnostic_table(1)
+    assert np.allclose([tb4.at['ALL', 'iitax'],
+                        tb4.at['ALL', 'payrolltax']],
+                       [dgt.at['Ind Income Tax ($b)', calc.current_year],
+                        dgt.at['Payroll Taxes ($b)', calc.current_year]])
+    
 
 def test_diff_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
@@ -580,12 +582,10 @@ def test_diff_table_sum_row(cps_subsample):
                                   pop_quantiles=False)
     dt4 = create_difference_table(dv1, dv2, 'weighted_deciles', 'iitax',
                                   pop_quantiles=True)
-    non_digit_cols = ['perc_inc', 'perc_cut']
-    digit_cols = [c for c in list(dt1) if c not in non_digit_cols]
-    assert np.allclose(dt1[digit_cols].iloc[-1], dt2[digit_cols].iloc[-1])
-    assert np.allclose(dt1[digit_cols].iloc[-1], dt3[digit_cols].iloc[-4])
+    assert np.allclose(dt1.loc['ALL'], dt2.loc['ALL'])
+    assert np.allclose(dt1.loc['ALL'], dt3.loc['ALL'])
     # make sure population count is larger than filing-unit count
-    assert dt4.iloc[-4, 0] > dt1.iloc[-1, 0]
+    assert dt4.at['ALL', 'count'] > dt1.at['ALL', 'count']
 
 
 def test_mtr_graph_data(cps_subsample):
