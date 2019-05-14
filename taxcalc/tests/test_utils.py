@@ -560,7 +560,7 @@ def test_dist_table_sum_row(cps_subsample):
                         tb4.at['ALL', 'payrolltax']],
                        [dgt.at['Ind Income Tax ($b)', calc.current_year],
                         dgt.at['Payroll Taxes ($b)', calc.current_year]])
-    
+
 
 def test_diff_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
