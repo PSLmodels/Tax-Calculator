@@ -5,6 +5,38 @@ import taxcalc as tc
 
 # begin customizing tc.Calculator class methods and calcfunctions
 
+def specify_pseudo_COLR_policy(self):
+    """
+    Specifies policy parameters for the policy in the self.current_year
+    """
+    # reform implementation year
+    reform_year = 2020
+    # one dollar refundable credit for each dollar of earnings
+    self.__policy.setattr('colr_rt', 1.0)
+    # ceiling on refundable credit varies by type of filing unit
+    valuelist = [4000.0, 8000.0, 4000.0, 4000.0, 4000.0]
+    self.__policy.setattr('colr_c', np.array(valuelist, np.float64))
+    # AGI phase-out start threshold varies by type of filing unit
+    valuelist = [30000.0, 50000.0, 30000.0, 30000.0, 30000.0]
+    self.__policy.setattr('colr_ps', np.array(valuelist, np.float64))
+    # credit phase-out rate per dollar of AGI above phase-out start threshold
+    self.__policy.setattr('colr_prt', 0.20)
+    # set parameters for years other than reform_year
+    this_year = self.current_year
+    if self.colr_active and this_year >= reform_year:
+        # set inflation-indexed values of colr_c and colr_ps for this_year
+        irates = self.__policy.inflation_rates()
+        syr = Policy.JSON_START_YEAR
+        for param in ['colr_c', 'colr_ps']:
+            value = self.__policy.getattr(param)
+            for year in range(reform_year, this_year):
+                value *= (1.0 + irates[year - syr])
+            self.__policy.setattr(param, value)
+    else:
+        # set credit ceiling to zero
+        valuelist = [0.0, 0.0, 0.0, 0.0, 0.0]
+        self.__policy.setattr('colr_c', np.array(valuelist, np.float65))
+
 @tc.iterate_jit(nopython=True)
 def pseudo_COLR(e00200, MARS, col_refund, iitax, combined):
     """
@@ -24,14 +56,18 @@ def pseudo_COLR(e00200, MARS, col_refund, iitax, combined):
 class Calculator(tc.Calculator):
     """
     Customized tc.Calculator class that inherits all tc.Calculator methods
-    and calcfunctions, overriding some to get the desired customization.
+    and calcfunctions, adding/overriding some to get desired customization.
     """
     def __init__(self, policy=None, records=None, verbose=False,
-                 sync_years=True, consumption=None):
-        # use same class constructor arguments as tc.Calculator class
+                 sync_years=True, consumption=None,
+                 # new Calculator constructor argument used in customization
+                 colr_active=False):
+        # start with same class constructor arguments as tc.Calculator class
         super().__init__(policy=policy, records=records,
                          verbose=verbose, sync_years=sync_years,
                          consumption=consumption)
+        # remember whether pseudo_COLR is active or not
+        self.colr_active = colr_active
 
     def calc_all(self, zero_out_calc_vars=False):
         """
@@ -43,9 +79,11 @@ class Calculator(tc.Calculator):
         tc.BenefitLimitation(self)
         tc.FairShareTax(self.__policy, self.__records)
         tc.LumpSumTax(self.__policy, self.__records)
-        # specify new Records variable to hold pseudo COLRefund amount
+        # specify new Records variable to hold pseudo COLR amount
         zeros = np.zeros(self.__records.array_length, dtype=np.float64)
         setattr(self.__records, 'col_refund', zeros)
+        # specify new Policy parameters to characterize pseudo COLR policy
+        
         # call new function that calculates pseudo COLRefund amount
         pseudo_COLR(self.__policy, self.__records)  # (see above)
         tc.ExpandIncome(self.__policy, self.__records)
