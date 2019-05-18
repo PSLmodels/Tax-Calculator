@@ -3,20 +3,19 @@ Reads skeletal uguide.htmx file and writes fleshed-out uguide.html file
 containing information from several JSON files.
 """
 # CODING-STYLE CHECKS:
-# pycodestyle --ignore=E402 make_uguide.py
+# pycodestyle make_uguide.py
 # pylint --disable=locally-disabled make_uguide.py
 
 import os
 import sys
 from collections import OrderedDict
-CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(os.path.join(CURDIR_PATH, '..'))
-# pylint: disable=import-error,wrong-import-position
 from taxcalc import Policy, json_to_dict
 
 
 INPUT_FILENAME = 'uguide.htmx'
 OUTPUT_FILENAME = 'uguide.html'
+
+CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
 
@@ -183,7 +182,15 @@ def var_text(vname, iotype, variable):
     else:
         txt = '<p><i>Output Variable Name:</i> <b>{}</b>'.format(vname)
     txt += '<br><i>Description:</i> {}'.format(variable['desc'])
-    txt += '<br><i>Datatype:</i> {}'.format(variable['type'])
+    if variable['type'] == 'float':
+        vtype = 'real'
+    elif variable['type'] == 'int':
+        vtype = 'integer'
+    else:
+        msg = ('{} variable {} has '
+               'unknown type={}'.format(iotype, vname, variable['type']))
+        raise ValueError(msg)
+    txt += '<br><i>Datatype:</i> {}'.format(vtype)
     if iotype == 'read':
         txt += '<br><i>Availability:</i> {}'.format(variable['availability'])
     txt += '<br><i>IRS Form Location:</i>'

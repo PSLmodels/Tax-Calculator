@@ -10,6 +10,7 @@ PUBLIC low-level utility functions for Tax-Calculator.
 import os
 import math
 import json
+import copy
 import collections
 import pkg_resources
 import numpy as np
@@ -17,9 +18,7 @@ import pandas as pd
 import bokeh.io as bio
 import bokeh.plotting as bp
 from bokeh.models import PrintfTickFormatter
-from taxcalc.utilsprvt import (weighted_count_lt_zero,
-                               weighted_count_gt_zero,
-                               weighted_count, weighted_mean,
+from taxcalc.utilsprvt import (weighted_mean,
                                wage_weighted, agi_weighted,
                                expanded_income_weighted)
 
@@ -32,19 +31,19 @@ DIST_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income', 'standard',
                   'c04470', 'c04600', 'c04800', 'taxbc', 'c62100', 'c09600',
                   'c05800', 'surtax', 'othertaxes', 'refund', 'c07100',
                   'iitax', 'payrolltax', 'combined', 's006', 'ubi',
-                  'benefit_cost_total', 'benefit_value_total']
+                  'benefit_cost_total', 'benefit_value_total', 'XTOT']
 
-DIST_TABLE_COLUMNS = ['s006',
+DIST_TABLE_COLUMNS = ['count',
                       'c00100',
-                      'num_returns_StandardDed',
+                      'count_StandardDed',
                       'standard',
-                      'num_returns_ItemDed',
+                      'count_ItemDed',
                       'c04470',
                       'c04600',
                       'c04800',
                       'taxbc',
                       'c62100',
-                      'num_returns_AMT',
+                      'count_AMT',
                       'c09600',
                       'c05800',
                       'c07100',
@@ -89,7 +88,7 @@ DIST_TABLE_LABELS = ['Returns',
 # labels list to map a label to the correct column in a difference table.
 
 DIFF_VARIABLES = ['expanded_income', 'c00100', 'aftertax_income',
-                  'iitax', 'payrolltax', 'combined', 's006',
+                  'iitax', 'payrolltax', 'combined', 's006', 'XTOT',
                   'ubi', 'benefit_cost_total', 'benefit_value_total']
 
 DIFF_TABLE_COLUMNS = ['count',
@@ -105,10 +104,10 @@ DIFF_TABLE_COLUMNS = ['count',
                       'benefit_value_total',
                       'pc_aftertaxinc']
 
-DIFF_TABLE_LABELS = ['All Tax Units',
-                     'Tax Units with Tax Cut',
+DIFF_TABLE_LABELS = ['Count',
+                     'Count with Tax Cut',
                      'Percent with Tax Cut',
-                     'Tax Units with Tax Increase',
+                     'Count with Tax Increase',
                      'Percent with Tax Increase',
                      'Average Tax Change',
                      'Total Tax Difference',
@@ -150,34 +149,61 @@ def weighted_sum(dframe, col_name):
 
 
 def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
+                                    pop_quantiles=False,
                                     decile_details=False,
                                     weight_by_income_measure=False):
     """
-    Add a variable to specified Pandas DataFrame, dframe, that specifies the
-    table row and is called 'table_row'.  The rows hold equal number of
-    filing units when weight_by_income_measure=False or equal number of
-    income dollars when weight_by_income_measure=True.  Assumes that
-    specified dframe contains columns for the specified income_measure and
-    for sample weights, s006.  When num_quantiles is 10 and decile_details
-    is True, the bottom decile is broken up into three subgroups (neg, zero,
-    and pos income_measure ) and the top decile is broken into three subgroups
+    Add a variable to specified Pandas DataFrame, dframe, that specifies
+    the table row and is called 'table_row'.
+
+    When weight_by_income_measure=False, the rows hold an equal number of
+    people if pop_quantiles=True or an equal number of filing units if
+    pop_quantiles=False.
+
+    When weight_by_income_measure=True, the rows hold an equal number
+    of income dollars.
+
+    This function assumes that specified dframe contains columns for
+    the specified income_measure and for sample weights, s006, and when
+    pop_quantiles=True, number of exemptions, XTOT.
+
+ .  When num_quantiles is 10 and decile_details is True,
+    the bottom decile is broken up into three subgroups
+    (neg, zero, and pos income_measure)
+    and the top decile is broken into three subgroups
     (90-95, 95-99, and top 1%).
     """
-    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-arguments,too-many-locals
     assert isinstance(dframe, pd.DataFrame)
     assert income_measure in dframe
+    assert 's006' in dframe
     if decile_details and num_quantiles != 10:
         msg = 'decile_details is True when num_quantiles is {}'
         raise ValueError(msg.format(num_quantiles))
-    dframe.sort_values(by=income_measure, inplace=True)
+    if pop_quantiles:
+        assert not weight_by_income_measure
+        assert 'XTOT' in dframe
+        # adjust income measure by square root of filing unit size
+        adj = np.sqrt(np.where(dframe['XTOT'] == 0, 1, dframe['XTOT']))
+        dframe['adj_income_measure'] = np.divide(dframe[income_measure], adj)
+    else:
+        dframe['adj_income_measure'] = dframe[income_measure]
+    dframe.sort_values(by='adj_income_measure', inplace=True)
     if weight_by_income_measure:
         dframe['cumsum_temp'] = np.cumsum(
             np.multiply(dframe[income_measure].values, dframe['s006'].values)
         )
         min_cumsum = dframe['cumsum_temp'].values[0]
     else:
-        dframe['cumsum_temp'] = np.cumsum(dframe['s006'].values)
-        min_cumsum = 0.  # because s006 values are non-negative
+        if pop_quantiles:
+            dframe['cumsum_temp'] = np.cumsum(
+                np.multiply(dframe['XTOT'].values, dframe['s006'].values)
+            )
+        else:
+            dframe['cumsum_temp'] = np.cumsum(
+                dframe['s006'].values
+            )
+        min_cumsum = 0.  # because s006 and XTOT values are non-negative
     max_cumsum = dframe['cumsum_temp'].values[-1]
     cumsum_range = max_cumsum - min_cumsum
     bin_width = cumsum_range / float(num_quantiles)
@@ -253,7 +279,8 @@ def get_sums(dframe):
     return pd.Series(sums, name='ALL')
 
 
-def create_distribution_table(vdf, groupby, income_measure, scaling=True):
+def create_distribution_table(vdf, groupby, income_measure,
+                              pop_quantiles=False, scaling=True):
     """
     Get results from vdf, sort them by expanded_income based on groupby,
     and return them as a table.
@@ -261,8 +288,8 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
     Parameters
     ----------
     vdf : Pandas DataFrame including columns named in DIST_TABLE_COLUMNS list
-        for example, an object returned from the Calculator class
-        distribution_table_dataframe method
+        for example, an object returned from the distribution_table_dataframe
+        function in the Calculator distribution_tables method
 
     groupby : String object
         options for input: 'weighted_deciles' or
@@ -273,8 +300,12 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
         options for input: 'expanded_income' or 'expanded_income_baseline'
         determines which variable is used to sort rows
 
+    pop_quantiles : boolean
+        specifies whether or not weighted_deciles contain an equal number
+        of people (True) or an equal number of filing units (False)
+
     scaling : boolean
-        specifies whether or not table entries are scaled
+        specifies whether or not table entry values are scaled
 
     Returns
     -------
@@ -298,8 +329,8 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
         Returns calculated distribution table column statistics derived from
         the specified grouped Dataframe object, gdf.
         """
-        unweighted_columns = ['s006', 'num_returns_StandardDed',
-                              'num_returns_ItemDed', 'num_returns_AMT']
+        unweighted_columns = ['count', 'count_StandardDed',
+                              'count_ItemDed', 'count_AMT']
         sdf = pd.DataFrame()
         for col in DIST_TABLE_COLUMNS:
             if col in unweighted_columns:
@@ -314,11 +345,14 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
                        'soi_agi_bins')
     assert income_measure in ('expanded_income', 'expanded_income_baseline')
     assert income_measure in vdf
-    assert 'table_row' not in list(vdf.columns.values)
+    assert 'table_row' not in vdf
+    if pop_quantiles:
+        assert groupby == 'weighted_deciles'
     # sort the data given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        dframe = add_quantile_table_row_variable(vdf, income_measure,
-                                                 10, decile_details=True)
+        dframe = add_quantile_table_row_variable(vdf, income_measure, 10,
+                                                 pop_quantiles=pop_quantiles,
+                                                 decile_details=True)
     elif groupby == 'standard_income_bins':
         dframe = add_income_table_row_variable(vdf, income_measure,
                                                STANDARD_INCOME_BINS)
@@ -367,10 +401,10 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
     del dframe
     # scale table elements
     if scaling:
-        count_vars = ['s006',
-                      'num_returns_StandardDed',
-                      'num_returns_ItemDed',
-                      'num_returns_AMT']
+        count_vars = ['count',
+                      'count_StandardDed',
+                      'count_ItemDed',
+                      'count_AMT']
         for col in dist_table.columns:
             if col in count_vars:
                 dist_table[col] = np.round(dist_table[col] * 1e-6, 2)
@@ -381,7 +415,8 @@ def create_distribution_table(vdf, groupby, income_measure, scaling=True):
     return dist_table
 
 
-def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
+def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
+                            pop_quantiles=False):
     """
     Get results from two different vdf, construct tax difference results,
     and return the difference statistics as a table.
@@ -389,11 +424,11 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     Parameters
     ----------
     vdf1 : Pandas DataFrame including columns named in DIFF_VARIABLES list
-           for example, object returned from a dataframe(DIFF_VARIABLE) call
+           for example, object returned from a dataframe(DIFF_VARIABLES) call
            on the basesline Calculator object
 
     vdf2 : Pandas DataFrame including columns in the DIFF_VARIABLES list
-           for example, object returned from a dataframe(DIFF_VARIABLE) call
+           for example, object returned from a dataframe(DIFF_VARIABLES) call
            on the reform Calculator object
 
     groupby : String object
@@ -404,6 +439,10 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
     tax_to_diff : String object
         options for input: 'iitax', 'payrolltax', 'combined'
         specifies which tax to difference
+
+    pop_quantiles : boolean
+        specifies whether or not weighted_deciles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     Returns
     -------
@@ -426,10 +465,22 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
         """
         Nested function that returns additive stats DataFrame derived from gdf
         """
+        def count_lt_zero(dframe, col_name, tolerance=-0.001):
+            """
+            Return count sum of negative Pandas DataFrame col_name items.
+            """
+            return dframe[dframe[col_name] < tolerance]['count'].sum()
+
+        def count_gt_zero(dframe, col_name, tolerance=0.001):
+            """
+            Return count sum of positive Pandas DataFrame col_name items.
+            """
+            return dframe[dframe[col_name] > tolerance]['count'].sum()
+        # start of additive_stats_dataframe code
         sdf = pd.DataFrame()
-        sdf['count'] = gdf.apply(weighted_count)
-        sdf['tax_cut'] = gdf.apply(weighted_count_lt_zero, 'tax_diff')
-        sdf['tax_inc'] = gdf.apply(weighted_count_gt_zero, 'tax_diff')
+        sdf['count'] = gdf.apply(unweighted_sum, 'count')
+        sdf['tax_cut'] = gdf.apply(count_lt_zero, 'tax_diff')
+        sdf['tax_inc'] = gdf.apply(count_gt_zero, 'tax_diff')
         sdf['tot_change'] = gdf.apply(weighted_sum, 'tax_diff')
         sdf['ubi'] = gdf.apply(weighted_sum, 'ubi')
         sdf['benefit_cost_total'] = gdf.apply(weighted_sum,
@@ -440,36 +491,48 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
         sdf['atinc2'] = gdf.apply(weighted_sum, 'atinc2')
         return sdf
     # main logic of create_difference_table
-    assert isinstance(vdf1, pd.DataFrame)
-    assert isinstance(vdf2, pd.DataFrame)
-    assert np.allclose(vdf1['s006'], vdf2['s006'])  # check rows in same order
     assert groupby in ('weighted_deciles',
                        'standard_income_bins',
                        'soi_agi_bins')
+    if pop_quantiles:
+        assert groupby == 'weighted_deciles'
     assert 'expanded_income' in vdf1
     assert tax_to_diff in ('iitax', 'payrolltax', 'combined')
-    assert 'table_row' not in list(vdf1.columns.values)
-    assert 'table_row' not in list(vdf2.columns.values)
+    assert 'table_row' not in vdf1
+    assert 'table_row' not in vdf2
+    assert isinstance(vdf1, pd.DataFrame)
+    assert isinstance(vdf2, pd.DataFrame)
+    assert np.allclose(vdf1['XTOT'], vdf2['XTOT'])  # check rows are the same
+    assert np.allclose(vdf1['s006'], vdf2['s006'])  # units and in same order
     baseline_expanded_income = 'expanded_income_baseline'
-    vdf2[baseline_expanded_income] = vdf1['expanded_income']
-    vdf2['tax_diff'] = vdf2[tax_to_diff] - vdf1[tax_to_diff]
+    df2 = copy.deepcopy(vdf2)
+    df2[baseline_expanded_income] = vdf1['expanded_income']
+    df2['tax_diff'] = df2[tax_to_diff] - vdf1[tax_to_diff]
     for col in ['ubi', 'benefit_cost_total', 'benefit_value_total']:
-        vdf2[col] = vdf2[col] - vdf1[col]
-    vdf2['atinc1'] = vdf1['aftertax_income']
-    vdf2['atinc2'] = vdf2['aftertax_income']
-    # add table_row column to vdf2 given specified groupby and income_measure
+        df2[col] = df2[col] - vdf1[col]
+    df2['atinc1'] = vdf1['aftertax_income']
+    df2['atinc2'] = vdf2['aftertax_income']
+    # specify count variable in df2
+    if pop_quantiles:
+        df2['count'] = np.multiply(df2['s006'], df2['XTOT'])
+
+    else:
+        df2['count'] = df2['s006']
+    # add table_row column to df2 given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        dframe = add_quantile_table_row_variable(vdf2,
-                                                 baseline_expanded_income,
-                                                 10, decile_details=True)
+        dframe = add_quantile_table_row_variable(df2,
+                                                 baseline_expanded_income, 10,
+                                                 pop_quantiles=pop_quantiles,
+                                                 decile_details=True)
     elif groupby == 'standard_income_bins':
-        dframe = add_income_table_row_variable(vdf2,
+        dframe = add_income_table_row_variable(df2,
                                                baseline_expanded_income,
                                                STANDARD_INCOME_BINS)
     elif groupby == 'soi_agi_bins':
-        dframe = add_income_table_row_variable(vdf2,
+        dframe = add_income_table_row_variable(df2,
                                                baseline_expanded_income,
                                                SOI_AGI_BINS)
+    del df2
     # create grouped Pandas DataFrame
     gdf = dframe.groupby('table_row', as_index=False)
     del dframe['table_row']
@@ -536,8 +599,8 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
         diff_table.index = rownames
         del rownames
     # scale table elements
-    count_vars = ['count']
-    scale_vars = ['tax_cut', 'tax_inc', 'tot_change', 'ubi',
+    count_vars = ['count', 'tax_cut', 'tax_inc']
+    scale_vars = ['tot_change', 'ubi',
                   'benefit_cost_total', 'benefit_value_total']
     for col in diff_table.columns:
         if col in count_vars:
@@ -547,8 +610,6 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff):
         else:
             diff_table[col] = np.round(diff_table[col], 1)
     # return table as Pandas DataFrame
-    vdf1.sort_index(inplace=True)
-    vdf2.sort_index(inplace=True)
     return diff_table
 
 
@@ -681,6 +742,7 @@ def mtr_graph_data(vdf, year,
                    alt_e00200p_text='',
                    mtr_wrt_full_compen=False,
                    income_measure='expanded_income',
+                   pop_quantiles=False,
                    dollar_weighting=False):
     """
     Prepare marginal tax rate data needed by xtr_graph_plot utility function.
@@ -737,6 +799,10 @@ def mtr_graph_data(vdf, year,
         - 'expanded_income': sum of AGI, non-taxable interest income,
           non-taxable social security benefits, and employer share of
           FICA taxes.
+
+    pop_quantiles : boolean
+        specifies whether or not quantiles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     dollar_weighting : boolean
         False implies both income_measure percentiles on x axis and
@@ -805,9 +871,15 @@ def mtr_graph_data(vdf, year,
         raise ValueError(msg.format(mtr_measure))
     # . . check vdf
     assert isinstance(vdf, pd.DataFrame)
+    # . . check pop_quantiles and dollar_weighting
+    if pop_quantiles:
+        assert not dollar_weighting
     # create 'table_row' column given specified income_var and dollar_weighting
     dfx = add_quantile_table_row_variable(
-        vdf, income_var, 100, weight_by_income_measure=dollar_weighting)
+        vdf, income_var, 100,
+        pop_quantiles=pop_quantiles,
+        weight_by_income_measure=dollar_weighting
+    )
     # split dfx into groups specified by 'table_row' column
     gdfx = dfx.groupby('table_row', as_index=False)
     # apply the weighting_function to percentile-grouped mtr values
@@ -844,7 +916,8 @@ def mtr_graph_data(vdf, year,
 
 def atr_graph_data(vdf, year,
                    mars='ALL',
-                   atr_measure='combined'):
+                   atr_measure='combined',
+                   pop_quantiles=False):
     """
     Prepare average tax rate data needed by xtr_graph_plot utility function.
 
@@ -877,6 +950,10 @@ def atr_graph_data(vdf, year,
         - 'ptax': average payroll tax rate
 
         - 'combined': sum of average income and payroll tax rates
+
+    pop_quantiles : boolean
+        specifies whether or not quantiles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     Returns
     -------
@@ -915,7 +992,8 @@ def atr_graph_data(vdf, year,
     nonpos_frac = weights[nonpos].sum() / weights.sum()
     num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
     # create 'table_row' column
-    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100)
+    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100,
+                                          pop_quantiles=pop_quantiles)
     # specify which 'table_row' are included
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
@@ -1053,7 +1131,7 @@ def xtr_graph_plot(data,
     return fig
 
 
-def pch_graph_data(vdf, year):
+def pch_graph_data(vdf, year, pop_quantiles=False):
     """
     Prepare percentage change in after-tax expanded income data needed by
     pch_graph_plot utility function.
@@ -1065,6 +1143,10 @@ def pch_graph_data(vdf, year):
 
     year : integer
         specifies calendar year of the data in vdf
+
+    pop_quantiles : boolean
+        specifies whether or not quantiles contain an equal number
+        of people (True) or an equal number of filing units (False)
 
     Returns
     -------
@@ -1079,7 +1161,8 @@ def pch_graph_data(vdf, year):
     nonpos_frac = weights[nonpos].sum() / weights.sum()
     num_bins_with_nonpos = int(math.ceil(100 * nonpos_frac))
     # create 'table_row' column
-    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100)
+    dfx = add_quantile_table_row_variable(vdf, 'expanded_income', 100,
+                                          pop_quantiles=pop_quantiles)
     # specify which 'table_row' are included
     include = [0] * num_bins_with_nonpos + [1] * (100 - num_bins_with_nonpos)
     included = np.array(include, dtype=bool)
@@ -1442,208 +1525,6 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     bsest['cilo'] = stat[int(round(alpha * num_samples)) - 1]
     bsest['cihi'] = stat[int(round((1 - alpha) * num_samples)) - 1]
     return bsest
-
-
-def dec_graph_data(dist_table1, dist_table2, year,
-                   include_zero_incomes, include_negative_incomes):
-    """
-    Prepare data needed by dec_graph_plot utility function.
-
-    Parameters
-    ----------
-    dist_table1 : a Pandas DataFrame object returned from the
-        Calculator class distribution_tables method for baseline
-
-    dist_table2 : a Pandas DataFrame object returned from the
-        Calculator class distribution_tables method for reform
-
-    year : integer
-        specifies calendar year of the data in the diff_table
-
-    include_zero_incomes : boolean
-        if True, the bottom decile does contain filing units
-        with zero expanded_income;
-        if False, the bottom decile does not contain filing units
-        with zero expanded_income.
-
-    include_negative_incomes : boolean
-        if True, the bottom decile does contain filing units
-        with negative expanded_income;
-        if False, the bottom decile does not contain filing units
-        with negative expanded_income.
-
-    Returns
-    -------
-    dictionary object suitable for passing to dec_graph_plot utility function
-    """
-    # pylint: disable=too-many-locals
-    # check that the two distribution tables are consistent
-    assert len(dist_table1.index) == len(DECILE_ROW_NAMES)
-    assert len(dist_table2.index) == len(DECILE_ROW_NAMES)
-    assert np.allclose(dist_table1['s006'], dist_table2['s006'])
-    # compute bottom bar width and statistic value
-    wght = dist_table1['s006']
-    total_wght = wght[2] + wght[1] + wght[0]
-    included_wght = wght[2]
-    included_val1 = dist_table1['aftertax_income'][2] * wght[2]
-    included_val2 = dist_table2['aftertax_income'][2] * wght[2]
-    if include_zero_incomes:
-        included_wght += wght[1]
-        included_val1 += dist_table1['aftertax_income'][1] * wght[1]
-        included_val2 += dist_table2['aftertax_income'][1] * wght[1]
-    if include_negative_incomes:
-        included_wght += wght[0]
-        included_val1 += dist_table1['aftertax_income'][0] * wght[0]
-        included_val2 += dist_table2['aftertax_income'][0] * wght[0]
-    bottom_bar_width = included_wght / total_wght
-    bottom_bar_value = (included_val2 / included_val1 - 1.) * 100.
-    # construct dictionary containing the bar data required by dec_graph_plot
-    bars = dict()
-    # ... bottom bar
-    info = dict()
-    if include_zero_incomes and include_negative_incomes:
-        info['label'] = '0-10'
-    elif include_zero_incomes and not include_negative_incomes:
-        info['label'] = '0-10zp'
-    if not include_zero_incomes and include_negative_incomes:
-        info['label'] = '0-10np'
-    if not include_zero_incomes and not include_negative_incomes:
-        info['label'] = '0-10p'
-    info['value'] = bottom_bar_value
-    bars[0] = info
-    # ... other bars
-    offset = 2
-    for idx in range(offset + 1, len(DECILE_ROW_NAMES)):
-        info = dict()
-        info['label'] = DECILE_ROW_NAMES[idx]
-        val1 = dist_table1['aftertax_income'][idx] * wght[idx]
-        val2 = dist_table2['aftertax_income'][idx] * wght[idx]
-        info['value'] = (val2 / val1 - 1.) * 100.
-        if info['label'] == 'ALL':
-            info['label'] = '---------'
-            info['value'] = 0
-        bars[idx - offset] = info
-    # construct dictionary containing bar data and auto-generated labels
-    data = dict()
-    data['bottom_bar_width'] = bottom_bar_width
-    data['bars'] = bars
-    xlabel = 'Reform-Induced Percentage Change in After-Tax Expanded Income'
-    data['xlabel'] = xlabel
-    ylabel = 'Expanded Income Percentile Group'
-    data['ylabel'] = ylabel
-    title_str = 'Change in After-Tax Income by Income Percentile Group'
-    data['title'] = '{} for {}'.format(title_str, year)
-    return data
-
-
-def dec_graph_plot(data,
-                   width=850,
-                   height=500,
-                   xlabel='',
-                   ylabel='',
-                   title=''):
-    """
-    Plot stacked decile graph using data returned from dec_graph_data function.
-
-    Parameters
-    ----------
-    data : dictionary object returned from dec_graph_data() utility function
-
-    width : integer
-        width of plot expressed in pixels
-
-    height : integer
-        height of plot expressed in pixels
-
-    xlabel : string
-        x-axis label; if '', then use label generated by dec_graph_data
-
-    ylabel : string
-        y-axis label; if '', then use label generated by dec_graph_data
-
-    title : string
-        graph title; if '', then use title generated by dec_graph_data
-
-    Returns
-    -------
-    bokeh.plotting figure object containing a raster graphics plot
-
-    Notes
-    -----
-    USAGE EXAMPLE::
-
-      gdata = dec_graph_data(...)
-      gplot = dec_graph_plot(gdata)
-
-    THEN when working interactively in a Python notebook::
-
-      bp.show(gplot)
-
-    OR when executing script using Python command-line interpreter::
-
-      bio.output_file('graph-name.html', title='Change in After-Tax Income')
-      bio.show(gplot)  [OR bio.save(gplot) WILL JUST WRITE FILE TO DISK]
-
-    WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE
-
-    To convert the visualized graph into a PNG-formatted file, click on
-    the "Save" icon on the Toolbar (located in the top-right corner of
-    the visualized graph) and a PNG-formatted file will written to your
-    Download directory.
-
-    The ONLY output option the bokeh.plotting figure has is HTML format,
-    which (as described above) can be converted into a PNG-formatted
-    raster graphics file.  There is no option to make the bokeh.plotting
-    figure generate a vector graphics file such as an EPS file.
-    """
-    # pylint: disable=too-many-arguments,too-many-locals
-    if title == '':
-        title = data['title']
-    bar_keys = sorted(data['bars'].keys())
-    bar_labels = [data['bars'][key]['label'] for key in bar_keys]
-    fig = bp.figure(plot_width=width, plot_height=height, title=title,
-                    y_range=bar_labels)
-    fig.title.text_font_size = '12pt'
-    fig.outline_line_color = None
-    fig.axis.axis_line_color = None
-    fig.axis.minor_tick_line_color = None
-    fig.axis.axis_label_text_font_size = '12pt'
-    fig.axis.axis_label_text_font_style = 'normal'
-    fig.axis.major_label_text_font_size = '12pt'
-    if xlabel == '':
-        xlabel = data['xlabel']
-    fig.xaxis.axis_label = xlabel
-    fig.xaxis[0].formatter = PrintfTickFormatter(format='%+.1f%%')
-    if ylabel == '':
-        ylabel = data['ylabel']
-    fig.yaxis.axis_label = ylabel
-    fig.ygrid.grid_line_color = None
-    # plot thick x-axis grid line at zero
-    fig.line(x=[0, 0], y=[0, 14], line_width=1, line_color='black')
-    # plot bars
-    barheight = 0.8
-    bcolor = 'blue'
-    yidx = 0
-    for idx in bar_keys:
-        bval = data['bars'][idx]['value']
-        blabel = data['bars'][idx]['label']
-        bheight = barheight
-        if blabel == '0-10':
-            bheight *= data['bottom_bar_width']
-        elif blabel == '90-95':
-            bheight *= 0.5
-            bcolor = 'red'
-        elif blabel == '95-99':
-            bheight *= 0.4
-        elif blabel == 'Top 1%':
-            bheight *= 0.1
-        fig.rect(x=(bval / 2.0),   # x-coordinate of center of the rectangle
-                 y=(yidx + 0.5),   # y-coordinate of center of the rectangle
-                 width=abs(bval),  # width of the rectangle
-                 height=bheight,   # height of the rectangle
-                 color=bcolor)
-        yidx += 1
-    return fig
 
 
 def json_to_dict(json_text):
