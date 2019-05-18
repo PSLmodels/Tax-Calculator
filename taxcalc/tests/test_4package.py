@@ -24,7 +24,7 @@ def test_for_package_existence():
     if re.search('taxcalc', envless_out) is not None:
         assert 'taxcalc package' == 'installed'
 
-@pytest.mark.one
+
 def test_for_consistency(tests_path):
     """
     Ensure that there is consistency between environment.yml dependencies
