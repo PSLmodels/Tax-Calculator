@@ -20,14 +20,13 @@ from taxcalc.utils import (DIST_VARIABLES,
                            DIFF_VARIABLES,
                            DIFF_TABLE_COLUMNS, DIFF_TABLE_LABELS,
                            SOI_AGI_BINS,
-                           create_distribution_table, create_difference_table,
-                           weighted_count_lt_zero, weighted_count_gt_zero,
-                           weighted_count, weighted_sum, weighted_mean,
+                           create_difference_table,
+                           weighted_sum, weighted_mean,
                            wage_weighted, agi_weighted,
                            expanded_income_weighted,
                            add_income_table_row_variable,
                            add_quantile_table_row_variable,
-                           mtr_graph_data, atr_graph_data, dec_graph_data,
+                           mtr_graph_data, atr_graph_data,
                            xtr_graph_plot, write_graph_file,
                            read_egg_csv, read_egg_json, delete_file,
                            bootstrap_se_ci,
@@ -59,10 +58,12 @@ DATA_FLOAT = [[1.0, 2, 'a'],
 def test_validity_of_name_lists():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     Records.read_var_info()
-    assert set(DIST_VARIABLES).issubset(Records.CALCULATED_VARS | {'s006'})
-    extra_vars_set = set(['num_returns_StandardDed',
-                          'num_returns_ItemDed',
-                          'num_returns_AMT'])
+    assert set(DIST_VARIABLES).issubset(Records.CALCULATED_VARS |
+                                        {'s006', 'XTOT'})
+    extra_vars_set = set(['count',
+                          'count_StandardDed',
+                          'count_ItemDed',
+                          'count_AMT'])
     assert (set(DIST_TABLE_COLUMNS) - set(DIST_VARIABLES)) == extra_vars_set
 
 
@@ -213,7 +214,7 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.1f},'.format(val))
 
-    tabcol = 'num_returns_ItemDed'
+    tabcol = 'count_ItemDed'
     expected = [0.0,
                 0.0,
                 0.4,
@@ -309,7 +310,7 @@ def test_create_tables(cps_subsample):
         for val in dist[tabcol].values:
             print('{:.1f},'.format(val))
 
-    tabcol = 'num_returns_ItemDed'
+    tabcol = 'count_ItemDed'
     expected = [0.0,
                 0.0,
                 0.1,
@@ -466,45 +467,6 @@ def test_diff_count_precision():
     assert not dump
 
 
-def test_weighted_count_lt_zero():
-    df1 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
-    grped = df1.groupby('label')
-    diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
-    exp = pd.Series(data=[4, 0], index=['a', 'b'])
-    exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
-    df2 = pd.DataFrame(data=DATA_FLOAT, columns=['tax_diff', 's006', 'label'])
-    grped = df2.groupby('label')
-    diffs = grped.apply(weighted_count_lt_zero, 'tax_diff')
-    exp = pd.Series(data=[4, 0], index=['a', 'b'])
-    exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
-
-
-def test_weighted_count_gt_zero():
-    df1 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
-    grped = df1.groupby('label')
-    diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
-    exp = pd.Series(data=[8, 10], index=['a', 'b'])
-    exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
-    df2 = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
-    grped = df2.groupby('label')
-    diffs = grped.apply(weighted_count_gt_zero, 'tax_diff')
-    exp = pd.Series(data=[8, 10], index=['a', 'b'])
-    exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
-
-
-def test_weighted_count():
-    dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
-    grouped = dfx.groupby('label')
-    diffs = grouped.apply(weighted_count)
-    exp = pd.Series(data=[12, 10], index=['a', 'b'])
-    exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
-
-
 def test_weighted_mean():
     dfx = pd.DataFrame(data=DATA, columns=['tax_diff', 's006', 'label'])
     grouped = dfx.groupby('label')
@@ -578,11 +540,26 @@ def test_dist_table_sum_row(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=rec)
     calc.calc_all()
-    tb1 = create_distribution_table(calc.distribution_table_dataframe(),
-                                    'standard_income_bins', 'expanded_income')
-    tb2 = create_distribution_table(calc.distribution_table_dataframe(),
-                                    'soi_agi_bins', 'expanded_income')
-    assert np.allclose(tb1[-1:], tb2[-1:])
+    # create three distribution tables and compare the ALL row contents
+    tb1, _ = calc.distribution_tables(None, 'standard_income_bins')
+    tb2, _ = calc.distribution_tables(None, 'soi_agi_bins')
+    tb3, _ = calc.distribution_tables(None, 'weighted_deciles')
+    tb4, _ = calc.distribution_tables(None, 'weighted_deciles',
+                                      pop_quantiles=True)
+    assert np.allclose(tb1.loc['ALL'], tb2.loc['ALL'])
+    assert np.allclose(tb1.loc['ALL'], tb3.loc['ALL'])
+    # make sure population count is larger than filing-unit count
+    assert tb4.at['ALL', 'count'] > tb1.at['ALL', 'count']
+    # make sure population table has same ALL row values as filing-unit table
+    for col in ['count', 'count_StandardDed', 'count_ItemDed', 'count_AMT']:
+        tb4.at['ALL', col] = tb1.at['ALL', col]
+    assert np.allclose(tb1.loc['ALL'], tb4.loc['ALL'])
+    # make sure population table has same ALL tax liabilities as diagnostic tbl
+    dgt = calc.diagnostic_table(1)
+    assert np.allclose([tb4.at['ALL', 'iitax'],
+                        tb4.at['ALL', 'payrolltax']],
+                       [dgt.at['Ind Income Tax ($b)', calc.current_year],
+                        dgt.at['Payroll Taxes ($b)', calc.current_year]])
 
 
 def test_diff_table_sum_row(cps_subsample):
@@ -596,19 +573,19 @@ def test_diff_table_sum_row(cps_subsample):
     pol.implement_reform(reform)
     calc2 = Calculator(policy=pol, records=rec)
     calc2.calc_all()
-    # create two difference tables and compare their content
-    tdiff1 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
-                                     calc2.dataframe(DIFF_VARIABLES),
-                                     'standard_income_bins', 'iitax')
-    tdiff2 = create_difference_table(calc1.dataframe(DIFF_VARIABLES),
-                                     calc2.dataframe(DIFF_VARIABLES),
-                                     'soi_agi_bins', 'iitax')
-    non_digit_cols = ['perc_inc', 'perc_cut']
-    digit_cols = [c for c in list(tdiff1) if c not in non_digit_cols]
-    assert np.allclose(tdiff1[digit_cols][-1:],
-                       tdiff2[digit_cols][-1:])
-    np.allclose(tdiff1[non_digit_cols][-1:],
-                tdiff2[non_digit_cols][-1:])
+    # create three difference tables and compare their content
+    dv1 = calc1.dataframe(DIFF_VARIABLES)
+    dv2 = calc2.dataframe(DIFF_VARIABLES)
+    dt1 = create_difference_table(dv1, dv2, 'standard_income_bins', 'iitax')
+    dt2 = create_difference_table(dv1, dv2, 'soi_agi_bins', 'iitax')
+    dt3 = create_difference_table(dv1, dv2, 'weighted_deciles', 'iitax',
+                                  pop_quantiles=False)
+    dt4 = create_difference_table(dv1, dv2, 'weighted_deciles', 'iitax',
+                                  pop_quantiles=True)
+    assert np.allclose(dt1.loc['ALL'], dt2.loc['ALL'])
+    assert np.allclose(dt1.loc['ALL'], dt3.loc['ALL'])
+    # make sure population count is larger than filing-unit count
+    assert dt4.at['ALL', 'count'] > dt1.at['ALL', 'count']
 
 
 def test_mtr_graph_data(cps_subsample):
@@ -807,36 +784,3 @@ def test_table_columns_labels():
     # check that length of two lists are the same
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
     assert len(DIFF_TABLE_COLUMNS) == len(DIFF_TABLE_LABELS)
-
-
-def test_dec_graph_plots(cps_subsample):
-    pol = Policy()
-    rec = Records.cps_constructor(data=cps_subsample)
-    calc1 = Calculator(policy=pol, records=rec)
-    year = 2020
-    calc1.advance_to_year(year)
-    reform = {
-        'SS_Earnings_c': {year: 9e99},  # OASDI FICA tax on all earnings
-        'FICA_ss_trt': {year: 0.107484}  # lower rate to keep revenue unchanged
-    }
-    pol.implement_reform(reform)
-    calc2 = Calculator(policy=pol, records=rec)
-    calc2.advance_to_year(year)
-    assert calc1.current_year == calc2.current_year
-    calc1.calc_all()
-    calc2.calc_all()
-    fig = calc1.decile_graph(calc2)
-    assert fig
-    dt1, dt2 = calc1.distribution_tables(calc2, 'weighted_deciles')
-    dta = dec_graph_data(dt1, dt2, year,
-                         include_zero_incomes=True,
-                         include_negative_incomes=False)
-    assert isinstance(dta, dict)
-    dta = dec_graph_data(dt1, dt2, year,
-                         include_zero_incomes=False,
-                         include_negative_incomes=True)
-    assert isinstance(dta, dict)
-    dta = dec_graph_data(dt1, dt2, year,
-                         include_zero_incomes=False,
-                         include_negative_incomes=False)
-    assert isinstance(dta, dict)

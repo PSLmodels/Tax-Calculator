@@ -672,11 +672,13 @@ def test_mtr_graph(cps_subsample):
     fig = calc.mtr_graph(calc,
                          mars=2,
                          income_measure='wages',
-                         mtr_measure='ptax')
+                         mtr_measure='ptax',
+                         pop_quantiles=False)
     assert fig
     fig = calc.mtr_graph(calc,
                          income_measure='agi',
-                         mtr_measure='itax')
+                         mtr_measure='itax',
+                         pop_quantiles=True)
     assert fig
 
 
