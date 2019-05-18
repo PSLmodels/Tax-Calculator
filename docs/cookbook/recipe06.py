@@ -76,10 +76,6 @@ class Calculator(tc.Calculator):
             # set pseudo COLR ceiling amount to zero
             zeros = [0.0, 0.0, 0.0, 0.0, 0.0]
             setattr(self.__policy, 'COLR_c', np.array(zeros, np.float64))
-        for name in pvalue:
-            value = getattr(self.__policy, name)
-            for idx in range(0, len(value)):
-                print('> {} {} {:.2f}'.format(this_year, name, value[idx]))
 
     def calc_all(self, zero_out_calc_vars=False):
         """
