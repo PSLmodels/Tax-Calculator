@@ -1,34 +1,30 @@
+"""
+Recipe that illustrates how to customize the taxcalc Calculator class so that
+it can analyze a non-parametric reform (that is, a reform that cannot be
+represented using existing taxcalc Policy parameters.
+
+The technique for doing this customization is standard in object-oriented
+programming.  A new, customized class is derived from another class.  The
+derived class inherits all the data and methods of the parent class, but
+can be customized by adding new data and methods or by overriding inherited
+methods.
+
+The reform used to illustrate this programming technique is somewhat like
+the Cost-of-Living Refund, a refundable credit that was being discussed in
+tax policy circles during 2019 as a replacement for the EITC.  But the
+reform analyzed here is not exactly like the Cost-of-Living Refund, so we
+call it a pseudo cost-of-living refund to emphasize that it is not meant
+to be an accurate representation of the Cost-of-Living Refund proposal.
+"""
 import numpy as np
+import pandas as pd
 import taxcalc as tc
-
-
-# begin adding/customizing tc.Calculator class methods and calcfunctions
-
-
-@tc.iterate_jit(nopython=True)
-def pseudo_COLR(e00200, MARS, c00100,
-                COLR_rt, COLR_c, COLR_ps, COLR_prt,
-                COLR_amount, iitax, combined):
-    """
-    Calculates pseudo Cost-of-Living Refund amount.
-    Note this is simply meant to illustrate a Python programming technique;
-    this function does NOT calculate the exact Cost-of-Living Refund amount.
-    See setting of COLR parameters below in specify_pseudo_COLR_policy method.
-    """
-    # calculate pseudo refund amount
-    COLR_amount = 1000.
-    # reduce income & combined tax liability because it is a refundable credit
-    iitax -= COLR_amount
-    combined -= COLR_amount
-    return (COLR_amount, iitax, combined)
-
-# end new calcfunctions used by customized Calculator class
 
 
 class Calculator(tc.Calculator):
     """
-    Customized tc.Calculator class that inherits all tc.Calculator methods
-    and calcfunctions, adding/overriding some to get desired customization.
+    Customized tc.Calculator class that inherits all tc.Calculator methods,
+    adding or overriding some to get the desired customization.
     """
     def __init__(self, policy=None, records=None, verbose=False,
                  sync_years=True, consumption=None,
@@ -38,44 +34,69 @@ class Calculator(tc.Calculator):
         super().__init__(policy=policy, records=records,
                          verbose=verbose, sync_years=sync_years,
                          consumption=consumption)
-        # remember whether pseudo_COLR is active or not
+        # remember whether pseudo_COLR policy is active or not
         self.colr_active = colr_active
 
     def specify_pseudo_COLR_policy(self):
         """
         Specifies policy parameters for the COLR policy in the current_year.
-        See use of these parameters above in the pseudo_COLR calcfunction.
+        See use of these parameters below in the pseudo_COLR_amount method.
         """
         # reform implementation year
         reform_year = 2020
         # specify dictionary of parameter names and values for reform_year
-        pvalue = {
+        self.colr_param = {
             # credit phase-in rate on earnings
-            'COLR_rt': [1.0],
+            'COLR_rt': 1.0,
             # ceiling on refundable credit varies by filing-unit type, MARS
-            'COLR_c': [4000.0, 8000.0, 4000.0, 4000.0, 4000.0],
+            'COLR_c': np.array([4000.0, 8000.0, 4000.0, 4000.0, 4000.0],
+                               dtype=np.float64),
             # credit phase-out start AGI level varies by filing-unit type, MARS
-            'COLR_ps': [30000.0, 50000.0, 30000.0, 30000.0, 30000.0],
+            'COLR_ps': np.array([30000.0, 50000.0, 30000.0, 30000.0, 30000.0],
+                                dtype=np.float64),
             # credit phase-out rate per dollar of AGI above COLR_ps level
-            'COLR_prt': [0.2]
+            'COLR_prt': 0.2
         }
-        for name in pvalue:
-            setattr(self.__policy, name, np.array(pvalue[name], np.float64))
-        # set parameter values for self.current_year
+        # set pseudo COLR parameter values for current year
         this_year = self.current_year
         if self.colr_active and this_year >= reform_year:
             # set inflation-indexed values of COLR_c and COLR_ps for this_year
             irates = self.__policy.inflation_rates()
             syr = tc.Policy.JSON_START_YEAR
             for name in ['COLR_c', 'COLR_ps']:
-                value = getattr(self.__policy, name)
+                value = self.colr_param[name]
                 for year in range(reform_year, this_year):
                     value *= (1.0 + irates[year - syr])
-                setattr(self.__policy, name, value)
-        else:
+                self.colr_param[name] = value
+        else:  # if policy not active or year is before the reform
             # set pseudo COLR ceiling amount to zero
-            zeros = [0.0, 0.0, 0.0, 0.0, 0.0]
-            setattr(self.__policy, 'COLR_c', np.array(zeros, np.float64))
+            self.colr_param['COLR_c'] = np.array([0.0, 0.0, 0.0, 0.0, 0.0],
+                                                  dtype=np.float64)
+        if 1 == 2:  # TODO: remove this code block
+            for name in self.colr_param:
+                print('> {} {} {}'.format(
+                    this_year, name, self.colr_param[name]
+                ))
+
+    def pseudo_COLR_amount(self):
+        """
+        Calculates pseudo Cost-of-Living Refund amount.
+        Note this is simply meant to illustrate a Python programming technique;
+        this function does NOT calculate an exact Cost-of-Living Refund amount.
+        See setting of parameters above in specify_pseudo_COLR_policy method.
+        """
+        """
+        e00200, MARS, c00100,
+        COLR_rt, COLR_c, COLR_ps, COLR_prt,
+        COLR_amount, iitax, combined):
+        """
+        # calculate pseudo COLR amount
+        recs = self.__records
+        colr_amt = np.ones(recs.array_length, dtype=np.float64) * 1000.0
+        setattr(recs, 'COLR_amount', colr_amt)
+        # reduce income and combined taxes because COLR is a refundable credit
+        recs.iitax -= colr_amt
+        recs.combined -= colr_amt
 
     def calc_all(self, zero_out_calc_vars=False):
         """
@@ -87,13 +108,10 @@ class Calculator(tc.Calculator):
         tc.BenefitLimitation(self)
         tc.FairShareTax(self.__policy, self.__records)
         tc.LumpSumTax(self.__policy, self.__records)
-        # specify new Records variable to hold pseudo COLR amount
-        zeros = np.zeros(self.__records.array_length, dtype=np.float64)
-        setattr(self.__records, 'COLR_amount', zeros)
         # specify new Policy parameters to characterize pseudo COLR policy
         self.specify_pseudo_COLR_policy()  # (see above)
-        # call new function that calculates pseudo COLRefund amount
-        pseudo_COLR(self.__policy, self.__records)  # (see above)
+        # call new method that calculates pseudo COLR amount
+        self.pseudo_COLR_amount()  # (see above)
         tc.ExpandIncome(self.__policy, self.__records)
         tc.AfterTaxIncome(self.__policy, self.__records)
 
