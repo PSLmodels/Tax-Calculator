@@ -4,6 +4,33 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-05-20 Release 2.2.0
+------------------------
+(last merged pull request is
+[#2327](https://github.com/PSLmodels/Tax-Calculator/pull/2327))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Add "Redefining Expanded Income" cookbook recipe
+  [[#2321](https://github.com/PSLmodels/Tax-Calculator/pull/2321)
+  by Martin Holmer responding to request by Max Ghenis]
+- Add option to specify table and graph quantiles that have equal numbers of people (rather than filing units)
+  [[#2322](https://github.com/PSLmodels/Tax-Calculator/pull/2322)
+  by Martin Holmer responding to request by Max Ghenis]
+- Add "Analyzing a Non-Parametric Reform" cookbook recipe
+  [[#2327](https://github.com/PSLmodels/Tax-Calculator/pull/2327)
+  by Martin Holmer]
+
+**Bug Fixes**
+- Correct treatment of tuition and fees deduction in 2018 and subsequent years
+  [[#2319](https://github.com/PSLmodels/Tax-Calculator/pull/2319)
+  by Anderson Frailey with bug reported by Alan Viard and Erin Melly]
+
+
 2019-05-09 Release 2.1.0
 ------------------------
 (last merged pull request is
