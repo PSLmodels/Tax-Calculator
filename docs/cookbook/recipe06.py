@@ -67,12 +67,13 @@ class Calculator(tc.Calculator):
                 value = self.colr_param[name]
                 for year in range(reform_year, this_year):
                     value *= (1.0 + irates[year - syr])
-                self.colr_param[name] = value
-        else:  # if policy not active or year is before the reform
+                self.colr_param[name] = np.round(value, 2)  # to nearest penny
+        else:  # if policy not active or if this year is before the reform year
             # set pseudo COLR ceiling amount to zero
             self.colr_param['COLR_c'] = np.array([0.0, 0.0, 0.0, 0.0, 0.0],
                                                   dtype=np.float64)
-        if 1 == 2:  # TODO: remove this code block
+        tracing = False
+        if tracing:
             for name in self.colr_param:
                 print('> {} {} {}'.format(
                     this_year, name, self.colr_param[name]
@@ -85,18 +86,29 @@ class Calculator(tc.Calculator):
         this function does NOT calculate an exact Cost-of-Living Refund amount.
         See setting of parameters above in specify_pseudo_COLR_policy method.
         """
-        """
-        e00200, MARS, c00100,
-        COLR_rt, COLR_c, COLR_ps, COLR_prt,
-        COLR_amount, iitax, combined):
-        """
-        # calculate pseudo COLR amount
         recs = self.__records
-        colr_amt = np.ones(recs.array_length, dtype=np.float64) * 1000.0
+        # create MARS-specific policy parameter arrays
+        mars_list = [recs.MARS == 1, recs.MARS == 2, recs.MARS == 3,
+                     recs.MARS == 4, recs.MARS == 5]
+        colr_c = np.select(mars_list, self.colr_param['COLR_c'])
+        colr_ps = np.select(mars_list, self.colr_param['COLR_ps'])
+        colr_rt = self.colr_param['COLR_rt']
+        colr_prt = self.colr_param['COLR_prt']
+        # compute colr_amt
+        amt_pre_phaseout = np.minimum(recs.e00200 * colr_rt, colr_c)
+        phaseout = np.maximum((recs.c00100 - colr_ps) * colr_prt, 0.)
+        colr_amt = np.maximum(amt_pre_phaseout - phaseout, 0.)
         setattr(recs, 'COLR_amount', colr_amt)
         # reduce income and combined taxes because COLR is a refundable credit
         recs.iitax -= colr_amt
         recs.combined -= colr_amt
+        # delete local arrays used only in this method
+        del mars_list
+        del colr_c
+        del colr_ps
+        del amt_pre_phaseout
+        del phaseout
+        del colr_amt
 
     def calc_all(self, zero_out_calc_vars=False):
         """
