@@ -1,14 +1,25 @@
+"""
+Recipe that illustrates how to customize the taxcalc Calculator class so that
+it can seamlessly use an alternative definition of expanded income.
+
+The technique for doing this customization is standard in object-oriented
+programming: a child class is derived from a parent class and then customized.
+The derived child class inherits all the data and methods of the parent class,
+but can be customized by adding new data and methods or by overriding inherited
+methods.
+"""
+
 import pandas as pd
 import taxcalc as tc
 
 
-# begin customizing tc.Calculator class methods and calcfunctions
+# override the ExpandIncome calcfunction that computes "market income"
+
 
 @tc.iterate_jit(nopython=True)
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
-                 e02000, e02100, p22250, p23250,
-                 cmbtp, ptax_was, benefit_value_total, ubi,
+                 e02000, e02100, p22250, p23250, cmbtp, ptax_was,
                  expanded_income):
     """
     Calculates expanded_income as "market income" from component income types.
@@ -36,17 +47,16 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         # excluding:
         # ubi +  # total UBI benefit
         # benefit_value_total  # consumption value of all benefits received;
-        # see the BenefitPrograms function in this file for details on
-        # exactly how the benefit_value_total variable is computed
     )
     return expanded_income
 
-# end overrided calcfunctions used by customized Calculator class
+# end overrided calcfunction used by customized Calculator class
+
 
 class Calculator(tc.Calculator):
     """
-    Customized tc.Calculator class that inherits all tc.Calculator methods
-    and calcfunctions, overriding some to get the desired customization.
+    Customized Calculator class that inherits all tc.Calculator data and
+    methods, overriding one method to get the desired customization.
     """
     def __init__(self, policy=None, records=None, verbose=False,
                  sync_years=True, consumption=None):
