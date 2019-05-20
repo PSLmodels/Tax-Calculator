@@ -37,10 +37,10 @@ class Calculator(tc.Calculator):
         # remember whether pseudo_COLR policy is active or not
         self.colr_active = colr_active
 
-    def specify_pseudo_COLR_policy(self):
+    def specify_pseudo_colr_policy(self):
         """
         Specify policy parameters for the COLR policy in the current_year.
-        See use of these parameters below in the pseudo_COLR_amount method.
+        See use of these parameters below in the pseudo_colr_amount method.
         """
         # reform implementation year
         reform_year = 2020
@@ -79,7 +79,7 @@ class Calculator(tc.Calculator):
                     this_year, name, self.colr_param[name]
                 ))
 
-    def pseudo_COLR_amount(self):
+    def pseudo_colr_amount(self):
         """
         Calculate pseudo Cost-of-Living Refund amount.
         Note this is simply meant to illustrate a Python programming technique;
@@ -98,7 +98,7 @@ class Calculator(tc.Calculator):
         amt_pre_phaseout = np.minimum(recs.e00200 * colr_rt, colr_c)
         phaseout = np.maximum((recs.c00100 - colr_ps) * colr_prt, 0.)
         colr_amt = np.maximum(amt_pre_phaseout - phaseout, 0.)
-        setattr(recs, 'COLR_amount', colr_amt)
+        setattr(recs, 'colr_amount', colr_amt)
         # reduce income and combined taxes because COLR is a refundable credit
         recs.iitax -= colr_amt
         recs.combined -= colr_amt
@@ -121,9 +121,9 @@ class Calculator(tc.Calculator):
         tc.FairShareTax(self.__policy, self.__records)
         tc.LumpSumTax(self.__policy, self.__records)
         # specify new method to set pseudo COLR policy parameters
-        self.specify_pseudo_COLR_policy()  # (see above)
+        self.specify_pseudo_colr_policy()  # (see above)
         # call new method to calculate pseudo COLR amount
-        self.pseudo_COLR_amount()  # (see above)
+        self.pseudo_colr_amount()  # (see above)
         tc.ExpandIncome(self.__policy, self.__records)
         tc.AfterTaxIncome(self.__policy, self.__records)
 
@@ -158,8 +158,8 @@ for cyr in range(cyr_first, cyr_last + 1):
     itax2 = calc2.weighted_total('iitax')
     eitc1 = calc1.weighted_total('eitc')
     eitc2 = calc2.weighted_total('eitc')
-    colr1 = calc1.weighted_total('COLR_amount')
-    colr2 = calc2.weighted_total('COLR_amount')
+    colr1 = calc1.weighted_total('colr_amount')
+    colr2 = calc2.weighted_total('colr_amount')
     # print weighted amounts for cyr
     if cyr == cyr_first:
         print('YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2')
