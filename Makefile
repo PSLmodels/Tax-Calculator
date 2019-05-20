@@ -87,7 +87,8 @@ TESTS_JSON_FILES := $(shell ls -l ./taxcalc/tests/*json | awk '{print $$9}')
 PYLINT_FILES := $(shell grep -rl --include="*py" disable=locally-disabled .)
 PYLINT_OPTIONS = --disable=locally-disabled --score=no --jobs=4
 RECIPE_FILES := $(shell ls -l ./docs/cookbook/recipe*py | awk '{print $$9}')
-RECIPE_OPTIONS = --disable=C0103,C0111,W0401,W0614,E0401 --score=no --jobs=4
+PYLINT_IGNORE = C0103,C0111,E0401,E1120,R0913,R0914,W0401,W0614
+RECIPE_OPTIONS = --disable=$(PYLINT_IGNORE) --score=no --jobs=4
 
 .PHONY=cstest
 cstest:
