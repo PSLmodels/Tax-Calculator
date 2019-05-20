@@ -80,7 +80,6 @@ tctest: package
 .PHONY=tctest-jit
 tctest-jit:
 	@./tctest-nojit.sh
-	@$(tctest-cleanup)
 
 TOPLEVEL_JSON_FILES := $(shell ls -l ./*json | awk '{print $$9}')
 TAXCALC_JSON_FILES := $(shell ls -l ./taxcalc/*json | awk '{print $$9}')
