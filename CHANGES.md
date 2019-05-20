@@ -2,6 +2,20 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.2.0 on 2019-05-20
+--------------------------------------
+
+**This is an enhancement and bug-fix release.**
+
+- Add "Analyzing a Non-Parametric Reform" cookbook recipe that shows how analyze reforms that cannot be represented using existing policy parameters
+
+- Add option to specify table and graph quantiles that have equal numbers of people rather than equal numbers of filing units
+
+- Add "Redefining Expanded Income" cookbook recipe
+
+- Correct treatment of tuition and fees deduction in 2018 and subsequent years
+
+
 Changes in release 2.1.0 on 2019-05-09
 --------------------------------------
 

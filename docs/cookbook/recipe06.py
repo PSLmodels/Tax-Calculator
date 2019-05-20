@@ -36,6 +36,8 @@ class Calculator(tc.Calculator):
                          consumption=consumption)
         # remember whether pseudo_COLR policy is active or not
         self.colr_active = colr_active
+        # declare colr_param dictionary that will contain pseudo COLR policy
+        self.colr_param = dict()
 
     def specify_pseudo_colr_policy(self):
         """
@@ -139,9 +141,9 @@ policy2.implement_reform(tc.Policy.read_json_reform('reformC.json'))
 # specify customized Calculator objects for baseline and reform:
 #   baseline calc1 uses policy1 (current-law) and colr_active=False
 #   reform calc2 uses policy2 (no EITC) and colr_active=True
-records = tc.Records.cps_constructor()
-calc1 = Calculator(policy=policy1, records=records, colr_active=False)
-calc2 = Calculator(policy=policy2, records=records, colr_active=True)
+cps_records = tc.Records.cps_constructor()
+calc1 = Calculator(policy=policy1, records=cps_records, colr_active=False)
+calc2 = Calculator(policy=policy2, records=cps_records, colr_active=True)
 
 # calculate tax liabilities for years around the reform year
 cyr_first = 2019
