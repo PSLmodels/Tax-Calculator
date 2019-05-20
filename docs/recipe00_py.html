@@ -53,7 +53,7 @@ dist_table1, dist_table2 = calc1.distribution_tables(calc2, 'weighted_deciles')
 assert isinstance(dist_table1, pd.DataFrame)
 assert isinstance(dist_table2, pd.DataFrame)
 dist_extract = pd.DataFrame()
-dist_extract['funits(#m)'] = dist_table1['s006']
+dist_extract['funits(#m)'] = dist_table1['count']
 dist_extract['itax1($b)'] = dist_table1['iitax']
 dist_extract['itax2($b)'] = dist_table2['iitax']
 dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income']
