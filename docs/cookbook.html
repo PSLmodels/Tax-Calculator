@@ -52,7 +52,8 @@
       <li><a href="#recipe02">2. Estimating Behavioral Response to Reform</a></li>
       <li><a href="#recipe03">3. Creating a Custom Table</a></li>
       <li><a href="#recipe04">4. Estimating Differential Reform Response</a></li>
-      <li><a href="#recipe04">5. Redefining Expanded Income</a></li>
+      <li><a href="#recipe05">5. Redefining Expanded Income</a></li>
+      <li><a href="#recipe06">6. Analyzing a Non-Parametric Reform</a></li>
     </ol>
 </ul>
 
@@ -390,6 +391,65 @@ instructions</a> in the <kbd>recipe05.py</kbd> file.</p>
 
 <p><a href="recipe05_res.html" target="_blank">Expected text
 results</a> from executing <kbd>python recipe05.py > recipe05.out</kbd> at
+the command prompt as illustrated <a href="#execution">above</a>.</p>
+
+
+<h3 id="recipe06">Recipe 6: Analyzing a Non-Parametric Reform</h3>
+
+<p>
+  This is an advanced recipe that should be followed only after
+  mastering the <a href="#recipe00">basic recipe</a>.  This recipe
+  shows how to customize the Calculator class so that it can analyze a
+  tax reform that cannot be characterized using existing policy
+  parameters (in this case a pseudo Cost-of-Living Refund reform).
+  It uses, in a more extensive way, the object-oriented programming
+  inheritance technique introduced in
+  <a href="#recipe05">Redefining Expanded Income</a>, so you might
+  want to read that recipe first.
+</p>
+
+<p>
+  If you look closely at this recipe and its results, you will see
+  that the reform-induced change in 2022 income tax liability is not
+  exactly that same as the 2022 reform-induced change in the sum of
+  the EITC (the parametric element of the reform) and the pseudo-COLR
+  (the non-parametric element of the reform).  Missing in the recipe
+  results is a component of income tax liability that is changing in
+  this reform and when its change is added to the change in EITC plus
+  pseudo-COLR, the total will exactly equal the change in income tax
+  liability.  To find this missing component, we are conducting a
+  contest with a $100 prize.  Anybody who has a US bank account to
+  which the prize money can be transferred is eligible to enter the
+  contest, except for people in two ineligible groups: those who are
+  members of the Policy Simulation Library Leadership Council and
+  those who have ever attended a Tax-Calculator online staff meeting,
+  which occurs every other Thursday at 5:00pm Eastern Time.  Your
+  contest entry, which must be submitted as a GitHub Tax-Calculator
+  repository issue with the title <q>Recipe 6 Contest Entry</q>, must
+  include a Python script (no notebooks please) that produces 2025
+  results rounded to the nearest million dollars for the
+  reform-induced changes in income tax liability, EITC, pseudo-COLR,
+  and the missing component, using the publicly-available CPS data that
+  are in the taxcalc package.  And most importantly, your entry must
+  include an explanation of why the missing component of income tax
+  liability changes when the pseudo-COLR replaces the EITC.  Entries
+  will not be accepted before 5:00pm Eastern Time on May 20, 2019.
+</p>
+
+<p><b>Ingredients</b></p>
+
+<p><a href="reformC_json.html" target="_blank">Policy reform</a> in the
+<kbd>reformC.json</kbd> file eliminates the EITC beginning in 2020.</p>
+
+<p><b>Instructions</b></p>
+
+<p><a href="recipe06_py.html" target="_blank">Step-by-step
+instructions</a> in the <kbd>recipe06.py</kbd> file.</p>
+
+<p><b>Results</b></p>
+
+<p><a href="recipe06_res.html" target="_blank">Expected text
+results</a> from executing <kbd>python recipe06.py > recipe06.out</kbd> at
 the command prompt as illustrated <a href="#execution">above</a>.</p>
 
 
