@@ -84,7 +84,6 @@ def translate(ivar):
     invar['f2441'] = ivar.loc[:, 8]
     invar['n24'] = ivar.loc[:, 9]
     num_eitc_qualified_kids = ivar.loc[:, 10]
-    # pylint: disable=assignment-from-no-return
     invar['EIC'] = np.minimum(num_eitc_qualified_kids, 3)
     num_taxpayers = np.where(mars == 2, 2, 1)
     invar['XTOT'] = num_taxpayers + num_deps

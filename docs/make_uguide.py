@@ -68,20 +68,20 @@ def policy_param_text(pname, param):
     """
     Extract info from param for pname and return as HTML string.
     """
-    # pylint: disable=too-many-statements,too-many-branches,len-as-condition
+    # pylint: disable=too-many-statements,too-many-branches
     sec1 = param['section_1']
-    if len(sec1) > 0:
+    if sec1:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
     else:
         txt = '<p><b>{} &mdash; {}</b>'.format('Other Parameters',
                                                'Not in Tax-Brain webapp')
     txt += '<br><i>tc Name:</i> {}'.format(pname)
-    if len(sec1) > 0:
+    if sec1:
         txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])
     else:
         txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
-    if len(param.get('notes', '')) > 0:
+    if param.get('notes', ''):
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
     txt += '<br><i>Has An Effect When Using:</i>'
     txt += '&nbsp;&nbsp; <i>PUF data:</i> '
@@ -106,7 +106,7 @@ def policy_param_text(pname, param):
         txt += 'False'
     txt += '<br><i>Value Type:</i> {}'.format(param['value_type'])
     txt += '<br><i>Known Values:</i>'
-    if len(param.get('vi_vals', [])) > 0:
+    if param.get('vi_vals', []):
         cols = ', '.join(param['vi_vals'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
     for cyr, val in zip(param['value_yrs'], param['value']):
@@ -224,24 +224,23 @@ def assumption_param_text(pname, ptype, param):
     """
     Extract info from param for pname of ptype and return as HTML string.
     """
-    # pylint: disable=len-as-condition
     sec1 = param.get('section_1', '')
-    if len(sec1) > 0:
+    if sec1:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1,
                                                param.get('section_2', ''))
     else:
         txt = '<p><b>{} &mdash; {}</b>'.format('Assumption Parameter',
                                                ptype.capitalize())
     txt += '<br><i>tc Name:</i> {}'.format(pname)
-    if len(sec1) > 0:
+    if sec1:
         txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])
     else:
         txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
-    if len(param.get('notes', '')) > 0:
+    if param.get('notes', ''):
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
     txt += '<br><i>Default Value:</i>'
-    if len(param.get('vi_vals', [])) > 0:
+    if param.get('vi_vals', []):
         cols = ', '.join(param['vi_vals'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
     for cyr, val in zip(param['value_yrs'], param['value']):

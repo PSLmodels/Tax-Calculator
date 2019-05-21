@@ -147,7 +147,7 @@ def test_read_json_reform_file_and_implement_reform(set_year):
         pol.set_year(2015)
     pol.implement_reform(Policy.read_json_reform(REFORM_JSON))
     syr = pol.start_year
-    # pylint: disable=protected-access,no-member
+    # pylint: disable=protected-access
     amt_brk1 = pol._AMT_brk1
     assert amt_brk1[2015 - syr] == 200000
     assert amt_brk1[2016 - syr] > 200000

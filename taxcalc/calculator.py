@@ -5,7 +5,7 @@ Tax-Calculator federal income and payroll tax Calculator class.
 # pycodestyle calculator.py
 # pylint --disable=locally-disabled calculator.py
 #
-# pylint: disable=invalid-name,no-value-for-parameter,too-many-lines
+# pylint: disable=too-many-lines,no-value-for-parameter
 
 import copy
 import numpy as np
@@ -637,7 +637,7 @@ class Calculator():
         elif variable_str == 'e00650':
             divincome_var = self.array('e00600')
         elif variable_str == 'e26270':
-            schEincome_var = self.array('e02000')
+            scheincome_var = self.array('e02000')
         # calculate level of taxes after a marginal increase in income
         self.array(variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
@@ -649,7 +649,7 @@ class Calculator():
         elif variable_str == 'e00650':
             self.array('e00600', divincome_var + finite_diff)
         elif variable_str == 'e26270':
-            self.array('e02000', schEincome_var + finite_diff)
+            self.array('e02000', scheincome_var + finite_diff)
         if self.__consumption.has_response():
             self.__consumption.response(self.__records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
@@ -670,7 +670,6 @@ class Calculator():
         # specify optional adjustment for employer (er) OASDI+HI payroll taxes
         mtr_on_earnings = variable_str in ('e00200p', 'e00200s')
         if wrt_full_compensation and mtr_on_earnings:
-            # pylint: disable=assignment-from-no-return
             oasdi_taxed = np.logical_or(
                 variable < self.policy_param('SS_Earnings_c'),
                 variable >= self.policy_param('SS_Earnings_thd')
@@ -700,7 +699,7 @@ class Calculator():
         elif variable_str == 'e00650':
             del divincome_var
         elif variable_str == 'e26270':
-            del schEincome_var
+            del scheincome_var
         del payrolltax_chng
         del incometax_chng
         del combined_taxes_chng

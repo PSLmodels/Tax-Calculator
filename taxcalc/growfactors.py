@@ -74,8 +74,7 @@ class GrowFactors():
         self._last_year = max(gfdf.index)
         # set gfdf as attribute of class
         self.gfdf = pd.DataFrame()
-        setattr(self, 'gfdf',
-                gfdf.astype(np.float64))  # pylint: disable=no-member
+        setattr(self, 'gfdf', gfdf.astype(np.float64))
         del gfdf
         # specify factors as being unused (that is, not yet accessed)
         self.used = False
@@ -108,7 +107,6 @@ class GrowFactors():
         if lastyear > self.last_year:
             msg = 'last_year={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(lastyear, self.last_year))
-        # pylint: disable=no-member
         rates = [round((self.gfdf['ACPIU'][cyr] - 1.0), 4)
                  for cyr in range(firstyear, lastyear + 1)]
         return rates
@@ -127,7 +125,6 @@ class GrowFactors():
         if lastyear > self.last_year:
             msg = 'lastyear={} > GrowFactors.last_year={}'
             raise ValueError(msg.format(lastyear, self.last_year))
-        # pylint: disable=no-member
         rates = [round((self.gfdf['AWAGE'][cyr] - 1.0), 4)
                  for cyr in range(firstyear, lastyear + 1)]
         return rates

@@ -112,8 +112,8 @@ def test_params_class(revision, expect, params_json_file):
         assert prms.start_year == 2001
         assert prms.current_year == 2001
         assert prms.end_year == 2010
-        assert prms.inflation_rates() is None
-        assert prms.wage_growth_rates() is None
+        assert prms.inflation_rates() == list()
+        assert prms.wage_growth_rates() == list()
         prms.set_year(2010)
         assert prms.current_year == 2010
         with pytest.raises(ValueError):

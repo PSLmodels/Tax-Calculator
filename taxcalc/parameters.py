@@ -5,7 +5,7 @@ Tax-Calculator abstract base parameters class.
 # pycodestyle parameters.py
 # pylint --disable=locally-disabled parameters.py
 #
-# pylint: disable=attribute-defined-outside-init,no-member
+# pylixx: disable=attribute-defined-outside-init
 
 import os
 import re
@@ -47,6 +47,19 @@ class Parameters():
         for pname in vals:
             self._vals['_' + pname] = vals[pname]
         del vals
+        # declare several scalar variables
+        self._current_year = 0
+        self._start_year = 0
+        self._end_year = 0
+        self._num_years = 0
+        self._last_known_year = 0
+        # declare optional _inflation_rates and _wage_growth_rates
+        self._inflation_rates = list()
+        self._wage_growth_rates = list()
+        self._wage_indexed = None
+        # declare removed and redefined parameters
+        self._removed = None
+        self._redefined = None
         # declare parameter warning/error variables
         self.parameter_warnings = ''
         self.parameter_errors = ''
@@ -96,15 +109,13 @@ class Parameters():
         """
         Override this method in subclass when appropriate.
         """
-        # pylint: disable=no-self-use
-        return None
+        return self._inflation_rates
 
     def wage_growth_rates(self):
         """
         Override this method in subclass when appropriate.
         """
-        # pylint: disable=no-self-use
-        return None
+        return self._wage_growth_rates
 
     @property
     def num_years(self):
@@ -221,7 +232,6 @@ class Parameters():
             valtype = data['value_type']
             values = data['value']
             indexed = data.get('indexed', False)
-            # pylint: disable=assignment-from-none
             if indexed:
                 if name in self._wage_indexed:
                     index_rates = self.wage_growth_rates()
@@ -734,7 +744,6 @@ class Parameters():
         """
         Private method called only by the private Parameter._update method.
         """
-        # pylint: disable=assignment-from-none
         if param_is_wage_indexed:
             rates = self.wage_growth_rates()
         else:
