@@ -27,7 +27,7 @@ def main(file1name, file2name, rounding_error):
     if 'INCTAX' in list(df1):
         # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
         minimalout1 = True
-        df1.rename(index=str,  # pylint: disable=no-member
+        df1.rename(index=str,
                    columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
                    inplace=True)
     else:
@@ -38,7 +38,7 @@ def main(file1name, file2name, rounding_error):
     if 'INCTAX' in list(df2):
         # rename minimal tc OUTPUT variables to --dump OUTPUT variable names
         minimalout2 = True
-        df2.rename(index=str,  # pylint: disable=no-member
+        df2.rename(index=str,
                    columns={'INCTAX': 'iitax', 'PAYTAX': 'payrolltax'},
                    inplace=True)
     else:

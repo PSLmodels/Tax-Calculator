@@ -7,7 +7,6 @@ Test example JSON response assumption files in taxcalc/responses directory
 
 import os
 import glob
-import pytest  # pylint: disable=unused-import
 # pylint: disable=import-error
 from taxcalc import Consumption, GrowDiff
 

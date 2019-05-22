@@ -216,7 +216,7 @@ def add_quantile_table_row_variable(dframe, income_measure, num_quantiles,
         assert bin_edges[1] > 1e-9  # bin_edges[1] is top of bottom decile
         neg_im = np.less_equal(dframe[income_measure], -1e-9)
         neg_wght = dframe['s006'][neg_im].sum()
-        zer_im = np.logical_and(  # pylint: disable=assignment-from-no-return
+        zer_im = np.logical_and(
             np.greater(dframe[income_measure], -1e-9),
             np.less(dframe[income_measure], 1e-9)
         )
@@ -373,7 +373,6 @@ def create_distribution_table(vdf, groupby, income_measure,
         topdec_row = get_sums(dist_table[11:lenindex])[dist_table.columns]
         # move top-decile detail rows to make room for topdec_row and sum_row
         dist_table = dist_table.reindex(index=range(0, lenindex + 2))
-        # pylint: disable=no-member
         dist_table.iloc[15] = dist_table.iloc[13]
         dist_table.iloc[14] = dist_table.iloc[12]
         dist_table.iloc[13] = dist_table.iloc[11]
@@ -548,7 +547,6 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
         topdec_row = get_sums(diff_table[11:lenindex])[diff_table.columns]
         # move top-decile detail rows to make room for topdec_row and sum_row
         diff_table = diff_table.reindex(index=range(0, lenindex + 2))
-        # pylint: disable=no-member
         diff_table.iloc[15] = diff_table.iloc[13]
         diff_table.iloc[14] = diff_table.iloc[12]
         diff_table.iloc[13] = diff_table.iloc[11]
@@ -1004,10 +1002,9 @@ def atr_graph_data(vdf, year,
     avgtax1_series = gdfx.apply(weighted_mean, 'tax1')
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2')
     # compute average tax rates for each included income percentile
-    # pylint: disable=unsupported-assignment-operation
-    atr1_series = np.zeros_like(avginc_series)
+    atr1_series = np.zeros(avginc_series.shape)
     atr1_series[included] = avgtax1_series[included] / avginc_series[included]
-    atr2_series = np.zeros_like(avginc_series)
+    atr2_series = np.zeros(avginc_series.shape)
     atr2_series[included] = avgtax2_series[included] / avginc_series[included]
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
@@ -1172,8 +1169,7 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     avginc_series = gdfx.apply(weighted_mean, 'expanded_income')
     change_series = gdfx.apply(weighted_mean, 'chg_aftinc')
     # compute percentage change statistic each included income percentile
-    # pylint: disable=unsupported-assignment-operation
-    pch_series = np.zeros_like(avginc_series)
+    pch_series = np.zeros(avginc_series.shape)
     pch_series[included] = change_series[included] / avginc_series[included]
     # construct DataFrame containing the pch_series expressed as percent
     line = pd.DataFrame()
@@ -1428,13 +1424,9 @@ def ce_aftertax_expanded_income(df1, df2,
     cedict['inc1'] = weighted_sum(df1, 'expanded_income') * billion
     cedict['inc2'] = weighted_sum(df2, 'expanded_income') * billion
     # calculate sample-weighted probability of each filing unit
-    prob_raw = np.divide(  # pylint: disable=assignment-from-no-return
-        df1['s006'], df1['s006'].sum()
-    )
+    prob_raw = np.divide(df1['s006'], df1['s006'].sum())
     # handle any rounding error in probability calculation
-    prob = np.divide(  # pylint: disable=assignment-from-no-return
-        prob_raw, prob_raw.sum()
-    )
+    prob = np.divide(prob_raw, prob_raw.sum())
     # calculate after-tax income of each filing unit in df1 and df2
     ati1 = df1['expanded_income'] - df1['combined']
     ati2 = df2['expanded_income'] - df2['combined']
@@ -1512,10 +1504,9 @@ def bootstrap_se_ci(data, seed, num_samples, statistic, alpha):
     assert isinstance(alpha, float)
     bsest = dict()
     bsest['seed'] = seed
-    np.random.seed(seed)  # pylint: disable=no-member
+    np.random.seed(seed)
     dlen = len(data)
-    idx = np.random.randint(low=0, high=dlen,   # pylint: disable=no-member
-                            size=(num_samples, dlen))
+    idx = np.random.randint(low=0, high=dlen, size=(num_samples, dlen))
     samples = data[idx]
     stat = statistic(samples, axis=1)
     bsest['B'] = num_samples

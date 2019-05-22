@@ -1785,7 +1785,6 @@ def BenefitLimitation(calc):
         benefit_limit = deduct_exps * calc.policy_param('ID_BenefitCap_rt')
         # Add the difference between the actual benefit and capped benefit
         # to income tax and combined tax liabilities.
-        # pylint: disable=assignment-from-no-return
         excess_benefit = np.maximum(benefit - benefit_limit, 0)
         calc.incarray('iitax', excess_benefit)
         calc.incarray('surtax', excess_benefit)

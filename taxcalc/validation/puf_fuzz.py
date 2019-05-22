@@ -67,8 +67,6 @@ def randomize_data(xdf, taxyear, rnseed):
     rnseed: integer
         specifies random-number seed to use in the randomization.
     """
-    # pylint: disable=no-member
-    # (above pylint comment eliminates several bogus np warnings)
     xdf['FLPDYR'] = taxyear
     num = xdf['FLPDYR'].size
     nmean = 1.0 + ANNUAL_DRIFT * (taxyear - 2009)
@@ -110,8 +108,6 @@ def constrain_data(xdf):
     xdf: Pandas DataFrame
         contains randomized data to be constrained.
     """
-    # pylint: disable=no-member
-    # (above pylint comment eliminates several bogus np warnings)
     if DEBUG:
         return
     # constraint: e00200 = e00200p + e00200s
@@ -121,7 +117,6 @@ def constrain_data(xdf):
     # constraint: e02100 = e02100p + e02100s
     xdf['e02100'] = xdf['e02100p'] + xdf['e02100s']
     # constraint: e00600 >= e00650
-    # pylint: disable=assignment-from-no-return
     xdf['e00600'] = np.maximum(xdf['e00600'], xdf['e00650'])
     # constraint: e01500 >= e01700
     xdf['e01500'] = np.maximum(xdf['e01500'], xdf['e01700'])
@@ -139,7 +134,6 @@ def main(taxyear, rnseed, ssize):
         sys.stderr.write(msg + '\n')
         return 1
     xdf = pd.read_csv(pufcsv_filename)
-    # pylint: disable=no-member
 
     # remove xdf variables not needed in xYY.csv file
     if TRACE:
