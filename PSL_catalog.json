@@ -11,7 +11,7 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://PSLmodels.github.io/Tax-Calculator/\">What is Tax-Calculator?</a>"
+        "data": "<a href=\"https://PSLmodels.github.io/Tax-Calculator/\"></a>"
     },
     "core_maintainers": {
         "start_header": null,
@@ -25,21 +25,21 @@
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"http://PSLmodels.github.io/Tax-Calculator/uguide.html\">User Guide</a>"
+        "data": "<a href=\"http://PSLmodels.github.io/Tax-Calculator/\"></a>"
     },
     "contributor_overview": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/CONTRIBUTING.md#tax-calculator-contributor-guide\">Tax-Calculator Contributor Guide</a>"
+        "data": "<a href=\"http://PSLmodels.github.io/Tax-Calculator/\"></a>"
     },
     "user_changelog_recent": {
         "start_header": null,
         "end_header": null,
         "source": null,
         "type": "html",
-        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history\">Tax-Calculator Change History</a>"
+        "data": "<a href=\"https://github.com/PSLmodels/Tax-Calculator/blob/master/CHANGES.md#tax-calculator-change-history\"></a>"
     },
     "link_to_webapp": {
         "start_header": null,
