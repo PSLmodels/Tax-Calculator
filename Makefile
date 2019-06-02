@@ -92,8 +92,7 @@ RECIPE_OPTIONS = --disable=$(PYLINT_IGNORE) --score=no --jobs=4
 
 .PHONY=cstest
 cstest:
-	-pycodestyle taxcalc
-	-pycodestyle docs/cookbook
+	-pycodestyle .
 	@-pycodestyle --ignore=E501,E121 $(TOPLEVEL_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TAXCALC_JSON_FILES)
 	@-pycodestyle --ignore=E501,E121 $(TESTS_JSON_FILES)
