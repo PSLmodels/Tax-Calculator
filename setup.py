@@ -4,7 +4,7 @@ except ImportError:
     from distutils.core import setup
 
 with open('README.md') as f:
-        longdesc = f.read()
+    longdesc = f.read()
 
 version = '0.0.0'
 
