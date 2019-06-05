@@ -50,20 +50,17 @@ class Data():
     -------
     class instance: Data
     """
-    # suppress pylint warnings about unrecognized Data variables:
-    # pylint: disable=no-member
     # suppress pylint warnings about uppercase variable names:
     # pylint: disable=invalid-name
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
     __metaclass__ = abc.ABCMeta
-        
+
     VAR_INFO_FILE_NAME = None
     VAR_INFO_FILE_PATH = None
 
     def __init__(self, data, start_year, gfactors, weights):
-        # pylixx: disable=too-many-statements,too-many-branches,too-many-locals
         self.__data_year = start_year
         # read specified data
         self._read_data(data)
@@ -146,7 +143,7 @@ class Data():
         returns dictionary and specifies static varname sets listed below.
         """
         assert Data.VAR_INFO_FILE_NAME is not None
-        assert Data.VAR_INFOR_FILE_PATH is not None
+        assert Data.VAR_INFO_FILE_PATH is not None
         file_path = os.path.join(Data.VAR_INFO_FILE_PATH,
                                  Data.VAR_INFO_FILE_NAME)
         if os.path.isfile(file_path):
@@ -155,7 +152,7 @@ class Data():
             vardict = json_to_dict(json_text)
         else:  # find file in conda package
             vardict = read_egg_json(
-                self.DEFAULTS_FILE_NAME)  # pragma: no cover
+                Data.VAR_INFO_FILE_NAME)  # pragma: no cover
         Data.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
                                      if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
@@ -190,7 +187,7 @@ class Data():
         """
         Read data from file or use specified DataFrame as data.
         """
-        # pylint: disable=too-many-statements,too-many-branches
+        # pylint: disable=too-many-branches
         if Data.INTEGER_VARS == set():
             Data.read_var_info()
         # read specified data
