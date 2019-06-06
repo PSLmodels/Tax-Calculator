@@ -77,7 +77,7 @@ class Data():
         else:
             raise ValueError('start_year is not an integer')
         # read data variable information
-        Data.read_var_info()
+        self._read_var_info()
         # read specified data
         self._read_data(data)
         # handle growth factors
@@ -145,43 +145,42 @@ class Data():
     CHANGING_CALCULATED_VARS = set()
     INTEGER_VARS = set()
 
-    @staticmethod
-    def read_var_info():
+    # ----- begin private methods of Data class -----
+
+    def _read_var_info(self):
         """
         Read Data variables metadata from JSON file and
         specifies static variable name sets listed above.
         """
-        assert Data.VARINFO_FILE_NAME is not None
-        assert Data.VARINFO_FILE_PATH is not None
-        file_path = os.path.join(Data.VARINFO_FILE_PATH,
-                                 Data.VARINFO_FILE_NAME)
+        assert self.VARINFO_FILE_NAME is not None
+        assert self.VARINFO_FILE_PATH is not None
+        file_path = os.path.join(self.VARINFO_FILE_PATH,
+                                 self.VARINFO_FILE_NAME)
         if os.path.isfile(file_path):
             with open(file_path) as pfile:
                 json_text = pfile.read()
             vardict = json_to_dict(json_text)
         else:  # find file in conda package
             vardict = read_egg_json(
-                Data.VARINFO_FILE_NAME)  # pragma: no cover
-        Data.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
+                self.VARINFO_FILE_NAME)  # pragma: no cover
+        self.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
                                      if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
                               if v['type'] == 'float')
-        Data.MUST_READ_VARS = set(k for k, v in vardict['read'].items()
+        self.MUST_READ_VARS = set(k for k, v in vardict['read'].items()
                                   if v.get('required'))
-        Data.USABLE_READ_VARS = Data.INTEGER_READ_VARS | FLOAT_READ_VARS
+        self.USABLE_READ_VARS = self.INTEGER_READ_VARS | FLOAT_READ_VARS
         INT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
                                   if v['type'] == 'int')
         FLOAT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
                                     if v['type'] == 'float')
         FIXED_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
                                     if v['type'] == 'unchanging_float')
-        Data.CALCULATED_VARS = (INT_CALCULATED_VARS |
+        self.CALCULATED_VARS = (INT_CALCULATED_VARS |
                                 FLOAT_CALCULATED_VARS |
                                 FIXED_CALCULATED_VARS)
-        Data.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
-        Data.INTEGER_VARS = Data.INTEGER_READ_VARS | INT_CALCULATED_VARS
-
-    # ----- begin private methods of Data class -----
+        self.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
+        self.INTEGER_VARS = self.INTEGER_READ_VARS | INT_CALCULATED_VARS
 
     def _read_data(self, data):
         """
@@ -205,9 +204,9 @@ class Data():
         READ_VARS = set()
         self.IGNORED_VARS = set()
         for varname in list(taxdf.columns.values):
-            if varname in Data.USABLE_READ_VARS:
+            if varname in self.USABLE_READ_VARS:
                 READ_VARS.add(varname)
-                if varname in Data.INTEGER_READ_VARS:
+                if varname in self.INTEGER_READ_VARS:
                     setattr(self, varname,
                             taxdf[varname].astype(np.int32).values)
                 else:
@@ -216,16 +215,16 @@ class Data():
             else:
                 self.IGNORED_VARS.add(varname)
         # check that MUST_READ_VARS are all present in taxdf
-        if not Data.MUST_READ_VARS.issubset(READ_VARS):
+        if not self.MUST_READ_VARS.issubset(READ_VARS):
             msg = 'Records data missing one or more MUST_READ_VARS'
             raise ValueError(msg)
         # delete intermediate taxdf object
         del taxdf
         # create other class variables that are set to all zeros
-        UNREAD_VARS = Data.USABLE_READ_VARS - READ_VARS
-        ZEROED_VARS = Data.CALCULATED_VARS | UNREAD_VARS
+        UNREAD_VARS = self.USABLE_READ_VARS - READ_VARS
+        ZEROED_VARS = self.CALCULATED_VARS | UNREAD_VARS
         for varname in ZEROED_VARS:
-            if varname in Data.INTEGER_VARS:
+            if varname in self.INTEGER_VARS:
                 setattr(self, varname,
                         np.zeros(self.array_length, dtype=np.int32))
             else:
@@ -238,9 +237,9 @@ class Data():
 
     def zero_out_changing_calculated_vars(self):
         """
-        Set to zero all variables in the Data.CHANGING_CALCULATED_VARS set.
+        Set to zero all variables in the self.CHANGING_CALCULATED_VARS set.
         """
-        for varname in Data.CHANGING_CALCULATED_VARS:
+        for varname in self.CHANGING_CALCULATED_VARS:
             var = getattr(self, varname)
             var.fill(0.)
         del var
