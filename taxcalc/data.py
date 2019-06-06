@@ -15,35 +15,37 @@ from taxcalc.utils import read_egg_csv, read_egg_json, json_to_dict
 
 class Data():
     """
-    Inherit from this class for Records, and other collections of
-    cross-sectional data that need to have growth factors and weights
-    to extrapolate the data to years after the start_year.
+    Inherit from this class for Records and other collections of
+    cross-sectional data that need to have growth factors and sample
+    weights to extrapolate the data to years after the start_year.
 
     Parameters
     ----------
     data: string or Pandas DataFrame
         string describes CSV file in which records data reside;
-        DataFrame already contains cross-sectional data.
+        DataFrame already contains cross-sectional data for start_year.
 
     start_year: integer
         specifies calendar year of the input data.
 
-    gfactors: GrowFactors class instance or None
-        containing data growth (or extrapolation) factors.
-        NOTE: the constructor should never call the _extrapolate() method.
+    gfactors: None or GrowFactors class instance
+        None implies empty growth factors DataFrame;
+        instance contains data growth factors.
 
-    weights: string or Pandas DataFrame or None
-        string describes CSV file in which weights reside;
-        DataFrame already contains weights;
-        None creates empty sample-weights DataFrame.
+    weights: None or string or Pandas DataFrame
+        None creates empty sample weights DataFrame.
+        string describes CSV file in which sample weights reside;
+        DataFrame already contains sample weights.
+
 
     Raises
     ------
     ValueError:
         if data is not a string or a DataFrame instance.
         if start_year is not an integer.
-        if gfactors is not a GrowFactors class instance or None.
-        if weights is not a string or a DataFrame instance or None.
+        if gfactors is not None or a GrowFactors class instance
+        if weights is not None or a string or a DataFrame instance.
+        if gfactors and weights are not consistent.
         if files cannot be found.
 
     Returns
@@ -57,38 +59,45 @@ class Data():
 
     __metaclass__ = abc.ABCMeta
 
-    VAR_INFO_FILE_NAME = None
-    VAR_INFO_FILE_PATH = None
+    VARINFO_FILE_NAME = None
+    VARINFO_FILE_PATH = None
 
-    def __init__(self, data, start_year, gfactors, weights):
+    def __init__(self, data, start_year, gfactors=None, weights=None):
+        # check consistency of specified gfactors and weights
+        if gfactors is None and weights is None:
+            self.__aged_data = False
+        elif gfactors is not None and weights is not None:
+            self.__aged_data = True
+        else:
+            raise ValueError('gfactors and weights are inconsistent')
         self.__data_year = start_year
-        # read specified data
-        self._read_data(data)
-        # handle growth factors
-        is_correct_type = isinstance(gfactors, GrowFactors)
-        if gfactors is not None and not is_correct_type:
-            msg = 'gfactors is neither None nor a GrowFactors instance'
-            raise ValueError(msg)
-        self.gfactors = gfactors
-        # read sample weights
-        self.WT = None
-        self._read_weights(weights)
-        # weights must be same size as data
-        if self.WT.size > 0 and self.array_length != len(self.WT.index):
-            # scale-up sub-sample weights by year-specific factor
-            sum_full_weights = self.WT.sum()
-            self.WT = self.WT.iloc[self.__index]
-            sum_sub_weights = self.WT.sum()
-            factor = sum_full_weights / sum_sub_weights
-            self.WT *= factor
-        # specify current_year and FLPDYR values
+        # specify current_year
         if isinstance(start_year, int):
             self.__current_year = start_year
         else:
-            msg = 'start_year is not an integer'
-            raise ValueError(msg)
-        # construct sample weights for current_year
-        if self.WT.size > 0:
+            raise ValueError('start_year is not an integer')
+        # read data variable information
+        Data.read_var_info()
+        # read specified data
+        self._read_data(data)
+        # handle growth factors
+        if self.__aged_data:
+            if not isinstance(gfactors, GrowFactors):
+                raise ValueError('gfactors is not a GrowFactors instance')
+        self.gfactors = gfactors
+        # read sample weights
+        self.WT = None
+        if self.__aged_data:
+            self._read_weights(weights)
+            # ... weights must be same size as data
+            if self.array_length != len(self.WT.index):
+                # scale-up sub-sample weights by year-specific factor
+                sum_full_weights = self.WT.sum()
+                self.WT = self.WT.iloc[self.__index]
+                sum_sub_weights = self.WT.sum()
+                factor = sum_full_weights / sum_sub_weights
+                self.WT *= factor
+            # ... construct sample weights for current_year
             wt_colname = 'WT{}'.format(self.current_year)
             if wt_colname in self.WT.columns:
                 self.s006 = self.WT[wt_colname] * 0.01
@@ -117,42 +126,42 @@ class Data():
     def increment_year(self):
         """
         Add one to current year.
-        Also, does extrapolation & reweighting for new current year.
+        Also, does extrapolation & reweighting for new current year if needed.
         """
         # move to next year
         self.__current_year += 1
-        # apply variable extrapolation grow factors
-        if self.gfactors is not None:
+        if self.__aged_data:
+            # ... apply variable extrapolation growth factors
             self._extrapolate(self.__current_year)
-        # specify current-year sample weights
-        if self.WT.size > 0:
+            # ... specify current-year sample weights
             wt_colname = 'WT{}'.format(self.__current_year)
             self.s006 = self.WT[wt_colname] * 0.01
 
-    def set_current_year(self, new_current_year):
-        """
-        Set current year to specified value.
-        Unlike increment_year method, extrapolation & reweighting are skipped.
-        """
-        self.__current_year = new_current_year
+    # specify various sets of Data variable names
+    INTEGER_READ_VARS = set()
+    MUST_READ_VARS = set()
+    USABLE_READ_VARS = set()
+    CALCULATED_VARS = set()
+    CHANGING_CALCULATED_VARS = set()
+    INTEGER_VARS = set()
 
     @staticmethod
     def read_var_info():
         """
-        Read Data variables metadata from JSON file;
-        returns dictionary and specifies static varname sets listed below.
+        Read Data variables metadata from JSON file and
+        specifies static variable name sets listed above.
         """
-        assert Data.VAR_INFO_FILE_NAME is not None
-        assert Data.VAR_INFO_FILE_PATH is not None
-        file_path = os.path.join(Data.VAR_INFO_FILE_PATH,
-                                 Data.VAR_INFO_FILE_NAME)
+        assert Data.VARINFO_FILE_NAME is not None
+        assert Data.VARINFO_FILE_PATH is not None
+        file_path = os.path.join(Data.VARINFO_FILE_PATH,
+                                 Data.VARINFO_FILE_NAME)
         if os.path.isfile(file_path):
             with open(file_path) as pfile:
                 json_text = pfile.read()
             vardict = json_to_dict(json_text)
         else:  # find file in conda package
             vardict = read_egg_json(
-                Data.VAR_INFO_FILE_NAME)  # pragma: no cover
+                Data.VARINFO_FILE_NAME)  # pragma: no cover
         Data.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
                                      if v['type'] == 'int')
         FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
@@ -171,15 +180,6 @@ class Data():
                                 FIXED_CALCULATED_VARS)
         Data.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
         Data.INTEGER_VARS = Data.INTEGER_READ_VARS | INT_CALCULATED_VARS
-        return vardict
-
-    # specify various sets of variable names
-    INTEGER_READ_VARS = set()
-    MUST_READ_VARS = set()
-    USABLE_READ_VARS = set()
-    CALCULATED_VARS = set()
-    CHANGING_CALCULATED_VARS = set()
-    INTEGER_VARS = set()
 
     # ----- begin private methods of Data class -----
 
@@ -188,8 +188,6 @@ class Data():
         Read data from file or use specified DataFrame as data.
         """
         # pylint: disable=too-many-branches
-        if Data.INTEGER_VARS == set():
-            Data.read_var_info()
         # read specified data
         if isinstance(data, pd.DataFrame):
             taxdf = data
