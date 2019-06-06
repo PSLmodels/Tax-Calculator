@@ -38,9 +38,9 @@ else:
                      'e09700', 'e09800', 'e09900', 'e11200'])
 
 # specify set of variables whose values are not to be randomized
-Records.read_var_info()
+RECORDS = Records(data=None)
 if DEBUG:
-    SKIP_VARS = Records.USABLE_READ_VARS
+    SKIP_VARS = RECORDS.USABLE_READ_VARS
 else:
     SKIP_VARS = set(['RECID', 'MARS', 'DSI', 'MIDR', 'FLPDYR',
                      'age_head', 'age_spouse',
@@ -136,11 +136,12 @@ def main(taxyear, rnseed, ssize):
     xdf = pd.read_csv(pufcsv_filename)
 
     # remove xdf variables not needed in xYY.csv file
+    recs = Records(data=None)
     if TRACE:
         info = 'df.shape before dropping = {}'.format(xdf.shape)
         sys.stdout.write(info + '\n')
     for var in DROP_VARS:
-        if var not in Records.USABLE_READ_VARS:
+        if var not in recs.USABLE_READ_VARS:
             msg = 'ERROR: variable {} already dropped'.format(var)
             sys.stderr.write(msg + '\n')
             return 1

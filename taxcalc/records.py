@@ -8,12 +8,16 @@ Tax-Calculator tax-filing-unit Records class.
 import os
 import numpy as np
 import pandas as pd
+from taxcalc.data import Data
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import read_egg_csv, read_egg_json, json_to_dict
+from taxcalc.utils import read_egg_csv
 
 
-class Records():
+class Records(Data):
     """
+    Records is a subclass of the abstract Data class, and therefore,
+    inherits its methods (none of which are shown here).
+
     Constructor for the tax-filing-unit Records class.
 
     Parameters
@@ -102,8 +106,9 @@ class Records():
     PUF_RATIOS_FILENAME = 'puf_ratios.csv'
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
-    VAR_INFO_FILENAME = 'records_variables.json'
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
+    VARINFO_FILE_NAME = 'records_variables.json'
+    VARINFO_FILE_PATH = CODE_PATH
 
     def __init__(self,
                  data='puf.csv',
@@ -114,9 +119,27 @@ class Records():
                  exact_calculations=False):
         # pylint: disable=too-many-arguments,too-many-locals
         # pylint: disable=too-many-statements,too-many-branches
-        self.__data_year = start_year
-        # read specified data
-        self._read_data(data, exact_calculations)
+        super().__init__(data, start_year, gfactors, weights)
+        if data is None:
+            return  # because there are no data
+        # read adjustment ratios
+        self.ADJ = None
+        self._read_ratios(adjust_ratios)
+        # specify exact value based on exact_calculations
+        self.exact[:] = np.where(exact_calculations is True, 1, 0)
+        # specify FLPDYR value based on start_year
+        self.FLPDYR.fill(start_year)
+        # check for valid MARS values
+        if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
+                                     np.less_equal(self.MARS, 5))):
+            raise ValueError('not all MARS values in [1,5] range')
+        # create variables derived from MARS, which is in MUST_READ_VARS
+        self.num[:] = np.where(self.MARS == 2, 2, 1)
+        self.sep[:] = np.where(self.MARS == 3, 2, 1)
+        # check for valid EIC values
+        if not np.all(np.logical_and(np.greater_equal(self.EIC, 0),
+                                     np.less_equal(self.EIC, 3))):
+            raise ValueError('not all EIC values in [0,3] range')
         # check that three sets of split-earnings variables have valid values
         msg = 'expression "{0} == {0}p + {0}s" is not true for every record'
         tol = 0.020001  # handles "%.2f" rounding errors
@@ -153,42 +176,12 @@ class Records():
             msg = 'expression "e01500 >= e01700" is not true for every record'
             raise ValueError(msg)
         del nontaxable_pensions
-        # handle grow factors
-        is_correct_type = isinstance(gfactors, GrowFactors)
-        if gfactors is not None and not is_correct_type:
-            msg = 'gfactors is neither None nor a GrowFactors instance'
-            raise ValueError(msg)
-        self.gfactors = gfactors
-        # read sample weights
-        self.WT = None
-        self._read_weights(weights)
-        self.ADJ = None
-        self._read_ratios(adjust_ratios)
-        # weights must be same size as tax record data
-        if self.WT.size > 0 and self.array_length != len(self.WT.index):
-            # scale-up sub-sample weights by year-specific factor
-            sum_full_weights = self.WT.sum()
-            self.WT = self.WT.iloc[self.__index]
-            sum_sub_weights = self.WT.sum()
-            factor = sum_full_weights / sum_sub_weights
-            self.WT *= factor
-        # specify current_year and FLPDYR values
-        if isinstance(start_year, int):
-            self.__current_year = start_year
-            self.FLPDYR.fill(start_year)
-        else:
-            msg = 'start_year is not an integer'
-            raise ValueError(msg)
-        # construct sample weights for current_year
-        if self.WT.size > 0:
-            wt_colname = 'WT{}'.format(self.current_year)
-            if wt_colname in self.WT.columns:
-                self.s006 = self.WT[wt_colname] * 0.01
 
     @staticmethod
     def cps_constructor(data=None,
-                        exact_calculations=False,
-                        gfactors=GrowFactors()):
+                        gfactors=GrowFactors(),
+                        weights=CPS_WEIGHTS_FILENAME,
+                        exact_calculations=False):
         """
         Static method returns a Records object instantiated with CPS
         input data.  This works in a analogous way to Records(), which
@@ -202,101 +195,21 @@ class Records():
         if data is None:
             data = os.path.join(Records.CODE_PATH, 'cps.csv.gz')
         return Records(data=data,
-                       exact_calculations=exact_calculations,
+                       start_year=Records.CPSCSV_YEAR,
                        gfactors=gfactors,
-                       weights=Records.CPS_WEIGHTS_FILENAME,
+                       weights=weights,
                        adjust_ratios=Records.CPS_RATIOS_FILENAME,
-                       start_year=Records.CPSCSV_YEAR)
-
-    @property
-    def data_year(self):
-        """
-        Records class original data year property.
-        """
-        return self.__data_year
-
-    @property
-    def current_year(self):
-        """
-        Records class current calendar year property.
-        """
-        return self.__current_year
-
-    @property
-    def array_length(self):
-        """
-        Length of arrays in Records class's DataFrame.
-        """
-        return self.__dim
+                       exact_calculations=exact_calculations)
 
     def increment_year(self):
         """
-        Add one to current year.
-        Also, does extrapolation, reweighting, adjusting for new current year.
+        Add one to current year, and also does
+        extrapolation, reweighting, adjusting for new current year.
         """
-        # move to next year
-        self.__current_year += 1
-        # apply variable extrapolation grow factors
-        if self.gfactors is not None:
-            self._extrapolate(self.__current_year)
+        super().increment_year()
+        self.FLPDYR.fill(self.current_year)
         # apply variable adjustment ratios
-        self._adjust(self.__current_year)
-        # specify current-year sample weights
-        if self.WT.size > 0:
-            wt_colname = 'WT{}'.format(self.__current_year)
-            self.s006 = self.WT[wt_colname] * 0.01
-
-    def set_current_year(self, new_current_year):
-        """
-        Set current year to specified value and updates FLPDYR variable.
-        Unlike increment_year method, extrapolation, reweighting, adjusting
-        are skipped.
-        """
-        self.__current_year = new_current_year
-        self.FLPDYR.fill(new_current_year)
-
-    @staticmethod
-    def read_var_info():
-        """
-        Read Records variables metadata from JSON file;
-        returns dictionary and specifies static varname sets listed below.
-        """
-        var_info_path = os.path.join(Records.CODE_PATH,
-                                     Records.VAR_INFO_FILENAME)
-        if os.path.isfile(var_info_path):
-            with open(var_info_path) as vfile:
-                json_text = vfile.read()
-            vardict = json_to_dict(json_text)
-        else:  # find file in conda package
-            vardict = read_egg_json(
-                Records.VAR_INFO_FILENAME)  # pragma: no cover
-        Records.INTEGER_READ_VARS = set(k for k, v in vardict['read'].items()
-                                        if v['type'] == 'int')
-        FLOAT_READ_VARS = set(k for k, v in vardict['read'].items()
-                              if v['type'] == 'float')
-        Records.MUST_READ_VARS = set(k for k, v in vardict['read'].items()
-                                     if v.get('required'))
-        Records.USABLE_READ_VARS = Records.INTEGER_READ_VARS | FLOAT_READ_VARS
-        INT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
-                                  if v['type'] == 'int')
-        FLOAT_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
-                                    if v['type'] == 'float')
-        FIXED_CALCULATED_VARS = set(k for k, v in vardict['calc'].items()
-                                    if v['type'] == 'unchanging_float')
-        Records.CALCULATED_VARS = (INT_CALCULATED_VARS |
-                                   FLOAT_CALCULATED_VARS |
-                                   FIXED_CALCULATED_VARS)
-        Records.CHANGING_CALCULATED_VARS = FLOAT_CALCULATED_VARS
-        Records.INTEGER_VARS = Records.INTEGER_READ_VARS | INT_CALCULATED_VARS
-        return vardict
-
-    # specify various sets of variable names
-    INTEGER_READ_VARS = set()
-    MUST_READ_VARS = set()
-    USABLE_READ_VARS = set()
-    CALCULATED_VARS = set()
-    CHANGING_CALCULATED_VARS = set()
-    INTEGER_VARS = set()
+        self._adjust(self.current_year)
 
     @staticmethod
     def read_cps_data():
@@ -420,110 +333,6 @@ class Records():
         if self.ADJ.size > 0:
             # Interest income
             self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values
-
-    def _read_data(self, data, exact_calcs):
-        """
-        Read Records data from file or use specified DataFrame as data.
-        Specifies exact array depending on boolean value of exact_calcs.
-        """
-        # pylint: disable=too-many-statements,too-many-branches
-        if Records.INTEGER_VARS == set():
-            Records.read_var_info()
-        # read specified data
-        if isinstance(data, pd.DataFrame):
-            taxdf = data
-        elif isinstance(data, str):
-            if os.path.isfile(data):
-                taxdf = pd.read_csv(data)
-            else:  # find file in conda package
-                taxdf = read_egg_csv(data)  # pragma: no cover
-        else:
-            msg = 'data is neither a string nor a Pandas DataFrame'
-            raise ValueError(msg)
-        self.__dim = len(taxdf.index)
-        self.__index = taxdf.index
-        # create class variables using taxdf column names
-        READ_VARS = set()
-        self.IGNORED_VARS = set()
-        for varname in list(taxdf.columns.values):
-            if varname in Records.USABLE_READ_VARS:
-                READ_VARS.add(varname)
-                if varname in Records.INTEGER_READ_VARS:
-                    setattr(self, varname,
-                            taxdf[varname].astype(np.int32).values)
-                else:
-                    setattr(self, varname,
-                            taxdf[varname].astype(np.float64).values)
-            else:
-                self.IGNORED_VARS.add(varname)
-        # check that MUST_READ_VARS are all present in taxdf
-        if not Records.MUST_READ_VARS.issubset(READ_VARS):
-            msg = 'Records data missing one or more MUST_READ_VARS'
-            raise ValueError(msg)
-        # delete intermediate taxdf object
-        del taxdf
-        # create other class variables that are set to all zeros
-        UNREAD_VARS = Records.USABLE_READ_VARS - READ_VARS
-        ZEROED_VARS = Records.CALCULATED_VARS | UNREAD_VARS
-        for varname in ZEROED_VARS:
-            if varname in Records.INTEGER_VARS:
-                setattr(self, varname,
-                        np.zeros(self.array_length, dtype=np.int32))
-            else:
-                setattr(self, varname,
-                        np.zeros(self.array_length, dtype=np.float64))
-        # check for valid MARS values
-        if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
-                                     np.less_equal(self.MARS, 5))):
-            raise ValueError('not all MARS values in [1,5] range')
-        # create variables derived from MARS, which is in MUST_READ_VARS
-        self.num[:] = np.where(self.MARS == 2, 2, 1)
-        self.sep[:] = np.where(self.MARS == 3, 2, 1)
-        # check for valid EIC values
-        if not np.all(np.logical_and(np.greater_equal(self.EIC, 0),
-                                     np.less_equal(self.EIC, 3))):
-            raise ValueError('not all EIC values in [0,3] range')
-        # specify value of exact array
-        self.exact[:] = np.where(exact_calcs is True, 1, 0)
-        # delete intermediate variables
-        del READ_VARS
-        del UNREAD_VARS
-        del ZEROED_VARS
-
-    def zero_out_changing_calculated_vars(self):
-        """
-        Set to zero all variables in the Records.CHANGING_CALCULATED_VARS set.
-        """
-        for varname in Records.CHANGING_CALCULATED_VARS:
-            var = getattr(self, varname)
-            var.fill(0.)
-        del var
-
-    def _read_weights(self, weights):
-        """
-        Read Records weights from file or
-        use specified DataFrame as data or
-        create empty DataFrame if None.
-        Assumes weights are integers equal to 100 times the real weight.
-        """
-        if weights is None:
-            setattr(self, 'WT', pd.DataFrame({'nothing': []}))
-            return
-        if isinstance(weights, pd.DataFrame):
-            WT = weights
-        elif isinstance(weights, str):
-            weights_path = os.path.join(Records.CODE_PATH, weights)
-            if os.path.isfile(weights_path):
-                WT = pd.read_csv(weights_path)
-            else:  # find file in conda package
-                WT = read_egg_csv(
-                    os.path.basename(weights_path))  # pragma: no cover
-        else:
-            msg = 'weights is not None or a string or a Pandas DataFrame'
-            raise ValueError(msg)
-        assert isinstance(WT, pd.DataFrame)
-        setattr(self, 'WT', WT.astype(np.int32))
-        del WT
 
     def _read_ratios(self, ratios):
         """

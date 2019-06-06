@@ -363,7 +363,8 @@ class TaxCalcIO():
         # split dump_vars_str into a list of dump variables
         dump_vars_list = dump_vars_str.split()
         # check that all dump_vars_list items are valid
-        valid_set = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+        recs = Records(data=None)
+        valid_set = recs.USABLE_READ_VARS | recs.CALCULATED_VARS
         for var in dump_vars_list:
             if var not in valid_set:
                 msg = 'invalid variable name in tcdumpvars file: {}'
@@ -685,15 +686,16 @@ class TaxCalcIO():
         """
         Extract dump output and return it as Pandas DataFrame.
         """
+        recs = Records(data=None)
         if dump_varset is None:
-            varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+            varset = recs.USABLE_READ_VARS | recs.CALCULATED_VARS
         else:
             varset = dump_varset
         # create and return dump output DataFrame
         odf = pd.DataFrame()
         for varname in varset:
             vardata = self.calc.array(varname)
-            if varname in Records.INTEGER_VARS:
+            if varname in recs.INTEGER_VARS:
                 odf[varname] = vardata
             else:
                 odf[varname] = vardata.round(2)  # rounded to nearest cent

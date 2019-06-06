@@ -53,7 +53,8 @@ def create_base_table(test_path):
                           'mcare_ben', 'mcaid_ben', 'vet_ben',
                           'housing_ben', 'tanf_ben', 'wic_ben',
                           'blind_head', 'blind_spouse'])
-    read_vars = list(Records.USABLE_READ_VARS - unused_var_set)
+    recs = Records(data=None)
+    read_vars = list(recs.USABLE_READ_VARS - unused_var_set)
     # get read variable information from JSON file
     rec_vars_path = os.path.join(test_path, '..', 'records_variables.json')
     with open(rec_vars_path) as rvfile:

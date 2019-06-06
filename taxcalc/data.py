@@ -63,44 +63,51 @@ class Data():
     VARINFO_FILE_PATH = None
 
     def __init__(self, data, start_year, gfactors=None, weights=None):
-        # check consistency of specified gfactors and weights
-        if gfactors is None and weights is None:
-            self.__aged_data = False
-        elif gfactors is not None and weights is not None:
-            self.__aged_data = True
-        else:
-            raise ValueError('gfactors and weights are inconsistent')
-        self.__data_year = start_year
-        # specify current_year
-        if isinstance(start_year, int):
-            self.__current_year = start_year
-        else:
-            raise ValueError('start_year is not an integer')
-        # read data variable information
+        # initialize data variable info sets and read variable information
+        self.INTEGER_READ_VARS = set()
+        self.MUST_READ_VARS = set()
+        self.USABLE_READ_VARS = set()
+        self.CALCULATED_VARS = set()
+        self.CHANGING_CALCULATED_VARS = set()
+        self.INTEGER_VARS = set()
         self._read_var_info()
-        # read specified data
-        self._read_data(data)
-        # handle growth factors
-        if self.__aged_data:
-            if not isinstance(gfactors, GrowFactors):
-                raise ValueError('gfactors is not a GrowFactors instance')
-        self.gfactors = gfactors
-        # read sample weights
-        self.WT = None
-        if self.__aged_data:
-            self._read_weights(weights)
-            # ... weights must be same size as data
-            if self.array_length != len(self.WT.index):
-                # scale-up sub-sample weights by year-specific factor
-                sum_full_weights = self.WT.sum()
-                self.WT = self.WT.iloc[self.__index]
-                sum_sub_weights = self.WT.sum()
-                factor = sum_full_weights / sum_sub_weights
-                self.WT *= factor
-            # ... construct sample weights for current_year
-            wt_colname = 'WT{}'.format(self.current_year)
-            if wt_colname in self.WT.columns:
-                self.s006 = self.WT[wt_colname] * 0.01
+        if data is not None:
+            # check consistency of specified gfactors and weights
+            if gfactors is None and weights is None:
+                self.__aged_data = False
+            elif gfactors is not None and weights is not None:
+                self.__aged_data = True
+            else:
+                raise ValueError('gfactors and weights are inconsistent')
+            self.__data_year = start_year
+            # specify current_year
+            if isinstance(start_year, int):
+                self.__current_year = start_year
+            else:
+                raise ValueError('start_year is not an integer')
+            # read specified data
+            self._read_data(data)
+            # handle growth factors
+            if self.__aged_data:
+                if not isinstance(gfactors, GrowFactors):
+                    raise ValueError('gfactors is not a GrowFactors instance')
+            self.gfactors = gfactors
+            # read sample weights
+            self.WT = None
+            if self.__aged_data:
+                self._read_weights(weights)
+                # ... weights must be same size as data
+                if self.array_length != len(self.WT.index):
+                    # scale-up sub-sample weights by year-specific factor
+                    sum_full_weights = self.WT.sum()
+                    self.WT = self.WT.iloc[self.__index]
+                    sum_sub_weights = self.WT.sum()
+                    factor = sum_full_weights / sum_sub_weights
+                    self.WT *= factor
+                # ... construct sample weights for current_year
+                wt_colname = 'WT{}'.format(self.current_year)
+                if wt_colname in self.WT.columns:
+                    self.s006 = self.WT[wt_colname] * 0.01
 
     @property
     def data_year(self):
@@ -136,14 +143,6 @@ class Data():
             # ... specify current-year sample weights
             wt_colname = 'WT{}'.format(self.__current_year)
             self.s006 = self.WT[wt_colname] * 0.01
-
-    # specify various sets of Data variable names
-    INTEGER_READ_VARS = set()
-    MUST_READ_VARS = set()
-    USABLE_READ_VARS = set()
-    CALCULATED_VARS = set()
-    CHANGING_CALCULATED_VARS = set()
-    INTEGER_VARS = set()
 
     # ----- begin private methods of Data class -----
 
@@ -187,6 +186,8 @@ class Data():
         Read data from file or use specified DataFrame as data.
         """
         # pylint: disable=too-many-branches
+        if data is None:
+            return  # because there are no data to read
         # read specified data
         if isinstance(data, pd.DataFrame):
             taxdf = data
