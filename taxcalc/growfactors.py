@@ -33,10 +33,10 @@ class GrowFactors():
     Notes
     -----
     Typical usage is "gfactor = GrowFactors()", which produces an object
-    containing the default grow factors in the GrowFactors.FILENAME file.
+    containing the default growth factors in the GrowFactors.FILE_NAME file.
     """
 
-    FILENAME = 'growfactors.csv'
+    FILE_NAME = 'growfactors.csv'
     FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
     VALID_NAMES = set(['ABOOK', 'ACGNS', 'ACPIM', 'ACPIU',
@@ -48,7 +48,7 @@ class GrowFactors():
                        'ABENSSI', 'ABENSNAP', 'ABENWIC',
                        'ABENHOUSING', 'ABENTANF', 'ABENVET'])
 
-    def __init__(self, growfactors_filename=FILENAME):
+    def __init__(self, growfactors_filename=FILE_NAME):
         # read grow factors from specified growfactors_filename
         gfdf = pd.DataFrame()
         if isinstance(growfactors_filename, str):
