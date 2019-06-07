@@ -180,7 +180,6 @@ class Records(Data):
     @staticmethod
     def cps_constructor(data=None,
                         gfactors=GrowFactors(),
-                        weights=CPS_WEIGHTS_FILENAME,
                         exact_calculations=False):
         """
         Static method returns a Records object instantiated with CPS
@@ -194,6 +193,11 @@ class Records(Data):
         """
         if data is None:
             data = os.path.join(Records.CODE_PATH, 'cps.csv.gz')
+        if gfactors is None:
+            weights = None
+        else:
+            weights = os.path.join(Records.CODE_PATH,
+                                   Records.CPS_WEIGHTS_FILENAME)
         return Records(data=data,
                        start_year=Records.CPSCSV_YEAR,
                        gfactors=gfactors,

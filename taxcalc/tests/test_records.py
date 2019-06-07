@@ -27,8 +27,7 @@ def test_incorrect_Records_instantiation(cps_subsample):
 
 
 def test_correct_Records_instantiation(cps_subsample):
-    rec1 = Records.cps_constructor(data=cps_subsample,
-                                   gfactors=None, weights=None)
+    rec1 = Records.cps_constructor(data=cps_subsample, gfactors=None)
     assert rec1
     assert np.all(rec1.MARS != 0)
     assert rec1.current_year == rec1.data_year
