@@ -31,6 +31,8 @@ class Records(Data):
         then construct a Records object like this:
         myrec = Records(data=<mydata.csv>, start_year=<mydata_year>,
                         gfactors=None, weights=None)
+        NOTE: data=None is allowed but the returned instance contains only
+              the data variable information in the specified VARINFO file.
 
     start_year: integer
         specifies calendar year of the input data;
@@ -40,8 +42,7 @@ class Records(Data):
         custom data's calendar year.
 
     gfactors: GrowFactors class instance or None
-        containing record data grow (or extrapolation) factors.
-        NOTE: the constructor should never call the _extrapolate() method.
+        containing record data growth (or extrapolation) factors.
 
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
@@ -59,7 +60,7 @@ class Records(Data):
 
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
-        any smoothing of "stair-step" provisions in income tax law;
+        any smoothing of stair-step provisions in income tax law;
         default value is false.
 
     Raises
@@ -92,8 +93,8 @@ class Records(Data):
     Use Records.cps_constructor() to get a Records object instantiated
     with CPS input data.
     """
-    # suppress pylint warnings about unrecognized Records variables:
-    # pylint: disable=no-member
+    # suppress pylint warning about constructor having too many arguments:
+    # pylint: disable=too-many-arguments
     # suppress pylint warnings about uppercase variable names:
     # pylint: disable=invalid-name
     # suppress pylint warnings about too many class instance attributes:
@@ -117,8 +118,7 @@ class Records(Data):
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  exact_calculations=False):
-        # pylint: disable=too-many-arguments,too-many-locals
-        # pylint: disable=too-many-statements,too-many-branches
+        # pylint: disable=no-member
         super().__init__(data, start_year, gfactors, weights)
         if data is None:
             return  # because there are no data
@@ -207,7 +207,7 @@ class Records(Data):
         extrapolation, reweighting, adjusting for new current year.
         """
         super().increment_year()
-        self.FLPDYR.fill(self.current_year)
+        self.FLPDYR.fill(self.current_year)  # pylint: disable=no-member
         # apply variable adjustment ratios
         self._adjust(self.current_year)
 
@@ -229,7 +229,7 @@ class Records(Data):
         """
         Apply to variables the grow factor values for specified calendar year.
         """
-        # pylint: disable=too-many-statements
+        # pylint: disable=too-many-statements,no-member
         # put values in local dictionary
         gfv = dict()
         for name in GrowFactors.VALID_NAMES:
@@ -330,6 +330,7 @@ class Records(Data):
         Adjust value of income variables to match SOI distributions
         Note: adjustment must leave variables as numpy.ndarray type
         """
+        # pylint: disable=no-member
         if self.ADJ.size > 0:
             # Interest income
             self.e00300 *= self.ADJ['INT{}'.format(year)][self.agi_bin].values

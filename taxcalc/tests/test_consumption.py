@@ -13,8 +13,8 @@ def test_year_consistency():
 
 
 def test_validity_of_consumption_vars_set():
-    recs = Records(data=None)
-    assert Consumption.RESPONSE_VARS.issubset(recs.USABLE_READ_VARS)
+    records_varinfo = Records(data=None)
+    assert Consumption.RESPONSE_VARS.issubset(records_varinfo.USABLE_READ_VARS)
     useable_vars = set(['housing', 'snap', 'tanf', 'vet', 'wic',
                         'mcare', 'mcaid', 'other'])
     assert Consumption.BENEFIT_VARS.issubset(useable_vars)

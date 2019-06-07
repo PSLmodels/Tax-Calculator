@@ -17,13 +17,15 @@ class Data():
     """
     Inherit from this class for Records and other collections of
     cross-sectional data that need to have growth factors and sample
-    weights to extrapolate the data to years after the start_year.
+    weights to age the data to years after the start_year.
 
     Parameters
     ----------
     data: string or Pandas DataFrame
-        string describes CSV file in which records data reside;
+        string describes CSV file in which data reside;
         DataFrame already contains cross-sectional data for start_year.
+        NOTE: data=None is allowed but the returned instance contains only
+              the data variable information in the specified VARINFO file.
 
     start_year: integer
         specifies calendar year of the input data.
@@ -74,9 +76,9 @@ class Data():
         if data is not None:
             # check consistency of specified gfactors and weights
             if gfactors is None and weights is None:
-                self.__aged_data = False
+                self.__aging_data = False
             elif gfactors is not None and weights is not None:
-                self.__aged_data = True
+                self.__aging_data = True
             else:
                 raise ValueError('gfactors and weights are inconsistent')
             self.__data_year = start_year
@@ -88,13 +90,13 @@ class Data():
             # read specified data
             self._read_data(data)
             # handle growth factors
-            if self.__aged_data:
+            if self.__aging_data:
                 if not isinstance(gfactors, GrowFactors):
                     raise ValueError('gfactors is not a GrowFactors instance')
             self.gfactors = gfactors
             # read sample weights
             self.WT = None
-            if self.__aged_data:
+            if self.__aging_data:
                 self._read_weights(weights)
                 # ... weights must be same size as data
                 if self.array_length != len(self.WT.index):
@@ -137,7 +139,7 @@ class Data():
         """
         # move to next year
         self.__current_year += 1
-        if self.__aged_data:
+        if self.__aging_data:
             # ... apply variable extrapolation growth factors
             self._extrapolate(self.__current_year)
             # ... specify current-year sample weights
@@ -217,7 +219,7 @@ class Data():
                 self.IGNORED_VARS.add(varname)
         # check that MUST_READ_VARS are all present in taxdf
         if not self.MUST_READ_VARS.issubset(READ_VARS):
-            msg = 'Records data missing one or more MUST_READ_VARS'
+            msg = 'data missing one or more MUST_READ_VARS'
             raise ValueError(msg)
         # delete intermediate taxdf object
         del taxdf
@@ -247,10 +249,10 @@ class Data():
 
     def _read_weights(self, weights):
         """
-        Read Records weights from file or
-        use specified DataFrame as data or
+        Read sample weights from file or
+        use specified DataFrame as weights or
         create empty DataFrame if None.
-        Assumes weights are integers equal to 100 times the real weight.
+        NOTE: assumes weights are integers equal to 100 times the real weight.
         """
         if weights is None:
             setattr(self, 'WT', pd.DataFrame({'nothing': []}))

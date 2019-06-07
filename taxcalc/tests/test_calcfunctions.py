@@ -96,12 +96,12 @@ def test_calc_and_used_vars(tests_path):
     all_cvars.update(set(['mtr_paytax', 'mtr_inctax']))
     all_cvars.update(set(['benefit_cost_total', 'benefit_value_total']))
     # .. check that each var in Records.CALCULATED_VARS is in the all_cvars set
-    recs = Records(data=None)
+    records_varinfo = Records(data=None)
     found_error1 = False
-    if not recs.CALCULATED_VARS <= all_cvars:
+    if not records_varinfo.CALCULATED_VARS <= all_cvars:
         msg1 = ('all Records.CALCULATED_VARS not calculated '
                 'in calcfunctions.py\n')
-        for var in recs.CALCULATED_VARS - all_cvars:
+        for var in records_varinfo.CALCULATED_VARS - all_cvars:
             found_error1 = True
             msg1 += 'VAR NOT CALCULATED: {}\n'.format(var)
     # Test (2):

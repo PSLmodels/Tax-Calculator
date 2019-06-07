@@ -113,22 +113,22 @@ def test_read_data(csv):
 
 
 def test_for_duplicate_names():
-    recs = Records(data=None)
+    records_varinfo = Records(data=None)
     varnames = set()
-    for varname in recs.USABLE_READ_VARS:
+    for varname in records_varinfo.USABLE_READ_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname not in recs.CALCULATED_VARS
+        assert varname not in records_varinfo.CALCULATED_VARS
     varnames = set()
-    for varname in recs.CALCULATED_VARS:
+    for varname in records_varinfo.CALCULATED_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname not in recs.USABLE_READ_VARS
+        assert varname not in records_varinfo.USABLE_READ_VARS
     varnames = set()
-    for varname in recs.INTEGER_READ_VARS:
+    for varname in records_varinfo.INTEGER_READ_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname in recs.USABLE_READ_VARS
+        assert varname in records_varinfo.USABLE_READ_VARS
 
 
 def test_records_variables_content(tests_path):
@@ -213,9 +213,9 @@ def test_csv_input_vars_md_contents(tests_path):
         if found_duplicates:
             raise ValueError(msg)
     # check that civ_set is a subset of Records.USABLE_READ_VARS set
-    recs = Records(data=None)
-    if not civ_set.issubset(recs.USABLE_READ_VARS):
-        valid_less_civ = recs.USABLE_READ_VARS - civ_set
+    records_varinfo = Records(data=None)
+    if not civ_set.issubset(records_varinfo.USABLE_READ_VARS):
+        valid_less_civ = records_varinfo.USABLE_READ_VARS - civ_set
         msg = 'VARIABLE(S) IN USABLE_READ_VARS BUT NOT CSV_INPUT_VARS.MD:\n'
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)
