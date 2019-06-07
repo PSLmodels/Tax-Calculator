@@ -686,16 +686,16 @@ class TaxCalcIO():
         """
         Extract dump output and return it as Pandas DataFrame.
         """
-        recs = Records(data=None)
+        recs_vinfo = Records(data=None)  # contains only Records VARINFO
         if dump_varset is None:
-            varset = recs.USABLE_READ_VARS | recs.CALCULATED_VARS
+            varset = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
         else:
             varset = dump_varset
         # create and return dump output DataFrame
         odf = pd.DataFrame()
         for varname in varset:
             vardata = self.calc.array(varname)
-            if varname in recs.INTEGER_VARS:
+            if varname in recs_vinfo.INTEGER_VARS:
                 odf[varname] = vardata
             else:
                 odf[varname] = vardata.round(2)  # rounded to nearest cent
