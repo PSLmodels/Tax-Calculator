@@ -119,6 +119,8 @@ class Records(Data):
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  exact_calculations=False):
         # pylint: disable=no-member
+        if isinstance(weights, str):
+            weights = os.path.join(Records.CODE_PATH, weights)
         super().__init__(data, start_year, gfactors, weights)
         if data is None:
             return  # because there are no data
