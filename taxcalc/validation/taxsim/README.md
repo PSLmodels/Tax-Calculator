@@ -50,6 +50,7 @@ Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
+4. 2019-06-05 : same results
 
 **b17 ASSUMPTION SET**:
 
@@ -67,6 +68,7 @@ Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
+4. 2019-06-05 : same results
 
 **c17 ASSUMPTION SET**:
 
@@ -77,6 +79,7 @@ Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
+4. 2019-06-05 : same results
 
 **a18 ASSUMPTION SET**:
 
@@ -90,6 +93,7 @@ the 100,000 filing units are completely different.)
 Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2019-01-29 : same results (other dependent credit not included in ovar 22)
 2. 2019-03-30 : same results (other dependent credit now included in ovar 22)
+3. 2019-06-05 : same results (other dependent credit now included in ovar 22)
 
 **b18 ASSUMPTION SET**:
 
@@ -107,6 +111,7 @@ used so that the 100,000 filing units are completely different.)
 
 Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2019-03-30 : same results except for 422 itax diffs with largest being $13.00
+2. 2019-06-05 : same results (other dependent credit now included in ovar 22)
 
 **c18 ASSUMPTION SET**:
 
@@ -118,3 +123,4 @@ different.)
 
 Validation results using the then current-version of TAXSIM-27 on these dates:
 1. 2019-03-30 : same results except for 327 itax diffs with largest being $13.00
+2. 2019-06-05 : same results (other dependent credit now included in ovar 22)
