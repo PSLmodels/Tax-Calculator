@@ -93,7 +93,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     with pytest.raises(ValueError):
         Recs(data=cps_subsample, start_year=2000,
              gfactors='', weights='')
-    # test Recs class for correct instantiation with unaged data
+    # test Recs class for correct instantiation with no aging of data
     syr = 2014
     rec = Recs(data=cps_subsample, start_year=syr,
                gfactors=None, weights=None)
@@ -108,7 +108,7 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     sum_e00300_in_syr_plus_one = rec.e00300.sum()
     assert np.allclose([sum_e00300_in_syr], [sum_e00300_in_syr_plus_one])
     del rec
-    # test Recs class for correct instantiation with aged data
+    # test Recs class for correct instantiation with aging of data
     wghts_path = os.path.join(GrowFactors.FILE_PATH, 'cps_weights.csv.gz')
     wghts_df = pd.read_csv(wghts_path)
     rec = Recs(data=cps_subsample, start_year=syr,
@@ -127,3 +127,8 @@ def test_recs_class(recs_varinfo_file, cps_subsample):
     sum_e00300_in_syr_plus_one = rec.e00300.sum()
     # because growfactor for e00300 was less than one in 2015, assert < below:
     assert sum_e00300_in_syr_plus_one < sum_e00300_in_syr
+    # test private methods
+    rec._read_data(data=None)
+    rec._read_weights(weights=None)
+    with pytest.raises(ValueError):
+        rec._read_weights(weights=list())
