@@ -27,12 +27,12 @@ def test_incorrect_Records_instantiation(cps_subsample):
 
 
 def test_correct_Records_instantiation(cps_subsample):
-    rec1 = Records.cps_constructor(data=cps_subsample)
+    rec1 = Records.cps_constructor(data=cps_subsample, gfactors=None)
     assert rec1
     assert np.all(rec1.MARS != 0)
     assert rec1.current_year == rec1.data_year
     sum_e00200_in_cps_year = rec1.e00200.sum()
-    rec1.set_current_year(rec1.data_year + 1)
+    rec1.increment_year()
     sum_e00200_in_cps_year_plus_one = rec1.e00200.sum()
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
     wghts_path = os.path.join(Records.CODE_PATH, Records.CPS_WEIGHTS_FILENAME)
@@ -112,21 +112,22 @@ def test_read_data(csv):
 
 
 def test_for_duplicate_names():
+    records_varinfo = Records(data=None)
     varnames = set()
-    for varname in Records.USABLE_READ_VARS:
+    for varname in records_varinfo.USABLE_READ_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname not in Records.CALCULATED_VARS
+        assert varname not in records_varinfo.CALCULATED_VARS
     varnames = set()
-    for varname in Records.CALCULATED_VARS:
+    for varname in records_varinfo.CALCULATED_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname not in Records.USABLE_READ_VARS
+        assert varname not in records_varinfo.USABLE_READ_VARS
     varnames = set()
-    for varname in Records.INTEGER_READ_VARS:
+    for varname in records_varinfo.INTEGER_READ_VARS:
         assert varname not in varnames
         varnames.add(varname)
-        assert varname in Records.USABLE_READ_VARS
+        assert varname in records_varinfo.USABLE_READ_VARS
 
 
 def test_records_variables_content(tests_path):
@@ -211,8 +212,9 @@ def test_csv_input_vars_md_contents(tests_path):
         if found_duplicates:
             raise ValueError(msg)
     # check that civ_set is a subset of Records.USABLE_READ_VARS set
-    if not civ_set.issubset(Records.USABLE_READ_VARS):
-        valid_less_civ = Records.USABLE_READ_VARS - civ_set
+    records_varinfo = Records(data=None)
+    if not civ_set.issubset(records_varinfo.USABLE_READ_VARS):
+        valid_less_civ = records_varinfo.USABLE_READ_VARS - civ_set
         msg = 'VARIABLE(S) IN USABLE_READ_VARS BUT NOT CSV_INPUT_VARS.MD:\n'
         for var in valid_less_civ:
             msg += 'VARIABLE= {}\n'.format(var)

@@ -57,8 +57,8 @@ DATA_FLOAT = [[1.0, 2, 'a'],
 
 def test_validity_of_name_lists():
     assert len(DIST_TABLE_COLUMNS) == len(DIST_TABLE_LABELS)
-    Records.read_var_info()
-    assert set(DIST_VARIABLES).issubset(Records.CALCULATED_VARS |
+    records_varinfo = Records(data=None)
+    assert set(DIST_VARIABLES).issubset(records_varinfo.CALCULATED_VARS |
                                         {'s006', 'XTOT'})
     extra_vars_set = set(['count',
                           'count_StandardDed',
