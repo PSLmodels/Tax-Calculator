@@ -2,6 +2,16 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.3.0 on 2019-06-xx
+--------------------------------------
+
+**This is an enhancement release.**
+
+- Redo validation tests using newest version of TAXSIM-27
+
+- Simplify Records class internal logic by adding generic Data class
+
+
 Changes in release 2.2.0 on 2019-05-20
 --------------------------------------
 
