@@ -4,8 +4,6 @@ Tax-Calculator abstract base parameters class.
 # CODING-STYLE CHECKS:
 # pycodestyle parameters.py
 # pylint --disable=locally-disabled parameters.py
-#
-# pylixx: disable=attribute-defined-outside-init
 
 import os
 import re

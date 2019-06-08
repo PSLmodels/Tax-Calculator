@@ -32,10 +32,10 @@ class TaxCalcIO():
     ----------
     input_data: string or Pandas DataFrame
         string is name of INPUT file that is CSV formatted containing
-        variable names in the Records.USABLE_READ_VARS set, or
+        variable names in the Records USABLE_READ_VARS set, or
         Pandas DataFrame is INPUT data containing variable names in
-        the Records.USABLE_READ_VARS set.  INPUT vsrisbles not in the
-        Records.USABLE_READ_VARS set can be present but are ignored.
+        the Records USABLE_READ_VARS set.  INPUT vsrisbles not in the
+        Records USABLE_READ_VARS set can be present but are ignored.
 
     tax_year: integer
         calendar year for which taxes will be computed for INPUT.
@@ -328,11 +328,11 @@ class TaxCalcIO():
                 )
         else:  # input_data are raw data that are not being aged
             recs = Records(data=input_data,
+                           start_year=tax_year,
                            gfactors=None,
-                           exact_calculations=exact_calculations,
                            weights=None,
                            adjust_ratios=None,
-                           start_year=tax_year)
+                           exact_calculations=exact_calculations)
             recs_base = copy.deepcopy(recs)
         if tax_year < recs.data_year:
             msg = 'tax_year {} less than records.data_year {}'
@@ -363,7 +363,8 @@ class TaxCalcIO():
         # split dump_vars_str into a list of dump variables
         dump_vars_list = dump_vars_str.split()
         # check that all dump_vars_list items are valid
-        valid_set = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+        recs_vinfo = Records(data=None)  # contains records VARINFO only
+        valid_set = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
         for var in dump_vars_list:
             if var not in valid_set:
                 msg = 'invalid variable name in tcdumpvars file: {}'
@@ -685,15 +686,16 @@ class TaxCalcIO():
         """
         Extract dump output and return it as Pandas DataFrame.
         """
+        recs_vinfo = Records(data=None)  # contains only Records VARINFO
         if dump_varset is None:
-            varset = Records.USABLE_READ_VARS | Records.CALCULATED_VARS
+            varset = recs_vinfo.USABLE_READ_VARS | recs_vinfo.CALCULATED_VARS
         else:
             varset = dump_varset
         # create and return dump output DataFrame
         odf = pd.DataFrame()
         for varname in varset:
             vardata = self.calc.array(varname)
-            if varname in Records.INTEGER_VARS:
+            if varname in recs_vinfo.INTEGER_VARS:
                 odf[varname] = vardata
             else:
                 odf[varname] = vardata.round(2)  # rounded to nearest cent
