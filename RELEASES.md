@@ -4,6 +4,28 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-06-08 Release 2.3.0
+------------------------
+(last merged pull request is
+[#2337](https://github.com/PSLmodels/Tax-Calculator/pull/2337))
+
+**This is an enhancement release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Redo validation tests using newest version of TAXSIM-27
+  [[#2336](https://github.com/PSLmodels/Tax-Calculator/pull/2336)
+  by Martin Holmer with assistance from Dan Feenberg]
+- Simplify Records class internal logic by adding generic Data class
+  [[#2337](https://github.com/PSLmodels/Tax-Calculator/pull/2337)
+  by Martin Holmer based on ideas from Cody Kallen]
+
+**Bug Fixes**
+- None
+
+
 2019-05-20 Release 2.2.0
 ------------------------
 (last merged pull request is

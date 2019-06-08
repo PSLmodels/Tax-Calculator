@@ -150,7 +150,7 @@
 <h4>Complete Story</h4>
 
 <p>
-Tax-Calculator contains seven basic classes, and a collection of
+Tax-Calculator contains eight basic classes, and a collection of
 global utility functions, that together provide the full range of
 Tax-Calculator capabilities.  Here is a description of their role in
 Tax-Calculator and a link to each the detailed documentation and
@@ -162,11 +162,23 @@ source code for each class and all its methods.
 <ul>
 
   <li><p>
-    <b>Records</b> &rarr; Contains attributes of each filing unit.<br />
+    <b>Data</b> &rarr; Contains basic logic for manipulating
+    cross-sectional data that need to have growth factors and sample
+    weights to age the data to years after the data start year.<br />
+    Documentation and source code are in
+    <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/data.py"
+       target="_blank">data.py</a>.
+  </p></li>
+
+  <ul>
+  <li><p>
+    <b>Records</b> &rarr; Derived from <b>Data</b> and contains attributes
+    of each tax filing unit.<br />
     Documentation and source code are in
     <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py"
        target="_blank">records.py</a>.
   </p></li>
+  </ul>
 
   <li><p>
     <b>GrowFactors</b> &rarr; Contains CBO-derived baseline annual
