@@ -143,7 +143,7 @@ source code for each class and all its methods.
   <li><p>
     <b>Data</b> &rarr; Contains basic logic for manipulating
     cross-sectional data that need to have growth factors and sample
-    weights to age the data to years after the start_year.<br />
+    weights to age the data to years after the data start year.<br />
     Documentation and source code are in
     <a href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/data.py"
        target="_blank">data.py</a>.
