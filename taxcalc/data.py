@@ -26,6 +26,7 @@ class Data():
         DataFrame already contains cross-sectional data for start_year.
         NOTE: data=None is allowed but the returned instance contains only
               the data variable information in the specified VARINFO file.
+        NOTE: when using custom data, set this argument to a DataFrame.
 
     start_year: integer
         specifies calendar year of the input data.
@@ -38,7 +39,8 @@ class Data():
         None creates empty sample weights DataFrame.
         string describes CSV file in which sample weights reside;
         DataFrame already contains sample weights.
-
+        NOTE: when using custom weights, set this argument to a DataFrame.
+        NOTE: assumes weights are integers that are 100 times the real weights.
 
     Raises
     ------
@@ -255,7 +257,6 @@ class Data():
         NOTE: assumes weights are integers equal to 100 times the real weight.
         """
         if weights is None:
-            setattr(self, 'WT', pd.DataFrame({'nothing': []}))
             return
         if isinstance(weights, pd.DataFrame):
             WT = weights

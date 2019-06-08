@@ -26,10 +26,12 @@ class Records(Data):
         string describes CSV file in which records data reside;
         DataFrame already contains records data;
         default value is the string 'puf.csv'
+        NOTE: when using custom data, set this argument to a DataFrame.
         NOTE: to use your own data for a specific year with Tax-Calculator,
-        be sure to read the DATAPREP.md file in the top-level directory and
+        be sure to read the documentation on creating your own data file and
         then construct a Records object like this:
-        myrec = Records(data=<mydata.csv>, start_year=<mydata_year>,
+        mydata = pd.read_csv(<mydata.csv>)
+        myrec = Records(data=mydata, start_year=<mydata_year>,
                         gfactors=None, weights=None)
         NOTE: data=None is allowed but the returned instance contains only
               the data variable information in the specified VARINFO file.
@@ -49,14 +51,17 @@ class Records(Data):
         DataFrame already contains weights;
         None creates empty sample-weights DataFrame;
         default value is filename of the PUF weights.
+        NOTE: when using custom weights, set this argument to a DataFrame.
+        NOTE: assumes weights are integers that are 100 times the real weights.
 
     adjust_ratios: string or Pandas DataFrame or None
         string describes CSV file in which adjustment ratios reside;
         DataFrame already contains transposed/no-index adjustment ratios;
         None creates empty adjustment-ratios DataFrame;
         default value is filename of the PUF adjustment ratios.
-        NOTE: if using ratio_df DataFrame, read file as follows:
-        ratio_df = pandas.read_csv('csv_filename', index_col=0).transpose()
+        NOTE: when using custom ratios, set this argument to a DataFrame.
+        NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:
+              my_df = pd.read_csv('<my_ratios.csv>', index_col=0).transpose()
 
     exact_calculations: boolean
         specifies whether or not exact tax calculations are done without
