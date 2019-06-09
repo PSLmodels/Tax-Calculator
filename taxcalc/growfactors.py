@@ -82,7 +82,7 @@ class GrowFactors():
     @property
     def first_year(self):
         """
-        GrowFactors class start_year property.
+        GrowFactors class first_year property.
         """
         return self._first_year
 

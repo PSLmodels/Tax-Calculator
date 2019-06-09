@@ -83,12 +83,11 @@ class Data():
                 self.__aging_data = True
             else:
                 raise ValueError('gfactors and weights are inconsistent')
-            self.__data_year = start_year
-            # specify current_year
-            if isinstance(start_year, int):
-                self.__current_year = start_year
-            else:
+            # check start_year type and remember specified start_year
+            if not isinstance(start_year, int):
                 raise ValueError('start_year is not an integer')
+            self.__data_year = start_year
+            self.__current_year = start_year
             # read specified data
             self._read_data(data)
             # handle growth factors
