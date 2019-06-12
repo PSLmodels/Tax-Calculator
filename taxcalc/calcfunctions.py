@@ -777,11 +777,12 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, c04800, MARS,
+def TaxInc(c00100, standard, c04470, c04600, c04800, qbided, MARS,
            PT_excl_rt, PT_excl_wagelim_rt, PT_excl_wagelim_thd,
            PT_excl_wagelim_prt, e00900, e26270, e00200):
     """
-    Calculates taxable income, c04800.
+    Calculates taxable income, c04800, and
+    qualified business income deduction, qbided.
     """
     pt_excl_pre = max(0., PT_excl_rt * (e00900 + e26270))
     wagelim_pre = e00200 * PT_excl_wagelim_rt
@@ -790,9 +791,9 @@ def TaxInc(c00100, standard, c04470, c04600, c04800, MARS,
     excess = max(taxinc_pre - PT_excl_wagelim_thd[MARS - 1], 0.)
     wagelim_rt = min(excess * PT_excl_wagelim_prt[MARS - 1], 1.)
     limit = wagelim_rt * max(pt_excl_pre - wagelim_pre, 0.)
-    pt_excl = pt_excl_pre - limit
-    c04800 = max(0., taxinc_pre - pt_excl)
-    return c04800
+    qbided = pt_excl_pre - limit
+    c04800 = max(0., taxinc_pre - qbided)
+    return (c04800, qbided)
 
 
 @JIT(nopython=True)
