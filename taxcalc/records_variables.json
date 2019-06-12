@@ -715,7 +715,8 @@
     "standard": {
       "type": "float",
       "desc": "Standard deduction (zero for itemizers)",
-      "form": {"2013-2016": "1040 line 40"}
+      "form": {"2013-2017": "1040 line 40",
+               "2018-20??": "1040 line 8"}
     },
     "surtax": {
       "type": "float",
@@ -730,7 +731,8 @@
     "c00100": {
       "type": "float",
       "desc": "Adjusted Gross Income (AGI)",
-      "form": {"2013-2016": "1040 line 37"}
+      "form": {"2013-2017": "1040 line 37",
+               "2018-20??": "1040 line 7"}
     },
     "c01000": {
       "type": "float",
@@ -755,17 +757,26 @@
     "c04470": {
       "type": "float",
       "desc": "Itemized deductions after phase-out (zero for non-itemizers)",
-      "form": {"2013-2016": "1040 line 40"}
+      "form": {"2013-2017": "1040 line 40",
+               "2018-20??": "1040 line 8"}
     },
     "c04600": {
       "type": "float",
       "desc": "Personal exemptions after phase-out",
-      "form": {"2013-2016": "1040 line 42"}
+      "form": {"2013-2017": "1040 line 42",
+               "2018-20??": ""}
+    },
+    "qbided": {
+      "type": "float",
+      "desc": "Qualified Business Income (QBI) deduction",
+      "form": {"2013-2017": "",
+               "2018-20??": "1040 line 9"}
     },
     "c04800": {
       "type": "float",
       "desc": "Regular taxable income",
-      "form": {"2013-2016": "1040 line 43"}
+      "form": {"2013-2017": "1040 line 43",
+               "2018-20??": "1040 line 10"}
     },
     "c05200": {
       "type": "float",
