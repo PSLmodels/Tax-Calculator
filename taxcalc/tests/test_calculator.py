@@ -827,7 +827,7 @@ def test_qbid_calculation():
       navigating-new-pass-through-provisions-technical-explanation/full
     """
     # In constructing the TPC example filing units, assume that the taxpayer
-    # has business income in the form of e26270==e02000 income and no earnings,
+    # has business income in the form of e26270/e02000 income and no earnings,
     # and that the spouse has no business income and only earnings.
     TPC_YEAR = 2018
     TPC_VARS = (
