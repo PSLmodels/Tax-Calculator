@@ -815,3 +815,48 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
         txt = '\n{}={:.3f}  !=  {:.3f}=difference_in_total_itemized_deductions'
         msg = txt.format(cvname, component_amt, difference_in_total_itmded)
         raise ValueError(msg)
+
+
+def test_qbid_calculation():
+    """
+    Test Calculator's QBID calculations using the six example filing units
+    specified in Table 1 of this TPC publication: "Navigating the New
+    Pass-Through Provisions: A Technical Explanation" by William G. Gale
+    and Aaron Krupkin (January 31, 2018), which is available at this URL:
+      https://www.taxpolicycenter.org/publications/
+      navigating-new-pass-through-provisions-technical-explanation/full
+    """
+    # In constructing the TPC example filing units, assume that the taxpayer
+    # has business income in the form of e26270==e02000 income and no earnings,
+    # and that the spouse has no business income and only earnings.
+    TPC_YEAR = 2018
+    TPC_VARS = (
+        'RECID,MARS,e00200s,e00200,e26270,e02000,PT_SSBT_income,'
+        'PT_binc_w2_wages,PT_ubia_property,pre_qbid_taxinc,qbid\n'
+    )
+    TPC_FUNITS = (
+        '1,2, 99000, 99000,75000,75000,1,20000,90000,150000,15000.00\n'
+        '2,2,349000,349000,75000,75000,1,20000,90000,400000, 1612.50\n'
+        '3,2,524000,524000,75000,75000,1,20000,90000,575000,    0.00\n'
+        '4,2, 99000, 99000,75000,75000,0,20000,90000,150000,15000.00\n'
+        '5,2,349000,349000,75000,75000,0,20000,90000,400000,10750.00\n'
+        '6,2,524000,524000,75000,75000,0,20000,90000,575000,10000.00\n'
+    )
+    # generate actual Calculator pre-qbid taxinc and qbid amounts
+    tpc_df = pd.read_csv(StringIO(TPC_VARS + TPC_FUNITS))
+    recs = Records(data=tpc_df, start_year=TPC_YEAR,
+                   gfactors=None, weights=None)
+    calc = Calculator(policy=Policy(), records=recs)
+    assert calc.current_year == TPC_YEAR
+    calc.calc_all()
+    varlist = ['RECID', 'c00100', 'standard', 'c04470', 'qbided']
+    tc_df = calc.dataframe(varlist)
+    # compare actual amounts with expected amounts from TPC publication
+    act_taxinc = tc_df.c00100 - np.maximum(tc_df.standard, tc_df.c04470)
+    exp_taxinc = tpc_df.pre_qbid_taxinc
+    assert np.allclose(act_taxinc, exp_taxinc)
+    print('act_qbid:')
+    print(tc_df.qbided)
+    print('exp_qbid:')
+    print(tpc_df.qbid)
+    # TODO : ACTIVATE : assert np.allclose(tc_df.qbided, tpc_df.qbid)
