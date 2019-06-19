@@ -629,6 +629,24 @@
       "desc": "Imputed WIC benefits",
       "form": {"2014-20??": "imputed using the C-TAM model"},
       "availability": "taxdata_cps"
+    },
+    "PT_SSTB_income": {
+      "type": "int",
+      "desc": "Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business",
+      "form": {"2018-20??": "specified in custom data"},
+      "availability": ""
+    },
+    "PT_binc_w2_wages": {
+      "type": "float",
+      "desc": "Filing unit's share of total W-2 wages paid by the pass-through business",
+      "form": {"2018-20??": "specified in custom data"},
+      "availability": ""
+    },
+    "PT_ubia_property": {
+      "type": "float",
+      "desc": "Filing unit's share of total business property owned by the pass-through business",
+      "form": {"2018-20??": "specified in custom data"},
+      "availability": ""
     }
   },
   "calc": {

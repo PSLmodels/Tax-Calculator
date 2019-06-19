@@ -123,7 +123,7 @@ class Records(Data):
                  weights=PUF_WEIGHTS_FILENAME,
                  adjust_ratios=PUF_RATIOS_FILENAME,
                  exact_calculations=False):
-        # pylint: disable=no-member
+        # pylint: disable=no-member,too-many-branches
         if isinstance(weights, str):
             weights = os.path.join(Records.CODE_PATH, weights)
         super().__init__(data, start_year, gfactors, weights)
@@ -183,6 +183,10 @@ class Records(Data):
             msg = 'expression "e01500 >= e01700" is not true for every record'
             raise ValueError(msg)
         del nontaxable_pensions
+        # check that PT_SSTB_income has valid value
+        if not np.all(np.logical_and(np.greater_equal(self.PT_SSTB_income, 0),
+                                     np.less_equal(self.PT_SSTB_income, 1))):
+            raise ValueError('not all PT_SSTB_income values are 0 or 1')
 
     @staticmethod
     def cps_constructor(data=None,

@@ -52,7 +52,10 @@ def create_base_table(test_path):
                           'ssi_ben', 'snap_ben', 'other_ben',
                           'mcare_ben', 'mcaid_ben', 'vet_ben',
                           'housing_ben', 'tanf_ben', 'wic_ben',
-                          'blind_head', 'blind_spouse'])
+                          'blind_head', 'blind_spouse',
+                          'PT_SSTB_income',
+                          'PT_binc_w2_wages',
+                          'PT_ubia_property'])
     records_varinfo = Records(data=None)
     read_vars = list(records_varinfo.USABLE_READ_VARS - unused_var_set)
     # get read variable information from JSON file

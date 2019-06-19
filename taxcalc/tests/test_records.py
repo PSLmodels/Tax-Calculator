@@ -103,6 +103,10 @@ def test_read_cps_data(cps_fullsample):
     (
         u'RECID,MARS,e01500,e01700\n'
         u'1,    1,        6,     7\n'
+    ),
+    (
+        u'RECID,MARS,PT_SSTB_income\n'
+        u'1,    1,   2\n'
     )
 ])
 def test_read_data(csv):
