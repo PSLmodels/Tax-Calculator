@@ -51,7 +51,16 @@ class Policy(Parameters):
         '_FilerCredit_c': 'is a removed parameter name',
         '_ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
         # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
-        '_cpi_offset': 'was renamed CPI_offset in release 2.0.0'
+        '_cpi_offset': 'was renamed CPI_offset in release 2.0.0',
+        # TODO: following parameters renamed in PR 23?? merged on 2019-06-??
+        '_PT_excl_rt':
+        'was renamed PT_qbid_rt in release 2.4.0',
+        '_PT_excl_wagelim_thd':
+        'was renamed PT_qbid_taxinc_thd in release 2.4.0',
+        '_PT_excl_wagelim_prt':
+        'was renamed PT_qbid_taxinc_gap in release 2.4.0',
+        '_PT_excl_wagelim_rt':
+        'was renamed PT_qbid_w2_wages_rt in release 2.4.0'
     }
     # (2) specify which Policy parameters have been redefined recently
     REDEFINED_PARAMS = {
