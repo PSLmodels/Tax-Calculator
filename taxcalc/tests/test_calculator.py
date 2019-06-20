@@ -816,7 +816,7 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
         msg = txt.format(cvname, component_amt, difference_in_total_itmded)
         raise ValueError(msg)
 
-@pytest.mark.one
+
 def test_qbid_calculation():
     """
     Test Calculator's QBID calculations using the six example filing units
@@ -855,9 +855,4 @@ def test_qbid_calculation():
     act_taxinc = tc_df.c00100 - np.maximum(tc_df.standard, tc_df.c04470)
     exp_taxinc = tpc_df.pre_qbid_taxinc
     assert np.allclose(act_taxinc, exp_taxinc)
-    print('act_qbid:')
-    print(tc_df.qbided)
-    print('exp_qbid:')
-    print(tpc_df.qbid)
-    # TODO : ACTIVATE : assert np.allclose(tc_df.qbided, tpc_df.qbid)
     assert np.allclose(tc_df.qbided, tpc_df.qbid)
