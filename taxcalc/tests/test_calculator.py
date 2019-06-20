@@ -816,7 +816,7 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
         msg = txt.format(cvname, component_amt, difference_in_total_itmded)
         raise ValueError(msg)
 
-
+@pytest.mark.one
 def test_qbid_calculation():
     """
     Test Calculator's QBID calculations using the six example filing units
@@ -831,7 +831,7 @@ def test_qbid_calculation():
     # and that the spouse has no business income and only earnings.
     TPC_YEAR = 2018
     TPC_VARS = (
-        'RECID,MARS,e00200s,e00200,e26270,e02000,PT_SSBT_income,'
+        'RECID,MARS,e00200s,e00200,e26270,e02000,PT_SSTB_income,'
         'PT_binc_w2_wages,PT_ubia_property,pre_qbid_taxinc,qbid\n'
     )
     TPC_FUNITS = (
@@ -860,3 +860,4 @@ def test_qbid_calculation():
     print('exp_qbid:')
     print(tpc_df.qbid)
     # TODO : ACTIVATE : assert np.allclose(tc_df.qbided, tpc_df.qbid)
+    assert np.allclose(tc_df.qbided, tpc_df.qbid)
