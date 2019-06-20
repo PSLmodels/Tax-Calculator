@@ -787,8 +787,9 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
     """
+    # calculate taxable income before qualified business income deduction
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
-    # calculate business income deduction
+    # calculate qualified business income deduction
     qbided = 0.
     qbinc = max(0., e00900 + e26270)
     if qbinc > 0. and PT_qbid_rt > 0.:
