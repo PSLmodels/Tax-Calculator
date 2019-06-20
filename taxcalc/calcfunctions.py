@@ -794,32 +794,34 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
         qbid_before_limits = qbinc * PT_qbid_rt
         pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
         lower_thd = PT_qbid_taxinc_thd[MARS - 1]
-        upper_thd = lower_thd + PT_qbid_taxinc_gap[MARS - 1]
         if pre_qbid_taxinc <= lower_thd:
             qbided = qbid_before_limits
-        elif pre_qbid_taxinc >= upper_thd:
-            if PT_SSTB_income == 1:
+        else:
+            pre_qbid_taxinc_gap = PT_qbid_taxinc_gap[MARS - 1]
+            upper_thd = lower_thd + pre_qbid_taxinc_gap
+            if PT_SSTB_income == 1 and pre_qbid_taxinc >= upper_thd:
                 qbided = 0.
             else:
-                # apply full cap
                 wage_cap = PT_binc_w2_wages * PT_qbid_w2_wages_rt
                 alt_cap = (PT_binc_w2_wages * PT_qbid_alt_w2_wages_rt +
                            PT_ubia_property * PT_qbid_alt_property_rt)
-                cap = max(wage_cap, alt_cap)
-                qbided = min(cap, qbid_before_limits)
-        else:
-            if PT_SSTB_income == 1:
-                # ...
-                qbided = 9999
-            if PT_SSTB_income == 0:
-                # phase in cap over range between lower_thd and upper_thd
-                wage_cap = PT_binc_w2_wages * PT_qbid_w2_wages_rt
-                alt_cap = (PT_binc_w2_wages * PT_qbid_alt_w2_wages_rt +
-                           PT_ubia_property * PT_qbid_alt_property_rt)
-                cap = max(wage_cap, alt_cap)
-                prt = (pre_qbid_taxinc - lower_thd) / (upper_thd - lower_thd)
-                adj = prt * (qbid_before_limits - cap)
-                qbided = qbid_before_limits - adj
+                full_cap = max(wage_cap, alt_cap)
+                if PT_SSTB_income == 0 and pre_qbid_taxinc >= upper_thd:
+                    # apply full cap
+                    qbided = min(full_cap, qbid_before_limits)
+                elif PT_SSTB_income == 0 and pre_qbid_taxinc < upper_thd:
+                    # apply adjusted cap as in Part III of Worksheet 12-A
+                    # in 2018 IRS Publication 535 (Chapter 12)
+                    prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
+                    adj = prt * (qbid_before_limits - full_cap)
+                    qbided = qbid_before_limits - adj
+                else:  # PT_SSTB_income == 1 and pre_qbid_taxinc < upper_thd
+                    prti = (upper_thd - pre_qbid_taxinc) / pre_qbid_taxinc_gap
+                    qbid_adjusted = prti * qbid_before_limits
+                    cap_adjusted = prti * full_cap
+                    prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
+                    adj = prt * (qbid_adjusted - cap_adjusted)
+                    qbided = qbid_adjusted - adj
     # calculate taxable income after qualified business income deduction
     c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
