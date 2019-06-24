@@ -31,7 +31,7 @@ fyr = '{}'.format(fyear)
 reverting_params = list()
 for pname in sorted(pdata.keys()):
     pdict = pdata[pname]
-    if pdata[pname]['cpi_inflated'] and fyr in pdata[pname]['row_label']:
+    if pdata[pname]['cpi_inflated'] and fyr in pdata[pname]['value_yrs']:
         if pname not in skip_list:
             reverting_params.append(pname)
 print('number_of_reverting_parameters= {}'.format(len(reverting_params)))

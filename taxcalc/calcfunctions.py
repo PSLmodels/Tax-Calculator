@@ -777,22 +777,54 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 
 @iterate_jit(nopython=True)
-def TaxInc(c00100, standard, c04470, c04600, c04800, qbided, MARS,
-           PT_excl_rt, PT_excl_wagelim_rt, PT_excl_wagelim_thd,
-           PT_excl_wagelim_prt, e00900, e26270, e00200):
+def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
+           PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
+           PT_qbid_rt, PT_qbid_taxinc_thd, PT_qbid_taxinc_gap,
+           PT_qbid_w2_wages_rt,
+           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+           c04800, qbided):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
     """
-    pt_excl_pre = max(0., PT_excl_rt * (e00900 + e26270))
-    wagelim_pre = e00200 * PT_excl_wagelim_rt
-    taxinc_pre = max(0., c00100 - max(c04470, standard) - c04600)
-    # calculate business income exclusion
-    excess = max(taxinc_pre - PT_excl_wagelim_thd[MARS - 1], 0.)
-    wagelim_rt = min(excess * PT_excl_wagelim_prt[MARS - 1], 1.)
-    limit = wagelim_rt * max(pt_excl_pre - wagelim_pre, 0.)
-    qbided = pt_excl_pre - limit
-    c04800 = max(0., taxinc_pre - qbided)
+    # calculate taxable income before qualified business income deduction
+    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
+    # calculate qualified business income deduction
+    qbided = 0.
+    qbinc = max(0., e00900 + e26270)
+    if qbinc > 0. and PT_qbid_rt > 0.:
+        qbid_before_limits = qbinc * PT_qbid_rt
+        lower_thd = PT_qbid_taxinc_thd[MARS - 1]
+        if pre_qbid_taxinc <= lower_thd:
+            qbided = qbid_before_limits
+        else:
+            pre_qbid_taxinc_gap = PT_qbid_taxinc_gap[MARS - 1]
+            upper_thd = lower_thd + pre_qbid_taxinc_gap
+            if PT_SSTB_income == 1 and pre_qbid_taxinc >= upper_thd:
+                qbided = 0.
+            else:
+                wage_cap = PT_binc_w2_wages * PT_qbid_w2_wages_rt
+                alt_cap = (PT_binc_w2_wages * PT_qbid_alt_w2_wages_rt +
+                           PT_ubia_property * PT_qbid_alt_property_rt)
+                full_cap = max(wage_cap, alt_cap)
+                if PT_SSTB_income == 0 and pre_qbid_taxinc >= upper_thd:
+                    # apply full cap
+                    qbided = min(full_cap, qbid_before_limits)
+                elif PT_SSTB_income == 0 and pre_qbid_taxinc < upper_thd:
+                    # apply adjusted cap as in Part III of Worksheet 12-A
+                    # in 2018 IRS Publication 535 (Chapter 12)
+                    prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
+                    adj = prt * (qbid_before_limits - full_cap)
+                    qbided = qbid_before_limits - adj
+                else:  # PT_SSTB_income == 1 and pre_qbid_taxinc < upper_thd
+                    prti = (upper_thd - pre_qbid_taxinc) / pre_qbid_taxinc_gap
+                    qbid_adjusted = prti * qbid_before_limits
+                    cap_adjusted = prti * full_cap
+                    prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
+                    adj = prt * (qbid_adjusted - cap_adjusted)
+                    qbided = qbid_adjusted - adj
+    # calculate taxable income after qualified business income deduction
+    c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
 
 

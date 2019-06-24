@@ -159,7 +159,7 @@ def test_json_file_contents(tests_path, fname):
                    'II_brk5', 'II_brk6', 'II_brk7',
                    'PT_brk1', 'PT_brk2', 'PT_brk3', 'PT_brk4',
                    'PT_brk5', 'PT_brk6', 'PT_brk7',
-                   'PT_excl_wagelim_thd',
+                   'PT_qbid_taxinc_thd',
                    'ALD_BusinessLosses_c',
                    'STD', 'II_em',
                    'AMT_em', 'AMT_em_ps', 'AMT_em_pe',

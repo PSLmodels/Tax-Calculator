@@ -831,7 +831,7 @@ def test_qbid_calculation():
     # and that the spouse has no business income and only earnings.
     TPC_YEAR = 2018
     TPC_VARS = (
-        'RECID,MARS,e00200s,e00200,e26270,e02000,PT_SSBT_income,'
+        'RECID,MARS,e00200s,e00200,e26270,e02000,PT_SSTB_income,'
         'PT_binc_w2_wages,PT_ubia_property,pre_qbid_taxinc,qbid\n'
     )
     TPC_FUNITS = (
@@ -855,8 +855,4 @@ def test_qbid_calculation():
     act_taxinc = tc_df.c00100 - np.maximum(tc_df.standard, tc_df.c04470)
     exp_taxinc = tpc_df.pre_qbid_taxinc
     assert np.allclose(act_taxinc, exp_taxinc)
-    print('act_qbid:')
-    print(tc_df.qbided)
-    print('exp_qbid:')
-    print(tpc_df.qbid)
-    # TODO : ACTIVATE : assert np.allclose(tc_df.qbided, tpc_df.qbid)
+    assert np.allclose(tc_df.qbided, tpc_df.qbid)
