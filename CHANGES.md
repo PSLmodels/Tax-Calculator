@@ -2,6 +2,14 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.4.0 on 2019-06-25
+--------------------------------------
+
+**This is an enhancement release.**
+
+- Improve calculation of qualified business income deduction
+
+
 Changes in release 2.3.0 on 2019-06-08
 --------------------------------------
 
