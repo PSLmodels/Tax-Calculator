@@ -23,7 +23,7 @@
   estimate reform-induced changes in after-tax incomes and marginal
   tax rates, and then use that information to calculate how other
   taxes or non-static behavior cause changes in individual incomes or
-  expenses, which are then fed back to Tax-Calculator so that
+  expenses.  These changes are then fed back to Tax-Calculator so that
   individual tax liabilities, as well as aggregate and distribution
   results, can be recalculated.  All these interactions between
   Tax-Calculator and other models are handled by
@@ -34,26 +34,28 @@
 <p>
   The <b>future development of Tax-Calculator</b> itself will focus on
   the following activities:
-</p>  
-  <p style="margin-left: 10px">
+</p>
+<ul>
+  <li>
     Fix bugs in tax-calculation logic.
-  </p>  
-  <p style="margin-left: 10px">
+  </li><br />
+  <li>
     Add new policy parameters to enable parametric simulation of new reforms.
-  </p>
-  <p style="margin-left: 10px">
-    Add actual policy parameter values as they become available each year.
-  </p>
-  <p style="margin-left: 10px">
+  </li><br />
+  <li>
+    Update actual policy parameter values as they become available each year.
+  </li><br />
+  <li>
     Update filing-unit data used by Tax-Calculator as they become available.
-  </p>
-  <p style="margin-left: 10px">
+  </li><br />
+  <li>
     Add ability to use publicly-available synthetic filing-unit data
     derived from a recent IRS-SOI PUF file.
-  </p>
-  <p style="margin-left: 10px">
+  </li><br />
+  <li>
     Improve documentation of model logic and data.
-  </p>
+  </li><br />
+</ul>
   
 <!-- #TOP# -->
 </body>
