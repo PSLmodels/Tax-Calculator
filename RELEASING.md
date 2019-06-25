@@ -10,7 +10,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]
 
---> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc]
+--> run `make pytest-all`  [or `pytest -m pre_release -n4` in taxcalc subdir]
 
 --> run `make package`  [to make local taxcalc package available]
 
@@ -18,7 +18,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> cd docs ; ./uguide_results.sh ; .fix. ; python make_uguide.py
 
---> set release in index.htmx ; python make_tc_pages.py
+--> specify release in index.htmx ; python make_tc_pages.py
 
 --> cd .. ; make clean  [to remove taxcalc package]
 

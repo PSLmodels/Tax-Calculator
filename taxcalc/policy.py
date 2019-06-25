@@ -52,7 +52,7 @@ class Policy(Parameters):
         '_ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
         # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
         '_cpi_offset': 'was renamed CPI_offset in release 2.0.0',
-        # TODO: following parameters renamed in PR 23?? merged on 2019-06-??
+        # TODO: following parameters renamed in PR 2345 merged on 2019-06-24
         '_PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
         '_PT_excl_wagelim_thd':

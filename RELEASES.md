@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-06-25 Release 2.4.0
+------------------------
+(last merged pull request is
+[#2345](https://github.com/PSLmodels/Tax-Calculator/pull/2345))
+
+**This is an enhancement release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Improve calculation of qualified business income deduction
+  [[#2345](https://github.com/PSLmodels/Tax-Calculator/pull/2345)
+  by Martin Holmer]
+
+**Bug Fixes**
+- None
+
+
 2019-06-08 Release 2.3.0
 ------------------------
 (last merged pull request is
