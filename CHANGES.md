@@ -2,6 +2,14 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.4.1 on 2019-06-26
+--------------------------------------
+
+**This is a bug-fix release.**
+
+- Add taxable-income cap to qualified business income deduction logic
+
+
 Changes in release 2.4.0 on 2019-06-25
 --------------------------------------
 
