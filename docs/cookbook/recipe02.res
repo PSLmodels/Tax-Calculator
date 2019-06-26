@@ -1,76 +1,76 @@
-2020_CURRENT_LAW_P__itax_rev($B)= 1450.248
-2020_REFORM_STATIC__itax_rev($B)= 1446.991
-2020_REFORM_DYNAMIC_itax_rev($B)= 1435.976
+2020_CURRENT_LAW_P__itax_rev($B)= 1451.838
+2020_REFORM_STATIC__itax_rev($B)= 1448.596
+2020_REFORM_DYNAMIC_itax_rev($B)= 1437.576
 
 DIAGNOSTIC TABLE FOR BASELINE
                                      2020       2021       2022
 Returns (#m)                      167.510    169.750    171.930
 AGI ($b)                        12109.411  12655.046  13180.408
-Itemizers (#m)                     32.030     33.200     34.310
-Itemized Deduction ($b)           902.200    961.069   1020.424
-Standard Deduction Filers (#m)    135.480    136.550    137.620
-Standard Deduction ($b)          2420.614   2495.349   2571.709
+Itemizers (#m)                     32.070     33.240     34.360
+Itemized Deduction ($b)           903.534    962.534   1022.023
+Standard Deduction Filers (#m)    135.440    136.500    137.570
+Standard Deduction ($b)          2419.865   2494.494   2570.741
 Personal Exemption ($b)             0.000      0.000      0.000
-Taxable Income ($b)              9280.899   9715.522  10128.922
-Regular Tax ($b)                 1609.736   1697.249   1778.694
-AMT Income ($b)                 11475.120  11978.694  12461.532
-AMT Liability ($b)                  1.206      1.198      1.185
-AMT Filers (#m)                     0.240      0.240      0.240
-Tax before Credits ($b)          1610.942   1698.447   1779.879
-Refundable Credits ($b)            77.664     78.142     79.485
-Nonrefundable Credits ($b)         94.005     95.409     96.668
+Taxable Income ($b)              9296.936   9732.043  10145.949
+Regular Tax ($b)                 1611.675   1699.252   1780.762
+AMT Income ($b)                 11473.999  11977.480  12460.216
+AMT Liability ($b)                  1.136      1.123      1.106
+AMT Filers (#m)                     0.210      0.200      0.200
+Tax before Credits ($b)          1612.811   1700.375   1781.868
+Refundable Credits ($b)            77.499     77.971     79.284
+Nonrefundable Credits ($b)         94.448     95.862     97.130
 Reform Surtaxes ($b)                0.000      0.000      0.000
 Other Taxes ($b)                   10.974     11.480     11.975
-Ind Income Tax ($b)              1450.248   1536.376   1615.701
+Ind Income Tax ($b)              1451.838   1538.022   1617.430
 Payroll Taxes ($b)               1323.691   1381.123   1436.210
-Combined Liability ($b)          2773.939   2917.498   3051.911
-With Income Tax <= 0 (#m)          59.970     60.550     61.130
-With Combined Tax <= 0 (#m)        38.980     39.670     40.430
+Combined Liability ($b)          2775.529   2919.145   3053.640
+With Income Tax <= 0 (#m)          59.630     60.210     60.760
+With Combined Tax <= 0 (#m)        38.980     39.660     40.420
 DIAGNOSTIC TABLE FOR REFORM EXCLUDING BEHAVIORAL RESPONSES
                                      2020       2021       2022
 Returns (#m)                      167.510    169.750    171.930
 AGI ($b)                        12109.411  12655.046  13180.408
-Itemizers (#m)                     31.960     33.130     34.230
-Itemized Deduction ($b)           899.970    958.439   1017.483
-Standard Deduction Filers (#m)    135.550    136.620    137.700
-Standard Deduction ($b)          2421.875   2496.735   2573.364
+Itemizers (#m)                     32.000     33.170     34.270
+Itemized Deduction ($b)           901.155    959.847   1018.993
+Standard Deduction Filers (#m)    135.510    136.580    137.650
+Standard Deduction ($b)          2421.149   2495.910   2572.461
 Personal Exemption ($b)           333.334    345.010    356.808
-Taxable Income ($b)              9027.832   9453.458   9857.929
-Regular Tax ($b)                 1603.993   1693.386   1776.278
-AMT Income ($b)                 11477.028  11980.961  12464.041
-AMT Liability ($b)                  1.239      1.230      1.219
-AMT Filers (#m)                     0.260      0.260      0.250
-Tax before Credits ($b)          1605.232   1694.616   1777.497
-Refundable Credits ($b)            80.415     80.945     82.575
-Nonrefundable Credits ($b)         88.801     90.142     91.342
+Taxable Income ($b)              9044.201   9470.324   9875.345
+Regular Tax ($b)                 1605.966   1695.423   1778.385
+AMT Income ($b)                 11476.071  11979.814  12462.814
+AMT Liability ($b)                  1.153      1.139      1.122
+AMT Filers (#m)                     0.220      0.220      0.220
+Tax before Credits ($b)          1607.119   1696.562   1779.508
+Refundable Credits ($b)            80.254     80.778     82.378
+Nonrefundable Credits ($b)         89.243     90.594     91.805
 Reform Surtaxes ($b)                0.000      0.000      0.000
 Other Taxes ($b)                   10.974     11.480     11.975
-Ind Income Tax ($b)              1446.991   1535.008   1615.555
+Ind Income Tax ($b)              1448.596   1536.670   1617.300
 Payroll Taxes ($b)               1323.691   1381.123   1436.210
-Combined Liability ($b)          2770.682   2916.131   3051.765
-With Income Tax <= 0 (#m)          62.220     62.730     63.340
-With Combined Tax <= 0 (#m)        39.300     40.030     40.860
+Combined Liability ($b)          2772.287   2917.793   3053.510
+With Income Tax <= 0 (#m)          61.860     62.360     62.960
+With Combined Tax <= 0 (#m)        39.300     40.020     40.860
 DIAGNOSTIC TABLE FOR REFORM INCLUDING BEHAVIORAL RESPONSES
                                      2020       2021       2022
 Returns (#m)                      167.510    169.750    171.930
-AGI ($b)                        12085.510  12628.610  13151.486
-Itemizers (#m)                     31.930     33.080     34.200
-Itemized Deduction ($b)           898.746    956.928   1016.012
-Standard Deduction Filers (#m)    135.580    136.660    137.730
-Standard Deduction ($b)          2422.435   2497.532   2574.045
+AGI ($b)                        12085.495  12628.651  13151.513
+Itemizers (#m)                     31.970     33.130     34.240
+Itemized Deduction ($b)           899.930    958.349   1017.536
+Standard Deduction Filers (#m)    135.540    136.620    137.690
+Standard Deduction ($b)          2421.711   2496.707   2573.145
 Personal Exemption ($b)           333.334    345.010    356.808
-Taxable Income ($b)              9004.221   9427.352   9829.351
-Regular Tax ($b)                 1593.141   1681.574   1763.500
-AMT Income ($b)                 11454.128  11955.735  12436.337
-AMT Liability ($b)                  1.289      1.275      1.303
-AMT Filers (#m)                     0.270      0.270      0.270
-Tax before Credits ($b)          1594.430   1682.850   1764.803
-Refundable Credits ($b)            80.129     80.661     82.311
-Nonrefundable Credits ($b)         89.048     90.390     91.584
+Taxable Income ($b)              9020.555   9444.225   9846.752
+Regular Tax ($b)                 1595.110   1683.613   1765.606
+AMT Income ($b)                 11453.158  11954.616  12435.122
+AMT Liability ($b)                  1.201      1.182      1.205
+AMT Filers (#m)                     0.230      0.230      0.230
+Tax before Credits ($b)          1596.311   1684.795   1766.811
+Refundable Credits ($b)            79.971     80.490     82.114
+Nonrefundable Credits ($b)         89.486     90.841     92.045
 Reform Surtaxes ($b)                0.000      0.000      0.000
 Other Taxes ($b)                   10.722     11.211     11.678
-Ind Income Tax ($b)              1435.976   1523.010   1602.586
-Payroll Taxes ($b)               1323.408   1380.745   1435.754
-Combined Liability ($b)          2759.384   2903.755   3038.340
-With Income Tax <= 0 (#m)          62.060     62.540     63.160
-With Combined Tax <= 0 (#m)        39.190     39.890     40.760
+Ind Income Tax ($b)              1437.576   1524.675   1604.330
+Payroll Taxes ($b)               1323.409   1380.746   1435.755
+Combined Liability ($b)          2760.985   2905.421   3040.086
+With Income Tax <= 0 (#m)          61.700     62.160     62.790
+With Combined Tax <= 0 (#m)        39.190     39.880     40.750
