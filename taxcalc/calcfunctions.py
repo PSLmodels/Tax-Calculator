@@ -778,6 +778,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
+           e00650, c01000,
            PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
            PT_qbid_rt, PT_qbid_taxinc_thd, PT_qbid_taxinc_gap,
            PT_qbid_w2_wages_rt,
@@ -823,6 +824,10 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
                     prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
                     adj = prt * (qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
+        # apply taxinc cap (assuning cap rate is equal to PT_qbid_rt)
+        net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
+        taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
+        qbided = min(qbided, taxinc_cap)
     # calculate taxable income after qualified business income deduction
     c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
