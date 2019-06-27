@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-06-28 Release 2.4.2
+------------------------
+(last merged pull request is
+[#2352](https://github.com/PSLmodels/Tax-Calculator/pull/2352))
+
+**This is a bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Add farm income to qualified business income
+  [[#2352](https://github.com/PSLmodels/Tax-Calculator/pull/2352)
+  by Martin Holmer]
+
+
 2019-06-26 Release 2.4.1
 ------------------------
 (last merged pull request is

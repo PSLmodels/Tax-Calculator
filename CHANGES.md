@@ -2,6 +2,14 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.4.2 on 2019-06-28
+--------------------------------------
+
+**This is a bug-fix release.**
+
+- Add farm income to qualified business income
+
+
 Changes in release 2.4.1 on 2019-06-26
 --------------------------------------
 
