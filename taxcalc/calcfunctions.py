@@ -778,7 +778,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
-           e00650, c01000,
+           e02100, e27200, e00650, c01000,
            PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
            PT_qbid_rt, PT_qbid_taxinc_thd, PT_qbid_taxinc_gap,
            PT_qbid_w2_wages_rt,
@@ -792,7 +792,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
     # calculate qualified business income deduction
     qbided = 0.
-    qbinc = max(0., e00900 + e26270)
+    qbinc = max(0., e00900 + e26270 + e02100 + e27200)
     if qbinc > 0. and PT_qbid_rt > 0.:
         qbid_before_limits = qbinc * PT_qbid_rt
         lower_thd = PT_qbid_taxinc_thd[MARS - 1]
