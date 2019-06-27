@@ -18,7 +18,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> cd docs ; ./uguide_results.sh ; .fix. ; python make_uguide.py
 
---> specify release in index.htmx ; python make_tc_pages.py
+--> specify release X.Y.Z in index.htmx ; python make_tc_pages.py
 
 --> cd .. ; make clean  [to remove taxcalc package]
 
