@@ -50,6 +50,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> on local master branch, ./gitsync
 
+--> execute `touch docs/index.html` and `touch docs/cookbook.html`
+
 ====> NOTIFY OTHER DEVELOPERS <====
 
 --> email policybrain-modelers list about the new release and packages
