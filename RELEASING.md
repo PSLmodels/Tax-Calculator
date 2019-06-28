@@ -28,6 +28,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> on local master branch, ./gitsync
 
+--> execute `touch docs/index.html`
+
 --> create release X.Y.Z on GitHub using master branch
 
 --> run `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
@@ -49,6 +51,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 --> merge X-Y-Z-cookbook branch into master branch on GitHub
 
 --> on local master branch, ./gitsync
+
+--> execute `touch docs/cookbook.html`
 
 ====> NOTIFY OTHER DEVELOPERS <====
 
