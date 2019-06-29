@@ -101,6 +101,37 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
+    "SS_cg_thd": {
+        "long_name": "Capital Gains Threshold for Social Security Tax",
+        "description": "Individual capital gains above this threshold are subjected to Social Security (OASDI) payroll tax.",
+        "section_1": "Payroll Taxes",
+        "section_2": "Social Security FICA",
+        "irs_ref": "",
+        "notes": "",
+        "value_yrs": [2013,
+                      2014,
+                      2015,
+                      2016,
+                      2017,
+                      2018],
+        "indexable": true,
+        "indexed": false,
+        "vi_name": "MARS",
+        "vi_vals": ["single", "mjoint", "mseparate", "headhh", "widow"],
+        "value_type": "real",
+        "value": [[9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99],
+                  [9e99, 9e99, 9e99, 9e99, 9e99]],
+        "valid_values": {"min": 0, "max": 9e99},
+        "invalid_minmsg": "",
+        "invalid_maxmsg": "",
+        "invalid_action": "stop",
+        "compatible_data": {"puf": true, "cps": true}
+    },
+
     "FICA_mc_trt": {
         "long_name": "Medicare payroll tax rate",
         "description": "Medicare FICA rate, including both employer and employee.",
