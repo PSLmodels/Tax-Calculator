@@ -81,6 +81,10 @@ def test_read_cps_data(cps_fullsample):
         u'1,    4,   200000, 100000, 100000\n'
     ),
     (
+        u'RECID,MARS,k1bx14s\n'
+        u'1,    4,   0.03\n'
+    ),
+    (
         u'RxCID,MARS\n'
         u'1,    2\n'
     ),
