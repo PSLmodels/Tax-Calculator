@@ -169,6 +169,8 @@ class Records(Data):
             raise ValueError(msg.format('e00900s'))
         if not np.allclose(self.e02100s[nospouse], zeros):
             raise ValueError(msg.format('e02100s'))
+        if not np.allclose(self.k1bx14s[nospouse], zeros):
+            raise ValueError(msg.format('k1bx14s'))
         # check that ordinary dividends are no less than qualified dividends
         other_dividends = np.maximum(0., self.e00600 - self.e00650)
         if not np.allclose(self.e00600, self.e00650 + other_dividends,
