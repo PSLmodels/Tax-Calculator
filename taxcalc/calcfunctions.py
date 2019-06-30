@@ -103,21 +103,23 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     gross_was_p = e00200p + pencon_p
     gross_was_s = e00200s + pencon_s
 
-    # compute taxable earnings for OASDI FICA
-    sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
+    # compute taxable gross earnings for OASDI FICA
     txearn_was_p = min(SS_Earnings_c, gross_was_p)
     txearn_was_s = min(SS_Earnings_c, gross_was_s)
-    txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
-    txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
-    # compute OASDI and HI payroll taxes on gross wage-and-salary income
+    # compute OASDI and HI payroll taxes on wage-and-salary income, FICA
     ptax_ss_was_p = FICA_ss_trt * txearn_was_p
     ptax_ss_was_s = FICA_ss_trt * txearn_was_s
     ptax_mc_was_p = FICA_mc_trt * gross_was_p
     ptax_mc_was_s = FICA_mc_trt * gross_was_s
     ptax_was = ptax_ss_was_p + ptax_ss_was_s + ptax_mc_was_p + ptax_mc_was_s
 
-    # compute self-employment tax on taxable self-employment income
+    # compute taxable self-employment income for OASDI SECA
+    sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
+    txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
+    txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
+
+    # compute self-employment tax on taxable self-employment income, SECA
     setax_ss_p = FICA_ss_trt * txearn_sey_p
     setax_ss_s = FICA_ss_trt * txearn_sey_s
     setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
@@ -126,22 +128,26 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
 
-    # compute additional OASDI taxes on the sum of gross wage-and-salary income
-    # and taxable self employment income
+    # compute extra OASDI payroll taxes on the portion of the sum
+    # of wage-and-salary income and taxable self employment income
+    # that exceeds SS_Earnings_thd
     sey_frac = 1.0 - 0.5 * FICA_ss_trt
     was_plus_sey_p = gross_was_p + max(0., sey_p * sey_frac)
     was_plus_sey_s = gross_was_s + max(0., sey_s * sey_frac)
-    additional_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
-    additional_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
-    additional_payrolltax = (additional_ss_income_p * FICA_ss_trt +
-                             additional_ss_income_s * FICA_ss_trt)
+    extra_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
+    extra_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
+    extra_payrolltax = (extra_ss_income_p * FICA_ss_trt +
+                        extra_ss_income_s * FICA_ss_trt)
 
-    # compute part of total regular payroll taxes for filing unit
-    payrolltax = ptax_was + setax + additional_payrolltax
+    # compute part of total payroll taxes for filing unit
+    # (the ptax_amc part of total payroll taxes for the filing unit is
+    # computed in the AdditionalMedicareTax function below)
+    payrolltax = ptax_was + setax + extra_payrolltax
 
     # compute OASDI part of payroll taxes
-    ptax_oasdi = (ptax_ss_was_p + ptax_ss_was_s + setax_ss_p + setax_ss_s +
-                  additional_payrolltax)
+    ptax_oasdi = (ptax_ss_was_p + ptax_ss_was_s +
+                  setax_ss_p + setax_ss_s +
+                  extra_payrolltax)
 
     # compute earned* variables and AGI deduction for
     # "employer share" of self-employment tax, c03260
@@ -711,7 +717,7 @@ def AdditionalMedicareTax(e00200, MARS,
     line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
     ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
                            max(0., line8 - line11))
-    payrolltax = payrolltax + ptax_amc
+    payrolltax += ptax_amc
     return (ptax_amc, payrolltax)
 
 

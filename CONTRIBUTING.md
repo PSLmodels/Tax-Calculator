@@ -3,7 +3,26 @@ Tax-Calculator Contributor Guide
 
 The purpose of this guide is to get you to the point where you can
 make improvements to the Tax-Calculator and share them with the rest
-of the development team.
+of the development team as a GitHub pull request.  This document
+assumes that you have read the [basic Tax-Calculator
+documentation](https://pslmodels.github.io/Tax-Calculator/index.html),
+including the User Guide and Python Cookbook.
+
+If the objective of your Tax-Calculator improvement is to add the
+ability to analyze a tax reform that cannot be analyzed using existing
+policy parameters, then you need to follow the steps described in this
+paragraph **before** preparing a pull request.  (a) Modify recipe 6 in
+the [Python
+Cookbook](https://PSLmodels.github.io/Tax-Calculator/cookbook.html) to
+analyze the kind of tax reform you want to add to the list of reforms
+that can be analyzed parametricly by Tax-Calculator.  (b) Raise a
+Tax-Calculator issue in which you show your modified recipe 6 that
+simulates the reform and provide some numerical results that
+illustrate the effects of the reform.  In the course of the
+conversation about your issue, you may be asked to prepare a pull
+request that would allow this reform to be analyzed using new policy
+parameters and associated logic.  If so, follow the directions below
+when preparing that pull request.
 
 We keep track of Tax-Calculator source code using the [Git version
 control system](https://git-scm.com/) via
@@ -301,14 +320,3 @@ pull request.
 
 You should now read the more [detailed pull-request workflow
 document](https://github.com/PSLmodels/Tax-Calculator/blob/master/WORKFLOW.md#tax-calculator-pull-request-workflow).
-
-
-Simple Usage
-------------
-
-For examples of Tax-Calculator usage, see the [Cookbook of Tested
-Recipes for Python Programming with
-Tax-Calculator](https://PSLmodels.github.io/Tax-Calculator/cookbook.html),
-which contains Python programs that can be executed by the Python
-command-line interpreter or imported into a Python notebook for
-interactive execution.
