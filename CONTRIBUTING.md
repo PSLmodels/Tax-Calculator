@@ -128,7 +128,7 @@ page](https://github.com/).
     ```
     If you do have a copy of the `puf.csv` file used by Tax-Calculator,
     then on the second line above omit the `not requires_pufcsv and`
-    expression so as to execute `py.test -m "not pre_release" -n4`.
+    expression so as to execute `pytest -m "not pre_release" -n4`.
 
     If all the tests pass, you're good to go. If they don't pass, enter
     the following updates at the command line and then try running the
@@ -239,7 +239,7 @@ situations, in which case other contributors are here to help.
    the Tax-Calculator/taxcalc directory::
    ```
    $ pycodestyle .
-   $ py.test -m "not requires_pufcsv and not pre_release" -n4
+   $ pytest -m "not requires_pufcsv and not pre_release" -n4
    ```
    Consult the [testing
    documentation](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md#tax-calculator-testing-procedures)
