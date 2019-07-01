@@ -124,11 +124,11 @@ page](https://github.com/).
     the command line in the Tax-Calculator directory:
     ```
     $ cd taxcalc
-    $ py.test -m "not requires_pufcsv and not pre_release" -n4
+    $ pytest -m "not requires_pufcsv and not pre_release" -n4
     ```
     If you do have a copy of the `puf.csv` file used by Tax-Calculator,
     then on the second line above omit the `not requires_pufcsv and`
-    expression so as to execute `py.test -m "not pre_release" -n4`.
+    expression so as to execute `pytest -m "not pre_release" -n4`.
 
     If all the tests pass, you're good to go. If they don't pass, enter
     the following updates at the command line and then try running the
@@ -139,7 +139,7 @@ page](https://github.com/).
     ```
     
     For more detail on Tax-Calculator testing procedures, read the
-    [testing documentation](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md).
+    [testing documentation](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md#tax-calculator-testing-procedures).
     If the tests still don't pass, please contact us.
 
 If you've made it this far, you've successfully made a remote copy (a
@@ -239,10 +239,10 @@ situations, in which case other contributors are here to help.
    the Tax-Calculator/taxcalc directory::
    ```
    $ pycodestyle .
-   $ py.test -m "not requires_pufcsv and not pre_release" -n4
+   $ pytest -m "not requires_pufcsv and not pre_release" -n4
    ```
    Consult the [testing
-   documentation](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md)
+   documentation](https://github.com/PSLmodels/Tax-Calculator/blob/master/TESTING.md#tax-calculator-testing-procedures)
    for more details.
 
    If the tests do not pass, try to fix the issue by using the

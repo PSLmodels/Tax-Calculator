@@ -33,6 +33,12 @@ def test_docs_uguide_up_to_date(tests_path):
             target_up_to_date = False
     if not target_up_to_date:
         msg = 'Tax-Calculator/docs/uguide.html IS NOT UP-TO-DATE\n'
+        msg += '###                                               \n'
+        msg += '### If you see this when preparing a pull request,\n'
+        msg += '### you are misusing pytest.  Please read the     \n'
+        msg += '### testing instructions in the Contributor Guide \n'
+        msg += '### and ignore the following intructions.         \n'
+        msg += '###                                               \n'
         msg += 'FIX BY DOING THIS:                              \n'
         msg += ' $ cd Tax-Calculator/docs                       \n'
         msg += ' $ python make_uguide.py                        \n'
@@ -61,6 +67,12 @@ def test_docs_cookbook_up_to_date(tests_path):
             target_up_to_date = False
     if not target_up_to_date:
         msg = 'Tax-Calculator/docs/cookbook.html IS NOT UP-TO-DATE:    \n'
+        msg += '###                                               \n'
+        msg += '### If you see this when preparing a pull request,\n'
+        msg += '### you are misusing pytest.  Please read the     \n'
+        msg += '### testing instructions in the Contributor Guide \n'
+        msg += '### and ignore the following intructions.         \n'
+        msg += '###                                               \n'
         msg += 'EDIT cookbook.html SO THAT IT REFERENCES               \n'
         msg += '- ALL cookbook/recipe*py FILES,                        \n'
         msg += '- ALL cookbook/recipe*res FILES,                       \n'
