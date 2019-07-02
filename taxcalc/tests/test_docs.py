@@ -37,12 +37,15 @@ def test_docs_uguide_up_to_date(tests_path):
         msg += '### If you see this when preparing a pull request,\n'
         msg += '### you are misusing pytest.  Please read the     \n'
         msg += '### testing instructions in the Contributor Guide \n'
-        msg += '### and ignore the following intructions.         \n'
+        msg += '### and ignore the following instructions.        \n'
         msg += '###                                               \n'
         msg += 'FIX BY DOING THIS:                              \n'
         msg += ' $ cd Tax-Calculator/docs                       \n'
         msg += ' $ python make_uguide.py                        \n'
         msg += 'AND INCLUDE UPDATED uguide.html IN NEXT COMMIT  \n'
+        msg += '                                                       \n'
+        msg += 'IF NO SUBSTATIVE CHANGES IN uguide.html ARE REQUIRED,  \n'
+        msg += 'TOUCH THE UNCHANGED FILE SO IT HAS A CURRENT TIMESTAMP.\n'
         raise ValueError(msg)
 
 
@@ -71,7 +74,7 @@ def test_docs_cookbook_up_to_date(tests_path):
         msg += '### If you see this when preparing a pull request,\n'
         msg += '### you are misusing pytest.  Please read the     \n'
         msg += '### testing instructions in the Contributor Guide \n'
-        msg += '### and ignore the following intructions.         \n'
+        msg += '### and ignore the following instructions.        \n'
         msg += '###                                               \n'
         msg += 'EDIT cookbook.html SO THAT IT REFERENCES               \n'
         msg += '- ALL cookbook/recipe*py FILES,                        \n'
@@ -80,5 +83,5 @@ def test_docs_cookbook_up_to_date(tests_path):
         msg += 'AND INCLUDE THE UPDATED cookbook.html IN NEXT COMMIT.  \n'
         msg += '                                                       \n'
         msg += 'IF NO SUBSTATIVE CHANGES IN cookbook.html ARE REQUIRED,\n'
-        msg += 'SAVE THE UNCHANGED FILE SO IT HAS A CURRENT TIMESTAMP. \n'
+        msg += 'TOUCH THE UNCHANGED FILE SO IT HAS A CURRENT TIMESTAMP.\n'
         raise ValueError(msg)
