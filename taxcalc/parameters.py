@@ -847,8 +847,6 @@ class Parameters():
         )
         for year in sorted(revision.keys()):
             for name in revision[year]:
-                if name.endswith('-indexed'):
-                    name = name[:-8]
                 if self._vals[name]['indexed']:
                     if name not in known_years:
                         known_years[name] = kyrs_in_revision
