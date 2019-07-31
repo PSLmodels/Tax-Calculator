@@ -4,6 +4,25 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-0X-XX Release 2.4.3
+------------------------
+(last merged pull request is
+[#2364](https://github.com/PSLmodels/Tax-Calculator/pull/2364))
+
+**This is a bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- None
+
+**Bug Fixes**
+- Allow reforms that specify a `CPI_offset` change in the same year as a tax policy parameter's indexing status is changed
+  [[#2364](https://github.com/PSLmodels/Tax-Calculator/pull/2364)
+  by Anderson Frailey]
+
+
 2019-06-28 Release 2.4.2
 ------------------------
 (last merged pull request is

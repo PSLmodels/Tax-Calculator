@@ -2,6 +2,14 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.4.3 on 2019-0X-XX
+--------------------------------------
+
+**This is a bug-fix release.**
+
+- Allow reforms that specify a `CPI_offset` change in the same year as a tax policy parameter's indexing status is changed
+
+
 Changes in release 2.4.2 on 2019-06-28
 --------------------------------------
 
