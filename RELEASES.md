@@ -330,12 +330,12 @@ incompatible with earlier releases.**
 - None
 
 **New Features**
-- Add new EITC policy parameter to aid in [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+- Add new EITC policy parameter to aid in [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim27/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
   [[#2164](https://github.com/PSLmodels/Tax-Calculator/pull/2164)
   by Martin Holmer]
 
 **Bug Fixes**
-- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim27/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
   [[#2162](https://github.com/PSLmodels/Tax-Calculator/pull/2162)
   by Martin Holmer]
 
@@ -349,7 +349,7 @@ incompatible with earlier releases.**
 - None
 
 **New Features**
-- Revise taxcalc/validation/taxsim logic to work with new TAXSIM version 27
+- Revise taxcalc/validation/taxsim27 logic to work with new TAXSIM version 27
   [[#2140](https://github.com/PSLmodels/Tax-Calculator/pull/2140)
   by Martin Holmer]
 - Use `tc --dump` in validation work, which allows removal of `simtax.py` and its class and tests
@@ -1551,7 +1551,7 @@ incompatible with earlier releases.**
 [#1228](https://github.com/PSLmodels/Tax-Calculator/pull/1228))
 
 **API Changes**
-- Move simtax.py to taxcalc/validation/taxsim directory
+- Move simtax.py to taxcalc/validation/taxsim27 directory
   [[#1288](https://github.com/PSLmodels/Tax-Calculator/pull/1288)
   by Martin Holmer]
 

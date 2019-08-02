@@ -14,7 +14,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> run `make package`  [to make local taxcalc package available]
 
---> cd taxcalc/validation/taxsim ; .tests. ; .fix. ; cd ../../..
+--> cd taxcalc/validation ; ./tests.sh ; .fix. ; cd ../..
 
 --> cd docs ; ./uguide_results.sh ; .fix. ; python make_uguide.py
 
