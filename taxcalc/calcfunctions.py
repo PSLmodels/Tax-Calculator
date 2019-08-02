@@ -90,8 +90,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
                   SS_Earnings_thd, e00900p, e00900s, e02100p, e02100s, k1bx14p,
                   k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-                  sey, sey_p, sey_s, gross_was_p, gross_was_s,
-                  earned, earned_p, earned_s):
+                  sey, earned, earned_p, earned_s,
+                  was_plus_sey_p, was_plus_sey_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
@@ -159,8 +159,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
     earned_s = max(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
-    return (sey, sey_p, sey_s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-            earned, earned_p, earned_s, gross_was_p, gross_was_s)
+    return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
+            earned, earned_p, earned_s, was_plus_sey_p, was_plus_sey_s)
 
 
 @iterate_jit(nopython=True)
@@ -1274,14 +1274,14 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 
 @iterate_jit(nopython=True)
-def PersonalEIC(gross_was_p, gross_was_s, sey_p, sey_s,
+def PersonalEIC(was_plus_sey_p, was_plus_sey_s,
                 PEIC_c, PEIC_rt,
                 peic_p, peic_s, peic):
     """
-    Computes Personal Earned Income Credit amounts.
+    Computes refundable Personal Earned Income Credit amounts.
     """
-    peic_p = min((gross_was_p + sey_p) * PEIC_rt, PEIC_c)
-    peic_s = min((gross_was_s + sey_s) * PEIC_rt, PEIC_c)
+    peic_p = min(was_plus_sey_p * PEIC_rt, PEIC_c)
+    peic_s = min(was_plus_sey_s * PEIC_rt, PEIC_c)
     peic = peic_p + peic_s
     return (peic_p, peic_s, peic)
 

@@ -5374,7 +5374,7 @@
         "section_1": "Refundable Credits",
         "section_2": "Personal Earned Income Credit",
         "irs_ref": "",
-        "notes": "",
+        "notes": "Positve values of PEIC_c and PEIC_rt can be used to emulate a payroll tax exemption.",
         "value_yrs": [2013,
                       2014,
                       2015,
@@ -5401,11 +5401,11 @@
 
     "PEIC_rt": {
         "long_name": "Personal refundable earned income credit phasein rate",
-        "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum personal earned income credit.",
+        "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum personal earned income credit, where earnings is defined as in FICA and SECA.",
         "section_1": "Refundable Credits",
         "section_2": "Personal Earned Income Credit",
         "irs_ref": "",
-        "notes": "",
+        "notes": "Positve values of PEIC_c and PEIC_rt can be used to emulate a payroll tax exemption.",
         "value_yrs": [2013],
         "indexable": false,
         "indexed": false,

@@ -676,12 +676,12 @@
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
-    "gross_was_p": {
+    "was_plus_sey_p": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
-    "gross_was_s": {
+    "was_plus_sey_s": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
@@ -751,16 +751,6 @@
       "form": {"2013-2016": "1040 lines 1-5"}
     },
     "sey": {
-      "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "sey_p": {
-      "type": "float",
-      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
-      "form": {"2013-20??": "calculated variable"}
-    },
-    "sey_s": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
