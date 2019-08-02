@@ -676,11 +676,36 @@
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
+    "gross_was_p": {
+      "type": "float",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "gross_was_s": {
+      "type": "float",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "eitc": {
       "type": "float",
       "desc": "Earned Income Credit",
       "form": {"2013-2013": "1040 line 64a",
                "2014-2016": "1040 line 66a"}
+    },
+    "peic": {
+      "type": "float",
+      "desc": "Personal Earned Income Credit for filing unit",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "peic_p": {
+      "type": "float",
+      "desc": "Personal Earned Income Credit for taxpayer",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "peic_s": {
+      "type": "float",
+      "desc": "Personal Earned Income Credit for spouse",
+      "form": {"2013-20??": "calculated variable"}
     },
     "exact": {
       "type": "int",
@@ -726,6 +751,16 @@
       "form": {"2013-2016": "1040 lines 1-5"}
     },
     "sey": {
+      "type": "float",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "sey_p": {
+      "type": "float",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "sey_s": {
       "type": "float",
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
