@@ -29,7 +29,7 @@ In order to handle known differences in assumptions between the two
 models, we use the `taxsim_emulation.json` "reform" file to make
 Tax-Calculator operate like TAXSIM-27.  See the
 [`taxsim_emulation.json`
-file](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/taxsim_emulation.json)
+file](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim27/taxsim_emulation.json)
 for details.
 
 In the following results, when we say "same results" we mean that the

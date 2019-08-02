@@ -1,41 +1,20 @@
 #!/bin/bash
-# Executes validation TESTS by calling tests.sh scripts in subdirectories.
-# .... check number of command-line arguments
-if [[ "$#" -gt 1 ]]; then
-    echo "ERROR: can specify at most one command-line argument"
-    echo "USAGE: ./tests.sh [all]"
-    echo "       (using the 'all' option may execute four tests at a time)"
-    exit 1
-fi
-# .... specify whether or not to execute all tests
-ALLTESTS=false
-if [[ "$#" -eq 1 ]]; then
-    if [[ "$1" == "all" ]]; then
-        ALLTESTS=true
-    else
-        echo "ERROR: optional command-line argument must be all"
-        echo "USAGE: ./tests.sh [all]"
-        exit 1
-    fi
-fi
+# Executes validation TESTS by calling test.sh scripts in subdirectories.
 echo "STARTING WITH VALIDATION TESTS : `date`"
-if [[ $ALLTESTS == true ]] ; then
-    # execute all tests sequentially
-    cd taxsim
-    bash tests.sh all
-    cd ..
-    # cd someothermodel
-    # bash tests.sh all
-    # cd ..
-else
-    # execute basic tests simultaneously
-    cd taxsim
-    bash tests.sh &
-    cd ..
-    # cd someothermodel
-    # bash tests.sh &
-    # cd ..
-    wait
-fi
+# execute tests several at a time
+cd taxsim27
+./test.sh a17 &
+./test.sh b17 &
+./test.sh c17 &
+wait
+./test.sh a18 &
+./test.sh b18 &
+./test.sh c18 &
+wait
+cd ..
+# cd someothermodel
+# ./test.sh xxx &
+# wait
+# cd ..
 echo "FINISHED WITH VALIDATION TESTS : `date`"
 exit 0
