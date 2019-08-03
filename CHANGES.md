@@ -2,6 +2,16 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.5.0 on 2019-08-XX
+--------------------------------------
+
+**This is an enhancement and bug-fix release.**
+
+- Add a refundable Personal Earned Income Credit (PEIC) that can be used to emulate a payroll tax exemption
+
+- Allow reforms that specify a `CPI_offset` change in the same year as a tax policy parameter's indexing status is changed
+
+
 Changes in release 2.4.2 on 2019-06-28
 --------------------------------------
 
