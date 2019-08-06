@@ -15,6 +15,7 @@ from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
                                    SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
                                    StdDed, AdditionalMedicareTax, F2441, EITC,
+                                   RefundablePayrollTaxCredit,
                                    ChildDepTaxCredit, AdditionalCTC, CTC_new,
                                    PersonalTaxCredit, SchR,
                                    AmOppCreditParts, EducationTaxCredit,
@@ -1400,6 +1401,7 @@ class Calculator():
         self._taxinc_to_amt()
         F2441(self.__policy, self.__records)
         EITC(self.__policy, self.__records)
+        RefundablePayrollTaxCredit(self.__policy, self.__records)
         PersonalTaxCredit(self.__policy, self.__records)
         AmOppCreditParts(self.__policy, self.__records)
         SchR(self.__policy, self.__records)

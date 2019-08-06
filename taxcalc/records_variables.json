@@ -676,11 +676,36 @@
       "desc": "search taxcalc/calcfunctions.py for how calculated and used",
       "form": {"2013-20??": "calculated variable"}
     },
+    "was_plus_sey_p": {
+      "type": "float",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "was_plus_sey_s": {
+      "type": "float",
+      "desc": "search taxcalc/calcfunctions.py for how calculated and used",
+      "form": {"2013-20??": "calculated variable"}
+    },
     "eitc": {
       "type": "float",
       "desc": "Earned Income Credit",
       "form": {"2013-2013": "1040 line 64a",
                "2014-2016": "1040 line 66a"}
+    },
+    "rptc": {
+      "type": "float",
+      "desc": "Refundable Payroll Tax Credit for filing unit",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "rptc_p": {
+      "type": "float",
+      "desc": "Refundable Payroll Tax Credit for taxpayer",
+      "form": {"2013-20??": "calculated variable"}
+    },
+    "rptc_s": {
+      "type": "float",
+      "desc": "Refundable Payroll Tax Credit for spouse",
+      "form": {"2013-20??": "calculated variable"}
     },
     "exact": {
       "type": "int",

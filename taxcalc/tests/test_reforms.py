@@ -303,7 +303,7 @@ def fixture_reforms_dict(tests_path):
     return json.loads(rjson)
 
 
-NUM_REFORMS = 63  # when changing this also change num_reforms in conftest.py
+NUM_REFORMS = 64  # when changing this also change num_reforms in conftest.py
 
 
 @pytest.mark.requires_pufcsv
