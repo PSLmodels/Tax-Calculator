@@ -692,19 +692,19 @@
       "form": {"2013-2013": "1040 line 64a",
                "2014-2016": "1040 line 66a"}
     },
-    "peic": {
+    "rptc": {
       "type": "float",
-      "desc": "Personal Earned Income Credit for filing unit",
+      "desc": "Refundable Payroll Tax Credit for filing unit",
       "form": {"2013-20??": "calculated variable"}
     },
-    "peic_p": {
+    "rptc_p": {
       "type": "float",
-      "desc": "Personal Earned Income Credit for taxpayer",
+      "desc": "Refundable Payroll Tax Credit for taxpayer",
       "form": {"2013-20??": "calculated variable"}
     },
-    "peic_s": {
+    "rptc_s": {
       "type": "float",
-      "desc": "Personal Earned Income Credit for spouse",
+      "desc": "Refundable Payroll Tax Credit for spouse",
       "form": {"2013-20??": "calculated variable"}
     },
     "exact": {

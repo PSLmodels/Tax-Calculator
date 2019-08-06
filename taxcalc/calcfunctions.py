@@ -1274,16 +1274,16 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
 
 
 @iterate_jit(nopython=True)
-def PersonalEIC(was_plus_sey_p, was_plus_sey_s,
-                PEIC_c, PEIC_rt,
-                peic_p, peic_s, peic):
+def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
+                               RPTC_c, RPTC_rt,
+                               rptc_p, rptc_s, rptc):
     """
     Computes refundable Personal Earned Income Credit amounts.
     """
-    peic_p = min(was_plus_sey_p * PEIC_rt, PEIC_c)
-    peic_s = min(was_plus_sey_s * PEIC_rt, PEIC_c)
-    peic = peic_p + peic_s
-    return (peic_p, peic_s, peic)
+    rptc_p = min(was_plus_sey_p * RPTC_rt, RPTC_c)
+    rptc_s = min(was_plus_sey_s * RPTC_rt, RPTC_c)
+    rptc = rptc_p + rptc_s
+    return (rptc_p, rptc_s, rptc)
 
 
 @iterate_jit(nopython=True)
@@ -1716,7 +1716,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
 
 
 @iterate_jit(nopython=True)
-def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, peic,
+def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, payrolltax,
           eitc, refund, iitax, combined):
     """
@@ -1724,7 +1724,7 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, peic,
     """
     eitc = c59660
     refund = (eitc + c11070 + c10960 +
-              personal_refundable_credit + ctc_new + peic)
+              personal_refundable_credit + ctc_new + rptc)
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)

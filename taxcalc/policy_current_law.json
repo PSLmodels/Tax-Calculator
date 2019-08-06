@@ -5368,13 +5368,13 @@
         "compatible_data": {"puf": true, "cps": false}
     },
 
-    "PEIC_c": {
-        "long_name": "Maximum refundable personal earned income credit",
-        "description": "This is the maximum amount of the personal earned income credit for each taxpayer/spouse.",
+    "RPTC_c": {
+        "long_name": "Maximum refundable payroll tax credit",
+        "description": "This is the maximum amount of the refundable payroll tax credit for each taxpayer/spouse.",
         "section_1": "Refundable Credits",
-        "section_2": "Personal Earned Income Credit",
+        "section_2": "Refundable Payroll Tax Credit",
         "irs_ref": "",
-        "notes": "Positve values of PEIC_c and PEIC_rt can be used to emulate a payroll tax exemption, the implied value of which is PEIC_c divided by PEIC_rt.",
+        "notes": "Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.",
         "value_yrs": [2013,
                       2014,
                       2015,
@@ -5399,13 +5399,13 @@
         "compatible_data": {"puf": true, "cps": true}
     },
 
-    "PEIC_rt": {
-        "long_name": "Personal refundable earned income credit phasein rate",
-        "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum personal earned income credit, where earnings is defined as in FICA and SECA.",
+    "RPTC_rt": {
+        "long_name": "Refundable payroll tax credit phasein rate",
+        "description": "Pre-phaseout credit is minimum of this rate times earnings and the maximum refundable payroll tax credit, where earnings is defined as in FICA and SECA.",
         "section_1": "Refundable Credits",
-        "section_2": "Personal Earned Income Credit",
+        "section_2": "Refundable Payroll Tax Credit",
         "irs_ref": "",
-        "notes": "Positve values of PEIC_c and PEIC_rt can be used to emulate a payroll tax exemption, the implied value of which is PEIC_c divided by PEIC_rt.",
+        "notes": "Positive values of RPTC_c and RPTC_rt can be used to emulate a payroll tax exemption, the implied value of which is RPTC_c divided by RPTC_rt.",
         "value_yrs": [2013],
         "indexable": false,
         "indexed": false,
