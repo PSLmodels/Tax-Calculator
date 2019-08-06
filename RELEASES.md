@@ -4,6 +4,27 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-08-06 Release 2.5.0
+------------------------
+(last merged pull request is
+[#2370](https://github.com/PSLmodels/Tax-Calculator/pull/2370))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Add to the income tax a refundable payroll tax credit (RPTC) that can be used to emulate a payroll tax exemption
+  [[#2366](https://github.com/PSLmodels/Tax-Calculator/pull/2366)
+  by Peter Metz, Matt Jensen and Martin Holmer]
+
+**Bug Fixes**
+- Allow reforms that specify a `CPI_offset` change in the same year as a tax policy parameter's indexing status is changed
+  [[#2364](https://github.com/PSLmodels/Tax-Calculator/pull/2364)
+  by Anderson Frailey]
+
+
 2019-06-28 Release 2.4.2
 ------------------------
 (last merged pull request is
@@ -330,12 +351,12 @@ incompatible with earlier releases.**
 - None
 
 **New Features**
-- Add new EITC policy parameter to aid in [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim27/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+- Add new EITC policy parameter to aid in [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
   [[#2164](https://github.com/PSLmodels/Tax-Calculator/pull/2164)
   by Martin Holmer]
 
 **Bug Fixes**
-- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim27/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
+- Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during [validation work](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim/README.md#validation-of-tax-calculator-against-internet-taxsim-version-27)
   [[#2162](https://github.com/PSLmodels/Tax-Calculator/pull/2162)
   by Martin Holmer]
 
@@ -349,7 +370,7 @@ incompatible with earlier releases.**
 - None
 
 **New Features**
-- Revise taxcalc/validation/taxsim27 logic to work with new TAXSIM version 27
+- Revise taxcalc/validation/taxsim logic to work with new TAXSIM version 27
   [[#2140](https://github.com/PSLmodels/Tax-Calculator/pull/2140)
   by Martin Holmer]
 - Use `tc --dump` in validation work, which allows removal of `simtax.py` and its class and tests
@@ -1551,7 +1572,7 @@ incompatible with earlier releases.**
 [#1228](https://github.com/PSLmodels/Tax-Calculator/pull/1228))
 
 **API Changes**
-- Move simtax.py to taxcalc/validation/taxsim27 directory
+- Move simtax.py to taxcalc/validation/taxsim directory
   [[#1288](https://github.com/PSLmodels/Tax-Calculator/pull/1288)
   by Martin Holmer]
 

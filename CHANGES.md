@@ -2,6 +2,16 @@ TAX-CALCULATOR CHANGE HISTORY
 =============================
 
 
+Changes in release 2.5.0 on 2019-08-06
+--------------------------------------
+
+**This is an enhancement and bug-fix release.**
+
+- Add to the income tax a refundable payroll tax credit (RPTC) that can be used to emulate a payroll tax exemption
+
+- Allow reforms that specify a `CPI_offset` change in the same year as a tax policy parameter's indexing status is changed
+
+
 Changes in release 2.4.2 on 2019-06-28
 --------------------------------------
 
