@@ -1,7 +1,7 @@
 name: taxcalc-dev
 dependencies:
 - python
-- "numpy>=1.13"
+- "numpy>=1.14"
 - "pandas>=0.23"
 - "bokeh>=0.13"
 - requests
