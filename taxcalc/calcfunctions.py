@@ -1278,7 +1278,7 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
                                RPTC_c, RPTC_rt,
                                rptc_p, rptc_s, rptc):
     """
-    Computes refundable Personal Earned Income Credit amounts.
+    Computes refundable payroll tax credit amounts.
     """
     rptc_p = min(was_plus_sey_p * RPTC_rt, RPTC_c)
     rptc_s = min(was_plus_sey_s * RPTC_rt, RPTC_c)
