@@ -633,5 +633,15 @@
       "name": "Individualize the EITC",
       "output_type": "iitax",
       "compare_with": {}
+  },
+
+  "64": {
+      "baseline": "policy_current_law.json",
+      "start_year": 2019,
+      "value": {"RPTC_rt": 0.062,
+                "RPTC_c": 310},
+      "name": "Add refundable payroll tax credit (equivalent to $5000 exemption in Tax-Calculator issue 2362)",
+      "output_type": "iitax",
+      "compare_with": {}
   }
 }
