@@ -971,10 +971,34 @@ def test_reform_with_scalar_vector_errors():
 
 def test_index_offset_reform():
     """
-    Test a reform that includes both a change in CPI offset and a change in
-    a variable's indexed status.
+    Test a reform that includes both a change in CPI_offset and a change in
+    a variable's indexed status in the same year.
     """
-    reform = {'CTC_c-indexed': {2020: True},
-              'CPI_offset': {2020: -0.005}}
-    pol = Policy()
-    pol.implement_reform(reform)
+    reform1 = {'CTC_c-indexed': {2020: True}}
+    policy1 = Policy()
+    policy1.implement_reform(reform1)
+    offset = -0.005
+    reform2 = {'CTC_c-indexed': {2020: True}, 'CPI_offset': {2020: offset}}
+    policy2 = Policy()
+    policy2.implement_reform(reform2)  # caused T-C crash before PR#2364
+    # extract from policy1 and policy2 the parameter values of CTC_c
+    pvalue1 = dict()
+    pvalue2 = dict()
+    for cyr in [2019, 2020, 2021]:
+        policy1.set_year(cyr)
+        pvalue1[cyr] = policy1.CTC_c
+        policy2.set_year(cyr)
+        pvalue2[cyr] = policy2.CTC_c
+    # check that pvalue1 and pvalue2 dictionaries contain the expected values
+    assert pvalue2[2019] == pvalue1[2019]
+    assert pvalue2[2020] == pvalue1[2020]
+    assert pvalue2[2020] == pvalue2[2019]
+    # ... indexing of CTC_c begins shows up first in 2021 parameter values
+    assert pvalue1[2021] > pvalue1[2020]
+    assert pvalue2[2021] > pvalue2[2020]
+    # ... calculate expected pvalue2[2021] from offset and pvalue1 values
+    indexrate1 = pvalue1[2021] / pvalue1[2020] - 1.
+    expindexrate = indexrate1 + offset
+    expvalue = round(pvalue2[2020] * (1. + expindexrate), 2)
+    # ... compare expected value with actual value of pvalue2 for 2021
+    assert np.allclose([expvalue], [pvalue2[2021]])
