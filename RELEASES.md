@@ -15,7 +15,7 @@ for a complete commit history.
 - None
 
 **New Features**
-- Add a refundable Personal Earned Income Credit (PEIC) that can be used to emulate a payroll tax exemption
+- Add to the income tax a refundable payroll tax credit (RPTC) that can be used to emulate a payroll tax exemption
   [[#2366](https://github.com/PSLmodels/Tax-Calculator/pull/2366)
   by Peter Metz, Matt Jensen and Martin Holmer]
 
