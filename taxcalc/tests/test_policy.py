@@ -967,3 +967,14 @@ def test_reform_with_scalar_vector_errors():
     reform2 = {'ID_Medical_frt': {2020: [0.08]}}
     with pytest.raises(ValueError):
         policy2.implement_reform(reform2)
+
+
+def test_index_offset_reform():
+    """
+    Test a reform that includes both a change in CPI offset and a change in
+    a variable's indexed status.
+    """
+    reform = {'CTC_c-indexed': {2020: True},
+              'CPI_offset': {2020: -0.005}}
+    pol = Policy()
+    pol.implement_reform(reform)
