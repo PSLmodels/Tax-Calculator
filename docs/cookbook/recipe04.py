@@ -1,4 +1,5 @@
 from taxcalc import *
+import pandas as pd
 import behresp
 
 # use publicly-available CPS input file
@@ -8,10 +9,10 @@ recs = Records.cps_constructor()
 pol = Policy()
 calc1 = Calculator(policy=pol, records=recs)
 
-cyr = 2020
+CYR = 2020
 
 # calculate current-law tax liabilities for cyr
-calc1.advance_to_year(cyr)
+calc1.advance_to_year(CYR)
 calc1.calc_all()
 
 # calculate marginal tax rate wrt cash charitable giving
@@ -23,7 +24,7 @@ pol.implement_reform(Policy.read_json_reform('reformB.json'))
 calc2 = Calculator(policy=pol, records=recs)
 
 # calculate reform tax liabilities for cyr
-calc2.advance_to_year(cyr)
+calc2.advance_to_year(CYR)
 calc2.calc_all()
 
 # calculate marginal tax rate wrt cash charitable giving
@@ -40,39 +41,41 @@ vdf['atinc2'] = calc2.array('aftertax_income')
 
 # group filing units into earnings groups with different response elasticities
 # (note earnings groups are just an example based on no empirical results)
-earnings_bins = [-9e99, 50e3, 9e99]  # two groups: below and above $50,000
-vdf = add_income_table_row_variable(vdf, 'e00200', earnings_bins)
-gbydf = vdf.groupby('table_row', as_index=False)
+EARNINGS_BINS = [-9e99, 50e3, 9e99]  # two groups: below and above $50,000
+vdf['table_row'] = pd.cut(vdf.e00200, EARNINGS_BINS, right=False).astype(str)
 
-# compute percentage response in charitable giving
-# (note elasticity values are just an example based on no empirical results)
-price_elasticity = [-0.1, -0.4]
-income_elasticity = [0.1, 0.1]
-print('\nResponse in Charitable Giving by Earnings Group')
-results = '{:18s}\t{:8.3f}\t{:8.3f}\t{:8.2f}'
-colhead = '{:18s}\t{:>8s}\t{:>8s}\t{:>8s}'
-print(colhead.format('Earnings Group', 'Num(#M)', 'Resp($B)', 'Resp(%)'))
-tot_funits = 0.
-tot_response = 0.
-tot_baseline = 0.
-idx = 0
-for grp_interval, grp in gbydf:
-    funits = grp['s006'].sum() * 1e-6
-    tot_funits += funits
-    response = behresp.quantity_response(grp['e19800'],
-                                         price_elasticity[idx],
-                                         grp['price1'],
-                                         grp['price2'],
-                                         income_elasticity[idx],
-                                         grp['atinc1'],
-                                         grp['atinc2'])
-    grp_response = (response * grp['s006']).sum() * 1e-9
-    tot_response += grp_response
-    grp_baseline = (grp['e19800'] * grp['s006']).sum() * 1e-9
-    tot_baseline += grp_baseline
-    pct_response = 100. * grp_response / grp_baseline
-    glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left, grp_interval.right)
-    print(results.format(glabel, funits, grp_response, pct_response))
-    idx += 1
-pct_response = 100. * tot_response / tot_baseline
-print(results.format('ALL', tot_funits, tot_response, pct_response))
+vdf['price_elasticity'] = np.where(vdf.e00200 < EARNINGS_BINS[1],
+                                   -0.1, -0.4)
+vdf['income_elasticity'] = 0.1
+
+# Calculate response based on features of each filing unit.
+vdf['response'] = behresp.quantity_response(vdf.e19800,
+                                            vdf.price_elasticity,
+                                            vdf.price1,
+                                            vdf.price2,
+                                            vdf.income_elasticity,
+                                            vdf.atinc1,
+                                            vdf.atinc2)
+
+# Add weighted totals.
+# Can also use microdf as mdf.add_weighted_totals(vdf, ['response', 'e19800'])
+vdf['e19800_b'] = vdf.s006 * vdf.e19800 / 1e9
+vdf['response_b'] = vdf.s006 * vdf.response / 1e9
+vdf['funits_m'] = vdf.s006 / 1e6
+
+SUM_VARS = ['funits_m', 'e19800_b', 'response_b']
+# Sum weighted total columns for each income group.
+grouped = vdf.groupby('table_row')[SUM_VARS].sum()
+# Add a total row and make the index a column for printing.
+grouped.loc['TOTAL'] = grouped.sum()
+grouped.reset_index(inplace=True)
+
+# Calculate percent response and drop unnecessary total.
+grouped['pct_response'] = 100 * grouped.response_b / grouped.e19800_b
+grouped.drop('e19800_b', axis=1, inplace=True)
+
+# Rename columns for printing.
+grouped.columns = ['Earnings Group', 'Num(#M)', 'Resp($B)', 'Resp(%)']
+
+print('Response in Charitable Giving by Earnings Group')
+print(grouped.round(3).to_string(index=False))
