@@ -52,7 +52,6 @@
       <li><a href="#pol-surtaxes">Surtaxes</a></li>
       <li><a href="#pol-ubi">Universal Basic Income</a></li>
       <li><a href="#pol-benefits">Benefits</a></li>
-      <li><a href="#pol-other-parameters">Other Parameters</a></li>
     </ol>
   <li><a href="#input"><b>Input Variables</b></a></li>
   <li><a href="#output"><b>Output Variables</b></a></li>
@@ -867,9 +866,7 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 
 <h4 id="pol-social-security-taxability">3c. Social Security Taxability</h4>
 
-<!-- Social Security Taxability @ Threshold For Social Security Benefit Taxability 1 -->
-
-<!-- Social Security Taxability @ Threshold For Social Security Benefit Taxability 2 -->
+<!-- Social Security Taxability @ -->
 
 <h4 id="pol-above-the-line-deductions">3d. Above The Line Deductions</h4>
 
@@ -881,17 +878,11 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 
 <h4 id="pol-personal-exemptions">3e. Personal Exemptions</h4>
 
-<!-- Personal Exemptions @ Personal And Dependent Exemption Amount -->
-
-<!-- Personal Exemptions @ Personal Exemption Phaseout Rate -->
-
-<!-- Personal Exemptions @ Repeal for Dependents Under Age 18 -->
+<!-- Personal Exemptions @ -->
 
 <h4 id="pol-standard-deduction">3f. Standard Deduction</h4>
 
-<!-- Standard Deduction @ Standard Deduction Amount -->
-
-<!-- Standard Deduction @ Additional Standard Deduction For Blind And Aged -->
+<!-- Standard Deduction @ -->
 
 <h4 id="pol-nonrefundable-credits">3g. Nonrefundable Credits</h4>
 
@@ -982,8 +973,6 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 <h4 id="pol-benefits">3p. Benefits</h4>
 
 <!-- Benefits @ Benefit Repeal -->
-
-<h4 id="pol-other-parameters">3q. Other Parameters</h4>
 
 <!--  @  -->
 
