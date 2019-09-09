@@ -665,7 +665,6 @@ def test_section_titles(tests_path):
         sdict = dict()
         for line in html_text.splitlines():
             if line == '<!--  @  -->':  # the last policy parameter line
-                sdict[''] = {'': 0}
                 break  # out of line loop
             secline = (line.startswith('<!--') and
                        line.endswith('-->') and
