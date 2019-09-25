@@ -27,7 +27,7 @@ def write_html_file(old_filename, new_filename):
 
 
 # make list of recipeNN.py filenames
-RECIPES = glob.glob('recipe[0-9][0-9].py')
+RECIPES = glob.glob('recipe[0-9][0-9]*.py')
 
 # construct HTML files for each recipe in RECIPES list
 for recipe in RECIPES:
