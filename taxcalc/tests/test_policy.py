@@ -665,6 +665,7 @@ def test_section_titles(tests_path):
         sdict = dict()
         for line in html_text.splitlines():
             if line == '<!--  @  -->':  # the last policy parameter line
+                sdict[''] = {'': 0}
                 break  # out of line loop
             secline = (line.startswith('<!--') and
                        line.endswith('-->') and
@@ -686,6 +687,9 @@ def test_section_titles(tests_path):
                      'As Regular Taxable Income')
     # pylint: disable=bad-continuation
     valid_dict = {
+        '': {  # empty section_1 implies parameter not displayed in Tax-Brain
+            '': 0
+        },
         'Parameter Indexing': {
             'Offsets': 0
         },
@@ -704,16 +708,9 @@ def test_section_titles(tests_path):
         },
         'Personal Exemptions': {
             '': 0,
-            # 'Personal And Dependent Exemption Amount': 0,
-            # 'Personal Exemption Phaseout Starting Income': 0,
-            # 'Personal Exemption Phaseout Rate': 0,
-            # 'Repeal for Dependents Under Age 18': 0
         },
         'Standard Deduction': {
             '': 0,
-            # 'Standard Deduction Amount': 0,
-            # 'Additional Standard Deduction For Blind And Aged': 0
-            # 'Standard Deduction For Dependents': 0
         },
         'Nonrefundable Credits': {
             'Misc. Credit Limits': 0,

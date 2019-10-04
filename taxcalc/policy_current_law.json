@@ -188,7 +188,7 @@
     "SS_percentage1": {
         "long_name": "Social Security taxable income decimal fraction 1",
         "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
-        "section_1": "Social Security Taxability",
+        "section_1": "",
         "section_2": "",
         "irs_ref": "Form 1040, line 5b, instructions (Social Security Worksheets, line 2 & 13)",
         "notes": "",
@@ -230,7 +230,7 @@
     "SS_percentage2": {
         "long_name": "Social Security taxable income decimal fraction 2",
         "description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.",
-        "section_1": "Social Security Taxability",
+        "section_1": "",
         "section_2": "",
         "irs_ref": "Form 1040, line 5b, instructions (Social Security Worksheets, line 15)",
         "notes": "",
@@ -810,7 +810,7 @@
     "II_em_ps": {
         "long_name": "Personal exemption phaseout starting income",
         "description": "If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).",
-        "section_1": "Personal Exemptions",
+        "section_1": "",
         "section_2": "",
         "irs_ref": "Form 1040, line 42, instruction (Worksheet).",
         "notes": "",
@@ -930,7 +930,7 @@
     "STD_Dep": {
         "long_name": "Standard deduction for dependents",
         "description": "This is the maximum standard deduction for dependents.",
-        "section_1": "Standard Deduction",
+        "section_1": "",
         "section_2": "",
         "irs_ref": "Form 1040, line 8, instructions. ",
         "notes": "",
@@ -992,7 +992,7 @@
     "STD_allow_charity_ded_nonitemizers": {
         "long_name": "Allow standard deduction filers to take the charitable contributions deduction",
         "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.",
-        "section_1": "Standard Deduction",
+        "section_1": "",
         "section_2": "",
         "irs_ref": "",
         "notes": "",
@@ -4539,8 +4539,8 @@
     "AMT_child_em": {
         "long_name": "Child AMT exemption additional income base",
         "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
-        "section_1": "Personal Income",
-        "section_2": "Alternative Minimum Tax",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "Form 6251, line 5, instruction.",
         "notes": "",
         "value_yrs": [2013,
@@ -4570,8 +4570,8 @@
     "AMT_child_em_c_age": {
         "long_name": "Age ceiling for special AMT exemption",
         "description": "Individuals under this age must use the child AMT exemption rules.",
-        "section_1": "Personal Income",
-        "section_2": "Alternative Minimum Tax",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "Form 6251, line 5, instruction.",
         "notes": "",
         "value_yrs": [2013],
@@ -4667,8 +4667,8 @@
     "AMT_em_pe": {
         "long_name": "AMT exemption phaseout ending AMT taxable income for Married filling Separately",
         "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
-        "section_1": "Personal Income",
-        "section_2": "Alternative Minimum Tax",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "Form 6251, line 4, instruction.",
         "notes": "",
         "value_yrs": [2013,
@@ -5423,8 +5423,8 @@
     "LLC_Expense_c": {
         "long_name": "Lifetime learning credit expense limit",
         "description": "The maximum expense eligible for lifetime learning credit, per child.",
-        "section_1": "Nonrefundable Credits",
-        "section_2": "Misc. Credit Limits",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "Form 8863, line 11, in-line.",
         "notes": "",
         "value_yrs": [2013],
@@ -5444,8 +5444,8 @@
     "ETC_pe_Single": {
         "long_name": "Education tax credit phaseout ends (Single)",
         "description": "The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.",
-        "section_1": "Nonrefundable Credits",
-        "section_2": "Misc. Credit Limits",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "value_yrs": [2013,
@@ -5475,8 +5475,8 @@
     "ETC_pe_Married": {
         "long_name": "Education tax credit phaseout ends (Married)",
         "description": "The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.",
-        "section_1": "Nonrefundable Credits",
-        "section_2": "Misc. Credit Limits",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "Form 8863, line 13, inline.",
         "notes": "",
         "value_yrs": [2013,
@@ -6295,8 +6295,8 @@
     "CR_Charity_rt": {
         "long_name": "Charity Credit rate",
         "description": "If greater than zero, this decimal fraction represents the portion of total charitable contributions provided as a nonrefundable tax credit.",
-        "section_1": "Nonrefundable Credits",
-        "section_2": "Misc. Credit Limits",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "",
         "notes": "Credit claimed will be (rt) * (e19800 + e20100)",
         "value_yrs": [2013],
@@ -6316,8 +6316,8 @@
     "CR_Charity_f": {
         "long_name": "Charity Credit Floor",
         "description": "Only charitable giving in excess of this dollar amount is eligible for the charity credit.",
-        "section_1": "Nonrefundable Credits",
-        "section_2": "Misc. Credit Limits",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "",
         "notes": "",
         "value_yrs": [2013],
@@ -6337,8 +6337,8 @@
     "CR_Charity_frt": {
         "long_name": "Charity Credit Floor Rate",
         "description": "Only charitable giving in excess of this decimal fraction of AGI is eligible for the charity credit.",
-        "section_1": "Nonrefundable Credits",
-        "section_2": "Misc. Credit Limits",
+        "section_1": "",
+        "section_2": "",
         "irs_ref": "",
         "notes": "",
         "value_yrs": [2013],

@@ -52,6 +52,7 @@
       <li><a href="#pol-surtaxes">Surtaxes</a></li>
       <li><a href="#pol-ubi">Universal Basic Income</a></li>
       <li><a href="#pol-benefits">Benefits</a></li>
+      <li><a href="#pol-other-parameters">Other Parameters</a></li>
     </ol>
   <li><a href="#input"><b>Input Variables</b></a></li>
   <li><a href="#output"><b>Output Variables</b></a></li>
@@ -545,7 +546,7 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2022.
 
 (7)$ ls cps-22*
-cps-22-#-ref3-#-doc.text	cps-22-#-ref3-#.csv
+cps-22-#-ref3-#-doc.text  cps-22-#-ref3-#.csv
 cps-22-#-ref3-#-tab.text
 
 (7)$ cat cps-22-#-ref3-#-tab.text
@@ -607,8 +608,8 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24-*
-cps-24-#-ref3-#-atr.html	cps-24-#-ref3-#-pch.html
-cps-24-#-ref3-#-doc.text	cps-24-#-ref3-#.csv
+cps-24-#-ref3-#-atr.html  cps-24-#-ref3-#-pch.html
+cps-24-#-ref3-#-doc.text  cps-24-#-ref3-#.csv
 cps-24-#-ref3-#-mtr.html
 </pre></p>
 
@@ -973,6 +974,8 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 <h4 id="pol-benefits">3p. Benefits</h4>
 
 <!-- Benefits @ Benefit Repeal -->
+
+<h4 id="pol-other-parameters">3q. Other Parameters</h4>
 
 <!--  @  -->
 
