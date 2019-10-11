@@ -699,10 +699,7 @@ def test_section_titles(tests_path):
             'Additional Medicare FICA': 0
         },
         'Social Security Taxability': {
-            'Threshold For Social Security Benefit Taxability 1': 0,
-            # 'Social Security Taxable Income Decimal Fraction 1': 0,
-            'Threshold For Social Security Benefit Taxability 2': 0
-            # 'Social Security Taxable Income Decimal Fraction 2': 0
+            '': 0,
         },
         'Above The Line Deductions': {
             'Misc. Adjustment Haircuts': 0,
@@ -710,15 +707,10 @@ def test_section_titles(tests_path):
             'Child And Elderly Care': 0
         },
         'Personal Exemptions': {
-            'Personal And Dependent Exemption Amount': 0,
-            # 'Personal Exemption Phaseout Starting Income': 0,
-            'Personal Exemption Phaseout Rate': 0,
-            'Repeal for Dependents Under Age 18': 0
+            '': 0,
         },
         'Standard Deduction': {
-            'Standard Deduction Amount': 0,
-            'Additional Standard Deduction For Blind And Aged': 0
-            # 'Standard Deduction For Dependents': 0
+            '': 0,
         },
         'Nonrefundable Credits': {
             'Misc. Credit Limits': 0,
