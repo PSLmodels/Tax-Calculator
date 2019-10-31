@@ -17,9 +17,6 @@ for a complete commit history.
 **New Features**
 - Add a version of recipe04 for Pandas users [[#2373](https://github.com/PSLmodels/Tax-Calculator/pull/2373)
   by Max Ghenis]
-- Streamlined parameter documentation
-  [[#2372](https://github.com/PSLmodels/Tax-Calculator/pull/2372)
-  by Peter Metz]
 
 **Bug Fixes**
 - None

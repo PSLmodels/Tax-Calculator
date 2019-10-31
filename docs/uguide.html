@@ -547,7 +547,7 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2022.
 
 (7)$ ls cps-22*
-cps-22-#-ref3-#-doc.text  cps-22-#-ref3-#.csv
+cps-22-#-ref3-#-doc.text	cps-22-#-ref3-#.csv
 cps-22-#-ref3-#-tab.text
 
 (7)$ cat cps-22-#-ref3-#-tab.text
@@ -609,8 +609,8 @@ You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
 (8)$ ls cps-24-*
-cps-24-#-ref3-#-atr.html  cps-24-#-ref3-#-pch.html
-cps-24-#-ref3-#-doc.text  cps-24-#-ref3-#.csv
+cps-24-#-ref3-#-atr.html	cps-24-#-ref3-#-pch.html
+cps-24-#-ref3-#-doc.text	cps-24-#-ref3-#.csv
 cps-24-#-ref3-#-mtr.html
 </pre></p>
 
@@ -868,7 +868,9 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 
 <h4 id="pol-social-security-taxability">3c. Social Security Taxability</h4>
 
-<!-- Social Security Taxability @ -->
+<p><b>Social Security Taxability &mdash; Threshold For Social Security Benefit Taxability 1</b><br><i>tc Name:</i> SS_thd50<br><i>TB Name:</i> Threshold for Social Security benefit taxability 1<br><i>Description:</i> The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]<br>2014: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]<br>2015: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]<br>2016: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]<br>2017: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]<br>2018: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]<br><i>Valid Range:</i> min = 0 and max = SS_thd85<br><i>Out-of-Range Action:</i> stop</p>
+
+<p><b>Social Security Taxability &mdash; Threshold For Social Security Benefit Taxability 2</b><br><i>tc Name:</i> SS_thd85<br><i>TB Name:</i> Threshold for Social Security benefit taxability 2<br><i>Description:</i> The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br>2014: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br>2015: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br>2016: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br>2017: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br>2018: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]<br><i>Valid Range:</i> min = SS_thd50 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p>
 
 <h4 id="pol-above-the-line-deductions">3d. Above The Line Deductions</h4>
 
@@ -880,11 +882,17 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 
 <h4 id="pol-personal-exemptions">3e. Personal Exemptions</h4>
 
-<!-- Personal Exemptions @ -->
+<p><b>Personal Exemptions &mdash; Personal And Dependent Exemption Amount</b><br><i>tc Name:</i> II_em<br><i>TB Name:</i> Personal and dependent exemption amount<br><i>Description:</i> Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 3900.0<br>2014: 3950.0<br>2015: 4000.0<br>2016: 4050.0<br>2017: 4050.0<br>2018: 0.0<br>2019: 0.0<br>2020: 0.0<br>2021: 0.0<br>2022: 0.0<br>2023: 0.0<br>2024: 0.0<br>2025: 0.0<br>2026: 4901.0<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p>
+
+<p><b>Personal Exemptions &mdash; Personal Exemption Phaseout Rate</b><br><i>tc Name:</i> II_prt<br><i>TB Name:</i> Personal exemption phaseout rate<br><i>Description:</i> Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> real<br><i>Known Values:</i><br>2013: 0.02<br>2014: 0.02<br>2015: 0.02<br>2016: 0.02<br>2017: 0.02<br>2018: 0.02<br><i>Valid Range:</i> min = 0 and max = 1<br><i>Out-of-Range Action:</i> stop</p>
+
+<p><b>Personal Exemptions &mdash; Repeal for Dependents Under Age 18</b><br><i>tc Name:</i> II_no_em_nu18<br><i>TB Name:</i> Repeal personal exemptions for dependents under age 18<br><i>Description:</i> Total personal exemptions will be decreased by the number of dependents under the age of 18.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> False&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> False<br><i>Value Type:</i> boolean<br><i>Known Values:</i><br>2013: False<br>2014: False<br>2015: False<br>2016: False<br>2017: False<br>2018: False<br><i>Valid Range:</i> min = False and max = True<br><i>Out-of-Range Action:</i> stop</p>
 
 <h4 id="pol-standard-deduction">3f. Standard Deduction</h4>
 
-<!-- Standard Deduction @ -->
+<p><b>Standard Deduction &mdash; Standard Deduction Amount</b><br><i>tc Name:</i> STD<br><i>TB Name:</i> Standard deduction amount<br><i>Description:</i> Amount filing unit can use as a standard deduction.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [6100.0, 12200.0, 6100.0, 8950.0, 12200.0]<br>2014: [6200.0, 12400.0, 6200.0, 9100.0, 12400.0]<br>2015: [6300.0, 12600.0, 6300.0, 9250.0, 12600.0]<br>2016: [6300.0, 12600.0, 6300.0, 9300.0, 12600.0]<br>2017: [6350.0, 12700.0, 6350.0, 9350.0, 12700.0]<br>2018: [12000.0, 24000.0, 12000.0, 18000.0, 24000.0]<br>2019: [12268.8, 24537.6, 12268.8, 18403.2, 24537.6]<br>2020: [12497.0, 24994.0, 12497.0, 18745.5, 24994.0]<br>2021: [12788.18, 25576.36, 12788.18, 19182.27, 25576.36]<br>2022: [13081.03, 26162.06, 13081.03, 19621.54, 26162.06]<br>2023: [13379.28, 26758.55, 13379.28, 20068.91, 26758.55]<br>2024: [13674.96, 27349.92, 13674.96, 20512.44, 27349.92]<br>2025: [13963.5, 27927.0, 13963.5, 20945.25, 27927.0]<br>2026: [7685.0, 15369.0, 7685.0, 11315.0, 15369.0]<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p>
+
+<p><b>Standard Deduction &mdash; Additional Standard Deduction For Blind And Aged</b><br><i>tc Name:</i> STD_Aged<br><i>TB Name:</i> Additional standard deduction for blind and aged<br><i>Description:</i> To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction.<br><i>Has An Effect When Using:</i>&nbsp;&nbsp; <i>PUF data:</i> True&nbsp;&nbsp; <i>CPS data:</i> True<br><i>Can Be Inflation Indexed:</i> True&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> True<br><i>Value Type:</i> real<br><i>Known Values:</i><br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]<br>2013: [1500.0, 1200.0, 1200.0, 1500.0, 1500.0]<br>2014: [1550.0, 1200.0, 1200.0, 1550.0, 1550.0]<br>2015: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br>2016: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br>2017: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br>2018: [1600.0, 1300.0, 1300.0, 1600.0, 1300.0]<br><i>Valid Range:</i> min = 0 and max = 9e+99<br><i>Out-of-Range Action:</i> stop</p>
 
 <h4 id="pol-nonrefundable-credits">3g. Nonrefundable Credits</h4>
 
