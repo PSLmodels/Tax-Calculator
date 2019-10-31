@@ -1,6 +1,14 @@
 TAX-CALCULATOR CHANGE HISTORY
 =============================
 
+Changes in release 2.6.0 on 2019-10-31
+--------------------------------------
+
+**This is an enhancement and bug-fix release.**
+
+- Add an additional version of recipe04 from the Tax-Calculator cookbook that shows how to use the Python Data Analysis Library (pandas) in applying different response elasticities to different earnings groups.     
+
+- Streamline the documentation of parameters so that parameter names are not duplicated in parameter section headers
 
 Changes in release 2.5.0 on 2019-08-06
 --------------------------------------

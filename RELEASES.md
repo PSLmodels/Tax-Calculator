@@ -4,6 +4,26 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-10-31 Release 2.6.0
+------------------------
+(last merged pull request is
+[#2379](https://github.com/PSLmodels/Tax-Calculator/pull/2379))
+
+**This is an enhancement release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Add a version of recipe04 for Pandas users [[#2373](https://github.com/PSLmodels/Tax-Calculator/pull/2373)
+  by Max Ghenis]
+- Streamlined parameter documentation
+  [[#2372](https://github.com/PSLmodels/Tax-Calculator/pull/2372)
+  by Peter Metz]
+
+**Bug Fixes**
+- None
+
 2019-08-06 Release 2.5.0
 ------------------------
 (last merged pull request is
