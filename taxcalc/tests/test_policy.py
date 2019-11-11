@@ -1003,3 +1003,30 @@ def test_index_offset_reform():
     expvalue = round(pvalue2[2020] * (1. + expindexrate), 2)
     # ... compare expected value with actual value of pvalue2 for 2021
     assert np.allclose([expvalue], [pvalue2[2021]])
+
+
+def test_cpi_offset_affect_on_prior_years():
+    """
+    Test that CPI_offset does not have affect on inflation
+    rates in earlier years.
+    """
+    reform = {'CPI_offset': {2022: -0.005}}
+    p1 = Policy()
+    p2 = Policy()
+    p2.implement_reform(reform)
+
+    start_year = p1.start_year
+    p1_rates = np.array(p1.inflation_rates())
+    p2_rates = np.array(p2.inflation_rates())
+
+    # Inflation rates prior to 2022 are the same.
+    np.testing.assert_allclose(
+        p1_rates[:2022 - start_year],
+        p2_rates[:2022 - start_year]
+    )
+
+    # Inflation rate in 2022 was updated.
+    np.testing.assert_allclose(
+        p1_rates[2022 - start_year + 1],
+        p2_rates[2022 - start_year + 1] - (-0.005)
+    )
