@@ -1027,6 +1027,6 @@ def test_cpi_offset_affect_on_prior_years():
 
     # Inflation rate in 2022 was updated.
     np.testing.assert_allclose(
-        p1_rates[2022 - start_year + 1],
-        p2_rates[2022 - start_year + 1] - (-0.005)
+        p1_rates[2022 - start_year],
+        p2_rates[2022 - start_year] - (-0.005)
     )
