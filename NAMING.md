@@ -82,20 +82,20 @@ Combine abbreviations to create more complex roles: frt = floor rate.
 Examples
 --------
 
-   **_AMT_em**: Alternative Minimum Tax exemption amount
+   **AMT_em**: Alternative Minimum Tax exemption amount
 
-   **_ID_ps**: Itemized Deduction phaseout Adjusted Gross Income start (Pease)
+   **ID_ps**: Itemized Deduction phaseout Adjusted Gross Income start (Pease)
 
-   **_AMT_brk1**: Alternative Minimum Tax first rate bracket top
+   **AMT_brk1**: Alternative Minimum Tax first rate bracket top
 
-   **_SS_Earnings_c**: Maximum taxable earnings for Social Security
+   **SS_Earnings_c**: Maximum taxable earnings for Social Security
 
-   **_AMT_Child_em**: Child Alternative Minimum Tax exemption
+   **AMT_child_em**: Child Alternative Minimum Tax exemption
    additional income base
 
-   **_ETC_pe_Married**: Education Tax Credit phaseout ends (Married)
+   **ETC_pe_Married**: Education Tax Credit phaseout ends (Married)
 
-   **_EITC_MinEligAge**: Earned Income Tax Credit minimum eligibility
+   **EITC_MinEligAge**: Earned Income Tax Credit minimum eligibility
    age for those with no EITC-eligible children
 
 Placing New Parameters in `policy_current_law.json`
