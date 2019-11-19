@@ -1,4 +1,6 @@
 name: taxcalc-dev
+channels:
+  - conda-forge
 dependencies:
 - python
 - "numpy>=1.14"
@@ -12,3 +14,4 @@ dependencies:
 - pycodestyle
 - pylint
 - coverage
+- "paramtools>=0.10.0"
