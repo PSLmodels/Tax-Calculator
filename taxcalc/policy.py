@@ -6,6 +6,8 @@ Tax-Calculator federal tax policy Policy class.
 # pylint --disable=locally-disabled policy.py
 
 import os
+import json
+import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -68,14 +70,10 @@ class Policy(Parameters):
         '_CTC_c': 'CTC_c was redefined in release 1.0.0'
     }
     # (3) specify which Policy parameters are wage (rather than price) indexed
-    WAGE_INDEXED_PARAMS = [
-        '_SS_Earnings_c',
-        '_SS_Earnings_thd'
-    ]
+    WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
     def __init__(self, gfactors=None, only_reading_defaults=False):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
-        super().__init__()
         if only_reading_defaults:
             return
         # handle gfactors argument
@@ -85,28 +83,9 @@ class Policy(Parameters):
             self._gfactors = gfactors
         else:
             raise ValueError('gfactors is not None or a GrowFactors instance')
-        # read default parameters and initialize
-        syr = Policy.JSON_START_YEAR
-        lyr = Policy.LAST_BUDGET_YEAR
-        nyrs = Policy.DEFAULT_NUM_YEARS
-        self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
-        self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
-        self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
-                        Policy.REMOVED_PARAMS,
-                        Policy.REDEFINED_PARAMS,
-                        Policy.WAGE_INDEXED_PARAMS)
 
-    def inflation_rates(self):
-        """
-        Returns list of price inflation rates starting with JSON_START_YEAR.
-        """
-        return self._inflation_rates
+        super().__init__()
 
-    def wage_growth_rates(self):
-        """
-        Returns list of wage growth rates starting with JSON_START_YEAR.
-        """
-        return self._wage_growth_rates
 
     @staticmethod
     def read_json_reform(obj):
@@ -121,18 +100,39 @@ class Policy(Parameters):
     def implement_reform(self, reform,
                          print_warnings=True, raise_errors=True):
         """
-        Implement specified policy reform and leave current_year unchanged.
-        See Parameters._update for argument documentation and details about
-        the expected structure of the reform dictionary.
+        Implement reform using Tax-Calculator syled reforms/adjustments. Users
+        may also use the adjust method with ParamTools styled reforms.
         """
-        self._update(reform, print_warnings, raise_errors)
+        # need to do conversion:
+        return self._update(reform, print_warnings=print_warnings, raise_errors=raise_errors)
 
     @staticmethod
     def parameter_list():
         """
         Returns list of parameter names in the policy_current_law.json file.
         """
-        policy = Policy(only_reading_defaults=True)
-        plist = list(policy._vals.keys())  # pylint: disable=protected-access
-        del policy
-        return plist
+        path = os.path.join(Policy.DEFAULTS_FILE_PATH, Policy.DEFAULTS_FILE_NAME)
+        with open(path) as f:
+            defaults = json.loads(f.read())  # pylint: disable=protected-access
+        return [k for k in defaults if k!= "schema"]
+
+    def set_rates(self):
+        """Initialize taxcalc indexing data."""
+        cpi_vals = [vo["value"] for vo in self._data["CPI_offset"]["value"]]
+        # extend cpi_offset values through budget window if they
+        # have not been extended already.
+        cpi_vals = cpi_vals + cpi_vals[-1:] * (2029 - 2013 + 1 - len(cpi_vals))
+        cpi_offset = {(2013 + ix): val for ix, val in enumerate(cpi_vals)}
+
+        if not self._gfactors:
+            self._gfactors = GrowFactors()
+
+        self.inflation_rates = {
+            2013 + ix: np.round(rate + cpi_offset[2013 + ix], 4)
+            for ix, rate in enumerate(self._gfactors.price_inflation_rates(2013, 2029))
+        }
+
+        self.wage_growth_rates = {
+            2013 + ix: rate
+            for ix, rate in enumerate(self._gfactors.wage_growth_rates(2013, 2029))
+        }

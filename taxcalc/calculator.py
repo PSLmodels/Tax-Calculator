@@ -277,7 +277,11 @@ class Calculator():
          return None (which can be ignored).
         """
         if param_value is None:
-            return getattr(self.__policy, param_name)
+            val = getattr(self.__policy, param_name)
+            if param_name.startswith("_"):
+                return val
+            else:
+                return val[0] # drop down a dimension.
         setattr(self.__policy, param_name, param_value)
         return None
 

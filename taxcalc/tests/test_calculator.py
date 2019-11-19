@@ -232,10 +232,10 @@ def test_make_calculator_increment_years_first(cps_subsample):
     rec = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=pol, records=rec)
     # compare expected policy parameter values with those embedded in calc
-    irates = pol.inflation_rates()
+    irates = pol.inflation_rates  # TODO: should this be a method or a property? ()
     syr = Policy.JSON_START_YEAR
-    irate2015 = irates[2015 - syr]
-    irate2016 = irates[2016 - syr]
+    irate2015 = irates[2015]
+    irate2016 = irates[2016]
     std6 = std5 * (1.0 + irate2015)
     std7 = std6 * (1.0 + irate2016)
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500],

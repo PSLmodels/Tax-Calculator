@@ -34,8 +34,7 @@ class Consumption(Parameters):
 
     def __init__(self):
         super().__init__()
-        self.initialize(Consumption.JSON_START_YEAR,
-                        Consumption.DEFAULT_NUM_YEARS)
+        self.set_state(year=self.JSON_START_YEAR)
 
     @staticmethod
     def read_json_update(obj):
@@ -46,6 +45,7 @@ class Consumption(Parameters):
         pointing to a valid JSON file hosted online, or a valid JSON text.
         """
         return Parameters._read_json_revision(obj, 'consumption')
+        # raise NotImplementedError()
 
     def update_consumption(self, revision,
                            print_warnings=True, raise_errors=True):

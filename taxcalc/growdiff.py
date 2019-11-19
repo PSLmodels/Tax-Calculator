@@ -31,11 +31,6 @@ class GrowDiff(Parameters):
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-    def __init__(self):
-        super().__init__()
-        self.initialize(GrowDiff.JSON_START_YEAR,
-                        GrowDiff.DEFAULT_NUM_YEARS)
-
     @staticmethod
     def read_json_update(obj, topkey):
         """

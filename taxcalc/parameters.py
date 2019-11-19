@@ -1,862 +1,373 @@
-"""
-Tax-Calculator abstract base parameters class.
-"""
-# CODING-STYLE CHECKS:
-# pycodestyle parameters.py
-# pylint --disable=locally-disabled parameters.py
-
+import copy
 import os
 import re
-import abc
-from collections import OrderedDict
-import requests
+from collections import defaultdict
+
+import paramtools
 import numpy as np
-from taxcalc.utils import read_egg_json, json_to_dict
+import requests
+
+import taxcalc
+from taxcalc.utils import json_to_dict
 
 
-class Parameters():
-    """
-    Inherit from this class for Policy, Consumption, GrowDiff, and
-    other groups of parameters that need to have a set_year method.
-    Override this __init__ method and DEFAULTS_FILE_NAME and
-    DEFAULTS_FILE_PATH in the inheriting class.
-    """
-    # pylint: disable=too-many-instance-attributes
+def lt_func(x, y) -> bool:
+    return all(x < item for item in y)
 
-    __metaclass__ = abc.ABCMeta
 
+def select_lt(value_objects, exact_match, labels, tree=None):
+    return paramtools.select(value_objects, exact_match, lt_func, labels, tree)
+
+
+class Parameters(paramtools.Parameters):
+    defaults = None
+    array_first = True
+    label_to_extend = "year"
+    uses_extend_func = True
+
+    WAGE_INDEXED_PARAMS = ()
+
+    # Legacy class attrs
     DEFAULTS_FILE_NAME = None
     DEFAULTS_FILE_PATH = None
+    JSON_START_YEAR = None
+    LAST_KNOWN_YEAR = None
 
-    def __init__(self):
-        # convert JSON in DEFAULTS_FILE_NAME into self._vals dictionary
-        assert self.DEFAULTS_FILE_NAME is not None
-        assert self.DEFAULTS_FILE_PATH is not None
-        file_path = os.path.join(self.DEFAULTS_FILE_PATH,
-                                 self.DEFAULTS_FILE_NAME)
-        if os.path.isfile(file_path):
-            with open(file_path) as pfile:
-                json_text = pfile.read()
-            vals = json_to_dict(json_text)
-        else:  # find file in conda package
-            vals = read_egg_json(self.DEFAULTS_FILE_NAME)  # pragma: no cover
-        # add leading underscore character to each parameter name
-        self._vals = OrderedDict()
-        for pname in vals:
-            self._vals['_' + pname] = vals[pname]
-        del vals
-        # declare several scalar variables
-        self._current_year = 0
-        self._start_year = 0
-        self._end_year = 0
-        self._num_years = 0
-        self._last_known_year = 0
-        # declare optional _inflation_rates and _wage_growth_rates
-        self._inflation_rates = list()
-        self._wage_growth_rates = list()
-        self._wage_indexed = None
-        # declare removed and redefined parameters
-        self._removed = None
-        self._redefined = None
-        # declare parameter warning/error variables
-        self.parameter_warnings = ''
-        self.parameter_errors = ''
+    def __init__(self, *args, **kwargs):
+        self.wage_growth_rates = None
+        self.inflation_rates = None
+        if self.defaults is None and self.DEFAULTS_FILE_PATH and self.DEFAULTS_FILE_NAME:
+            print("trying DEFAULTS_FILE_PATH and DEFAULTS_FILE_NAME")
+            self.defaults = os.path.join(self.DEFAULTS_FILE_PATH, self.DEFAULTS_FILE_NAME)
+        super().__init__(*args, **kwargs)
+        self._init_values = {
+            param: data["value"]
+            for param, data in self.read_params(self.defaults).items()
+            if param != "schema"
+        }
+        if self.JSON_START_YEAR:
+            self.set_state(year=self.JSON_START_YEAR)
 
-    def initialize(self, start_year, num_years, last_known_year=None,
-                   removed=None, redefined=None, wage_indexed=None):
+    def adjust(self, params_or_path, **kwargs):
         """
-        Called from subclass __init__ function.
-        """
-        # pylint: disable=too-many-arguments
-        # check arguments
-        assert start_year >= 0
-        assert num_years >= 1
-        end_year = start_year + num_years - 1
-        assert last_known_year is None or isinstance(last_known_year, int)
-        assert removed is None or isinstance(removed, dict)
-        assert redefined is None or isinstance(redefined, dict)
-        assert wage_indexed is None or isinstance(wage_indexed, list)
-        # remember arguments
-        self._current_year = start_year
-        self._start_year = start_year
-        self._num_years = num_years
-        self._end_year = end_year
-        if last_known_year is None:
-            self._last_known_year = start_year
-        else:
-            assert last_known_year >= start_year
-            assert last_known_year <= end_year
-            self._last_known_year = last_known_year
-        if removed is None:
-            self._removed = dict()
-        else:
-            self._removed = removed
-        if redefined is None:
-            self._redefined = dict()
-        else:
-            self._redefined = redefined
-        if wage_indexed is None:
-            self._wage_indexed = list()
-        else:
-            self._wage_indexed = wage_indexed
-        # set default parameter values
-        self._apply_cpi_offset_to_inflation_rates()
-        self._set_default_vals()
+        Custom adjust method that handles special indexing logic. The logic
+        is:
 
-    def inflation_rates(self):
-        """
-        Override this method in subclass when appropriate.
-        """
-        return self._inflation_rates
+        1. If "CPI_offset" is adjusted, revert all values of indexed parameters
+            to the 'known' values:
+            a. The current values of parameters that are being adjusted are
+                deleted after the first year in which CPI_offset is adjusted.
+            b. The current values of parameters that are not being adjusted
+                (i.e. are not in params) are deleted after the last known year.
+            After the 'unknown' values have been deleted, the last known value
+            is extrapolated through the budget window. If there are indexed
+            parameters in the adjustment, they will be included in the final
+            adjustment call (unless their indexed status is changed).
+        2. If the "indexed" status is updated for any parameter:
+            a. if a parameter has values that are being adjusted before
+                the indexed status is adjusted, update those parameters fist.
+            b. extend the values of that parameter to the year in which
+                the status is changed.
+            c. change the the indexed status for the parameter.
+            d. update parameter values in adjustment that are adjusted after
+                the year in which the indexed status changes.
+            e. using the new "-indexed" status, extend the values of that
+                parameter through the remaining years or until the -indexed
+                status changes again.
+        3. Update all parameters that are not indexing related, i.e. they are
+            not "CPI_offset" or do not end with "-indexed".
+        4. Return parsed adjustment with all adjustments, including "-indexed"
+            parameters.
 
-    def wage_growth_rates(self):
+        Notable side-effects:
+            - All values of indexed parameters, including default values, are wiped out after
+                the first year in which the "CPI_offset" is changed. This is only necessary because
+                Tax-Calculator hard-codes inflated values. If Tax-Calculator only hard-coded values
+                that were changed for non-inflation related reasons, then this would not be
+                necessary for default values.
+            - All values of a parameter whose indexed status is adjusted are wiped out after the
+                year in which the value is adjusted for the same hard-coding reason.
         """
-        Override this method in subclass when appropriate.
-        """
-        return self._wage_growth_rates
+        min_year = min(self._stateless_label_grid["year"])
 
-    @property
-    def num_years(self):
-        """
-        Parameters class number of parameter years property.
-        """
-        return self._num_years
+        # turn off extra ops during the intermediary adjustments so that
+        # expensive and unnecessary operations are not changed.
+        label_to_extend = self.label_to_extend
+        array_first = self.array_first
+        self.array_first = False
 
-    @property
-    def current_year(self):
-        """
-        Parameters class current calendar year property.
-        """
-        return self._current_year
+        params = self.read_params(params_or_path)
 
-    @property
-    def start_year(self):
-        """
-        Parameters class first parameter year property.
-        """
-        return self._start_year
+        # Check if CPI_offset is adjusted. If so, reset values of all indexed
+        # parameters after year where CPI_offset is changed. If CPI_offset is
+        # changed multiple times, then the reset year is the year in which the
+        # CPI_offset is first changed.
+        needs_reset = []
+        if params.get("CPI_offset") is not None:
+            # get first year CPI_offset is adjusted
+            cpi_adj = super().adjust({"CPI_offset": params["CPI_offset"]}, **kwargs)
+            # turn off extend now that CPI_offset has been updated.
+            self.label_to_extend = None
+            cpi_min_year = min(cpi_adj["CPI_offset"], key=lambda vo: vo["year"])
+            # apply new CPI_offset values to inflation rates
+            rate_adjustment_vals = filter(
+                lambda vo: vo["year"] >= cpi_min_year["value"],
+                self._data["CPI_offset"]["value"]
+            )
+            for cpi_vo in rate_adjustment_vals:
+                self.inflation_rates[cpi_vo["year"]] += cpi_vo["value"]
+            # 1. delete all unknown values.
+            # 1.a for revision these are years specified after cpi_min_year
+            to_delete = {}
+            to_adjust = {}
+            for param in params:
+                if param == "CPI_offset" or param in self.WAGE_INDEXED_PARAMS:
+                    continue
+                if param.endswith("-indexed"):
+                    param = param.split("-indexed")[0]
+                # TODO: disting. btw wage and price?
+                if self._data[param].get("indexed", False):
+                    gt = self.select_gt(param, True, year=cpi_min_year["year"])
+                    to_delete[param] = list([dict(vo, **{"value": None}) for vo in gt])
+                    to_adjust[param] = select_lt(
+                        self._init_values[param],
+                        True,
+                        {"year": cpi_min_year["year"] + 1},
+                    )
+                    needs_reset.append(param)
+            super().adjust(to_delete, **kwargs)
+            super().adjust(to_adjust, **kwargs)
 
-    @property
-    def last_known_year(self):
-        """
-        Parameters class last known parameter year property.
-        """
-        return self._last_known_year
+            # 1.b for all others these are years after last_known_year
+            to_delete = {}
+            to_adjust = {}
+            last_known_year = max(cpi_min_year["year"], self.LAST_KNOWN_YEAR)
+            for param in self._data:
+                if (
+                    param in params
+                    or param == "CPI_offset"
+                    or param in self.WAGE_INDEXED_PARAMS
+                ):
+                    continue
+                if self._data[param].get("indexed", False):  # TODO: see above
+                    gt = self.select_gt(param, True, year=last_known_year)
+                    to_delete[param] = list([dict(vo, **{"value": None}) for vo in gt])
+                    to_adjust[param] = select_lt(
+                        self._init_values[param], True, {"year": last_known_year + 1}
+                    )
+                    needs_reset.append(param)
 
-    @property
-    def end_year(self):
-        """
-        Parameters class last parameter year property.
-        """
-        return self._end_year
+            super().adjust(to_delete, **kwargs)
+            super().adjust(to_adjust, **kwargs)
 
-    def set_year(self, year):
-        """
-        Set parameters to their values for the specified calendar year.
+            self.extend(label_to_extend="year")
 
-        Parameters
-        ----------
-        year: integer
-            calendar year for which to set current_year and parameter values
-
-        Raises
-        ------
-        ValueError:
-            if year is not in [start_year, end_year] range.
-
-        Returns
-        -------
-        nothing: void
-        """
-        if year < self.start_year or year > self.end_year:
-            msg = 'year {} passed to set_year() must be in [{},{}] range.'
-            raise ValueError(msg.format(year, self.start_year, self.end_year))
-        self._current_year = year
-        iyr = year - self._start_year
-        for name in self._vals:
-            arr = getattr(self, name)
-            setattr(self, name[1:], arr[iyr])
-
-    def metadata(self):
-        """
-        Returns ordered dictionary of all parameter information based on
-        DEFAULTS_FILE_NAME contents with each parameter's 'start_year',
-        'value_yrs', and 'value' key values updated so that they contain
-        just the current_year information.
-        """
-        mdata = OrderedDict()
-        for pname, pdata in self._vals.items():
-            name = pname[1:]
-            mdata[name] = pdata
-            mdata[name]['start_year'] = '{}'.format(self.current_year)
-            mdata[name]['value_yrs'] = ['{}'.format(self.current_year)]
-            valraw = getattr(self, name)
-            if isinstance(valraw, np.ndarray):
-                val = valraw.tolist()
-            else:
-                val = valraw
-            mdata[name]['value'] = val
-        return mdata
-
-    @staticmethod
-    def years_in_revision(revision):
-        """
-        Return list of years in specified revision dictionary, which is
-        assumed to have a param:year:value format.
-        """
-        assert isinstance(revision, dict)
-        years = list()
-        for _, paramdata in revision.items():
-            assert isinstance(paramdata, dict)
-            for year, _ in paramdata.items():
-                assert isinstance(year, int)
-                if year not in years:
-                    years.append(year)
-        return years
-
-    # ----- begin private methods of Parameters class -----
-
-    def _set_default_vals(self, known_years=999999):
-        """
-        Called by initialize method and from some subclass methods.
-        """
-        # pylint: disable=too-many-branches,too-many-nested-blocks
-        assert isinstance(known_years, (int, dict))
-        if isinstance(known_years, int):
-            known_years_is_int = True
-        elif isinstance(known_years, dict):
-            known_years_is_int = False
-        for name, data in self._vals.items():
-            valtype = data['value_type']
-            values = data['value']
-            indexed = data.get('indexed', False)
-            if indexed:
-                if name in self._wage_indexed:
-                    index_rates = self.wage_growth_rates()
+        # 2. handle -indexed parameters
+        self.label_to_extend = None
+        index_affected = set([])
+        for param, values in params.items():
+            if param.endswith("-indexed"):
+                base_param = param.split("-indexed")[0]
+                index_affected = index_affected | {param, base_param}
+                to_index = {}
+                if isinstance(values, bool):
+                    to_index[min_year] = values
+                elif isinstance(values, list):
+                    for vo in values:
+                        to_index[vo.get("year", min_year)] = vo["value"]
                 else:
-                    index_rates = self.inflation_rates()
-                if known_years_is_int:
-                    values = values[:known_years]
-                else:
-                    values = values[:known_years[name]]
-            else:
-                index_rates = None
-            setattr(self, name,
-                    self._expand_array(values, valtype,
-                                       inflate=indexed,
-                                       inflation_rates=index_rates,
-                                       num_years=self._num_years))
-        self.set_year(self._start_year)
+                    raise Exception(
+                        "Index adjustment parameter must be a boolean or list."
+                    )
+                # 2.a adjust values less than first year in which index status
+                # was changed
+                if base_param in params:
+                    min_index_change_year = min(to_index.keys())
+                    vos = select_lt(
+                        params[base_param], False, {"year": min_index_change_year}
+                    )
+                    if vos:
+                        min_adj_year = min(vos, key=lambda vo: vo["year"])["year"]
+                        gt = self.select_gt(base_param, True, year=min_adj_year)
+                        super().adjust(
+                            {
+                                base_param: list(
+                                    [dict(vo, **{"value": None}) for vo in gt]
+                                )
+                            }
+                        )
+                        super().adjust({base_param: vos}, **kwargs)
+                        self.extend(
+                            params=[base_param],
+                            label_to_extend="year",
+                            label_to_extend_values=list(
+                                range(min_year, min_index_change_year)
+                            ),
+                        )
+
+                for year in sorted(to_index):
+                    indexed_val = to_index[year]
+                    # get and delete all default values after year where indexed status changed.
+                    gte = self.select_gt(base_param, True, year=year)
+                    super().adjust(
+                        {base_param: list([dict(vo, **{"value": None}) for vo in gte])}
+                    )
+
+                    # 2.b extend values for this parameter to the year where the indexed
+                    # status changes.
+                    if year > min_year:
+                        self.extend(
+                            params=[base_param],
+                            label_to_extend="year",
+                            label_to_extend_values=list(range(min_year, year + 1)),
+                        )
+
+                    # 2.c set indexed status.
+                    self._data[base_param]["indexed"] = indexed_val
+
+                    # 2.d adjust with values greater than or equal to current year
+                    # in params
+                    if base_param in params:
+                        vos = paramtools.select_gt(
+                            params[base_param], False, {"year": year - 1}
+                        )
+                        super().adjust({base_param: vos}, **kwargs)
+
+                    # 2.e extend values throuh remaining years.
+                    self.extend(params=[base_param], label_to_extend="year")
+
+                needs_reset.append(base_param)
+        # re-instate ops.
+        self.label_to_extend = label_to_extend
+        self.array_first = array_first
+
+        # filter out "-indexed" params
+        nonindexed_params = {
+            param: val for param, val in params.items() if param not in index_affected
+        }
+
+        needs_reset = set(needs_reset) - set(nonindexed_params.keys())
+        if needs_reset:
+            self._set_state(params=needs_reset)
+
+        # 3. Do adjustment for all non-indexing related parameters.
+        adj = super().adjust(nonindexed_params, **kwargs)
+
+        # 4. Add indexing params back for return to user.
+        adj.update(
+            {param: val for param, val in params.items() if param in index_affected}
+        )
+        return adj
+
+    def get_index_rate(self, param, label_to_extend_val):
+        """
+        Initalize indexing data and return the indexing rate value
+        depending on the parameter name and label_to_extend_val, the value of
+        label_to_extend.
+        Returns: rate to use for indexing.
+        """
+        if not self.inflation_rates or not self.wage_growth_rates:
+            self.set_rates()
+        if param in self.WAGE_INDEXED_PARAMS:
+            return self.wage_growth_rates[label_to_extend_val]
+        else:
+            return self.inflation_rates[label_to_extend_val]
+
+    def set_rates(self):
+        """
+        This method is implemented by classes inheriting
+        Parameters.
+        """
+        raise NotImplementedError()
+
+    # alias methods
 
     def _update(self, revision_, print_warnings, raise_errors):
         """
-        Update parameters using specified revision_ dictionary and
-        leave current_year unchanged.
+        A translation layer on top of Parameters.adjust. Projects
+        that have historically used the `_update` method with
+        Tax-Calculator styled adjustments can continue to do so
+        without making any changes to how they handle adjustments.
 
-        Parameters
-        ----------
-        revision_: parameter-changes dictionary in param:year:value format
-            Each param primary key must be a string;
-            each year secondary key must be an integer; and
-            each value item must be either
-              a real/integer/boolean/string value for a scalar parameter
-              or
-              a list of real/integer/boolean/string values for a vector param.
+        Converts reforms that are compatible with Tax-Calculator:
 
-        print_warnings: boolean
-            if True, prints warnings when parameter_warnings exists;
-            if False, does not print warnings when parameter_warnings exists
-                    and leaves warning handling to caller of _update method.
+        adjustment = {
+            "standard_deduction": {2024: [10000.0, 10000.0]},
+            "ss_rate": {2024: 0.2}
+        }
 
-        raise_errors: boolean
-            if True, raises ValueError when parameter_errors exists;
-            if False, does not raise ValueError when parameter_errors exists
-                    and leaves error handling to caller of _update method.
+        into reforms that are compatible with ParamTools:
 
-        Raises
-        ------
-        ValueError:
-            if revision_ is not a dictionary.
-            if each revision_ primary key is not a valid parameter name.
-            if each revision_ secondary key is not an integet.
-            if minimum year in revision_ is less than current_year.
-            if maximum year in revision_ is greater than end_year.
-            if _validate_names_types generates errors
-            if _validate_values generates errors and raise_errors is True
+        {
+            'standard_deduction': [
+                {'year': 2024, 'marital_status': 'single', 'value': 10000.0},
+                {'year': 2024, 'marital_status': 'joint', 'value': 10000.0}
+            ],
+            'ss_rate': [{'value': 0.2}]}
+        }
 
-        Returns
-        -------
-        nothing: void
         """
-        # pylint: disable=too-many-locals,too-many-branches
-        # check revisions_ type and whether empty
         if not isinstance(revision_, dict):
-            raise ValueError('ERROR: YYYY PARAM revision_ is not a dictionary')
-        if not revision_:
-            return  # no revisions provided to update parameters
-        # convert revision_ to revision with year:param:value format
-        revision = dict()
-        for name, namedata in revision_.items():
-            if not isinstance(name, str):
-                msg = 'ERROR: KEY {} is not a string parameter name'
-                raise ValueError(msg.format(name))
-            if not isinstance(namedata, dict):
-                msg = 'ERROR: KEY {} VAL {} is not a year:value dictionary'
-                raise ValueError(msg.format(name, namedata))
-            for year, yeardata in namedata.items():
-                if not isinstance(year, int):
-                    msg = 'ERROR: KEY {} YEAR {} is not an integer year'
-                    raise ValueError(msg.format(name, year))
-                if year not in revision:
-                    revision[year] = dict()
-                revision[year][name] = yeardata
-        # check range of revision years
-        revision_years = list(revision.keys())
-        first_revision_year = min(revision_years)
-        if first_revision_year < self.current_year:
-            msg = 'ERROR: {} YEAR revision provision in YEAR < current_year={}'
-            raise ValueError(msg.format(first_revision_year,
-                                        self.current_year))
-        last_revision_year = max(revision_years)
-        if last_revision_year > self.end_year:
-            msg = 'ERROR: {} YEAR revision provision in YEAR > end_year={}'
-            raise ValueError(msg.format(last_revision_year, self.end_year))
-        # add leading underscore character to each parameter name in revision
-        revision = Parameters._add_underscores(revision)
-        # add brackets around each value element in revision
-        revision = Parameters._add_brackets(revision)
-        # validate revision parameter names and types
-        self.parameter_warnings = ''
-        self.parameter_errors = ''
-        self._validate_names_types(revision)
-        if self.parameter_errors:
-            raise ValueError(self.parameter_errors)
-        # optionally apply CPI_offset to inflation_rates and re-initialize
-        known_years = self._apply_cpi_offset_in_revision(revision)
-        if known_years is not None:
-            self._set_default_vals(known_years=known_years)
-        # implement the revision year by year
-        precall_current_year = self.current_year
-        revision_parameters = set()
-        for year in sorted(revision_years):
-            self.set_year(year)
-            revision_parameters.update(revision[year].keys())
-            self._update_for_year({year: revision[year]})
-        self.set_year(precall_current_year)
-        # validate revision parameter values
-        self._validate_values(revision_parameters)
-        if self.parameter_warnings and print_warnings:
-            print(self.parameter_warnings)
-        if self.parameter_errors and raise_errors:
-            raise ValueError('\n' + self.parameter_errors)
-
-    def _update_for_year(self, year_mods):
-        """
-        Private method used by Parameters._update method.
-        """
-        # pylint: disable=too-many-locals
-        # check YEAR value in the single YEAR:MODS dictionary parameter
-        assert isinstance(year_mods, dict)
-        assert len(year_mods.keys()) == 1
-        year = list(year_mods.keys())[0]
-        assert year == self.current_year
-        # check that MODS is a dictionary
-        assert isinstance(year_mods[year], dict)
-        # implement reform provisions included in the single YEAR:MODS pair
-        num_years_to_expand = (self.start_year + self.num_years) - year
-        all_names = set(year_mods[year].keys())  # no duplicate keys in a dict
-        used_names = set()  # set of used parameter names in MODS dict
-        for name, values in year_mods[year].items():
-            # determine indexing status of parameter with name for year
-            if name.endswith('-indexed'):
-                continue  # handle elsewhere in this method
-            vals_indexed = self._vals[name].get('indexed', False)
-            valtype = self._vals[name].get('value_type')
-            name_plus_indexed = name + '-indexed'
-            if name_plus_indexed in year_mods[year].keys():
-                used_names.add(name_plus_indexed)
-                indexed = year_mods[year].get(name_plus_indexed)
-                self._vals[name]['indexed'] = indexed  # remember status
+            raise paramtools.ValidationError({"schema": "Revision must be a dictionary."}, None)
+        new_params = defaultdict(list)
+        # save shallow copy of current instance state
+        cur_state = dict(self.view_state())
+        for param, val in revision_.items():
+            if not isinstance(param, str):
+                raise paramtools.ValidationError({"schema": f"Parameter {param} is not a string."}, None)
+            if param not in self._data and param.split("-indexed")[0] not in self._data:
+                raise paramtools.ValidationError({"schema": f"Parameter {param} does not exist."}, None)
+            if param.endswith("-indexed"):
+                for year, yearval in val.items():
+                    new_params[param] += [{"year": year, "value": yearval}]
+            elif isinstance(val, dict):
+                for year, yearval in val.items():
+                    ndims = getattr(self, param).ndim
+                    yearval = np.array(yearval)
+                    short_dims = ndims - yearval.ndim
+                    yearval = yearval.reshape(
+                        (*(1, ) * short_dims, *yearval.shape)
+                    )
+                    self.set_state(year=year)
+                    try:
+                        yearval = self.from_array(param, yearval)
+                    except IndexError:
+                        raise paramtools.ValidationError({"schema": f"Pameter {param} does not have the correct array dimensions for year {year}."}, None)
+                    new_params[param] += yearval
             else:
-                indexed = vals_indexed
-            # set post-reform values of parameter with name
-            used_names.add(name)
-            cval = getattr(self, name, None)
-            wage_indexed_param = name in self._wage_indexed
-            index_rates = self._indexing_rates_for_update(wage_indexed_param,
-                                                          year,
-                                                          num_years_to_expand)
-            nval = self._expand_array(values, valtype,
-                                      inflate=indexed,
-                                      inflation_rates=index_rates,
-                                      num_years=num_years_to_expand)
-            cval[(year - self.start_year):] = nval
-        # handle unused parameter names, all of which end in -indexed, but
-        # some parameter names ending in -indexed were handled above
-        unused_names = all_names - used_names
-        for name in unused_names:
-            used_names.add(name)
-            pname = name[:-8]  # root parameter name
-            pindexed = year_mods[year][name]
-            self._vals[pname]['indexed'] = pindexed  # remember status
-            cval = getattr(self, pname, None)
-            pvalues = [cval[year - self.start_year]]
-            wage_indexed_param = pname in self._wage_indexed
-            index_rates = self._indexing_rates_for_update(wage_indexed_param,
-                                                          year,
-                                                          num_years_to_expand)
-            valtype = self._vals[pname].get('value_type')
-            nval = self._expand_array(pvalues, valtype,
-                                      inflate=pindexed,
-                                      inflation_rates=index_rates,
-                                      num_years=num_years_to_expand)
-            cval[(year - self.start_year):] = nval
-        # confirm that all names have been used
-        assert len(used_names) == len(all_names)
-        # implement updated parameters for year
-        self.set_year(year)
+                raise paramtools.ValidationError({"schema": f"Parameter {param} must be a year:value dictionary if you are not using the new adjust method."}, None)
+        self.set_state(**cur_state)
+        return self.adjust(new_params, raise_errors=raise_errors)
 
-    def _validate_names_types(self, revision):
-        """
-        Check validity of parameter names and parameter types used
-        in the specified revision dictionary, which is assumed to
-        have a year:param:value format
-        """
-        # pylint: disable=too-many-branches,too-many-nested-blocks
-        # pylint: disable=too-many-statements,too-many-locals
-        assert isinstance(self._vals, dict)
-        param_names = set(self._vals.keys())
-        for year in sorted(revision.keys()):
-            for name in revision[year]:
-                if name.endswith('-indexed'):
-                    if isinstance(revision[year][name], bool):
-                        pname = name[:-8]  # root parameter name
-                        if pname not in param_names:
-                            if pname in self._removed:
-                                msg = self._removed[pname]
-                            else:
-                                msg = 'is an unknown parameter name'
-                            self.parameter_errors += (
-                                'ERROR: {} {} '.format(year, name[1:]) +
-                                msg + '\n'
-                            )
-                        else:
-                            # check if root parameter is indexable
-                            indexable = self._vals[pname].get('indexable',
-                                                              False)
-                            if not indexable:
-                                msg = '{} {} parameter is not indexable'
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, pname[1:]) + '\n'
-                                )
-                    else:
-                        msg = '{} {} parameter is not true or false'
-                        self.parameter_errors += (
-                            'ERROR: ' + msg.format(year, name[1:]) + '\n'
-                        )
-                else:  # if name does not end with '-indexed'
-                    if name not in param_names:
-                        if name in self._removed:
-                            msg = self._removed[name]
-                        else:
-                            msg = 'is an unknown parameter name'
-                        self.parameter_errors += (
-                            'ERROR: {} {} '.format(year, name[1:]) + msg + '\n'
-                        )
-                    else:
-                        # check parameter value type avoiding use of isinstance
-                        # because isinstance(True, (int,float)) is True, which
-                        # makes it impossible to check float parameters
-                        valtype = self._vals[name]['value_type']
-                        assert isinstance(revision[year][name], list)
-                        pvalue = revision[year][name][0]
-                        if isinstance(pvalue, list):
-                            scalar = False  # parameter value is a list
-                            if not self._vals[name].get('vi_vals', []):
-                                msg = ('{} {} with value {} '
-                                       'should be a scalar parameter')
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, name[1:], pvalue) +
-                                    '\n'
-                                )
-                                # following is not true but is needed to
-                                # avoid errors below
-                                scalar = True
-                        else:
-                            scalar = True  # parameter value is a scalar
-                            if self._vals[name].get('vi_vals', []):
-                                msg = ('{} {} with value {} '
-                                       'should be a vector parameter')
-                                self.parameter_errors += (
-                                    'ERROR: ' +
-                                    msg.format(year, name[1:], pvalue) +
-                                    '\n'
-                                )
-                            pvalue = [pvalue]  # make scalar a single-item list
-                        # pylint: disable=consider-using-enumerate
-                        for idx in range(0, len(pvalue)):
-                            if scalar:
-                                pname = name
-                            else:
-                                col = self._vals[name]['vi_vals'][idx]
-                                pname = '{}[{}]'.format(name, col)
-                            pval = pvalue[idx]
-                            # pylint: disable=unidiomatic-typecheck
-                            if valtype == 'real':
-                                if type(pval) != float and type(pval) != int:
-                                    msg = '{} {} value {} is not a number'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname[1:], pval) +
-                                        '\n'
-                                    )
-                            elif valtype == 'boolean':
-                                if type(pval) != bool:
-                                    msg = '{} {} value {} is not boolean'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname[1:], pval) +
-                                        '\n'
-                                    )
-                            elif valtype == 'integer':
-                                if type(pval) != int:
-                                    msg = '{} {} value {} is not integer'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname[1:], pval) +
-                                        '\n'
-                                    )
-                            elif valtype == 'string':
-                                if type(pval) != str:
-                                    msg = '{} {} value {} is not a string'
-                                    self.parameter_errors += (
-                                        'ERROR: ' +
-                                        msg.format(year, pname[1:], pval) +
-                                        '\n'
-                                    )
-        del param_names
+    def set_year(self, year):
+        self.set_state(year=year)
 
-    def _validate_values(self, parameters_set):
-        """
-        Check values of parameters in specified parameter_set using
-        range information from DEFAULTS_FILE_NAME JSON file.
-        """
-        # pylint: disable=too-many-statements,too-many-locals
-        # pylint: disable=too-many-branches,too-many-nested-blocks
-        assert isinstance(parameters_set, set)
-        parameters = sorted(parameters_set)
-        syr = self.start_year
-        for pname in parameters:
-            if pname.endswith('-indexed'):
-                continue  # *-indexed parameter values validated elsewhere
-            if pname in self._redefined:
-                msg = self._redefined[pname]
-                self.parameter_warnings += msg + '\n'
-            pvalue = getattr(self, pname)
-            if self._vals[pname]['value_type'] == 'string':
-                valid_options = self._vals[pname]['valid_values']['options']
-                for idx in np.ndindex(pvalue.shape):
-                    if pvalue[idx] not in valid_options:
-                        msg = "{} {} value '{}' not in {}"
-                        fullmsg = '{}: {}\n'.format(
-                            'ERROR',
-                            msg.format(idx[0] + syr,
-                                       pname[1:],
-                                       pvalue[idx],
-                                       valid_options)
-                        )
-                        self.parameter_errors += fullmsg
-            else:  # parameter does not have string type
-                for vop, vval in self._vals[pname]['valid_values'].items():
-                    if isinstance(vval, str):
-                        vvalue = getattr(self, '_' + vval)
-                    else:
-                        vvalue = np.full(pvalue.shape, vval)
-                    assert pvalue.shape == vvalue.shape
-                    assert len(pvalue.shape) <= 2
-                    if len(pvalue.shape) == 2:
-                        scalar = False  # parameter value is a vector
-                    else:
-                        scalar = True  # parameter value is a scalar
-                    for idx in np.ndindex(pvalue.shape):
-                        out_of_range = False
-                        if vop == 'min' and pvalue[idx] < vvalue[idx]:
-                            out_of_range = True
-                            msg = '{} {} value {} < min value {}'
-                            extra = self._vals[pname].get('invalid_minmsg', '')
-                            if extra:
-                                msg += ' {}'.format(extra)
-                        if vop == 'max' and pvalue[idx] > vvalue[idx]:
-                            out_of_range = True
-                            msg = '{} {} value {} > max value {}'
-                            extra = self._vals[pname].get('invalid_maxmsg', '')
-                            if extra:
-                                msg += ' {}'.format(extra)
-                        if out_of_range:
-                            action = self._vals[pname].get('invalid_action',
-                                                           'stop')
-                            if scalar:
-                                name = pname
-                            else:
-                                col = self._vals[pname]['vi_vals'][idx[1]]
-                                name = '{}[{}]'.format(pname, col)
-                                if extra:
-                                    msg += '[{}]'.format(col)
-                            if action == 'warn':
-                                fullmsg = '{}: {}\n'.format(
-                                    'WARNING',
-                                    msg.format(idx[0] + syr,
-                                               name,
-                                               pvalue[idx],
-                                               vvalue[idx])
-                                )
-                                self.parameter_warnings += fullmsg
-                            if action == 'stop':
-                                fullmsg = '{}: {}\n'.format(
-                                    'ERROR',
-                                    msg.format(idx[0] + syr,
-                                               name[1:],
-                                               pvalue[idx],
-                                               vvalue[idx])
-                                )
-                                self.parameter_errors += fullmsg
-        del parameters
+    @property
+    def current_year(self):
+        return self.label_grid["year"][0]
 
-    STRING_DTYPE = 'U16'
+    @property
+    def start_year(self):
+        return self._stateless_label_grid["year"][0]
 
-    @staticmethod
-    def _expand_array(xxx, xxx_type, inflate, inflation_rates, num_years):
-        """
-        Private method called only within this abstract base class.
-        Dispatch to either _expand_1d or _expand_2d given dimension of xxx.
+    @property
+    def end_year(self):
+        return self._stateless_label_grid["year"][-1]
 
-        Parameters
-        ----------
-        xxx : value to expand
-              xxx must be either a scalar list or a 1D numpy array, or
-              xxx must be either a list of scalar lists or a 2D numpy array
+    @property
+    def num_years(self):
+        return self.end_year - self.start_year + 1
 
-        xxx_type : string ('real', 'boolean', 'integer', 'string')
+    @property
+    def parameter_warnings(self):
+        # TODO: taxcalc expects string errors when empty.
+        # TODO: paramtools doesn't do errors.
+        return self.errors or ""
 
-        inflate: boolean
-            As we expand, inflate values if this is True, otherwise, just copy
-
-        inflation_rates: list of inflation rates
-            Annual decimal inflation rates
-
-        num_years: int
-            Number of budget years to expand
-
-        Returns
-        -------
-        expanded numpy array with specified type
-        """
-        assert isinstance(xxx, (list, np.ndarray))
-        if isinstance(xxx, list):
-            if xxx_type == 'real':
-                xxx = np.array(xxx, np.float64)
-            elif xxx_type == 'boolean':
-                xxx = np.array(xxx, np.bool_)
-            elif xxx_type == 'integer':
-                xxx = np.array(xxx, np.int16)
-            elif xxx_type == 'string':
-                xxx = np.array(xxx, np.dtype(Parameters.STRING_DTYPE))
-                assert len(xxx.shape) == 1, \
-                    'string parameters must be scalar (not vector)'
-        dim = len(xxx.shape)
-        assert dim in (1, 2)
-        if dim == 1:
-            return Parameters._expand_1d(xxx, inflate, inflation_rates,
-                                         num_years)
-        return Parameters._expand_2d(xxx, inflate, inflation_rates,
-                                     num_years)
-
-    @staticmethod
-    def _expand_1d(xxx, inflate, inflation_rates, num_years):
-        """
-        Private method called only from _expand_array method.
-        Expand the given data xxx to account for given number of budget years.
-        If necessary, pad out additional years by increasing the last given
-        year using the given inflation_rates list.
-        """
-        if not isinstance(xxx, np.ndarray):
-            raise ValueError('_expand_1d expects xxx to be a numpy array')
-        if len(xxx) >= num_years:
-            return xxx
-        string_type = xxx.dtype == Parameters.STRING_DTYPE
-        if string_type:
-            ans = np.array(['' for i in range(0, num_years)],
-                           dtype=xxx.dtype)
-        else:
-            ans = np.zeros(num_years, dtype=xxx.dtype)
-        ans[:len(xxx)] = xxx
-        if string_type:
-            extra = [str(xxx[-1]) for i in
-                     range(1, num_years - len(xxx) + 1)]
-        else:
-            if inflate:
-                extra = []
-                cur = xxx[-1]
-                for i in range(0, num_years - len(xxx)):
-                    cur *= (1. + inflation_rates[i + len(xxx) - 1])
-                    cur = round(cur, 2) if cur < 9e99 else 9e99
-                    extra.append(cur)
-            else:
-                extra = [float(xxx[-1]) for i in
-                         range(1, num_years - len(xxx) + 1)]
-        ans[len(xxx):] = extra
-        return ans
-
-    @staticmethod
-    def _expand_2d(xxx, inflate, inflation_rates, num_years):
-        """
-        Private method called only from _expand_array method.
-        Expand the given data to account for the given number of budget years.
-        For 2D arrays, we expand out the number of rows until we have num_years
-        number of rows. For each expanded row, we inflate using the given
-        inflation rates list.
-        """
-        if not isinstance(xxx, np.ndarray):
-            raise ValueError('_expand_2d expects xxx to be a numpy array')
-        if xxx.shape[0] >= num_years:
-            return xxx
-        ans = np.zeros((num_years, xxx.shape[1]), dtype=xxx.dtype)
-        ans[:len(xxx), :] = xxx
-        for i in range(xxx.shape[0], ans.shape[0]):
-            for j in range(ans.shape[1]):
-                if inflate:
-                    cur = (ans[i - 1, j] *
-                           (1. + inflation_rates[i - 1]))
-                    cur = round(cur, 2) if cur < 9e99 else 9e99
-                    ans[i, j] = cur
-                else:
-                    ans[i, j] = ans[i - 1, j]
-        return ans
-
-    def _indexing_rates_for_update(self, param_is_wage_indexed,
-                                   calyear, num_years_to_expand):
-        """
-        Private method called only by the private Parameter._update method.
-        """
-        if param_is_wage_indexed:
-            rates = self.wage_growth_rates()
-        else:
-            rates = self.inflation_rates()
-        if rates:
-            expanded_rates = [rates[(calyear - self.start_year) + i]
-                              for i in range(0, num_years_to_expand)]
-            return expanded_rates
-        return None
-
-    @staticmethod
-    def _add_underscores(update_dict):
-        """
-        Returns dictionary that adds leading underscore character to
-        each parameter name in specified update_dict, which is assumed
-        to have a year:param:value format.
-        """
-        updict = dict()
-        for year, yeardata in update_dict.items():
-            updict[year] = dict()
-            for pname, pvalue in yeardata.items():
-                updict[year]['_' + pname] = pvalue
-        return updict
-
-    @staticmethod
-    def _add_brackets(update_dict):
-        """
-        Returns dictionary that adds brackets around each
-        data element (value) in specified update_dict, which
-        is assumed to have a year:param:value format.
-        """
-        updict = dict()
-        for year, yeardata in update_dict.items():
-            updict[year] = dict()
-            for pname, pvalue in yeardata.items():
-                if pname.endswith('-indexed'):
-                    updict[year][pname] = pvalue  # no added brackets
-                else:
-                    updict[year][pname] = [pvalue]
-        return updict
-
-    def _apply_cpi_offset_to_inflation_rates(self):
-        """
-        Called from Parameters.initialize method.
-        Does nothing if CPI_offset parameter is not in self._vals dictionary.
-        """
-        if '_CPI_offset' not in self._vals:
-            return
-        nyrs = self.num_years
-        ovalues = self._vals['_CPI_offset']['value']
-        if len(ovalues) < nyrs:  # extrapolate last known value
-            ovalues = ovalues + ovalues[-1:] * (nyrs - len(ovalues))
-        for idx in range(0, nyrs):
-            infrate = round(self._inflation_rates[idx] + ovalues[idx], 6)
-            self._inflation_rates[idx] = infrate
-
-    def _apply_cpi_offset_in_revision(self, revision):
-        """
-        Apply CPI offset to inflation rates and
-        revert indexed parameter values in preparation for re-indexing.
-        Also, return known_years which is dictionary with indexed policy
-        parameter names as keys and known_years as values.  For indexed
-        parameters included in revision, the known_years value is equal to:
-        (first_cpi_offset_year - start_year + 1).  For indexed parameters
-        not included in revision, the known_years value is equal to:
-        (max(first_cpi_offset_year, last_known_year) - start_year + 1).
-        """
-        # pylint: disable=too-many-branches
-        # determine if CPI_offset is in specified revision; if not, return
-        cpi_offset_in_revision = False
-        for year in revision:
-            for name in revision[year]:
-                if name == '_CPI_offset':
-                    cpi_offset_in_revision = True
-                    break  # out of loop
-        if not cpi_offset_in_revision:
-            return None
-        # extrapolate CPI_offset revision
-        self.set_year(self.start_year)
-        first_cpi_offset_year = 0
-        for year in sorted(revision.keys()):
-            self.set_year(year)
-            if '_CPI_offset' in revision[year]:
-                if first_cpi_offset_year == 0:
-                    first_cpi_offset_year = year
-                orevision = {'_CPI_offset': revision[year]['_CPI_offset']}
-                self._update_for_year({year: orevision})
-        self.set_year(self.start_year)
-        assert first_cpi_offset_year > 0
-        # adjust inflation rates
-        cpi_offset = getattr(self, '_CPI_offset')
-        for idx in range(0, self.num_years):
-            infrate = round(self._inflation_rates[idx] + cpi_offset[idx], 6)
-            self._inflation_rates[idx] = infrate
-        # revert indexed parameter values to policy_current_law.json values
-        for name in self._vals.keys():
-            if self._vals[name]['indexed']:
-                setattr(self, name, self._vals[name]['value'])
-        # construct and return known_years dictionary
-        known_years = dict()
-        kyrs_in_revision = (first_cpi_offset_year - self.start_year + 1)
-        kyrs_not_in_revision = (
-            max(first_cpi_offset_year, self.last_known_year) -
-            self.start_year + 1
-        )
-        for year in sorted(revision.keys()):
-            for name in revision[year]:
-                if name.endswith('-indexed'):
-                    name = name[:-8]
-                if self._vals[name]['indexed']:
-                    if name not in known_years:
-                        known_years[name] = kyrs_in_revision
-        for name in self._vals.keys():
-            if self._vals[name]['indexed']:
-                if name not in known_years:
-                    known_years[name] = kyrs_not_in_revision
-        return known_years
+    @property
+    def parameter_errors(self):
+        # TODO: taxcalc expects string errors when empty.
+        return self.errors or ""
 
     @staticmethod
     def _read_json_revision(obj, topkey):
@@ -864,12 +375,10 @@ class Parameters():
         Read JSON revision specified by obj and topkey
         returning a single revision dictionary suitable for
         use with the Parameters._update method.
-
         The obj function argument can be None or a string, where the
         string contains a local filename, a URL beginning with 'http'
         pointing to a valid JSON file hosted online, or valid JSON
         text.
-
         The topkey argument must be a string containing the top-level
         key in a compound-revision JSON text for which a revision
         dictionary is returned.  If the specified topkey is not among
@@ -926,3 +435,36 @@ class Parameters():
             single_dict = full_dict
         # convert string year to integer year in dictionary and return
         return convert_year_to_int(single_dict)
+
+    def metadata(self):
+        return self.dump()
+
+    @staticmethod
+    def years_in_revision(revision):
+        """
+        Return list of years in specified revision dictionary, which is
+        assumed to have a param:year:value format.
+        """
+        assert isinstance(revision, dict)
+        years = list()
+        for _, paramdata in revision.items():
+            assert isinstance(paramdata, dict)
+            for year, _ in paramdata.items():
+                assert isinstance(year, int)
+                if year not in years:
+                    years.append(year)
+        return years
+
+    def __getattr__(self, attr):
+        """
+        Allows the user to get the value of a parameter over all years,
+        not just the ones that are active.
+        """
+        if attr.startswith("_") and attr[1:] in super().__getattribute__("_data"):
+            state = dict(self.view_state())
+            self.clear_state()
+            value = getattr(self, attr[1:])
+            self.set_state(**state)
+            return value
+        else:
+            raise AttributeError(f"{attr} not definied.")

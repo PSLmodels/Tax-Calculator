@@ -1773,19 +1773,19 @@ def ComputeBenefit(calc, ID_switch):
     # the types of itemized deductions covered under the BenefitSurtax
     no_ID_calc = copy.deepcopy(calc)
     if ID_switch[0]:
-        no_ID_calc.policy_param('ID_Medical_hc', 1.)
+        no_ID_calc.policy_param('ID_Medical_hc', [1.])
     if ID_switch[1]:
-        no_ID_calc.policy_param('ID_StateLocalTax_hc', 1.)
+        no_ID_calc.policy_param('ID_StateLocalTax_hc', [1.])
     if ID_switch[2]:
-        no_ID_calc.policy_param('ID_RealEstate_hc', 1.)
+        no_ID_calc.policy_param('ID_RealEstate_hc', [1.])
     if ID_switch[3]:
-        no_ID_calc.policy_param('ID_Casualty_hc', 1.)
+        no_ID_calc.policy_param('ID_Casualty_hc', [1.])
     if ID_switch[4]:
-        no_ID_calc.policy_param('ID_Miscellaneous_hc', 1.)
+        no_ID_calc.policy_param('ID_Miscellaneous_hc', [1.])
     if ID_switch[5]:
-        no_ID_calc.policy_param('ID_InterestPaid_hc', 1.)
+        no_ID_calc.policy_param('ID_InterestPaid_hc', [1.])
     if ID_switch[6]:
-        no_ID_calc.policy_param('ID_Charity_hc', 1.)
+        no_ID_calc.policy_param('ID_Charity_hc', [1.])
     no_ID_calc._calc_one_year()  # pylint: disable=protected-access
     diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
     benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
@@ -1798,6 +1798,8 @@ def BenefitSurtax(calc):
     to income tax, combined tax, and surtax liabilities.
     """
     if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
+        print("switch", calc.policy_param('ID_BenefitSurtax_Switch'))
+        switch = calc.policy_param('ID_BenefitSurtax_Switch')
         ben = ComputeBenefit(calc,
                              calc.policy_param('ID_BenefitSurtax_Switch'))
         agi = calc.array('c00100')

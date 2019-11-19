@@ -101,7 +101,7 @@ def create_apply_function_string(sigout, sigin, parameters):
     return fstr.getvalue()
 
 
-def create_toplevel_function_string(args_out, args_in, pm_or_pf):
+def create_toplevel_function_string(args_out, args_in, pm_or_pf, parameter_list):
     """
     Create a string for a function of the form:
 
@@ -142,6 +142,9 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     fstr.write("        (" + ", ".join(outs) + ") = \\\n")
     fstr.write("        " + "applied_f(")
     for ppp, attr in zip(pm_or_pf, args_out + args_in):
+        # Bring Policy parameter values down a dimension.
+        if attr in parameter_list:
+            attr += "[0]"
         fstr.write("get_values(" + ppp + "." + attr + ")" + ", ")
     fstr.write(")\n")
     fstr.write("    header = [")
@@ -308,7 +311,8 @@ def iterate_jit(parameters=None, **kwargs):
             # Create the high level function
             high_level_func = create_toplevel_function_string(all_out_args,
                                                               list(in_args),
-                                                              pm_or_pf)
+                                                              pm_or_pf,
+                                                              set(all_parameters))
             func_code = compile(high_level_func, "<string>", "exec")
             fakeglobals = {}
             eval(func_code,  # pylint: disable=eval-used
