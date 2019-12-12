@@ -20,6 +20,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> specify release X.Y.Z in index.htmx ; python make_tc_pages.py
 
+--> specify release X.Y.Z in setup.py and taxcalc/__init__.py
+
 --> cd .. ; make clean  [to remove taxcalc package]
 
 --> commit X-Y-Z branch and push to origin
