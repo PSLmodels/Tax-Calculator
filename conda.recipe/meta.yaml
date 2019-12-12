@@ -11,7 +11,7 @@ requirements:
     - python
     - "numpy>=1.14"
     - "pandas>=0.23"
-    - "bokeh>=0.13"
+    - "bokeh>=1.4.0"
     - requests
     - numba
 
@@ -19,7 +19,7 @@ requirements:
     - python
     - "numpy>=1.14"
     - "pandas>=0.23"
-    - "bokeh>=0.13"
+    - "bokeh>=1.4.0"
     - requests
     - numba
 
