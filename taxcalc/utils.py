@@ -1101,9 +1101,9 @@ def xtr_graph_plot(data,
     fig.title.text_font_size = '12pt'
     lines = data['lines']
     fig.line(lines.index, lines.base,
-             line_color='blue', line_width=3, legend='Baseline')
+             line_color='blue', line_width=3, legend_label='Baseline')
     fig.line(lines.index, lines.reform,
-             line_color='red', line_width=3, legend='Reform')
+             line_color='red', line_width=3, legend_label='Reform')
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     if xlabel == '':
         xlabel = data['xlabel']
