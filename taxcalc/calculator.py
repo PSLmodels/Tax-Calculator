@@ -1259,7 +1259,7 @@ class Calculator():
         if years:
             doc += param_doc(years, gdiff_resp, GrowDiff())
         else:
-            doc += 'none: no reform GrowDiff assumptions specified\n'
+            doc += 'none: no response GrowDiff assumptions specified\n'
         # ... documentation for (possibly compound) policy reform
         if policy_dicts is None:
             doc += 'Policy Reform Parameter Values by Year:\n'
