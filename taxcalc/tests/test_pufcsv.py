@@ -64,6 +64,7 @@ def test_agg(tests_path, puf_fullsample):
         msg += '--- if new OK, copy pufcsv_agg_actual.csv to  ---\n'
         msg += '---                 pufcsv_agg_expect.csv     ---\n'
         msg += '---            and rerun test.                ---\n'
+        msg += '---       (both are in taxcalc/tests)         ---\n'
         msg += '-------------------------------------------------\n'
         raise ValueError(msg)
     # create aggregate diagnostic table using unweighted sub-sample of records
