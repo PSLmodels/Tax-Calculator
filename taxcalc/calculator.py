@@ -1248,14 +1248,14 @@ class Calculator():
         if years:
             doc += param_doc(years, gdiff_base, GrowDiff())
         else:
-            doc += 'none: using default growth assumptions\n'
+            doc += 'none: no baseline GrowDiff assumptions specified\n'
         # ... documentation for reform growdiff assumptions
         doc += 'Response Growth-Difference Assumption Values by Year:\n'
         years = GrowDiff.years_in_revision(params['growdiff_response'])
         if years:
             doc += param_doc(years, gdiff_resp, GrowDiff())
         else:
-            doc += 'none: using default growth assumptions\n'
+            doc += 'none: no reform GrowDiff assumptions specified\n'
         # ... documentation for (possibly compound) policy reform
         if policy_dicts is None:
             doc += 'Policy Reform Parameter Values by Year:\n'
