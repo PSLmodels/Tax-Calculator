@@ -546,9 +546,9 @@ def test_noreform_documentation():
     expected_doc = (
         'REFORM DOCUMENTATION\n'
         'Baseline Growth-Difference Assumption Values by Year:\n'
-        'none: using default growth assumptions\n'
+        'none: no baseline GrowDiff assumptions specified\n'
         'Response Growth-Difference Assumption Values by Year:\n'
-        'none: using default growth assumptions\n'
+        'none: no response GrowDiff assumptions specified\n'
         'Policy Reform Parameter Values by Year:\n'
         'none: using current-law policy parameters\n'
     )
