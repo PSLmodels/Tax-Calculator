@@ -4,6 +4,28 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2019-12-13 Release 2.7.0
+------------------------
+(last merged pull request is
+[#2395](https://github.com/PSLmodels/Tax-Calculator/pull/2395))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+- None
+
+**New Features**
+- Versioning improved to facilitate pip installation [[#2390](https://github.com/PSLmodels/Tax-Calculator/pull/2390)
+  by Matt Jensen as requested by Max Ghenis]
+- New notification and documentation about when data extrapolation are not conducted by Tax-Calculator on startup [[#2394](https://github.com/PSLmodels/Tax-Calculator/pull/2394) by Matt Jensen as requested by Don Boyd]
+
+**Bug Fixes**
+
+- Fix for CPI_offsets when applied in 2018 and later [[#2381](https://github.com/PSLmodels/Tax-Calculator/pull/2381)
+  by Hank Doupe, who also identified the bug]
+- Ceiling on SALT taxes no longer incorrectly indexed for inflation [[#2388](https://github.com/PSLmodels/Tax-Calculator/pull/2388)
+  by Max Ghenis with bug reported by Tyler Evilsizer]
+
 2019-10-31 Release 2.6.0
 ------------------------
 (last merged pull request is

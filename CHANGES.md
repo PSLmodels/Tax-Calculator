@@ -1,10 +1,24 @@
 TAX-CALCULATOR CHANGE HISTORY
 =============================
 
-Changes in release 2.6.0 on 2019-10-31
+Changes in release 2.7.0 on 2019-12-13
 --------------------------------------
 
 **This is an enhancement and bug-fix release.**
+
+- Improve versioning process for use with pip installation. 
+
+- New notification and documentation about when data extrapolation are not conducted by Tax-Calculator on startup.
+
+- Fix a bug with the CPI_offset parameter. 
+
+- Fix the incorrect application of inflation indexing to the ceiling on SALT deductions.
+
+
+Changes in release 2.6.0 on 2019-10-31
+--------------------------------------
+
+**This is an enhancement release.**
 
 - Add an additional version of recipe04 from the Tax-Calculator cookbook that shows how to use the Python Data Analysis Library (pandas) in applying different response elasticities to different earnings groups.     
 
