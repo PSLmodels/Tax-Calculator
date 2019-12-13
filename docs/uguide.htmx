@@ -313,9 +313,9 @@
 </p>
 
 <p>
-  The name of your file is also relevant to how <kbd>tc</kbd> will behave. 
-  If your file name ends with "puf.csv" or "cps.csv", <kbd>tc</kbd> will
-  automatically extrapolate your data from its base year to the year you 
+  The name of your input data file is also relevant to how <kbd>tc</kbd> will
+  behave. If your file name ends with "puf.csv" or "cps.csv", <kbd>tc</kbd> 
+  will automatically extrapolate your data from its base year to the year you 
   specify for tax calculations to be calculated using built in growth factors,
   extrapolated weights, and other adjustment factors. If you are not using 
   the "puf.csv" or "cps.csv" files produced by the TaxData project, it is 
