@@ -130,6 +130,10 @@ class Calculator():
                 print('Tax-Calculator startup automatically ' +
                       'extrapolated your data to ' +
                       str(self.__records.current_year) + '.')
+        else: 
+            if verbose: 
+                print('Tax-Calculator startup did not ' +
+                      'extrapolate your data.')
         assert self.__policy.current_year == self.__records.current_year
         assert self.__policy.current_year == self.__consumption.current_year
         self.__stored_records = None
