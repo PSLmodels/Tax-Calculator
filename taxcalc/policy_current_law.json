@@ -3030,7 +3030,8 @@
         "validators": {
             "range": {
                 "min": 0.075,
-                "max": 0.1
+                "max": 0.1,
+                "level": "warn"
             }
         },
         "section_1": "Itemized Deductions",

@@ -863,17 +863,26 @@ def test_reform_with_out_of_range_error():
     pol.implement_reform(reform, raise_errors=False)
     assert pol.parameter_errors
 
-# TODO: paramtools does not have warnings.
-@pytest.mark.xfail
 def test_reform_with_warning():
     """
     Try to use warned out-of-range parameter value in reform.
     """
     pol = Policy()
     reform = {'ID_Medical_frt': {2020: 0.05}}
-    pol.implement_reform(reform)
-    assert pol.parameter_warnings
+    # TODO: breaking change. ParamTools throws an error
+    # if ignore_warnings is False while taxcalc simply
+    # printed the warnings. If ignore_warnings is True
+    # the warnings are not stored.
 
+    # pol.implement_reform(reform)
+    # assert pol.parameter_warnings
+    with pytest.raises(paramtools.ValidationError):
+       pol.implement_reform(reform)
+
+    pol = Policy()
+    pol.implement_reform(reform, ignore_warnings=True)
+    pol.set_state(year=2020)
+    assert pol.ID_Medical_frt == np.array([0.05])
 
 def test_reform_with_scalar_vector_errors():
     """

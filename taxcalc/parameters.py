@@ -280,9 +280,9 @@ class Parameters(paramtools.Parameters):
         """
         raise NotImplementedError()
 
-    # alias methods
+    # alias methods below
 
-    def _update(self, revision_, print_warnings, raise_errors):
+    def _update(self, revision_, ignore_warnings, raise_errors):
         """
         A translation layer on top of Parameters.adjust. Projects
         that have historically used the `_update` method with
@@ -308,15 +308,24 @@ class Parameters(paramtools.Parameters):
 
         """
         if not isinstance(revision_, dict):
-            raise paramtools.ValidationError({"schema": "Revision must be a dictionary."}, None)
+            raise paramtools.ValidationError(
+                {"errors": {"schema": "Revision must be a dictionary."}},
+                None
+            )
         new_params = defaultdict(list)
         # save shallow copy of current instance state
         cur_state = dict(self.view_state())
         for param, val in revision_.items():
             if not isinstance(param, str):
-                raise paramtools.ValidationError({"schema": f"Parameter {param} is not a string."}, None)
+                raise paramtools.ValidationError(
+                    {"errors": {"schema": f"Parameter {param} is not a string."}},
+                    None
+                )
             if param not in self._data and param.split("-indexed")[0] not in self._data:
-                raise paramtools.ValidationError({"schema": f"Parameter {param} does not exist."}, None)
+                raise paramtools.ValidationError(
+                    {"errors": {"schema": f"Parameter {param} does not exist."}},
+                    None
+                )
             if param.endswith("-indexed"):
                 for year, yearval in val.items():
                     new_params[param] += [{"year": year, "value": yearval}]
@@ -332,12 +341,25 @@ class Parameters(paramtools.Parameters):
                     try:
                         yearval = self.from_array(param, yearval)
                     except IndexError:
-                        raise paramtools.ValidationError({"schema": f"Pameter {param} does not have the correct array dimensions for year {year}."}, None)
+                        msg = f"Pameter {param} does not have the correct array dimensions for year {year}."
+                        raise paramtools.ValidationError(
+                            {"errors": {"schema": msg}},
+                            None
+                        )
                     new_params[param] += yearval
             else:
-                raise paramtools.ValidationError({"schema": f"Parameter {param} must be a year:value dictionary if you are not using the new adjust method."}, None)
+                msg =  (f"Parameter {param} must be a year:value dictionary "
+                        f"if you are not using the new adjust method.")
+                raise paramtools.ValidationError(
+                    {"errors": {"schema": msg}},
+                    None
+                )
         self.set_state(**cur_state)
-        return self.adjust(new_params, raise_errors=raise_errors)
+        return self.adjust(
+            new_params,
+            ignore_warnings=ignore_warnings,
+            raise_errors=raise_errors
+        )
 
     def set_year(self, year):
         self.set_state(year=year)

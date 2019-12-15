@@ -48,13 +48,13 @@ class Consumption(Parameters):
         # raise NotImplementedError()
 
     def update_consumption(self, revision,
-                           print_warnings=True, raise_errors=True):
+                           ignore_warnings=False, raise_errors=True):
         """
         Update consumption default values using specified revision dictionary.
         See Parameters._update for argument documentation and details about
         the expected structure of the revision dictionary.
         """
-        self._update(revision, print_warnings, raise_errors)
+        self._update(revision, ignore_warnings, raise_errors)
 
     RESPONSE_VARS = set(['e17500', 'e18400', 'e19800', 'e20400'])
     BENEFIT_VARS = set(['housing', 'snap', 'tanf', 'vet', 'wic',
