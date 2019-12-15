@@ -32,8 +32,8 @@ class Consumption(Parameters):
     DEFAULTS_FILE_NAME = 'consumption.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self.set_state(year=self.JSON_START_YEAR)
 
     @staticmethod

@@ -20,6 +20,34 @@ def select_lt(value_objects, exact_match, labels, tree=None):
 
 
 class Parameters(paramtools.Parameters):
+    """
+    Base Parameters class that wraps ParamTools,
+    providing parameter indexing for tax policy in the
+    adjust method and backwards-compatible preserving
+    layer that supports Tax-Calculator's conventional
+    reform formatting style as well as convenience
+    methods like set_Year for classes operating on
+    this one.
+
+    The defaults file path may be set through the
+    defaults class attribute variable or through
+    the old DEFAULTS_FILE_NAME/DEFAULTS_FILE_PATH
+    work flow.
+
+    A custom getter method is implemented so that
+    the value of a parameter over all allowed years
+    can conveniently be retrieved by adding an
+    underscore before the variable name (e.g.
+    EITC_c vs _EITC_c).
+
+    Note: Like all paramtools.Parameters classes
+    the values of attributes corresponding to a
+    parameter value on this class are ephemeral
+    and the only way to make permanent changes
+    to this class'sstate is through the set_state
+    or adjust methods.
+
+    """
     defaults = None
     array_first = True
     label_to_extend = "year"
@@ -37,7 +65,6 @@ class Parameters(paramtools.Parameters):
         self.wage_growth_rates = None
         self.inflation_rates = None
         if self.defaults is None and self.DEFAULTS_FILE_PATH and self.DEFAULTS_FILE_NAME:
-            print("trying DEFAULTS_FILE_PATH and DEFAULTS_FILE_NAME")
             self.defaults = os.path.join(self.DEFAULTS_FILE_PATH, self.DEFAULTS_FILE_NAME)
         super().__init__(*args, **kwargs)
         self._init_values = {
@@ -282,7 +309,7 @@ class Parameters(paramtools.Parameters):
 
     # alias methods below
 
-    def _update(self, revision_, ignore_warnings, raise_errors):
+    def _update(self, revision, ignore_warnings, raise_errors):
         """
         A translation layer on top of Parameters.adjust. Projects
         that have historically used the `_update` method with
@@ -307,7 +334,7 @@ class Parameters(paramtools.Parameters):
         }
 
         """
-        if not isinstance(revision_, dict):
+        if not isinstance(revision, dict):
             raise paramtools.ValidationError(
                 {"errors": {"schema": "Revision must be a dictionary."}},
                 None
@@ -315,7 +342,7 @@ class Parameters(paramtools.Parameters):
         new_params = defaultdict(list)
         # save shallow copy of current instance state
         cur_state = dict(self.view_state())
-        for param, val in revision_.items():
+        for param, val in revision.items():
             if not isinstance(param, str):
                 raise paramtools.ValidationError(
                     {"errors": {"schema": f"Parameter {param} is not a string."}},

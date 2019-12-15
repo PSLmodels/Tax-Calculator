@@ -72,7 +72,7 @@ class Policy(Parameters):
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
-    def __init__(self, gfactors=None, only_reading_defaults=False):
+    def __init__(self, gfactors=None, only_reading_defaults=False, **kwargs):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         if only_reading_defaults:
             return
@@ -84,7 +84,7 @@ class Policy(Parameters):
         else:
             raise ValueError('gfactors is not None or a GrowFactors instance')
 
-        super().__init__()
+        super().__init__(**kwargs)
 
 
     @staticmethod
