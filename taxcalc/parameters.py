@@ -3,6 +3,7 @@ import os
 import re
 from collections import defaultdict
 
+import marshmallow as ma
 import paramtools
 import numpy as np
 import requests
@@ -17,6 +18,18 @@ def lt_func(x, y) -> bool:
 
 def select_lt(value_objects, exact_match, labels, tree=None):
     return paramtools.select(value_objects, exact_match, lt_func, labels, tree)
+
+
+class CompatibleDataSchema(ma.Schema):
+    """
+    Schema for Compatible data object
+    {
+        "compatible_data": {"data1": bool, "data2": bool, ...}
+    }
+    """
+
+    puf = ma.fields.Boolean()
+    cps = ma.fields.Boolean()
 
 
 class Parameters(paramtools.Parameters):
@@ -48,6 +61,8 @@ class Parameters(paramtools.Parameters):
     or adjust methods.
 
     """
+    field_map = {"compatible_data": ma.fields.Nested(CompatibleDataSchema())}
+
     defaults = None
     array_first = True
     label_to_extend = "year"
@@ -61,10 +76,10 @@ class Parameters(paramtools.Parameters):
     JSON_START_YEAR = None
     LAST_KNOWN_YEAR = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, start_year=None, **kwargs):
         self.wage_growth_rates = None
         self.inflation_rates = None
-        if self.defaults is None and self.DEFAULTS_FILE_PATH and self.DEFAULTS_FILE_NAME:
+        if self.defaults is None and self.DEFAULTS_FILE_PATH is not None and self.DEFAULTS_FILE_NAME:
             self.defaults = os.path.join(self.DEFAULTS_FILE_PATH, self.DEFAULTS_FILE_NAME)
         super().__init__(*args, **kwargs)
         self._init_values = {
@@ -72,8 +87,8 @@ class Parameters(paramtools.Parameters):
             for param, data in self.read_params(self.defaults).items()
             if param != "schema"
         }
-        if self.JSON_START_YEAR:
-            self.set_state(year=self.JSON_START_YEAR)
+        if start_year or self.JSON_START_YEAR:
+            self.set_state(year=start_year or self.JSON_START_YEAR)
 
     def adjust(self, params_or_path, **kwargs):
         """
@@ -195,6 +210,13 @@ class Parameters(paramtools.Parameters):
         for param, values in params.items():
             if param.endswith("-indexed"):
                 base_param = param.split("-indexed")[0]
+                if not self._data[base_param].get("indexable", None):
+                    raise paramtools.ValidationError(
+                        {
+                            "errors": {base_param: f"Parameter {base_param} is not indexable."}
+                        },
+                        labels=None
+                    )
                 index_affected = index_affected | {param, base_param}
                 to_index = {}
                 if isinstance(values, bool):
@@ -358,7 +380,11 @@ class Parameters(paramtools.Parameters):
                     new_params[param] += [{"year": year, "value": yearval}]
             elif isinstance(val, dict):
                 for year, yearval in val.items():
-                    ndims = getattr(self, param).ndim
+                    val = getattr(self, param)
+                    if isinstance(val, np.ndarray):
+                        ndims = val.ndim
+                    else:
+                        ndims = 0
                     yearval = np.array(yearval)
                     short_dims = ndims - yearval.ndim
                     yearval = yearval.reshape(
