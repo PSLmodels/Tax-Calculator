@@ -831,7 +831,8 @@ class Parameters():
         assert first_cpi_offset_year > 0
         # adjust inflation rates
         cpi_offset = getattr(self, '_CPI_offset')
-        for idx in range(0, self.num_years):
+        first_cpi_offset_ix = first_cpi_offset_year - self.start_year
+        for idx in range(first_cpi_offset_ix, self.num_years):
             infrate = round(self._inflation_rates[idx] + cpi_offset[idx], 6)
             self._inflation_rates[idx] = infrate
         # revert indexed parameter values to policy_current_law.json values

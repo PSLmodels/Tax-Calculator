@@ -6,7 +6,7 @@ except ImportError:
 with open('README.md') as f:
     longdesc = f.read()
 
-version = '0.0.0'
+version = '2.7.0'
 
 config = {
     'description': 'Tax Calculator',
