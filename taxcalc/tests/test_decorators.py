@@ -45,8 +45,8 @@ def test_create_toplevel_function_string_mult_outputs():
            "            return x\n"
            "    outputs = \\\n"
            "        (pm.a, pm.b) = \\\n"
-           "        applied_f(get_values(pm.a), get_values(pm.b), "
-           "get_values(pf.d), get_values(pm.e), )\n"
+           "        applied_f(get_values(pm.a[0]), get_values(pm.b[0]), "
+           "get_values(pf.d), get_values(pm.e[0]), )\n"
            "    header = ['a', 'b']\n"
            "    return DataFrame(data=np.column_stack(outputs),"
            "columns=header)")
@@ -69,8 +69,8 @@ def test_create_toplevel_function_string():
            "            return x\n"
            "    outputs = \\\n"
            "        (pm.a) = \\\n"
-           "        applied_f(get_values(pm.a), get_values(pf.d), "
-           "get_values(pm.e), )\n"
+           "        applied_f(get_values(pm.a[0]), get_values(pf.d), "
+           "get_values(pm.e[0]), )\n"
            "    header = ['a']\n"
            "    return DataFrame(data=outputs,"
            "columns=header)")
@@ -167,8 +167,8 @@ def test_magic_apply_jit_swap():
 def test_magic_iterate_jit():
     pm = Foo()
     pf = Foo()
-    pm.a = np.ones((5,))
-    pm.b = np.ones((5,))
+    pm.a = np.ones((1, 5))
+    pm.b = np.ones((1, 5))
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
@@ -212,8 +212,8 @@ def Magic_calc3(x, y, z):
 def test_function_takes_kwarg():
     pm = Foo()
     pf = Foo()
-    pm.a = np.ones((5,))
-    pm.b = np.ones((5,))
+    pm.a = np.ones((1, 5))
+    pm.b = np.ones((1, 5))
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
@@ -233,8 +233,8 @@ def Magic_calc4(x, y, z):
 def test_function_no_parameters_listed():
     pm = Foo()
     pf = Foo()
-    pm.a = np.ones((5,))
-    pm.b = np.ones((5,))
+    pm.a = np.ones((1, 5))
+    pm.b = np.ones((1, 5))
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
@@ -254,9 +254,9 @@ def Magic_calc5(w, x, y, z):
 def test_function_parameters_optional():
     pm = Foo()
     pf = Foo()
-    pm.a = np.ones((5,))
-    pm.b = np.ones((5,))
-    pm.w = np.ones((5,))
+    pm.a = np.ones((1, 5))
+    pm.b = np.ones((1, 5))
+    pm.w = np.ones((1, 5))
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
@@ -288,9 +288,9 @@ def test_iterate_jit_raises_on_unknown_return_argument():
     uf2 = ij(unjittable_function2)
     pm = Foo()
     pf = Foo()
-    pm.a = np.ones((5,))
-    pm.b = np.ones((5,))
-    pm.w = np.ones((5,))
+    pm.a = np.ones((1, 5))
+    pm.b = np.ones((1, 5))
+    pm.w = np.ones((1, 5))
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
@@ -317,9 +317,9 @@ def test_force_no_jit():
     Magic_calc6_ = iterate_jit(parameters=['w'], nopython=True)(Magic_calc6)
     pm = Foo()
     pf = Foo()
-    pm.a = np.ones((5,))
-    pm.b = np.ones((5,))
-    pm.w = np.ones((5,))
+    pm.a = np.ones((1, 5))
+    pm.b = np.ones((1, 5))
+    pm.w = np.ones((1, 5))
     pf.x = np.ones((5,))
     pf.y = np.ones((5,))
     pf.z = np.ones((5,))
