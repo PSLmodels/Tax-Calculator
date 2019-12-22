@@ -286,7 +286,7 @@ class Parameters(paramtools.Parameters):
                     self.extend(params=[base_param], label_to_extend="year")
 
                 needs_reset.append(base_param)
-        # re-instate ops.
+        # re-instate actions.
         self.label_to_extend = label_to_extend
         self.array_first = array_first
 
