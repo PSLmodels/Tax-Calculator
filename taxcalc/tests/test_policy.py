@@ -162,7 +162,7 @@ def test_constant_inflation_rate_with_reform():
     }
     pol.implement_reform(reform)
     # extract price inflation rates
-    pirates = pol.inflation_rates
+    pirates = pol.inflation_rates()
     syr = Policy.JSON_START_YEAR
     irate_b = pirates[ryr - 2]
     irate_a = pirates[ryr]
@@ -190,7 +190,7 @@ def test_variable_inflation_rate_with_reform():
     pol.set_year(2020)
     assert pol.current_year == 2020
     # extract price inflation rates
-    pirates = pol.inflation_rates
+    pirates = pol.inflation_rates()
     irate2018 = pirates[2018]
     irate2020 = pirates[2020]
     irate2021 = pirates[2021]
@@ -213,11 +213,11 @@ def test_multi_year_reform():
     syr = Policy.JSON_START_YEAR
     nyrs = Policy.DEFAULT_NUM_YEARS
     pol = Policy()
-    iratelist = pol.inflation_rates
+    iratelist = pol.inflation_rates()
     ifactor = {}
     for i in range(0, nyrs):
         ifactor[syr + i] = 1.0 + iratelist[syr + i]
-    wratelist = pol.wage_growth_rates
+    wratelist = pol.wage_growth_rates()
     wfactor = {}
     for i in range(0, nyrs):
         wfactor[syr + i] = 1.0 + wratelist[syr + i]

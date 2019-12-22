@@ -45,7 +45,6 @@ class Consumption(Parameters):
         pointing to a valid JSON file hosted online, or a valid JSON text.
         """
         return Parameters._read_json_revision(obj, 'consumption')
-        # raise NotImplementedError()
 
     def update_consumption(self, revision,
                            ignore_warnings=False, raise_errors=True):

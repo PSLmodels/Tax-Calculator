@@ -77,8 +77,8 @@ class Parameters(paramtools.Parameters):
     LAST_KNOWN_YEAR = None
 
     def __init__(self, *args, start_year=None, **kwargs):
-        self.wage_growth_rates = None
-        self.inflation_rates = None
+        self._wage_growth_rates = None
+        self._inflation_rates = None
         if self.defaults is None and self.DEFAULTS_FILE_PATH is not None and self.DEFAULTS_FILE_NAME:
             self.defaults = os.path.join(self.DEFAULTS_FILE_PATH, self.DEFAULTS_FILE_NAME)
         super().__init__(*args, **kwargs)
@@ -157,7 +157,7 @@ class Parameters(paramtools.Parameters):
                 self._data["CPI_offset"]["value"]
             )
             for cpi_vo in rate_adjustment_vals:
-                self.inflation_rates[cpi_vo["year"]] += cpi_vo["value"]
+                self._inflation_rates[cpi_vo["year"]] += cpi_vo["value"]
             # 1. delete all unknown values.
             # 1.a for revision these are years specified after cpi_min_year
             to_delete = {}
@@ -315,12 +315,12 @@ class Parameters(paramtools.Parameters):
         label_to_extend.
         Returns: rate to use for indexing.
         """
-        if not self.inflation_rates or not self.wage_growth_rates:
+        if not self._inflation_rates or not self._wage_growth_rates:
             self.set_rates()
         if param in self.WAGE_INDEXED_PARAMS:
-            return self.wage_growth_rates[label_to_extend_val]
+            return self._wage_growth_rates[label_to_extend_val]
         else:
-            return self.inflation_rates[label_to_extend_val]
+            return self._inflation_rates[label_to_extend_val]
 
     def set_rates(self):
         """
@@ -328,6 +328,15 @@ class Parameters(paramtools.Parameters):
         Parameters.
         """
         raise NotImplementedError()
+
+    # TODO: It seems like less trouble to keep wage_growth_rates
+    # and inflaiton_rates as attributes instead of methods that
+    # access a private variable.
+    def wage_growth_rates(self):
+        return self._wage_growth_rates
+
+    def inflation_rates(self):
+        return self._inflation_rates
 
     # alias methods below
 

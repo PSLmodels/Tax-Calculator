@@ -127,12 +127,12 @@ class Policy(Parameters):
         if not self._gfactors:
             self._gfactors = GrowFactors()
 
-        self.inflation_rates = {
+        self._inflation_rates = {
             2013 + ix: np.round(rate + cpi_offset[2013 + ix], 4)
             for ix, rate in enumerate(self._gfactors.price_inflation_rates(2013, 2029))
         }
 
-        self.wage_growth_rates = {
+        self._wage_growth_rates = {
             2013 + ix: rate
             for ix, rate in enumerate(self._gfactors.wage_growth_rates(2013, 2029))
         }

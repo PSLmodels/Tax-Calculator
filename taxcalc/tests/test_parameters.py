@@ -128,8 +128,8 @@ def test_params_class(revision, expect, params_json_file):
         assert prms.start_year == 2001
         assert prms.current_year == 2001
         assert prms.end_year == 2010
-        assert prms.inflation_rates == None
-        assert prms.wage_growth_rates == None
+        assert prms.inflation_rates() == None
+        assert prms.wage_growth_rates() == None
         prms.set_year(2010)
         assert prms.current_year == 2010
         with pytest.raises(paramtools.ValidationError):
