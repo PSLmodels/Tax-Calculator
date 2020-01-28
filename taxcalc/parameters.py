@@ -521,7 +521,7 @@ class Parameters(paramtools.Parameters):
         return convert_year_to_int(single_dict)
 
     def metadata(self):
-        return self.dump()
+        return self.specification(meta_data=True, use_state=False)
 
     @staticmethod
     def years_in_revision(revision):

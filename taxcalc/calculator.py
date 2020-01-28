@@ -10,6 +10,7 @@ Tax-Calculator federal income and payroll tax Calculator class.
 import copy
 import numpy as np
 import pandas as pd
+import paramtools
 from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    NetInvIncTax, AMT, EI_PayrollTax, Adj,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
@@ -1165,24 +1166,22 @@ class Calculator():
             for year in years:
                 baseline.set_year(year)
                 updated.set_year(year)
-                mdata_base = baseline.metadata()
-                mdata_upda = updated.metadata()
-                mdata_base_keys = mdata_base.keys()
-                mdata_upda_keys = mdata_upda.keys()
-                assert set(mdata_base_keys) == set(mdata_upda_keys)
+                assert set(baseline.keys()) == set(updated.keys())
                 params_with_diff = list()
-                for pname in mdata_base_keys:
-                    base_value = mdata_base[pname]['value']
-                    upda_value = mdata_upda[pname]['value']
-                    if upda_value != base_value:
+                for pname in baseline.keys():
+                    upda_value = getattr(updated, pname)
+                    base_value = getattr(baseline, pname)
+                    if ((isinstance(upda_value, np.ndarray) and np.allclose(upda_value, base_value)) or
+                        (not isinstance(upda_value, np.ndarray) and upda_value != base_value)):
                         params_with_diff.append(pname)
                 if params_with_diff:
+                    mdata_base = baseline.specification(meta_data=True)
                     # write year
                     doc += '{}:\n'.format(year)
                     for pname in sorted(params_with_diff):
                         # write updated value line
-                        pval = mdata_upda[pname]['value']
-                        if mdata_base[pname]['value_type'] == 'boolean':
+                        pval = getattr(updated, pname).tolist()[0]
+                        if mdata_base[pname]['type'] == 'bool':
                             if isinstance(pval, list):
                                 pval = [bool(item) for item in pval]
                             else:
@@ -1190,11 +1189,20 @@ class Calculator():
                         doc += ' {} : {}\n'.format(pname, pval)
                         # ... write optional param-vector-index line
                         if isinstance(pval, list):
-                            pval = mdata_base[pname].get('vi_vals', [])
-                            pval = [str(item) for item in pval]
-                            doc += ' ' * (4 + len(pname)) + '{}\n'.format(pval)
+                            labels = paramtools.consistent_labels(
+                                [mdata_base[pname]["value"][0]]
+                            )
+                            label = None
+                            for _label in labels:
+                                if _label not in ("value", "year"):
+                                    label = _label
+                                    break
+                            if label:
+                                label_values = baseline._stateless_label_grid[label]
+                                label_values = [str(item) for item in label_values]
+                                doc += ' ' * (4 + len(pname)) + '{}\n'.format(label_values)
                         # ... write param-name line
-                        name = mdata_base[pname]['long_name']
+                        name = mdata_base[pname]['title']
                         for line in lines('name: ' + name, 6):
                             doc += '  ' + line
                         # ... write param-description line
@@ -1203,21 +1211,18 @@ class Calculator():
                             doc += '  ' + line
                         # ... write param-baseline-value line
                         if isinstance(baseline, Policy):
-                            pval = mdata_base[pname]['value']
-                            ptype = mdata_base[pname]['value_type']
+                            pval = getattr(baseline, pname).tolist()[0]
+                            ptype = mdata_base[pname]['type']
                             if isinstance(pval, list):
-                                if ptype == 'boolean':
+                                if ptype == 'bool':
                                     pval = [bool(item) for item in pval]
-                            elif ptype == 'boolean':
+                            elif ptype == 'bool':
                                 pval = bool(pval)
                             doc += '  baseline_value: {}\n'.format(pval)
                         else:  # if baseline is GrowDiff object
                             # each GrowDiff parameter has zero as default value
                             doc += '  baseline_value: 0.0\n'
             del mdata_base
-            del mdata_upda
-            del mdata_base_keys
-            del mdata_upda_keys
             return doc
 
         # begin main logic of reform_documentation
