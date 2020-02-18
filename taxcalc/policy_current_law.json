@@ -1223,7 +1223,7 @@
                   0.100,
                   0.075,
                   0.075,
-                  0.100],
+                  0.075],
         "valid_values": {"min": 0.075, "max": 0.100},
         "invalid_minmsg": "",
         "invalid_maxmsg": "",
