@@ -256,7 +256,8 @@ def test_multi_year_reform():
                                      [503, 3359, 5548, 6242],
                                      [506, 3373, 5572, 6269],
                                      [510, 3400, 5616, 6318],
-                                     [519, 3461, 5716, 6431]],
+                                     [519, 3461, 5716, 6431],
+                                     [529, 3526, 5828, 6557]],
                                     dtype=np.float64),
                            'real',
                            inflate=True,
@@ -265,7 +266,7 @@ def test_multi_year_reform():
                        atol=0.01, rtol=0.0)
     assert np.allclose(getattr(pol, '_STD_Dep'),
                        Policy._expand_array(
-                           np.array([1000, 1000, 1050, 1050, 1050, 1050],
+                           np.array([1000, 1000, 1050, 1050, 1050, 1050, 1100],
                                     dtype=np.float64),
                            'real',
                            inflate=True,
@@ -285,7 +286,7 @@ def test_multi_year_reform():
     assert np.allclose(getattr(pol, '_SS_Earnings_c'),
                        Policy._expand_array(
                            np.array([113700, 117000, 118500, 118500, 127200,
-                                     128400],
+                                     128400, 132900],
                                     dtype=np.float64),
                            'real',
                            inflate=True,
