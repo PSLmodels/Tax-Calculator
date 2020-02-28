@@ -13,7 +13,7 @@ from taxcalc import Policy
 # specify year constants (only byear should vary)
 syear = Policy.JSON_START_YEAR
 pyear = 2017  # prior year before TCJA first implemented
-byear = 2018  # base year: year for last known historical parameter values
+byear = 2019  # base year: year for last known historical parameter values
 fyear = 2026  # final year in which parameter values revert to pre-TCJA values
 
 # ensure proper relationship between year constants
@@ -27,11 +27,11 @@ pdata = clp._vals
 
 # identify policy parameters that have their values reverted in final year
 skip_list = ['_II_brk7', '_PT_brk7']  # because they are both "infinity" (9e99)
-fyr = '{}'.format(fyear)
+fyr = fyear
 reverting_params = list()
 for pname in sorted(pdata.keys()):
     pdict = pdata[pname]
-    if pdata[pname]['cpi_inflated'] and fyr in pdata[pname]['value_yrs']:
+    if pdata[pname]['indexed'] and fyr in pdata[pname]['value_yrs']:
         if pname not in skip_list:
             reverting_params.append(pname)
 print('number_of_reverting_parameters= {}'.format(len(reverting_params)))

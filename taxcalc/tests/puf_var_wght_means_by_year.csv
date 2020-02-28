@@ -75,6 +75,6 @@ nu13,Number of dependents under 13 years old,       0,       0,       0,       0
 p08000,Other tax credits (but not including Sch R credit),       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1,       1
 p22250,Sch D: Net short-term capital gains/losses,    -135,    -193,    -197,    -176,    -229,    -281,    -283,    -274,    -266,    -264,    -265,    -267,    -273,    -280,    -292,    -297,    -309
 p23250,Sch D: Net long-term capital gains/losses,    2567,    3591,    3583,    3099,    3990,    4748,    4700,    4414,    4271,    4154,    4106,    4122,    4160,    4220,    4306,    4393,    4492
-payrolltax,Payroll taxes (ee+er) for OASDI+HI,    5842,    6060,    6250,    6296,    6525,    6682,    6901,    7133,    7340,    7536,    7738,    7960,    8179,    8401,    8631,    8872,    9122
+payrolltax,Payroll taxes (ee+er) for OASDI+HI,    5842,    6060,    6250,    6296,    6525,    6682,    6900,    7131,    7339,    7535,    7736,    7958,    8178,    8399,    8629,    8870,    9120
 pencon_p,Contributions to defined-contribution pension plans for taxpayer,     976,    1025,    1063,    1079,    1107,    1138,    1176,    1216,    1251,    1285,    1319,    1358,    1396,    1434,    1474,    1516,    1559
 pencon_s,Contributions to defined-contribution pension plans for spouse,     430,     448,     464,     469,     483,     496,     512,     528,     542,     556,     570,     587,     602,     617,     633,     651,     668
