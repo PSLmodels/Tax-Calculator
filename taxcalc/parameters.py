@@ -153,7 +153,7 @@ class Parameters(paramtools.Parameters):
             cpi_min_year = min(cpi_adj["CPI_offset"], key=lambda vo: vo["year"])
             # apply new CPI_offset values to inflation rates
             rate_adjustment_vals = filter(
-                lambda vo: vo["year"] >= cpi_min_year["value"],
+                lambda vo: vo["year"] >= cpi_min_year["year"],
                 self._data["CPI_offset"]["value"]
             )
             for cpi_vo in rate_adjustment_vals:

@@ -948,17 +948,15 @@ def test_cpi_offset_affect_on_prior_years():
     p2.implement_reform(reform)
 
     start_year = p1.start_year
-    p1_rates = np.array(p1.inflation_rates())
-    p2_rates = np.array(p2.inflation_rates())
-
+    p1_rates = p1.inflation_rates()
+    p2_rates = p2.inflation_rates()
     # Inflation rates prior to 2022 are the same.
-    np.testing.assert_allclose(
-        p1_rates[:2022 - start_year],
-        p2_rates[:2022 - start_year]
-    )
+    for year in range(start_year, 2022):
+        assert p1_rates[year] == p2_rates[year], (
+            f"Difference in year {year}: {p1_rates[year] - p2_rates[year]}"
+        )
 
     # Inflation rate in 2022 was updated.
-    np.testing.assert_allclose(
-        p1_rates[2022 - start_year],
-        p2_rates[2022 - start_year] - (-0.005)
-    )
+    assert p1_rates[2022] == p2_rates[2022] - (-0.005), (
+            f"Difference in year 2022: {p1_rates[2022] - p2_rates[2022]}"
+        )
