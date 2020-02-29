@@ -1,0 +1,1 @@
+Documentation is built using the `make_*.py` scripts, building from the `.htmx` pages in this directory or the `.py` and `.res` files in the `cookbook` folder. `.html` files should not be modified outside these scripts.

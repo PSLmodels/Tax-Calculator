@@ -224,49 +224,50 @@ def test_multi_year_reform():
     # TODO: this seems like a test of _expand_array which is
     # already tested within paramtools
     # confirm that parameters have current-law values
-    # assert np.allclose(getattr(pol, '_EITC_c'),
-    #                    Policy._expand_array(
-    #                        np.array([[487, 3250, 5372, 6044],
-    #                                  [496, 3305, 5460, 6143],
-    #                                  [503, 3359, 5548, 6242],
-    #                                  [506, 3373, 5572, 6269],
-    #                                  [510, 3400, 5616, 6318],
-    #                                  [519, 3461, 5716, 6431]],
-    #                                 dtype=np.float64),
-    #                        'real',
-    #                        inflate=True,
-    #                        inflation_rates=iratelist,
-    #                        num_years=nyrs),
-    #                    atol=0.01, rtol=0.0)
-    # assert np.allclose(getattr(pol, '_STD_Dep'),
-    #                    Policy._expand_array(
-    #                        np.array([1000, 1000, 1050, 1050, 1050, 1050],
-    #                                 dtype=np.float64),
-    #                        'real',
-    #                        inflate=True,
-    #                        inflation_rates=iratelist,
-    #                        num_years=nyrs),
-    #                    atol=0.01, rtol=0.0)
-    # assert np.allclose(getattr(pol, '_CTC_c'),
-    #                    Policy._expand_array(
-    #                        np.array([1000] * 5 + [2000] * 8 + [1000],
-    #                                 dtype=np.float64),
-    #                        'real',
-    #                        inflate=False,
-    #                        inflation_rates=iratelist,
-    #                        num_years=nyrs),
-    #                    atol=0.01, rtol=0.0)
-    # # this parameter uses a different indexing rate
-    # assert np.allclose(getattr(pol, '_SS_Earnings_c'),
-    #                    Policy._expand_array(
-    #                        np.array([113700, 117000, 118500, 118500, 127200,
-    #                                  128400],
-    #                                 dtype=np.float64),
-    #                        'real',
-    #                        inflate=True,
-    #                        inflation_rates=wratelist,
-    #                        num_years=nyrs),
-    #                    atol=0.01, rtol=0.0)
+    assert np.allclose(getattr(pol, '_EITC_c'),
+                       Policy._expand_array(
+                           np.array([[487, 3250, 5372, 6044],
+                                     [496, 3305, 5460, 6143],
+                                     [503, 3359, 5548, 6242],
+                                     [506, 3373, 5572, 6269],
+                                     [510, 3400, 5616, 6318],
+                                     [519, 3461, 5716, 6431],
+                                     [529, 3526, 5828, 6557]],
+                                    dtype=np.float64),
+                           'real',
+                           inflate=True,
+                           inflation_rates=iratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(getattr(pol, '_STD_Dep'),
+                       Policy._expand_array(
+                           np.array([1000, 1000, 1050, 1050, 1050, 1050, 1100],
+                                    dtype=np.float64),
+                           'real',
+                           inflate=True,
+                           inflation_rates=iratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
+    assert np.allclose(getattr(pol, '_CTC_c'),
+                       Policy._expand_array(
+                           np.array([1000] * 5 + [2000] * 8 + [1000],
+                                    dtype=np.float64),
+                           'real',
+                           inflate=False,
+                           inflation_rates=iratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
+    # this parameter uses a different indexing rate
+    assert np.allclose(getattr(pol, '_SS_Earnings_c'),
+                       Policy._expand_array(
+                           np.array([113700, 117000, 118500, 118500, 127200,
+                                     128400, 132900],
+                                    dtype=np.float64),
+                           'real',
+                           inflate=True,
+                           inflation_rates=wratelist,
+                           num_years=nyrs),
+                       atol=0.01, rtol=0.0)
     # specify multi-year reform using a param:year:value-fomatted dictionary
     reform = {
         'SS_Earnings_c': {2016: 300000,
@@ -934,3 +935,30 @@ def test_index_offset_reform():
     expvalue = round(pvalue2[2020] * (1. + expindexrate), 2)
     # ... compare expected value with actual value of pvalue2 for 2021
     assert np.allclose([expvalue], [pvalue2[2021]])
+
+
+def test_cpi_offset_affect_on_prior_years():
+    """
+    Test that CPI_offset does not have affect on inflation
+    rates in earlier years.
+    """
+    reform = {'CPI_offset': {2022: -0.005}}
+    p1 = Policy()
+    p2 = Policy()
+    p2.implement_reform(reform)
+
+    start_year = p1.start_year
+    p1_rates = np.array(p1.inflation_rates())
+    p2_rates = np.array(p2.inflation_rates())
+
+    # Inflation rates prior to 2022 are the same.
+    np.testing.assert_allclose(
+        p1_rates[:2022 - start_year],
+        p2_rates[:2022 - start_year]
+    )
+
+    # Inflation rate in 2022 was updated.
+    np.testing.assert_allclose(
+        p1_rates[2022 - start_year],
+        p2_rates[2022 - start_year] - (-0.005)
+    )
