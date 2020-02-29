@@ -66,8 +66,9 @@ class Policy(Parameters):
     }
     # (2) specify which Policy parameters have been redefined recently
     REDEFINED_PARAMS = {
+        # TODO: TODO: should this be removed now?
         # TODO: remove the CTC_c name:message pair sometime later in 2019
-        '_CTC_c': 'CTC_c was redefined in release 1.0.0'
+        # '_CTC_c': 'CTC_c was redefined in release 1.0.0'
     }
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']

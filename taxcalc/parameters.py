@@ -68,6 +68,8 @@ class Parameters(paramtools.Parameters):
     label_to_extend = "year"
     uses_extend_func = True
 
+    REMOVED_PARAMS = None
+    REDEFINED_PARAMS = None
     WAGE_INDEXED_PARAMS = ()
 
     # Legacy class attrs
@@ -380,8 +382,14 @@ class Parameters(paramtools.Parameters):
                     None
                 )
             if param not in self._data and param.split("-indexed")[0] not in self._data:
+                if self.REMOVED_PARAMS and param in self.REMOVED_PARAMS:
+                    msg = self.REMOVED_PARAMS[param]
+                elif self.REDEFINED_PARAMS and param in self.REDEFINED_PARAMS:
+                    msg = self.REDEFINED_PARAMS[param]
+                else:
+                    msg = f"Parameter {param} does not exist."
                 raise paramtools.ValidationError(
-                    {"errors": {"schema": f"Parameter {param} does not exist."}},
+                    {"errors": {"schema": msg}},
                     None
                 )
             if param.endswith("-indexed"):
