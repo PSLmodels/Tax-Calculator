@@ -1,112 +1,285 @@
 {
-  "MPC_e17500": {
-      "long_name": "Marginal propensity to consume medical expenses",
-      "description": "Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [0.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "MPC_e18400": {
-      "start_year": 2013,
-      "long_name": "Marginal propensity to consume state-and-local taxes",
-      "description": "Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [0.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "MPC_e19800": {
-      "start_year": 2013,
-      "long_name": "Marginal propensity to consume charity cash contributions",
-      "description": "Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [0.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "MPC_e20400": {
-      "start_year": 2013,
-      "long_name": "Marginal propensity to consume miscellaneous deduction expenses",
-      "description": "Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [0.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "BEN_housing_value": {
-      "long_name": "Consumption value of housing benefits",
-      "description": "Consumption value per dollar of housing benefits, all of which are in-kind benefits.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "BEN_snap_value": {
-      "long_name": "Consumption value of SNAP benefits",
-      "description": "Consumption value per dollar of SNAP benefits, all of which are in-kind benefits.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "BEN_tanf_value": {
-      "long_name": "Consumption value of TANF benefits",
-      "description": "Consumption value per dollar of TANF benefits, some of which are cash benefits and some of which are in-kind benefits.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "BEN_vet_value": {
-      "long_name": "Consumption value of veterans benefits",
-      "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (only about 48% are cash benefits).",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 2}
-  },
-
-  "BEN_wic_value": {
-      "long_name": "Consumption value of WIC benefits",
-      "description": "Consumption value per dollar of WIC benefits, all of which are in-kind benefits.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 1}
-  },
-
-  "BEN_mcare_value": {
-      "long_name": "Consumption value of Medicare benefits",
-      "description": "Consumption value per dollar of Medicare benefits, all of which are in-kind benefits.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 2}
-  },
-
-  "BEN_mcaid_value": {
-      "long_name": "Consumption value of Medicaid benefits",
-      "description": "Consumption value per dollar of Medicaid benefits, all of which are in-kind benefits.",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 2}
-  },
-
-  "BEN_other_value": {
-      "long_name": "Consumption value of other benefits",
-      "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between 52% and 76% are in-kind benefits).",
-      "value_type": "real",
-      "value_yrs": [2013],
-      "value": [1.0],
-      "valid_values": {"min": 0, "max": 1}
-  }
+    "schema": {
+        "labels": {
+            "year": {
+                "type": "int",
+                "validators": {
+                    "range": {
+                        "min": 2013,
+                        "max": 2029
+                    }
+                }
+            },
+            "MARS": {
+                "type": "str",
+                "validators": {
+                    "choice": {
+                        "choices": [
+                            "single",
+                            "mjoint",
+                            "mseparate",
+                            "headhh",
+                            "widow"
+                        ]
+                    }
+                }
+            },
+            "idedtype": {
+                "type": "str",
+                "validators": {
+                    "choice": {
+                        "choices": [
+                            "med",
+                            "sltx",
+                            "retx",
+                            "cas",
+                            "misc",
+                            "int",
+                            "char"
+                        ]
+                    }
+                }
+            },
+            "EIC": {
+                "type": "str",
+                "validators": {
+                    "choice": {
+                        "choices": [
+                            "0kids",
+                            "1kid",
+                            "2kids",
+                            "3+kids"
+                        ]
+                    }
+                }
+            }
+        },
+        "additional_members": {
+            "section_1": {
+                "type": "str"
+            },
+            "section_2": {
+                "type": "str"
+            },
+            "start_year": {
+                "type": "int"
+            },
+            "indexable": {
+                "type": "bool"
+            },
+            "indexed": {
+                "type": "bool"
+            },
+            "compatible_data": {
+                "type": "compatible_data"
+            }
+        }
+    },
+    "MPC_e17500": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "title": "Marginal propensity to consume medical expenses",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "description": "Defined as dollar change in medical-expense consumption divided by dollar change in income.  Typical value is in [0,1] range."
+    },
+    "MPC_e18400": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "title": "Marginal propensity to consume state-and-local taxes",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "start_year": 2013,
+        "description": "Defined as dollar change in state-and-local-taxes consumption divided by dollar change in income.  Typical value is in [0,1] range."
+    },
+    "MPC_e19800": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "title": "Marginal propensity to consume charity cash contributions",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "start_year": 2013,
+        "description": "Defined as dollar change in charity-cash-contribution consumption divided by dollar change in income.  Typical value is in [0,1] range."
+    },
+    "MPC_e20400": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "title": "Marginal propensity to consume miscellaneous deduction expenses",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "start_year": 2013,
+        "description": "Defined as dollar change in miscellaneous-deduction-expense consumption divided by dollar change in income.  Typical value is in [0,1] range."
+    },
+    "BEN_housing_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of housing benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "description": "Consumption value per dollar of housing benefits, all of which are in-kind benefits."
+    },
+    "BEN_snap_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of SNAP benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "description": "Consumption value per dollar of SNAP benefits, all of which are in-kind benefits."
+    },
+    "BEN_tanf_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of TANF benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "description": "Consumption value per dollar of TANF benefits, some of which are cash benefits and some of which are in-kind benefits."
+    },
+    "BEN_vet_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of veterans benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 2
+            }
+        },
+        "description": "Consumption value per dollar of veterans benefits, some of which are in-kind benefits (only about 48% are cash benefits)."
+    },
+    "BEN_wic_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of WIC benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "description": "Consumption value per dollar of WIC benefits, all of which are in-kind benefits."
+    },
+    "BEN_mcare_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of Medicare benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 2
+            }
+        },
+        "description": "Consumption value per dollar of Medicare benefits, all of which are in-kind benefits."
+    },
+    "BEN_mcaid_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of Medicaid benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 2
+            }
+        },
+        "description": "Consumption value per dollar of Medicaid benefits, all of which are in-kind benefits."
+    },
+    "BEN_other_value": {
+        "value": [
+            {
+                "year": 2013,
+                "value": 1.0
+            }
+        ],
+        "title": "Consumption value of other benefits",
+        "type": "float",
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "description": "Consumption value per dollar of other benefits, some of which are in-kind benefits (somewhere between 52% and 76% are in-kind benefits)."
+    }
 }
