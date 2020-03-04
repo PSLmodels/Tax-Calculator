@@ -87,7 +87,6 @@ class Policy(Parameters):
 
         super().__init__(**kwargs)
 
-
     @staticmethod
     def read_json_reform(obj):
         """
@@ -105,17 +104,24 @@ class Policy(Parameters):
         may also use the adjust method with ParamTools styled reforms.
         """
         # need to do conversion:
-        return self._update(reform, ignore_warnings=ignore_warnings, raise_errors=raise_errors)
+        return self._update(
+            reform,
+            ignore_warnings=ignore_warnings,
+            raise_errors=raise_errors
+        )
 
     @staticmethod
     def parameter_list():
         """
         Returns list of parameter names in the policy_current_law.json file.
         """
-        path = os.path.join(Policy.DEFAULTS_FILE_PATH, Policy.DEFAULTS_FILE_NAME)
+        path = os.path.join(
+            Policy.DEFAULTS_FILE_PATH,
+            Policy.DEFAULTS_FILE_NAME
+        )
         with open(path) as f:
             defaults = json.loads(f.read())  # pylint: disable=protected-access
-        return [k for k in defaults if k!= "schema"]
+        return [k for k in defaults if k != "schema"]
 
     def set_rates(self):
         """Initialize taxcalc indexing data."""
@@ -130,10 +136,14 @@ class Policy(Parameters):
 
         self._inflation_rates = {
             2013 + ix: np.round(rate + cpi_offset[2013 + ix], 4)
-            for ix, rate in enumerate(self._gfactors.price_inflation_rates(2013, 2029))
+            for ix, rate in enumerate(
+                self._gfactors.price_inflation_rates(2013, 2029)
+            )
         }
 
         self._wage_growth_rates = {
             2013 + ix: rate
-            for ix, rate in enumerate(self._gfactors.wage_growth_rates(2013, 2029))
+            for ix, rate in enumerate(
+                self._gfactors.wage_growth_rates(2013, 2029)
+            )
         }

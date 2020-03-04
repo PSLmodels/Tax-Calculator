@@ -241,8 +241,9 @@ def test_multi_year_reform():
     #                    atol=0.01, rtol=0.0)
     # assert np.allclose(getattr(pol, '_STD_Dep'),
     #                    Policy._expand_array(
-    #                        np.array([1000, 1000, 1050, 1050, 1050, 1050, 1100],
-    #                                 dtype=np.float64),
+    #                        np.array(
+    #                           [1000, 1000, 1050, 1050, 1050, 1050, 1100],
+    #                           dtype=np.float64),
     #                        'real',
     #                        inflate=True,
     #                        inflation_rates=iratelist,
@@ -864,6 +865,7 @@ def test_reform_with_out_of_range_error():
     pol.implement_reform(reform, raise_errors=False)
     assert pol.parameter_errors
 
+
 def test_reform_with_warning():
     """
     Try to use warned out-of-range parameter value in reform.
@@ -878,12 +880,13 @@ def test_reform_with_warning():
     # pol.implement_reform(reform)
     # assert pol.parameter_warnings
     with pytest.raises(paramtools.ValidationError):
-       pol.implement_reform(reform)
+        pol.implement_reform(reform)
 
     pol = Policy()
     pol.implement_reform(reform, ignore_warnings=True)
     pol.set_state(year=2020)
     assert pol.ID_Medical_frt == np.array([0.05])
+
 
 def test_reform_with_scalar_vector_errors():
     """
@@ -901,6 +904,7 @@ def test_reform_with_scalar_vector_errors():
     # with pytest.raises(paramtools.ValidationError):
     #     policy2.implement_reform(reform2)
     policy2.implement_reform(reform2)
+
 
 def test_index_offset_reform():
     """

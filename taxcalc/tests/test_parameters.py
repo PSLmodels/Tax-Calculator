@@ -25,12 +25,12 @@ from taxcalc import Parameters, Policy, Consumption, GrowFactors
 # Params class, which is defined in the test_params_class function.
 
 
-PARAMS_JSON = json.dumps(
-{
+PARAMS_JSON = json.dumps({
     "schema": {
         "labels": {
             "year": {
-                "type": "int", "validators": {"range": {"min": 2001, "max": 2010}}
+                "type": "int",
+                "validators": {"range": {"min": 2001, "max": 2010}}
             }
         },
         "operators": {
@@ -66,7 +66,6 @@ PARAMS_JSON = json.dumps(
         "validators": {"choice": {"choices": ["linear", "nonlinear", "cubic"]}}
     }
 })
-
 
 
 @pytest.fixture(scope='module', name='params_json_file')
@@ -128,8 +127,8 @@ def test_params_class(revision, expect, params_json_file):
         assert prms.start_year == 2001
         assert prms.current_year == 2001
         assert prms.end_year == 2010
-        assert prms.inflation_rates() == None
-        assert prms.wage_growth_rates() == None
+        assert prms.inflation_rates() is None
+        assert prms.wage_growth_rates() is None
         prms.set_year(2010)
         assert prms.current_year == 2010
         with pytest.raises(paramtools.ValidationError):
@@ -174,7 +173,8 @@ def test_json_file_contents(tests_path, fname):
                    'STD', 'II_em',
                    'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
                    'ID_ps', 'ID_AllTaxes_c']
-    long_known_years = set(range(first_year, 2026 + 1))  # for TCJA-reverting long_params
+    # for TCJA-reverting long_params
+    long_known_years = set(range(first_year, 2026 + 1))
     # check elements in each parameter sub-dictionary
     failures = ''
     with open(os.path.join(tests_path, "..", fname)) as f:
@@ -275,7 +275,6 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
 
 
 # following tests access private methods, so pylint: disable=protected-access
-
 
 
 def test_read_json_revision():

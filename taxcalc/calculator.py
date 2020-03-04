@@ -286,7 +286,7 @@ class Calculator():
             if param_name.startswith("_"):
                 return val
             else:
-                return val[0] # drop down a dimension.
+                return val[0]  # drop down a dimension.
         setattr(self.__policy, param_name, param_value)
         return None
 
@@ -1175,8 +1175,12 @@ class Calculator():
                 for pname in baseline.keys():
                     upda_value = getattr(updated, pname)
                     base_value = getattr(baseline, pname)
-                    if ((isinstance(upda_value, np.ndarray) and np.allclose(upda_value, base_value)) or
-                        (not isinstance(upda_value, np.ndarray) and upda_value != base_value)):
+                    if (
+                        (isinstance(upda_value, np.ndarray) and
+                         np.allclose(upda_value, base_value)) or
+                        (not isinstance(upda_value, np.ndarray) and
+                         upda_value != base_value)
+                    ):
                         params_with_diff.append(pname)
                 if params_with_diff:
                     mdata_base = baseline.specification(meta_data=True)
@@ -1202,9 +1206,13 @@ class Calculator():
                                     label = _label
                                     break
                             if label:
-                                label_values = baseline._stateless_label_grid[label]
-                                label_values = [str(item) for item in label_values]
-                                doc += ' ' * (4 + len(pname)) + '{}\n'.format(label_values)
+                                lv = baseline._stateless_label_grid[label]
+                                lv = [
+                                    str(item) for item in lv
+                                ]
+                                doc += ' ' * (
+                                    4 + len(pname)
+                                ) + '{}\n'.format(lv)
                         # ... write param-name line
                         name = mdata_base[pname]['title']
                         for line in lines('name: ' + name, 6):

@@ -81,8 +81,15 @@ class Parameters(paramtools.Parameters):
     def __init__(self, *args, start_year=None, **kwargs):
         self._wage_growth_rates = None
         self._inflation_rates = None
-        if self.defaults is None and self.DEFAULTS_FILE_PATH is not None and self.DEFAULTS_FILE_NAME:
-            self.defaults = os.path.join(self.DEFAULTS_FILE_PATH, self.DEFAULTS_FILE_NAME)
+        if (
+            self.defaults is None and
+            self.DEFAULTS_FILE_PATH is not None and
+            self.DEFAULTS_FILE_NAME
+        ):
+            self.defaults = os.path.join(
+                self.DEFAULTS_FILE_PATH,
+                self.DEFAULTS_FILE_NAME
+            )
         super().__init__(*args, **kwargs)
         self._init_values = {
             param: data["value"]
@@ -124,13 +131,15 @@ class Parameters(paramtools.Parameters):
             parameters.
 
         Notable side-effects:
-            - All values of indexed parameters, including default values, are wiped out after
-                the first year in which the "CPI_offset" is changed. This is only necessary because
-                Tax-Calculator hard-codes inflated values. If Tax-Calculator only hard-coded values
-                that were changed for non-inflation related reasons, then this would not be
-                necessary for default values.
-            - All values of a parameter whose indexed status is adjusted are wiped out after the
-                year in which the value is adjusted for the same hard-coding reason.
+            - All values of indexed parameters, including default values, are
+                wiped out after the first year in which the "CPI_offset" is
+                changed. This is only necessary because Tax-Calculator
+                hard-codes inflated values. If Tax-Calculator only hard-coded
+                values that were changed for non-inflation related reasons,
+                then this would not be necessary for default values.
+            - All values of a parameter whose indexed status is adjusted are
+              wiped out after the year in which the value is adjusted for the
+              same hard-coding reason.
         """
         min_year = min(self._stateless_label_grid["year"])
 
@@ -149,10 +158,18 @@ class Parameters(paramtools.Parameters):
         needs_reset = []
         if params.get("CPI_offset") is not None:
             # get first year CPI_offset is adjusted
-            cpi_adj = super().adjust({"CPI_offset": params["CPI_offset"]}, **kwargs)
+            cpi_adj = super().adjust(
+                {
+                    "CPI_offset": params["CPI_offset"]
+                },
+                **kwargs
+            )
             # turn off extend now that CPI_offset has been updated.
             self.label_to_extend = None
-            cpi_min_year = min(cpi_adj["CPI_offset"], key=lambda vo: vo["year"])
+            cpi_min_year = min(
+                cpi_adj["CPI_offset"],
+                key=lambda vo: vo["year"]
+            )
             # apply new CPI_offset values to inflation rates
             rate_adjustment_vals = filter(
                 lambda vo: vo["year"] >= cpi_min_year["year"],
@@ -172,7 +189,9 @@ class Parameters(paramtools.Parameters):
                 # TODO: disting. btw wage and price?
                 if self._data[param].get("indexed", False):
                     gt = self.select_gt(param, True, year=cpi_min_year["year"])
-                    to_delete[param] = list([dict(vo, **{"value": None}) for vo in gt])
+                    to_delete[param] = list(
+                        [dict(vo, **{"value": None}) for vo in gt]
+                    )
                     to_adjust[param] = select_lt(
                         self._init_values[param],
                         True,
@@ -195,9 +214,13 @@ class Parameters(paramtools.Parameters):
                     continue
                 if self._data[param].get("indexed", False):  # TODO: see above
                     gt = self.select_gt(param, True, year=last_known_year)
-                    to_delete[param] = list([dict(vo, **{"value": None}) for vo in gt])
+                    to_delete[param] = list(
+                        [dict(vo, **{"value": None}) for vo in gt]
+                    )
                     to_adjust[param] = select_lt(
-                        self._init_values[param], True, {"year": last_known_year + 1}
+                        self._init_values[param],
+                        True,
+                        {"year": last_known_year + 1}
                     )
                     needs_reset.append(param)
 
@@ -213,10 +236,9 @@ class Parameters(paramtools.Parameters):
             if param.endswith("-indexed"):
                 base_param = param.split("-indexed")[0]
                 if not self._data[base_param].get("indexable", None):
+                    msg = f"Parameter {base_param} is not indexable."
                     raise paramtools.ValidationError(
-                        {
-                            "errors": {base_param: f"Parameter {base_param} is not indexable."}
-                        },
+                        {"errors": {base_param: msg}},
                         labels=None
                     )
                 index_affected = index_affected | {param, base_param}
@@ -235,15 +257,27 @@ class Parameters(paramtools.Parameters):
                 if base_param in params:
                     min_index_change_year = min(to_index.keys())
                     vos = select_lt(
-                        params[base_param], False, {"year": min_index_change_year}
+                        params[base_param],
+                        False,
+                        {"year": min_index_change_year}
                     )
                     if vos:
-                        min_adj_year = min(vos, key=lambda vo: vo["year"])["year"]
-                        gt = self.select_gt(base_param, True, year=min_adj_year)
+                        min_adj_year = min(
+                            vos,
+                            key=lambda vo: vo["year"]
+                        )["year"]
+                        gt = self.select_gt(
+                            base_param,
+                            True,
+                            year=min_adj_year
+                        )
                         super().adjust(
                             {
                                 base_param: list(
-                                    [dict(vo, **{"value": None}) for vo in gt]
+                                    [
+                                        dict(vo, **{"value": None})
+                                        for vo in gt
+                                    ]
                                 )
                             }
                         )
@@ -258,26 +292,36 @@ class Parameters(paramtools.Parameters):
 
                 for year in sorted(to_index):
                     indexed_val = to_index[year]
-                    # get and delete all default values after year where indexed status changed.
+                    # get and delete all default values after year where
+                    # indexed status changed.
                     gte = self.select_gt(base_param, True, year=year)
                     super().adjust(
-                        {base_param: list([dict(vo, **{"value": None}) for vo in gte])}
+                        {
+                            base_param: list(
+                                [
+                                    dict(vo, **{"value": None})
+                                    for vo in gte
+                                ]
+                            )
+                        }
                     )
 
-                    # 2.b extend values for this parameter to the year where the indexed
-                    # status changes.
+                    # 2.b extend values for this parameter to the year where
+                    # the indexed status changes.
                     if year > min_year:
                         self.extend(
                             params=[base_param],
                             label_to_extend="year",
-                            label_to_extend_values=list(range(min_year, year + 1)),
+                            label_to_extend_values=list(
+                                range(min_year, year + 1)
+                            ),
                         )
 
                     # 2.c set indexed status.
                     self._data[base_param]["indexed"] = indexed_val
 
-                    # 2.d adjust with values greater than or equal to current year
-                    # in params
+                    # 2.d adjust with values greater than or equal to current
+                    # year in params
                     if base_param in params:
                         vos = paramtools.select_gt(
                             params[base_param], False, {"year": year - 1}
@@ -294,7 +338,8 @@ class Parameters(paramtools.Parameters):
 
         # filter out "-indexed" params
         nonindexed_params = {
-            param: val for param, val in params.items() if param not in index_affected
+            param: val for param, val in params.items()
+            if param not in index_affected
         }
 
         needs_reset = set(needs_reset) - set(nonindexed_params.keys())
@@ -306,7 +351,10 @@ class Parameters(paramtools.Parameters):
 
         # 4. Add indexing params back for return to user.
         adj.update(
-            {param: val for param, val in params.items() if param in index_affected}
+            {
+                param: val for param, val in params.items()
+                if param in index_affected
+            }
         )
         return adj
 
@@ -377,11 +425,15 @@ class Parameters(paramtools.Parameters):
         cur_state = dict(self.view_state())
         for param, val in revision.items():
             if not isinstance(param, str):
+                msg = f"Parameter {param} is not a string."
                 raise paramtools.ValidationError(
-                    {"errors": {"schema": f"Parameter {param} is not a string."}},
+                    {"errors": {"schema": msg}},
                     None
                 )
-            if param not in self._data and param.split("-indexed")[0] not in self._data:
+            if (
+                param not in self._data and
+                param.split("-indexed")[0] not in self._data
+            ):
                 if self.REMOVED_PARAMS and param in self.REMOVED_PARAMS:
                     msg = self.REMOVED_PARAMS[param]
                 elif self.REDEFINED_PARAMS and param in self.REDEFINED_PARAMS:
@@ -411,15 +463,20 @@ class Parameters(paramtools.Parameters):
                     try:
                         yearval = self.from_array(param, yearval)
                     except IndexError:
-                        msg = f"Pameter {param} does not have the correct array dimensions for year {year}."
+                        msg = (
+                            f"Pameter {param} does not have the correct "
+                            f"array dimensions for year {year}."
+                        )
                         raise paramtools.ValidationError(
                             {"errors": {"schema": msg}},
                             None
                         )
                     new_params[param] += yearval
             else:
-                msg =  (f"Parameter {param} must be a year:value dictionary "
-                        f"if you are not using the new adjust method.")
+                msg = (
+                    f"Parameter {param} must be a year:value dictionary "
+                    f"if you are not using the new adjust method."
+                )
                 raise paramtools.ValidationError(
                     {"errors": {"schema": msg}},
                     None
@@ -552,7 +609,10 @@ class Parameters(paramtools.Parameters):
         Allows the user to get the value of a parameter over all years,
         not just the ones that are active.
         """
-        if attr.startswith("_") and attr[1:] in super().__getattribute__("_data"):
+        if (
+            attr.startswith("_") and
+            attr[1:] in super().__getattribute__("_data")
+        ):
             state = dict(self.view_state())
             self.clear_state()
             value = getattr(self, attr[1:])
