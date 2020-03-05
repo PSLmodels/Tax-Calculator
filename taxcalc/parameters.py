@@ -397,14 +397,16 @@ class Parameters(paramtools.Parameters):
 
         self._wage_indexed = wage_indexed or self.WAGE_INDEXED_PARAMS
 
-        super().__init__()
+        if start_year or self.JSON_START_YEAR:
+            initial_state = {"year": start_year or self.JSON_START_YEAR}
+        else:
+            initial_state = None
+        super().__init__(initial_state=initial_state)
         self._init_values = {
             param: data["value"]
             for param, data in self.read_params(self.defaults).items()
             if param != "schema"
         }
-        if start_year or self.JSON_START_YEAR:
-            self.set_state(year=start_year or self.JSON_START_YEAR)
 
     def _update(self, revision, ignore_warnings, raise_errors):
         """
