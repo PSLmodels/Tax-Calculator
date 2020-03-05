@@ -111,7 +111,8 @@ def test_params_class(revision, expect, params_json_file):
         NUM_YEARS = LAST_YEAR - START_YEAR + 1
 
         def __init__(self):
-            super().__init__(start_year=Params.START_YEAR)
+            super().__init__()
+            self.initialize(Params.START_YEAR, Params.NUM_YEARS)
 
         def update_params(self, revision,
                           ignore_warnings=False, raise_errors=True):

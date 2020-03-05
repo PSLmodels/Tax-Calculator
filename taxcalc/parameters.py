@@ -78,26 +78,8 @@ class Parameters(paramtools.Parameters):
     JSON_START_YEAR = None
     LAST_KNOWN_YEAR = None
 
-    def __init__(self, *args, start_year=None, **kwargs):
-        self._wage_growth_rates = None
-        self._inflation_rates = None
-        if (
-            self.defaults is None and
-            self.DEFAULTS_FILE_PATH is not None and
-            self.DEFAULTS_FILE_NAME
-        ):
-            self.defaults = os.path.join(
-                self.DEFAULTS_FILE_PATH,
-                self.DEFAULTS_FILE_NAME
-            )
-        super().__init__(*args, **kwargs)
-        self._init_values = {
-            param: data["value"]
-            for param, data in self.read_params(self.defaults).items()
-            if param != "schema"
-        }
-        if start_year or self.JSON_START_YEAR:
-            self.set_state(year=start_year or self.JSON_START_YEAR)
+    def __init__(self, *args, **kwargs):
+        pass
 
     def adjust(self, params_or_path, **kwargs):
         """
@@ -182,7 +164,7 @@ class Parameters(paramtools.Parameters):
             to_delete = {}
             to_adjust = {}
             for param in params:
-                if param == "CPI_offset" or param in self.WAGE_INDEXED_PARAMS:
+                if param == "CPI_offset" or param in self._wage_indexed:
                     continue
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
@@ -204,7 +186,7 @@ class Parameters(paramtools.Parameters):
             # 1.b for all others these are years after last_known_year
             to_delete = {}
             to_adjust = {}
-            last_known_year = max(cpi_min_year["year"], self.LAST_KNOWN_YEAR)
+            last_known_year = max(cpi_min_year["year"], self._last_known_year)
             for param in self._data:
                 if (
                     param in params or
@@ -389,6 +371,40 @@ class Parameters(paramtools.Parameters):
         return self._inflation_rates
 
     # alias methods below
+    def initialize(self, start_year, num_years, last_known_year=None,
+                   removed=None, redefined=None, wage_indexed=None):
+        self._wage_growth_rates = None
+        self._inflation_rates = None
+        if (
+            self.defaults is None and
+            self.DEFAULTS_FILE_PATH is not None and
+            self.DEFAULTS_FILE_NAME
+        ):
+            self.defaults = os.path.join(
+                self.DEFAULTS_FILE_PATH,
+                self.DEFAULTS_FILE_NAME
+            )
+
+        if last_known_year is None:
+            self._last_known_year = start_year
+        else:
+            assert last_known_year >= start_year
+            assert last_known_year <= self.LAST_BUDGET_YEAR
+            self._last_known_year = last_known_year
+
+        self._removed_params = removed or self.REMOVED_PARAMS
+        self._redefined_params = redefined or self.REDEFINED_PARAMS
+
+        self._wage_indexed = wage_indexed or self.WAGE_INDEXED_PARAMS
+
+        super().__init__()
+        self._init_values = {
+            param: data["value"]
+            for param, data in self.read_params(self.defaults).items()
+            if param != "schema"
+        }
+        if start_year or self.JSON_START_YEAR:
+            self.set_state(year=start_year or self.JSON_START_YEAR)
 
     def _update(self, revision, ignore_warnings, raise_errors):
         """

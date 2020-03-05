@@ -73,10 +73,9 @@ class Policy(Parameters):
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
-    def __init__(self, gfactors=None, only_reading_defaults=False, **kwargs):
+    def __init__(self, gfactors=None, only_reading_defaults=False):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
-        if only_reading_defaults:
-            return
+        super().__init__()
         # handle gfactors argument
         if gfactors is None:
             self._gfactors = GrowFactors()
@@ -84,8 +83,16 @@ class Policy(Parameters):
             self._gfactors = gfactors
         else:
             raise ValueError('gfactors is not None or a GrowFactors instance')
-
-        super().__init__(**kwargs)
+        # read default parameters and initialize
+        syr = Policy.JSON_START_YEAR
+        lyr = Policy.LAST_BUDGET_YEAR
+        nyrs = Policy.DEFAULT_NUM_YEARS
+        self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
+        self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
+        self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
+                        Policy.REMOVED_PARAMS,
+                        Policy.REDEFINED_PARAMS,
+                        Policy.WAGE_INDEXED_PARAMS)
 
     @staticmethod
     def read_json_reform(obj):
