@@ -1,6 +1,16 @@
 TAX-CALCULATOR CHANGE HISTORY
 =============================
 
+Changes in release 2.9.0 on 2020-03-13
+--------------------------------------
+
+**This is an enhancement and bug-fix release.**
+
+- New baseline data and growth projections based on CBO's January 28, 2020 report, "The Budget and Economic Outlook: 2020 to 2030."
+
+- Previously, the personal exemption phaseout (PEP) was not reinstated in 2026 alongside the personal exemption under current law. This bug is now fixed, and PEP is reinstated.  
+
+
 Changes in release 2.8.0 on 2020-02-28
 --------------------------------------
 
