@@ -161,7 +161,7 @@ def test_json_file_contents(tests_path, fname):
                    'PT_brk5', 'PT_brk6', 'PT_brk7',
                    'PT_qbid_taxinc_thd',
                    'ALD_BusinessLosses_c',
-                   'STD', 'II_em',
+                   'STD', 'II_em', 'II_em_ps',
                    'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
                    'ID_ps', 'ID_AllTaxes_c']
     long_known_years = 2026 - first_year + 1  # for TCJA-reverting long_params
