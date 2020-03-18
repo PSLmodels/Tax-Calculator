@@ -806,9 +806,11 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     component_amt = calc1.weighted_total(cvname) * 1e-9
     # confirm that component amount is equal to difference in total deductions
     if year == 2017 and cvname == 'c19700':
-        atol = 0.009
+        atol = 0.016
     elif year == 2017 and cvname == 'c19200':
         atol = 0.010
+    elif year == 2017 and cvname == 'c18300':
+        atol = 0.009
     else:
         atol = 0.00001
     if not np.allclose(component_amt, difference_in_total_itmded, atol=atol):
