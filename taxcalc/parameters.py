@@ -158,7 +158,8 @@ class Parameters(paramtools.Parameters):
                 self._data["CPI_offset"]["value"]
             )
             for cpi_vo in rate_adjustment_vals:
-                self._inflation_rates[cpi_vo["year"]] += cpi_vo["value"]
+                self._inflation_rates[cpi_vo["year"] - self.start_year] += \
+                    cpi_vo["value"]
             # 1. delete all unknown values.
             # 1.a for revision these are years specified after cpi_min_year
             to_delete = {}
@@ -350,9 +351,9 @@ class Parameters(paramtools.Parameters):
         if not self._inflation_rates or not self._wage_growth_rates:
             self.set_rates()
         if param in self.WAGE_INDEXED_PARAMS:
-            return self._wage_growth_rates[label_to_extend_val]
+            return self.wage_growth_rates(year=label_to_extend_val)
         else:
-            return self._inflation_rates[label_to_extend_val]
+            return self.inflation_rates(year=label_to_extend_val)
 
     def set_rates(self):
         """
@@ -361,14 +362,15 @@ class Parameters(paramtools.Parameters):
         """
         raise NotImplementedError()
 
-    # TODO: It seems like less trouble to keep wage_growth_rates
-    # and inflaiton_rates as attributes instead of methods that
-    # access a private variable.
-    def wage_growth_rates(self):
-        return self._wage_growth_rates
+    def wage_growth_rates(self, year=None):
+        if year is not None:
+            return self._wage_growth_rates[year - self.start_year]
+        return self._wage_growth_rates or []
 
-    def inflation_rates(self):
-        return self._inflation_rates
+    def inflation_rates(self, year=None):
+        if year is not None:
+            return self._inflation_rates[year - self.start_year]
+        return self._inflation_rates or []
 
     # alias methods below
     def initialize(self, start_year, num_years, last_known_year=None,

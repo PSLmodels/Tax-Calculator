@@ -164,8 +164,8 @@ def test_constant_inflation_rate_with_reform():
     # extract price inflation rates
     pirates = pol.inflation_rates()
     syr = Policy.JSON_START_YEAR
-    irate_b = pirates[ryr - 2]
-    irate_a = pirates[ryr]
+    irate_b = pirates[ryr - 2 - syr]
+    irate_a = pirates[ryr - syr]
     # check implied inflation rate just before reform
     grate = float(pol._II_em[ryr - 1 - syr]) / float(pol._II_em[ryr - 2 - syr])
     assert round(grate - 1.0, 4) == round(irate_b, 4)
@@ -191,9 +191,9 @@ def test_variable_inflation_rate_with_reform():
     assert pol.current_year == 2020
     # extract price inflation rates
     pirates = pol.inflation_rates()
-    irate2018 = pirates[2018]
-    irate2020 = pirates[2020]
-    irate2021 = pirates[2021]
+    irate2018 = pirates[2018 - syr]
+    irate2020 = pirates[2020 - syr]
+    irate2021 = pirates[2021 - syr]
     # check implied inflation rate between 2018 and 2019 (before the reform)
     grate = float(pol._II_em[2019 - syr]) / float(pol._II_em[2018 - syr])
     assert round(grate - 1.0, 5) == round(irate2018, 5)
@@ -216,11 +216,11 @@ def test_multi_year_reform():
     iratelist = pol.inflation_rates()
     ifactor = {}
     for i in range(0, nyrs):
-        ifactor[syr + i] = 1.0 + iratelist[syr + i]
+        ifactor[syr + i] = 1.0 + iratelist[i]
     wratelist = pol.wage_growth_rates()
     wfactor = {}
     for i in range(0, nyrs):
-        wfactor[syr + i] = 1.0 + wratelist[syr + i]
+        wfactor[syr + i] = 1.0 + wratelist[i]
     # TODO: this seems like a test of _expand_array which is
     # already tested within paramtools
     # confirm that parameters have current-law values
@@ -952,15 +952,17 @@ def test_cpi_offset_affect_on_prior_years():
     p2.implement_reform(reform)
 
     start_year = p1.start_year
-    p1_rates = p1.inflation_rates()
-    p2_rates = p2.inflation_rates()
+    p1_rates = np.array(p1.inflation_rates())
+    p2_rates = np.array(p2.inflation_rates())
+
     # Inflation rates prior to 2022 are the same.
-    for year in range(start_year, 2022):
-        assert p1_rates[year] == p2_rates[year], (
-            f"Difference in year {year}: {p1_rates[year] - p2_rates[year]}"
-        )
+    np.testing.assert_allclose(
+        p1_rates[:2022 - start_year],
+        p2_rates[:2022 - start_year]
+    )
 
     # Inflation rate in 2022 was updated.
-    assert p1_rates[2022] == p2_rates[2022] - (-0.005), (
-            f"Difference in year 2022: {p1_rates[2022] - p2_rates[2022]}"
-        )
+    np.testing.assert_allclose(
+        p1_rates[2022 - start_year],
+        p2_rates[2022 - start_year] - (-0.005)
+    )

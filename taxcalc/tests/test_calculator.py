@@ -234,8 +234,8 @@ def test_make_calculator_increment_years_first(cps_subsample):
     # compare expected policy parameter values with those embedded in calc
     irates = pol.inflation_rates()
     syr = Policy.JSON_START_YEAR
-    irate2015 = irates[2015]
-    irate2016 = irates[2016]
+    irate2015 = irates[2015 - syr]
+    irate2016 = irates[2016 - syr]
     std6 = std5 * (1.0 + irate2015)
     std7 = std6 * (1.0 + irate2016)
     exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500],

@@ -87,8 +87,8 @@ class Policy(Parameters):
         syr = Policy.JSON_START_YEAR
         lyr = Policy.LAST_BUDGET_YEAR
         nyrs = Policy.DEFAULT_NUM_YEARS
-        self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
-        self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
+        self._inflation_rates = None
+        self._wage_growth_rates = None
         self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
                         Policy.REMOVED_PARAMS,
                         Policy.REDEFINED_PARAMS,
@@ -141,16 +141,14 @@ class Policy(Parameters):
         if not self._gfactors:
             self._gfactors = GrowFactors()
 
-        self._inflation_rates = {
-            2013 + ix: np.round(rate + cpi_offset[2013 + ix], 4)
+        self._inflation_rates = [
+            np.round(rate + cpi_offset[2013 + ix], 4)
             for ix, rate in enumerate(
                 self._gfactors.price_inflation_rates(2013, 2029)
             )
-        }
+        ]
 
-        self._wage_growth_rates = {
-            2013 + ix: rate
-            for ix, rate in enumerate(
-                self._gfactors.wage_growth_rates(2013, 2029)
-            )
-        }
+        self._wage_growth_rates = [
+            rate
+            for rate in self._gfactors.wage_growth_rates(2013, 2029)
+        ]
