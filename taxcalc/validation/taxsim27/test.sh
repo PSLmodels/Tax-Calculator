@@ -37,7 +37,7 @@ if [[ $? -ne 0 ]]; then
     exit 1
 fi
 # (2) generate TAXSIM-27-formatted output using Tax-Calculator tc CLI
-./taxcalc.sh $LYY.in $SAVE
+python taxcalc.py $LYY.in
 if [[ $? -ne 0 ]]; then
     echo "ERROR: taxcalc.sh failed"
     exit 1
