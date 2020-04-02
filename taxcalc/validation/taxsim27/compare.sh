@@ -4,6 +4,6 @@ if [[ "$#" -ne 1 ]]; then
     exit 1
 fi
 LYY=$1
-./taxcalc.sh $LYY.in
+python taxcalc.py $LYY.in
 tclsh taxdiffs.tcl $LYY.in.out-taxcalc $LYY.in.out-taxsim > $LYY.taxdiffs-actual
 cat $LYY.taxdiffs-actual
