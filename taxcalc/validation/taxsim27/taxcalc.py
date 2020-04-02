@@ -32,7 +32,7 @@ taxsim_in = args.LYY_FILENAME
 save = args.save
 
 if os.path.exists(os.path.join(CURR_PATH, taxsim_in)) is False:
-    sys.exit("LYY_FILENAME is not a valid path")
+    sys.exit("ERROR: LYY_FILENAME is not a valid path")
 
 taxsim_in_csv = taxsim_in + ".csv"
 taxsim_out_csv = taxsim_in + ".out.csv"
