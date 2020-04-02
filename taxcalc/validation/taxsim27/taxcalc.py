@@ -14,13 +14,13 @@ parser = argparse.ArgumentParser(
                      'specified input file name plus the .out-taxcalc '
                      'extension.'))
 
-parser.add_argument('LYY_FILENAME', 
+parser.add_argument('LYY_FILENAME',
                         help=('L is a letter that is valid taxsim_input.py L input and '
                               'YY is valid taxsim_input.py YEAR (20YY) input.'),
                         default='')
 
 parser.add_argument('--save',
-                        help=('skips the deletion of itermediate files at the end of this script.'),
+                        help=('Save intermediate files.'),
                         default=False,
                         action="store_true")
 
