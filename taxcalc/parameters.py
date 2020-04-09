@@ -4,20 +4,13 @@ import re
 from collections import defaultdict
 
 import marshmallow as ma
-import paramtools
+import paramtools as pt
+from paramtools.select import select_lt
 import numpy as np
 import requests
 
 import taxcalc
 from taxcalc.utils import json_to_dict
-
-
-def lt_func(x, y) -> bool:
-    return all(x < item for item in y)
-
-
-def select_lt(value_objects, exact_match, labels, tree=None):
-    return paramtools.select(value_objects, exact_match, lt_func, labels, tree)
 
 
 class CompatibleDataSchema(ma.Schema):
@@ -32,7 +25,13 @@ class CompatibleDataSchema(ma.Schema):
     cps = ma.fields.Boolean()
 
 
-class Parameters(paramtools.Parameters):
+pt.register_custom_type(
+    "compatible_data",
+    ma.fields.Nested(CompatibleDataSchema())
+)
+
+
+class Parameters(pt.Parameters):
     """
     Base Parameters class that wraps ParamTools,
     providing parameter indexing for tax policy in the
@@ -53,7 +52,7 @@ class Parameters(paramtools.Parameters):
     underscore before the variable name (e.g.
     EITC_c vs _EITC_c).
 
-    Note: Like all paramtools.Parameters classes
+    Note: Like all pt.Parameters classes
     the values of attributes corresponding to a
     parameter value on this class are ephemeral
     and the only way to make permanent changes
@@ -61,8 +60,6 @@ class Parameters(paramtools.Parameters):
     or adjust methods.
 
     """
-    field_map = {"compatible_data": ma.fields.Nested(CompatibleDataSchema())}
-
     defaults = None
     array_first = True
     label_to_extend = "year"
@@ -220,7 +217,7 @@ class Parameters(paramtools.Parameters):
                 base_param = param.split("-indexed")[0]
                 if not self._data[base_param].get("indexable", None):
                     msg = f"Parameter {base_param} is not indexable."
-                    raise paramtools.ValidationError(
+                    raise pt.ValidationError(
                         {"errors": {base_param: msg}},
                         labels=None
                     )
@@ -306,7 +303,7 @@ class Parameters(paramtools.Parameters):
                     # 2.d adjust with values greater than or equal to current
                     # year in params
                     if base_param in params:
-                        vos = paramtools.select_gt(
+                        vos = pt.select_gt(
                             params[base_param], False, {"year": year - 1}
                         )
                         super().adjust({base_param: vos}, **kwargs)
@@ -436,7 +433,7 @@ class Parameters(paramtools.Parameters):
 
         """
         if not isinstance(revision, dict):
-            raise paramtools.ValidationError(
+            raise pt.ValidationError(
                 {"errors": {"schema": "Revision must be a dictionary."}},
                 None
             )
@@ -446,7 +443,7 @@ class Parameters(paramtools.Parameters):
         for param, val in revision.items():
             if not isinstance(param, str):
                 msg = f"Parameter {param} is not a string."
-                raise paramtools.ValidationError(
+                raise pt.ValidationError(
                     {"errors": {"schema": msg}},
                     None
                 )
@@ -460,7 +457,7 @@ class Parameters(paramtools.Parameters):
                     msg = self.REDEFINED_PARAMS[param]
                 else:
                     msg = f"Parameter {param} does not exist."
-                raise paramtools.ValidationError(
+                raise pt.ValidationError(
                     {"errors": {"schema": msg}},
                     None
                 )
@@ -487,7 +484,7 @@ class Parameters(paramtools.Parameters):
                             f"Pameter {param} does not have the correct "
                             f"array dimensions for year {year}."
                         )
-                        raise paramtools.ValidationError(
+                        raise pt.ValidationError(
                             {"errors": {"schema": msg}},
                             None
                         )
@@ -497,7 +494,7 @@ class Parameters(paramtools.Parameters):
                     f"Parameter {param} must be a year:value dictionary "
                     f"if you are not using the new adjust method."
                 )
-                raise paramtools.ValidationError(
+                raise pt.ValidationError(
                     {"errors": {"schema": msg}},
                     None
                 )
