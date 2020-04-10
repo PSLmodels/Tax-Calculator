@@ -77,9 +77,9 @@ def policy_param_text(pname, param):
                                                'Not in Tax-Brain webapp')
     txt += '<br><i>tc Name:</i> {}'.format(pname)
     if sec1:
-        txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])
+        txt += '<br><i>TB Name:</i> {}'.format(param['title'])
     else:
-        txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
+        txt += '<br><i>Long Name:</i> {}'.format(param['title'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
     if param.get('notes', ''):
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
@@ -104,27 +104,28 @@ def policy_param_text(pname, param):
         txt += 'True'
     else:
         txt += 'False'
-    txt += '<br><i>Value Type:</i> {}'.format(param['value_type'])
+    txt += '<br><i>Value Type:</i> {}'.format(param['type'])
     txt += '<br><i>Known Values:</i>'
-    if param.get('vi_vals', []):
-        cols = ', '.join(param['vi_vals'])
-        txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
-    for cyr, val in zip(param['value_yrs'], param['value']):
-        final_cyr = cyr
-        final_val = val
-        txt += '<br>{}: {}'.format(cyr, val)
-    if not param['indexed']:
-        fcyr = int(final_cyr)
-        if fcyr < Policy.LAST_KNOWN_YEAR:
-            # extrapolate final_val thru Policy.LAST_KNOWN_YEAR if not indexed
-            for cyr in range(fcyr + 1, Policy.LAST_KNOWN_YEAR + 1):
-                txt += '<br>{}: {}'.format(cyr, final_val)
+    for vo in param["value"]:
+        labels = " ".join(
+            f"{label}={value}" for label, value in vo.items()
+            if label not in ("year", "value")
+        )
+        txt += f"<br>{vo['year']}: {vo['value']} {labels}"
+    # if not param['indexed']:
+    #     fcyr = int(final_cyr)
+    #     if fcyr < Policy.LAST_KNOWN_YEAR:
+    #         # extrapolate final_val thru Policy.LAST_KNOWN_YEAR if not indexed
+    #         for cyr in range(fcyr + 1, Policy.LAST_KNOWN_YEAR + 1):
+    #             txt += '<br>{}: {}'.format(cyr, final_val)
     txt += '<br><i>Valid Range:</i>'
-    minval = param['valid_values']['min']
-    maxval = param['valid_values']['max']
-    txt += ' min = {} and max = {}'.format(minval, maxval)
-    invalid_action = param.get('invalid_action', 'stop')
-    txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
+    validators = param.get("validators", None)
+    if validators:
+        minval = validators['range']['min']
+        maxval = validators['range']['max']
+        txt += ' min = {} and max = {}'.format(minval, maxval)
+        invalid_action = validators["range"].get('level', 'error')
+        txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
     txt += '</p>'
     return txt
 
@@ -144,6 +145,8 @@ def policy_params(path, text):
     section = OrderedDict()
     using_other_params_section = False
     for pname in params:
+        if pname == "schema":
+            continue
         param = params[pname]
         sec1_sec2 = '{}{}{}'.format(param['section_1'],
                                     concat_str,
@@ -161,6 +164,8 @@ def policy_params(path, text):
         sec2 = split_list[1]
         ptext = ''
         for pname in params:
+            if pname == "schema":
+                continue
             param = params[pname]
             if sec1 == param['section_1'] and sec2 == param['section_2']:
                 ptext += policy_param_text(pname, param)
@@ -233,9 +238,9 @@ def assumption_param_text(pname, ptype, param):
                                                ptype.capitalize())
     txt += '<br><i>tc Name:</i> {}'.format(pname)
     if sec1:
-        txt += '<br><i>TB Name:</i> {}'.format(param['long_name'])
+        txt += '<br><i>TB Name:</i> {}'.format(param['title'])
     else:
-        txt += '<br><i>Long Name:</i> {}'.format(param['long_name'])
+        txt += '<br><i>Long Name:</i> {}'.format(param['title'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
     if param.get('notes', ''):
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
@@ -243,14 +248,20 @@ def assumption_param_text(pname, ptype, param):
     if param.get('vi_vals', []):
         cols = ', '.join(param['vi_vals'])
         txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
-    for cyr, val in zip(param['value_yrs'], param['value']):
-        txt += '<br>{}: {}'.format(cyr, val)
+    for vo in param["value"]:
+        labels = " ".join(
+            f"{label}={value}" for label, value in vo.items()
+            if label not in ("year", "value")
+        )
+        txt += f"<br>{vo['year']}: {vo['value']} {labels}"
     txt += '<br><i>Valid Range:</i>'
-    minval = param['valid_values']['min']
-    maxval = param['valid_values']['max']
-    txt += ' min = {} and max = {}'.format(minval, maxval)
-    invalid_action = param.get('invalid_action', 'stop')
-    txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
+    validators = param.get("validators", None)
+    if validators:
+        minval = validators['range']['min']
+        maxval = validators['range']['max']
+        txt += ' min = {} and max = {}'.format(minval, maxval)
+        invalid_action = validators["range"].get('level', 'error')
+        txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
     txt += '</p>'
     return txt
 
@@ -267,6 +278,8 @@ def assumption_params(ptype, path, text):
     # construct parameter text for each param
     ptext = ''
     for pname in params:
+        if pname == "schema":
+            continue
         param = params[pname]
         ptext += assumption_param_text(pname, ptype, param)
     # integrate parameter text into text
