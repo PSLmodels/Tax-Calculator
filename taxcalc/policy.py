@@ -148,7 +148,4 @@ class Policy(Parameters):
             )
         ]
 
-        self._wage_growth_rates = [
-            rate
-            for rate in self._gfactors.wage_growth_rates(2013, 2029)
-        ]
+        self._wage_growth_rates = self._gfactors.wage_growth_rates(2013, 2029)
