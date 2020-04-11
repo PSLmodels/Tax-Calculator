@@ -83,9 +83,6 @@ def fixture_params_json_file():
 @pytest.mark.parametrize("revision, expect", [
     ({}, ""),
     ({'real_param': {2004: 1.9}}, "error"),
-    # TODO: Should ParamTools allow ints for float
-    # params. Current behavior is to cast.
-    # ({'int_param': {2004: [3.6]}}, "raise"),
     ({'bool_param': {2004: [4.9]}}, "raise"),
     ({'str_param': {2004: [9]}}, "raise"),
     ({'str_param': {2004: 'nonlinear'}}, "noerror"),
@@ -160,8 +157,6 @@ def test_json_file_contents(tests_path, fname):
     """
     Check contents of JSON parameter files in Tax-Calculator/taxcalc directory.
     """
-    # TODO: only leave checks on parameter specification,
-    # and leave schema checks to Paramtools
     first_year = Policy.JSON_START_YEAR
     last_known_year = Policy.LAST_KNOWN_YEAR  # for indexed parameter values
     known_years = set(range(first_year, last_known_year + 1))

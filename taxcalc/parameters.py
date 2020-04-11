@@ -503,13 +503,10 @@ class Parameters(pt.Parameters):
 
     @property
     def parameter_warnings(self):
-        # TODO: taxcalc expects string errors when empty.
-        # TODO: paramtools doesn't do errors.
         return self.errors or ""
 
     @property
     def parameter_errors(self):
-        # TODO: taxcalc expects string errors when empty.
         return self.errors or ""
 
     @staticmethod
