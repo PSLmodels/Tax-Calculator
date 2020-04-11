@@ -179,9 +179,9 @@ class Parameters(pt.Parameters):
             last_known_year = max(cpi_min_year["year"], self._last_known_year)
             for param in self._data:
                 if (
-                    param in params
-                    or param == "CPI_offset"
-                    or param in self.WAGE_INDEXED_PARAMS
+                    param in params or
+                    param == "CPI_offset" or
+                    param in self.WAGE_INDEXED_PARAMS
                 ):
                     continue
                 if self._data[param].get("indexed", False):
