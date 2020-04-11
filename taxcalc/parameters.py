@@ -151,9 +151,9 @@ class Parameters(pt.Parameters):
                 self._inflation_rates[
                     cpi_vo["year"] - self.start_year
                 ] += cpi_vo["value"]
-            # 1. delete all unknown values.
-            # 1.a for revision these are years specified after cpi_min_year
-            to_adjust = {}
+            # 1. Delete all unknown values.
+            # 1.a For revision, these are years specified after cpi_min_year.
+            init_vals = {}
             to_delete = {}
             for param in params:
                 if param == "CPI_offset" or param in self._wage_indexed:
@@ -161,7 +161,7 @@ class Parameters(pt.Parameters):
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
                 if self._data[param].get("indexed", False):
-                    to_adjust[param] = pt.select_lte(
+                    init_vals[param] = pt.select_lte(
                         self._init_values[param],
                         True,
                         {"year": cpi_min_year["year"]},
@@ -171,10 +171,10 @@ class Parameters(pt.Parameters):
                     )
                     needs_reset.append(param)
             super().delete(to_delete, **kwargs)
-            super().adjust(to_adjust, **kwargs)
+            super().adjust(init_vals, **kwargs)
 
-            # 1.b for all others these are years after last_known_year
-            to_adjust = {}
+            # 1.b For all others, these are years after last_known_year.
+            init_vals = {}
             to_delete = {}
             last_known_year = max(cpi_min_year["year"], self._last_known_year)
             for param in self._data:
@@ -185,7 +185,7 @@ class Parameters(pt.Parameters):
                 ):
                     continue
                 if self._data[param].get("indexed", False):
-                    to_adjust[param] = pt.select_lte(
+                    init_vals[param] = pt.select_lte(
                         self._init_values[param],
                         True,
                         {"year": last_known_year}
@@ -196,7 +196,7 @@ class Parameters(pt.Parameters):
                     needs_reset.append(param)
 
             super().delete(to_delete, **kwargs)
-            super().adjust(to_adjust, **kwargs)
+            super().adjust(init_vals, **kwargs)
 
             self.extend(label_to_extend="year")
 
