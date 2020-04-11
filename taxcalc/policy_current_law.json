@@ -6,7 +6,7 @@
                 "validators": {
                     "range": {
                         "min": 2013,
-                        "max": 2029
+                        "max": 2030
                     }
                 }
             },
@@ -1335,152 +1335,152 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 259743.0
+                "value": 259029.0
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 519486.0
+                "value": 518058.0
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 259743.0
+                "value": 259029.0
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 259743.0
+                "value": 259029.0
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 519486.0
+                "value": 518058.0
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 265795.01
+                "value": 264675.83
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 531590.02
+                "value": 529351.66
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 265795.01
+                "value": 264675.83
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 265795.01
+                "value": 264675.83
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 531590.02
+                "value": 529351.66
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 271881.72
+                "value": 270683.97
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 543763.44
+                "value": 541367.95
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 271881.72
+                "value": 270683.97
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 271881.72
+                "value": 270683.97
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 543763.44
+                "value": 541367.95
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 278080.62
+                "value": 276936.77
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 556161.24
+                "value": 553873.55
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 278080.62
+                "value": 276936.77
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 278080.62
+                "value": 276936.77
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 556161.24
+                "value": 553873.55
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 284226.2
+                "value": 283084.77
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 568452.41
+                "value": 566169.54
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 284226.2
+                "value": 283084.77
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 284226.2
+                "value": 283084.77
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 568452.41
+                "value": 566169.54
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 290223.38
+                "value": 289199.4
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 580446.75
+                "value": 578398.8
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 290223.38
+                "value": 289199.4
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 290223.38
+                "value": 289199.4
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 580446.75
+                "value": 578398.8
             },
             {
                 "year": 2026,
@@ -1583,7 +1583,7 @@
             },
             {
                 "year": 2026,
-                "value": 4901.0
+                "value": 4880.0
             }
         ],
         "title": "Personal and dependent exemption amount",
@@ -1781,6 +1781,181 @@
                 "year": 2019,
                 "MARS": "widow",
                 "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2022,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2023,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2024,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2025,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2026,
+                "MARS": "single",
+                "value": 316457.0
+            },
+            {
+                "year": 2026,
+                "MARS": "mjoint",
+                "value": 379748.0
+            },
+            {
+                "year": 2026,
+                "MARS": "mseparate",
+                "value": 189874.0
+            },
+            {
+                "year": 2026,
+                "MARS": "headhh",
+                "value": 348102.0
+            },
+            {
+                "year": 2026,
+                "MARS": "widow",
+                "value": 379748.0
             }
         ],
         "title": "Personal exemption phaseout starting income",
@@ -2034,177 +2209,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 12426.92
+                "value": 12392.76
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 24853.84
+                "value": 24785.52
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 12426.92
+                "value": 12392.76
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 18691.31
+                "value": 18639.93
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 24853.84
+                "value": 24785.52
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 12716.47
+                "value": 12662.92
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 25432.93
+                "value": 25325.84
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 12716.47
+                "value": 12662.92
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 19126.82
+                "value": 19046.28
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 25432.93
+                "value": 25325.84
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 13007.67
+                "value": 12950.37
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 26015.35
+                "value": 25900.74
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 13007.67
+                "value": 12950.37
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 19564.82
+                "value": 19478.63
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 26015.35
+                "value": 25900.74
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 13304.25
+                "value": 13249.52
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 26608.5
+                "value": 26499.05
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 13304.25
+                "value": 13249.52
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 20010.9
+                "value": 19928.59
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 26608.5
+                "value": 26499.05
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 13598.27
+                "value": 13543.66
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 27196.55
+                "value": 27087.33
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 13598.27
+                "value": 13543.66
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 20453.14
+                "value": 20371.0
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 27196.55
+                "value": 27087.33
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 13885.2
+                "value": 13836.21
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 27770.39
+                "value": 27672.41
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 13885.2
+                "value": 13836.21
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 20884.7
+                "value": 20811.02
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 27770.39
+                "value": 27672.41
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 7685.0
+                "value": 7651.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 15369.0
+                "value": 15303.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 7685.0
+                "value": 7651.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 11315.0
+                "value": 11266.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 15369.0
+                "value": 15303.0
             }
         ],
         "title": "Standard deduction amount",
@@ -6110,27 +6285,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 316457.0
+                "value": 315093.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 379748.0
+                "value": 378112.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 189874.0
+                "value": 189056.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 348102.0
+                "value": 346603.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 379748.0
+                "value": 378112.0
             }
         ],
         "title": "Itemized deduction phaseout AGI start (Pease provision)",
@@ -8727,177 +8902,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 9880.42
+                "value": 9853.26
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 19760.84
+                "value": 19706.52
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 9880.42
+                "value": 9853.26
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 14107.61
+                "value": 14068.83
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 19760.84
+                "value": 19706.52
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 10110.63
+                "value": 10068.06
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 20221.27
+                "value": 20136.12
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 10110.63
+                "value": 10068.06
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 14436.32
+                "value": 14375.53
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 20221.27
+                "value": 20136.12
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 10342.17
+                "value": 10296.61
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 20684.33
+                "value": 20593.21
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 10342.17
+                "value": 10296.61
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 14766.91
+                "value": 14701.86
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 20684.33
+                "value": 20593.21
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 10577.97
+                "value": 10534.46
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 21155.94
+                "value": 21068.92
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 10577.97
+                "value": 10534.46
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 15103.59
+                "value": 15041.47
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 21155.94
+                "value": 21068.92
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 10811.74
+                "value": 10768.32
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 21623.48
+                "value": 21536.65
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 10811.74
+                "value": 10768.32
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 15437.38
+                "value": 15375.39
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 21623.48
+                "value": 21536.65
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 11039.87
+                "value": 11000.92
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 22079.74
+                "value": 22001.84
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 11039.87
+                "value": 11000.92
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 15763.11
+                "value": 15707.5
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 22079.74
+                "value": 22001.84
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 11285.0
+                "value": 11236.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 22569.0
+                "value": 22472.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 11285.0
+                "value": 11236.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 16156.0
+                "value": 16086.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 22569.0
+                "value": 22472.0
             }
         ],
         "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 1",
@@ -9177,177 +9352,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 40209.24
+                "value": 40098.7
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 80418.47
+                "value": 80197.41
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 40209.24
+                "value": 40098.7
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 53833.01
+                "value": 53685.03
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 80418.47
+                "value": 80197.41
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 41146.11
+                "value": 40972.86
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 82292.22
+                "value": 81945.71
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 41146.11
+                "value": 40972.86
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 55087.32
+                "value": 54855.36
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 82292.22
+                "value": 81945.71
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 42088.36
+                "value": 41902.94
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 84176.71
+                "value": 83805.88
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 42088.36
+                "value": 41902.94
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 56348.82
+                "value": 56100.58
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 84176.71
+                "value": 83805.88
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 43047.97
+                "value": 42870.9
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 86095.94
+                "value": 85741.8
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 43047.97
+                "value": 42870.9
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 57633.57
+                "value": 57396.5
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 86095.94
+                "value": 85741.8
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 43999.33
+                "value": 43822.63
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 87998.66
+                "value": 87645.26
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 43999.33
+                "value": 43822.63
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 58907.27
+                "value": 58670.71
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 87998.66
+                "value": 87645.26
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 44927.72
+                "value": 44769.2
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 89855.43
+                "value": 89538.4
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 44927.72
+                "value": 44769.2
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 60150.22
+                "value": 59937.99
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 89855.43
+                "value": 89538.4
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 45926.0
+                "value": 45728.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 91851.0
+                "value": 91455.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 45926.0
+                "value": 45728.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 61476.0
+                "value": 61211.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 91851.0
+                "value": 91455.0
             }
         ],
         "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 2",
@@ -9627,177 +9802,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 85766.12
+                "value": 85530.36
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 171532.24
+                "value": 171060.72
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 85766.12
+                "value": 85530.36
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 85766.12
+                "value": 85530.36
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 171532.24
+                "value": 171060.72
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 87764.47
+                "value": 87394.92
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 175528.94
+                "value": 174789.84
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 87764.47
+                "value": 87394.92
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 87764.47
+                "value": 87394.92
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 175528.94
+                "value": 174789.84
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 89774.28
+                "value": 89378.79
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 179548.55
+                "value": 178757.57
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 89774.28
+                "value": 89378.79
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 89774.28
+                "value": 89378.79
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 179548.55
+                "value": 178757.57
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 91821.13
+                "value": 91443.44
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 183642.26
+                "value": 182886.87
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 91821.13
+                "value": 91443.44
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 91821.13
+                "value": 91443.44
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 183642.26
+                "value": 182886.87
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 93850.38
+                "value": 93473.48
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 187700.75
+                "value": 186946.96
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 93850.38
+                "value": 93473.48
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 93850.38
+                "value": 93473.48
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 187700.75
+                "value": 186946.96
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 95830.62
+                "value": 95492.51
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 191661.24
+                "value": 190985.02
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 95830.62
+                "value": 95492.51
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 95830.62
+                "value": 95492.51
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 191661.24
+                "value": 190985.02
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 111214.0
+                "value": 110735.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 185275.0
+                "value": 184477.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 92638.0
+                "value": 92239.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 158773.0
+                "value": 158089.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 185275.0
+                "value": 184477.0
             }
         ],
         "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 3",
@@ -10077,177 +10252,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 163714.48
+                "value": 163264.46
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 327428.97
+                "value": 326528.91
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 163714.48
+                "value": 163264.46
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 163689.02
+                "value": 163239.06
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 327428.97
+                "value": 326528.91
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 167529.03
+                "value": 166823.62
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 335058.07
+                "value": 333647.24
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 167529.03
+                "value": 166823.62
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 167502.97
+                "value": 166797.67
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 335058.07
+                "value": 333647.24
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 171365.45
+                "value": 170610.52
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 342730.89
+                "value": 341221.03
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 171365.45
+                "value": 170610.52
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 171338.79
+                "value": 170583.98
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 342730.89
+                "value": 341221.03
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 175272.58
+                "value": 174551.62
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 350545.16
+                "value": 349103.24
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 175272.58
+                "value": 174551.62
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 175245.32
+                "value": 174524.47
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 350545.16
+                "value": 349103.24
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 179146.1
+                "value": 178426.67
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 358292.21
+                "value": 356853.33
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 179146.1
+                "value": 178426.67
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 179118.24
+                "value": 178398.91
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 358292.21
+                "value": 356853.33
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 182926.09
+                "value": 182280.68
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 365852.17
+                "value": 364561.36
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 182926.09
+                "value": 182280.68
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 182897.63
+                "value": 182252.33
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 365852.17
+                "value": 364561.36
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 231927.0
+                "value": 230928.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 282391.0
+                "value": 281174.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 141195.0
+                "value": 140587.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 257159.0
+                "value": 256051.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 282391.0
+                "value": 281174.0
             }
         ],
         "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 4",
@@ -10527,177 +10702,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 207896.26
+                "value": 207324.78
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 415792.52
+                "value": 414649.56
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 207896.26
+                "value": 207324.78
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 207896.26
+                "value": 207324.78
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 415792.52
+                "value": 414649.56
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 212740.24
+                "value": 211844.46
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 425480.49
+                "value": 423688.92
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 212740.24
+                "value": 211844.46
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 212740.24
+                "value": 211844.46
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 425480.49
+                "value": 423688.92
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 217611.99
+                "value": 216653.33
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 435223.99
+                "value": 433306.66
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 217611.99
+                "value": 216653.33
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 217611.99
+                "value": 216653.33
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 435223.99
+                "value": 433306.66
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 222573.55
+                "value": 221658.02
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 445147.1
+                "value": 443316.04
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 222573.55
+                "value": 221658.02
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 222573.55
+                "value": 221658.02
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 445147.1
+                "value": 443316.04
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 227492.42
+                "value": 226578.83
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 454984.85
+                "value": 453157.66
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 227492.42
+                "value": 226578.83
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 227492.42
+                "value": 226578.83
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 454984.85
+                "value": 453157.66
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 232292.51
+                "value": 231472.93
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 464585.03
+                "value": 462945.86
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 232292.51
+                "value": 231472.93
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 232292.51
+                "value": 231472.93
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 464585.03
+                "value": 462945.86
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 504273.0
+                "value": 502101.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 504273.0
+                "value": 502101.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 252137.0
+                "value": 251050.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 504273.0
+                "value": 502101.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 504273.0
+                "value": 502101.0
             }
         ],
         "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket (upper threshold) 5",
@@ -10977,177 +11152,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 519791.58
+                "value": 518362.74
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 623739.71
+                "value": 622025.13
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 311869.86
+                "value": 311012.56
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 519791.58
+                "value": 518362.74
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 623739.71
+                "value": 622025.13
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 531902.72
+                "value": 529663.05
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 638272.85
+                "value": 635585.28
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 319136.42
+                "value": 317792.64
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 531902.72
+                "value": 529663.05
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 638272.85
+                "value": 635585.28
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 544083.3
+                "value": 541686.4
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 652889.29
+                "value": 650013.06
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 326444.65
+                "value": 325006.53
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 544083.3
+                "value": 541686.4
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 652889.29
+                "value": 650013.06
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 556488.4
+                "value": 554199.35
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 667775.17
+                "value": 665028.37
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 333887.58
+                "value": 332514.18
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 556488.4
+                "value": 554199.35
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 667775.17
+                "value": 665028.37
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 568786.79
+                "value": 566502.58
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 682533.0
+                "value": 679792.0
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 341266.5
+                "value": 339896.0
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 568786.79
+                "value": 566502.58
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 682533.0
+                "value": 679792.0
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 580788.19
+                "value": 578739.04
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 696934.45
+                "value": 694475.5
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 348467.22
+                "value": 347237.75
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 580788.19
+                "value": 578739.04
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 696934.45
+                "value": 694475.5
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 506331.0
+                "value": 504149.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 569622.0
+                "value": 567168.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 284811.0
+                "value": 283584.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 537976.0
+                "value": 535659.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 569622.0
+                "value": 567168.0
             }
         ],
         "title": "Personal income (regular/non-AMT/non-pass-through) tax bracket 6",
@@ -11903,177 +12078,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 9880.42
+                "value": 9853.26
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 19760.84
+                "value": 19706.52
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 9880.42
+                "value": 9853.26
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 14107.61
+                "value": 14068.83
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 19760.84
+                "value": 19706.52
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 10110.63
+                "value": 10068.06
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 20221.27
+                "value": 20136.12
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 10110.63
+                "value": 10068.06
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 14436.32
+                "value": 14375.53
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 20221.27
+                "value": 20136.12
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 10342.17
+                "value": 10296.61
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 20684.33
+                "value": 20593.21
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 10342.17
+                "value": 10296.61
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 14766.91
+                "value": 14701.86
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 20684.33
+                "value": 20593.21
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 10577.97
+                "value": 10534.46
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 21155.94
+                "value": 21068.92
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 10577.97
+                "value": 10534.46
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 15103.59
+                "value": 15041.47
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 21155.94
+                "value": 21068.92
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 10811.74
+                "value": 10768.32
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 21623.48
+                "value": 21536.65
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 10811.74
+                "value": 10768.32
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 15437.38
+                "value": 15375.39
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 21623.48
+                "value": 21536.65
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 11039.87
+                "value": 11000.92
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 22079.74
+                "value": 22001.84
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 11039.87
+                "value": 11000.92
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 15763.11
+                "value": 15707.5
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 22079.74
+                "value": 22001.84
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 11285.0
+                "value": 11236.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 22569.0
+                "value": 22472.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 11285.0
+                "value": 11236.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 16156.0
+                "value": 16086.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 22569.0
+                "value": 22472.0
             }
         ],
         "title": "Pass-through income tax bracket (upper threshold) 1",
@@ -12353,177 +12528,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 40209.24
+                "value": 40098.7
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 80418.47
+                "value": 80197.41
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 40209.24
+                "value": 40098.7
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 53833.01
+                "value": 53685.03
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 80418.47
+                "value": 80197.41
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 41146.11
+                "value": 40972.86
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 82292.22
+                "value": 81945.71
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 41146.11
+                "value": 40972.86
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 55087.32
+                "value": 54855.36
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 82292.22
+                "value": 81945.71
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 42088.36
+                "value": 41902.94
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 84176.71
+                "value": 83805.88
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 42088.36
+                "value": 41902.94
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 56348.82
+                "value": 56100.58
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 84176.71
+                "value": 83805.88
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 43047.97
+                "value": 42870.9
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 86095.94
+                "value": 85741.8
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 43047.97
+                "value": 42870.9
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 57633.57
+                "value": 57396.5
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 86095.94
+                "value": 85741.8
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 43999.33
+                "value": 43822.63
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 87998.66
+                "value": 87645.26
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 43999.33
+                "value": 43822.63
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 58907.27
+                "value": 58670.71
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 87998.66
+                "value": 87645.26
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 44927.72
+                "value": 44769.2
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 89855.43
+                "value": 89538.4
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 44927.72
+                "value": 44769.2
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 60150.22
+                "value": 59937.99
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 89855.43
+                "value": 89538.4
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 45926.0
+                "value": 45728.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 91851.0
+                "value": 91455.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 45926.0
+                "value": 45728.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 61476.0
+                "value": 61211.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 91851.0
+                "value": 91455.0
             }
         ],
         "title": "Pass-through income tax bracket (upper threshold) 2",
@@ -12803,177 +12978,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 85766.12
+                "value": 85530.36
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 171532.24
+                "value": 171060.72
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 85766.12
+                "value": 85530.36
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 85766.12
+                "value": 85530.36
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 171532.24
+                "value": 171060.72
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 87764.47
+                "value": 87394.92
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 175528.94
+                "value": 174789.84
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 87764.47
+                "value": 87394.92
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 87764.47
+                "value": 87394.92
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 175528.94
+                "value": 174789.84
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 89774.28
+                "value": 89378.79
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 179548.55
+                "value": 178757.57
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 89774.28
+                "value": 89378.79
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 89774.28
+                "value": 89378.79
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 179548.55
+                "value": 178757.57
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 91821.13
+                "value": 91443.44
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 183642.26
+                "value": 182886.87
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 91821.13
+                "value": 91443.44
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 91821.13
+                "value": 91443.44
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 183642.26
+                "value": 182886.87
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 93850.38
+                "value": 93473.48
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 187700.75
+                "value": 186946.96
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 93850.38
+                "value": 93473.48
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 93850.38
+                "value": 93473.48
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 187700.75
+                "value": 186946.96
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 95830.62
+                "value": 95492.51
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 191661.24
+                "value": 190985.02
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 95830.62
+                "value": 95492.51
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 95830.62
+                "value": 95492.51
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 191661.24
+                "value": 190985.02
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 111214.0
+                "value": 110735.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 185275.0
+                "value": 184477.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 92638.0
+                "value": 92239.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 158773.0
+                "value": 158089.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 185275.0
+                "value": 184477.0
             }
         ],
         "title": "Pass-through income tax bracket (upper threshold) 3",
@@ -13253,177 +13428,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 163714.48
+                "value": 163264.46
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 327428.97
+                "value": 326528.91
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 163714.48
+                "value": 163264.46
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 163689.02
+                "value": 163239.06
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 327428.97
+                "value": 326528.91
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 167529.03
+                "value": 166823.62
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 335058.07
+                "value": 333647.24
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 167529.03
+                "value": 166823.62
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 167502.97
+                "value": 166797.67
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 335058.07
+                "value": 333647.24
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 171365.45
+                "value": 170610.52
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 342730.89
+                "value": 341221.03
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 171365.45
+                "value": 170610.52
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 171338.79
+                "value": 170583.98
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 342730.89
+                "value": 341221.03
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 175272.58
+                "value": 174551.62
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 350545.16
+                "value": 349103.24
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 175272.58
+                "value": 174551.62
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 175245.32
+                "value": 174524.47
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 350545.16
+                "value": 349103.24
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 179146.1
+                "value": 178426.67
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 358292.21
+                "value": 356853.33
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 179146.1
+                "value": 178426.67
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 179118.24
+                "value": 178398.91
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 358292.21
+                "value": 356853.33
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 182926.09
+                "value": 182280.68
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 365852.17
+                "value": 364561.36
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 182926.09
+                "value": 182280.68
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 182897.63
+                "value": 182252.33
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 365852.17
+                "value": 364561.36
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 231927.0
+                "value": 230928.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 282391.0
+                "value": 281174.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 141195.0
+                "value": 140587.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 257159.0
+                "value": 256051.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 282391.0
+                "value": 281174.0
             }
         ],
         "title": "Pass-through income tax bracket (upper threshold) 4",
@@ -13703,177 +13878,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 207896.26
+                "value": 207324.78
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 415792.52
+                "value": 414649.56
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 207896.26
+                "value": 207324.78
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 207896.26
+                "value": 207324.78
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 415792.52
+                "value": 414649.56
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 212740.24
+                "value": 211844.46
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 425480.49
+                "value": 423688.92
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 212740.24
+                "value": 211844.46
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 212740.24
+                "value": 211844.46
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 425480.49
+                "value": 423688.92
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 217611.99
+                "value": 216653.33
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 435223.99
+                "value": 433306.66
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 217611.99
+                "value": 216653.33
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 217611.99
+                "value": 216653.33
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 435223.99
+                "value": 433306.66
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 222573.55
+                "value": 221658.02
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 445147.1
+                "value": 443316.04
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 222573.55
+                "value": 221658.02
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 222573.55
+                "value": 221658.02
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 445147.1
+                "value": 443316.04
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 227492.42
+                "value": 226578.83
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 454984.85
+                "value": 453157.66
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 227492.42
+                "value": 226578.83
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 227492.42
+                "value": 226578.83
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 454984.85
+                "value": 453157.66
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 232292.51
+                "value": 231472.93
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 464585.03
+                "value": 462945.86
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 232292.51
+                "value": 231472.93
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 232292.51
+                "value": 231472.93
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 464585.03
+                "value": 462945.86
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 504273.0
+                "value": 502101.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 504273.0
+                "value": 502101.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 252137.0
+                "value": 251050.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 504273.0
+                "value": 502101.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 504273.0
+                "value": 502101.0
             }
         ],
         "title": "Pass-through income tax bracket (upper threshold) 5",
@@ -14153,177 +14328,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 519791.58
+                "value": 518362.74
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 623739.71
+                "value": 622025.13
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 311869.86
+                "value": 311012.56
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 519791.58
+                "value": 518362.74
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 623739.71
+                "value": 622025.13
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 531902.72
+                "value": 529663.05
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 638272.85
+                "value": 635585.28
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 319136.42
+                "value": 317792.64
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 531902.72
+                "value": 529663.05
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 638272.85
+                "value": 635585.28
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 544083.3
+                "value": 541686.4
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 652889.29
+                "value": 650013.06
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 326444.65
+                "value": 325006.53
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 544083.3
+                "value": 541686.4
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 652889.29
+                "value": 650013.06
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 556488.4
+                "value": 554199.35
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 667775.17
+                "value": 665028.37
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 333887.58
+                "value": 332514.18
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 556488.4
+                "value": 554199.35
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 667775.17
+                "value": 665028.37
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 568786.79
+                "value": 566502.58
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 682533.0
+                "value": 679792.0
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 341266.5
+                "value": 339896.0
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 568786.79
+                "value": 566502.58
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 682533.0
+                "value": 679792.0
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 580788.19
+                "value": 578739.04
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 696934.45
+                "value": 694475.5
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 348467.22
+                "value": 347237.75
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 580788.19
+                "value": 578739.04
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 696934.45
+                "value": 694475.5
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 506331.0
+                "value": 504149.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 569622.0
+                "value": 567168.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 284811.0
+                "value": 283584.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 537976.0
+                "value": 535659.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 569622.0
+                "value": 567168.0
             }
         ],
         "title": "Pass-through income tax bracket (upper threshold) 6",
@@ -15183,152 +15358,152 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 163689.02
+                "value": 163239.06
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 327378.04
+                "value": 326478.12
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 163714.48
+                "value": 163264.46
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 163689.02
+                "value": 163239.06
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 327378.04
+                "value": 326478.12
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 167502.97
+                "value": 166797.67
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 335005.95
+                "value": 333595.34
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 167529.03
+                "value": 166823.62
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 167502.97
+                "value": 166797.67
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 335005.95
+                "value": 333595.34
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 171338.79
+                "value": 170583.98
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 342677.58
+                "value": 341167.96
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 171365.45
+                "value": 170610.52
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 171338.79
+                "value": 170583.98
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 342677.58
+                "value": 341167.96
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 175245.32
+                "value": 174524.47
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 350490.63
+                "value": 349048.94
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 175272.58
+                "value": 174551.62
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 175245.32
+                "value": 174524.47
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 350490.63
+                "value": 349048.94
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 179118.24
+                "value": 178398.91
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 358236.48
+                "value": 356797.82
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 179146.1
+                "value": 178426.67
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 179118.24
+                "value": 178398.91
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 358236.48
+                "value": 356797.82
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 182897.63
+                "value": 182252.33
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 365795.27
+                "value": 364504.66
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 182926.09
+                "value": 182280.68
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 182897.63
+                "value": 182252.33
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 365795.27
+                "value": 364504.66
             },
             {
                 "year": 2026,
@@ -16161,177 +16336,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 73033.62
+                "value": 72832.86
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 113777.62
+                "value": 113464.86
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 56888.81
+                "value": 56732.43
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 73033.62
+                "value": 72832.86
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 113777.62
+                "value": 113464.86
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 74735.3
+                "value": 74420.62
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 116428.64
+                "value": 115938.39
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 58214.32
+                "value": 57969.2
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 74735.3
+                "value": 74420.62
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 116428.64
+                "value": 115938.39
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 76446.74
+                "value": 76109.96
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 119094.85
+                "value": 118570.2
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 59547.43
+                "value": 59285.1
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 76446.74
+                "value": 76109.96
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 119094.85
+                "value": 118570.2
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 78189.73
+                "value": 77868.1
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 121810.22
+                "value": 121309.17
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 60905.11
+                "value": 60654.58
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 78189.73
+                "value": 77868.1
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 121810.22
+                "value": 121309.17
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 79917.72
+                "value": 79596.78
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 124502.22
+                "value": 124002.23
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 62251.11
+                "value": 62001.12
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 79917.72
+                "value": 79596.78
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 124502.22
+                "value": 124002.23
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 81603.98
+                "value": 81316.07
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 127129.22
+                "value": 126680.68
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 63564.61
+                "value": 63340.34
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 81603.98
+                "value": 81316.07
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 127129.22
+                "value": 126680.68
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 65712.0
+                "value": 65429.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 102258.0
+                "value": 101818.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 51129.0
+                "value": 50909.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 65712.0
+                "value": 65429.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 102258.0
+                "value": 101818.0
             }
         ],
         "title": "AMT exemption amount",
@@ -16559,177 +16734,177 @@
             {
                 "year": 2020,
                 "MARS": "single",
-                "value": 519791.58
+                "value": 518362.74
             },
             {
                 "year": 2020,
                 "MARS": "mjoint",
-                "value": 1039583.16
+                "value": 1036725.48
             },
             {
                 "year": 2020,
                 "MARS": "mseparate",
-                "value": 519791.58
+                "value": 518362.74
             },
             {
                 "year": 2020,
                 "MARS": "headhh",
-                "value": 519791.58
+                "value": 518362.74
             },
             {
                 "year": 2020,
                 "MARS": "widow",
-                "value": 1039583.16
+                "value": 1036725.48
             },
             {
                 "year": 2021,
                 "MARS": "single",
-                "value": 531902.72
+                "value": 529663.05
             },
             {
                 "year": 2021,
                 "MARS": "mjoint",
-                "value": 1063805.45
+                "value": 1059326.1
             },
             {
                 "year": 2021,
                 "MARS": "mseparate",
-                "value": 531902.72
+                "value": 529663.05
             },
             {
                 "year": 2021,
                 "MARS": "headhh",
-                "value": 531902.72
+                "value": 529663.05
             },
             {
                 "year": 2021,
                 "MARS": "widow",
-                "value": 1063805.45
+                "value": 1059326.1
             },
             {
                 "year": 2022,
                 "MARS": "single",
-                "value": 544083.3
+                "value": 541686.4
             },
             {
                 "year": 2022,
                 "MARS": "mjoint",
-                "value": 1088166.59
+                "value": 1083372.8
             },
             {
                 "year": 2022,
                 "MARS": "mseparate",
-                "value": 544083.3
+                "value": 541686.4
             },
             {
                 "year": 2022,
                 "MARS": "headhh",
-                "value": 544083.3
+                "value": 541686.4
             },
             {
                 "year": 2022,
                 "MARS": "widow",
-                "value": 1088166.59
+                "value": 1083372.8
             },
             {
                 "year": 2023,
                 "MARS": "single",
-                "value": 556488.4
+                "value": 554199.35
             },
             {
                 "year": 2023,
                 "MARS": "mjoint",
-                "value": 1112976.79
+                "value": 1108398.71
             },
             {
                 "year": 2023,
                 "MARS": "mseparate",
-                "value": 556488.4
+                "value": 554199.35
             },
             {
                 "year": 2023,
                 "MARS": "headhh",
-                "value": 556488.4
+                "value": 554199.35
             },
             {
                 "year": 2023,
                 "MARS": "widow",
-                "value": 1112976.79
+                "value": 1108398.71
             },
             {
                 "year": 2024,
                 "MARS": "single",
-                "value": 568786.79
+                "value": 566502.58
             },
             {
                 "year": 2024,
                 "MARS": "mjoint",
-                "value": 1137573.58
+                "value": 1133005.16
             },
             {
                 "year": 2024,
                 "MARS": "mseparate",
-                "value": 568786.79
+                "value": 566502.58
             },
             {
                 "year": 2024,
                 "MARS": "headhh",
-                "value": 568786.79
+                "value": 566502.58
             },
             {
                 "year": 2024,
                 "MARS": "widow",
-                "value": 1137573.58
+                "value": 1133005.16
             },
             {
                 "year": 2025,
                 "MARS": "single",
-                "value": 580788.19
+                "value": 578739.04
             },
             {
                 "year": 2025,
                 "MARS": "mjoint",
-                "value": 1161576.38
+                "value": 1157478.07
             },
             {
                 "year": 2025,
                 "MARS": "mseparate",
-                "value": 580788.19
+                "value": 578739.04
             },
             {
                 "year": 2025,
                 "MARS": "headhh",
-                "value": 580788.19
+                "value": 578739.04
             },
             {
                 "year": 2025,
                 "MARS": "widow",
-                "value": 1161576.38
+                "value": 1157478.07
             },
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 146066.0
+                "value": 145437.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 194715.0
+                "value": 193876.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 97357.0
+                "value": 96938.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 146066.0
+                "value": 145437.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 194715.0
+                "value": 193876.0
             }
         ],
         "title": "AMT exemption phaseout start",
@@ -16961,31 +17136,31 @@
             },
             {
                 "year": 2020,
-                "value": 747346.82
+                "value": 745292.46
             },
             {
                 "year": 2021,
-                "value": 764760.0
+                "value": 761539.84
             },
             {
                 "year": 2022,
-                "value": 782273.0
+                "value": 778826.79
             },
             {
                 "year": 2023,
-                "value": 800108.83
+                "value": 796817.69
             },
             {
                 "year": 2024,
-                "value": 817791.23
+                "value": 814507.04
             },
             {
                 "year": 2025,
-                "value": 835046.63
+                "value": 832100.39
             },
             {
                 "year": 2026,
-                "value": 301874.0
+                "value": 300574.0
             }
         ],
         "title": "AMT exemption phaseout ending AMT taxable income for Married filing Separately",
