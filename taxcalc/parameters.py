@@ -153,6 +153,7 @@ class Parameters(pt.Parameters):
                 ] += cpi_vo["value"]
             # 1. delete all unknown values.
             # 1.a for revision these are years specified after cpi_min_year
+            to_adjust = {}
             to_delete = {}
             for param in params:
                 if param == "CPI_offset" or param in self._wage_indexed:
@@ -160,13 +161,20 @@ class Parameters(pt.Parameters):
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
                 if self._data[param].get("indexed", False):
+                    to_adjust[param] = pt.select_lte(
+                        self._init_values[param],
+                        True,
+                        {"year": cpi_min_year["year"]},
+                    )
                     to_delete[param] = self.select_gt(
                         param, year=cpi_min_year["year"]
                     )
                     needs_reset.append(param)
             super().delete(to_delete, **kwargs)
+            super().adjust(to_adjust, **kwargs)
 
             # 1.b for all others these are years after last_known_year
+            to_adjust = {}
             to_delete = {}
             last_known_year = max(cpi_min_year["year"], self._last_known_year)
             for param in self._data:
@@ -177,12 +185,18 @@ class Parameters(pt.Parameters):
                 ):
                     continue
                 if self._data[param].get("indexed", False):
+                    to_adjust[param] = pt.select_lte(
+                        self._init_values[param],
+                        True,
+                        {"year": last_known_year}
+                    )
                     to_delete[param] = self.select_gt(
                         param, year=last_known_year
                     )
                     needs_reset.append(param)
 
             super().delete(to_delete, **kwargs)
+            super().adjust(to_adjust, **kwargs)
 
             self.extend(label_to_extend="year")
 
