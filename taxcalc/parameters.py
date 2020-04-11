@@ -5,7 +5,6 @@ from collections import defaultdict
 
 import marshmallow as ma
 import paramtools as pt
-from paramtools.select import select_lt
 import numpy as np
 import requests
 
@@ -120,8 +119,6 @@ class Parameters(pt.Parameters):
               wiped out after the year in which the value is adjusted for the
               same hard-coding reason.
         """
-        min_year = min(self._stateless_label_grid["year"])
-
         # Temporarily turn off extra ops during the intermediary adjustments
         # so that expensive and unnecessary operations are not run.
         label_to_extend = self.label_to_extend
@@ -138,10 +135,7 @@ class Parameters(pt.Parameters):
         if params.get("CPI_offset") is not None:
             # Update CPI_offset with new value.
             cpi_adj = super().adjust(
-                {
-                    "CPI_offset": params["CPI_offset"]
-                },
-                **kwargs
+                {"CPI_offset": params["CPI_offset"]}, **kwargs
             )
             # turn off extend now that CPI_offset has been updated.
             self.label_to_extend = None
@@ -150,12 +144,13 @@ class Parameters(pt.Parameters):
                 cpi_adj["CPI_offset"], key=lambda vo: vo["year"]
             )
             # Apply new CPI_offset values to inflation rates
-            rate_adjustment_vals = self.select_gt(
-                "CPI_offset", True, year=cpi_min_year["year"] - 1
+            rate_adjustment_vals = self.select_gte(
+                "CPI_offset", year=cpi_min_year["year"]
             )
             for cpi_vo in rate_adjustment_vals:
-                self._inflation_rates[cpi_vo["year"] - self.start_year] += \
-                    cpi_vo["value"]
+                self._inflation_rates[
+                    cpi_vo["year"] - self.start_year
+                ] += cpi_vo["value"]
             # 1. delete all unknown values.
             # 1.a for revision these are years specified after cpi_min_year
             to_delete = {}
@@ -165,31 +160,29 @@ class Parameters(pt.Parameters):
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
                 if self._data[param].get("indexed", False):
-                    gt = self.select_gt(param, True, year=cpi_min_year["year"])
-                    to_delete[param] = [
-                        dict(vo, **{"value": None}) for vo in gt
-                    ]
+                    to_delete[param] = self.select_gt(
+                        param, year=cpi_min_year["year"]
+                    )
                     needs_reset.append(param)
-            super().adjust(to_delete, **kwargs)
+            super().delete(to_delete, **kwargs)
 
             # 1.b for all others these are years after last_known_year
             to_delete = {}
             last_known_year = max(cpi_min_year["year"], self._last_known_year)
             for param in self._data:
                 if (
-                    param in params or
-                    param == "CPI_offset" or
-                    param in self.WAGE_INDEXED_PARAMS
+                    param in params
+                    or param == "CPI_offset"
+                    or param in self.WAGE_INDEXED_PARAMS
                 ):
                     continue
                 if self._data[param].get("indexed", False):
-                    gt = self.select_gt(param, True, year=last_known_year)
-                    to_delete[param] = [
-                        dict(vo, **{"value": None}) for vo in gt
-                    ]
+                    to_delete[param] = self.select_gt(
+                        param, year=last_known_year
+                    )
                     needs_reset.append(param)
 
-            super().adjust(to_delete, **kwargs)
+            super().delete(to_delete, **kwargs)
 
             self.extend(label_to_extend="year")
 
@@ -202,16 +195,17 @@ class Parameters(pt.Parameters):
                 if not self._data[base_param].get("indexable", None):
                     msg = f"Parameter {base_param} is not indexable."
                     raise pt.ValidationError(
-                        {"errors": {base_param: msg}},
-                        labels=None
+                        {"errors": {base_param: msg}}, labels=None
                     )
                 index_affected |= {param, base_param}
                 indexed_changes = {}
                 if isinstance(values, bool):
-                    indexed_changes[min_year] = values
+                    indexed_changes[self.start_year] = values
                 elif isinstance(values, list):
                     for vo in values:
-                        indexed_changes[vo.get("year", min_year)] = vo["value"]
+                        indexed_changes[vo.get("year", self.start_year)] = vo[
+                            "value"
+                        ]
                 else:
                     raise Exception(
                         "Index adjustment parameter must be a boolean or list."
@@ -220,26 +214,20 @@ class Parameters(pt.Parameters):
                 # was changed.
                 if base_param in params:
                     min_index_change_year = min(indexed_changes.keys())
-                    vos = select_lt(
+                    vos = pt.select_lt(
                         params[base_param],
                         False,
-                        {"year": min_index_change_year}
+                        {"year": min_index_change_year},
                     )
                     if vos:
-                        min_adj_year = min(
-                            vos,
-                            key=lambda vo: vo["year"]
-                        )["year"]
-                        gt = self.select_gt(
-                            base_param,
-                            True,
-                            year=min_adj_year
-                        )
-                        super().adjust(
+                        min_adj_year = min(vos, key=lambda vo: vo["year"])[
+                            "year"
+                        ]
+                        super().delete(
                             {
-                                base_param: [
-                                    dict(vo, **{"value": None}) for vo in gt
-                                ]
+                                base_param: self.select_gt(
+                                    base_param, year=min_adj_year
+                                )
                             }
                         )
                         super().adjust({base_param: vos}, **kwargs)
@@ -247,7 +235,7 @@ class Parameters(pt.Parameters):
                             params=[base_param],
                             label_to_extend="year",
                             label_to_extend_values=list(
-                                range(min_year, min_index_change_year)
+                                range(self.start_year, min_index_change_year)
                             ),
                         )
 
@@ -255,23 +243,18 @@ class Parameters(pt.Parameters):
                     indexed_val = indexed_changes[year]
                     # Get and delete all default values after year where
                     # indexed status changed.
-                    gte = self.select_gt(base_param, True, year=year)
-                    super().adjust(
-                        {
-                            base_param: [
-                                dict(vo, **{"value": None}) for vo in gte
-                            ]
-                        }
+                    super().delete(
+                        {base_param: self.select_gt(base_param, year=year)}
                     )
 
                     # 2.b Extend values for this parameter to the year where
                     # the indexed status changes.
-                    if year > min_year:
+                    if year > self.start_year:
                         self.extend(
                             params=[base_param],
                             label_to_extend="year",
                             label_to_extend_values=list(
-                                range(min_year, year + 1)
+                                range(self.start_year, year + 1)
                             ),
                         )
 
@@ -281,8 +264,8 @@ class Parameters(pt.Parameters):
                     # 2.d Adjust with values greater than or equal to current
                     # year in params
                     if base_param in params:
-                        vos = pt.select_gt(
-                            params[base_param], False, {"year": year - 1}
+                        vos = pt.select_gte(
+                            params[base_param], False, {"year": year}
                         )
                         super().adjust({base_param: vos}, **kwargs)
 
@@ -296,7 +279,8 @@ class Parameters(pt.Parameters):
 
         # Filter out "-indexed" params.
         nonindexed_params = {
-            param: val for param, val in params.items()
+            param: val
+            for param, val in params.items()
             if param not in index_affected
         }
 
@@ -310,7 +294,8 @@ class Parameters(pt.Parameters):
         # 4. Add indexing params back for return to user.
         adj.update(
             {
-                param: val for param, val in params.items()
+                param: val
+                for param, val in params.items()
                 if param in index_affected
             }
         )
