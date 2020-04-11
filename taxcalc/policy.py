@@ -135,17 +135,17 @@ class Policy(Parameters):
         cpi_vals = [vo["value"] for vo in self._data["CPI_offset"]["value"]]
         # extend cpi_offset values through budget window if they
         # have not been extended already.
-        cpi_vals = cpi_vals + cpi_vals[-1:] * (2029 - 2013 + 1 - len(cpi_vals))
-        cpi_offset = {(2013 + ix): val for ix, val in enumerate(cpi_vals)}
+        cpi_vals = cpi_vals + cpi_vals[-1:] * (self.end_year - self.start_year + 1 - len(cpi_vals))
+        cpi_offset = {(self.start_year + ix): val for ix, val in enumerate(cpi_vals)}
 
         if not self._gfactors:
             self._gfactors = GrowFactors()
 
         self._inflation_rates = [
-            np.round(rate + cpi_offset[2013 + ix], 4)
+            np.round(rate + cpi_offset[self.start_year + ix], 4)
             for ix, rate in enumerate(
-                self._gfactors.price_inflation_rates(2013, 2029)
+                self._gfactors.price_inflation_rates(self.start_year, self.end_year)
             )
         ]
 
-        self._wage_growth_rates = self._gfactors.wage_growth_rates(2013, 2029)
+        self._wage_growth_rates = self._gfactors.wage_growth_rates(self.start_year, self.end_year)

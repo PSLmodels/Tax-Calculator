@@ -981,10 +981,9 @@ class TestAdjust:
         exp = np.vstack([
             val2020,
             val2020 * (1 + pol2.inflation_rates(year=2020)),
-            val2020 * (
-                (1 + pol2.inflation_rates(year=2020)) *
-                (1 + pol2.inflation_rates(year=2021))
-            ),
+            (
+                val2020 * (1 + pol2.inflation_rates(year=2020))
+            ).round(2) * (1 + pol2.inflation_rates(year=2021)),
             val2023,
             val2023 * (1 + pol2.inflation_rates(year=2023)),
         ]).round(2)
@@ -1092,10 +1091,9 @@ class TestAdjust:
         exp = np.vstack([
             val2020,
             val2020 * (1 + pol2.inflation_rates(year=2020)),
-            val2020 * (
-                (1 + pol2.inflation_rates(year=2020)) *
-                (1 + pol2.inflation_rates(year=2021))
-            ),
+            (
+                val2020 * (1 + pol2.inflation_rates(year=2020))
+            ).round(2) * (1 + pol2.inflation_rates(year=2021)),
             val2023,
             val2023,
         ]).round(2)
