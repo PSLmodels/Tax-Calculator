@@ -32,30 +32,23 @@ pt.register_custom_type(
 
 class Parameters(pt.Parameters):
     """
-    Base Parameters class that wraps ParamTools,
-    providing parameter indexing for tax policy in the
-    adjust method and backwards-compatible preserving
-    layer that supports Tax-Calculator's conventional
-    reform formatting style as well as convenience
-    methods like set_Year for classes operating on
-    this one.
+    Base Parameters class that wraps ParamTools, providing parameter indexing
+    for tax policy in the adjust method and backwards-compatible preserving
+    layer that supports Tax-Calculator's conventional reform formatting style
+    as well as convenience methods like set_Year for classes operating on this
+    one.
 
-    The defaults file path may be set through the
-    defaults class attribute variable or through
-    the old DEFAULTS_FILE_NAME/DEFAULTS_FILE_PATH
-    work flow.
+    The defaults file path may be set through the defaults class attribute
+    variable or through the old DEFAULTS_FILE_NAME/DEFAULTS_FILE_PATH work
+    flow.
 
-    A custom getter method is implemented so that
-    the value of a parameter over all allowed years
-    can conveniently be retrieved by adding an
-    underscore before the variable name (e.g.
-    EITC_c vs _EITC_c).
+    A custom getter method is implemented so that the value of a parameter
+    over all allowed years can conveniently be retrieved by adding an
+    underscore before the variable name (e.g. EITC_c vs _EITC_c).
 
-    Note: Like all pt.Parameters classes
-    the values of attributes corresponding to a
-    parameter value on this class are ephemeral
-    and the only way to make permanent changes
-    to this class'sstate is through the set_state
+    Note: Like all pt.Parameters classes the values of attributes
+    corresponding to a parameter value on this class are ephemeral and the only
+    way to make permanent changes to this class'sstate is through the set_state
     or adjust methods.
 
     """
@@ -221,8 +214,12 @@ class Parameters(pt.Parameters):
                             "value"
                         ]
                 else:
-                    raise Exception(
-                        "Index adjustment parameter must be a boolean or list."
+                    msg = (
+                        "Index adjustment parameter must be a boolean or "
+                        "list."
+                    )
+                    raise pt.ValidationError(
+                        {"errors": {base_param: msg}}, labels=None
                     )
                 # 2.a Adjust values less than first year in which index status
                 # was changed.
