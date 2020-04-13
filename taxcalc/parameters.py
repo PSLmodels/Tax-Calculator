@@ -427,7 +427,9 @@ class Parameters(pt.Parameters):
             ):
                 if self._removed_params and param in self._removed_params:
                     msg = f"{param} {self._removed_params[param]}"
-                elif self._redefined_params and param in self._redefined_params:
+                elif (
+                    self._redefined_params and param in self._redefined_params
+                ):
                     msg = self._redefined_params[param]
                 else:
                     msg = f"Parameter {param} does not exist."
