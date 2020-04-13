@@ -12,7 +12,7 @@ import os
 import json
 import numpy as np
 import pytest
-import paramtools
+import paramtools as pt
 # pylint: disable=import-error
 from taxcalc import Policy
 
@@ -53,14 +53,14 @@ def test_correct_class_instantiation():
     pol = Policy()
     assert pol
     pol.implement_reform({})
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform(list())
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform({2099: {'II_em': 99000}})
     pol.set_year(2019)
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform({2018: {'II_em': 99000}})
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform({2020: {'II_em': -1000}})
 
 
@@ -400,7 +400,7 @@ def test_implement_reform_raises_on_no_year():
     """
     reform = {'STD_Aged': [1400, 1200, 1400, 1400, 1400]}
     ppo = Policy()
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         ppo.implement_reform(reform)
 
 
@@ -410,7 +410,7 @@ def test_implement_reform_raises_on_early_year():
     """
     ppo = Policy()
     reform = {'STD_Aged': {2010: [1400, 1100, 1100, 1400, 1400]}}
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         ppo.implement_reform(reform)
 
 
@@ -800,22 +800,29 @@ def test_reform_with_bad_ctc_levels():
         'CTC_c': {2020: 2200},
         'ACTC_c': {2020: 2500}
     }
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform(child_credit_reform)
 
 
-def test_reform_with_removed_parameter():
+def test_reform_with_removed_parameter(monkeypatch):
     """
     Try to use removed parameter in a reform.
     """
     policy1 = Policy()
     reform1 = {'FilerCredit_c': {2020: 1000}}
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         policy1.implement_reform(reform1)
     policy2 = Policy()
     reform2 = {'FilerCredit_c-indexed': {2020: True}}
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         policy2.implement_reform(reform2)
+
+    redefined_msg = {"some_redefined": "some_redefined was redefined."}
+    monkeypatch.setattr(Policy, "REDEFINED_PARAMS", redefined_msg)
+
+    pol = Policy()
+    with pytest.raises(pt.ValidationError):
+        pol.implement_reform({"some_redefined": "hello world"})
 
 
 def test_reform_with_out_of_range_error():
@@ -841,7 +848,7 @@ def test_reform_with_warning():
 
     # pol.implement_reform(reform)
     # assert pol.parameter_warnings
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform(reform)
 
     pol = Policy()
@@ -856,7 +863,7 @@ def test_reform_with_scalar_vector_errors():
     """
     policy1 = Policy()
     reform1 = {'SS_thd85': {2020: 30000}}
-    with pytest.raises(paramtools.ValidationError):
+    with pytest.raises(pt.ValidationError):
         policy1.implement_reform(reform1)
     policy2 = Policy()
     # This does not throw an error because the
@@ -932,7 +939,7 @@ class TestAdjust:
     """
     Test update and indexing rules as defined in the Parameters docstring.
 
-    Each test implements a Tax-Calculator style reform and a ParamTools styled
+    Each test implements a Tax-Calculator style reform and a pt styled
     reform, checks that the updated values are equal, and then, tests that
     values were extended and indexed (or not indexed) correctly.
     """
@@ -1354,3 +1361,16 @@ class TestAdjust:
             (pol2.CTC_c[1] / pol2.CTC_c[0] - 1).round(4),
             pol0.inflation_rates(year=2021) + (-0.005),
         )
+
+    def test_indexed_status_parsing(self):
+        pol1 = Policy()
+
+        pol1.implement_reform({"EITC_c-indexed": {pol1.start_year: False}})
+
+        pol2 = Policy()
+        pol2.adjust({"EITC_c-indexed": False})
+
+        cmp_policy_objs(pol1, pol2)
+
+        with pytest.raises(pt.ValidationError):
+            pol2.adjust({"EITC_c-indexed": 123})

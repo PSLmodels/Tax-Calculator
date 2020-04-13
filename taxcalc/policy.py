@@ -47,28 +47,28 @@ class Policy(Parameters):
     # (1) specify which Policy parameters have been removed or renamed
     REMOVED_PARAMS = {
         # following five parameters removed in PR 2223 merged on 2019-02-06
-        '_DependentCredit_Child_c': 'is a removed parameter name',
-        '_DependentCredit_Nonchild_c': 'is a removed parameter name',
-        '_DependentCredit_before_CTC': 'is a removed parameter name',
-        '_FilerCredit_c': 'is a removed parameter name',
-        '_ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
+        'DependentCredit_Child_c': 'is a removed parameter name',
+        'DependentCredit_Nonchild_c': 'is a removed parameter name',
+        'DependentCredit_before_CTC': 'is a removed parameter name',
+        'FilerCredit_c': 'is a removed parameter name',
+        'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
         # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
-        '_cpi_offset': 'was renamed CPI_offset in release 2.0.0',
+        'cpi_offset': 'was renamed CPI_offset in release 2.0.0',
         # TODO: following parameters renamed in PR 2345 merged on 2019-06-24
-        '_PT_excl_rt':
+        'PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
-        '_PT_excl_wagelim_thd':
+        'PT_excl_wagelim_thd':
         'was renamed PT_qbid_taxinc_thd in release 2.4.0',
-        '_PT_excl_wagelim_prt':
+        'PT_excl_wagelim_prt':
         'was renamed PT_qbid_taxinc_gap in release 2.4.0',
-        '_PT_excl_wagelim_rt':
+        'PT_excl_wagelim_rt':
         'was renamed PT_qbid_w2_wages_rt in release 2.4.0'
     }
     # (2) specify which Policy parameters have been redefined recently
     REDEFINED_PARAMS = {
         # TODO: TODO: should this be removed now?
         # TODO: remove the CTC_c name:message pair sometime later in 2019
-        # '_CTC_c': 'CTC_c was redefined in release 1.0.0'
+        # 'CTC_c': 'CTC_c was redefined in release 1.0.0'
     }
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
@@ -143,8 +143,7 @@ class Policy(Parameters):
             for ix, val in enumerate(cpi_vals)
         }
 
-        if not self._gfactors:
-            self._gfactors = GrowFactors()
+        self._gfactors = GrowFactors()
 
         self._inflation_rates = [
             np.round(rate + cpi_offset[self.start_year + ix], 4)

@@ -174,7 +174,7 @@ class Parameters(pt.Parameters):
                 if (
                     param in params or
                     param == "CPI_offset" or
-                    param in self.WAGE_INDEXED_PARAMS
+                    param in self._wage_indexed
                 ):
                     continue
                 if self._data[param].get("indexed", False):
@@ -321,7 +321,7 @@ class Parameters(pt.Parameters):
         """
         if not self._inflation_rates or not self._wage_growth_rates:
             self.set_rates()
-        if param in self.WAGE_INDEXED_PARAMS:
+        if param in self._wage_indexed:
             return self.wage_growth_rates(year=label_to_extend_val)
         else:
             return self.inflation_rates(year=label_to_extend_val)
@@ -425,10 +425,10 @@ class Parameters(pt.Parameters):
                 param not in self._data and
                 param.split("-indexed")[0] not in self._data
             ):
-                if self.REMOVED_PARAMS and param in self.REMOVED_PARAMS:
-                    msg = self.REMOVED_PARAMS[param]
-                elif self.REDEFINED_PARAMS and param in self.REDEFINED_PARAMS:
-                    msg = self.REDEFINED_PARAMS[param]
+                if self._removed_params and param in self._removed_params:
+                    msg = f"{param} {self._removed_params[param]}"
+                elif self._redefined_params and param in self._redefined_params:
+                    msg = self._redefined_params[param]
                 else:
                     msg = f"Parameter {param} does not exist."
                 raise pt.ValidationError(
