@@ -83,6 +83,7 @@ def fixture_params_json_file():
 @pytest.mark.parametrize("revision, expect", [
     ({}, ""),
     ({'real_param': {2004: 1.9}}, "error"),
+    ({'int_param': {2004: [3.6]}}, "raise"),
     ({'bool_param': {2004: [4.9]}}, "raise"),
     ({'str_param': {2004: [9]}}, "raise"),
     ({'str_param': {2004: 'nonlinear'}}, "noerror"),
