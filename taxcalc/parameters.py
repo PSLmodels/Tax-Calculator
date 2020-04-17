@@ -163,7 +163,7 @@ class Parameters(pt.Parameters):
                         param, year=cpi_min_year["year"]
                     )
                     needs_reset.append(param)
-            super().delete(to_delete, **kwargs)
+            self.delete(to_delete, **kwargs)
             super().adjust(init_vals, **kwargs)
 
             # 1.b For all others, these are years after last_known_year.
@@ -188,7 +188,7 @@ class Parameters(pt.Parameters):
                     )
                     needs_reset.append(param)
 
-            super().delete(to_delete, **kwargs)
+            self.delete(to_delete, **kwargs)
             super().adjust(init_vals, **kwargs)
 
             self.extend(label_to_extend="year")
@@ -234,7 +234,7 @@ class Parameters(pt.Parameters):
                         min_adj_year = min(vos, key=lambda vo: vo["year"])[
                             "year"
                         ]
-                        super().delete(
+                        self.delete(
                             {
                                 base_param: self.select_gt(
                                     base_param, year=min_adj_year
@@ -254,7 +254,7 @@ class Parameters(pt.Parameters):
                     indexed_val = indexed_changes[year]
                     # Get and delete all default values after year where
                     # indexed status changed.
-                    super().delete(
+                    self.delete(
                         {base_param: self.select_gt(base_param, year=year)}
                     )
 
