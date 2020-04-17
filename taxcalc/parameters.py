@@ -456,11 +456,22 @@ class Parameters(pt.Parameters):
                         yearval.shape != val[0].shape
                     ):
                         exp_dims = val[0].shape
-                        act_dims = yearval.shape
-                        msg = (
-                            f"Parameter {param} has dimension {act_dims} "
-                            f"but it should have dimension {exp_dims}"
-                        )
+                        if exp_dims == tuple():
+                            msg = (
+                                f"{param} is not an array "
+                                f"parameter."
+                            )
+                        elif yearval.shape:
+                            msg = (
+                                f"{param} has {yearval.shape[0]} elements "
+                                f"but should only have {exp_dims[0]} "
+                                f"elements."
+                            )
+                        else:
+                            msg = (
+                                f"{param} is an array parameter with "
+                                f"{exp_dims[0]} elements."
+                            )
                         raise pt.ValidationError(
                             {"errors": {"schema": msg}},
                             None
@@ -474,7 +485,7 @@ class Parameters(pt.Parameters):
                         )
                     except IndexError:
                         msg = (
-                            f"Parameter {param} does not have the correct "
+                            f"{param} does not have the correct "
                             f"array dimensions for year {year}."
                         )
                         raise pt.ValidationError(
@@ -484,7 +495,7 @@ class Parameters(pt.Parameters):
                     new_params[param] += value_objects
             else:
                 msg = (
-                    f"Parameter {param} must be a year:value dictionary "
+                    f"{param} must be a year:value dictionary "
                     f"if you are not using the new adjust method."
                 )
                 raise pt.ValidationError(
