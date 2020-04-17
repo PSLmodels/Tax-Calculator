@@ -478,20 +478,10 @@ class Parameters(pt.Parameters):
                         )
 
                     self.set_state(year=year)
-                    try:
-                        value_objects = self.from_array(
-                            param,
-                            yearval.reshape((1, *yearval.shape))
-                        )
-                    except IndexError:
-                        msg = (
-                            f"{param} does not have the correct "
-                            f"array dimensions for year {year}."
-                        )
-                        raise pt.ValidationError(
-                            {"errors": {"schema": msg}},
-                            None
-                        )
+                    value_objects = self.from_array(
+                        param,
+                        yearval.reshape((1, *yearval.shape))
+                    )
                     new_params[param] += value_objects
             else:
                 msg = (
