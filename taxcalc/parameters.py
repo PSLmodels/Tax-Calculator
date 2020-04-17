@@ -444,27 +444,40 @@ class Parameters(pt.Parameters):
                 for year, yearval in val.items():
                     val = getattr(self, param)
                     if isinstance(val, np.ndarray):
-                        ndims = val.ndim
+                        ndim = val.ndim
                     else:
-                        ndims = 0
+                        ndim = 0
                     yearval = np.array(yearval)
-                    short_dims = ndims - yearval.ndim
-                    yearval = yearval.reshape(
+                    short_dims = ndim - yearval.ndim
+                    reshaped = yearval.reshape(
                         (*(1, ) * short_dims, *yearval.shape)
                     )
                     self.set_state(year=year)
                     try:
-                        yearval = self.from_array(param, yearval)
+                        value_objects = self.from_array(param, reshaped)
+                        if (
+                            len(reshaped.shape) == 2 and
+                            reshaped.shape[1] != val.shape[1]
+                        ):
+                            msg = (
+                                f"Parameter {param} has {reshaped.shape[1]} "
+                                f"elements but it should have "
+                                f"{val.shape[1]} elements."
+                            )
+                            raise pt.ValidationError(
+                                {"errors": {"schema": msg}},
+                                None
+                            )
                     except IndexError:
                         msg = (
-                            f"Pameter {param} does not have the correct "
+                            f"Parameter {param} does not have the correct "
                             f"array dimensions for year {year}."
                         )
                         raise pt.ValidationError(
                             {"errors": {"schema": msg}},
                             None
                         )
-                    new_params[param] += yearval
+                    new_params[param] += value_objects
             else:
                 msg = (
                     f"Parameter {param} must be a year:value dictionary "

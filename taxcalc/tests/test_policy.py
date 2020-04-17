@@ -868,9 +868,21 @@ def test_reform_with_scalar_vector_errors():
     policy2 = Policy()
     # This does not throw an error because the
     # reshape call in `_update` casts it down to the
-    # correct number of dimensions.
+    # correct number of dimensions. But the adjust
+    # method does thrown an error.
     reform2 = {'ID_Medical_frt': {2020: [0.08]}}
     policy2.implement_reform(reform2)
+
+    policy3 = Policy()
+    reform3 = {'ID_Medical_frt': [{"year": 2020, "value": [0.08]}]}
+    with pytest.raises(pt.ValidationError):
+        policy3.adjust(reform3)
+
+    # Check that error is thrown if there are extra elements in array.
+    policy4 = Policy()
+    ref4 = {"II_brk1": {2020: [9700, 19400, 9700, 13850, 19400, 19400]}}
+    with pytest.raises(pt.ValidationError):
+        policy4.implement_reform(ref4)
 
 
 def test_index_offset_reform():

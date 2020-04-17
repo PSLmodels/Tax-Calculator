@@ -31,6 +31,10 @@ PARAMS_JSON = json.dumps({
             "year": {
                 "type": "int",
                 "validators": {"range": {"min": 2001, "max": 2010}}
+            },
+            "label": {
+                "type": "str",
+                "validators": {"choice": {"choices": ["label1", "label2"]}}
             }
         },
         "operators": {
@@ -64,6 +68,16 @@ PARAMS_JSON = json.dumps({
         "type": "str",
         "value": "linear",
         "validators": {"choice": {"choices": ["linear", "nonlinear", "cubic"]}}
+    },
+    "label_param": {
+        "title": "Parameter that uses labels.",
+        "description": "",
+        "type": "int",
+        "value": [
+            {"label": "label1", "year": 2001, "value": 2},
+            {"label": "label2", "year": 2001, "value": 3}
+        ],
+        "validators": {"range": {"min": 0, "max": 9}}
     }
 })
 
@@ -84,6 +98,10 @@ def fixture_params_json_file():
     ({}, ""),
     ({'real_param': {2004: 1.9}}, "error"),
     ({'int_param': {2004: [3.6]}}, "raise"),
+    ({"int_param": {2004: [3]}}, "raise"),
+    ({"label_param": {2004: [1, 2]}}, "noerror"),
+    ({"label_param": {2004: [[1, 2]]}}, "noerror"),
+    ({"label_param": {2004: [1, 2, 3]}}, "raise"),
     ({'bool_param': {2004: [4.9]}}, "raise"),
     ({'str_param': {2004: [9]}}, "raise"),
     ({'str_param': {2004: 'nonlinear'}}, "noerror"),
