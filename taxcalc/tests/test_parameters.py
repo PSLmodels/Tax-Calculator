@@ -100,7 +100,7 @@ def fixture_params_json_file():
     ({'int_param': {2004: [3.6]}}, "raise"),
     ({"int_param": {2004: [3]}}, "raise"),
     ({"label_param": {2004: [1, 2]}}, "noerror"),
-    ({"label_param": {2004: [[1, 2]]}}, "noerror"),
+    ({"label_param": {2004: [[1, 2]]}}, "raise"),
     ({"label_param": {2004: [1, 2, 3]}}, "raise"),
     ({'bool_param': {2004: [4.9]}}, "raise"),
     ({'str_param': {2004: [9]}}, "raise"),
@@ -108,6 +108,7 @@ def fixture_params_json_file():
     ({'str_param': {2004: 'unknownvalue'}}, "error"),
     ({'str_param': {2004: ['nonlinear']}}, "raise"),
     ({'real_param': {2004: 'linear'}}, "raise"),
+    ({'real_param': {2004: [0.2, 0.3]}}, "raise"),
     ({'real_param-indexed': {2004: True}}, "raise"),
     ({'unknown_param-indexed': {2004: False}}, "raise")
 ])

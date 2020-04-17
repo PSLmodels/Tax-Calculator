@@ -443,31 +443,35 @@ class Parameters(pt.Parameters):
             elif isinstance(val, dict):
                 for year, yearval in val.items():
                     val = getattr(self, param)
-                    if isinstance(val, np.ndarray):
-                        ndim = val.ndim
-                    else:
-                        ndim = 0
+                    if (
+                        self._data[param].get("type", None) == "str" and
+                        isinstance(yearval, str)
+                    ):
+                        new_params[param] += [{"value": yearval}]
+                        continue
+
                     yearval = np.array(yearval)
-                    short_dims = ndim - yearval.ndim
-                    reshaped = yearval.reshape(
-                        (*(1, ) * short_dims, *yearval.shape)
-                    )
+                    if (
+                        getattr(val, "shape", None) and
+                        yearval.shape != val[0].shape
+                    ):
+                        exp_dims = val[0].shape
+                        act_dims = yearval.shape
+                        msg = (
+                            f"Parameter {param} has dimension {act_dims} "
+                            f"but it should have dimension {exp_dims}"
+                        )
+                        raise pt.ValidationError(
+                            {"errors": {"schema": msg}},
+                            None
+                        )
+
                     self.set_state(year=year)
                     try:
-                        value_objects = self.from_array(param, reshaped)
-                        if (
-                            len(reshaped.shape) == 2 and
-                            reshaped.shape[1] != val.shape[1]
-                        ):
-                            msg = (
-                                f"Parameter {param} has {reshaped.shape[1]} "
-                                f"elements but it should have "
-                                f"{val.shape[1]} elements."
-                            )
-                            raise pt.ValidationError(
-                                {"errors": {"schema": msg}},
-                                None
-                            )
+                        value_objects = self.from_array(
+                            param,
+                            yearval.reshape((1, *yearval.shape))
+                        )
                     except IndexError:
                         msg = (
                             f"Parameter {param} does not have the correct "
