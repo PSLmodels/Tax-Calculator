@@ -528,15 +528,17 @@ def test_pop_the_cap_reform():
     ppo = Policy()
     assert ppo.current_year == Policy.JSON_START_YEAR
     # confirm that MTE has current-law values in 2015 and 2016
+    mte = ppo._SS_Earnings_c
     syr = Policy.JSON_START_YEAR
-    assert ppo._SS_Earnings_c[2015 - syr] == 118500
-    assert ppo._SS_Earnings_c[2016 - syr] == 118500
+    assert mte[2015 - syr] == 118500
+    assert mte[2016 - syr] == 118500
     # specify a "pop the cap" reform that eliminates MTE cap in 2016
     reform = {'SS_Earnings_c': {2016: 9e99}}
     ppo.implement_reform(reform)
-    assert ppo._SS_Earnings_c[2015 - syr] == 118500
-    assert ppo._SS_Earnings_c[2016 - syr] == 9e99
-    assert ppo._SS_Earnings_c[ppo.end_year - syr] == 9e99
+    mte = ppo._SS_Earnings_c
+    assert mte[2015 - syr] == 118500
+    assert mte[2016 - syr] == 9e99
+    assert mte[ppo.end_year - syr] == 9e99
 
 
 def test_order_of_indexing_and_level_reforms():
