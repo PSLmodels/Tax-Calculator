@@ -90,7 +90,7 @@ class Parameters(pt.Parameters):
                 the indexed status is adjusted, update those parameters first.
             b. Extend the values of that parameter to the year in which
                 the status is changed.
-            c. Change the the indexed status for the parameter.
+            c. Change the indexed status for the parameter.
             d. Update parameter values in adjustment that are adjusted after
                 the year in which the indexed status changes.
             e. Using the new "-indexed" status, extend the values of that
