@@ -190,7 +190,7 @@ def test_json_file_contents(tests_path, fname):
                    'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
                    'ID_ps', 'ID_AllTaxes_c']
     # for TCJA-reverting long_params
-    long_known_years = set(range(first_year, 2019 + 1))
+    long_known_years = set(range(first_year, last_known_year + 1))
     long_known_years.add(2026)
     # check elements in each parameter sub-dictionary
     failures = ''
