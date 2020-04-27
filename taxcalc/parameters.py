@@ -70,7 +70,40 @@ class Parameters(pt.Parameters):
     def __init__(self, *args, **kwargs):
         pass
 
-    def adjust(self, params_or_path, **kwargs):
+    def adjust(self, params_or_path, print_warnings=True, **kwargs):
+        """
+        Implements custom warning and error handling.
+
+        If print_warnings is True, warnings are printed out and if
+        print_warnings is False, nothing is printed.
+
+        ParamTools throws an error if a warning is triggered and
+        ignore_warnings is False. This method circumvents this behavior.
+        """
+        if print_warnings:
+            _data = copy.deepcopy(self._data)
+            kwargs["ignore_warnings"] = False
+        else:
+            kwargs["ignore_warnings"] = True
+        self._warnings = {}
+        try:
+            return self.adjust_with_indexing(params_or_path, **kwargs)
+        except pt.ValidationError as ve:
+            if self.errors:
+                raise ve
+            if print_warnings:
+                print("WARNING:")
+                print(self.warnings)
+            kwargs["ignore_warnings"] = True
+            self._data = _data
+            _warnings = copy.deepcopy(self._warnings)
+            self._warnings = {}
+            self._errors = {}
+            adjustment = self.adjust_with_indexing(params_or_path, **kwargs)
+            self._warnings = _warnings
+            return adjustment
+
+    def adjust_with_indexing(self, params_or_path, **kwargs):
         """
         Custom adjust method that handles special indexing logic. The logic
         is:
@@ -381,7 +414,7 @@ class Parameters(pt.Parameters):
             if param != "schema"
         }
 
-    def _update(self, revision, ignore_warnings, raise_errors):
+    def _update(self, revision, print_warnings, raise_errors):
         """
         A translation layer on top of Parameters.adjust. Projects
         that have historically used the `_update` method with
@@ -495,7 +528,7 @@ class Parameters(pt.Parameters):
         self.set_state(**cur_state)
         return self.adjust(
             new_params,
-            ignore_warnings=ignore_warnings,
+            print_warnings=print_warnings,
             raise_errors=raise_errors
         )
 

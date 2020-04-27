@@ -841,20 +841,21 @@ def test_reform_with_warning():
     """
     Try to use warned out-of-range parameter value in reform.
     """
+    exp_warnings = {
+        'ID_Medical_frt': [
+            'ID_Medical_frt[year=2020] 0.05 < min 0.075 '
+        ]
+    }
     pol = Policy()
     reform = {'ID_Medical_frt': {2020: 0.05}}
-    # TODO: breaking change. ParamTools throws an error
-    # if ignore_warnings is False while taxcalc simply
-    # printed the warnings. If ignore_warnings is True
-    # the warnings are not stored.
 
-    # pol.implement_reform(reform)
-    # assert pol.parameter_warnings
-    with pytest.raises(pt.ValidationError):
-        pol.implement_reform(reform)
+    pol.implement_reform(reform, print_warnings=True)
+    assert pol.warnings == exp_warnings
+    pol.set_state(year=2020)
+    assert pol.ID_Medical_frt == np.array([0.05])
 
-    pol = Policy()
-    pol.implement_reform(reform, ignore_warnings=True)
+    pol.implement_reform(reform, print_warnings=False)
+    assert pol.warnings == {}
     pol.set_state(year=2020)
     assert pol.ID_Medical_frt == np.array([0.05])
 

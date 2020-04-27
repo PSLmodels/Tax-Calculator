@@ -132,11 +132,11 @@ def test_params_class(revision, expect, params_json_file):
             self.initialize(Params.START_YEAR, Params.NUM_YEARS)
 
         def update_params(self, revision,
-                          ignore_warnings=False, raise_errors=True):
+                          print_warnings=True, raise_errors=True):
             """
             Update parameters given specified revision dictionary.
             """
-            self._update(revision, ignore_warnings, raise_errors)
+            self._update(revision, print_warnings, raise_errors)
 
     # test Params class
     prms = Params()

@@ -266,7 +266,7 @@ class TaxCalcIO():
         base = Policy(gfactors=gfactors_base)
         try:
             base.implement_reform(basedict['policy'],
-                                  ignore_warnings=True,
+                                  print_warnings=True,
                                   raise_errors=False)
             self.errmsg += base.parameter_errors
         except paramtools.ValidationError as valerr_msg:
@@ -277,7 +277,7 @@ class TaxCalcIO():
             for poldict in policydicts:
                 try:
                     pol.implement_reform(poldict,
-                                         ignore_warnings=True,
+                                         print_warnings=True,
                                          raise_errors=False)
                     self.errmsg += pol.parameter_errors
                 except paramtools.ValidationError as valerr_msg:
