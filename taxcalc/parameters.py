@@ -9,6 +9,7 @@ import numpy as np
 import requests
 
 import taxcalc
+from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import json_to_dict
 
 
@@ -117,6 +118,7 @@ class Parameters(pt.Parameters):
         label_to_extend = self.label_to_extend
         array_first = self.array_first
         self.array_first = False
+        self._gfactors = GrowFactors()
 
         params = self.read_params(params_or_path)
 
@@ -136,10 +138,16 @@ class Parameters(pt.Parameters):
             cpi_min_year = min(
                 cpi_adj["CPI_offset"], key=lambda vo: vo["year"]
             )
-            # Apply new CPI_offset values to inflation rates
+
             rate_adjustment_vals = self.select_gte(
                 "CPI_offset", year=cpi_min_year["year"]
             )
+            # "Undo" any existing CPI_offset for years after CPI_offset has been updated.
+            self._inflation_rates = self._inflation_rates[
+                :cpi_min_year["year"] - self.start_year
+            ] + self._gfactors.price_inflation_rates(cpi_min_year["year"], self.LAST_BUDGET_YEAR)
+
+            # Then apply new CPI_offset values to inflation rates
             for cpi_vo in rate_adjustment_vals:
                 self._inflation_rates[
                     cpi_vo["year"] - self.start_year
@@ -170,6 +178,43 @@ class Parameters(pt.Parameters):
             init_vals = {}
             to_delete = {}
             last_known_year = max(cpi_min_year["year"], self._last_known_year)
+            # calculate 2026 value, using new inflation rates, for parameters
+            # that revert to their pre-TCJA values.
+            long_params = ['II_brk7', 'II_brk6', 'II_brk5', 'II_brk4',
+                           'II_brk3', 'II_brk2', 'II_brk1',
+                           'PT_brk7', 'PT_brk6', 'PT_brk5', 'PT_brk4',
+                           'PT_brk3', 'PT_brk2', 'PT_brk1',
+                           'PT_qbid_taxinc_thd',
+                           'ALD_BusinessLosses_c',
+                           'STD', 'II_em', 'II_em_ps',
+                           'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
+                           'ID_ps', 'ID_AllTaxes_c']
+            final_ifactor = 1.0
+            pyear = 2017  # prior year before TCJA first implemented
+            fyear = 2026  # final year in which parameter values revert to pre-TCJA values
+            # construct final-year inflation factor from prior year
+            # NOTE: pvalue[t+1] = pvalue[t] * ( 1 + irate[t] )
+            for year in range(pyear, fyear):
+                final_ifactor *= 1 + \
+                    self._inflation_rates[year - self.start_year]
+            # compute final year parameter value
+            for param in long_params:
+                # only revert param in 2026 if it's not in revision
+                if params.get(param) is None:
+                    list_vals = []
+                    # grab param values from 2017
+                    for dim in self.select_eq(param, year=pyear):
+                        list_vals.append(dim['value'])
+                    new_vals = []
+                    # use final_ifactor to inflate from 2017 to 2026
+                    for idx in range(0, len(list_vals)):
+                        val = min(9e99, round(list_vals[idx] * final_ifactor, 0))
+                        new_vals.append(val)
+                    self._update(
+                        {param: {fyear: new_vals}}, False, True
+                    )
+                else:
+                    pass
             for param in self._data:
                 if (
                     param in params or
@@ -183,8 +228,8 @@ class Parameters(pt.Parameters):
                         True,
                         {"year": last_known_year}
                     )
-                    to_delete[param] = self.select_gt(
-                        param, year=last_known_year
+                    to_delete[param] = self.select_eq(
+                        param, strict=True, _auto=True
                     )
                     needs_reset.append(param)
 
