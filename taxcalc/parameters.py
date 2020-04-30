@@ -208,8 +208,6 @@ class Parameters(pt.Parameters):
             super().adjust(init_vals, **kwargs)
 
             # 1.b For all others, these are years after last_known_year.
-            init_vals = {}
-            to_delete = {}
             last_known_year = max(cpi_min_year["year"], self._last_known_year)
             # calculate 2026 value, using new inflation rates, for parameters
             # that revert to their pre-TCJA values.
@@ -230,8 +228,10 @@ class Parameters(pt.Parameters):
             for year in range(pyear, fyear):
                 final_ifactor *= 1 + \
                     self._inflation_rates[year - self.start_year]
+            long_param_vals = {}
             # compute final year parameter value
             for param in long_params:
+                long_param_vals[param] = {}
                 # only revert param in 2026 if it's not in revision
                 if params.get(param) is None:
                     list_vals = []
@@ -243,11 +243,12 @@ class Parameters(pt.Parameters):
                     for idx in range(0, len(list_vals)):
                         val = min(9e99, round(list_vals[idx] * final_ifactor, 0))
                         new_vals.append(val)
-                    self._update(
-                        {param: {fyear: new_vals}}, False, True
-                    )
+                    long_param_vals[param][fyear] = new_vals
                 else:
                     pass
+            self._update(long_param_vals, False, True)
+            init_vals = {}
+            to_delete = {}
             for param in self._data:
                 if (
                     param in params or
