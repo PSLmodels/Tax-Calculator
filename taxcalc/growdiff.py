@@ -48,13 +48,13 @@ class GrowDiff(Parameters):
         return Parameters._read_json_revision(obj, topkey)
 
     def update_growdiff(self, revision,
-                        ignore_warnings=False, raise_errors=True):
+                        print_warnings=True, raise_errors=True):
         """
         Update growdiff default values using specified revision dictionary.
         See Parameters._update for argument documentation and details about
         the expected structure of the revision dictionary.
         """
-        self._update(revision, ignore_warnings, raise_errors)
+        self._update(revision, print_warnings, raise_errors)
 
     def has_any_response(self):
         """

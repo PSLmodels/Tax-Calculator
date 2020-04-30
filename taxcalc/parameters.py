@@ -71,7 +71,40 @@ class Parameters(pt.Parameters):
     def __init__(self, *args, **kwargs):
         pass
 
-    def adjust(self, params_or_path, **kwargs):
+    def adjust(self, params_or_path, print_warnings=True, **kwargs):
+        """
+        Implements custom warning and error handling.
+
+        If print_warnings is True, warnings are printed out and if
+        print_warnings is False, nothing is printed.
+
+        ParamTools throws an error if a warning is triggered and
+        ignore_warnings is False. This method circumvents this behavior.
+        """
+        if print_warnings:
+            _data = copy.deepcopy(self._data)
+            kwargs["ignore_warnings"] = False
+        else:
+            kwargs["ignore_warnings"] = True
+        self._warnings = {}
+        try:
+            return self.adjust_with_indexing(params_or_path, **kwargs)
+        except pt.ValidationError as ve:
+            if self.errors:
+                raise ve
+            if print_warnings:
+                print("WARNING:")
+                print(self.warnings)
+            kwargs["ignore_warnings"] = True
+            self._data = _data
+            _warnings = copy.deepcopy(self._warnings)
+            self._warnings = {}
+            self._errors = {}
+            adjustment = self.adjust_with_indexing(params_or_path, **kwargs)
+            self._warnings = _warnings
+            return adjustment
+
+    def adjust_with_indexing(self, params_or_path, **kwargs):
         """
         Custom adjust method that handles special indexing logic. The logic
         is:
@@ -91,7 +124,7 @@ class Parameters(pt.Parameters):
                 the indexed status is adjusted, update those parameters first.
             b. Extend the values of that parameter to the year in which
                 the status is changed.
-            c. Change the the indexed status for the parameter.
+            c. Change the indexed status for the parameter.
             d. Update parameter values in adjustment that are adjusted after
                 the year in which the indexed status changes.
             e. Using the new "-indexed" status, extend the values of that
@@ -171,7 +204,7 @@ class Parameters(pt.Parameters):
                         param, year=cpi_min_year["year"]
                     )
                     needs_reset.append(param)
-            super().delete(to_delete, **kwargs)
+            self.delete(to_delete, **kwargs)
             super().adjust(init_vals, **kwargs)
 
             # 1.b For all others, these are years after last_known_year.
@@ -233,7 +266,7 @@ class Parameters(pt.Parameters):
                     )
                     needs_reset.append(param)
 
-            super().delete(to_delete, **kwargs)
+            self.delete(to_delete, **kwargs)
             super().adjust(init_vals, **kwargs)
 
             self.extend(label_to_extend="year")
@@ -279,7 +312,7 @@ class Parameters(pt.Parameters):
                         min_adj_year = min(vos, key=lambda vo: vo["year"])[
                             "year"
                         ]
-                        super().delete(
+                        self.delete(
                             {
                                 base_param: self.select_gt(
                                     base_param, year=min_adj_year
@@ -299,7 +332,7 @@ class Parameters(pt.Parameters):
                     indexed_val = indexed_changes[year]
                     # Get and delete all default values after year where
                     # indexed status changed.
-                    super().delete(
+                    self.delete(
                         {base_param: self.select_gt(base_param, year=year)}
                     )
 
@@ -426,7 +459,7 @@ class Parameters(pt.Parameters):
             if param != "schema"
         }
 
-    def _update(self, revision, ignore_warnings, raise_errors):
+    def _update(self, revision, print_warnings, raise_errors):
         """
         A translation layer on top of Parameters.adjust. Projects
         that have historically used the `_update` method with
@@ -540,7 +573,7 @@ class Parameters(pt.Parameters):
         self.set_state(**cur_state)
         return self.adjust(
             new_params,
-            ignore_warnings=ignore_warnings,
+            print_warnings=print_warnings,
             raise_errors=raise_errors
         )
 

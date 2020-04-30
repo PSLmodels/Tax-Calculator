@@ -105,17 +105,13 @@ class Policy(Parameters):
         return Parameters._read_json_revision(obj, 'policy')
 
     def implement_reform(self, reform,
-                         ignore_warnings=False, raise_errors=True):
+                         print_warnings=True, raise_errors=True):
         """
         Implement reform using Tax-Calculator syled reforms/adjustments. Users
         may also use the adjust method with ParamTools styled reforms.
         """
         # need to do conversion:
-        return self._update(
-            reform,
-            ignore_warnings=ignore_warnings,
-            raise_errors=raise_errors
-        )
+        return self._update(reform, print_warnings, raise_errors)
 
     @staticmethod
     def parameter_list():

@@ -132,11 +132,11 @@ def test_params_class(revision, expect, params_json_file):
             self.initialize(Params.START_YEAR, Params.NUM_YEARS)
 
         def update_params(self, revision,
-                          ignore_warnings=False, raise_errors=True):
+                          print_warnings=True, raise_errors=True):
             """
             Update parameters given specified revision dictionary.
             """
-            self._update(revision, ignore_warnings, raise_errors)
+            self._update(revision, print_warnings, raise_errors)
 
     # test Params class
     prms = Params()
@@ -190,7 +190,8 @@ def test_json_file_contents(tests_path, fname):
                    'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
                    'ID_ps', 'ID_AllTaxes_c']
     # for TCJA-reverting long_params
-    long_known_years = set(range(first_year, 2026 + 1))
+    long_known_years = set(range(first_year, last_known_year + 1))
+    long_known_years.add(2026)
     # check elements in each parameter sub-dictionary
     failures = ''
     with open(os.path.join(tests_path, "..", fname)) as f:
