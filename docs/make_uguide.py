@@ -9,7 +9,7 @@ containing information from several JSON files.
 import os
 import sys
 from collections import OrderedDict
-from taxcalc import Policy, json_to_dict
+from taxcalc import *
 
 
 INPUT_FILENAME = 'uguide.htmx'
@@ -20,6 +20,7 @@ CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
 
 INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
+TCJA_PATH = os.path.join(CURDIR_PATH,'../taxcalc/reforms/TCJA.json')
 POLICY_PATH = os.path.join(TAXCALC_PATH, 'policy_current_law.json')
 IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
@@ -48,8 +49,9 @@ def main():
     old = '<!-- #TOP# -->'
     text = text.replace(old, topbtn)
 
+    params_dict = reformat_params()
     # augment text variable with information from JSON files
-    text = policy_params(POLICY_PATH, text)
+    text = policy_params(POLICY_PATH, text, params_dict)
     text = io_variables('read', IOVARS_PATH, text)
     text = io_variables('calc', IOVARS_PATH, text)
     text = assumption_params('consumption', CONSUMPTION_PATH, text)
@@ -64,11 +66,51 @@ def main():
 # end of main function code
 
 
-def policy_param_text(pname, param):
+def reformat_params():
+    """
+    Translates ParamTools-style policy_current_law.json
+    to a dictionary that resembles the old Tax-Calculator
+    parameter schema
+    """
+    # Parameters that were changed by TCJA will be extended through
+    # 2026 in the uguide
+    tcja = Policy.read_json_reform(TCJA_PATH)
+
+    pol = Policy()
+    pol.clear_state()
+    years_short = list(range(2013, 2020))
+    years_long = list(range(2013, 2027))
+    pol.set_year(years_long)
+    params = pol.specification(serializable=True, sort_values=True)
+
+    # Create parameter dictionary that resembles old Tax-Calculator
+    # paramter schema
+    params_dict = {}
+    for param in params.keys():
+        if param in tcja.keys():
+            years = years_long
+        else:
+            years = years_short
+        params_dict[param] = {}
+        params_dict[param]['years'] = years
+        list_vals2 = []
+        for year in years:
+            list_vals1 = []
+            for idx in range(0, len(params[param])):
+                if params[param][idx]['year'] == year:
+                    list_vals1.append(params[param][idx]['value'])
+                    if params[param][idx]['year'] != params[param][idx - 1]['year']:
+                        list_vals2.append(list_vals1)
+                        params_dict[param]['values'] = list_vals2
+    return params_dict
+
+
+def policy_param_text(pname, param, params_dict):
     """
     Extract info from param for pname and return as HTML string.
     """
     # pylint: disable=too-many-statements,too-many-branches
+
     sec1 = param['section_1']
     if sec1:
         txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
@@ -76,10 +118,7 @@ def policy_param_text(pname, param):
         txt = '<p><b>{} &mdash; {}</b>'.format('Other Parameters',
                                                'Not in Tax-Brain webapp')
     txt += '<br><i>tc Name:</i> {}'.format(pname)
-    if sec1:
-        txt += '<br><i>TB Name:</i> {}'.format(param['title'])
-    else:
-        txt += '<br><i>Long Name:</i> {}'.format(param['title'])
+    txt += '<br><i>Title:</i> {}'.format(param['title'])
     txt += '<br><i>Description:</i> {}'.format(param['description'])
     if param.get('notes', ''):
         txt += '<br><i>Notes:</i> {}'.format(param['notes'])
@@ -106,18 +145,17 @@ def policy_param_text(pname, param):
         txt += 'False'
     txt += '<br><i>Value Type:</i> {}'.format(param['type'])
     txt += '<br><i>Known Values:</i>'
-    for vo in param["value"]:
-        labels = " ".join(
-            f"{label}={value}" for label, value in vo.items()
-            if label not in ("year", "value")
-        )
-        txt += f"<br>{vo['year']}: {vo['value']} {labels}"
-    # if not param['indexed']:
-    #     fcyr = int(final_cyr)
-    #     if fcyr < Policy.LAST_KNOWN_YEAR:
-    #         # extrapolate final_val thru Policy.LAST_KNOWN_YEAR if not indexed
-    #         for cyr in range(fcyr + 1, Policy.LAST_KNOWN_YEAR + 1):
-    #             txt += '<br>{}: {}'.format(cyr, final_val)
+    if len(params_dict[pname]['values'][0]) == 5:
+        txt += '<br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]'
+    elif len(params_dict[pname]['values'][0]) == 4:
+        txt += '<br>&nbsp;&nbsp; for: [0kids, 1kid, 2kids, 3+kids]'
+    elif len(params_dict[pname]['values'][0]) == 7:
+        txt += '<br>&nbsp;&nbsp; for: [med, sltx, retx, cas, misc, int, char]' 
+    for cyr, val in zip(params_dict[pname]['years'], params_dict[pname]['values']):
+        if len(params_dict[pname]['values'][0]) == 1:
+            txt += '<br>{}: {}'.format(cyr, val[0])
+        else:
+            txt += '<br>{}: {}'.format(cyr, val)       
     txt += '<br><i>Valid Range:</i>'
     validators = param.get("validators", None)
     if validators:
@@ -130,7 +168,7 @@ def policy_param_text(pname, param):
     return txt
 
 
-def policy_params(path, text):
+def policy_params(path, text, params_dict):
     """
     Read policy parameters from path, integrate them into text, and
     return the integrated text.
@@ -168,7 +206,7 @@ def policy_params(path, text):
                 continue
             param = params[pname]
             if sec1 == param['section_1'] and sec2 == param['section_2']:
-                ptext += policy_param_text(pname, param)
+                ptext += policy_param_text(pname, param, params_dict)
         # integrate parameter text into text
         old = '<!-- {} -->'.format(sec1_sec2)
         text = text.replace(old, ptext)
