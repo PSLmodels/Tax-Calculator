@@ -896,6 +896,11 @@ def test_index_offset_reform():
     Test a reform that includes both a change in CPI_offset and a change in
     a variable's indexed status in the same year.
     """
+    # create policy0 to extract inflation rates before any CPI_offset
+    policy0 = Policy()
+    policy0.implement_reform({'CPI_offset': {2017: 0}})
+    cpiu_rates = policy0.inflation_rates() 
+
     reform1 = {'CTC_c-indexed': {2020: True}}
     policy1 = Policy()
     policy1.implement_reform(reform1)
@@ -920,7 +925,8 @@ def test_index_offset_reform():
     assert pvalue2[2021] > pvalue2[2020]
     # ... calculate expected pvalue2[2021] from offset and pvalue1 values
     indexrate1 = pvalue1[2021] / pvalue1[2020] - 1.
-    expindexrate = indexrate1 + offset
+    syear = Policy.JSON_START_YEAR
+    expindexrate = cpiu_rates[2020 - syear] + offset
     expvalue = round(pvalue2[2020] * (1. + expindexrate), 2)
     # ... compare expected value with actual value of pvalue2 for 2021
     assert np.allclose([expvalue], [pvalue2[2021]])
@@ -931,10 +937,12 @@ def test_cpi_offset_affect_on_prior_years():
     Test that CPI_offset does not have affect on inflation
     rates in earlier years.
     """
-    reform = {'CPI_offset': {2022: -0.005}}
+    reform1 = {'CPI_offset': {2022: 0}}
+    reform2 = {'CPI_offset': {2022: -0.005}}
     p1 = Policy()
     p2 = Policy()
-    p2.implement_reform(reform)
+    p1.implement_reform(reform1)
+    p2.implement_reform(reform2)
 
     start_year = p1.start_year
     p1_rates = np.array(p1.inflation_rates())
@@ -1167,6 +1175,7 @@ class TestAdjust:
         cmp_policy_objs(pol1, pol2)
 
         pol0 = Policy()
+        pol0.implement_reform({"CPI_offset": {2021: 0}})
 
         init_rates = pol0.inflation_rates()
         new_rates = pol2.inflation_rates()
@@ -1367,6 +1376,7 @@ class TestAdjust:
 
         # Check no difference prior to 2020
         pol0 = Policy()
+        pol0.implement_reform({"CPI_offset": {2020: 0}})
         cmp_policy_objs(
             pol0,
             pol2,
