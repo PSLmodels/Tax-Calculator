@@ -403,7 +403,10 @@ class ArrayParams(Parameters):
         pass
 
 
-def test_expand_errors():
+def test_expand_xd_errors():
+    """
+    One of several _expand_?D tests.
+    """
     params = ArrayParams(label_to_extend=None, array_first=False)
     with pytest.raises(paramtools.ValidationError):
         params.extend(label="year", label_values=[1, 2, 3])
@@ -421,15 +424,16 @@ def test_expand_empty():
 
 
 def test_expand_1d_scalar():
-    yrs = list(range(2013, 2013 + 12 + 1))
+    yrs = 12
     val = 10.0
-    exp = np.array([val * math.pow(1.02, i) for i in range(len(yrs))])
+    exp = np.array([val * math.pow(1.02, i) for i in range(0, yrs)])
 
+    yrslist = list(range(2013, 2013 + 12))
     params = ArrayParams(label_to_extend=None, array_first=False)
     params.adjust({"one_dim": val})
-    params.extend(params=["one_dim"], label="year", label_values=yrs)
+    params.extend(params=["one_dim"], label="year", label_values=yrslist)
     assert np.allclose(
-        params.to_array("one_dim", year=yrs), exp, atol=0.01, rtol=0.0
+        params.to_array("one_dim", year=yrslist), exp, atol=0.01, rtol=0.0
     )
 
     params = ArrayParams(label_to_extend=None, array_first=False)
