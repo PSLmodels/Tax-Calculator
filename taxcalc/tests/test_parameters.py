@@ -432,19 +432,14 @@ def test_expand_1d_scalar():
     params = ArrayParams(label_to_extend=None, array_first=False)
     params.adjust({"one_dim": val})
     params.extend(params=["one_dim"], label="year", label_values=yrslist)
-    assert np.allclose(
-        params.to_array("one_dim", year=yrslist), exp, atol=0.01, rtol=0.0
-    )
+    res = params.to_array("one_dim", year=yrslist)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
     params = ArrayParams(label_to_extend=None, array_first=False)
     params.adjust({"one_dim": val})
     params.extend(params=["one_dim"], label="year", label_values=[2013])
-    assert np.allclose(
-        params.to_array("one_dim", year=2013),
-        np.array([val]),
-        atol=0.01,
-        rtol=0.0
-    )
+    res = params.to_array("one_dim", year=2013)
+    assert np.allclose(np.array([val]), res, atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_short_array():
@@ -466,13 +461,8 @@ def test_expand_2d_short_array():
         label="year",
         label_values=years,
     )
-
-    assert np.allclose(
-        exp,
-        params.to_array("two_dim", year=years),
-        atol=0.01,
-        rtol=0.0
-    )
+    res = params.to_array("two_dim", year=years)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_variable_rates():
@@ -497,9 +487,8 @@ def test_expand_2d_variable_rates():
     params._inflation_rates = irates
     years = [2013, 2014, 2015, 2016, 2017]
     params.extend(params=["two_dim"], label="year", label_values=years)
-    assert np.allclose(
-        exp, params.to_array("two_dim", year=years), atol=0.01, rtol=0.0
-    )
+    res = params.to_array("two_dim", year=years)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_already_filled():
@@ -523,12 +512,8 @@ def test_expand_2d_already_filled():
     params.extend(
         params=["II_brk2"], label="year", label_values=years
     )
-    assert np.allclose(
-        params.to_array("II_brk2", year=years),
-        np.array(_II_brk2),
-        atol=0.01,
-        rtol=0.0
-    )
+    res = params.to_array("II_brk2", year=years)
+    assert np.allclose(res, np.array(_II_brk2), atol=0.01, rtol=0.0)
 
 
 def test_expand_2d_partial_expand():
@@ -567,12 +552,8 @@ def test_expand_2d_partial_expand():
     params.extend(
         params=["II_brk2"], label="year", label_values=years + [2016]
     )
-    assert np.allclose(
-        params.to_array("II_brk2", year=years + [2016]),
-        exp,
-        atol=0.01,
-        rtol=0.0
-    )
+    res = params.to_array("II_brk2", year=years + [2016])
+    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
 
 
 def test_read_json_revision():
