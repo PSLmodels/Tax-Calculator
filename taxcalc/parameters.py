@@ -464,8 +464,6 @@ class Parameters(pt.Parameters):
                 None
             )
         new_params = defaultdict(list)
-        # save shallow copy of current instance state
-        cur_state = dict(self.view_state())
         for param, val in revision.items():
             if not isinstance(param, str):
                 msg = f"Parameter {param} is not a string."
@@ -529,10 +527,10 @@ class Parameters(pt.Parameters):
                             None
                         )
 
-                    self.set_state(year=year)
                     value_objects = self.from_array(
                         param,
-                        yearval.reshape((1, *yearval.shape))
+                        yearval.reshape((1, *yearval.shape)),
+                        year=year
                     )
                     new_params[param] += value_objects
             else:
@@ -544,7 +542,6 @@ class Parameters(pt.Parameters):
                     {"errors": {"schema": msg}},
                     None
                 )
-        self.set_state(**cur_state)
         return self.adjust(
             new_params,
             print_warnings=print_warnings,
