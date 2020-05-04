@@ -782,15 +782,19 @@ def test_description_punctuation(tests_path):
     assert all_desc_ok
 
 
-def test_indexing_rates_for_update():
+def test_get_index_rate():
     """
-    Check private _indexing_rates_for_update method.
+    Test Parameters.get_index_rate.
     """
     pol = Policy()
-    wgrates = pol.get_index_rate('_SS_Earnings_c', 2017)
-    pirates = pol.get_index_rate('_II_em', 2017)
+    wgrates = pol.get_index_rate('SS_Earnings_c', 2017)
+    pirates = pol.get_index_rate('II_em', 2017)
     assert isinstance(wgrates, np.float64)
+    assert wgrates == pol.wage_growth_rates(2017)
+    assert pirates == pol.inflation_rates(2017)
     assert isinstance(pirates, np.float64)
+    assert pol.inflation_rates() == pol._inflation_rates
+    assert pol.wage_growth_rates() == pol._wage_growth_rates
 
 
 def test_reform_with_bad_ctc_levels():
