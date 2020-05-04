@@ -454,7 +454,7 @@ class Parameters(pt.Parameters):
                 {'year': 2024, 'marital_status': 'single', 'value': 10000.0},
                 {'year': 2024, 'marital_status': 'joint', 'value': 10000.0}
             ],
-            'ss_rate': [{'value': 0.2}]}
+            'ss_rate': [{'year': 2024, 'value': 0.2}]}
         }
 
         """
