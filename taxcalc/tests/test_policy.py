@@ -899,7 +899,7 @@ def test_index_offset_reform():
     # create policy0 to extract inflation rates before any CPI_offset
     policy0 = Policy()
     policy0.implement_reform({'CPI_offset': {2017: 0}})
-    cpiu_rates = policy0.inflation_rates() 
+    cpiu_rates = policy0.inflation_rates()
 
     reform1 = {'CTC_c-indexed': {2020: True}}
     policy1 = Policy()
@@ -959,6 +959,39 @@ def test_cpi_offset_affect_on_prior_years():
         p1_rates[2022 - start_year],
         p2_rates[2022 - start_year] - (-0.005)
     )
+
+
+def test_cpi_offset_on_reverting_params():
+    """
+    Test that params that revert to their pre-TCJA values
+    in 2026 revert if a CPI_offset is specified.
+    """
+    reform0 = {'CPI_offset': {2020: -0.001}}
+    reform1 = {'STD': {2017: [6350, 12700, 6350, 9350, 12700]},
+               'CPI_offset': {2020: -0.001}}
+    reform2 = {'STD': {2020: [10000, 20000, 10000, 10000, 20000]},
+               'CPI_offset': {2020: -0.001}}
+
+    p0 = Policy()
+    p1 = Policy()
+    p2 = Policy()
+    p0.implement_reform(reform0)
+    p1.implement_reform(reform1)
+    p2.implement_reform(reform2)
+
+    ryear = 2026
+    syear = Policy.JSON_START_YEAR
+
+    # STD was reverted in 2026
+    # atol=0.5 because ppp.py rounds params to nearest int
+    assert np.allclose(
+        p0._STD[ryear - syear],
+        p1._STD[ryear - syear], atol=0.5)
+
+    # STD was not reverted in 2026 if included in revision
+    assert np.allclose(
+        p1._STD[ryear - syear],
+        p2._STD[ryear - syear], atol=0.5) == False
 
 
 class TestAdjust:
