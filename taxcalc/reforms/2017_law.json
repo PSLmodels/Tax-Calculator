@@ -26,7 +26,7 @@
 // NOTE: this reform projects pre-TCJA 2017 parameter values forward using the
 //       unchained CPI-U price index.
 {
-    "CPI_offset": {"2016": 0},
+    "CPI_offset": {"2017": 0},
     "II_rt1": {"2018": 0.10},
     "II_brk1": {"2017": [9325, 18650, 9325, 13350, 18650]},
     "II_rt2": {"2018": 0.15},
