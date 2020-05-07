@@ -158,7 +158,7 @@ class Parameters(pt.Parameters):
             b. The current values of parameters that are not being adjusted
                 (i.e. are not in params) are deleted after the last known year,
                 with the exception of parameters that revert to their pre-TCJA
-                values in 2026. Instead, these (2026) parameter values are 
+                values in 2026. Instead, these (2026) parameter values are
                 recalculated using the new inflation rates.
             After the 'unknown' values have been deleted, the last known value
             is extrapolated through the budget window. If there are indexed
@@ -214,10 +214,12 @@ class Parameters(pt.Parameters):
             rate_adjustment_vals = self.select_gte(
                 "CPI_offset", year=cpi_min_year["year"]
             )
-            # "Undo" any existing CPI_offset for years after CPI_offset has been updated.
+            # "Undo" any existing CPI_offset for years after CPI_offset has
+            # been updated.
             self._inflation_rates = self._inflation_rates[
                 :cpi_min_year["year"] - self.start_year
-            ] + self._gfactors.price_inflation_rates(cpi_min_year["year"], self.LAST_BUDGET_YEAR)
+            ] + self._gfactors.price_inflation_rates(
+                cpi_min_year["year"], self.LAST_BUDGET_YEAR)
 
             # Then apply new CPI_offset values to inflation rates
             for cpi_vo in rate_adjustment_vals:
@@ -261,7 +263,8 @@ class Parameters(pt.Parameters):
                            'ID_ps', 'ID_AllTaxes_c']
             final_ifactor = 1.0
             pyear = 2017  # prior year before TCJA first implemented
-            fyear = 2026  # final year in which parameter values revert to pre-TCJA values
+            fyear = 2026  # final year in which parameter values revert to
+            # pre-TCJA values
             # construct final-year inflation factor from prior year
             # NOTE: pvalue[t+1] = pvalue[t] * ( 1 + irate[t] )
             for year in range(pyear, fyear):
@@ -280,7 +283,8 @@ class Parameters(pt.Parameters):
                     new_vals = []
                     # use final_ifactor to inflate from 2017 to 2026
                     for idx in range(0, len(list_vals)):
-                        val = min(9e99, round(list_vals[idx] * final_ifactor, 0))
+                        val = min(9e99, round(
+                            list_vals[idx] * final_ifactor, 0))
                         new_vals.append(val)
                     if len(list_vals) == 1:
                         long_param_vals[param][fyear] = new_vals[0]

@@ -993,9 +993,9 @@ def test_cpi_offset_on_reverting_params():
         p1._STD[ryear - syear], atol=0.5)
 
     # STD was not reverted in 2026 if included in revision
-    assert np.allclose(
+    assert not np.allclose(
         p1._STD[ryear - syear],
-        p2._STD[ryear - syear], atol=0.5) == False
+        p2._STD[ryear - syear], atol=0.5)
 
 
 class TestAdjust:
