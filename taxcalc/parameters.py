@@ -150,12 +150,16 @@ class Parameters(pt.Parameters):
         Custom adjust method that handles special indexing logic. The logic
         is:
 
-        1. If "CPI_offset" is adjusted, revert all values of indexed parameters
-            to the 'known' values:
+        1. If "CPI_offset" is adjusted, first set CPI_offset to zero before
+           implementing the adjusted CPI_offset to avoid stacking adjustments.
+           Then, revert all values of indexed parameters to the 'known' values:
             a. The current values of parameters that are being adjusted are
                 deleted after the first year in which CPI_offset is adjusted.
             b. The current values of parameters that are not being adjusted
-                (i.e. are not in params) are deleted after the last known year.
+                (i.e. are not in params) are deleted after the last known year,
+                with the exception of parameters that revert to their pre-TCJA
+                values in 2026. Instead, these (2026) parameter values are 
+                recalculated using the new inflation rates.
             After the 'unknown' values have been deleted, the last known value
             is extrapolated through the budget window. If there are indexed
             parameters in the adjustment, they will be included in the final
@@ -177,12 +181,6 @@ class Parameters(pt.Parameters):
             parameters.
 
         Notable side-effects:
-            - All values of indexed parameters, including default values, are
-                wiped out after the first year in which the "CPI_offset" is
-                changed. This is only necessary because Tax-Calculator
-                hard-codes inflated values. If Tax-Calculator only hard-coded
-                values that were changed for non-inflation related reasons,
-                then this would not be necessary for default values.
             - All values of a parameter whose indexed status is adjusted are
               wiped out after the year in which the value is adjusted for the
               same hard-coding reason.
@@ -284,7 +282,10 @@ class Parameters(pt.Parameters):
                     for idx in range(0, len(list_vals)):
                         val = min(9e99, round(list_vals[idx] * final_ifactor, 0))
                         new_vals.append(val)
-                    long_param_vals[param][fyear] = new_vals
+                    if len(list_vals) == 1:
+                        long_param_vals[param][fyear] = new_vals[0]
+                    else:
+                        long_param_vals[param][fyear] = new_vals
                 else:
                     pass
             self._update(long_param_vals, False, True)
