@@ -7,12 +7,35 @@ Test Policy class and its methods.
 #
 # pylint: disable=too-many-lines
 
+import copy
 import os
 import json
 import numpy as np
 import pytest
+import paramtools as pt
 # pylint: disable=import-error
 from taxcalc import Policy
+
+
+def cmp_policy_objs(pol1, pol2, year_range=None, exclude=None):
+    """
+    Compare parameter values two policy objects.
+
+    year_range: years over which to compare values.
+    exclude: list of parameters to exclude from comparison.
+    """
+    if year_range is not None:
+        pol1.set_state(year=list(year_range))
+        pol2.set_state(year=list(year_range))
+    else:
+        pol1.clear_state()
+        pol2.clear_state()
+    for param in pol1._data:
+        if exclude and param in exclude:
+            continue
+        v1 = getattr(pol1, param)
+        v2 = getattr(pol2, param)
+        np.testing.assert_allclose(v1, v2)
 
 
 def test_incorrect_class_instantiation():
@@ -30,43 +53,15 @@ def test_correct_class_instantiation():
     pol = Policy()
     assert pol
     pol.implement_reform({})
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform(list())
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform({2099: {'II_em': 99000}})
     pol.set_year(2019)
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform({2018: {'II_em': 99000}})
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform({2020: {'II_em': -1000}})
-
-
-def test_policy_json_content_consistency():
-    """
-    Test contents of JSON defaults file, which is read into Policy._vals dict.
-    """
-    expected_vi_vals = {
-        'MARS': ['single', 'mjoint', 'mseparate', 'headhh', 'widow'],
-        'EIC': ['0kids', '1kid', '2kids', '3+kids'],
-        'idedtype': ['med', 'sltx', 'retx', 'cas', 'misc', 'int', 'char']
-    }
-    policy = Policy()
-    start_year = policy.start_year
-    assert start_year == Policy.JSON_START_YEAR
-    policy_vals = getattr(policy, '_vals')
-    for name, data in policy_vals.items():
-        # check entries in value_yrs list
-        value_yrs = data['value_yrs']
-        assert isinstance(value_yrs, list)
-        value = data['value']
-        expected_value_yrs = [(start_year + i) for i in range(len(value))]
-        if value_yrs != expected_value_yrs:
-            msg = 'name,value_yrs,expected_value_yrs: {}\n{}\n{}'
-            raise ValueError(msg.format(name, value_yrs, expected_value_yrs))
-        # check entries in vi_vals list
-        vivals = data['vi_vals']
-        if vivals:
-            assert vivals == expected_vi_vals[data['vi_name']]
 
 
 def test_json_reform_url():
@@ -248,51 +243,6 @@ def test_multi_year_reform():
     wfactor = {}
     for i in range(0, nyrs):
         wfactor[syr + i] = 1.0 + wratelist[i]
-    # confirm that parameters have current-law values
-    assert np.allclose(getattr(pol, '_EITC_c'),
-                       Policy._expand_array(
-                           np.array([[487, 3250, 5372, 6044],
-                                     [496, 3305, 5460, 6143],
-                                     [503, 3359, 5548, 6242],
-                                     [506, 3373, 5572, 6269],
-                                     [510, 3400, 5616, 6318],
-                                     [519, 3461, 5716, 6431],
-                                     [529, 3526, 5828, 6557]],
-                                    dtype=np.float64),
-                           'real',
-                           inflate=True,
-                           inflation_rates=iratelist,
-                           num_years=nyrs),
-                       atol=0.01, rtol=0.0)
-    assert np.allclose(getattr(pol, '_STD_Dep'),
-                       Policy._expand_array(
-                           np.array([1000, 1000, 1050, 1050, 1050, 1050, 1100],
-                                    dtype=np.float64),
-                           'real',
-                           inflate=True,
-                           inflation_rates=iratelist,
-                           num_years=nyrs),
-                       atol=0.01, rtol=0.0)
-    assert np.allclose(getattr(pol, '_CTC_c'),
-                       Policy._expand_array(
-                           np.array([1000] * 5 + [2000] * 8 + [1000],
-                                    dtype=np.float64),
-                           'real',
-                           inflate=False,
-                           inflation_rates=iratelist,
-                           num_years=nyrs),
-                       atol=0.01, rtol=0.0)
-    # this parameter uses a different indexing rate
-    assert np.allclose(getattr(pol, '_SS_Earnings_c'),
-                       Policy._expand_array(
-                           np.array([113700, 117000, 118500, 118500, 127200,
-                                     128400, 132900],
-                                    dtype=np.float64),
-                           'real',
-                           inflate=True,
-                           inflation_rates=wratelist,
-                           num_years=nyrs),
-                       atol=0.01, rtol=0.0)
     # specify multi-year reform using a param:year:value-fomatted dictionary
     reform = {
         'SS_Earnings_c': {2016: 300000,
@@ -441,15 +391,7 @@ def test_policy_metadata():
     """
     clp = Policy()
     mdata = clp.metadata()
-    assert isinstance(mdata['STD']['value'], list)
-    assert np.allclose(mdata['STD']['value'],
-                       [6100, 12200, 6100, 8950, 12200])
-    assert isinstance(mdata['CDCC_ps']['value'], float)
-    assert mdata['CDCC_ps']['value'] == 15000
-    dump = False
-    if dump:
-        print(mdata)
-        assert 1 == 2
+    assert mdata
 
 
 def test_implement_reform_raises_on_no_year():
@@ -458,7 +400,7 @@ def test_implement_reform_raises_on_no_year():
     """
     reform = {'STD_Aged': [1400, 1200, 1400, 1400, 1400]}
     ppo = Policy()
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         ppo.implement_reform(reform)
 
 
@@ -468,7 +410,7 @@ def test_implement_reform_raises_on_early_year():
     """
     ppo = Policy()
     reform = {'STD_Aged': {2010: [1400, 1100, 1100, 1400, 1400]}}
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         ppo.implement_reform(reform)
 
 
@@ -593,6 +535,7 @@ def test_pop_the_cap_reform():
     # specify a "pop the cap" reform that eliminates MTE cap in 2016
     reform = {'SS_Earnings_c': {2016: 9e99}}
     ppo.implement_reform(reform)
+    mte = ppo._SS_Earnings_c
     assert mte[2015 - syr] == 118500
     assert mte[2016 - syr] == 9e99
     assert mte[ppo.end_year - syr] == 9e99
@@ -781,6 +724,7 @@ def test_section_titles(tests_path):
     path = os.path.join(tests_path, '..', 'policy_current_law.json')
     with open(path, 'r') as clpfile:
         clpdict = json.load(clpfile)
+        clpdict.pop("schema", None)
     # ... make sure ever clpdict section title is in valid_dict
     clp_dict = dict()  # dictionary of clp section titles structured like valid
     for pname in clpdict:
@@ -827,6 +771,7 @@ def test_description_punctuation(tests_path):
     path = os.path.join(tests_path, '..', 'policy_current_law.json')
     with open(path, 'r') as jsonfile:
         dct = json.load(jsonfile)
+        dct.pop("schema", None)
     all_desc_ok = True
     for param in dct.keys():
         if not dct[param]['description'].endswith('.'):
@@ -837,77 +782,19 @@ def test_description_punctuation(tests_path):
     assert all_desc_ok
 
 
-def test_valid_value_infomation():
+def test_get_index_rate():
     """
-    Check consistency of valid_values info in policy_current_law.json file.
-    """
-    # pylint: disable=too-many-statements,too-many-locals
-    # pylint: disable=too-many-branches,too-many-nested-blocks
-    # construct set of parameter names with a "valid_values" field
-    policy = Policy()
-    min_max_list = ['min', 'max']
-    warn_stop_list = ['warn', 'stop']
-    json_range_params = set()
-    parameters = set(policy._vals.keys())
-    for pname, param in policy._vals.items():
-        assert isinstance(param, dict)
-        if param['value_type'] == 'string':
-            continue  # because string parameters have no invalid_* keys
-        prange = param.get('valid_values', None)
-        if prange:
-            json_range_params.add(pname)
-            oor_action = param['invalid_action']
-            assert oor_action in warn_stop_list
-            range_items = prange.items()
-            assert len(range_items) == 2
-            for vop, vval in range_items:
-                assert vop in min_max_list
-                if isinstance(vval, str):
-                    if vval == 'default':
-                        if vop != 'min' or oor_action != 'warn':
-                            msg = 'USES DEFAULT FOR min OR FOR error'
-                            assert pname == msg
-                        continue
-                    else:
-                        vval_ = '_' + vval
-                        if vval_ in parameters:
-                            if vop == 'min':
-                                extra_msg = param['invalid_minmsg']
-                            if vop == 'max':
-                                extra_msg = param['invalid_maxmsg']
-                            assert vval in extra_msg
-                        else:
-                            assert vval == 'ILLEGAL RANGE STRING VALUE'
-                else:  # if vval is not a str
-                    if isinstance(vval, int):
-                        continue
-                    elif isinstance(vval, float):
-                        continue
-                    elif isinstance(vval, bool):
-                        continue
-                    else:
-                        assert vval == 'ILLEGAL RANGE NUMERIC VALUE'
-    # compare contents of c_l_p.json parameters and json_range_params
-    unmatched = parameters ^ json_range_params
-    if unmatched:
-        assert unmatched == 'UNMATCHED RANGE PARAMETERS'
-    # check all current-law-policy parameters for range validity
-    clp = Policy()
-    clp._validate_values(parameters)
-    # eventually activate: assert not clp.parameter_warnings
-    ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
-    assert clp.parameter_warnings == ctc_c_warning
-    assert not clp.parameter_errors
-
-
-def test_indexing_rates_for_update():
-    """
-    Check private _indexing_rates_for_update method.
+    Test Parameters.get_index_rate.
     """
     pol = Policy()
-    wgrates = pol._indexing_rates_for_update('_SS_Earnings_c', 2017, 10)
-    pirates = pol._indexing_rates_for_update('_II_em', 2017, 10)
-    assert len(wgrates) == len(pirates)
+    wgrates = pol.get_index_rate('SS_Earnings_c', 2017)
+    pirates = pol.get_index_rate('II_em', 2017)
+    assert isinstance(wgrates, np.float64)
+    assert wgrates == pol.wage_growth_rates(2017)
+    assert pirates == pol.inflation_rates(2017)
+    assert isinstance(pirates, np.float64)
+    assert pol.inflation_rates() == pol._inflation_rates
+    assert pol.wage_growth_rates() == pol._wage_growth_rates
 
 
 def test_reform_with_bad_ctc_levels():
@@ -919,22 +806,29 @@ def test_reform_with_bad_ctc_levels():
         'CTC_c': {2020: 2200},
         'ACTC_c': {2020: 2500}
     }
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         pol.implement_reform(child_credit_reform)
 
 
-def test_reform_with_removed_parameter():
+def test_reform_with_removed_parameter(monkeypatch):
     """
     Try to use removed parameter in a reform.
     """
     policy1 = Policy()
     reform1 = {'FilerCredit_c': {2020: 1000}}
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         policy1.implement_reform(reform1)
     policy2 = Policy()
     reform2 = {'FilerCredit_c-indexed': {2020: True}}
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         policy2.implement_reform(reform2)
+
+    redefined_msg = {"some_redefined": "some_redefined was redefined."}
+    monkeypatch.setattr(Policy, "REDEFINED_PARAMS", redefined_msg)
+
+    pol = Policy()
+    with pytest.raises(pt.ValidationError):
+        pol.implement_reform({"some_redefined": "hello world"})
 
 
 def test_reform_with_out_of_range_error():
@@ -951,10 +845,23 @@ def test_reform_with_warning():
     """
     Try to use warned out-of-range parameter value in reform.
     """
+    exp_warnings = {
+        'ID_Medical_frt': [
+            'ID_Medical_frt[year=2020] 0.05 < min 0.075 '
+        ]
+    }
     pol = Policy()
     reform = {'ID_Medical_frt': {2020: 0.05}}
-    pol.implement_reform(reform)
-    assert pol.parameter_warnings
+
+    pol.implement_reform(reform, print_warnings=True)
+    assert pol.warnings == exp_warnings
+    pol.set_state(year=2020)
+    assert pol.ID_Medical_frt == np.array([0.05])
+
+    pol.implement_reform(reform, print_warnings=False)
+    assert pol.warnings == {}
+    pol.set_state(year=2020)
+    assert pol.ID_Medical_frt == np.array([0.05])
 
 
 def test_reform_with_scalar_vector_errors():
@@ -963,12 +870,29 @@ def test_reform_with_scalar_vector_errors():
     """
     policy1 = Policy()
     reform1 = {'SS_thd85': {2020: 30000}}
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         policy1.implement_reform(reform1)
+
     policy2 = Policy()
     reform2 = {'ID_Medical_frt': {2020: [0.08]}}
-    with pytest.raises(ValueError):
+    with pytest.raises(pt.ValidationError):
         policy2.implement_reform(reform2)
+
+    policy3 = Policy()
+    reform3 = {'ID_Medical_frt': [{"year": 2020, "value": [0.08]}]}
+    with pytest.raises(pt.ValidationError):
+        policy3.adjust(reform3)
+
+    # Check that error is thrown if there are extra elements in array.
+    policy4 = Policy()
+    ref4 = {"II_brk1": {2020: [9700, 19400, 9700, 13850, 19400, 19400]}}
+    with pytest.raises(pt.ValidationError):
+        policy4.implement_reform(ref4)
+
+    policy5 = Policy()
+    ref5 = {"II_rt1": {2029: [.2, .3]}}
+    with pytest.raises(pt.ValidationError):
+        policy5.implement_reform(ref5)
 
 
 def test_index_offset_reform():
@@ -988,9 +912,9 @@ def test_index_offset_reform():
     pvalue2 = dict()
     for cyr in [2019, 2020, 2021]:
         policy1.set_year(cyr)
-        pvalue1[cyr] = policy1.CTC_c
+        pvalue1[cyr] = policy1.CTC_c[0]
         policy2.set_year(cyr)
-        pvalue2[cyr] = policy2.CTC_c
+        pvalue2[cyr] = policy2.CTC_c[0]
     # check that pvalue1 and pvalue2 dictionaries contain the expected values
     assert pvalue2[2019] == pvalue1[2019]
     assert pvalue2[2020] == pvalue1[2020]
@@ -1031,3 +955,444 @@ def test_cpi_offset_affect_on_prior_years():
         p1_rates[2022 - start_year],
         p2_rates[2022 - start_year] - (-0.005)
     )
+
+
+class TestAdjust:
+    """
+    Test update and indexing rules as defined in the Parameters docstring.
+
+    Each test implements a Tax-Calculator style reform and a pt styled
+    reform, checks that the updated values are equal, and then, tests that
+    values were extended and indexed (or not indexed) correctly.
+    """
+
+    def test_simple_adj(self):
+        """
+        Test updating a 2D parameter that is indexed to inflation.
+        """
+        pol1 = Policy()
+        pol1.implement_reform(
+            {
+                "EITC_c": {
+                    2020: [10000, 10001, 10002, 10003],
+                    2023: [20000, 20001, 20002, 20003],
+                }
+            }
+        )
+
+        pol2 = Policy()
+        pol2.adjust(
+            {
+                "EITC_c": [
+                    {"year": 2020, "EIC": "0kids", "value": 10000},
+                    {"year": 2020, "EIC": "1kid", "value": 10001},
+                    {"year": 2020, "EIC": "2kids", "value": 10002},
+                    {"year": 2020, "EIC": "3+kids", "value": 10003},
+                    {"year": 2023, "EIC": "0kids", "value": 20000},
+                    {"year": 2023, "EIC": "1kid", "value": 20001},
+                    {"year": 2023, "EIC": "2kids", "value": 20002},
+                    {"year": 2023, "EIC": "3+kids", "value": 20003},
+                ]
+            }
+        )
+        cmp_policy_objs(pol1, pol2)
+
+        pol0 = Policy()
+        pol0.set_year(2019)
+        pol2.set_year(2019)
+
+        assert np.allclose(pol0.EITC_c, pol2.EITC_c)
+
+        pol2.set_state(year=[2020, 2021, 2022, 2023, 2024])
+        val2020 = np.array([[10000, 10001, 10002, 10003]])
+        val2023 = np.array([[20000, 20001, 20002, 20003]])
+
+        exp = np.vstack([
+            val2020,
+            val2020 * (1 + pol2.inflation_rates(year=2020)),
+            (
+                val2020 * (1 + pol2.inflation_rates(year=2020))
+            ).round(2) * (1 + pol2.inflation_rates(year=2021)),
+            val2023,
+            val2023 * (1 + pol2.inflation_rates(year=2023)),
+        ]).round(2)
+        np.testing.assert_allclose(pol2.EITC_c, exp)
+
+    def test_adj_without_index_1(self):
+        """
+        Test update indexed parameter after turning off its
+        indexed status.
+        """
+        pol1 = Policy()
+        pol1.implement_reform(
+            {
+                "EITC_c": {
+                    2020: [10000, 10001, 10002, 10003],
+                    2023: [20000, 20001, 20002, 20003],
+                },
+                "EITC_c-indexed": {2019: False},
+            }
+        )
+
+        pol2 = Policy()
+        pol2.adjust(
+            {
+                "EITC_c": [
+                    {"year": 2020, "EIC": "0kids", "value": 10000},
+                    {"year": 2020, "EIC": "1kid", "value": 10001},
+                    {"year": 2020, "EIC": "2kids", "value": 10002},
+                    {"year": 2020, "EIC": "3+kids", "value": 10003},
+                    {"year": 2023, "EIC": "0kids", "value": 20000},
+                    {"year": 2023, "EIC": "1kid", "value": 20001},
+                    {"year": 2023, "EIC": "2kids", "value": 20002},
+                    {"year": 2023, "EIC": "3+kids", "value": 20003},
+                ],
+                "EITC_c-indexed": [{"year": 2019, "value": False}],
+            }
+        )
+        cmp_policy_objs(pol1, pol2)
+
+        pol0 = Policy()
+        pol0.set_year(2019)
+        pol2.set_year(2019)
+
+        assert np.allclose(pol0.EITC_c, pol2.EITC_c)
+
+        pol2.set_state(year=[2020, 2021, 2022, 2023, 2024])
+
+        val2020 = np.array([[10000, 10001, 10002, 10003]])
+        val2023 = np.array([[20000, 20001, 20002, 20003]])
+
+        exp = np.vstack([
+            val2020,
+            val2020,
+            val2020,
+            val2023,
+            val2023,
+        ]).round(2)
+        np.testing.assert_allclose(pol2.EITC_c, exp)
+
+    def test_adj_without_index_2(self):
+        """
+        Test updating an indexed parameter, making it unindexed,
+        and then adjusting it again.
+        """
+        pol1 = Policy()
+        pol1.implement_reform(
+            {
+                "EITC_c": {
+                    2020: [10000, 10001, 10002, 10003],
+                    2023: [20000, 20001, 20002, 20003],
+                },
+                "EITC_c-indexed": {2022: False},
+            }
+        )
+
+        pol2 = Policy()
+        pol2.adjust(
+            {
+                "EITC_c": [
+                    {"year": 2020, "EIC": "0kids", "value": 10000},
+                    {"year": 2020, "EIC": "1kid", "value": 10001},
+                    {"year": 2020, "EIC": "2kids", "value": 10002},
+                    {"year": 2020, "EIC": "3+kids", "value": 10003},
+                    {"year": 2023, "EIC": "0kids", "value": 20000},
+                    {"year": 2023, "EIC": "1kid", "value": 20001},
+                    {"year": 2023, "EIC": "2kids", "value": 20002},
+                    {"year": 2023, "EIC": "3+kids", "value": 20003},
+                ],
+                "EITC_c-indexed": [{"year": 2022, "value": False}],
+            }
+        )
+        cmp_policy_objs(pol1, pol2)
+
+        pol0 = Policy()
+        pol0.set_year(2019)
+        pol2.set_year(2019)
+
+        assert np.allclose(pol0.EITC_c, pol2.EITC_c)
+
+        pol2.set_state(year=[2020, 2021, 2022, 2023, 2024])
+
+        val2020 = np.array([[10000, 10001, 10002, 10003]])
+        val2023 = np.array([[20000, 20001, 20002, 20003]])
+
+        exp = np.vstack([
+            val2020,
+            val2020 * (1 + pol2.inflation_rates(year=2020)),
+            (
+                val2020 * (1 + pol2.inflation_rates(year=2020))
+            ).round(2) * (1 + pol2.inflation_rates(year=2021)),
+            val2023,
+            val2023,
+        ]).round(2)
+        np.testing.assert_allclose(pol2.EITC_c, exp)
+
+    def test_activate_index(self):
+        """
+        Test changing a non-indexed parameter to an indexed parameter.
+        """
+        pol1 = Policy()
+        pol1.implement_reform({
+            "CTC_c": {2022: 1005},
+            "CTC_c-indexed": {2022: True}
+        })
+
+        pol2 = Policy()
+        pol2.adjust(
+            {
+                "CTC_c": [{"year": 2022, "value": 1005}],
+                "CTC_c-indexed": [{"year": 2022, "value": True}],
+            }
+        )
+        cmp_policy_objs(pol1, pol2)
+
+        pol0 = Policy()
+        pol0.set_year(year=2021)
+        pol2.set_state(year=[2021, 2022, 2023])
+        exp = np.array([
+            pol0.CTC_c[0],
+            1005,
+            1005 * (1 + pol2.inflation_rates(year=2022))
+        ]).round(2)
+
+        np.testing.assert_allclose(pol2.CTC_c, exp)
+
+    def test_apply_cpi_offset(self):
+        """
+        Test applying the CPI_offset parameter without any other parameters.
+        """
+        pol1 = Policy()
+        pol1.implement_reform({"CPI_offset": {2021: -0.001}})
+
+        pol2 = Policy()
+        pol2.adjust({"CPI_offset": [{"year": 2021, "value": -0.001}]})
+
+        cmp_policy_objs(pol1, pol2)
+
+        pol0 = Policy()
+
+        init_rates = pol0.inflation_rates()
+        new_rates = pol2.inflation_rates()
+
+        start_ix = 2021 - pol2.start_year
+
+        exp_rates = copy.deepcopy(new_rates)
+        exp_rates[start_ix:] -= pol2._CPI_offset[start_ix:]
+        np.testing.assert_allclose(init_rates, exp_rates)
+
+        # make sure values prior to 2021 were not affected.
+        cmp_policy_objs(pol0, pol2, year_range=range(pol2.start_year, 2021))
+
+        pol2.set_state(year=[2021, 2022])
+        np.testing.assert_equal(
+            (pol2.EITC_c[1] / pol2.EITC_c[0] - 1).round(4),
+            pol0.inflation_rates(year=2021) + (-0.001),
+        )
+
+    def test_multiple_cpi_swaps(self):
+        """
+        Test changing a parameter's indexed status multiple times.
+        """
+        pol1 = Policy()
+        pol1.implement_reform(
+            {
+                "II_em": {2016: 6000, 2018: 7500, 2020: 9000},
+                "II_em-indexed": {2016: False, 2018: True},
+            }
+        )
+
+        pol2 = Policy()
+        pol2.adjust(
+            {
+                "II_em": [
+                    {"year": 2016, "value": 6000},
+                    {"year": 2018, "value": 7500},
+                    {"year": 2020, "value": 9000},
+                ],
+                "II_em-indexed": [
+                    {"year": 2016, "value": False},
+                    {"year": 2018, "value": True},
+                ],
+            }
+        )
+
+        cmp_policy_objs(pol1, pol2)
+
+        # check inflation is not applied.
+        pol2.set_state(year=[2016, 2017])
+        np.testing.assert_equal(
+            pol2.II_em[0], pol2.II_em[1]
+        )
+
+        # check inflation rate is applied.
+        pol2.set_state(year=[2018, 2019])
+        np.testing.assert_equal(
+            (pol2.II_em[1] / pol2.II_em[0] - 1).round(4),
+            pol2.inflation_rates(year=2018),
+        )
+
+        # check inflation rate applied for rest of window.
+        window = list(range(2020, pol2.end_year + 1))
+        pol2.set_state(year=window)
+        np.testing.assert_equal(
+            (pol2.II_em[1:] / pol2.II_em[:-1] - 1).round(4),
+            [pol2.inflation_rates(year=year) for year in window[:-1]],
+        )
+
+    def test_multiple_cpi_swaps2(self):
+        """
+        Test changing the indexed status of multiple parameters multiple
+        times.
+        """
+        pol1 = Policy()
+        pol1.implement_reform(
+            {
+                "II_em": {2016: 6000, 2018: 7500, 2020: 9000},
+                "II_em-indexed": {2016: False, 2018: True},
+                "SS_Earnings_c": {2016: 300000, 2018: 500000},
+                "SS_Earnings_c-indexed": {2017: False, 2019: True},
+                "AMT_em-indexed": {2017: False, 2020: True},
+            }
+        )
+
+        pol2 = Policy()
+        pol2.adjust(
+            {
+                "SS_Earnings_c": [
+                    {"year": 2016, "value": 300000},
+                    {"year": 2018, "value": 500000},
+                ],
+                "SS_Earnings_c-indexed": [
+                    {"year": 2017, "value": False},
+                    {"year": 2019, "value": True},
+                ],
+                "AMT_em-indexed": [
+                    {"year": 2017, "value": False},
+                    {"year": 2020, "value": True},
+                ],
+                "II_em": [
+                    {"year": 2016, "value": 6000},
+                    {"year": 2018, "value": 7500},
+                    {"year": 2020, "value": 9000},
+                ],
+                "II_em-indexed": [
+                    {"year": 2016, "value": False},
+                    {"year": 2018, "value": True},
+                ],
+            }
+        )
+
+        cmp_policy_objs(pol1, pol2)
+
+        # Test SS_Earnings_c
+        # check inflation is still applied from 2016 to 2017.
+        pol2.set_state(year=[2016, 2017])
+        np.testing.assert_equal(
+            (pol2.SS_Earnings_c[1] / pol2.SS_Earnings_c[0] - 1).round(4),
+            pol2.wage_growth_rates(year=2016),
+        )
+
+        # check inflation rate is not applied after adjustment in 2018.
+        pol2.set_state(year=[2018, 2019])
+        np.testing.assert_equal(
+            pol2.SS_Earnings_c[0], pol2.SS_Earnings_c[1]
+        )
+
+        # check inflation rate applied for rest of window.
+        window = list(range(2019, pol2.end_year + 1))
+        pol2.set_state(year=window)
+        np.testing.assert_equal(
+            (pol2.SS_Earnings_c[1:] / pol2.SS_Earnings_c[:-1] - 1).round(4),
+            [pol2.wage_growth_rates(year=year) for year in window[:-1]],
+        )
+
+        # Test AMT
+        # Check values for 2017 through 2020 are equal.
+        pol2.set_state(year=[2017, 2018, 2019, 2020])
+        for i in (1, 2, 3):
+            np.testing.assert_equal(
+                pol2.AMT_em[0], pol2.AMT_em[i]
+            )
+
+        # check inflation rate applied for rest of window.
+        window = list(range(2020, pol2.end_year + 1))
+        pol2.set_state(year=window)
+        # repeat inflation rates accross matrix so they can be compared to the
+        # rates derived from AMT_em, a 5 * N matrix.
+        exp_rates = [pol2.inflation_rates(year=year) for year in window[:-1]]
+        exp_rates = np.tile([exp_rates], (5, 1)).transpose()
+        np.testing.assert_equal(
+            (pol2.AMT_em[1:] / pol2.AMT_em[:-1] - 1).round(4),
+            exp_rates,
+        )
+
+        # Test II_em
+        # check inflation is not applied.
+        pol2.set_state(year=[2016, 2017])
+        np.testing.assert_equal(
+            pol2.II_em[0], pol2.II_em[1]
+        )
+
+        # check inflation rate is applied.
+        pol2.set_state(year=[2018, 2019])
+        np.testing.assert_equal(
+            (pol2.II_em[1] / pol2.II_em[0] - 1).round(4),
+            pol2.inflation_rates(year=2018),
+        )
+
+        # check inflation rate applied for rest of window.
+        window = list(range(2020, pol2.end_year + 1))
+        pol2.set_state(year=window)
+        np.testing.assert_equal(
+            (pol2.II_em[1:] / pol2.II_em[:-1] - 1).round(4),
+            [pol2.inflation_rates(year=year) for year in window[:-1]],
+        )
+
+    def test_adj_CPI_offset_and_index_status(self):
+        """
+        Test changing CPI_offset and another parameter simultaneously.
+        """
+        pol1 = Policy()
+        pol1.implement_reform({
+            "CTC_c-indexed": {2020: True},
+            "CPI_offset": {2020: -0.005}},
+        )
+
+        pol2 = Policy()
+        pol2.adjust(
+            {
+                "CPI_offset": [{"year": 2020, "value": -0.005}],
+                "CTC_c-indexed": [{"year": 2020, "value": True}],
+            }
+        )
+
+        cmp_policy_objs(pol1, pol2)
+
+        # Check no difference prior to 2020
+        pol0 = Policy()
+        cmp_policy_objs(
+            pol0,
+            pol2,
+            year_range=range(pol2.start_year, 2020 + 1),
+            exclude=["CPI_offset"]
+        )
+
+        pol2.set_state(year=[2021, 2022])
+        np.testing.assert_equal(
+            (pol2.CTC_c[1] / pol2.CTC_c[0] - 1).round(4),
+            pol0.inflation_rates(year=2021) + (-0.005),
+        )
+
+    def test_indexed_status_parsing(self):
+        pol1 = Policy()
+
+        pol1.implement_reform({"EITC_c-indexed": {pol1.start_year: False}})
+
+        pol2 = Policy()
+        pol2.adjust({"EITC_c-indexed": False})
+
+        cmp_policy_objs(pol1, pol2)
+
+        with pytest.raises(pt.ValidationError):
+            pol2.adjust({"EITC_c-indexed": 123})

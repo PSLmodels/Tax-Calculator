@@ -2,6 +2,7 @@
 # pycodestyle test_consumption.py
 
 import numpy as np
+import paramtools
 import pytest
 import copy
 from taxcalc import Policy, Records, Calculator, Consumption
@@ -57,19 +58,19 @@ def test_update_consumption():
 
 
 def test_incorrect_update_consumption():
-    with pytest.raises(ValueError):
+    with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption([])
-    with pytest.raises(ValueError):
+    with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500': {'xyz': 0.2}})
-    with pytest.raises(ValueError):
+    with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500': {2012: 0.2}})
-    with pytest.raises(ValueError):
+    with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500': {2052: 0.2}})
-    with pytest.raises(ValueError):
+    with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_exxxxx': {2014: 0.2}})
-    with pytest.raises(ValueError):
+    with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500': {2014: -0.1}})
-    with pytest.raises(ValueError):
+    with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500-indexed': {2014: 0.1}})
 
 
@@ -98,12 +99,12 @@ def test_future_update_consumption():
 
 def test_consumption_default_data():
     consump = Consumption()
-    pdata = consump._vals
+    pdata = consump.specification(meta_data=True, ignore_state=True)
     for pname in pdata.keys():
         if pname.startswith('MPC'):
-            assert pdata[pname]['value'] == [0.0]
+            assert pdata[pname]['value'] == [{"value": 0.0, "year": 2013}]
         elif pname.startswith('BEN'):
-            assert pdata[pname]['value'] == [1.0]
+            assert pdata[pname]['value'] == [{"value": 1.0, "year": 2013}]
 
 
 def test_consumption_response(cps_subsample):

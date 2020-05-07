@@ -27,12 +27,9 @@ def test_2017_law_reform(tests_path):
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
-    # eventually activate: assert not clp.parameter_warnings
-    ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
-    assert pol.parameter_warnings == ctc_c_warning
-    assert not pol.parameter_errors
+    assert not pol.parameter_warnings
     pol.set_year(2018)
-    pre_mdata = pol.metadata()
+    pre_mdata = dict(pol.items())
     # check some policy parameter values against expected values under 2017 law
     pre_expect = {
         # relation '<' implies asserting that actual < expect
@@ -61,11 +58,11 @@ def test_2017_law_reform(tests_path):
     assert isinstance(pre_expect, dict)
     assert set(pre_expect.keys()).issubset(set(pre_mdata.keys()))
     for name in pre_expect:
-        aval = pre_mdata[name]['value']
-        if isinstance(aval, list):
-            act = aval[0]  # comparing only first item in a vector parameter
+        aval = pre_mdata[name]
+        if aval.ndim == 2:
+            act = aval[0][0]  # comparing only first item in a vector parameter
         else:
-            act = aval
+            act = aval[0]
         exp = pre_expect[name]['value']
         if pre_expect[name]['relation'] == '<':
             assert act < exp, '{} a={} !< e={}'.format(name, act, exp)
@@ -91,26 +88,24 @@ def test_round_trip_tcja_reform(tests_path):
     # create clp metadata dictionary for current-law policy in fyear
     pol = Policy()
     pol.set_year(fyear)
-    clp_mdata = pol.metadata()
+    clp_mdata = dict(pol.items())
     # create rtr metadata dictionary for round-trip reform in fyear
     pol = Policy()
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
-    # eventually activate: assert not clp.parameter_warnings
-    ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
-    assert pol.parameter_warnings == ctc_c_warning
-    assert not pol.parameter_errors
+
+    assert not pol.parameter_warnings
+    assert not pol.errors
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
-    # eventually activate: assert not clp.parameter_warnings
-    assert pol.parameter_warnings == ctc_c_warning
-    assert not pol.parameter_errors
+    assert not pol.parameter_warnings
+    assert not pol.errors
     pol.set_year(fyear)
-    rtr_mdata = pol.metadata()
+    rtr_mdata = dict(pol.items())
     # compare fyear policy parameter values
     assert clp_mdata.keys() == rtr_mdata.keys()
     fail_dump = False
@@ -120,8 +115,8 @@ def test_round_trip_tcja_reform(tests_path):
     fail_params = list()
     msg = '\nRound-trip-reform and current-law-policy param values differ for:'
     for pname in clp_mdata.keys():
-        rtr_val = rtr_mdata[pname]['value']
-        clp_val = clp_mdata[pname]['value']
+        rtr_val = rtr_mdata[pname]
+        clp_val = clp_mdata[pname]
         if not np.allclose(rtr_val, clp_val):
             fail_params.append(pname)
             msg += '\n  {} in {} : rtr={} clp={}'.format(

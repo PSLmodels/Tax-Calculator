@@ -61,8 +61,8 @@ class GrowDiff(Parameters):
         Returns true if any parameter is non-zero for any year;
         returns false if all parameters are zero in all years.
         """
-        for param in self._vals:
-            values = getattr(self, param)
+        for param in self:
+            values = getattr(self, f"_{param}")
             for year in np.ndindex(values.shape):
                 val = values[year]
                 if val != 0.0:
