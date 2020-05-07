@@ -27,11 +27,7 @@ def test_2017_law_reform(tests_path):
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
-    # TODO: I'm unclear on how to handle the undefined warning behavior
-    # since the parameter is still defined in the JSON.
-    # eventually activate: assert not clp.parameter_warnings
-    # ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
-    # assert pol.parameter_warnings == ctc_c_warning
+    assert not pol.parameter_warnings
     pol.set_year(2018)
     pre_mdata = dict(pol.items())
     # check some policy parameter values against expected values under 2017 law
@@ -100,18 +96,13 @@ def test_round_trip_tcja_reform(tests_path):
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
 
-    # TODO: see comments in test_2017_law_reform
-    # eventually activate: assert not clp.parameter_warnings
-    # ctc_c_warning = 'CTC_c was redefined in release 1.0.0\n'
-    # assert pol.parameter_warnings == ctc_c_warning
+    assert not pol.parameter_warnings
     assert not pol.errors
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
-    # TODO:
-    # eventually activate: assert not clp.parameter_warnings
-    # assert pol.parameter_warnings == ctc_c_warning
+    assert not pol.parameter_warnings
     assert not pol.errors
     pol.set_year(fyear)
     rtr_mdata = dict(pol.items())

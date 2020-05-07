@@ -1,6 +1,5 @@
-
 Response in Charitable Giving by Earnings Group
-Earnings Group    	 Num(#M)	Resp($B)	  Resp(%)
-[-9e+99, 50000)   	 109.371	   0.704	    0.560
-[50000, 9e+99)    	  58.142	   3.606	    2.123
-ALL               	 167.512	   4.310	    1.458
+    Earnings Group  Num(#M)  Resp($B)  Resp(%)
+ [-9e+99, 50000.0)  108.866     0.689    0.553
+  [50000.0, 9e+99)   58.646     3.588    2.097
+             TOTAL  167.512     4.277    1.446

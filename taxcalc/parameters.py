@@ -68,8 +68,49 @@ class Parameters(pt.Parameters):
     JSON_START_YEAR = None
     LAST_KNOWN_YEAR = None
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, start_year=None, num_years=None, last_known_year=None,
+                 removed=None, redefined=None, wage_indexed=None, **kwargs):
+        # In case we need to wait for this to be called from the
+        # initialize method for legacy reasons.
+        if not start_year or not num_years:
+            return
+        self._wage_growth_rates = None
+        self._inflation_rates = None
+        if (
+            self.defaults is None and
+            self.DEFAULTS_FILE_PATH is not None and
+            self.DEFAULTS_FILE_NAME
+        ):
+            self.defaults = os.path.join(
+                self.DEFAULTS_FILE_PATH,
+                self.DEFAULTS_FILE_NAME
+            )
+
+        if last_known_year is None:
+            self._last_known_year = start_year
+        else:
+            assert last_known_year >= start_year
+            assert last_known_year <= self.LAST_BUDGET_YEAR
+            self._last_known_year = last_known_year
+
+        self._removed_params = removed or self.REMOVED_PARAMS
+        self._redefined_params = redefined or self.REDEFINED_PARAMS
+
+        self._wage_indexed = wage_indexed or self.WAGE_INDEXED_PARAMS
+
+        if (
+            (start_year or self.JSON_START_YEAR) and
+            "initial_state" not in kwargs
+        ):
+            kwargs["initial_state"] = {
+                "year": start_year or self.JSON_START_YEAR
+            }
+        super().__init__(**kwargs)
+        self._init_values = {
+            param: copy.deepcopy(data["value"])
+            for param, data in self.read_params(self.defaults).items()
+            if param != "schema"
+        }
 
     def adjust(self, params_or_path, print_warnings=True, **kwargs):
         """
@@ -270,7 +311,7 @@ class Parameters(pt.Parameters):
             self.delete(to_delete, **kwargs)
             super().adjust(init_vals, **kwargs)
 
-            self.extend(label_to_extend="year")
+            self.extend(label="year")
 
         # 2. Handle -indexed parameters.
         self.label_to_extend = None
@@ -323,8 +364,8 @@ class Parameters(pt.Parameters):
                         super().adjust({base_param: vos}, **kwargs)
                         self.extend(
                             params=[base_param],
-                            label_to_extend="year",
-                            label_to_extend_values=list(
+                            label="year",
+                            label_values=list(
                                 range(self.start_year, min_index_change_year)
                             ),
                         )
@@ -342,8 +383,8 @@ class Parameters(pt.Parameters):
                     if year > self.start_year:
                         self.extend(
                             params=[base_param],
-                            label_to_extend="year",
-                            label_to_extend_values=list(
+                            label="year",
+                            label_values=list(
                                 range(self.start_year, year + 1)
                             ),
                         )
@@ -360,7 +401,7 @@ class Parameters(pt.Parameters):
                         super().adjust({base_param: vos}, **kwargs)
 
                     # 2.e Extend values through remaining years.
-                    self.extend(params=[base_param], label_to_extend="year")
+                    self.extend(params=[base_param], label="year")
 
                 needs_reset.append(base_param)
         # Re-instate ops.
@@ -424,41 +465,19 @@ class Parameters(pt.Parameters):
 
     # alias methods below
     def initialize(self, start_year, num_years, last_known_year=None,
-                   removed=None, redefined=None, wage_indexed=None):
-        self._wage_growth_rates = None
-        self._inflation_rates = None
-        if (
-            self.defaults is None and
-            self.DEFAULTS_FILE_PATH is not None and
-            self.DEFAULTS_FILE_NAME
-        ):
-            self.defaults = os.path.join(
-                self.DEFAULTS_FILE_PATH,
-                self.DEFAULTS_FILE_NAME
+                   removed=None, redefined=None, wage_indexed=None,
+                   **kwargs):
+        """
+        Legacy method for initializing a Parameters instance. Projects
+        should use the __init__ method in the future.
+        """
+        # case where project hasn't been initialized yet.
+        if getattr(self, "_data", None) is None:
+            return Parameters.__init__(
+                self, start_year, num_years, last_known_year=last_known_year,
+                removed=removed, redefined=redefined,
+                wage_indexed=wage_indexed, **kwargs
             )
-
-        if last_known_year is None:
-            self._last_known_year = start_year
-        else:
-            assert last_known_year >= start_year
-            assert last_known_year <= self.LAST_BUDGET_YEAR
-            self._last_known_year = last_known_year
-
-        self._removed_params = removed or self.REMOVED_PARAMS
-        self._redefined_params = redefined or self.REDEFINED_PARAMS
-
-        self._wage_indexed = wage_indexed or self.WAGE_INDEXED_PARAMS
-
-        if start_year or self.JSON_START_YEAR:
-            initial_state = {"year": start_year or self.JSON_START_YEAR}
-        else:
-            initial_state = None
-        super().__init__(initial_state=initial_state)
-        self._init_values = {
-            param: copy.deepcopy(data["value"])
-            for param, data in self.read_params(self.defaults).items()
-            if param != "schema"
-        }
 
     def _update(self, revision, print_warnings, raise_errors):
         """
@@ -481,7 +500,7 @@ class Parameters(pt.Parameters):
                 {'year': 2024, 'marital_status': 'single', 'value': 10000.0},
                 {'year': 2024, 'marital_status': 'joint', 'value': 10000.0}
             ],
-            'ss_rate': [{'value': 0.2}]}
+            'ss_rate': [{'year': 2024, 'value': 0.2}]}
         }
 
         """
@@ -491,8 +510,6 @@ class Parameters(pt.Parameters):
                 None
             )
         new_params = defaultdict(list)
-        # save shallow copy of current instance state
-        cur_state = dict(self.view_state())
         for param, val in revision.items():
             if not isinstance(param, str):
                 msg = f"Parameter {param} is not a string."
@@ -556,10 +573,10 @@ class Parameters(pt.Parameters):
                             None
                         )
 
-                    self.set_state(year=year)
                     value_objects = self.from_array(
                         param,
-                        yearval.reshape((1, *yearval.shape))
+                        yearval.reshape((1, *yearval.shape)),
+                        year=year
                     )
                     new_params[param] += value_objects
             else:
@@ -571,7 +588,6 @@ class Parameters(pt.Parameters):
                     {"errors": {"schema": msg}},
                     None
                 )
-        self.set_state(**cur_state)
         return self.adjust(
             new_params,
             print_warnings=print_warnings,
@@ -700,10 +716,8 @@ class Parameters(pt.Parameters):
             attr.startswith("_") and
             attr[1:] in super().__getattribute__("_data")
         ):
-            state = dict(self.view_state())
-            self.clear_state()
-            value = getattr(self, attr[1:])
-            self.set_state(**state)
-            return value
+            return self.to_array(
+                attr[1:], year=list(range(self.start_year, self.end_year + 1))
+            )
         else:
             raise AttributeError(f"{attr} not definied.")

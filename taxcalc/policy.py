@@ -65,15 +65,11 @@ class Policy(Parameters):
         'was renamed PT_qbid_w2_wages_rt in release 2.4.0'
     }
     # (2) specify which Policy parameters have been redefined recently
-    REDEFINED_PARAMS = {
-        # TODO: TODO: should this be removed now?
-        # TODO: remove the CTC_c name:message pair sometime later in 2019
-        # 'CTC_c': 'CTC_c was redefined in release 1.0.0'
-    }
+    REDEFINED_PARAMS = {}
     # (3) specify which Policy parameters are wage (rather than price) indexed
     WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
-    def __init__(self, gfactors=None, only_reading_defaults=False):
+    def __init__(self, gfactors=None, only_reading_defaults=False, **kwargs):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
         # handle gfactors argument
@@ -92,7 +88,7 @@ class Policy(Parameters):
         self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
                         Policy.REMOVED_PARAMS,
                         Policy.REDEFINED_PARAMS,
-                        Policy.WAGE_INDEXED_PARAMS)
+                        Policy.WAGE_INDEXED_PARAMS, **kwargs)
 
     @staticmethod
     def read_json_reform(obj):

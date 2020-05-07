@@ -5,6 +5,7 @@ Tests for Tax-Calculator Parameters class and JSON parameter files.
 # pycodestyle test_parameters.py
 # pylint --disable=locally-disabled test_parameters.py
 
+import copy
 import os
 import json
 import math
@@ -292,6 +293,267 @@ def test_parameters_mentioned(tests_path, jfname, pfname):
 
 
 # following tests access private methods, so pylint: disable=protected-access
+
+class ArrayParams(Parameters):
+    defaults = {
+        "schema": {
+            "labels": {
+                "year": {
+                    "type": "int",
+                    "validators": {"range": {"min": 2013, "max": 2028}}
+                },
+                "MARS": {
+                    "type": "str",
+                    "validators": {
+                        "choice": {
+                            "choices": [
+                                "single",
+                                "joint",
+                                "mseparate",
+                                "headhh",
+                                "widow",
+                                # test value of II_brk2 has 6 columns
+                                "extra",
+                            ]
+                        }
+                    }
+                },
+                "idedtype": {
+                    "type": "str",
+                    "validators": {
+                        "choice": {"choices": ["med", "sltx", "retx"]}
+                    }
+                }
+            },
+            "additional_members": {
+                "indexable": {
+                    "type": "bool"
+                },
+                "indexed": {
+                    "type": "bool"
+                },
+            },
+            "operators": {
+                "array_first": True,
+                "label_to_extend": "year"
+            }
+        },
+        "one_dim": {
+            "title": "One dimension parameter",
+            "description": "",
+            "type": "float",
+            "indexed": True,
+            "indexable": True,
+            "value": [{"year": 2013, "value": 5}]
+        },
+        "two_dim": {
+            "title": "Two dimension parameter",
+            "description": "",
+            "type": "float",
+            "indexed": True,
+            "indexable": True,
+            "value": [
+                {"year": 2013, "idedtype": "med", "value": 1},
+                {"year": 2013, "idedtype": "sltx", "value": 2},
+                {"year": 2013, "idedtype": "retx", "value": 3}
+            ]
+        },
+        "II_brk2": {
+            "title": "II_brk2",
+            "description": "",
+            "type": "float",
+            "indexed": True,
+            "indexable": True,
+            "value": [
+                {"year": 2013, "MARS": "single", "value": 1},
+                {"year": 2013, "MARS": "joint", "value": 2},
+                {"year": 2013, "MARS": "mseparate", "value": 3},
+                {"year": 2013, "MARS": "headhh", "value": 2},
+                {"year": 2013, "MARS": "widow", "value": 3},
+                {"year": 2013, "MARS": "extra", "value": 3},
+            ]
+        }
+    }
+
+    # These will be controlled directly through the extend method.
+    label_to_extend = None
+    array_first = False
+
+    START_YEAR = 2013
+    LAST_YEAR = 2030
+    NUM_YEARS = LAST_YEAR - START_YEAR + 1
+
+    def __init__(self, **kwargs):
+        super().__init__(
+            ArrayParams.START_YEAR,
+            ArrayParams.NUM_YEARS,
+            **kwargs
+        )
+        self._inflation_rates = [0.02] * self.num_years
+        self._wage_growth_rates = [0.03] * self.num_years
+
+    def update_params(self, revision,
+                      print_warnings=True, raise_errors=True):
+        """
+        Update parameters given specified revision dictionary.
+        """
+        self._update(revision, print_warnings, raise_errors)
+
+    def set_rates(self):
+        pass
+
+
+def test_expand_xd_errors():
+    """
+    One of several _expand_?D tests.
+    """
+    params = ArrayParams(label_to_extend=None, array_first=False)
+    with pytest.raises(paramtools.ValidationError):
+        params.extend(label="year", label_values=[1, 2, 3])
+
+
+def test_expand_empty():
+    params = ArrayParams(label_to_extend=None, array_first=False)
+    params.sort_values()
+    one_dim = copy.deepcopy(params.one_dim)
+
+    params.extend(label="year", label_values=[])
+
+    params.sort_values()
+    assert params.one_dim == one_dim
+
+
+def test_expand_1d_scalar():
+    yrs = 12
+    val = 10.0
+    exp = np.array([val * math.pow(1.02, i) for i in range(0, yrs)])
+
+    yrslist = list(range(2013, 2013 + 12))
+    params = ArrayParams(label_to_extend=None, array_first=False)
+    params.adjust({"one_dim": val})
+    params.extend(params=["one_dim"], label="year", label_values=yrslist)
+    res = params.to_array("one_dim", year=yrslist)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
+
+    params = ArrayParams(label_to_extend=None, array_first=False)
+    params.adjust({"one_dim": val})
+    params.extend(params=["one_dim"], label="year", label_values=[2013])
+    res = params.to_array("one_dim", year=2013)
+    assert np.allclose(np.array([val]), res, atol=0.01, rtol=0.0)
+
+
+def test_expand_2d_short_array():
+    """
+    One of several _expand_?D tests.
+    """
+    ary = np.array([[1., 2., 3.]])
+    val = np.array([1., 2., 3.])
+    exp2 = np.array([val * math.pow(1.02, i) for i in range(1, 5)])
+    exp1 = np.array([1., 2., 3.])
+    exp = np.zeros((5, 3))
+    exp[:1] = exp1
+    exp[1:] = exp2
+
+    params = ArrayParams(array_first=False, label_to_extend=None)
+    years = [2013, 2014, 2015, 2016, 2017]
+    params.extend(
+        params=["two_dim"],
+        label="year",
+        label_values=years,
+    )
+    res = params.to_array("two_dim", year=years)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
+
+
+def test_expand_2d_variable_rates():
+    """
+    One of several _expand_?D tests.
+    """
+    ary = np.array([[1., 2., 3.]])
+    cur = np.array([1., 2., 3.])
+    irates = [0.02, 0.02, 0.02, 0.03, 0.035]
+    exp2 = []
+    for i in range(0, 4):
+        idx = i + len(ary) - 1
+        cur = np.array(cur * (1.0 + irates[idx]))
+        print('cur is ', cur)
+        exp2.append(cur)
+    exp1 = np.array([1., 2., 3.])
+    exp = np.zeros((5, 3))
+    exp[:1] = exp1
+    exp[1:] = exp2
+
+    params = ArrayParams(array_first=False, label_to_extend=None)
+    params._inflation_rates = irates
+    years = [2013, 2014, 2015, 2016, 2017]
+    params.extend(params=["two_dim"], label="year", label_values=years)
+    res = params.to_array("two_dim", year=years)
+    assert np.allclose(exp, res, atol=0.01, rtol=0.0)
+
+
+def test_expand_2d_already_filled():
+    """
+    One of several _expand_?D tests.
+    """
+    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
+    _II_brk2 = [[36000., 72250., 36500., 48600., 72500., 36250.],
+                [38000., 74000., 36900., 49400., 73800., 36900.],
+                [40000., 74900., 37450., 50200., 74900., 37450.]]
+
+    years = [2013, 2014, 2015]
+    params = ArrayParams(
+        array_first=False,
+        label_to_extend=None,
+    )
+    params.adjust({
+        "II_brk2": params.from_array("II_brk2", np.array(_II_brk2), year=years)
+    })
+
+    params.extend(
+        params=["II_brk2"], label="year", label_values=years
+    )
+    res = params.to_array("II_brk2", year=years)
+    assert np.allclose(res, np.array(_II_brk2), atol=0.01, rtol=0.0)
+
+
+def test_expand_2d_partial_expand():
+    """
+    One of several _expand_?D tests.
+    """
+    # pylint doesn't like caps in var name, so  pylint: disable=invalid-name
+    _II_brk2 = [[36000.0, 72250.0, 36500.0, 48600.0, 72500.0, 36250.0],
+                [38000.0, 74000.0, 36900.0, 49400.0, 73800.0, 36900.0],
+                [40000.0, 74900.0, 37450.0, 50200.0, 74900.0, 37450.0]]
+    # We have three years worth of data, need 4 years worth,
+    # but we only need the inflation rate for year 3 to go
+    # from year 3 -> year 4
+    inf_rates = [0.02, 0.02, 0.03]
+    exp1 = 40000. * 1.03
+    exp2 = 74900. * 1.03
+    exp3 = 37450. * 1.03
+    exp4 = 50200. * 1.03
+    exp5 = 74900. * 1.03
+    exp6 = 37450. * 1.03
+    exp = [[36000.0, 72250.0, 36500.0, 48600.0, 72500.0, 36250.0],
+           [38000.0, 74000.0, 36900.0, 49400.0, 73800.0, 36900.0],
+           [40000.0, 74900.0, 37450.0, 50200.0, 74900.0, 37450.0],
+           [exp1, exp2, exp3, exp4, exp5, exp6]]
+
+    years = [2013, 2014, 2015]
+    params = ArrayParams(array_first=False, label_to_extend=None)
+    params.adjust({
+        "II_brk2": params.from_array(
+            "II_brk2",
+            np.array(_II_brk2),
+            year=years
+        )
+    })
+    params._inflation_rates[:3] = inf_rates
+    params.extend(
+        params=["II_brk2"], label="year", label_values=years + [2016]
+    )
+    res = params.to_array("II_brk2", year=years + [2016])
+    assert np.allclose(res, exp, atol=0.01, rtol=0.0)
 
 
 def test_read_json_revision():
