@@ -64,6 +64,7 @@ def BenefitPrograms(calc):
         calc.array('mcaid_ben') +
         calc.array('e02400') +
         calc.array('e02300') +
+        calc.array('ubi') +
         calc.array('other_ben')
     )
     calc.array('benefit_cost_total', cost)
@@ -80,6 +81,7 @@ def BenefitPrograms(calc):
         calc.array('mcaid_ben') * calc.consump_param('BEN_mcaid_value') +
         calc.array('e02400') +
         calc.array('e02300') +
+        calc.array('ubi') +
         calc.array('other_ben') * calc.consump_param('BEN_other_value')
     )
     calc.array('benefit_value_total', value)
