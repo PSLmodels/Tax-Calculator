@@ -7,7 +7,7 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link href="docs.css" rel="stylesheet">
   <title>T-C User Guide</title>
-</head>    
+</head>
 <body>
 
 <h1>Tax-Calculator User Guide</h1>
@@ -315,13 +315,13 @@
 
 <p>
   The name of your input data file is also relevant to how <kbd>tc</kbd> will
-  behave. If your file name ends with "puf.csv" or "cps.csv", <kbd>tc</kbd> 
-  will automatically extrapolate your data from its base year to the year you 
+  behave. If your file name ends with "puf.csv" or "cps.csv", <kbd>tc</kbd>
+  will automatically extrapolate your data from its base year to the year you
   specify for tax calculations to be calculated using built in growth factors,
-  extrapolated weights, and other adjustment factors. If you are not using 
-  the "puf.csv" or "cps.csv" files produced by the TaxData project, it is 
-  likely that your data will not be compatible with these extrapolations and 
-  you should adopt filenames with alternative endings. 
+  extrapolated weights, and other adjustment factors. If you are not using
+  the "puf.csv" or "cps.csv" files produced by the TaxData project, it is
+  likely that your data will not be compatible with these extrapolations and
+  you should adopt filenames with alternative endings.
 </p>
 
 <h4 id="cli-init-analysis">2e. Initiate Reform Analysis</h4>
@@ -478,7 +478,7 @@
 </pre></p>
 
 <p>
-  Example (5) produces 2021 output for the filing units in the 
+  Example (5) produces 2021 output for the filing units in the
   <kbd>test.csv</kbd> file using the policy reform specified in
   the <kbd>ref3.json</kbd> file.  The name of the output file in this
   example is <kbd>test-21-#-ref3-#.csv</kbd> because no baseline or
@@ -505,7 +505,7 @@
 </pre></p>
 
 <p>
-  Example (6) produces 2021 output for the filing units in the 
+  Example (6) produces 2021 output for the filing units in the
   <kbd>test.csv</kbd> file using the policy reform specified in
   the <kbd>ref3.json</kbd> file and the economic assumptions specified
   in the <kbd>eas1.json</kbd> file.  The output results produced by this
@@ -602,7 +602,7 @@ Weighted Tax Differences by Baseline Expanded-Income Decile
   do that because of the special input file name <kbd>cps.csv</kbd>.
   The tables produced by this analysis are written to the
   <kbd>cps-22-#-ref3-#-tab.text</kbd> file.  Note that on Windows
-  you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and 
+  you would use <kbd>dir</kbd> instead of <kbd>ls</kbd> and
   <kbd>type</kbd> instead of <kbd>cat</kbd>.
 </p>
 
@@ -757,7 +757,7 @@ Tax-Calculator startup automatically extrapolated your data to 2019.
 $ tc cps.csv 2016 --sqldb
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2016.
-    
+
 $ sqlite3 cps-16-#-#-#.db
 SQLite version 3.22.0 2018-01-22 18:45:57
 Enter ".help" for usage hints.

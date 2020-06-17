@@ -1941,7 +1941,6 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         p23250 +  # Sch D: net long-term capital gain/loss
         cmbtp +  # other AMT taxable income items from Form 6251
         0.5 * ptax_was +  # employer share of FICA taxes on wages/salaries
-        ubi +  # total UBI benefit
         benefit_value_total  # consumption value of all benefits received;
         # see the BenefitPrograms function in this file for details on
         # exactly how the benefit_value_total variable is computed
