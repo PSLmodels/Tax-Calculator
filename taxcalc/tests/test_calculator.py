@@ -858,3 +858,39 @@ def test_qbid_calculation():
     exp_taxinc = tpc_df.pre_qbid_taxinc
     assert np.allclose(act_taxinc, exp_taxinc)
     assert np.allclose(tc_df.qbided, tpc_df.qbid)
+
+
+def test_calc_all_benefits_amounts(cps_subsample):
+    '''
+    Testing how benefits are handled in the calc_all method
+    '''
+    # set a reform with a positive UBI amount
+    ubi_ref = {'UBI_21': {2020: 1000}}
+
+    # create baseline calculator
+    pol = Policy()
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc_base = Calculator(pol, recs)
+    calc_base.advance_to_year(2020)
+    calc_base.calc_all()
+
+    # create reform calculator
+    pol_ubi = Policy()
+    pol_ubi.implement_reform(ubi_ref)
+    calc_ubi = Calculator(pol_ubi, recs)
+    calc_ubi.advance_to_year(2020)
+    calc_ubi.calc_all()
+
+    # check that differences in benefits totals are equal to diffs in
+    # UBI
+    ubi_diff = (calc_ubi.weighted_total('ubi') -
+                calc_base.weighted_total('ubi')) / 1e9
+    benefit_cost_diff = (
+        calc_ubi.weighted_total('benefit_cost_total') -
+        calc_base.weighted_total('benefit_cost_total')) / 1e9
+    benefit_value_diff = (
+        calc_ubi.weighted_total('benefit_cost_total') -
+        calc_base.weighted_total('benefit_cost_total')) / 1e9
+
+    assert np.allclose(ubi_diff, benefit_cost_diff)
+    assert np.allclose(ubi_diff, benefit_value_diff)
