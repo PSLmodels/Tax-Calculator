@@ -1915,9 +1915,8 @@ def LumpSumTax(DSI, num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
-                 e02000, e02100, p22250, p23250,
-                 cmbtp, ptax_was, benefit_value_total, ubi,
-                 expanded_income):
+                 e02000, e02100, p22250, p23250, cmbtp, ptax_was,
+                 benefit_value_total, expanded_income):
     """
     Calculates expanded_income from component income types.
     """
