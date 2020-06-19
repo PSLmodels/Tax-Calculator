@@ -60,8 +60,8 @@ Read JSON reform file and use (the default) static analysis assumptions.
 
 .. code-block:: python3
 		
-    reform_filename = ('https://raw.githubusercontent.com/MaxGhenis/taxcalc-notebooks/' +
-                       'master/recipes/ingredients/reformA.json')
+    reform_filename = ('https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/' +
+		       'master/docs/cookbook/reformA.json')
     params = tc.Calculator.read_json_param_objects(reform_filename, None)
 
 Specify Calculator object for static analysis of reform policy.
