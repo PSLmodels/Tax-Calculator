@@ -713,6 +713,16 @@ def create_diagnostic_table(dframe_list, year_list):
         # number of tax units with non-positive combined tax liability
         val = (wghts[vdf['combined'] <= 0]).sum()
         odict['With Combined Tax <= 0 (#m)'] = round(val * in_millions, 2)
+        # UBI benefits
+        val = (vdf['ubi'] * wghts).sum()
+        odict['UBI Benefits ($b)'] = round(val * in_billions, 3)
+        # Total consumption value of benefits
+        val = (vdf['benefit_value_total'] * wghts).sum()
+        odict['Total Benefits, Consumption Value ($b)'] = round(
+            val * in_billions, 3)
+        # Total dollar cost of benefits
+        val = (vdf['benefit_cost_total'] * wghts).sum()
+        odict['Total Benefits Cost ($b)'] = round(val * in_billions, 3)
         return odict
     # check function arguments
     assert isinstance(dframe_list, list)

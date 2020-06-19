@@ -167,6 +167,7 @@ class Calculator():
         Call all tax-calculation functions for the current_year.
         """
         # conducts static analysis of Calculator object for current_year
+        UBI(self.__policy, self.__records)
         BenefitPrograms(self)
         self._calc_one_year(zero_out_calc_vars)
         BenefitSurtax(self)
@@ -1368,7 +1369,6 @@ class Calculator():
         ALD_InvInc_ec_base(self.__policy, self.__records)
         CapGains(self.__policy, self.__records)
         SSBenefits(self.__policy, self.__records)
-        UBI(self.__policy, self.__records)
         AGI(self.__policy, self.__records)
         ItemDedCap(self.__policy, self.__records)
         ItemDed(self.__policy, self.__records)
