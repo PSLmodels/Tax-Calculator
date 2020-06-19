@@ -29,12 +29,14 @@ statement for the prior statement:
 
     
 .. code-block:: python3
+		
     recs = tc.Records.cps_constructor()
 
 
 Specify `Calculator` object for static analysis of current-law policy.
 
 .. code-block:: python3
+		
     pol = tc.Policy()
     calc1 = tc.Calculator(policy=pol, records=recs)
 
@@ -43,11 +45,13 @@ so we can continue to use `pol` and `recs` in this script without any
 concern about side effects from `Calculator` method calls on `calc1`.
 
 .. code-block:: python3
+		
    CYR = 2020
 
 Calculate aggregate current-law income tax liabilities for `CYR`.
    
 .. code-block:: python3
+		
     calc1.advance_to_year(CYR)
     calc1.calc_all()
     itax_rev1 = calc1.weighted_total('iitax')
@@ -55,6 +59,7 @@ Calculate aggregate current-law income tax liabilities for `CYR`.
 Read JSON reform file and use (the default) static analysis assumptions.
 
 .. code-block:: python3
+		
     reform_filename = ('https://raw.githubusercontent.com/MaxGhenis/taxcalc-notebooks/' +
                        'master/recipes/ingredients/reformA.json')
     params = tc.Calculator.read_json_param_objects(reform_filename, None)
@@ -62,6 +67,7 @@ Read JSON reform file and use (the default) static analysis assumptions.
 Specify Calculator object for static analysis of reform policy.
 
 .. code-block:: python3
+		
     pol.implement_reform(params['policy'])
     calc2 = tc.Calculator(policy=pol, records=recs)
 
@@ -70,6 +76,7 @@ Specify Calculator object for static analysis of reform policy.
 Calculate reform income tax liabilities for `CYR`.
 
 .. code-block:: python3
+		
     calc2.advance_to_year(CYR)
     calc2.calc_all()
     itax_rev2 = calc2.weighted_total('iitax')
@@ -77,6 +84,7 @@ Calculate reform income tax liabilities for `CYR`.
 Print reform documentation.
 
 .. code-block:: python3
+		
     tc.Calculator.reform_documentation(params)
 
 ## Results
@@ -86,6 +94,7 @@ Print total revenue estimates for 2018.
 *Estimates in billons of dollars rounded to nearest hundredth of a billion.*
 
 .. code-block:: python3
+		
     print('{}_CLP_itax_rev($B)= {:.3f}'.format(CYR, itax_rev1 * 1e-9))
     print('{}_REF_itax_rev($B)= {:.3f}'.format(CYR, itax_rev2 * 1e-9))
 
@@ -93,6 +102,7 @@ Print total revenue estimates for 2018.
 Generate several other standard results tables.
 
 .. code-block:: python3
+		
     # Aggregate diagnostic tables for CYR.
     clp_diagnostic_table = calc1.diagnostic_table(1)
     ref_diagnostic_table = calc2.diagnostic_table(1)
@@ -122,6 +132,7 @@ Generate several other standard results tables.
 Generate a decile graph and display it using Bokeh.
 
 .. code-block:: python3
+		
     fig = calc1.pch_graph(calc2)
     output_notebook()
     show(fig)
@@ -131,19 +142,23 @@ Generate a decile graph and display it using Bokeh.
 CLP diagnostic table for `CYR`.
 
 .. code-block:: python3
+		
     clp_diagnostic_table
 
 REF diagnostic table for CYR.
 
 .. code-block:: python3
+		
     ref_diagnostic_table
 
 Extract of CYR distribution tables by baseline expanded-income decile.
 
 .. code-block:: python3
+		
     dist_extract
 
 Extract of CYR income-tax difference table by expanded-income decile.
 
 .. code-block:: python3
+		
     diff_extract
