@@ -151,3 +151,6 @@ jupyter_images_markdown = True
 
 #This is set true by default to pass html to the notebooks
 jupyter_allow_html_only=True
+
+# Execute notebooks.
+jupyter_execute_notebooks = True
