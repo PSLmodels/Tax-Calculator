@@ -1,6 +1,7 @@
 Basic Recipe: Static Analysis of a Simple Reform
-=======================
-This is the recipe you should follow first.  Mastering this recipe is a prerequisite for all the other recipes in this cookbook.
+================================================
+This is the recipe you should follow first.
+Mastering this recipe is a prerequisite for all the other recipes in this cookbook.
 
 **Ingredients**
 
@@ -12,7 +13,6 @@ This is the recipe you should follow first.  Mastering this recipe is a prerequi
 
     import taxcalc as tc
     import pandas as pd
-    # Not in original recipe, but import to show the chart in the notebook.
     from bokeh.io import show, output_notebook
 
 
@@ -25,7 +25,9 @@ and you have that file (named 'puf.csv') located in the directory
 where this script is located, then you can substitute the following
 statement for the prior statement:
 
-`recs = Records()`
+```
+recs = Records()
+```
 
     
 .. code-block:: python3
@@ -81,12 +83,6 @@ Calculate reform income tax liabilities for `CYR`.
     calc2.calc_all()
     itax_rev2 = calc2.weighted_total('iitax')
 
-Print reform documentation.
-
-.. code-block:: python3
-		
-    tc.Calculator.reform_documentation(params)
-
 ## Results
 
 Print total revenue estimates for 2018.
@@ -112,7 +108,7 @@ Generate several other standard results tables.
     assert isinstance(dist_table1, pd.DataFrame)
     assert isinstance(dist_table2, pd.DataFrame)
     dist_extract = pd.DataFrame()
-    dist_extract['funits(#m)'] = dist_table1['s006']
+    dist_extract['funits(#m)'] = dist_table1['count']
     dist_extract['itax1($b)'] = dist_table1['iitax']
     dist_extract['itax2($b)'] = dist_table2['iitax']
     dist_extract['aftertax_inc1($b)'] = dist_table1['aftertax_income']
@@ -129,7 +125,7 @@ Generate several other standard results tables.
 
 ## Plotting
 
-Generate a decile graph and display it using Bokeh.
+Generate a decile graph and display it using Bokeh (will render in Jupyter, not in webpage).
 
 .. code-block:: python3
 		
