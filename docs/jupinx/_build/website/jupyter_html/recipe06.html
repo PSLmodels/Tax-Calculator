@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+
+		<title>Recipe 6: Analyzing a Non-Parametric Reform &ndash; Documentation</title>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="">
+		<meta name="keywords" content="">
+		<meta name="description" content="">
+
+		<link rel="stylesheet" href="/_static/css/base.css">
+
+	</head>
+
+	<body>
+
+		<div class="wrapper">
+
+			<header class="header">
+
+				<div class="branding">
+
+					<p class="site-title"><a href="/">Documentation</a></p>
+
+					<p class="sr-only"><a href="#skip">Skip to content</a></p>
+
+				</div>
+
+				<div class="header-tools">
+
+
+					<div class="header-badge" id="executability_status_badge"></div>
+
+
+				</div>
+
+			</header>
+
+			<div class="main">
+
+				<div class="content">
+
+					<div id="skip"></div>
+
+					<div class="document">
+
+<div class="{} cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Recipe-6:-Analyzing-a-Non-Parametric-Reform">Recipe 6: Analyzing a Non-Parametric Reform<a class="anchor-link" href="#Recipe-6:-Analyzing-a-Non-Parametric-Reform">&#182;</a></h1><p>This is an advanced recipe that should be followed only after mastering the basic recipe.
+This recipe shows how to customize the Calculator class so that it can analyze a tax reform
+that cannot be characterized using existing policy parameters (in this case a pseudo Cost-of-Living Refund reform).
+It uses, in a more extensive way, the object-oriented programming inheritance technique introduced in Redefining Expanded Income,
+so you might want to read that recipe first.</p>
+<p>Recipe that illustrates how to customize the taxcalc Calculator class so that
+it can analyze a non-parametric reform (that is, a reform that cannot be
+represented using existing taxcalc Policy parameters.</p>
+<p>The technique for doing this customization is standard in object-oriented
+programming: a child class is derived from a parent class and then customized.
+The derived child class inherits all the data and methods of the parent class,
+but can be customized by adding new data and methods or by overriding inherited
+methods.</p>
+<p>The reform used to illustrate this programming technique is somewhat like
+the Cost-of-Living Refund, a refundable credit that was being discussed in
+tax policy circles during 2019 as a replacement for the EITC.  But the
+reform analyzed here is not exactly like the Cost-of-Living Refund, so we
+call it a pseudo cost-of-living refund to emphasize that it is not meant
+to be an accurate representation of the Cost-of-Living Refund proposal.</p>
+
+</div>
+</div>
+</div>
+
+<div class="{} cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+	<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
+
+
+<span class="k">class</span> <span class="nc">Calculator</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Customized Calculator class that inherits all tc.Calculator data and</span>
+<span class="sd">    methods, adding or overriding some to get the desired customization.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">policy</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">sync_years</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">consumption</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="c1"># above are the tc.Calculator constructor arguments</span>
+                 <span class="c1"># below is new constructor argument used in customization</span>
+                 <span class="n">colr_active</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># call the parent class constructor</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">policy</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">records</span><span class="p">,</span>
+                         <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">sync_years</span><span class="o">=</span><span class="n">sync_years</span><span class="p">,</span>
+                         <span class="n">consumption</span><span class="o">=</span><span class="n">consumption</span><span class="p">)</span>
+        <span class="c1"># remember whether pseudo_COLR policy is active or not</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colr_active</span> <span class="o">=</span> <span class="n">colr_active</span>
+        <span class="c1"># declare colr_param dictionary that will contain pseudo COLR policy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">specify_pseudo_colr_policy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Specify policy parameters for the COLR policy in the current_year.</span>
+<span class="sd">        See use of these parameters below in the pseudo_colr_amount method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># reform implementation year</span>
+        <span class="n">reform_year</span> <span class="o">=</span> <span class="mi">2020</span>
+        <span class="c1"># specify dictionary of parameter names and values for reform_year</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="c1"># credit phase-in rate on earnings</span>
+            <span class="s1">&#39;COLR_rt&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="c1"># ceiling on refundable credit varies by filing-unit type, MARS</span>
+            <span class="s1">&#39;COLR_c&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">,</span> <span class="mi">4000</span><span class="p">],</span>
+                               <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+            <span class="c1"># credit phase-out start AGI level varies by filing-unit type, MARS</span>
+            <span class="s1">&#39;COLR_ps&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">30000</span><span class="p">,</span> <span class="mi">50000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mi">30000</span><span class="p">],</span>
+                                <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
+            <span class="c1"># credit phase-out rate per dollar of AGI above COLR_ps level</span>
+            <span class="s1">&#39;COLR_prt&#39;</span><span class="p">:</span> <span class="mf">0.2</span>
+        <span class="p">}</span>
+        <span class="c1"># set pseudo COLR parameter values for current year</span>
+        <span class="n">this_year</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_active</span> <span class="ow">and</span> <span class="n">this_year</span> <span class="o">&gt;=</span> <span class="n">reform_year</span><span class="p">:</span>
+            <span class="c1"># set inflation-indexed values of COLR_c and COLR_ps for this year</span>
+            <span class="n">irates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">inflation_rates</span><span class="p">()</span>
+            <span class="n">syr</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;COLR_c&#39;</span><span class="p">,</span> <span class="s1">&#39;COLR_ps&#39;</span><span class="p">]:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">reform_year</span><span class="p">,</span> <span class="n">this_year</span><span class="p">):</span>
+                    <span class="n">value</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">irates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="n">syr</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c1"># to nearest penny</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if policy not active or if this year is before the reform year</span>
+            <span class="c1"># set ceiling to zero</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+                                                 <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">tracing</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># set to True to see parameter values for this year</span>
+        <span class="k">if</span> <span class="n">tracing</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&gt; </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">this_year</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">pseudo_colr_amount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Calculate pseudo Cost-of-Living Refund amount.</span>
+<span class="sd">        Note this is simply meant to illustrate a Python programming technique;</span>
+<span class="sd">        this function does NOT calculate an exact Cost-of-Living Refund amount.</span>
+<span class="sd">        See setting of parameters above in specify_pseudo_COLR_policy method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span>
+        <span class="c1"># create MARS-specific policy parameter arrays</span>
+        <span class="n">mars_indicators</span> <span class="o">=</span> <span class="p">[</span><span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span>
+                           <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span> <span class="n">recs</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="n">colr_c</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">mars_indicators</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_c&#39;</span><span class="p">])</span>
+        <span class="n">colr_ps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">mars_indicators</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_ps&#39;</span><span class="p">])</span>
+        <span class="n">colr_rt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_rt&#39;</span><span class="p">]</span>
+        <span class="n">colr_prt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">colr_param</span><span class="p">[</span><span class="s1">&#39;COLR_prt&#39;</span><span class="p">]</span>
+        <span class="c1"># compute colr_amt</span>
+        <span class="n">amt_pre_phaseout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">recs</span><span class="o">.</span><span class="n">e00200</span> <span class="o">*</span> <span class="n">colr_rt</span><span class="p">,</span> <span class="n">colr_c</span><span class="p">)</span>
+        <span class="n">phaseout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">((</span><span class="n">recs</span><span class="o">.</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">colr_ps</span><span class="p">)</span> <span class="o">*</span> <span class="n">colr_prt</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="n">colr_amt</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">amt_pre_phaseout</span> <span class="o">-</span> <span class="n">phaseout</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">recs</span><span class="p">,</span> <span class="s1">&#39;colr_amount&#39;</span><span class="p">,</span> <span class="n">colr_amt</span><span class="p">)</span>
+        <span class="c1"># reduce income and combined taxes because COLR is a refundable credit</span>
+        <span class="n">recs</span><span class="o">.</span><span class="n">iitax</span> <span class="o">-=</span> <span class="n">colr_amt</span>
+        <span class="n">recs</span><span class="o">.</span><span class="n">combined</span> <span class="o">-=</span> <span class="n">colr_amt</span>
+        <span class="c1"># delete local arrays used only in this method</span>
+        <span class="k">del</span> <span class="n">mars_indicators</span>
+        <span class="k">del</span> <span class="n">colr_c</span>
+        <span class="k">del</span> <span class="n">colr_ps</span>
+        <span class="k">del</span> <span class="n">amt_pre_phaseout</span>
+        <span class="k">del</span> <span class="n">phaseout</span>
+        <span class="k">del</span> <span class="n">colr_amt</span>
+
+    <span class="k">def</span> <span class="nf">calc_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call all tax-calculation functions for the current_year.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitPrograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="p">)</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitSurtax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">FairShareTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">LumpSumTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+        <span class="c1"># specify new method to set pseudo COLR policy parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">specify_pseudo_colr_policy</span><span class="p">()</span>  <span class="c1"># (see above)</span>
+        <span class="c1"># call new method to calculate pseudo COLR amount</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pseudo_colr_amount</span><span class="p">()</span>  <span class="c1"># (see above)</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">ExpandIncome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+        <span class="n">tc</span><span class="o">.</span><span class="n">AfterTaxIncome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+
+<span class="c1"># end of customized Calculator class definition</span>
+
+
+<span class="c1"># top-level logic of program that uses customized Calculator class</span>
+
+<span class="n">policy1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>  <span class="c1"># baseline policy is current-law policy</span>
+<span class="n">policy2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>  <span class="c1"># parametric reform, reformC.json, eliminates EITC</span>
+
+<span class="c1"># TODO: Move to the web so this can be done standalone.</span>
+<span class="n">policy2</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformC.json&#39;</span><span class="p">))</span>
+
+<span class="c1"># specify customized Calculator objects for baseline and reform:</span>
+<span class="c1">#   baseline calc1 uses policy1 (current-law) and colr_active=False</span>
+<span class="c1">#   reform calc2 uses policy2 (no EITC) and colr_active=True</span>
+<span class="n">cps_records</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
+<span class="n">calc1</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">policy1</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">cps_records</span><span class="p">,</span> <span class="n">colr_active</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">policy2</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">cps_records</span><span class="p">,</span> <span class="n">colr_active</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># calculate tax liabilities for years around the reform year</span>
+<span class="n">cyr_first</span> <span class="o">=</span> <span class="mi">2019</span>
+<span class="n">CYR_LAST</span> <span class="o">=</span> <span class="mi">2022</span>
+<span class="k">for</span> <span class="n">cyr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CYR_FIRST</span><span class="p">,</span> <span class="n">CYR_LAST</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="c1"># advance to and calculate for specified cyr</span>
+    <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">cyr</span><span class="p">)</span>
+    <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+    <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">cyr</span><span class="p">)</span>
+    <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+    <span class="c1"># tabulate weighted amounts</span>
+    <span class="n">funits</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span>
+    <span class="n">itax1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+    <span class="n">itax2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+    <span class="n">eitc1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;eitc&#39;</span><span class="p">)</span>
+    <span class="n">eitc2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;eitc&#39;</span><span class="p">)</span>
+    <span class="n">colr1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;colr_amount&#39;</span><span class="p">)</span>
+    <span class="n">colr2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;colr_amount&#39;</span><span class="p">)</span>
+    <span class="c1"># print weighted amounts for cyr</span>
+    <span class="k">if</span> <span class="n">cyr</span> <span class="o">==</span> <span class="n">CYR_FIRST</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2&#39;</span><span class="p">)</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  </span><span class="si">{:.1f}</span><span class="s1">  </span><span class="si">{:.1f}</span><span class="s1">  </span><span class="si">{:.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">  </span><span class="si">{:5.1f}</span><span class="s1">&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cyr</span><span class="p">,</span> <span class="n">funits</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span>
+                      <span class="n">itax1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">itax2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                      <span class="n">eitc1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">eitc2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                      <span class="n">colr1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span> <span class="n">colr2</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+</pre></div>
+
+	</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+	<div class="prompt"></div>
+
+
+<div class="output_subarea output_text output_error">
+<pre>
+<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">JSONDecodeError</span>                           Traceback (most recent call last)
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/utils.py</span> in <span class="ansi-cyan-fg">json_to_dict</span><span class="ansi-blue-fg">(json_text)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1541</span>         ordered_dict = json.loads(json_text,
+<span class="ansi-green-fg">-&gt; 1542</span><span class="ansi-red-fg">                                   object_pairs_hook=collections.OrderedDict)
+</span><span class="ansi-green-intense-fg ansi-bold">   1543</span>     <span class="ansi-green-fg">except</span> ValueError <span class="ansi-green-fg">as</span> valerr<span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/json/__init__.py</span> in <span class="ansi-cyan-fg">loads</span><span class="ansi-blue-fg">(s, encoding, cls, object_hook, parse_float, parse_int, parse_constant, object_pairs_hook, **kw)</span>
+<span class="ansi-green-intense-fg ansi-bold">    360</span>         kw<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;parse_constant&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> parse_constant
+<span class="ansi-green-fg">--&gt; 361</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> cls<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>kw<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>decode<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/json/decoder.py</span> in <span class="ansi-cyan-fg">decode</span><span class="ansi-blue-fg">(self, s, _w)</span>
+<span class="ansi-green-intense-fg ansi-bold">    336</span>         &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 337</span><span class="ansi-red-fg">         </span>obj<span class="ansi-blue-fg">,</span> end <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>raw_decode<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">,</span> idx<span class="ansi-blue-fg">=</span>_w<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>end<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    338</span>         end <span class="ansi-blue-fg">=</span> _w<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">,</span> end<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>end<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/json/decoder.py</span> in <span class="ansi-cyan-fg">raw_decode</span><span class="ansi-blue-fg">(self, s, idx)</span>
+<span class="ansi-green-intense-fg ansi-bold">    354</span>         <span class="ansi-green-fg">except</span> StopIteration <span class="ansi-green-fg">as</span> err<span class="ansi-blue-fg">:</span>
+<span class="ansi-green-fg">--&gt; 355</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> JSONDecodeError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;Expecting value&#34;</span><span class="ansi-blue-fg">,</span> s<span class="ansi-blue-fg">,</span> err<span class="ansi-blue-fg">.</span>value<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">from</span> <span class="ansi-green-fg">None</span>
+<span class="ansi-green-intense-fg ansi-bold">    356</span>         <span class="ansi-green-fg">return</span> obj<span class="ansi-blue-fg">,</span> end
+
+<span class="ansi-red-fg">JSONDecodeError</span>: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
+<span class="ansi-green-fg">&lt;ipython-input-1-56a56d1f88fd&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
+<span class="ansi-green-intense-fg ansi-bold">    121</span> 
+<span class="ansi-green-intense-fg ansi-bold">    122</span> <span class="ansi-red-fg"># TODO: Move to the web so this can be done standalone.</span>
+<span class="ansi-green-fg">--&gt; 123</span><span class="ansi-red-fg"> </span>policy2<span class="ansi-blue-fg">.</span>implement_reform<span class="ansi-blue-fg">(</span>tc<span class="ansi-blue-fg">.</span>Policy<span class="ansi-blue-fg">.</span>read_json_reform<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;_static/reformC.json&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    124</span> 
+<span class="ansi-green-intense-fg ansi-bold">    125</span> <span class="ansi-red-fg"># specify customized Calculator objects for baseline and reform:</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/policy.py</span> in <span class="ansi-cyan-fg">read_json_reform</span><span class="ansi-blue-fg">(obj)</span>
+<span class="ansi-green-intense-fg ansi-bold">    117</span>         pointing to a valid JSON file hosted online<span class="ansi-blue-fg">,</span> <span class="ansi-green-fg">or</span> a valid JSON text<span class="ansi-blue-fg">.</span>
+<span class="ansi-green-intense-fg ansi-bold">    118</span>         &#34;&#34;&#34;
+<span class="ansi-green-fg">--&gt; 119</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> Parameters<span class="ansi-blue-fg">.</span>_read_json_revision<span class="ansi-blue-fg">(</span>obj<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;policy&#39;</span><span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    120</span> 
+<span class="ansi-green-intense-fg ansi-bold">    121</span>     def implement_reform(self, reform,
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/parameters.py</span> in <span class="ansi-cyan-fg">_read_json_revision</span><span class="ansi-blue-fg">(obj, topkey)</span>
+<span class="ansi-green-intense-fg ansi-bold">    920</span>         json_txt <span class="ansi-blue-fg">=</span> re<span class="ansi-blue-fg">.</span>sub<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;//.*&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39; &#39;</span><span class="ansi-blue-fg">,</span> txt<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    921</span>         <span class="ansi-red-fg"># convert JSON text into a Python dictionary</span>
+<span class="ansi-green-fg">--&gt; 922</span><span class="ansi-red-fg">         </span>full_dict <span class="ansi-blue-fg">=</span> json_to_dict<span class="ansi-blue-fg">(</span>json_txt<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">    923</span>         <span class="ansi-red-fg"># check top-level key contents of dictionary</span>
+<span class="ansi-green-intense-fg ansi-bold">    924</span>         <span class="ansi-green-fg">if</span> topkey <span class="ansi-green-fg">in</span> full_dict<span class="ansi-blue-fg">.</span>keys<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
+
+<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/utils.py</span> in <span class="ansi-cyan-fg">json_to_dict</span><span class="ansi-blue-fg">(json_text)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1555</span>             msg <span class="ansi-blue-fg">+=</span> <span class="ansi-blue-fg">&#39;{:04d}{}&#39;</span><span class="ansi-blue-fg">.</span>format<span class="ansi-blue-fg">(</span>linenum<span class="ansi-blue-fg">,</span> line<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">+</span> <span class="ansi-blue-fg">&#39;\n&#39;</span>
+<span class="ansi-green-intense-fg ansi-bold">   1556</span>         msg <span class="ansi-blue-fg">+=</span> bline <span class="ansi-blue-fg">+</span> <span class="ansi-blue-fg">&#39;\n&#39;</span>
+<span class="ansi-green-fg">-&gt; 1557</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">raise</span> ValueError<span class="ansi-blue-fg">(</span>msg<span class="ansi-blue-fg">)</span>
+<span class="ansi-green-intense-fg ansi-bold">   1558</span>     <span class="ansi-green-fg">return</span> ordered_dict
+
+<span class="ansi-red-fg">ValueError</span>: Text below contains invalid JSON:
+Expecting value: line 1 column 1 (char 0)
+Above location of the first error may be approximate.
+The invalid JSON text is between the lines:
+XXXX----.----1----.----2----.----3----.----4----.----5----.----6----.----7
+0001_static/reformC.json
+XXXX----.----1----.----2----.----3----.----4----.----5----.----6----.----7
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+ 
+
+
+
+
+					</div>
+
+				</div>
+
+			</div>
+
+			<footer class="footer">
+
+				<p>&copy; Copyright <YEAR>, Built using the minimal jupinx template.</p>
+
+			</footer>
+
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+		<script src="/_static/js/base.js"></script>
+
+	</body>
+</html>
