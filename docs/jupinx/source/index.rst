@@ -15,3 +15,4 @@ Welcome to taxcalc's documentation!
    recipe02
    recipe03
    recipe04
+   recipe04_pandas
