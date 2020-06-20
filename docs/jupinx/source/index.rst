@@ -11,3 +11,4 @@ Welcome to taxcalc's documentation!
    :caption: Contents:
 
    recipe00
+   recipe01
