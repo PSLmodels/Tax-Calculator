@@ -14,3 +14,4 @@ Welcome to taxcalc's documentation!
    recipe01
    recipe02
    recipe03
+   recipe04
