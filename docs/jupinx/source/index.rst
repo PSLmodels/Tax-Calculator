@@ -12,3 +12,4 @@ Welcome to taxcalc's documentation!
 
    recipe00
    recipe01
+   recipe02
