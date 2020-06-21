@@ -64,18 +64,19 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 	<div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">behresp</span>
 
 <span class="c1"># use publicly-available CPS input file</span>
-<span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
+<span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
 
 <span class="c1"># specify Calculator object for static analysis of current-law policy</span>
-<span class="n">pol</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">()</span>
-<span class="n">calc1</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+<span class="n">pol</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
+<span class="n">calc1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
 
 <span class="n">CYR</span> <span class="o">=</span> <span class="mi">2020</span>
 
-<span class="c1"># calculate current-law tax liabilities for cyr</span>
+<span class="c1"># calculate current-law tax liabilities for CYR</span>
 <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
 <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
 
@@ -84,8 +85,9 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
                          <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="c1"># specify Calculator object for static analysis of reform policy</span>
-<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;reformB.json&#39;</span><span class="p">))</span>
-<span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+<span class="c1"># TODO: Move this reform online so this can be run non-locally.</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformB.json&#39;</span><span class="p">))</span>
+<span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
 
 <span class="c1"># calculate reform tax liabilities for cyr</span>
 <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
@@ -164,33 +166,6 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 </div>
 </div>
 
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-	<div class="prompt"></div>
-
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">ModuleNotFoundError</span>                       Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-1-0b6995afd66a&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">      1</span> <span class="ansi-green-fg">import</span> taxcalc <span class="ansi-green-fg">as</span> tc
-<span class="ansi-green-intense-fg ansi-bold">      2</span> <span class="ansi-green-fg">import</span> pandas <span class="ansi-green-fg">as</span> pd
-<span class="ansi-green-fg">----&gt; 3</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">import</span> behresp
-<span class="ansi-green-intense-fg ansi-bold">      4</span> 
-<span class="ansi-green-intense-fg ansi-bold">      5</span> <span class="ansi-red-fg"># use publicly-available CPS input file</span>
-
-<span class="ansi-red-fg">ModuleNotFoundError</span>: No module named &#39;behresp&#39;</pre>
-</div>
-</div>
-
-</div>
-</div>
-
 </div>
 
 <div class="{} cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
@@ -207,7 +182,7 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
 	<div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">grouped</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">grouped</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 
 	</div>
@@ -220,18 +195,62 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 
 <div class="output_area">
 
-	<div class="prompt"></div>
+	<div class="prompt output_prompt">Out[2]:</div>
 
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-2-7ec012555c59&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-fg">----&gt; 1</span><span class="ansi-red-fg"> </span>print<span class="ansi-blue-fg">(</span>grouped<span class="ansi-blue-fg">.</span>round<span class="ansi-blue-fg">(</span><span class="ansi-cyan-fg">3</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>to_string<span class="ansi-blue-fg">(</span>index<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
 
-<span class="ansi-red-fg">NameError</span>: name &#39;grouped&#39; is not defined</pre>
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Earnings Group</th>
+      <th>Num(#M)</th>
+      <th>Resp($B)</th>
+      <th>Resp(%)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>[-9e+99, 50000.0)</td>
+      <td>108.866</td>
+      <td>0.689</td>
+      <td>0.553</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>[50000.0, 9e+99)</td>
+      <td>58.646</td>
+      <td>3.588</td>
+      <td>2.097</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>TOTAL</td>
+      <td>167.512</td>
+      <td>4.277</td>
+      <td>1.446</td>
+    </tr>
+  </tbody>
+</table>
 </div>
+</div>
+
 </div>
 
 </div>

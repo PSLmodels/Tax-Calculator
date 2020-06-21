@@ -25,8 +25,8 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
     itax_rev1 = calc1.weighted_total('iitax')
 
     # specify Calculator object for static analysis of reform policy
-    pol.implement_reform(Policy.read_json_reform('reformA.json'))
-    calc2 = Calculator(policy=pol, records=recs)
+    pol.implement_reform(tc.Policy.read_json_reform('_static/reformA.json'))
+    calc2 = tc.Calculator(policy=pol, records=recs)
 
     # calculate reform income tax liabilities for cyr under static assumptions
     calc2.advance_to_year(CYR)

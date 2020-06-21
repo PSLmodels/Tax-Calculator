@@ -9,18 +9,19 @@ It employs the `groupby` technique used in the Creating a Custom Table recipe, s
 
     import taxcalc as tc
     import pandas as pd
+    import numpy as np
     import behresp
 
     # use publicly-available CPS input file
-    recs = Records.cps_constructor()
+    recs = tc.Records.cps_constructor()
 
     # specify Calculator object for static analysis of current-law policy
-    pol = Policy()
-    calc1 = Calculator(policy=pol, records=recs)
+    pol = tc.Policy()
+    calc1 = tc.Calculator(policy=pol, records=recs)
 
     CYR = 2020
 
-    # calculate current-law tax liabilities for cyr
+    # calculate current-law tax liabilities for CYR
     calc1.advance_to_year(CYR)
     calc1.calc_all()
 
@@ -29,8 +30,9 @@ It employs the `groupby` technique used in the Creating a Custom Table recipe, s
 			     wrt_full_compensation=False)
 
     # specify Calculator object for static analysis of reform policy
-    pol.implement_reform(Policy.read_json_reform('reformB.json'))
-    calc2 = Calculator(policy=pol, records=recs)
+    # TODO: Move this reform online so this can be run non-locally.
+    pol.implement_reform(tc.Policy.read_json_reform('_static/reformB.json'))
+    calc2 = tc.Calculator(policy=pol, records=recs)
 
     # calculate reform tax liabilities for cyr
     calc2.advance_to_year(CYR)
@@ -108,4 +110,4 @@ Result: Response in Charitable Giving by Earnings Group
 
 .. code-block:: python3
 
-    print(grouped.round(3).to_string(index=False))
+    grouped.round(3)

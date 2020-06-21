@@ -62,6 +62,7 @@ This recipe shows how to prepare a custom table.</p>
 <div class="inner_cell">
 	<div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="c1"># use publicly-available CPS input file</span>
 <span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
@@ -79,37 +80,11 @@ This recipe shows how to prepare a custom table.</p>
 <span class="c1"># tabulate custom table showing number of filing units receiving EITC</span>
 <span class="c1"># and the average positive EITC amount by IRS-SOI AGI categories</span>
 <span class="n">vardf</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">dataframe</span><span class="p">([</span><span class="s1">&#39;s006&#39;</span><span class="p">,</span> <span class="s1">&#39;c00100&#39;</span><span class="p">,</span> <span class="s1">&#39;eitc&#39;</span><span class="p">])</span>
-<span class="n">vardf</span> <span class="o">=</span> <span class="n">add_income_table_row_variable</span><span class="p">(</span><span class="n">vardf</span><span class="p">,</span> <span class="s1">&#39;c00100&#39;</span><span class="p">,</span> <span class="n">tc</span><span class="o">.</span><span class="n">SOI_AGI_BINS</span><span class="p">)</span>
+<span class="n">vardf</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">add_income_table_row_variable</span><span class="p">(</span><span class="n">vardf</span><span class="p">,</span> <span class="s1">&#39;c00100&#39;</span><span class="p">,</span> <span class="n">tc</span><span class="o">.</span><span class="n">SOI_AGI_BINS</span><span class="p">)</span>
 <span class="n">gbydf</span> <span class="o">=</span> <span class="n">vardf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
 	</div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-	<div class="prompt"></div>
-
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-1-88c06f43a0a7&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">     17</span> <span class="ansi-red-fg"># and the average positive EITC amount by IRS-SOI AGI categories</span>
-<span class="ansi-green-intense-fg ansi-bold">     18</span> vardf <span class="ansi-blue-fg">=</span> calc<span class="ansi-blue-fg">.</span>dataframe<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;s006&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;c00100&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;eitc&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-fg">---&gt; 19</span><span class="ansi-red-fg"> </span>vardf <span class="ansi-blue-fg">=</span> add_income_table_row_variable<span class="ansi-blue-fg">(</span>vardf<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;c00100&#39;</span><span class="ansi-blue-fg">,</span> tc<span class="ansi-blue-fg">.</span>SOI_AGI_BINS<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">     20</span> gbydf <span class="ansi-blue-fg">=</span> vardf<span class="ansi-blue-fg">.</span>groupby<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;table_row&#39;</span><span class="ansi-blue-fg">,</span> as_index<span class="ansi-blue-fg">=</span><span class="ansi-green-fg">False</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-red-fg">NameError</span>: name &#39;add_income_table_row_variable&#39; is not defined</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -167,27 +142,27 @@ This recipe shows how to prepare a custom table.</p>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>AGI Category           	 Num(#M)	 Avg($K)
+[-9e+99, 1)            	   0.053	   1.358
+[1, 5000)              	   1.144	   0.515
+[5000, 10000)          	   2.004	   1.387
+[10000, 15000)         	   3.140	   1.869
+[15000, 20000)         	   2.640	   3.345
+[20000, 25000)         	   2.259	   4.046
+[25000, 30000)         	   2.021	   3.775
+[30000, 40000)         	   3.813	   2.491
+[40000, 50000)         	   2.140	   1.299
+[50000, 75000)         	   0.425	   0.570
+[75000, 100000)        	   0.000	     nan
+[100000, 200000)       	   0.000	     nan
+[200000, 500000)       	   0.000	     nan
+[500000, 1000000)      	   0.000	     nan
+[1000000, 1500000)     	   0.000	     nan
+[1500000, 2000000)     	   0.000	     nan
+[2000000, 5000000)     	   0.000	     nan
+[5000000, 10000000)    	   0.000	     nan
+[10000000, 9e+99)      	   0.000	     nan
+ALL                    	  19.638	   2.415
 </pre>
-</div>
-</div>
-
-<div class="output_area">
-
-	<div class="prompt"></div>
-
-
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-2-8ec1b0186c9e&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">      6</span> tot_amount <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">0.</span>
-<span class="ansi-green-intense-fg ansi-bold">      7</span> idx <span class="ansi-blue-fg">=</span> <span class="ansi-cyan-fg">0</span>
-<span class="ansi-green-fg">----&gt; 8</span><span class="ansi-red-fg"> </span><span class="ansi-green-fg">for</span> grp_interval<span class="ansi-blue-fg">,</span> grp <span class="ansi-green-fg">in</span> gbydf<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-intense-fg ansi-bold">      9</span>     recips <span class="ansi-blue-fg">=</span> grp<span class="ansi-blue-fg">[</span>grp<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;eitc&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">&gt;</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;s006&#39;</span><span class="ansi-blue-fg">]</span><span class="ansi-blue-fg">.</span>sum<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">*</span> <span class="ansi-cyan-fg">1e-6</span>
-<span class="ansi-green-intense-fg ansi-bold">     10</span>     tot_recips <span class="ansi-blue-fg">+=</span> recips
-
-<span class="ansi-red-fg">NameError</span>: name &#39;gbydf&#39; is not defined</pre>
 </div>
 </div>
 

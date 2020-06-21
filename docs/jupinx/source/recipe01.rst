@@ -6,6 +6,7 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 (instead of reform files on your computer's disk).
 
 .. code-block:: python3
+		
     import pandas as pd
     import taxcalc as tc
 
@@ -69,8 +70,9 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 Print reform2-vs-reform1 difference table
 
 .. code-block:: python3
+		
     title = 'Extract of {} income-tax difference table by expanded-income decile'
-    print(title.format(cyr))
+    print(title.format(CYR))
     print('(taxfall is count of funits with cut in income tax in reform 2 vs 1)')
     print('(taxrise is count of funits with rise in income tax in reform 2 vs 1)')
     print(diff_extract.to_string())

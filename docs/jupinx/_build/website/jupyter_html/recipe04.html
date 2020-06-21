@@ -56,6 +56,121 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 </div>
 </div>
 </div>
+
+<div class="{} cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+	<div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
+<span class="kn">import</span> <span class="nn">behresp</span>
+
+<span class="c1"># use publicly-available CPS input file</span>
+<span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
+
+<span class="c1"># specify Calculator object for static analysis of current-law policy</span>
+<span class="n">pol</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
+<span class="n">calc1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+
+<span class="n">CYR</span> <span class="o">=</span> <span class="mi">2020</span>
+
+<span class="c1"># calculate current-law tax liabilities for CYR</span>
+<span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+
+<span class="c1"># calculate marginal tax rate wrt cash charitable giving</span>
+<span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr1</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># specify Calculator object for static analysis of reform policy</span>
+<span class="c1"># TODO: Move this reform online so it can be read non-locally.</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformB.json&#39;</span><span class="p">))</span>
+<span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+
+<span class="c1"># calculate reform tax liabilities for CYR</span>
+<span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+
+<span class="c1"># calculate marginal tax rate wrt cash charitable giving</span>
+<span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr2</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># extract variables needed for quantity_response function</span>
+<span class="c1"># (note the aftertax price is 1+mtr because mtr wrt charity is non-positive)</span>
+<span class="n">vdf</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">dataframe</span><span class="p">([</span><span class="s1">&#39;s006&#39;</span><span class="p">,</span> <span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="s1">&#39;e00200&#39;</span><span class="p">])</span>
+<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;price1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">mtr1</span>
+<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;price2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="n">mtr2</span>
+<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;atinc1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;aftertax_income&#39;</span><span class="p">)</span>
+<span class="n">vdf</span><span class="p">[</span><span class="s1">&#39;atinc2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;aftertax_income&#39;</span><span class="p">)</span>
+
+<span class="c1"># group filing units into earnings groups with different response elasticities</span>
+<span class="c1"># (note earnings groups are just an example based on no empirical results)</span>
+<span class="n">earnings_bins</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">9e99</span><span class="p">,</span> <span class="mf">50e3</span><span class="p">,</span> <span class="mf">9e99</span><span class="p">]</span>  <span class="c1"># two groups: below and above $50,000</span>
+<span class="n">vdf</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">add_income_table_row_variable</span><span class="p">(</span><span class="n">vdf</span><span class="p">,</span> <span class="s1">&#39;e00200&#39;</span><span class="p">,</span> <span class="n">earnings_bins</span><span class="p">)</span>
+<span class="n">gbydf</span> <span class="o">=</span> <span class="n">vdf</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># compute percentage response in charitable giving</span>
+<span class="c1"># (note elasticity values are just an example based on no empirical results)</span>
+<span class="n">PRICE_ELASTICITY</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">]</span>
+<span class="n">INCOME_ELASTICITY</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Response in Charitable Giving by Earnings Group&#39;</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:18s}</span><span class="se">\t</span><span class="si">{:8.3f}</span><span class="se">\t</span><span class="si">{:8.3f}</span><span class="se">\t</span><span class="si">{:8.2f}</span><span class="s1">&#39;</span>
+<span class="n">colhead</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:18s}</span><span class="se">\t</span><span class="si">{:&gt;8s}</span><span class="se">\t</span><span class="si">{:&gt;8s}</span><span class="se">\t</span><span class="si">{:&gt;8s}</span><span class="s1">&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">colhead</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;Earnings Group&#39;</span><span class="p">,</span> <span class="s1">&#39;Num(#M)&#39;</span><span class="p">,</span> <span class="s1">&#39;Resp($B)&#39;</span><span class="p">,</span> <span class="s1">&#39;Resp(%)&#39;</span><span class="p">))</span>
+<span class="n">tot_funits</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">tot_response</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">tot_baseline</span> <span class="o">=</span> <span class="mf">0.</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">grp_interval</span><span class="p">,</span> <span class="n">grp</span> <span class="ow">in</span> <span class="n">gbydf</span><span class="p">:</span>
+    <span class="n">funits</span> <span class="o">=</span> <span class="n">grp</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-6</span>
+    <span class="n">tot_funits</span> <span class="o">+=</span> <span class="n">funits</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">quantity_response</span><span class="p">(</span><span class="n">grp</span><span class="p">[</span><span class="s1">&#39;e19800&#39;</span><span class="p">],</span>
+                                         <span class="n">PRICE_ELASTICITY</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                                         <span class="n">grp</span><span class="p">[</span><span class="s1">&#39;price1&#39;</span><span class="p">],</span>
+                                         <span class="n">grp</span><span class="p">[</span><span class="s1">&#39;price2&#39;</span><span class="p">],</span>
+                                         <span class="n">INCOME_ELASTICITY</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                                         <span class="n">grp</span><span class="p">[</span><span class="s1">&#39;atinc1&#39;</span><span class="p">],</span>
+                                         <span class="n">grp</span><span class="p">[</span><span class="s1">&#39;atinc2&#39;</span><span class="p">])</span>
+    <span class="n">grp_response</span> <span class="o">=</span> <span class="p">(</span><span class="n">response</span> <span class="o">*</span> <span class="n">grp</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-9</span>
+    <span class="n">tot_response</span> <span class="o">+=</span> <span class="n">grp_response</span>
+    <span class="n">grp_baseline</span> <span class="o">=</span> <span class="p">(</span><span class="n">grp</span><span class="p">[</span><span class="s1">&#39;e19800&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">grp</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-9</span>
+    <span class="n">tot_baseline</span> <span class="o">+=</span> <span class="n">grp_baseline</span>
+    <span class="n">pct_response</span> <span class="o">=</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">grp_response</span> <span class="o">/</span> <span class="n">grp_baseline</span>
+    <span class="n">glabel</span> <span class="o">=</span> <span class="s1">&#39;[</span><span class="si">{:.8g}</span><span class="s1">, </span><span class="si">{:.8g}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">grp_interval</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">grp_interval</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">glabel</span><span class="p">,</span> <span class="n">funits</span><span class="p">,</span> <span class="n">grp_response</span><span class="p">,</span> <span class="n">pct_response</span><span class="p">))</span>
+    <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="n">pct_response</span> <span class="o">=</span> <span class="mf">100.</span> <span class="o">*</span> <span class="n">tot_response</span> <span class="o">/</span> <span class="n">tot_baseline</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;ALL&#39;</span><span class="p">,</span> <span class="n">tot_funits</span><span class="p">,</span> <span class="n">tot_response</span><span class="p">,</span> <span class="n">pct_response</span><span class="p">))</span>
+</pre></div>
+
+	</div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+	<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+Response in Charitable Giving by Earnings Group
+Earnings Group    	 Num(#M)	Resp($B)	 Resp(%)
+[-9e+99, 50000)   	 108.866	   0.689	    0.55
+[50000, 9e+99)    	  58.646	   3.588	    2.10
+ALL               	 167.512	   4.277	    1.45
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
  
 
 

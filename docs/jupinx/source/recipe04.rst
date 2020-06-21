@@ -6,6 +6,7 @@ This recipe shows how to estimate the reform response in charitable giving when 
 It employs the groupby technique used in the Creating a Custom Table recipe, so you might want to read that recipe first.
 
 .. code-block:: python3
+		
     import taxcalc as tc
     import behresp
 
@@ -18,7 +19,7 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 
     CYR = 2020
 
-    # calculate current-law tax liabilities for cyr
+    # calculate current-law tax liabilities for CYR
     calc1.advance_to_year(CYR)
     calc1.calc_all()
 
@@ -27,8 +28,9 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 			     wrt_full_compensation=False)
 
     # specify Calculator object for static analysis of reform policy
-    pol.implement_reform(Policy.read_json_reform('reformB.json'))
-    calc2 = Calculator(policy=pol, records=recs)
+    # TODO: Move this reform online so it can be read non-locally.
+    pol.implement_reform(tc.Policy.read_json_reform('_static/reformB.json'))
+    calc2 = tc.Calculator(policy=pol, records=recs)
 
     # calculate reform tax liabilities for CYR
     calc2.advance_to_year(CYR)
@@ -49,13 +51,13 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
     # group filing units into earnings groups with different response elasticities
     # (note earnings groups are just an example based on no empirical results)
     earnings_bins = [-9e99, 50e3, 9e99]  # two groups: below and above $50,000
-    vdf = add_income_table_row_variable(vdf, 'e00200', earnings_bins)
+    vdf = tc.add_income_table_row_variable(vdf, 'e00200', earnings_bins)
     gbydf = vdf.groupby('table_row', as_index=False)
 
     # compute percentage response in charitable giving
     # (note elasticity values are just an example based on no empirical results)
-    price_elasticity = [-0.1, -0.4]
-    income_elasticity = [0.1, 0.1]
+    PRICE_ELASTICITY = [-0.1, -0.4]
+    INCOME_ELASTICITY = [0.1, 0.1]
     print('\nResponse in Charitable Giving by Earnings Group')
     results = '{:18s}\t{:8.3f}\t{:8.3f}\t{:8.2f}'
     colhead = '{:18s}\t{:>8s}\t{:>8s}\t{:>8s}'
@@ -68,10 +70,10 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 	funits = grp['s006'].sum() * 1e-6
 	tot_funits += funits
 	response = behresp.quantity_response(grp['e19800'],
-					     price_elasticity[idx],
+					     PRICE_ELASTICITY[idx],
 					     grp['price1'],
 					     grp['price2'],
-					     income_elasticity[idx],
+					     INCOME_ELASTICITY[idx],
 					     grp['atinc1'],
 					     grp['atinc2'])
 	grp_response = (response * grp['s006']).sum() * 1e-9

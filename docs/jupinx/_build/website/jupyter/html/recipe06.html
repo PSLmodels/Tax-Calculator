@@ -210,7 +210,7 @@ to be an accurate representation of the Cost-of-Living Refund proposal.</p>
 <span class="n">calc2</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">policy2</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">cps_records</span><span class="p">,</span> <span class="n">colr_active</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># calculate tax liabilities for years around the reform year</span>
-<span class="n">cyr_first</span> <span class="o">=</span> <span class="mi">2019</span>
+<span class="n">CYR_FIRST</span> <span class="o">=</span> <span class="mi">2019</span>
 <span class="n">CYR_LAST</span> <span class="o">=</span> <span class="mi">2022</span>
 <span class="k">for</span> <span class="n">cyr</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CYR_FIRST</span><span class="p">,</span> <span class="n">CYR_LAST</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
     <span class="c1"># advance to and calculate for specified cyr</span>
@@ -249,68 +249,12 @@ to be an accurate representation of the Cost-of-Living Refund proposal.</p>
 	<div class="prompt"></div>
 
 
-<div class="output_subarea output_text output_error">
-<pre>
-<span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">JSONDecodeError</span>                           Traceback (most recent call last)
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/utils.py</span> in <span class="ansi-cyan-fg">json_to_dict</span><span class="ansi-blue-fg">(json_text)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1541</span>         ordered_dict = json.loads(json_text,
-<span class="ansi-green-fg">-&gt; 1542</span><span class="ansi-red-fg">                                   object_pairs_hook=collections.OrderedDict)
-</span><span class="ansi-green-intense-fg ansi-bold">   1543</span>     <span class="ansi-green-fg">except</span> ValueError <span class="ansi-green-fg">as</span> valerr<span class="ansi-blue-fg">:</span>
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/json/__init__.py</span> in <span class="ansi-cyan-fg">loads</span><span class="ansi-blue-fg">(s, encoding, cls, object_hook, parse_float, parse_int, parse_constant, object_pairs_hook, **kw)</span>
-<span class="ansi-green-intense-fg ansi-bold">    360</span>         kw<span class="ansi-blue-fg">[</span><span class="ansi-blue-fg">&#39;parse_constant&#39;</span><span class="ansi-blue-fg">]</span> <span class="ansi-blue-fg">=</span> parse_constant
-<span class="ansi-green-fg">--&gt; 361</span><span class="ansi-red-fg">     </span><span class="ansi-green-fg">return</span> cls<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">**</span>kw<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>decode<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/json/decoder.py</span> in <span class="ansi-cyan-fg">decode</span><span class="ansi-blue-fg">(self, s, _w)</span>
-<span class="ansi-green-intense-fg ansi-bold">    336</span>         &#34;&#34;&#34;
-<span class="ansi-green-fg">--&gt; 337</span><span class="ansi-red-fg">         </span>obj<span class="ansi-blue-fg">,</span> end <span class="ansi-blue-fg">=</span> self<span class="ansi-blue-fg">.</span>raw_decode<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">,</span> idx<span class="ansi-blue-fg">=</span>_w<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">,</span> <span class="ansi-cyan-fg">0</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>end<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    338</span>         end <span class="ansi-blue-fg">=</span> _w<span class="ansi-blue-fg">(</span>s<span class="ansi-blue-fg">,</span> end<span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">.</span>end<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span>
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/json/decoder.py</span> in <span class="ansi-cyan-fg">raw_decode</span><span class="ansi-blue-fg">(self, s, idx)</span>
-<span class="ansi-green-intense-fg ansi-bold">    354</span>         <span class="ansi-green-fg">except</span> StopIteration <span class="ansi-green-fg">as</span> err<span class="ansi-blue-fg">:</span>
-<span class="ansi-green-fg">--&gt; 355</span><span class="ansi-red-fg">             </span><span class="ansi-green-fg">raise</span> JSONDecodeError<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#34;Expecting value&#34;</span><span class="ansi-blue-fg">,</span> s<span class="ansi-blue-fg">,</span> err<span class="ansi-blue-fg">.</span>value<span class="ansi-blue-fg">)</span> <span class="ansi-green-fg">from</span> <span class="ansi-green-fg">None</span>
-<span class="ansi-green-intense-fg ansi-bold">    356</span>         <span class="ansi-green-fg">return</span> obj<span class="ansi-blue-fg">,</span> end
-
-<span class="ansi-red-fg">JSONDecodeError</span>: Expecting value: line 1 column 1 (char 0)
-
-During handling of the above exception, another exception occurred:
-
-<span class="ansi-red-fg">ValueError</span>                                Traceback (most recent call last)
-<span class="ansi-green-fg">&lt;ipython-input-1-56a56d1f88fd&gt;</span> in <span class="ansi-cyan-fg">&lt;module&gt;</span>
-<span class="ansi-green-intense-fg ansi-bold">    121</span> 
-<span class="ansi-green-intense-fg ansi-bold">    122</span> <span class="ansi-red-fg"># TODO: Move to the web so this can be done standalone.</span>
-<span class="ansi-green-fg">--&gt; 123</span><span class="ansi-red-fg"> </span>policy2<span class="ansi-blue-fg">.</span>implement_reform<span class="ansi-blue-fg">(</span>tc<span class="ansi-blue-fg">.</span>Policy<span class="ansi-blue-fg">.</span>read_json_reform<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;_static/reformC.json&#39;</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    124</span> 
-<span class="ansi-green-intense-fg ansi-bold">    125</span> <span class="ansi-red-fg"># specify customized Calculator objects for baseline and reform:</span>
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/policy.py</span> in <span class="ansi-cyan-fg">read_json_reform</span><span class="ansi-blue-fg">(obj)</span>
-<span class="ansi-green-intense-fg ansi-bold">    117</span>         pointing to a valid JSON file hosted online<span class="ansi-blue-fg">,</span> <span class="ansi-green-fg">or</span> a valid JSON text<span class="ansi-blue-fg">.</span>
-<span class="ansi-green-intense-fg ansi-bold">    118</span>         &#34;&#34;&#34;
-<span class="ansi-green-fg">--&gt; 119</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">return</span> Parameters<span class="ansi-blue-fg">.</span>_read_json_revision<span class="ansi-blue-fg">(</span>obj<span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39;policy&#39;</span><span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    120</span> 
-<span class="ansi-green-intense-fg ansi-bold">    121</span>     def implement_reform(self, reform,
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/parameters.py</span> in <span class="ansi-cyan-fg">_read_json_revision</span><span class="ansi-blue-fg">(obj, topkey)</span>
-<span class="ansi-green-intense-fg ansi-bold">    920</span>         json_txt <span class="ansi-blue-fg">=</span> re<span class="ansi-blue-fg">.</span>sub<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">&#39;//.*&#39;</span><span class="ansi-blue-fg">,</span> <span class="ansi-blue-fg">&#39; &#39;</span><span class="ansi-blue-fg">,</span> txt<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    921</span>         <span class="ansi-red-fg"># convert JSON text into a Python dictionary</span>
-<span class="ansi-green-fg">--&gt; 922</span><span class="ansi-red-fg">         </span>full_dict <span class="ansi-blue-fg">=</span> json_to_dict<span class="ansi-blue-fg">(</span>json_txt<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">    923</span>         <span class="ansi-red-fg"># check top-level key contents of dictionary</span>
-<span class="ansi-green-intense-fg ansi-bold">    924</span>         <span class="ansi-green-fg">if</span> topkey <span class="ansi-green-fg">in</span> full_dict<span class="ansi-blue-fg">.</span>keys<span class="ansi-blue-fg">(</span><span class="ansi-blue-fg">)</span><span class="ansi-blue-fg">:</span>
-
-<span class="ansi-green-fg">~/anaconda3/lib/python3.7/site-packages/taxcalc/utils.py</span> in <span class="ansi-cyan-fg">json_to_dict</span><span class="ansi-blue-fg">(json_text)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1555</span>             msg <span class="ansi-blue-fg">+=</span> <span class="ansi-blue-fg">&#39;{:04d}{}&#39;</span><span class="ansi-blue-fg">.</span>format<span class="ansi-blue-fg">(</span>linenum<span class="ansi-blue-fg">,</span> line<span class="ansi-blue-fg">)</span> <span class="ansi-blue-fg">+</span> <span class="ansi-blue-fg">&#39;\n&#39;</span>
-<span class="ansi-green-intense-fg ansi-bold">   1556</span>         msg <span class="ansi-blue-fg">+=</span> bline <span class="ansi-blue-fg">+</span> <span class="ansi-blue-fg">&#39;\n&#39;</span>
-<span class="ansi-green-fg">-&gt; 1557</span><span class="ansi-red-fg">         </span><span class="ansi-green-fg">raise</span> ValueError<span class="ansi-blue-fg">(</span>msg<span class="ansi-blue-fg">)</span>
-<span class="ansi-green-intense-fg ansi-bold">   1558</span>     <span class="ansi-green-fg">return</span> ordered_dict
-
-<span class="ansi-red-fg">ValueError</span>: Text below contains invalid JSON:
-Expecting value: line 1 column 1 (char 0)
-Above location of the first error may be approximate.
-The invalid JSON text is between the lines:
-XXXX----.----1----.----2----.----3----.----4----.----5----.----6----.----7
-0001_static/reformC.json
-XXXX----.----1----.----2----.----3----.----4----.----5----.----6----.----7
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2
+2019  165.3  1358.4  1358.4   47.7   47.7    0.0    0.0
+2020  167.5  1430.7  1196.6   47.4    0.0    0.0  281.6
+2021  169.7  1513.9  1275.9   47.9    0.0    0.0  285.8
+2022  171.9  1590.8  1347.7   48.7    0.0    0.0  291.8
 </pre>
 </div>
 </div>

@@ -158,7 +158,7 @@ to be an accurate representation of the Cost-of-Living Refund proposal.
     calc2 = Calculator(policy=policy2, records=cps_records, colr_active=True)
 
     # calculate tax liabilities for years around the reform year
-    cyr_first = 2019
+    CYR_FIRST = 2019
     CYR_LAST = 2022
     for cyr in range(CYR_FIRST, CYR_LAST + 1):
 	# advance to and calculate for specified cyr

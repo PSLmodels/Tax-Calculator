@@ -1,0 +1,15 @@
+{
+    "policy": {
+        // raise personal exemption amount and index in subsequent years
+        "II_em": {"2020": 1000},
+        // raise tax rates in the top three brackets
+        // ... raise non-AMT rates on non-pass-through income
+        "II_rt5": {"2020": 0.36},
+        "II_rt6": {"2020": 0.39},
+        "II_rt7": {"2020": 0.41},
+        // ... raise non-AMT rates on pass-through income
+        "PT_rt5": {"2020": 0.36},
+        "PT_rt6": {"2020": 0.39},
+        "PT_rt7": {"2020": 0.41}
+    }
+}

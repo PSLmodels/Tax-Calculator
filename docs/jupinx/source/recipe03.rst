@@ -7,6 +7,7 @@ This recipe shows how to prepare a custom table.
 .. code-block:: python3
 
     import taxcalc as tc
+    import numpy as np
 
     # use publicly-available CPS input file
     recs = tc.Records.cps_constructor()
@@ -24,7 +25,7 @@ This recipe shows how to prepare a custom table.
     # tabulate custom table showing number of filing units receiving EITC
     # and the average positive EITC amount by IRS-SOI AGI categories
     vardf = calc.dataframe(['s006', 'c00100', 'eitc'])
-    vardf = add_income_table_row_variable(vardf, 'c00100', tc.SOI_AGI_BINS)
+    vardf = tc.add_income_table_row_variable(vardf, 'c00100', tc.SOI_AGI_BINS)
     gbydf = vardf.groupby('table_row', as_index=False)
 
 
