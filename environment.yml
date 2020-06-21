@@ -1,9 +1,11 @@
 name: taxcalc-dev
+channels:
+  - conda-forge
 dependencies:
 - python
 - "numpy>=1.14"
 - "pandas>=0.23"
-- "bokeh>=0.13"
+- "bokeh>=1.4.0"
 - requests
 - numba
 - pytest
@@ -12,3 +14,4 @@ dependencies:
 - pycodestyle
 - pylint
 - coverage
+- "paramtools>=0.14.0"

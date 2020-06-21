@@ -13,6 +13,10 @@ conda list
 @rem Clean up any left-over from a previous build
 conda remove --all -q -y -n %CONDA_ENV%
 
+@rem Address occassional error, per:
+@rem https://github.com/conda/conda/issues/3935#issuecomment-263756320
+CONDA_SSL_VERIFY=false conda update pyopenssl
+
 @rem Create test environment
 @rem (note: no cytoolz as it seems to prevent faulthandler tracebacks on crash)
 conda create -n %CONDA_ENV% -q -y python=%PYTHON%

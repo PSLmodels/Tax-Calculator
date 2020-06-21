@@ -18,6 +18,7 @@ print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 
 # make list of recipeNN.py filenames
 RECIPES = glob.glob('recipe[0-9][0-9].py')
+RECIPES.append('recipe04_pandas.py')
 
 # execute each recipe in RECIPES list and compare output with expected output
 for recipe in sorted(RECIPES):

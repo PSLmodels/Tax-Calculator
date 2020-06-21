@@ -6,6 +6,8 @@ Tax-Calculator federal tax policy Policy class.
 # pylint --disable=locally-disabled policy.py
 
 import os
+import json
+import numpy as np
 from taxcalc.parameters import Parameters
 from taxcalc.growfactors import GrowFactors
 
@@ -35,9 +37,9 @@ class Policy(Parameters):
     DEFAULTS_FILE_NAME = 'policy_current_law.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
     JSON_START_YEAR = 2013  # remains the same unless earlier data added
-    LAST_KNOWN_YEAR = 2018  # last year for which indexed param vals are known
+    LAST_KNOWN_YEAR = 2019  # last year for which indexed param vals are known
     # should increase LAST_KNOWN_YEAR by one every calendar year
-    LAST_BUDGET_YEAR = 2029  # last extrapolation year
+    LAST_BUDGET_YEAR = 2030  # last extrapolation year
     # should increase LAST_BUDGET_YEAR by one every calendar year
     DEFAULT_NUM_YEARS = LAST_BUDGET_YEAR - JSON_START_YEAR + 1
 
@@ -45,39 +47,31 @@ class Policy(Parameters):
     # (1) specify which Policy parameters have been removed or renamed
     REMOVED_PARAMS = {
         # following five parameters removed in PR 2223 merged on 2019-02-06
-        '_DependentCredit_Child_c': 'is a removed parameter name',
-        '_DependentCredit_Nonchild_c': 'is a removed parameter name',
-        '_DependentCredit_before_CTC': 'is a removed parameter name',
-        '_FilerCredit_c': 'is a removed parameter name',
-        '_ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
+        'DependentCredit_Child_c': 'is a removed parameter name',
+        'DependentCredit_Nonchild_c': 'is a removed parameter name',
+        'DependentCredit_before_CTC': 'is a removed parameter name',
+        'FilerCredit_c': 'is a removed parameter name',
+        'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
         # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
-        '_cpi_offset': 'was renamed CPI_offset in release 2.0.0',
+        'cpi_offset': 'was renamed CPI_offset in release 2.0.0',
         # TODO: following parameters renamed in PR 2345 merged on 2019-06-24
-        '_PT_excl_rt':
+        'PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
-        '_PT_excl_wagelim_thd':
+        'PT_excl_wagelim_thd':
         'was renamed PT_qbid_taxinc_thd in release 2.4.0',
-        '_PT_excl_wagelim_prt':
+        'PT_excl_wagelim_prt':
         'was renamed PT_qbid_taxinc_gap in release 2.4.0',
-        '_PT_excl_wagelim_rt':
+        'PT_excl_wagelim_rt':
         'was renamed PT_qbid_w2_wages_rt in release 2.4.0'
     }
     # (2) specify which Policy parameters have been redefined recently
-    REDEFINED_PARAMS = {
-        # TODO: remove the CTC_c name:message pair sometime later in 2019
-        '_CTC_c': 'CTC_c was redefined in release 1.0.0'
-    }
+    REDEFINED_PARAMS = {}
     # (3) specify which Policy parameters are wage (rather than price) indexed
-    WAGE_INDEXED_PARAMS = [
-        '_SS_Earnings_c',
-        '_SS_Earnings_thd'
-    ]
+    WAGE_INDEXED_PARAMS = ['SS_Earnings_c', 'SS_Earnings_thd']
 
-    def __init__(self, gfactors=None, only_reading_defaults=False):
+    def __init__(self, gfactors=None, only_reading_defaults=False, **kwargs):
         # put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary
         super().__init__()
-        if only_reading_defaults:
-            return
         # handle gfactors argument
         if gfactors is None:
             self._gfactors = GrowFactors()
@@ -89,24 +83,12 @@ class Policy(Parameters):
         syr = Policy.JSON_START_YEAR
         lyr = Policy.LAST_BUDGET_YEAR
         nyrs = Policy.DEFAULT_NUM_YEARS
-        self._inflation_rates = self._gfactors.price_inflation_rates(syr, lyr)
-        self._wage_growth_rates = self._gfactors.wage_growth_rates(syr, lyr)
+        self._inflation_rates = None
+        self._wage_growth_rates = None
         self.initialize(syr, nyrs, Policy.LAST_KNOWN_YEAR,
                         Policy.REMOVED_PARAMS,
                         Policy.REDEFINED_PARAMS,
-                        Policy.WAGE_INDEXED_PARAMS)
-
-    def inflation_rates(self):
-        """
-        Returns list of price inflation rates starting with JSON_START_YEAR.
-        """
-        return self._inflation_rates
-
-    def wage_growth_rates(self):
-        """
-        Returns list of wage growth rates starting with JSON_START_YEAR.
-        """
-        return self._wage_growth_rates
+                        Policy.WAGE_INDEXED_PARAMS, **kwargs)
 
     @staticmethod
     def read_json_reform(obj):
@@ -121,18 +103,49 @@ class Policy(Parameters):
     def implement_reform(self, reform,
                          print_warnings=True, raise_errors=True):
         """
-        Implement specified policy reform and leave current_year unchanged.
-        See Parameters._update for argument documentation and details about
-        the expected structure of the reform dictionary.
+        Implement reform using Tax-Calculator syled reforms/adjustments. Users
+        may also use the adjust method with ParamTools styled reforms.
         """
-        self._update(reform, print_warnings, raise_errors)
+        # need to do conversion:
+        return self._update(reform, print_warnings, raise_errors)
 
     @staticmethod
     def parameter_list():
         """
         Returns list of parameter names in the policy_current_law.json file.
         """
-        policy = Policy(only_reading_defaults=True)
-        plist = list(policy._vals.keys())  # pylint: disable=protected-access
-        del policy
-        return plist
+        path = os.path.join(
+            Policy.DEFAULTS_FILE_PATH,
+            Policy.DEFAULTS_FILE_NAME
+        )
+        with open(path) as f:
+            defaults = json.loads(f.read())  # pylint: disable=protected-access
+        return [k for k in defaults if k != "schema"]
+
+    def set_rates(self):
+        """Initialize taxcalc indexing data."""
+        cpi_vals = [vo["value"] for vo in self._data["CPI_offset"]["value"]]
+        # extend cpi_offset values through budget window if they
+        # have not been extended already.
+        cpi_vals = cpi_vals + cpi_vals[-1:] * (
+            self.end_year - self.start_year + 1 - len(cpi_vals)
+        )
+        cpi_offset = {
+            (self.start_year + ix): val
+            for ix, val in enumerate(cpi_vals)
+        }
+
+        self._gfactors = GrowFactors()
+
+        self._inflation_rates = [
+            np.round(rate + cpi_offset[self.start_year + ix], 4)
+            for ix, rate in enumerate(
+                self._gfactors.price_inflation_rates(
+                    self.start_year, self.end_year
+                )
+            )
+        ]
+
+        self._wage_growth_rates = self._gfactors.wage_growth_rates(
+            self.start_year, self.end_year
+        )

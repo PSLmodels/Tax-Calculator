@@ -6,7 +6,7 @@ except ImportError:
 with open('README.md') as f:
     longdesc = f.read()
 
-version = '0.0.0'
+version = '2.9.0'
 
 config = {
     'description': 'Tax Calculator',
@@ -31,7 +31,10 @@ config = {
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Topic :: Software Development :: Libraries :: Python Modules'],
-    'tests_require': ['pytest']
+    'tests_require': ['pytest'],
+    'entry_points': {
+        'console_scripts': ['tc=taxcalc.cli.tc:cli_tc_main']
+    }
 }
 
 setup(**config)

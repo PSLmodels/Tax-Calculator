@@ -142,6 +142,9 @@ def create_toplevel_function_string(args_out, args_in, pm_or_pf):
     fstr.write("        (" + ", ".join(outs) + ") = \\\n")
     fstr.write("        " + "applied_f(")
     for ppp, attr in zip(pm_or_pf, args_out + args_in):
+        # Bring Policy parameter values down a dimension.
+        if ppp == "pm":
+            attr += "[0]"
         fstr.write("get_values(" + ppp + "." + attr + ")" + ", ")
     fstr.write(")\n")
     fstr.write("    header = [")

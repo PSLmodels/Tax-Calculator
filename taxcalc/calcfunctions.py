@@ -64,6 +64,7 @@ def BenefitPrograms(calc):
         calc.array('mcaid_ben') +
         calc.array('e02400') +
         calc.array('e02300') +
+        calc.array('ubi') +
         calc.array('other_ben')
     )
     calc.array('benefit_cost_total', cost)
@@ -80,6 +81,7 @@ def BenefitPrograms(calc):
         calc.array('mcaid_ben') * calc.consump_param('BEN_mcaid_value') +
         calc.array('e02400') +
         calc.array('e02300') +
+        calc.array('ubi') +
         calc.array('other_ben') * calc.consump_param('BEN_other_value')
     )
     calc.array('benefit_value_total', value)
@@ -1773,19 +1775,19 @@ def ComputeBenefit(calc, ID_switch):
     # the types of itemized deductions covered under the BenefitSurtax
     no_ID_calc = copy.deepcopy(calc)
     if ID_switch[0]:
-        no_ID_calc.policy_param('ID_Medical_hc', 1.)
+        no_ID_calc.policy_param('ID_Medical_hc', [1.])
     if ID_switch[1]:
-        no_ID_calc.policy_param('ID_StateLocalTax_hc', 1.)
+        no_ID_calc.policy_param('ID_StateLocalTax_hc', [1.])
     if ID_switch[2]:
-        no_ID_calc.policy_param('ID_RealEstate_hc', 1.)
+        no_ID_calc.policy_param('ID_RealEstate_hc', [1.])
     if ID_switch[3]:
-        no_ID_calc.policy_param('ID_Casualty_hc', 1.)
+        no_ID_calc.policy_param('ID_Casualty_hc', [1.])
     if ID_switch[4]:
-        no_ID_calc.policy_param('ID_Miscellaneous_hc', 1.)
+        no_ID_calc.policy_param('ID_Miscellaneous_hc', [1.])
     if ID_switch[5]:
-        no_ID_calc.policy_param('ID_InterestPaid_hc', 1.)
+        no_ID_calc.policy_param('ID_InterestPaid_hc', [1.])
     if ID_switch[6]:
-        no_ID_calc.policy_param('ID_Charity_hc', 1.)
+        no_ID_calc.policy_param('ID_Charity_hc', [1.])
     no_ID_calc._calc_one_year()  # pylint: disable=protected-access
     diff_iitax = no_ID_calc.array('iitax') - calc.array('iitax')
     benefit = np.where(diff_iitax > 0., diff_iitax, 0.)
@@ -1913,9 +1915,8 @@ def LumpSumTax(DSI, num, XTOT,
 @iterate_jit(nopython=True)
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
-                 e02000, e02100, p22250, p23250,
-                 cmbtp, ptax_was, benefit_value_total, ubi,
-                 expanded_income):
+                 e02000, e02100, p22250, p23250, cmbtp, ptax_was,
+                 benefit_value_total, expanded_income):
     """
     Calculates expanded_income from component income types.
     """
@@ -1939,7 +1940,6 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         p23250 +  # Sch D: net long-term capital gain/loss
         cmbtp +  # other AMT taxable income items from Form 6251
         0.5 * ptax_was +  # employer share of FICA taxes on wages/salaries
-        ubi +  # total UBI benefit
         benefit_value_total  # consumption value of all benefits received;
         # see the BenefitPrograms function in this file for details on
         # exactly how the benefit_value_total variable is computed

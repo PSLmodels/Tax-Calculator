@@ -546,9 +546,9 @@ def test_noreform_documentation():
     expected_doc = (
         'REFORM DOCUMENTATION\n'
         'Baseline Growth-Difference Assumption Values by Year:\n'
-        'none: using default growth assumptions\n'
+        'none: no baseline GrowDiff assumptions specified\n'
         'Response Growth-Difference Assumption Values by Year:\n'
-        'none: using default growth assumptions\n'
+        'none: no response GrowDiff assumptions specified\n'
         'Policy Reform Parameter Values by Year:\n'
         'none: using current-law policy parameters\n'
     )
@@ -806,9 +806,11 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     component_amt = calc1.weighted_total(cvname) * 1e-9
     # confirm that component amount is equal to difference in total deductions
     if year == 2017 and cvname == 'c19700':
-        atol = 0.009
+        atol = 0.016
     elif year == 2017 and cvname == 'c19200':
         atol = 0.010
+    elif year == 2017 and cvname == 'c18300':
+        atol = 0.009
     else:
         atol = 0.00001
     if not np.allclose(component_amt, difference_in_total_itmded, atol=atol):
@@ -856,3 +858,39 @@ def test_qbid_calculation():
     exp_taxinc = tpc_df.pre_qbid_taxinc
     assert np.allclose(act_taxinc, exp_taxinc)
     assert np.allclose(tc_df.qbided, tpc_df.qbid)
+
+
+def test_calc_all_benefits_amounts(cps_subsample):
+    '''
+    Testing how benefits are handled in the calc_all method
+    '''
+    # set a reform with a positive UBI amount
+    ubi_ref = {'UBI_21': {2020: 1000}}
+
+    # create baseline calculator
+    pol = Policy()
+    recs = Records.cps_constructor(data=cps_subsample)
+    calc_base = Calculator(pol, recs)
+    calc_base.advance_to_year(2020)
+    calc_base.calc_all()
+
+    # create reform calculator
+    pol_ubi = Policy()
+    pol_ubi.implement_reform(ubi_ref)
+    calc_ubi = Calculator(pol_ubi, recs)
+    calc_ubi.advance_to_year(2020)
+    calc_ubi.calc_all()
+
+    # check that differences in benefits totals are equal to diffs in
+    # UBI
+    ubi_diff = (calc_ubi.weighted_total('ubi') -
+                calc_base.weighted_total('ubi')) / 1e9
+    benefit_cost_diff = (
+        calc_ubi.weighted_total('benefit_cost_total') -
+        calc_base.weighted_total('benefit_cost_total')) / 1e9
+    benefit_value_diff = (
+        calc_ubi.weighted_total('benefit_cost_total') -
+        calc_base.weighted_total('benefit_cost_total')) / 1e9
+
+    assert np.allclose(ubi_diff, benefit_cost_diff)
+    assert np.allclose(ubi_diff, benefit_value_diff)

@@ -49,14 +49,32 @@ vdf['price_elasticity'] = np.where(vdf.e00200 < EARNINGS_BINS[1],
                                    -0.1, -0.4)
 vdf['income_elasticity'] = 0.1
 
+# create copies of vdf and subset by price elasticity
+vdf_1 = vdf.copy()
+vdf_2 = vdf.copy()
+
+vdf_1 = vdf_1.loc[vdf_1['price_elasticity']==-0.1]
+vdf_2 = vdf_2.loc[vdf_2['price_elasticity']==-0.4]
+
 # Calculate response based on features of each filing unit.
-vdf['response'] = behresp.quantity_response(vdf.e19800,
-                                            vdf.price_elasticity,
-                                            vdf.price1,
-                                            vdf.price2,
-                                            vdf.income_elasticity,
-                                            vdf.atinc1,
-                                            vdf.atinc2)
+# Call quantity_response for each subset (i.e. vdf_1 and vdf_2)
+vdf_1['response'] = behresp.quantity_response(quantity=vdf_1.e19800,
+                                            price_elasticity=-0.1,
+                                            aftertax_price1=vdf_1.price1,
+                                            aftertax_price2=vdf_1.price2,
+                                            income_elasticity=0.1,
+                                            aftertax_income1=vdf_1.atinc1,
+                                            aftertax_income2=vdf_1.atinc2)
+
+vdf_2['response'] = behresp.quantity_response(quantity=vdf_2.e19800,
+                                            price_elasticity=-0.4,
+                                            aftertax_price1=vdf_2.price1,
+                                            aftertax_price2=vdf_2.price2,
+                                            income_elasticity=0.1,
+                                            aftertax_income1=vdf_2.atinc1,
+                                            aftertax_income2=vdf_2.atinc2)
+
+vdf = pd.concat([vdf_1, vdf_2])
 
 # Add weighted totals.
 # Can also use microdf as mdf.add_weighted_totals(vdf, ['response', 'e19800'])

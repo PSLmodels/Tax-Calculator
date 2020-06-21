@@ -36,7 +36,8 @@ def test_for_consistency(tests_path):
         'pytest-xdist',
         'pycodestyle',
         'pylint',
-        'coverage'
+        'coverage',
+        "paramtools>=0.14.0"
     ])
     # read conda.recipe/meta.yaml requirements
     meta_file = os.path.join(tests_path, '..', '..',

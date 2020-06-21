@@ -1,233 +1,503 @@
 {
+    "schema": {
+        "labels": {
+            "year": {
+                "type": "int",
+                "validators": {
+                    "range": {
+                        "min": 2013,
+                        "max": 2030
+                    }
+                }
+            },
+            "MARS": {
+                "type": "str",
+                "validators": {
+                    "choice": {
+                        "choices": [
+                            "single",
+                            "mjoint",
+                            "mseparate",
+                            "headhh",
+                            "widow"
+                        ]
+                    }
+                }
+            },
+            "idedtype": {
+                "type": "str",
+                "validators": {
+                    "choice": {
+                        "choices": [
+                            "med",
+                            "sltx",
+                            "retx",
+                            "cas",
+                            "misc",
+                            "int",
+                            "char"
+                        ]
+                    }
+                }
+            },
+            "EIC": {
+                "type": "str",
+                "validators": {
+                    "choice": {
+                        "choices": [
+                            "0kids",
+                            "1kid",
+                            "2kids",
+                            "3+kids"
+                        ]
+                    }
+                }
+            }
+        },
+        "additional_members": {
+            "section_1": {
+                "type": "str"
+            },
+            "section_2": {
+                "type": "str"
+            },
+            "start_year": {
+                "type": "int"
+            },
+            "indexable": {
+                "type": "bool"
+            },
+            "indexed": {
+                "type": "bool"
+            },
+            "compatible_data": {
+                "type": "compatible_data"
+            }
+        }
+    },
     "ABOOK": {
-        "long_name": "ABOOK additive difference from default projection",
+        "title": "ABOOK additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABOOK extrapolates input variables: e07300 and e07400.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ACGNS": {
-        "long_name": "ACGNS additive difference from default projection",
+        "title": "ACGNS additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ACGNS extrapolates input variables: e01200, p22250, p23250, e24515 and e24518.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ACPIM": {
-        "long_name": "ACPIM additive difference from default projection",
+        "title": "ACPIM additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ACPIM extrapolates input variables: e03270, e03290 and e17500.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ACPIU": {
-        "long_name": "ACPIU additive difference from default projection",
+        "title": "ACPIU additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ACPIU is the price inflation rate used to inflate many policy parameters.  Note that non-zero values of this parameter will not affect historically known values of policy parameters.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ADIVS": {
-        "long_name": "ADIVS additive difference from default projection",
+        "title": "ADIVS additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ADIVS extrapolates input variables: e00600 and e00650.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "AINTS": {
-        "long_name": "AINTS additive difference from default projection",
+        "title": "AINTS additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AINTS extrapolates input variables: e00300 and e00400.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "AIPD": {
-        "long_name": "AIPD additive difference from default projection",
+        "title": "AIPD additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AIPD extrapolates input variables: e19200.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ASCHCI": {
-        "long_name": "ASCHCI additive difference from default projection",
+        "title": "ASCHCI additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHCI extrapolates input variables: e00900, e00900p and e00900s when they are positive.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ASCHCL": {
-        "long_name": "ASCHCL additive difference from default projection",
+        "title": "ASCHCL additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHCL extrapolates input variables: e00900, e00900p and e00900s when they are negative.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ASCHEI": {
-        "long_name": "ASCHEI additive difference from default projection",
+        "title": "ASCHEI additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHEI extrapolates input variables: e02000 when positive, and e26270, k1bx14p, k1bx14s and e27200 for all values.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ASCHEL": {
-        "long_name": "ASCHEL additive difference from default projection",
+        "title": "ASCHEL additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHEL extrapolates input variable: e02000 when negative.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ASCHF": {
-        "long_name": "ASCHF additive difference from default projection",
+        "title": "ASCHF additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASCHF extrapolates input variables: e02100, e02100p and e02100s.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ASOCSEC": {
-        "long_name": "ASOCSEC additive difference from default projection",
+        "title": "ASOCSEC additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ASOCSEC extrapolates input variable: e02400.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ATXPY": {
-        "long_name": "ATXPY additive difference from default projection",
+        "title": "ATXPY additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ATXPY extrapolates input variables: e00700, e00800, e01400, e01500, e01700, e03150, e03210, e03220, e03230, e03300, e03400, e03500, e07240, e07260, p08000, e09700, e09800, e09900, e11200, e18400, e18500, e19800, e20100, e20400, g20500, e07600, e32800, e58990, e62900, e87530, e87521 and cmbtp.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "AUCOMP": {
-        "long_name": "AUCOMP additive difference from default projection",
+        "title": "AUCOMP additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AUCOMP extrapolates input variable: e02300.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "AWAGE": {
-        "long_name": "AWAGE additive difference from default projection",
+        "title": "AWAGE additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  AWAGE extrapolates input variables: e00200, e00200p and e00200s.  Also, AWAGE is the wage growth rate used to inflate the OASDI maximum taxable earnings policy parameter, _SS_Earnings_c.  Note that non-zero values of this parameter will not affect historically known values of _SS_Earnings_c.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ABENOTHER": {
-        "long_name": "ABENOTHER additive difference from default projection",
+        "title": "ABENOTHER additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENOTHER extrapolates input variable other_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ABENMCARE": {
-        "long_name": "ABENMCARE additive difference from default projection",
+        "title": "ABENMCARE additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENMCARE extrapolates input variable mcare_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
-
     "ABENMCAID": {
-        "long_name": "ABENMCAID additive difference from default projection",
+        "title": "ABENMCAID additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENMCAID extrapolates input variable mcaid_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
-
     "ABENSSI": {
-        "long_name": "ABENSSI additive difference from default projection",
+        "title": "ABENSSI additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENSSI extrapolates input variable ssi_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
-
     "ABENSNAP": {
-        "long_name": "ABENSNAP additive difference from default projection",
+        "title": "ABENSNAP additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENSNAP extrapolates input variable snap_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
-
     "ABENWIC": {
-        "long_name": "ABENWIC additive difference from default projection",
+        "title": "ABENWIC additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENWIC extrapolates input variable wic_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
-
     "ABENHOUSING": {
-        "long_name": "ABENHOUSING additive difference from default projection",
+        "title": "ABENHOUSING additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENHOUSING extrapolates input variable housing_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
-
     "ABENTANF": {
-        "long_name": "ABENTANF additive difference from default projection",
+        "title": "ABENTANF additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENTANF extrapolates input variable tanf_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     },
-
     "ABENVET": {
-        "long_name": "ABENVET additive difference from default projection",
+        "title": "ABENVET additive difference from default projection",
         "description": "Default projection is in growfactors.csv file.  ABENVET extrapolates input variable vet_ben.",
-        "value_type": "real",
-        "value_yrs": [2013],
-        "value": [0.0],
-        "valid_values": {"min": -1, "max": 1}
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": -10,
+                "max": 10
+            }
+        }
     }
-
 }

@@ -6,6 +6,8 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> on branch X-Y-Z, edit RELEASES.md and CHANGES.md to finalize X.Y.Z info
 
+--> specify release X.Y.Z in setup.py and taxcalc/__init__.py
+
 --> merge master branch into X-Y-Z branch
 
 --> run `make tctest-jit`  [to make sure JIT decorators are not hiding bugs]

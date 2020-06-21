@@ -713,6 +713,16 @@ def create_diagnostic_table(dframe_list, year_list):
         # number of tax units with non-positive combined tax liability
         val = (wghts[vdf['combined'] <= 0]).sum()
         odict['With Combined Tax <= 0 (#m)'] = round(val * in_millions, 2)
+        # UBI benefits
+        val = (vdf['ubi'] * wghts).sum()
+        odict['UBI Benefits ($b)'] = round(val * in_billions, 3)
+        # Total consumption value of benefits
+        val = (vdf['benefit_value_total'] * wghts).sum()
+        odict['Total Benefits, Consumption Value ($b)'] = round(
+            val * in_billions, 3)
+        # Total dollar cost of benefits
+        val = (vdf['benefit_cost_total'] * wghts).sum()
+        odict['Total Benefits Cost ($b)'] = round(val * in_billions, 3)
         return odict
     # check function arguments
     assert isinstance(dframe_list, list)
@@ -1101,9 +1111,9 @@ def xtr_graph_plot(data,
     fig.title.text_font_size = '12pt'
     lines = data['lines']
     fig.line(lines.index, lines.base,
-             line_color='blue', line_width=3, legend='Baseline')
+             line_color='blue', line_width=3, legend_label='Baseline')
     fig.line(lines.index, lines.reform,
-             line_color='red', line_width=3, legend='Reform')
+             line_color='red', line_width=3, legend_label='Reform')
     fig.circle(0, 0, visible=False)  # force zero to be included on y axis
     if xlabel == '':
         xlabel = data['xlabel']

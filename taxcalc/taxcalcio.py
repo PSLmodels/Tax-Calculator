@@ -11,6 +11,7 @@ import copy
 import sqlite3
 import numpy as np
 import pandas as pd
+import paramtools
 from taxcalc.policy import Policy
 from taxcalc.records import Records
 from taxcalc.consumption import Consumption
@@ -245,7 +246,7 @@ class TaxCalcIO():
         gdiff_baseline = GrowDiff()
         try:
             gdiff_baseline.update_growdiff(paramdict['growdiff_baseline'])
-        except ValueError as valerr_msg:
+        except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors base object that incorporates gdiff_baseline
         gfactors_base = GrowFactors()
@@ -254,7 +255,7 @@ class TaxCalcIO():
         gdiff_response = GrowDiff()
         try:
             gdiff_response.update_growdiff(paramdict['growdiff_response'])
-        except ValueError as valerr_msg:
+        except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # create GrowFactors ref object that has all gdiff objects applied
         gfactors_ref = GrowFactors()
@@ -265,10 +266,10 @@ class TaxCalcIO():
         base = Policy(gfactors=gfactors_base)
         try:
             base.implement_reform(basedict['policy'],
-                                  print_warnings=False,
+                                  print_warnings=True,
                                   raise_errors=False)
             self.errmsg += base.parameter_errors
-        except ValueError as valerr_msg:
+        except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # ... the reform Policy object
         if self.specified_reform:
@@ -276,10 +277,10 @@ class TaxCalcIO():
             for poldict in policydicts:
                 try:
                     pol.implement_reform(poldict,
-                                         print_warnings=False,
+                                         print_warnings=True,
                                          raise_errors=False)
                     self.errmsg += pol.parameter_errors
-                except ValueError as valerr_msg:
+                except paramtools.ValidationError as valerr_msg:
                     self.errmsg += valerr_msg.__str__()
         else:
             pol = Policy(gfactors=gfactors_base)
@@ -287,7 +288,7 @@ class TaxCalcIO():
         con = Consumption()
         try:
             con.update_consumption(paramdict['consumption'])
-        except ValueError as valerr_msg:
+        except paramtools.ValidationError as valerr_msg:
             self.errmsg += valerr_msg.__str__()
         # check for valid tax_year value
         if tax_year < pol.start_year:

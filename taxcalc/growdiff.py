@@ -27,7 +27,7 @@ class GrowDiff(Parameters):
     """
 
     JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
-    DEFAULT_NUM_YEARS = 17  # must be same as Policy.DEFAULT_NUM_YEARS
+    DEFAULT_NUM_YEARS = 18  # must be same as Policy.DEFAULT_NUM_YEARS
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -61,8 +61,8 @@ class GrowDiff(Parameters):
         Returns true if any parameter is non-zero for any year;
         returns false if all parameters are zero in all years.
         """
-        for param in self._vals:
-            values = getattr(self, param)
+        for param in self:
+            values = getattr(self, f"_{param}")
             for year in np.ndindex(values.shape):
                 val = values[year]
                 if val != 0.0:
