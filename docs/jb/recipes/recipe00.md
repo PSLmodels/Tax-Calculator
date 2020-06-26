@@ -6,8 +6,8 @@ jupytext:
     format_version: '0.8'
     jupytext_version: 1.5.0
 kernelspec:
-  display_name: Python
-  language: python3
+  display_name: Python 3
+  language: python
   name: python3
 ---
 
@@ -15,10 +15,6 @@ kernelspec:
 
 This is the recipe you should follow first.
 Mastering this recipe is a prerequisite for all the other recipes in this cookbook.
-
-**Ingredients**
-
-[Policy reform]([https://pslmodels.github.io/Tax-Calculator/reformA.json](https://pslmodels.github.io/Tax-Calculator/reformA.json))
 
 ## Imports
 
@@ -83,8 +79,7 @@ Read JSON reform file and use (the default) static analysis assumptions.
 ```{code-cell} ipython3
 :hide-output: false
 
-reform_filename = ('https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/' +
-                   'master/docs/cookbook/reformA.json')
+reform_filename = '_static/reformA.json'
 params = tc.Calculator.read_json_param_objects(reform_filename, None)
 ```
 

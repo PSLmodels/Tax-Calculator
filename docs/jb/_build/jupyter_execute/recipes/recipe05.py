@@ -7,7 +7,7 @@ This recipe introduces a powerful technique for customizing the operation of Tax
 This calculator-customization technique is used in this recipe to redefine expanded income in a way that allows the
 redefined income measure to be used seamlessly with all the other (table and graph) methods of the Calculator class.
 The basic idea behind the calculator-customization technique is to derive a customized Calculator class from the Tax-Calculator Calculator class.
-This is a standard [object-oriented programming]([https://pslmodels.github.io/Tax-Calculator/tc_overview.html](https://pslmodels.github.io/Tax-Calculator/tc_overview.html)) technique.
+This is a standard [object-oriented programming](https://pslmodels.github.io/Tax-Calculator/tc_overview.html) technique.
 
 Recipe that illustrates how to customize the taxcalc Calculator class so that
 it can seamlessly use an alternative definition of expanded income.
