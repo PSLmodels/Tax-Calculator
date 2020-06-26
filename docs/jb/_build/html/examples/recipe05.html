@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Recipe 5: Redefining Expanded Income &#8212; Tax-Calculator documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Recipe 6: Analyzing a Non-Parametric Reform" href="recipe06.html" />
+    <link rel="prev" title="Recipe 4: Estimating Differential Reform Response - pandas version" href="recipe04_pandas.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator documentation</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  
+  <ul class="nav sidenav_l1">
+  <li class="">
+    <a href="../intro.html">Tax-Calculator documentation</a>
+  </li>
+  <li class="active">
+    <a href="index.html">Welcome to taxcalc’s documentation!</a>
+  <ul class="nav sidenav_l2">
+    <li class="">
+      <a href="recipe00.html">Basic Recipe: Static Analysis of a Simple Reform</a>
+    </li>
+    <li class="">
+      <a href="recipe01.html">Recipe 1: Directly Comparing Two Reforms</a>
+    </li>
+    <li class="">
+      <a href="recipe02.html">Recipe 2: Estimating Behavioral Response to Reform</a>
+    </li>
+    <li class="">
+      <a href="recipe03.html">Recipe 3: Creating a Custom Table</a>
+    </li>
+    <li class="">
+      <a href="recipe04.html">Recipe 4: Estimating Differential Reform Response</a>
+    </li>
+    <li class="">
+      <a href="recipe04_pandas.html">Recipe 4: Estimating Differential Reform Response - pandas version</a>
+    </li>
+    <li class="active">
+      <a href="">Recipe 5: Redefining Expanded Income</a>
+    </li>
+    <li class="">
+      <a href="recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a>
+    </li>
+  </ul>
+  </li>
+</ul>
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+                    class="fas fa-download"></i></button>
+
+            
+            <div class="dropdown-buttons">
+                <!-- ipynb file if we had a myst markdown file -->
+                
+                <!-- Download raw file -->
+                <a class="dropdown-buttons" href="../_sources/examples/recipe05.md"><button type="button"
+                        class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                        data-placement="left">.md</button></a>
+                <!-- Download PDF via print -->
+                <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                    onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+            </div>
+            
+        </div>
+
+        <!-- Source interaction buttons -->
+        
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+        
+    </div>
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+
+<nav id="bd-toc-nav">
+    <ul class="nav section-nav flex-column">
+    
+    </ul>
+</nav>
+
+
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="recipe-5-redefining-expanded-income">
+<h1>Recipe 5: Redefining Expanded Income<a class="headerlink" href="#recipe-5-redefining-expanded-income" title="Permalink to this headline">¶</a></h1>
+<p>This is an advanced recipe that should be followed only after mastering the basic recipe.
+This recipe is almost exactly the same as Directly Comparing Two Reforms, so you might want to read that recipe first.</p>
+<p>This recipe introduces a powerful technique for customizing the operation of Tax-Calculator.
+This calculator-customization technique is used in this recipe to redefine expanded income in a way that allows the
+redefined income measure to be used seamlessly with all the other (table and graph) methods of the Calculator class.
+The basic idea behind the calculator-customization technique is to derive a customized Calculator class from the Tax-Calculator Calculator class.
+This is a standard <a class="reference external" href="https://pslmodels.github.io/Tax-Calculator/tc_overview.html">object-oriented programming</a> technique.</p>
+<p>Recipe that illustrates how to customize the taxcalc Calculator class so that
+it can seamlessly use an alternative definition of expanded income.</p>
+<p>The technique for doing this customization is standard in object-oriented
+programming: a child class is derived from a parent class and then customized.
+The derived child class inherits all the data and methods of the parent class,
+but can be customized by adding new data and methods or by overriding inherited
+methods.</p>
+<p>.. code-block:: python3</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>import pandas as pd
+import taxcalc as tc
+
+
+# override the ExpandIncome calcfunction that computes &quot;market income&quot;
+
+
+@tc.iterate_jit(nopython=True)
+def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
+	     e00700, e00800, e00900, e01100, e01200, e01400, e01500,
+	     e02000, e02100, p22250, p23250, cmbtp, ptax_was,
+	     expanded_income):
+&quot;&quot;&quot;
+Calculates expanded_income as &quot;market income&quot; from component income types.
+&quot;&quot;&quot;
+expanded_income = (
+    e00200 +  # wage and salary income net of DC pension contributions
+    pencon_p +  # tax-advantaged DC pension contributions for taxpayer
+    pencon_s +  # tax-advantaged DC pension contributions for spouse
+    e00300 +  # taxable interest income
+    e00400 +  # non-taxable interest income
+    e00600 +  # dividends
+    e00700 +  # state and local income tax refunds
+    e00800 +  # alimony received
+    e00900 +  # Sch C business net income/loss
+    e01100 +  # capital gain distributions not reported on Sch D
+    e01200 +  # Form 4797 other net gain/loss
+    e01400 +  # taxable IRA distributions
+    e01500 +  # total pension &amp; annuity income (including DB-plan benefits)
+    e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
+    e02100 +  # Sch F farm net income/loss
+    p22250 +  # Sch D: net short-term capital gain/loss
+    p23250 +  # Sch D: net long-term capital gain/loss
+    cmbtp +  # other AMT taxable income items from Form 6251
+    0.5 * ptax_was  # employer share of FICA taxes on wages/salaries
+    # excluding:
+    # ubi +  # total UBI benefit
+    # benefit_value_total  # consumption value of all benefits received;
+)
+return expanded_income
+
+# end overrided calcfunction used by customized Calculator class
+
+
+class Calculator(tc.Calculator):
+&quot;&quot;&quot;
+Customized Calculator class that inherits all tc.Calculator data and
+methods, overriding one method to get the desired customization.
+&quot;&quot;&quot;
+def __init__(self, policy=None, records=None, verbose=False,
+	     sync_years=True, consumption=None):
+    # use same class constructor arguments as tc.Calculator class
+    super().__init__(policy=policy, records=records,
+		     verbose=verbose, sync_years=sync_years,
+		     consumption=consumption)
+
+def calc_all(self, zero_out_calc_vars=False):
+    &quot;&quot;&quot;
+    Call all tax-calculation functions for the current_year.
+    &quot;&quot;&quot;
+    tc.BenefitPrograms(self)
+    self._calc_one_year(zero_out_calc_vars)
+    tc.BenefitSurtax(self)
+    tc.BenefitLimitation(self)
+    tc.FairShareTax(self.__policy, self.__records)
+    tc.LumpSumTax(self.__policy, self.__records)
+    ExpandIncome(self.__policy, self.__records)  # customized (see above)
+    tc.AfterTaxIncome(self.__policy, self.__records)
+
+# end of customized Calculator class definition
+
+
+# top-level logic of program that uses customized Calculator class
+
+# read an &quot;old&quot; reform file from Tax-Calculator website
+# (&quot;old&quot; means the reform file is defined relative to pre-TCJA policy)
+REFORMS_URL = (&#39;https://raw.githubusercontent.com/&#39;
+	   &#39;PSLmodels/Tax-Calculator/master/taxcalc/reforms/&#39;)
+
+# specify reform dictionary for pre-TCJA policy
+reform1 = tc.Policy.read_json_reform(REFORMS_URL + &#39;2017_law.json&#39;)
+
+# specify reform dictionary for TCJA as passed by Congress in late 2017
+reform2 = tc.Policy.read_json_reform(REFORMS_URL + &#39;TCJA.json&#39;)
+
+# specify Policy object for pre-TCJA policy
+bpolicy = tc.Policy()
+bpolicy.implement_reform(reform1, print_warnings=False, raise_errors=False)
+assert not bpolicy.parameter_errors
+
+# specify Policy object for TCJA reform relative to pre-TCJA policy
+rpolicy = tc.Policy()
+rpolicy.implement_reform(reform1, print_warnings=False, raise_errors=False)
+assert not rpolicy.parameter_errors
+rpolicy.implement_reform(reform2, print_warnings=False, raise_errors=False)
+assert not rpolicy.parameter_errors
+
+# specify customized Calculator objects using bpolicy and rpolicy
+recs = tc.Records.cps_constructor()
+calc1 = Calculator(policy=bpolicy, records=recs)
+calc2 = Calculator(policy=rpolicy, records=recs)
+
+CYR = 2018
+
+# calculate for specified CYR
+calc1.advance_to_year(CYR)
+calc1.calc_all()
+calc2.advance_to_year(CYR)
+calc2.calc_all()
+
+# compare aggregate individual income tax revenue in CYR
+iitax_rev1 = calc1.weighted_total(&#39;iitax&#39;)
+iitax_rev2 = calc2.weighted_total(&#39;iitax&#39;)
+
+# construct reform-vs-baseline difference table with results for income deciles
+diff_table = calc1.difference_table(calc2, &#39;weighted_deciles&#39;, &#39;iitax&#39;)
+assert isinstance(diff_table, pd.DataFrame)
+diff_extract = pd.DataFrame()
+dif_colnames = [&#39;count&#39;, &#39;tax_cut&#39;, &#39;tax_inc&#39;,
+	    &#39;tot_change&#39;, &#39;mean&#39;, &#39;pc_aftertaxinc&#39;]
+ext_colnames = [&#39;funits(#m)&#39;, &#39;taxfall(#m)&#39;, &#39;taxrise(#m)&#39;,
+	    &#39;agg_diff($b)&#39;, &#39;mean_diff($)&#39;, &#39;aftertax_income_diff(%)&#39;]
+for dname, ename in zip(dif_colnames, ext_colnames):
+diff_extract[ename] = diff_table[dname]
+
+# print total revenue estimates for CYR
+# (estimates in billons of dollars)
+print(&#39;{}_REFORM1_iitax_rev($B)= {:.3f}&#39;.format(CYR, iitax_rev1 * 1e-9))
+print(&#39;{}_REFORM2_iitax_rev($B)= {:.3f}&#39;.format(CYR, iitax_rev2 * 1e-9))
+print(&#39;&#39;)
+
+# print reform2-vs-reform1 difference table
+title = &#39;Extract of {} income-tax difference table by expanded-income decile&#39;
+print(title.format(CYR))
+print(&#39;(taxfall is count of funits with cut in income tax in reform 2 vs 1)&#39;)
+print(&#39;(taxrise is count of funits with rise in income tax in reform 2 vs 1)&#39;)
+print(diff_extract.to_string())
+</pre></div>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="recipe04_pandas.html" title="previous page">Recipe 4: Estimating Differential Reform Response - pandas version</a>
+    <a class='right-next' id="next-link" href="recipe06.html" title="next page">Recipe 6: Analyzing a Non-Parametric Reform</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>
