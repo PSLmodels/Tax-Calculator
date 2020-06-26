@@ -270,29 +270,28 @@ class Parameters(pt.Parameters):
             for year in range(pyear, fyear):
                 final_ifactor *= 1 + \
                     self._inflation_rates[year - self.start_year]
-            long_param_vals = {}
+
+            long_param_vals = defaultdict(list)
             # compute final year parameter value
             for param in long_params:
-                long_param_vals[param] = {}
                 # only revert param in 2026 if it's not in revision
                 if params.get(param) is None:
-                    list_vals = []
                     # grab param values from 2017
-                    for dim in self.select_eq(param, year=pyear):
-                        list_vals.append(dim['value'])
-                    new_vals = []
+                    vos = self.select_eq(param, year=pyear)
                     # use final_ifactor to inflate from 2017 to 2026
-                    for idx in range(0, len(list_vals)):
-                        val = min(9e99, round(
-                            list_vals[idx] * final_ifactor, 0))
-                        new_vals.append(val)
-                    if len(list_vals) == 1:
-                        long_param_vals[param][fyear] = new_vals[0]
-                    else:
-                        long_param_vals[param][fyear] = new_vals
-                else:
-                    pass
-            self._update(long_param_vals, False, True)
+                    for vo in vos:
+                        long_param_vals[param].append(
+                            # Create new dict to avoid modifying the original
+                            dict(
+                                vo,
+                                value=min(9e99, round(
+                                    vo["value"] * final_ifactor, 0)),
+                                year=fyear,
+                            )
+                        )
+                    needs_reset.append(param)
+            super().adjust(long_param_vals, **kwargs)
+
             init_vals = {}
             to_delete = {}
             for param in self._data:
