@@ -1,0 +1,11 @@
+- file: intro
+- file: examples/index
+  sections:
+    - file: examples/recipe00
+    - file: examples/recipe01
+    - file: examples/recipe02
+    - file: examples/recipe03
+    - file: examples/recipe04
+    - file: examples/recipe04_pandas
+    - file: examples/recipe05
+    - file: examples/recipe06
