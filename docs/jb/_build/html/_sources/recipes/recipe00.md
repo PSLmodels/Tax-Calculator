@@ -36,7 +36,7 @@ where this script is located, then you can substitute the following
 statement for the prior statement:
 
 ``
-recs = Records()
+recs = tc.Records()
 ``
 
 ```{code-cell} ipython3
