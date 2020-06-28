@@ -2,7 +2,14 @@
 - header: Usage
 - file: usage/starting
 - file: usage/overview
-- file: usage/uguide
+- file: usage/uguide/index
+  sections:
+    - file: usage/uguide/python_interface
+    - file: usage/uguide/cli
+    - file: usage/uguide/policy_params
+    - file: usage/uguide/input_vars
+    - file: usage/uguide/output_vars
+    - file: usage/uguide/assumption_params
 - file: recipes/index
   sections:
     - file: recipes/recipe00

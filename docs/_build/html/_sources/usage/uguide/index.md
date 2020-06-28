@@ -1,0 +1,5 @@
+User guide
+==========
+
+This document tells you how to use Tax-Calculator, an open-source federal income and payroll tax microsimulation model.
+It assumes that you are already familiar with the material covered in {doc}`../starting` and that you are using the latest release of Tax-Calculator mentioned there.

@@ -1,0 +1,900 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Input variables &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/mystnb.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Output variables" href="output_vars.html" />
+    <link rel="prev" title="Policy parameters" href="policy_params.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  <img src="../../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  
+  <ul class="nav sidenav_l1">
+  <li class="">
+    <a href="../../index.html">Tax-Calculator</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">Usage</p>
+</li>
+  <li class="">
+    <a href="../starting.html">Getting started</a>
+  </li>
+  <li class="">
+    <a href="../overview.html">Structural overview</a>
+  </li>
+  <li class="active">
+    <a href="index.html">User guide</a>
+  <ul class="nav sidenav_l2">
+    <li class="">
+      <a href="python_interface.html">Python interface</a>
+    </li>
+    <li class="">
+      <a href="cli.html">Command-line interface</a>
+    </li>
+    <li class="">
+      <a href="policy_params.html">Policy parameters</a>
+    </li>
+    <li class="active">
+      <a href="">Input variables</a>
+    </li>
+    <li class="">
+      <a href="output_vars.html">Output variables</a>
+    </li>
+    <li class="">
+      <a href="assumption_params.html">Assumption parameters</a>
+    </li>
+  </ul>
+  </li>
+  <li class="">
+    <a href="../../recipes/index.html">Recipes</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">About</p>
+</li>
+  <li class="">
+    <a href="../../about/license.html">License</a>
+  </li>
+  <li class="">
+    <a href="../../about/history.html">History</a>
+  </li>
+  <li class="">
+    <a href="../../about/roadmap.html">Roadmap</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">Contributing</p>
+</li>
+  <li class="">
+    <a href="../../contributing/contributor_guide.html">Contributor guide</a>
+  </li>
+  <li class="">
+    <a href="../../contributing/pr_workflow.html">Pull request workflow</a>
+  </li>
+  <li class="">
+    <a href="../../contributing/param_naming.html">Policy parameter naming and placing conventions</a>
+  </li>
+  <li class="">
+    <a href="../../contributing/testing.html">Testing</a>
+  </li>
+</ul>
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+                    class="fas fa-download"></i></button>
+
+            
+            <div class="dropdown-buttons">
+                <!-- ipynb file if we had a myst markdown file -->
+                
+                <!-- Download raw file -->
+                <a class="dropdown-buttons" href="../../_sources/usage/uguide/input_vars.md"><button type="button"
+                        class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                        data-placement="left">.md</button></a>
+                <!-- Download PDF via print -->
+                <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                    onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+            </div>
+            
+        </div>
+
+        <!-- Source interaction buttons -->
+        
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+        
+    </div>
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+
+<nav id="bd-toc-nav">
+    <ul class="nav section-nav flex-column">
+    
+    </ul>
+</nav>
+
+
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="input-variables">
+<h1>Input variables<a class="headerlink" href="#input-variables" title="Permalink to this headline">¶</a></h1>
+<p>This section contains documentation of input variables in a format that is easy to search and print.
+The input variables are ordered alphabetically by name.
+There are no subsections, just a long list of input variables that Tax-Calculator is programmed to use in its calculations.
+The Availability information indicates which input data files contain the variable.</p>
+<p><em>Input Variable Name:</em> <strong>DSI</strong><br />
+<em>Description:</em> 1 if claimed as dependent on another return; otherwise 0<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 6a</p>
+<p><em>Input Variable Name:</em> <strong>EIC</strong><br />
+<em>Description:</em> number of EIC qualifying children (range: 0 to 3)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch EIC</p>
+<p><em>Input Variable Name:</em> <strong>FLPDYR</strong><br />
+<em>Description:</em> Calendar year for which taxes are calculated<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040</p>
+<p><em>Input Variable Name:</em> <strong>MARS</strong><br />
+<strong><em>Required Input Variable</em></strong><br />
+<em>Description:</em> Filing (marital) status: line number of the checked box [1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er)]<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 lines 1-5</p>
+<p><em>Input Variable Name:</em> <strong>MIDR</strong><br />
+<em>Description:</em> 1 if separately filing spouse itemizes; otherwise 0<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 39b</p>
+<p><em>Input Variable Name:</em> <strong>PT_SSTB_income</strong><br />
+<em>Description:</em> Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em><br />
+<em>IRS Form Location:</em><br />
+2018-20??: specified in custom data</p>
+<p><em>Input Variable Name:</em> <strong>PT_binc_w2_wages</strong><br />
+<em>Description:</em> Filing unit’s share of total W-2 wages paid by the pass-through business<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em><br />
+<em>IRS Form Location:</em><br />
+2018-20??: specified in custom data</p>
+<p><em>Input Variable Name:</em> <strong>PT_ubia_property</strong><br />
+<em>Description:</em> Filing unit’s share of total business property owned by the pass-through business<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em><br />
+<em>IRS Form Location:</em><br />
+2018-20??: specified in custom data</p>
+<p><em>Input Variable Name:</em> <strong>RECID</strong><br />
+<strong><em>Required Input Variable</em></strong><br />
+<em>Description:</em> Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: private info</p>
+<p><em>Input Variable Name:</em> <strong>XTOT</strong><br />
+<em>Description:</em> Total number of exemptions for filing unit<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 6d</p>
+<p><em>Input Variable Name:</em> <strong>a_lineno</strong><br />
+<em>Description:</em> CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+<p><em>Input Variable Name:</em> <strong>age_head</strong><br />
+<em>Description:</em> Age in years of taxpayer (i.e. primary adult)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>age_spouse</strong><br />
+<em>Description:</em> Age in years of spouse (i.e. secondary adult if present)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>agi_bin</strong><br />
+<em>Description:</em> Historical AGI category used in data extrapolation<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: not used in tax calculations</p>
+<p><em>Input Variable Name:</em> <strong>blind_head</strong><br />
+<em>Description:</em> 1 if taxpayer is blind; otherwise 0<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 39a</p>
+<p><em>Input Variable Name:</em> <strong>blind_spouse</strong><br />
+<em>Description:</em> 1 if spouse is blind; otherwise 0<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 39a</p>
+<p><em>Input Variable Name:</em> <strong>cmbtp</strong><br />
+<em>Description:</em> Estimate of income on (AMT) Form 6251 but not in AGI<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251 and 1040</p>
+<p><em>Input Variable Name:</em> <strong>data_source</strong><br />
+<em>Description:</em> 1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+<p><em>Input Variable Name:</em> <strong>e00200</strong><br />
+<em>Description:</em> Wages, salaries, and tips for filing unit net of pension contributions<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 7</p>
+<p><em>Input Variable Name:</em> <strong>e00200p</strong><br />
+<em>Description:</em> Wages, salaries, and tips for taxpayer net of pension contributions (pencon_p)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 7 component</p>
+<p><em>Input Variable Name:</em> <strong>e00200s</strong><br />
+<em>Description:</em> Wages, salaries, and tips for spouse net of pension contributions (pencon_s)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 7 component</p>
+<p><em>Input Variable Name:</em> <strong>e00300</strong><br />
+<em>Description:</em> Taxable interest income<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 8a</p>
+<p><em>Input Variable Name:</em> <strong>e00400</strong><br />
+<em>Description:</em> Tax-exempt interest income<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 8b</p>
+<p><em>Input Variable Name:</em> <strong>e00600</strong><br />
+<em>Description:</em> Ordinary dividends included in AGI<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 9a</p>
+<p><em>Input Variable Name:</em> <strong>e00650</strong><br />
+<em>Description:</em> Qualified dividends included in ordinary dividends<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 9b</p>
+<p><em>Input Variable Name:</em> <strong>e00700</strong><br />
+<em>Description:</em> Taxable refunds of state and local income taxes<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 10</p>
+<p><em>Input Variable Name:</em> <strong>e00800</strong><br />
+<em>Description:</em> Alimony received<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 11</p>
+<p><em>Input Variable Name:</em> <strong>e00900</strong><br />
+<em>Description:</em> Sch C business net profit/loss for filing unit<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 12</p>
+<p><em>Input Variable Name:</em> <strong>e00900p</strong><br />
+<em>Description:</em> Sch C business net profit/loss for taxpayer<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 12 component</p>
+<p><em>Input Variable Name:</em> <strong>e00900s</strong><br />
+<em>Description:</em> Sch C business net profit/loss for spouse<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 12 component</p>
+<p><em>Input Variable Name:</em> <strong>e01100</strong><br />
+<em>Description:</em> Capital gain distributions not reported on Sch D<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 13</p>
+<p><em>Input Variable Name:</em> <strong>e01200</strong><br />
+<em>Description:</em> Other net gain/loss from Form 4797<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 14</p>
+<p><em>Input Variable Name:</em> <strong>e01400</strong><br />
+<em>Description:</em> Taxable IRA distributions<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 15b</p>
+<p><em>Input Variable Name:</em> <strong>e01500</strong><br />
+<em>Description:</em> Total pensions and annuities<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 16a</p>
+<p><em>Input Variable Name:</em> <strong>e01700</strong><br />
+<em>Description:</em> Taxable pensions and annuities<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 16b</p>
+<p><em>Input Variable Name:</em> <strong>e02000</strong><br />
+<em>Description:</em> Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 17</p>
+<p><em>Input Variable Name:</em> <strong>e02100</strong><br />
+<em>Description:</em> Farm net income/loss for filing unit from Sch F<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 18</p>
+<p><em>Input Variable Name:</em> <strong>e02100p</strong><br />
+<em>Description:</em> Farm net income/loss for taxpayer<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 18 component</p>
+<p><em>Input Variable Name:</em> <strong>e02100s</strong><br />
+<em>Description:</em> Farm net income/loss for spouse<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 18 component</p>
+<p><em>Input Variable Name:</em> <strong>e02300</strong><br />
+<em>Description:</em> Unemployment insurance benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 19</p>
+<p><em>Input Variable Name:</em> <strong>e02400</strong><br />
+<em>Description:</em> Total social security (OASDI) benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 20a</p>
+<p><em>Input Variable Name:</em> <strong>e03150</strong><br />
+<em>Description:</em> Total deductible IRA contributions<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 32</p>
+<p><em>Input Variable Name:</em> <strong>e03210</strong><br />
+<em>Description:</em> Student loan interest<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 33</p>
+<p><em>Input Variable Name:</em> <strong>e03220</strong><br />
+<em>Description:</em> Educator expenses<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 23</p>
+<p><em>Input Variable Name:</em> <strong>e03230</strong><br />
+<em>Description:</em> Tuition and fees from Form 8917<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 34</p>
+<p><em>Input Variable Name:</em> <strong>e03240</strong><br />
+<em>Description:</em> Domestic production activities from Form 8903<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 35</p>
+<p><em>Input Variable Name:</em> <strong>e03270</strong><br />
+<em>Description:</em> Self-employed health insurance deduction<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 29</p>
+<p><em>Input Variable Name:</em> <strong>e03290</strong><br />
+<em>Description:</em> Health savings account deduction from Form 8889<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 25</p>
+<p><em>Input Variable Name:</em> <strong>e03300</strong><br />
+<em>Description:</em> Contributions to SEP, SIMPLE and qualified plans<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 28</p>
+<p><em>Input Variable Name:</em> <strong>e03400</strong><br />
+<em>Description:</em> Penalty on early withdrawal of savings<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 30</p>
+<p><em>Input Variable Name:</em> <strong>e03500</strong><br />
+<em>Description:</em> Alimony paid<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 31a</p>
+<p><em>Input Variable Name:</em> <strong>e07240</strong><br />
+<em>Description:</em> Retirement savings contributions credit from Form 8880<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 50<br />
+2014-2016: 1040 line 51</p>
+<p><em>Input Variable Name:</em> <strong>e07260</strong><br />
+<em>Description:</em> Residential energy credit from Form 5695<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 52<br />
+2014-2016: 1040 line 53</p>
+<p><em>Input Variable Name:</em> <strong>e07300</strong><br />
+<em>Description:</em> Foreign tax credit from Form 1116<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 47<br />
+2014-2016: 1040 line 48</p>
+<p><em>Input Variable Name:</em> <strong>e07400</strong><br />
+<em>Description:</em> General business credit from Form 3800<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 53a<br />
+2014-2016: 1040 line 54a</p>
+<p><em>Input Variable Name:</em> <strong>e07600</strong><br />
+<em>Description:</em> Prior year minimum tax credit from Form 8801<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 53b<br />
+2014-2016: 1040 line 54b</p>
+<p><em>Input Variable Name:</em> <strong>e09700</strong><br />
+<em>Description:</em> Recapture of Investment Credit<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2015: 4255 line 15<br />
+2016-2016: 4255 line 20</p>
+<p><em>Input Variable Name:</em> <strong>e09800</strong><br />
+<em>Description:</em> Unreported payroll taxes from Form 4137 or 8919<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 57<br />
+2014-2016: 1040 line 58</p>
+<p><em>Input Variable Name:</em> <strong>e09900</strong><br />
+<em>Description:</em> Penalty tax on qualified retirement plans<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 58<br />
+2014-2016: 1040 line 59</p>
+<p><em>Input Variable Name:</em> <strong>e11200</strong><br />
+<em>Description:</em> Excess payroll (FICA/RRTA) tax withheld<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 69<br />
+2014-2016: 1040 line 71</p>
+<p><em>Input Variable Name:</em> <strong>e17500</strong><br />
+<em>Description:</em> Itemizable medical and dental expenses. WARNING: this variable is zero below the floor in PUF data.<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 1</p>
+<p><em>Input Variable Name:</em> <strong>e18400</strong><br />
+<em>Description:</em> Itemizable state and local income/sales taxes<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 5</p>
+<p><em>Input Variable Name:</em> <strong>e18500</strong><br />
+<em>Description:</em> Itemizable real-estate taxes paid<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 6</p>
+<p><em>Input Variable Name:</em> <strong>e19200</strong><br />
+<em>Description:</em> Itemizable interest paid<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 15</p>
+<p><em>Input Variable Name:</em> <strong>e19800</strong><br />
+<em>Description:</em> Itemizable charitable giving: cash/check contributions. WARNING: this variable is already capped in PUF data.<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 16</p>
+<p><em>Input Variable Name:</em> <strong>e20100</strong><br />
+<em>Description:</em> Itemizable charitable giving: other than cash/check contributions. WARNING: this variable is already capped in PUF data.<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 17</p>
+<p><em>Input Variable Name:</em> <strong>e20400</strong><br />
+<em>Description:</em> Itemizable miscellaneous deductions. WARNING: this variable is zero below the floor in PUF data.<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 24</p>
+<p><em>Input Variable Name:</em> <strong>e24515</strong><br />
+<em>Description:</em> Sch D: Un-Recaptured Section 1250 Gain<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 19</p>
+<p><em>Input Variable Name:</em> <strong>e24518</strong><br />
+<em>Description:</em> Sch D: 28% Rate Gain or Loss<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 18</p>
+<p><em>Input Variable Name:</em> <strong>e26270</strong><br />
+<em>Description:</em> Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch E line 32</p>
+<p><em>Input Variable Name:</em> <strong>e27200</strong><br />
+<em>Description:</em> Sch E: Farm rent net income or loss (included in e02000)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch E line 40</p>
+<p><em>Input Variable Name:</em> <strong>e32800</strong><br />
+<em>Description:</em> Child/dependent-care expenses for qualifying persons from Form 2441<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 2441 line 3</p>
+<p><em>Input Variable Name:</em> <strong>e58990</strong><br />
+<em>Description:</em> Investment income elected amount from Form 4952<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 4952 line 4g</p>
+<p><em>Input Variable Name:</em> <strong>e62900</strong><br />
+<em>Description:</em> Alternative Minimum Tax foreign tax credit from Form 6251<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251 line 32</p>
+<p><em>Input Variable Name:</em> <strong>e87521</strong><br />
+<em>Description:</em> Total tentative AmOppCredit amount for all students<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 8863 Part I line 1 and 8863 Part III line 30</p>
+<p><em>Input Variable Name:</em> <strong>e87530</strong><br />
+<em>Description:</em> Adjusted qualified lifetime learning expenses for all students<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 8863 Part I line 10 and 8863 Part III line 31</p>
+<p><em>Input Variable Name:</em> <strong>elderly_dependents</strong><br />
+<em>Description:</em> number of dependents age 65+ in filing unit excluding taxpayer and spouse<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data; not used in tax law</p>
+<p><em>Input Variable Name:</em> <strong>f2441</strong><br />
+<em>Description:</em> number of child/dependent-care qualifying persons<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 2441 line 2b</p>
+<p><em>Input Variable Name:</em> <strong>f6251</strong><br />
+<em>Description:</em> 1 if Form 6251 (AMT) attached to return; otherwise 0<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251</p>
+<p><em>Input Variable Name:</em> <strong>ffpos</strong><br />
+<em>Description:</em> CPS family identifier within household (not used in tax-calculation logic)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+<p><em>Input Variable Name:</em> <strong>fips</strong><br />
+<em>Description:</em> FIPS state code (not used in tax-calculation logic)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+<p><em>Input Variable Name:</em> <strong>g20500</strong><br />
+<em>Description:</em> Itemizable gross (before 10% AGI disregard) casualty or theft loss<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 20 before disregard subtracted</p>
+<p><em>Input Variable Name:</em> <strong>h_seq</strong><br />
+<em>Description:</em> CPS household sequence number (not used in tax-calculation logic)<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+<p><em>Input Variable Name:</em> <strong>housing_ben</strong><br />
+<em>Description:</em> Imputed housing benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+<p><em>Input Variable Name:</em> <strong>k1bx14p</strong><br />
+<em>Description:</em> Partner self-employment earnings/loss for taxpayer (included in e26270 total)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1065 (Schedule K-1) box 14</p>
+<p><em>Input Variable Name:</em> <strong>k1bx14s</strong><br />
+<em>Description:</em> Partner self-employment earnings/loss for spouse (included in e26270 total)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1065 (Schedule K-1) box 14</p>
+<p><em>Input Variable Name:</em> <strong>mcaid_ben</strong><br />
+<em>Description:</em> Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+<p><em>Input Variable Name:</em> <strong>mcare_ben</strong><br />
+<em>Description:</em> Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+<p><em>Input Variable Name:</em> <strong>n1820</strong><br />
+<em>Description:</em> Number of people age 18-20 years old in the filing unit<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>n21</strong><br />
+<em>Description:</em> Number of people 21 years old or older in the filing unit<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>n24</strong><br />
+<em>Description:</em> Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>nu05</strong><br />
+<em>Description:</em> Number of dependents under 5 years old<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>nu13</strong><br />
+<em>Description:</em> Number of dependents under 13 years old<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>nu18</strong><br />
+<em>Description:</em> Number of people under 18 years old in the filing unit<br />
+<em>Datatype:</em> integer<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+<p><em>Input Variable Name:</em> <strong>other_ben</strong><br />
+<em>Description:</em> Non-imputed benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: determined using government benefit program data</p>
+<p><em>Input Variable Name:</em> <strong>p08000</strong><br />
+<em>Description:</em> Other tax credits (but not including Sch R credit)<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 53<br />
+2014-2016: 1040 line 54</p>
+<p><em>Input Variable Name:</em> <strong>p22250</strong><br />
+<em>Description:</em> Sch D: Net short-term capital gains/losses<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 7</p>
+<p><em>Input Variable Name:</em> <strong>p23250</strong><br />
+<em>Description:</em> Sch D: Net long-term capital gains/losses<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 15</p>
+<p><em>Input Variable Name:</em> <strong>pencon_p</strong><br />
+<em>Description:</em> Contributions to defined-contribution pension plans for taxpayer<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: Imputed using IRS tabulations of Form W-2 sample</p>
+<p><em>Input Variable Name:</em> <strong>pencon_s</strong><br />
+<em>Description:</em> Contributions to defined-contribution pension plans for spouse<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: Imputed using IRS tabulations of Form W-2 sample</p>
+<p><em>Input Variable Name:</em> <strong>s006</strong><br />
+<em>Description:</em> Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: not used in filing unit tax calculations</p>
+<p><em>Input Variable Name:</em> <strong>snap_ben</strong><br />
+<em>Description:</em> Imputed SNAP benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+<p><em>Input Variable Name:</em> <strong>ssi_ben</strong><br />
+<em>Description:</em> Imputed SSI benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+<p><em>Input Variable Name:</em> <strong>tanf_ben</strong><br />
+<em>Description:</em> Imputed TANF benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+<p><em>Input Variable Name:</em> <strong>vet_ben</strong><br />
+<em>Description:</em> Imputed Veteran’s benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+<p><em>Input Variable Name:</em> <strong>wic_ben</strong><br />
+<em>Description:</em> Imputed WIC benefits<br />
+<em>Datatype:</em> real<br />
+<em>Availability:</em> taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="policy_params.html" title="previous page">Policy parameters</a>
+    <a class='right-next' id="next-link" href="output_vars.html" title="next page">Output variables</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    
+  </body>
+</html>

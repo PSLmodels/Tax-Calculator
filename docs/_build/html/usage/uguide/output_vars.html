@@ -1,0 +1,774 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Output variables &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/mystnb.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Assumption parameters" href="assumption_params.html" />
+    <link rel="prev" title="Input variables" href="input_vars.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  <img src="../../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  
+  <ul class="nav sidenav_l1">
+  <li class="">
+    <a href="../../index.html">Tax-Calculator</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">Usage</p>
+</li>
+  <li class="">
+    <a href="../starting.html">Getting started</a>
+  </li>
+  <li class="">
+    <a href="../overview.html">Structural overview</a>
+  </li>
+  <li class="active">
+    <a href="index.html">User guide</a>
+  <ul class="nav sidenav_l2">
+    <li class="">
+      <a href="python_interface.html">Python interface</a>
+    </li>
+    <li class="">
+      <a href="cli.html">Command-line interface</a>
+    </li>
+    <li class="">
+      <a href="policy_params.html">Policy parameters</a>
+    </li>
+    <li class="">
+      <a href="input_vars.html">Input variables</a>
+    </li>
+    <li class="active">
+      <a href="">Output variables</a>
+    </li>
+    <li class="">
+      <a href="assumption_params.html">Assumption parameters</a>
+    </li>
+  </ul>
+  </li>
+  <li class="">
+    <a href="../../recipes/index.html">Recipes</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">About</p>
+</li>
+  <li class="">
+    <a href="../../about/license.html">License</a>
+  </li>
+  <li class="">
+    <a href="../../about/history.html">History</a>
+  </li>
+  <li class="">
+    <a href="../../about/roadmap.html">Roadmap</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">Contributing</p>
+</li>
+  <li class="">
+    <a href="../../contributing/contributor_guide.html">Contributor guide</a>
+  </li>
+  <li class="">
+    <a href="../../contributing/pr_workflow.html">Pull request workflow</a>
+  </li>
+  <li class="">
+    <a href="../../contributing/param_naming.html">Policy parameter naming and placing conventions</a>
+  </li>
+  <li class="">
+    <a href="../../contributing/testing.html">Testing</a>
+  </li>
+</ul>
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+                    class="fas fa-download"></i></button>
+
+            
+            <div class="dropdown-buttons">
+                <!-- ipynb file if we had a myst markdown file -->
+                
+                <!-- Download raw file -->
+                <a class="dropdown-buttons" href="../../_sources/usage/uguide/output_vars.md"><button type="button"
+                        class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                        data-placement="left">.md</button></a>
+                <!-- Download PDF via print -->
+                <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                    onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+            </div>
+            
+        </div>
+
+        <!-- Source interaction buttons -->
+        
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+        
+    </div>
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+
+<nav id="bd-toc-nav">
+    <ul class="nav section-nav flex-column">
+    
+    </ul>
+</nav>
+
+
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="output-variables">
+<h1>Output variables<a class="headerlink" href="#output-variables" title="Permalink to this headline">¶</a></h1>
+<p>This section contains documentation of output variables in a format that is easy to search and print.
+The output variables are ordered alphabetically by name.
+There are no subsections, just a long list of output variables that Tax-Calculator is programmed to calculate.</p>
+<p><em>Output Variable Name:</em> <strong>aftertax_income</strong><br />
+<em>Description:</em> After tax income is equal to expanded_income minus combined<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>benefit_cost_total</strong><br />
+<em>Description:</em> Government cost of all benefits received by tax unit<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>benefit_value_total</strong><br />
+<em>Description:</em> Consumption value of all benefits received by tax unit, which is included in expanded_income<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c00100</strong><br />
+<em>Description:</em> Adjusted Gross Income (AGI)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 37<br />
+2018-20??: 1040 line 7</p>
+<p><em>Output Variable Name:</em> <strong>c01000</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c02500</strong><br />
+<em>Description:</em> Social security (OASDI) benefits included in AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 20b</p>
+<p><em>Output Variable Name:</em> <strong>c02900</strong><br />
+<em>Description:</em> Total of all ‘above the line’ income adjustments to get AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 36</p>
+<p><em>Output Variable Name:</em> <strong>c03260</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c04470</strong><br />
+<em>Description:</em> Itemized deductions after phase-out (zero for non-itemizers)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 40<br />
+2018-20??: 1040 line 8</p>
+<p><em>Output Variable Name:</em> <strong>c04600</strong><br />
+<em>Description:</em> Personal exemptions after phase-out<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 42<br />
+2018-20??:</p>
+<p><em>Output Variable Name:</em> <strong>c04800</strong><br />
+<em>Description:</em> Regular taxable income<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 43<br />
+2018-20??: 1040 line 10</p>
+<p><em>Output Variable Name:</em> <strong>c05200</strong><br />
+<em>Description:</em> Tax amount from Sch X,Y,X tables<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c05700</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c05800</strong><br />
+<em>Description:</em> Total (regular + AMT) income tax liability before credits (equals taxbc plus c09600)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 46<br />
+2014-2016: 1040 line 47</p>
+<p><em>Output Variable Name:</em> <strong>c07100</strong><br />
+<em>Description:</em> Total non-refundable credits used to reduce positive tax liability<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 46 minus 1040 line 55<br />
+2014-2016: 1040 line 47 minus 1040 line 56</p>
+<p><em>Output Variable Name:</em> <strong>c07180</strong><br />
+<em>Description:</em> Credit for child and dependent care expenses from Form 2441<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 48<br />
+2014-2016: 1040 line 49</p>
+<p><em>Output Variable Name:</em> <strong>c07200</strong><br />
+<em>Description:</em> Schedule R credit for the elderly and the disabled<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c07220</strong><br />
+<em>Description:</em> Child tax credit (adjusted) from Form 8812<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 51<br />
+2014-2016: 1040 line 52</p>
+<p><em>Output Variable Name:</em> <strong>c07230</strong><br />
+<em>Description:</em> Education tax credits non-refundable amount from Form 8863 (includes c87668)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 8863 line 19 and 1040 line 49<br />
+2014-2016: 8863 line 19 and 1040 line 50</p>
+<p><em>Output Variable Name:</em> <strong>c07240</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c07260</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c07300</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c07400</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c07600</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c08000</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c09200</strong><br />
+<em>Description:</em> Income tax liability (including othertaxes) after non-refundable credits are used, but before refundable credits are applied<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 61<br />
+2014-2016: 1040 line 63</p>
+<p><em>Output Variable Name:</em> <strong>c09600</strong><br />
+<em>Description:</em> Alternative Minimum Tax (AMT) liability<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 45</p>
+<p><em>Output Variable Name:</em> <strong>c10960</strong><br />
+<em>Description:</em> American Opportunity Credit refundable amount from Form 8863<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 8863 line 8 and 1040 line 66<br />
+2014-2016: 8863 line 8 and 1040 line 68</p>
+<p><em>Output Variable Name:</em> <strong>c11070</strong><br />
+<em>Description:</em> Child tax credit (refunded) from Form 8812<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 65<br />
+2014-2016: 1040 line 67</p>
+<p><em>Output Variable Name:</em> <strong>c17000</strong><br />
+<em>Description:</em> Sch A: Medical expenses deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c18300</strong><br />
+<em>Description:</em> Sch A: State and local taxes plus real estate taxes deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c19200</strong><br />
+<em>Description:</em> Sch A: Interest deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c19700</strong><br />
+<em>Description:</em> Sch A: Charity contributions deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c20500</strong><br />
+<em>Description:</em> Sch A: Net casualty or theft loss deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c20800</strong><br />
+<em>Description:</em> Sch A: Net limited miscellaneous deductions deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c21040</strong><br />
+<em>Description:</em> Itemized deductions that are phased out<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c21060</strong><br />
+<em>Description:</em> Itemized deductions before phase-out (zero for non-itemizers)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c23650</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c59660</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>c62100</strong><br />
+<em>Description:</em> Alternative Minimum Tax (AMT) taxable income<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251 line 28</p>
+<p><em>Output Variable Name:</em> <strong>c87668</strong><br />
+<em>Description:</em> American Opportunity Credit non-refundable amount from Form 8863 (included in c07230)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>care_deduction</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>charity_credit</strong><br />
+<em>Description:</em> Credit for charitable giving<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>codtc_limited</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>combined</strong><br />
+<em>Description:</em> Sum of iitax and payrolltax and lumpsum_tax<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>ctc_new</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>dwks10</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>dwks13</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>dwks14</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>dwks19</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>e17500_capped</strong><br />
+<em>Description:</em> Sch A: Medical expenses, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>e18400_capped</strong><br />
+<em>Description:</em> Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>e18500_capped</strong><br />
+<em>Description:</em> Sch A: State and local real estate taxes deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>e19200_capped</strong><br />
+<em>Description:</em> Sch A: Interest deduction deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>e19800_capped</strong><br />
+<em>Description:</em> Sch A: Charity cash contributions deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>e20100_capped</strong><br />
+<em>Description:</em> Sch A: Charity noncash contributions deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>e20400_capped</strong><br />
+<em>Description:</em> Sch A: Gross miscellaneous deductions deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>earned</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>earned_p</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>earned_s</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>eitc</strong><br />
+<em>Description:</em> Earned Income Credit<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 64a<br />
+2014-2016: 1040 line 66a</p>
+<p><em>Output Variable Name:</em> <strong>exact</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> integer<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>expanded_income</strong><br />
+<em>Description:</em> Broad income measure that includes benefit_value_total<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>fstax</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>g20500_capped</strong><br />
+<em>Description:</em> Sch A: Gross casualty or theft loss deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>iitax</strong><br />
+<em>Description:</em> Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 61 minus line 56 minus line 60a<br />
+2014-2016: 1040 line 63 minus line 57 minus line 62a</p>
+<p><em>Output Variable Name:</em> <strong>invinc_agi_ec</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>invinc_ec_base</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>lumpsum_tax</strong><br />
+<em>Description:</em> Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>mtr_inctax</strong><br />
+<em>Description:</em> Marginal income tax rate (in percentage terms) on extra taxpayer earnings (e00200p)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>mtr_paytax</strong><br />
+<em>Description:</em> Marginal payroll tax rate (in percentage terms) on extra taxpayer earnings (e00200p)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>niit</strong><br />
+<em>Description:</em> Net Investment Income Tax from Form 8960<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 60b<br />
+2014-2016: 1040 line 62b</p>
+<p><em>Output Variable Name:</em> <strong>nontaxable_ubi</strong><br />
+<em>Description:</em> Amount of UBI benefit excluded from AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>num</strong><br />
+<em>Description:</em> 2 when MARS is 2 (married filing jointly); otherwise 1<br />
+<em>Datatype:</em> integer<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 lines 1-5</p>
+<p><em>Output Variable Name:</em> <strong>odc</strong><br />
+<em>Description:</em> Other Dependent Credit<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>othertaxes</strong><br />
+<em>Description:</em> Other taxes: sum of niit, e09700, e09800 and e09900 (included in c09200)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: sum of 1040 lines 57 through 60<br />
+2014-2016: sum of 1040 lines 58 through 62</p>
+<p><em>Output Variable Name:</em> <strong>payrolltax</strong><br />
+<em>Description:</em> Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: OASDI+HI FICA plus 1040 lines 56 and 60a<br />
+2014-2016: OASDI+HI FICA plus 1040 lines 57 and 62a</p>
+<p><em>Output Variable Name:</em> <strong>personal_nonrefundable_credit</strong><br />
+<em>Description:</em> Personal nonrefundable credit<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>personal_refundable_credit</strong><br />
+<em>Description:</em> Personal refundable credit<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>pre_c04600</strong><br />
+<em>Description:</em> Personal exemption before phase-out<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>ptax_amc</strong><br />
+<em>Description:</em> Additional Medicare Tax from Form 8959 (included in payrolltax)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 60a<br />
+2014-2016: 1040 line 62a</p>
+<p><em>Output Variable Name:</em> <strong>ptax_oasdi</strong><br />
+<em>Description:</em> Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: OASDI FICA plus 1040 line 56<br />
+2014-2016: OASDI FICA plus 1040 line 57</p>
+<p><em>Output Variable Name:</em> <strong>ptax_was</strong><br />
+<em>Description:</em> Employee + employer OASDI + HI FICA tax<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: OASDHI FICA<br />
+2014-2016: OASDHI FICA</p>
+<p><em>Output Variable Name:</em> <strong>qbided</strong><br />
+<em>Description:</em> Qualified Business Income (QBI) deduction<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2017:<br />
+2018-20??: 1040 line 9</p>
+<p><em>Output Variable Name:</em> <strong>refund</strong><br />
+<em>Description:</em> Total refundable income tax credits<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>rptc</strong><br />
+<em>Description:</em> Refundable Payroll Tax Credit for filing unit<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>rptc_p</strong><br />
+<em>Description:</em> Refundable Payroll Tax Credit for taxpayer<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>rptc_s</strong><br />
+<em>Description:</em> Refundable Payroll Tax Credit for spouse<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>sep</strong><br />
+<em>Description:</em> 2 when MARS is 3 (married filing separately); otherwise 1<br />
+<em>Datatype:</em> integer<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 lines 1-5</p>
+<p><em>Output Variable Name:</em> <strong>setax</strong><br />
+<em>Description:</em> Self-employment tax<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 56<br />
+2014-2016: 1040 line 57</p>
+<p><em>Output Variable Name:</em> <strong>sey</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>standard</strong><br />
+<em>Description:</em> Standard deduction (zero for itemizers)<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 40<br />
+2018-20??: 1040 line 8</p>
+<p><em>Output Variable Name:</em> <strong>surtax</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>taxable_ubi</strong><br />
+<em>Description:</em> Amount of UBI benefit included in AGI<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>taxbc</strong><br />
+<em>Description:</em> Regular tax on regular taxable income before credits<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 44</p>
+<p><em>Output Variable Name:</em> <strong>ubi</strong><br />
+<em>Description:</em> Universal Basic Income benefit for filing unit<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>was_plus_sey_p</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>was_plus_sey_s</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>ymod</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+<p><em>Output Variable Name:</em> <strong>ymod1</strong><br />
+<em>Description:</em> search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype:</em> real<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="input_vars.html" title="previous page">Input variables</a>
+    <a class='right-next' id="next-link" href="assumption_params.html" title="next page">Assumption parameters</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    
+  </body>
+</html>
