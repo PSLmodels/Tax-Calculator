@@ -9,24 +9,27 @@ containing information from several JSON files.
 import os
 import sys
 from collections import OrderedDict
-from taxcalc import *
+import taxcalc as tc
 
-
-INPUT_FILENAME = 'uguide.htmx'
-OUTPUT_FILENAME = 'uguide.html'
+INPUT_FILENAME = 'test_in.md'
+OUTPUT_FILENAME = 'test_out.md'
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
 TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
 
-INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
+# INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
 TCJA_PATH = os.path.join(CURDIR_PATH,'../taxcalc/reforms/TCJA.json')
 POLICY_PATH = os.path.join(TAXCALC_PATH, 'policy_current_law.json')
 IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
 GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
+INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
 OUTPUT_PATH = os.path.join(CURDIR_PATH, OUTPUT_FILENAME)
 
+START_YEAR = 2013
+END_YEAR_SHORT = 2020
+END_YEAR_LONG = 2027
 
 def main():
     """
@@ -43,11 +46,11 @@ def main():
     text = text.replace(old, new)
 
     # augment text variable with top button code
-    topbtn_filename = os.path.join(CURDIR_PATH, 'topbtn.htmx')
-    with open(topbtn_filename, 'r') as topbtn_file:
-        topbtn = topbtn_file.read()
-    old = '<!-- #TOP# -->'
-    text = text.replace(old, topbtn)
+    # topbtn_filename = os.path.join(CURDIR_PATH, 'topbtn.htmx')
+    # with open(topbtn_filename, 'r') as topbtn_file:
+    #     topbtn = topbtn_file.read()
+    # old = '<!-- #TOP# -->'
+    # text = text.replace(old, topbtn)
 
     params_dict = reformat_params()
     # augment text variable with information from JSON files
@@ -74,17 +77,17 @@ def reformat_params():
     """
     # Parameters that were changed by TCJA will be extended through
     # 2026 in the uguide
-    tcja = Policy.read_json_reform(TCJA_PATH)
+    tcja = tc.Policy.read_json_reform(TCJA_PATH)
 
-    pol = Policy()
-    pol.clear_state()
-    years_short = list(range(2013, 2020))
-    years_long = list(range(2013, 2027))
-    pol.set_year(years_long)
-    params = pol.specification(serializable=True, sort_values=True)
+    pol = tc.Policy()
+    # pol.clear_state()
+    years_short = list(range(START_YEAR, END_YEAR_SHORT))
+    years_long = list(range(START_YEAR, END_YEAR_LONG))
+    pol.set_year(START_YEAR)
+    params = pol.metadata()
 
     # Create parameter dictionary that resembles old Tax-Calculator
-    # paramter schema
+    # parameter schema
     params_dict = {}
     for param in params.keys():
         if param in tcja.keys():
@@ -113,58 +116,60 @@ def policy_param_text(pname, param, params_dict):
 
     sec1 = param['section_1']
     if sec1:
-        txt = '<p><b>{} &mdash; {}</b>'.format(sec1, param['section_2'])
+        txt = '### {}  '.format(param['section_2'])
     else:
-        txt = '<p><b>{} &mdash; {}</b>'.format('Other Parameters',
-                                               'Not in Tax-Brain webapp')
-    txt += '<br><i>tc Name:</i> {}'.format(pname)
-    txt += '<br><i>Title:</i> {}'.format(param['title'])
-    txt += '<br><i>Description:</i> {}'.format(param['description'])
+        txt = '### {}  '.format('Not in Tax-Brain webapp')
+    txt += '#### `{}`'.format(pname)
+    # linebreak
+    txt += '_Title:_ {}  '.format(param['title'])
+    # linebreak
+    txt += '_Description:_ {}  '.format(param['description'])
+    # linebreak
     if param.get('notes', ''):
-        txt += '<br><i>Notes:</i> {}'.format(param['notes'])
-    txt += '<br><i>Has An Effect When Using:</i>'
-    txt += '&nbsp;&nbsp; <i>PUF data:</i> '
+        txt += '_Notes:_ {}  '.format(param['notes'])
+    # linebreak
+    txt += '_Has An Effect When Using:_'
+    txt += ' _PUF data:_ '
     if param['compatible_data']['puf']:
         txt += 'True'
     else:
         txt += 'False'
-    txt += '&nbsp;&nbsp; <i>CPS data:</i> '
+    txt += ' _CPS data:_ '
     if param['compatible_data']['cps']:
-        txt += 'True'
+        txt += 'True  '
     else:
-        txt += 'False'
-    txt += '<br><i>Can Be Inflation Indexed:</i> '
+        txt += 'False  '
+    txt += '_Can Be Inflation Indexed:_ '
     if param['indexable']:
         txt += 'True'
     else:
         txt += 'False'
-    txt += '&nbsp;&nbsp;&nbsp;&nbsp; <i>Is Inflation Indexed:</i> '
+    txt += ' _Is Inflation Indexed:_ '
     if param['indexed']:
-        txt += 'True'
+        txt += 'True  '
     else:
-        txt += 'False'
-    txt += '<br><i>Value Type:</i> {}'.format(param['type'])
-    txt += '<br><i>Known Values:</i>'
+        txt += 'False  '
+    txt += '_Value Type:_ {}  '.format(param['type'])
+    txt += '_Known Values:_  '
     if len(params_dict[pname]['values'][0]) == 5:
-        txt += '<br>&nbsp;&nbsp; for: [single, mjoint, mseparate, headhh, widow]'
+        txt += ' for: [single, mjoint, mseparate, headhh, widow]  '
     elif len(params_dict[pname]['values'][0]) == 4:
-        txt += '<br>&nbsp;&nbsp; for: [0kids, 1kid, 2kids, 3+kids]'
+        txt += ' for: [0kids, 1kid, 2kids, 3+kids]  '
     elif len(params_dict[pname]['values'][0]) == 7:
-        txt += '<br>&nbsp;&nbsp; for: [med, sltx, retx, cas, misc, int, char]' 
+        txt += ' for: [med, sltx, retx, cas, misc, int, char]  '
     for cyr, val in zip(params_dict[pname]['years'], params_dict[pname]['values']):
         if len(params_dict[pname]['values'][0]) == 1:
-            txt += '<br>{}: {}'.format(cyr, val[0])
+            txt += '{}: {}'.format(cyr, val[0])
         else:
-            txt += '<br>{}: {}'.format(cyr, val)       
-    txt += '<br><i>Valid Range:</i>'
+            txt += '{}: {}'.format(cyr, val)
+    txt += '_Valid Range:_'
     validators = param.get("validators", None)
     if validators:
         minval = validators['range']['min']
         maxval = validators['range']['max']
-        txt += ' min = {} and max = {}'.format(minval, maxval)
+        txt += ' min = {} and max = {}  '.format(minval, maxval)
         invalid_action = validators["range"].get('level', 'error')
-        txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
-    txt += '</p>'
+        txt += '_Out-of-Range Action:_ {}  '.format(invalid_action)
     return txt
 
 
@@ -219,28 +224,27 @@ def var_text(vname, iotype, variable):
     and return info as HTML string.
     """
     if iotype == 'read':
-        txt = '<p><i>Input Variable Name:</i> <b>{}</b>'.format(vname)
+        txt = '## `{}`'.format(vname)
         if 'required' in variable:
-            txt += '<br><b><i>Required Input Variable</i></b>'
+            txt += '*'
     else:
-        txt = '<p><i>Output Variable Name:</i> <b>{}</b>'.format(vname)
-    txt += '<br><i>Description:</i> {}'.format(variable['desc'])
+        txt = '## `{}`'.format(vname)
+    txt += '_Description:_ {}  '.format(variable['desc'])
     if variable['type'] == 'float':
         vtype = 'real'
     elif variable['type'] == 'int':
         vtype = 'integer'
     else:
         msg = ('{} variable {} has '
-               'unknown type={}'.format(iotype, vname, variable['type']))
+               'unknown type={}  '.format(iotype, vname, variable['type']))
         raise ValueError(msg)
-    txt += '<br><i>Datatype:</i> {}'.format(vtype)
+    txt += '_Datatype:_ {}  '.format(vtype)
     if iotype == 'read':
-        txt += '<br><i>Availability:</i> {}'.format(variable['availability'])
-    txt += '<br><i>IRS Form Location:</i>'
+        txt += '_Availability:_ {}  '.format(variable['availability'])
+    txt += '_IRS Form Location:_'
     formdict = variable['form']
     for yrange in sorted(formdict.keys()):
-        txt += '<br>{}: {}'.format(yrange, formdict[yrange])
-    txt += '</p>'
+        txt += '{}: {}  '.format(yrange, formdict[yrange])
     return txt
 
 
@@ -269,38 +273,35 @@ def assumption_param_text(pname, ptype, param):
     """
     sec1 = param.get('section_1', '')
     if sec1:
-        txt = '<p><b>{} &mdash; {}</b>'.format(sec1,
-                                               param.get('section_2', ''))
+        txt = '### {}'.format(param.get('section_2', ''))
     else:
-        txt = '<p><b>{} &mdash; {}</b>'.format('Assumption Parameter',
-                                               ptype.capitalize())
-    txt += '<br><i>tc Name:</i> {}'.format(pname)
+        txt = '### {}'.format(ptype.capitalize())
+    txt += '#### `{}`  '.format(pname)
     if sec1:
-        txt += '<br><i>TB Name:</i> {}'.format(param['title'])
+        txt += '_TB Name:_ {}  '.format(param['title'])
     else:
-        txt += '<br><i>Long Name:</i> {}'.format(param['title'])
-    txt += '<br><i>Description:</i> {}'.format(param['description'])
+        txt += '_Long Name:_ {}  '.format(param['title'])
+    txt += '_Description:_ {}  '.format(param['description'])
     if param.get('notes', ''):
-        txt += '<br><i>Notes:</i> {}'.format(param['notes'])
-    txt += '<br><i>Default Value:</i>'
+        txt += '_Notes:_ {}  '.format(param['notes'])
+    txt += '_Default Value:_  '
     if param.get('vi_vals', []):
         cols = ', '.join(param['vi_vals'])
-        txt += '<br>&nbsp;&nbsp; for: [{}]'.format(cols)
+        txt += ' for: [{}]  '.format(cols)
     for vo in param["value"]:
         labels = " ".join(
             f"{label}={value}" for label, value in vo.items()
             if label not in ("year", "value")
         )
-        txt += f"<br>{vo['year']}: {vo['value']} {labels}"
-    txt += '<br><i>Valid Range:</i>'
+        txt += f"{vo['year']}: {vo['value']} {labels}  "
+    txt += '_Valid Range:_'
     validators = param.get("validators", None)
     if validators:
         minval = validators['range']['min']
         maxval = validators['range']['max']
-        txt += ' min = {} and max = {}'.format(minval, maxval)
+        txt += ' min = {} and max = {}  '.format(minval, maxval)
         invalid_action = validators["range"].get('level', 'error')
-        txt += '<br><i>Out-of-Range Action:</i> {}'.format(invalid_action)
-    txt += '</p>'
+        txt += '_Out-of-Range Action:_ {}  '.format(invalid_action)
     return txt
 
 
