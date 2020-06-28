@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>Recipe 5: Redefining Expanded Income &#8212; Tax-Calculator documentation</title>
+    <title>Recipe 5: Redefining Expanded Income &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
     <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
@@ -30,8 +30,6 @@
     <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Recipe 6: Analyzing a Non-Parametric Reform" href="recipe06.html" />
-    <link rel="prev" title="Recipe 4: Estimating Differential Reform Response - pandas version" href="recipe04_pandas.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="docsearch:language" content="en">
@@ -53,7 +51,7 @@
   <img src="../_static/PSL.svg" class="logo" alt="logo">
   
   
-  <h1 class="site-logo" id="site-title">Tax-Calculator documentation</h1>
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
   
 </a>
 </div>
@@ -73,57 +71,37 @@
 <p class="margin-caption">About</p>
 </li>
   <li class="">
-    <a href="../starting.html">Getting Started</a>
+    <a href="../starting.html">Getting started</a>
   </li>
   <li class="">
     <a href="../license.html">License</a>
   </li>
   <li class="">
-    <a href="../history.html">Origins & History</a>
+    <a href="../history.html">Origins and history</a>
   </li>
   <li class="">
-    <a href="../roadmap.html">Future Directions</a>
+    <a href="../roadmap.html">Future directions</a>
   </li>
 <li class="navbar-special">
 <p class="margin-caption">Documentation</p>
 </li>
   <li class="">
-    <a href="../overview.html">Structural Overview</a>
+    <a href="../overview.html">Structural overview</a>
   </li>
   <li class="">
-    <a href="../uguide.html">Tax-Calculator User Guide</a>
+    <a href="../uguide.html">User guide</a>
   </li>
-  <li class="active">
-    <a href="index.html">Tax-Calculator recipes</a>
-  <ul class="nav sidenav_l2">
-    <li class="">
-      <a href="recipe00.html">Basic Recipe: Static Analysis of a Simple Reform</a>
-    </li>
-    <li class="">
-      <a href="recipe01.html">Recipe 1: Directly Comparing Two Reforms</a>
-    </li>
-    <li class="">
-      <a href="recipe02.html">Recipe 2: Estimating Behavioral Response to Reform</a>
-    </li>
-    <li class="">
-      <a href="recipe03.html">Recipe 3: Creating a Custom Table</a>
-    </li>
-    <li class="">
-      <a href="recipe04.html">Recipe 4: Estimating Differential Reform Response</a>
-    </li>
-    <li class="">
-      <a href="recipe04_pandas.html">Recipe 4: Estimating Differential Reform Response - pandas version</a>
-    </li>
-    <li class="active">
-      <a href="">Recipe 5: Redefining Expanded Income</a>
-    </li>
-    <li class="">
-      <a href="recipe06.html">Recipe 6: Analyzing a Non-Parametric Reform</a>
-    </li>
-  </ul>
+<li class="navbar-special">
+<p class="margin-caption">Contributing</p>
+</li>
+  <li class="">
+    <a href="../contributing.html">Contributor guide</a>
   </li>
   <li class="">
-    <a href="../CONTRIBUTING.html">Tax-Calculator Contributor Guide</a>
+    <a href="../pr_workflow.html">Pull request workflow</a>
+  </li>
+  <li class="">
+    <a href="../param_naming.html">Policy parameter naming and placing conventions</a>
   </li>
 </ul>
 </nav>
@@ -297,14 +275,13 @@ methods.</p>
 
 <span class="c1"># read an &quot;old&quot; reform file from Tax-Calculator website</span>
 <span class="c1"># (&quot;old&quot; means the reform file is defined relative to pre-TCJA policy)</span>
-<span class="n">REFORMS_URL</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/&#39;</span>
-               <span class="s1">&#39;PSLmodels/Tax-Calculator/master/taxcalc/reforms/&#39;</span><span class="p">)</span>
+<span class="n">REFORMS_PATH</span> <span class="o">=</span> <span class="s1">&#39;../../../taxcalc/reforms/&#39;</span>
 
 <span class="c1"># specify reform dictionary for pre-TCJA policy</span>
-<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_URL</span> <span class="o">+</span> <span class="s1">&#39;2017_law.json&#39;</span><span class="p">)</span>
+<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;2017_law.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify reform dictionary for TCJA as passed by Congress in late 2017</span>
-<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_URL</span> <span class="o">+</span> <span class="s1">&#39;TCJA.json&#39;</span><span class="p">)</span>
+<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;TCJA.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify Policy object for pre-TCJA policy</span>
 <span class="n">bpolicy</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
@@ -400,8 +377,6 @@ Top 1%        1.63         1.42         0.20       -22.305      -13695.2        
     
     <div class='prev-next-bottom'>
         
-    <a class='left-prev' id="prev-link" href="recipe04_pandas.html" title="previous page">Recipe 4: Estimating Differential Reform Response - pandas version</a>
-    <a class='right-next' id="next-link" href="recipe06.html" title="next page">Recipe 6: Analyzing a Non-Parametric Reform</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">

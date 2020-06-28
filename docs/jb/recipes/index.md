@@ -1,2 +1,2 @@
-Tax-Calculator recipes
-======================
+Recipes
+=======

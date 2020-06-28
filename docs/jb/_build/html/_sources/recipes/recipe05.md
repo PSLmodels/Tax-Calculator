@@ -110,14 +110,13 @@ class Calculator(tc.Calculator):
 
 # read an "old" reform file from Tax-Calculator website
 # ("old" means the reform file is defined relative to pre-TCJA policy)
-REFORMS_URL = ('https://raw.githubusercontent.com/'
-               'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
+REFORMS_PATH = '../../../taxcalc/reforms/'
 
 # specify reform dictionary for pre-TCJA policy
-reform1 = tc.Policy.read_json_reform(REFORMS_URL + '2017_law.json')
+reform1 = tc.Policy.read_json_reform(REFORMS_PATH + '2017_law.json')
 
 # specify reform dictionary for TCJA as passed by Congress in late 2017
-reform2 = tc.Policy.read_json_reform(REFORMS_URL + 'TCJA.json')
+reform2 = tc.Policy.read_json_reform(REFORMS_PATH + 'TCJA.json')
 
 # specify Policy object for pre-TCJA policy
 bpolicy = tc.Policy()

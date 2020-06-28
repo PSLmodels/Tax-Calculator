@@ -17,4 +17,7 @@
     - file: recipes/recipe04_pandas
     - file: recipes/recipe05
     - file: recipes/recipe06
-- file: CONTRIBUTING
+- header: Contributing
+- file: contributing
+- file: pr_workflow
+- file: param_naming
