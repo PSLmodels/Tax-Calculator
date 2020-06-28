@@ -24,10 +24,9 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 import pandas as pd
 import taxcalc as tc
 
-# read an "old" reform file from Tax-Calculator website
+# Read an "old" reform file
 # ("old" means the reform file is defined relative to pre-TCJA policy)
-REFORMS_URL = ('https://raw.githubusercontent.com/'
-               'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
+REFORMS_PATH = '../../../taxcalc/reforms/'
 
 # specify reform dictionary for pre-TCJA policy
 reform1 = tc.Policy.read_json_reform(REFORMS_URL + '2017_law.json')
