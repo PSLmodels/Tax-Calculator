@@ -1,4 +1,12 @@
 - file: index
+- header: About
+- file: starting
+- file: license
+- file: history
+- file: roadmap
+- header: Documentation
+- file: overview
+- file: uguide
 - file: recipes/index
   sections:
     - file: recipes/recipe00
@@ -9,3 +17,4 @@
     - file: recipes/recipe04_pandas
     - file: recipes/recipe05
     - file: recipes/recipe06
+- file: CONTRIBUTING
