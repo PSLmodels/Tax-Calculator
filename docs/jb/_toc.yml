@@ -1,4 +1,4 @@
-- file: intro
+- file: index
 - file: recipes/index
   sections:
     - file: recipes/recipe00
