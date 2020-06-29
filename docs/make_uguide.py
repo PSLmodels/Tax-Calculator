@@ -80,11 +80,11 @@ def reformat_params():
     tcja = tc.Policy.read_json_reform(TCJA_PATH)
 
     pol = tc.Policy()
-    # pol.clear_state()
+    pol.clear_state()
     years_short = list(range(START_YEAR, END_YEAR_SHORT))
     years_long = list(range(START_YEAR, END_YEAR_LONG))
     pol.set_year(START_YEAR)
-    params = pol.metadata()
+    params = pol.specification(serializable=True, sort_values=True)
 
     # Create parameter dictionary that resembles old Tax-Calculator
     # parameter schema
@@ -181,7 +181,7 @@ def policy_params(path, text, params_dict):
     # pylint: disable=too-many-locals
     with open(path) as pfile:
         json_text = pfile.read()
-    params = json_to_dict(json_text)
+    params = tc.json_to_dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct section dict containing sec1_sec2 titles
     concat_str = ' @ '
