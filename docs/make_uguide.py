@@ -55,6 +55,7 @@ def main():
     params_dict = reformat_params()
     # augment text variable with information from JSON files
     text = policy_params(POLICY_PATH, text, params_dict)
+    print(text)
     text = io_variables('read', IOVARS_PATH, text)
     text = io_variables('calc', IOVARS_PATH, text)
     text = assumption_params('consumption', CONSUMPTION_PATH, text)
@@ -83,7 +84,7 @@ def reformat_params():
     pol.clear_state()
     years_short = list(range(START_YEAR, END_YEAR_SHORT))
     years_long = list(range(START_YEAR, END_YEAR_LONG))
-    pol.set_year(START_YEAR)
+    pol.set_year(years_long)
     params = pol.specification(serializable=True, sort_values=True)
 
     # Create parameter dictionary that resembles old Tax-Calculator
@@ -255,7 +256,7 @@ def io_variables(iotype, path, text):
     """
     with open(path) as vfile:
         json_text = vfile.read()
-    variables = json_to_dict(json_text)
+    variables = tc.json_to_dict(json_text)
     assert isinstance(variables, dict)
     # construct variable text
     vtext = ''
@@ -312,7 +313,7 @@ def assumption_params(ptype, path, text):
     """
     with open(path) as pfile:
         json_text = pfile.read()
-    params = json_to_dict(json_text)
+    params = tc.json_to_dict(json_text)
     assert isinstance(params, OrderedDict)
     # construct parameter text for each param
     ptext = ''
