@@ -10,7 +10,7 @@ this folder, and JSON files from Tax-Calculator.
 import os
 import sys
 # Other scripts in this folder.
-import make_policy_params
+import make_params
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -33,8 +33,13 @@ END_YEAR_LONG = 2027
 
 def main():
     # Policy parameters.
-    policy_param_text = make_policy_params.make_policy_params()
+    policy_param_text = make_params.make_params(POLICY_PATH, 'policy')
     write_file(policy_param_text, 'policy_params')
+    consumption_param_text = make_params.make_params(CONSUMPTION_PATH,
+        'consumption')
+    growdiff_param_text = make_params.make_params(GROWDIFF_PATH, 'growdiff')
+    assumption_param_text = consumption_param_text + growdiff_param_text
+    write_file(assumption_param_text, 'assumption_params')
     # augment text variable with information from JSON files
     # text = io_variables('read', IOVARS_PATH, text)
     # text = io_variables('calc', IOVARS_PATH, text)
