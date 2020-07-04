@@ -2,25 +2,22 @@ import numpy as np
 import pandas as pd
 from collections import OrderedDict
 import taxcalc as tc
+import os
 
 
-INPUT_FILENAME = 'test_in.md'
-OUTPUT_FILENAME = 'test_out.md'
+CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
-# CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
-CURDIR_PATH = os.path.abspath('')
-
-TAXCALC_PATH = os.path.join(CURDIR_PATH, '..', 'taxcalc')
+TAXCALC_PATH = os.path.join(CURDIR_PATH, '../../../..', 'taxcalc')
 
 # INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
 # Use TCJA to determine whether policies change in 2026.
-TCJA_PATH = os.path.join(CURDIR_PATH,'../taxcalc/reforms/TCJA.json')
+TCJA_PATH = os.path.join(TAXCALC_PATH, 'reforms/TCJA.json')
 POLICY_PATH = os.path.join(TAXCALC_PATH, 'policy_current_law.json')
 IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
 GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
-INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
-OUTPUT_PATH = os.path.join(CURDIR_PATH, OUTPUT_FILENAME)
+TEMPLATE_PATH = os.path.join(CURDIR_PATH, '../templates')
+OUTPUT_PATH = os.path.join(CURDIR_PATH, '..')
 
 START_YEAR = 2013
 END_YEAR_SHORT = 2020
@@ -46,6 +43,34 @@ SECTION_1_ORDER = ['Parameter Indexing',
                    'Other Parameters (not in Tax-Brain webapp)']
 
 
+def make_policy_params():
+    params_dict = reformat_params()
+    with open(POLICY_PATH) as pfile:
+        json_text = pfile.read()
+    params = tc.json_to_dict(json_text)
+    df = pd.DataFrame(params).transpose()[1:].join(
+    pd.DataFrame(params_dict).transpose())
+    df['content'] = paramtextdf(df)
+    df.section_1 = np.where(df.section_1 == '',
+        'Other Parameters (not in Tax-Brain webapp)', df.section_1)
+    section_1_order_index = dict(zip(SECTION_1_ORDER,
+        range(len(SECTION_1_ORDER))))
+    df['section_1_order'] = df.section_1.map(section_1_order_index)
+    df.sort_values(['section_1_order', 'section_2'], inplace=True)
+    # Add section titles when they change.
+    df['new_section_1'] = ~df.section_1.eq(df.section_1.shift())
+    df['new_section_2'] = (~df.section_2.eq(df.section_2.shift()) &
+        (df.section_2 > ''))
+    df['section_1_content'] = np.where(df.new_section_1,
+        '## ' + df.section_1 + '\n\n', '')
+    df['section_2_content'] = np.where(df.new_section_2,
+        '### ' + df.section_2 + '\n\n', '')
+    # Concatenate section titles with content for each parameter.
+    df['content_all'] = df.section_1_content + df.section_2_content + df.content
+    # Return a single string.
+    return '\n\n'.join(df.content_all)
+
+
 def boolstr(b):
     """ Return a bool value or Series as 'True'/'False' strings.
 
@@ -62,35 +87,6 @@ def boolstr(b):
     if b:
         return 'True'
     return 'False'
-
-
-def make_policy_params():
-    params_dict = reformat_params()
-    text = policy_params(POLICY_PATH, '', params_dict)
-    with open(POLICY_PATH) as pfile:
-        json_text = pfile.read()
-    params = tc.json_to_dict(json_text)
-    df = pd.DataFrame(params).transpose()[1:].join(
-    pd.DataFrame(params_dict).transpose())
-    df['content'] = paramtextdf(df)
-    df.section_1 = np.where(df.section_1 == '',
-        'Other Parameters (not in Tax-Brain webapp)', df.section_1)
-    section_1_order_index = dict(zip(SECTION_1_ORDER,
-        range(len(SECTION_1_ORDER))))
-    df['section_1_order'] = df.section_1.map(section_1_order_index)
-    df.sort_values(['section_1_order', 'section_2'], inplace=True)
-    # Add section titles when they change.
-    df['new_section_1'] = ~df.section_1.eq(df.section_1.shift())
-    df['new_section_2'] = (~df.section_2.eq(df.section_2.shift()) &
-        df.section_2 > '')
-    df['section_1_content'] = np.where(df.new_section_1,
-        '## ' + df.section_1 + '\n\n', '')
-    df['section_2_content'] = np.where(df.new_section_2,
-        '### ' + df.section_2 + '\n\n', '')
-    # Concatenate section titles with content for each parameter.
-    df['content_all'] = df.section_1_content + df.section_2_content + df.content
-    # Return a single string.
-    return '\n\n'.join(df.content_all)
 
 
 def paramtextdf(p):
@@ -158,8 +154,8 @@ def paramtextdf(p):
             effect_puf_cps(p) + '  \n' +
             inflation_indexed(p) + '  \n' +
             value_type(p) + '  \n' +
-            known_values(p) + '  \n' +
-            valid_range(p) + '\n\n'
+            known_values(p) +  # Skip the newline because it's part of the loop.
+            valid_range(p) + '\n'
            )
 
 
@@ -201,75 +197,3 @@ def reformat_params():
                         list_vals2.append(list_vals1)
                         params_dict[param]['values'] = list_vals2
     return params_dict
-
-def policy_params(path, text, params_dict):
-    """
-    Read policy parameters from path, integrate them into text, and
-    return the integrated text.
-    """
-    # pylint: disable=too-many-locals
-    with open(path) as pfile:
-        json_text = pfile.read()
-    params = tc.json_to_dict(json_text)
-    import pdb; pdb.set_trace()
-    assert isinstance(params, OrderedDict)
-    # construct section dict containing sec1_sec2 titles
-    concat_str = ' @ '
-    section = OrderedDict()
-    using_other_params_section = False
-    for pname in params:
-        if pname == "schema":
-            continue
-        param = params[pname]
-        sec1_sec2 = '{}{}{}'.format(param['section_1'],
-                                    concat_str,
-                                    param['section_2'])
-        if sec1_sec2 == concat_str:
-            using_other_params_section = True
-        elif sec1_sec2 not in section:
-            section[sec1_sec2] = 0
-    if using_other_params_section:
-        section[concat_str] = 0
-    # construct parameter text for each sec1_sec2 in section
-    for sec1_sec2 in section:
-        split_list = sec1_sec2.split(concat_str)
-        sec1 = split_list[0]
-        sec2 = split_list[1]
-        ptext = ''
-        for pname in params:
-            if pname == "schema":
-                continue
-            param = params[pname]
-            if sec1 == param['section_1'] and sec2 == param['section_2']:
-                ptext += policy_param_text(pname, param, params_dict)
-    return ptext
-
-
-def var_text(vname, iotype, variable):
-    """
-    Extract info from variable for vname of iotype
-    and return info as HTML string.
-    """
-    if iotype == 'read':
-        txt = '## `{}`'.format(vname)
-        if 'required' in variable:
-            txt += '*'
-    else:
-        txt = '## `{}`'.format(vname)
-    txt += '_Description:_ {}  \n'.format(variable['desc'])
-    if variable['type'] == 'float':
-        vtype = 'real'
-    elif variable['type'] == 'int':
-        vtype = 'integer'
-    else:
-        msg = ('{} variable {} has '
-               'unknown type={}  \n'.format(iotype, vname, variable['type']))
-        raise ValueError(msg)
-    txt += '_Datatype:_ {}  \n'.format(vtype)
-    if iotype == 'read':
-        txt += '_Availability:_ {}  \n'.format(variable['availability'])
-    txt += '_IRS Form Location:_'
-    formdict = variable['form']
-    for yrange in sorted(formdict.keys()):
-        txt += '{}: {}  \n'.format(yrange, formdict[yrange])
-    return txt
