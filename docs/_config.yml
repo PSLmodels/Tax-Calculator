@@ -2,7 +2,8 @@
 title: Tax-Calculator
 author: Policy Simulation Library
 logo: PSL.svg
-exclude_patterns: [guide/make, guide/templates, recipes/jupyter_src]
+exclude_patterns: [guide/make, guide/templates, guide/README.md, 
+                   recipes/jupyter_src]
 launch_buttons:
   colab_url: "https://colab.research.google.com"
   binderhub_url: "https://mybinder.org"
