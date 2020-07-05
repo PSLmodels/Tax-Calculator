@@ -7,7 +7,7 @@ Computer programming knowledge is not required, but this approach to using Tax-C
 
 ## Test `tc` CLI
 
-The `tc` CLI is part of the Tax-Calculator `taxcalc` package you installed on your computer as part of {doc}`../starting`.
+The `tc` CLI is part of the Tax-Calculator `taxcalc` package you installed on your computer as part of {doc}`../usage/starting`.
 
 To check your installation of `tc`, enter the following command:
 
