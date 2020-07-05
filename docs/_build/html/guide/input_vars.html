@@ -1,0 +1,1565 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Input variables &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Output variables" href="output_vars.html" />
+    <link rel="prev" title="Policy parameters" href="policy_params.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  
+  <ul class="nav sidenav_l1">
+<li class="navbar-special">
+<p class="margin-caption">Usage</p>
+</li>
+  <li class="">
+    <a href="../usage/starting.html">Getting started</a>
+  </li>
+  <li class="">
+    <a href="../usage/overview.html">Structural overview</a>
+  </li>
+  <li class="active">
+    <a href="index.html">User guide</a>
+  <ul class="nav sidenav_l2">
+    <li class="">
+      <a href="python_interface.html">Python interface</a>
+    </li>
+    <li class="">
+      <a href="cli.html">Command-line interface</a>
+    </li>
+    <li class="">
+      <a href="policy_params.html">Policy parameters</a>
+    </li>
+    <li class="active">
+      <a href="">Input variables</a>
+    </li>
+    <li class="">
+      <a href="output_vars.html">Output variables</a>
+    </li>
+    <li class="">
+      <a href="assumption_params.html">Assumption parameters</a>
+    </li>
+  </ul>
+  </li>
+  <li class="">
+    <a href="../recipes/index.html">Recipes</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">About</p>
+</li>
+  <li class="">
+    <a href="../about/history.html">History</a>
+  </li>
+  <li class="">
+    <a href="../about/roadmap.html">Roadmap</a>
+  </li>
+  <li class="">
+    <a href="../about/releases.html">Release history</a>
+  </li>
+  <li class="">
+    <a href="../about/changes.html">Change history</a>
+  </li>
+  <li class="">
+    <a href="../about/upgrading.html">Upgrading to Tax-Calculator 2.0</a>
+  </li>
+  <li class="">
+    <a href="../about/license.html">License</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">Contributing</p>
+</li>
+  <li class="">
+    <a href="../contributing/contributor_guide.html">Contributor guide</a>
+  </li>
+  <li class="">
+    <a href="../contributing/pr_workflow.html">Pull request workflow</a>
+  </li>
+  <li class="">
+    <a href="../contributing/param_naming.html">Policy parameter naming and placing conventions</a>
+  </li>
+  <li class="">
+    <a href="../contributing/testing.html">Testing</a>
+  </li>
+</ul>
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/guide/input_vars.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fguide/input_vars.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/guide/input_vars.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="nav section-nav flex-column">
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#dsi" class="nav-link">DSI</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#eic" class="nav-link">EIC</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#flpdyr" class="nav-link">FLPDYR</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#mars" class="nav-link">MARS</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#midr" class="nav-link">MIDR</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#recid" class="nav-link">RECID</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#xtot" class="nav-link">XTOT</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#age-head" class="nav-link">age_head</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#age-spouse" class="nav-link">age_spouse</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#agi-bin" class="nav-link">agi_bin</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#blind-head" class="nav-link">blind_head</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#blind-spouse" class="nav-link">blind_spouse</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#cmbtp" class="nav-link">cmbtp</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00200" class="nav-link">e00200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00200p" class="nav-link">e00200p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00200s" class="nav-link">e00200s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#pencon-p" class="nav-link">pencon_p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#pencon-s" class="nav-link">pencon_s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00300" class="nav-link">e00300</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00400" class="nav-link">e00400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00600" class="nav-link">e00600</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00650" class="nav-link">e00650</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00700" class="nav-link">e00700</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00800" class="nav-link">e00800</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00900" class="nav-link">e00900</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00900p" class="nav-link">e00900p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e00900s" class="nav-link">e00900s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e01100" class="nav-link">e01100</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e01200" class="nav-link">e01200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e01400" class="nav-link">e01400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e01500" class="nav-link">e01500</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e01700" class="nav-link">e01700</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e02000" class="nav-link">e02000</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e02100" class="nav-link">e02100</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e02100p" class="nav-link">e02100p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e02100s" class="nav-link">e02100s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e02300" class="nav-link">e02300</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e02400" class="nav-link">e02400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03150" class="nav-link">e03150</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03210" class="nav-link">e03210</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03220" class="nav-link">e03220</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03230" class="nav-link">e03230</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03240" class="nav-link">e03240</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03270" class="nav-link">e03270</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03290" class="nav-link">e03290</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03300" class="nav-link">e03300</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03400" class="nav-link">e03400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e03500" class="nav-link">e03500</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e07240" class="nav-link">e07240</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e07260" class="nav-link">e07260</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e07300" class="nav-link">e07300</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e07400" class="nav-link">e07400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e07600" class="nav-link">e07600</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e09700" class="nav-link">e09700</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e09800" class="nav-link">e09800</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e09900" class="nav-link">e09900</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e11200" class="nav-link">e11200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e17500" class="nav-link">e17500</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e18400" class="nav-link">e18400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e18500" class="nav-link">e18500</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e19200" class="nav-link">e19200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e19800" class="nav-link">e19800</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e20100" class="nav-link">e20100</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e20400" class="nav-link">e20400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#g20500" class="nav-link">g20500</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e24515" class="nav-link">e24515</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e24518" class="nav-link">e24518</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e26270" class="nav-link">e26270</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e27200" class="nav-link">e27200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e32800" class="nav-link">e32800</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e58990" class="nav-link">e58990</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e62900" class="nav-link">e62900</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e87530" class="nav-link">e87530</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#elderly-dependents" class="nav-link">elderly_dependents</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#f2441" class="nav-link">f2441</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#f6251" class="nav-link">f6251</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#a-lineno" class="nav-link">a_lineno</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ffpos" class="nav-link">ffpos</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#fips" class="nav-link">fips</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#h-seq" class="nav-link">h_seq</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#data-source" class="nav-link">data_source</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#k1bx14p" class="nav-link">k1bx14p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#k1bx14s" class="nav-link">k1bx14s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#mcaid-ben" class="nav-link">mcaid_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#mcare-ben" class="nav-link">mcare_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#n24" class="nav-link">n24</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#nu05" class="nav-link">nu05</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#nu13" class="nav-link">nu13</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#nu18" class="nav-link">nu18</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#n1820" class="nav-link">n1820</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#n21" class="nav-link">n21</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#other-ben" class="nav-link">other_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#p08000" class="nav-link">p08000</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#p22250" class="nav-link">p22250</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#p23250" class="nav-link">p23250</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e87521" class="nav-link">e87521</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#s006" class="nav-link">s006</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#snap-ben" class="nav-link">snap_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#housing-ben" class="nav-link">housing_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ssi-ben" class="nav-link">ssi_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#tanf-ben" class="nav-link">tanf_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#vet-ben" class="nav-link">vet_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#wic-ben" class="nav-link">wic_ben</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#pt-sstb-income" class="nav-link">PT_SSTB_income</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#pt-binc-w2-wages" class="nav-link">PT_binc_w2_wages</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#pt-ubia-property" class="nav-link">PT_ubia_property</a>
+        </li>
+    
+    </ul>
+</nav>
+
+
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/guide/input_vars.md">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="input-variables">
+<h1>Input variables<a class="headerlink" href="#input-variables" title="Permalink to this headline">¶</a></h1>
+<p>This section contains documentation of input variables in a format that is easy to search and print.
+The input variables are ordered alphabetically by name.
+There are no subsections, just a long list of input variables that Tax-Calculator is programmed to use in its calculations.
+The Availability information indicates which input data files contain the variable.</p>
+<div class="section" id="dsi">
+<h2><code class="docutils literal notranslate"><span class="pre">DSI</span></code><a class="headerlink" href="#dsi" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 1 if claimed as dependent on another return; otherwise 0<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 6a</p>
+</div>
+<div class="section" id="eic">
+<h2><code class="docutils literal notranslate"><span class="pre">EIC</span></code><a class="headerlink" href="#eic" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: number of EIC qualifying children (range: 0 to 3)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch EIC</p>
+</div>
+<div class="section" id="flpdyr">
+<h2><code class="docutils literal notranslate"><span class="pre">FLPDYR</span></code><a class="headerlink" href="#flpdyr" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Calendar year for which taxes are calculated<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040</p>
+</div>
+<div class="section" id="mars">
+<h2><code class="docutils literal notranslate"><span class="pre">MARS</span></code><a class="headerlink" href="#mars" title="Permalink to this headline">¶</a></h2>
+<p><strong><em>Required Input Variable</em></strong><br />
+<em>Description</em>: Filing (marital) status: line number of the checked box [1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er)]<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 lines 1-5</p>
+</div>
+<div class="section" id="midr">
+<h2><code class="docutils literal notranslate"><span class="pre">MIDR</span></code><a class="headerlink" href="#midr" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 1 if separately filing spouse itemizes; otherwise 0<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 39b</p>
+</div>
+<div class="section" id="recid">
+<h2><code class="docutils literal notranslate"><span class="pre">RECID</span></code><a class="headerlink" href="#recid" title="Permalink to this headline">¶</a></h2>
+<p><strong><em>Required Input Variable</em></strong><br />
+<em>Description</em>: Unique numeric identifier for filing unit; appears as RECID variable in tc CLI minimal output<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: private info</p>
+</div>
+<div class="section" id="xtot">
+<h2><code class="docutils literal notranslate"><span class="pre">XTOT</span></code><a class="headerlink" href="#xtot" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total number of exemptions for filing unit<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 6d</p>
+</div>
+<div class="section" id="age-head">
+<h2><code class="docutils literal notranslate"><span class="pre">age_head</span></code><a class="headerlink" href="#age-head" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Age in years of taxpayer (i.e. primary adult)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="age-spouse">
+<h2><code class="docutils literal notranslate"><span class="pre">age_spouse</span></code><a class="headerlink" href="#age-spouse" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Age in years of spouse (i.e. secondary adult if present)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="agi-bin">
+<h2><code class="docutils literal notranslate"><span class="pre">agi_bin</span></code><a class="headerlink" href="#agi-bin" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Historical AGI category used in data extrapolation<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: not used in tax calculations</p>
+</div>
+<div class="section" id="blind-head">
+<h2><code class="docutils literal notranslate"><span class="pre">blind_head</span></code><a class="headerlink" href="#blind-head" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 1 if taxpayer is blind; otherwise 0<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 39a</p>
+</div>
+<div class="section" id="blind-spouse">
+<h2><code class="docutils literal notranslate"><span class="pre">blind_spouse</span></code><a class="headerlink" href="#blind-spouse" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 1 if spouse is blind; otherwise 0<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 39a</p>
+</div>
+<div class="section" id="cmbtp">
+<h2><code class="docutils literal notranslate"><span class="pre">cmbtp</span></code><a class="headerlink" href="#cmbtp" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Estimate of income on (AMT) Form 6251 but not in AGI<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251 and 1040</p>
+</div>
+<div class="section" id="e00200">
+<h2><code class="docutils literal notranslate"><span class="pre">e00200</span></code><a class="headerlink" href="#e00200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Wages, salaries, and tips for filing unit net of pension contributions<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 7</p>
+</div>
+<div class="section" id="e00200p">
+<h2><code class="docutils literal notranslate"><span class="pre">e00200p</span></code><a class="headerlink" href="#e00200p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Wages, salaries, and tips for taxpayer net of pension contributions (pencon_p)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 7 component</p>
+</div>
+<div class="section" id="e00200s">
+<h2><code class="docutils literal notranslate"><span class="pre">e00200s</span></code><a class="headerlink" href="#e00200s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Wages, salaries, and tips for spouse net of pension contributions (pencon_s)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 7 component</p>
+</div>
+<div class="section" id="pencon-p">
+<h2><code class="docutils literal notranslate"><span class="pre">pencon_p</span></code><a class="headerlink" href="#pencon-p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Contributions to defined-contribution pension plans for taxpayer<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: Imputed using IRS tabulations of Form W-2 sample</p>
+</div>
+<div class="section" id="pencon-s">
+<h2><code class="docutils literal notranslate"><span class="pre">pencon_s</span></code><a class="headerlink" href="#pencon-s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Contributions to defined-contribution pension plans for spouse<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: Imputed using IRS tabulations of Form W-2 sample</p>
+</div>
+<div class="section" id="e00300">
+<h2><code class="docutils literal notranslate"><span class="pre">e00300</span></code><a class="headerlink" href="#e00300" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Taxable interest income<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 8a</p>
+</div>
+<div class="section" id="e00400">
+<h2><code class="docutils literal notranslate"><span class="pre">e00400</span></code><a class="headerlink" href="#e00400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Tax-exempt interest income<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 8b</p>
+</div>
+<div class="section" id="e00600">
+<h2><code class="docutils literal notranslate"><span class="pre">e00600</span></code><a class="headerlink" href="#e00600" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Ordinary dividends included in AGI<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 9a</p>
+</div>
+<div class="section" id="e00650">
+<h2><code class="docutils literal notranslate"><span class="pre">e00650</span></code><a class="headerlink" href="#e00650" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Qualified dividends included in ordinary dividends<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 9b</p>
+</div>
+<div class="section" id="e00700">
+<h2><code class="docutils literal notranslate"><span class="pre">e00700</span></code><a class="headerlink" href="#e00700" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Taxable refunds of state and local income taxes<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 10</p>
+</div>
+<div class="section" id="e00800">
+<h2><code class="docutils literal notranslate"><span class="pre">e00800</span></code><a class="headerlink" href="#e00800" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Alimony received<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 11</p>
+</div>
+<div class="section" id="e00900">
+<h2><code class="docutils literal notranslate"><span class="pre">e00900</span></code><a class="headerlink" href="#e00900" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch C business net profit/loss for filing unit<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 12</p>
+</div>
+<div class="section" id="e00900p">
+<h2><code class="docutils literal notranslate"><span class="pre">e00900p</span></code><a class="headerlink" href="#e00900p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch C business net profit/loss for taxpayer<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 12 component</p>
+</div>
+<div class="section" id="e00900s">
+<h2><code class="docutils literal notranslate"><span class="pre">e00900s</span></code><a class="headerlink" href="#e00900s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch C business net profit/loss for spouse<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 12 component</p>
+</div>
+<div class="section" id="e01100">
+<h2><code class="docutils literal notranslate"><span class="pre">e01100</span></code><a class="headerlink" href="#e01100" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Capital gain distributions not reported on Sch D<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 13</p>
+</div>
+<div class="section" id="e01200">
+<h2><code class="docutils literal notranslate"><span class="pre">e01200</span></code><a class="headerlink" href="#e01200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Other net gain/loss from Form 4797<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 14</p>
+</div>
+<div class="section" id="e01400">
+<h2><code class="docutils literal notranslate"><span class="pre">e01400</span></code><a class="headerlink" href="#e01400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Taxable IRA distributions<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 15b</p>
+</div>
+<div class="section" id="e01500">
+<h2><code class="docutils literal notranslate"><span class="pre">e01500</span></code><a class="headerlink" href="#e01500" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total pensions and annuities<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 16a</p>
+</div>
+<div class="section" id="e01700">
+<h2><code class="docutils literal notranslate"><span class="pre">e01700</span></code><a class="headerlink" href="#e01700" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Taxable pensions and annuities<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 16b</p>
+</div>
+<div class="section" id="e02000">
+<h2><code class="docutils literal notranslate"><span class="pre">e02000</span></code><a class="headerlink" href="#e02000" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 17</p>
+</div>
+<div class="section" id="e02100">
+<h2><code class="docutils literal notranslate"><span class="pre">e02100</span></code><a class="headerlink" href="#e02100" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Farm net income/loss for filing unit from Sch F<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 18</p>
+</div>
+<div class="section" id="e02100p">
+<h2><code class="docutils literal notranslate"><span class="pre">e02100p</span></code><a class="headerlink" href="#e02100p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Farm net income/loss for taxpayer<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 18 component</p>
+</div>
+<div class="section" id="e02100s">
+<h2><code class="docutils literal notranslate"><span class="pre">e02100s</span></code><a class="headerlink" href="#e02100s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Farm net income/loss for spouse<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 18 component</p>
+</div>
+<div class="section" id="e02300">
+<h2><code class="docutils literal notranslate"><span class="pre">e02300</span></code><a class="headerlink" href="#e02300" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Unemployment insurance benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 19</p>
+</div>
+<div class="section" id="e02400">
+<h2><code class="docutils literal notranslate"><span class="pre">e02400</span></code><a class="headerlink" href="#e02400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total social security (OASDI) benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 20a</p>
+</div>
+<div class="section" id="e03150">
+<h2><code class="docutils literal notranslate"><span class="pre">e03150</span></code><a class="headerlink" href="#e03150" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total deductible IRA contributions<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 32</p>
+</div>
+<div class="section" id="e03210">
+<h2><code class="docutils literal notranslate"><span class="pre">e03210</span></code><a class="headerlink" href="#e03210" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Student loan interest<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 33</p>
+</div>
+<div class="section" id="e03220">
+<h2><code class="docutils literal notranslate"><span class="pre">e03220</span></code><a class="headerlink" href="#e03220" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Educator expenses<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 23</p>
+</div>
+<div class="section" id="e03230">
+<h2><code class="docutils literal notranslate"><span class="pre">e03230</span></code><a class="headerlink" href="#e03230" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Tuition and fees from Form 8917<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 34</p>
+</div>
+<div class="section" id="e03240">
+<h2><code class="docutils literal notranslate"><span class="pre">e03240</span></code><a class="headerlink" href="#e03240" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Domestic production activities from Form 8903<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 35</p>
+</div>
+<div class="section" id="e03270">
+<h2><code class="docutils literal notranslate"><span class="pre">e03270</span></code><a class="headerlink" href="#e03270" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Self-employed health insurance deduction<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 29</p>
+</div>
+<div class="section" id="e03290">
+<h2><code class="docutils literal notranslate"><span class="pre">e03290</span></code><a class="headerlink" href="#e03290" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Health savings account deduction from Form 8889<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 25</p>
+</div>
+<div class="section" id="e03300">
+<h2><code class="docutils literal notranslate"><span class="pre">e03300</span></code><a class="headerlink" href="#e03300" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Contributions to SEP, SIMPLE and qualified plans<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 28</p>
+</div>
+<div class="section" id="e03400">
+<h2><code class="docutils literal notranslate"><span class="pre">e03400</span></code><a class="headerlink" href="#e03400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Penalty on early withdrawal of savings<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 30</p>
+</div>
+<div class="section" id="e03500">
+<h2><code class="docutils literal notranslate"><span class="pre">e03500</span></code><a class="headerlink" href="#e03500" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Alimony paid<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 31a</p>
+</div>
+<div class="section" id="e07240">
+<h2><code class="docutils literal notranslate"><span class="pre">e07240</span></code><a class="headerlink" href="#e07240" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Retirement savings contributions credit from Form 8880<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 50<br />
+2014-2016: 1040 line 51</p>
+</div>
+<div class="section" id="e07260">
+<h2><code class="docutils literal notranslate"><span class="pre">e07260</span></code><a class="headerlink" href="#e07260" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Residential energy credit from Form 5695<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 52<br />
+2014-2016: 1040 line 53</p>
+</div>
+<div class="section" id="e07300">
+<h2><code class="docutils literal notranslate"><span class="pre">e07300</span></code><a class="headerlink" href="#e07300" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Foreign tax credit from Form 1116<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 47<br />
+2014-2016: 1040 line 48</p>
+</div>
+<div class="section" id="e07400">
+<h2><code class="docutils literal notranslate"><span class="pre">e07400</span></code><a class="headerlink" href="#e07400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: General business credit from Form 3800<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 53a<br />
+2014-2016: 1040 line 54a</p>
+</div>
+<div class="section" id="e07600">
+<h2><code class="docutils literal notranslate"><span class="pre">e07600</span></code><a class="headerlink" href="#e07600" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Prior year minimum tax credit from Form 8801<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 53b<br />
+2014-2016: 1040 line 54b</p>
+</div>
+<div class="section" id="e09700">
+<h2><code class="docutils literal notranslate"><span class="pre">e09700</span></code><a class="headerlink" href="#e09700" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Recapture of Investment Credit<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2015: 4255 line 15<br />
+2016-2016: 4255 line 20</p>
+</div>
+<div class="section" id="e09800">
+<h2><code class="docutils literal notranslate"><span class="pre">e09800</span></code><a class="headerlink" href="#e09800" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Unreported payroll taxes from Form 4137 or 8919<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 57<br />
+2014-2016: 1040 line 58</p>
+</div>
+<div class="section" id="e09900">
+<h2><code class="docutils literal notranslate"><span class="pre">e09900</span></code><a class="headerlink" href="#e09900" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Penalty tax on qualified retirement plans<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 58<br />
+2014-2016: 1040 line 59</p>
+</div>
+<div class="section" id="e11200">
+<h2><code class="docutils literal notranslate"><span class="pre">e11200</span></code><a class="headerlink" href="#e11200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Excess payroll (FICA/RRTA) tax withheld<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 69<br />
+2014-2016: 1040 line 71</p>
+</div>
+<div class="section" id="e17500">
+<h2><code class="docutils literal notranslate"><span class="pre">e17500</span></code><a class="headerlink" href="#e17500" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable medical and dental expenses.  WARNING: this variable is zero below the floor in PUF data.<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 1</p>
+</div>
+<div class="section" id="e18400">
+<h2><code class="docutils literal notranslate"><span class="pre">e18400</span></code><a class="headerlink" href="#e18400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable state and local income/sales taxes<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 5</p>
+</div>
+<div class="section" id="e18500">
+<h2><code class="docutils literal notranslate"><span class="pre">e18500</span></code><a class="headerlink" href="#e18500" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable real-estate taxes paid<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 6</p>
+</div>
+<div class="section" id="e19200">
+<h2><code class="docutils literal notranslate"><span class="pre">e19200</span></code><a class="headerlink" href="#e19200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable interest paid<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 15</p>
+</div>
+<div class="section" id="e19800">
+<h2><code class="docutils literal notranslate"><span class="pre">e19800</span></code><a class="headerlink" href="#e19800" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable charitable giving: cash/check contributions.  WARNING: this variable is already capped in PUF data.<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 16</p>
+</div>
+<div class="section" id="e20100">
+<h2><code class="docutils literal notranslate"><span class="pre">e20100</span></code><a class="headerlink" href="#e20100" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable charitable giving: other than cash/check contributions.  WARNING: this variable is already capped in PUF data.<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 17</p>
+</div>
+<div class="section" id="e20400">
+<h2><code class="docutils literal notranslate"><span class="pre">e20400</span></code><a class="headerlink" href="#e20400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable miscellaneous deductions.  WARNING: this variable is zero below the floor in PUF data.<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 24</p>
+</div>
+<div class="section" id="g20500">
+<h2><code class="docutils literal notranslate"><span class="pre">g20500</span></code><a class="headerlink" href="#g20500" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemizable gross (before 10% AGI disregard) casualty or theft loss<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch A line 20 before disregard subtracted</p>
+</div>
+<div class="section" id="e24515">
+<h2><code class="docutils literal notranslate"><span class="pre">e24515</span></code><a class="headerlink" href="#e24515" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch D: Un-Recaptured Section 1250 Gain<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 19</p>
+</div>
+<div class="section" id="e24518">
+<h2><code class="docutils literal notranslate"><span class="pre">e24518</span></code><a class="headerlink" href="#e24518" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch D: 28% Rate Gain or Loss<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 18</p>
+</div>
+<div class="section" id="e26270">
+<h2><code class="docutils literal notranslate"><span class="pre">e26270</span></code><a class="headerlink" href="#e26270" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch E: Combined partnership and S-corporation net income/loss (includes k1bx14p and k1bx14s amounts and is included in e02000)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch E line 32</p>
+</div>
+<div class="section" id="e27200">
+<h2><code class="docutils literal notranslate"><span class="pre">e27200</span></code><a class="headerlink" href="#e27200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch E: Farm rent net income or loss (included in e02000)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch E line 40</p>
+</div>
+<div class="section" id="e32800">
+<h2><code class="docutils literal notranslate"><span class="pre">e32800</span></code><a class="headerlink" href="#e32800" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Child/dependent-care expenses for qualifying persons from Form 2441<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 2441 line 3</p>
+</div>
+<div class="section" id="e58990">
+<h2><code class="docutils literal notranslate"><span class="pre">e58990</span></code><a class="headerlink" href="#e58990" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Investment income elected amount from Form 4952<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 4952 line 4g</p>
+</div>
+<div class="section" id="e62900">
+<h2><code class="docutils literal notranslate"><span class="pre">e62900</span></code><a class="headerlink" href="#e62900" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Alternative Minimum Tax foreign tax credit from Form 6251<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251 line 32</p>
+</div>
+<div class="section" id="e87530">
+<h2><code class="docutils literal notranslate"><span class="pre">e87530</span></code><a class="headerlink" href="#e87530" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Adjusted qualified lifetime learning expenses for all students<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 8863 Part I line 10 and 8863 Part III line 31</p>
+</div>
+<div class="section" id="elderly-dependents">
+<h2><code class="docutils literal notranslate"><span class="pre">elderly_dependents</span></code><a class="headerlink" href="#elderly-dependents" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: number of dependents age 65+ in filing unit excluding taxpayer and spouse<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data; not used in tax law</p>
+</div>
+<div class="section" id="f2441">
+<h2><code class="docutils literal notranslate"><span class="pre">f2441</span></code><a class="headerlink" href="#f2441" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: number of child/dependent-care qualifying persons<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 2441 line 2b</p>
+</div>
+<div class="section" id="f6251">
+<h2><code class="docutils literal notranslate"><span class="pre">f6251</span></code><a class="headerlink" href="#f6251" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 1 if Form 6251 (AMT) attached to return; otherwise 0<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251</p>
+</div>
+<div class="section" id="a-lineno">
+<h2><code class="docutils literal notranslate"><span class="pre">a_lineno</span></code><a class="headerlink" href="#a-lineno" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: CPS line number for the person record of the head of the tax filing unit (not used in tax-calculation logic)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+</div>
+<div class="section" id="ffpos">
+<h2><code class="docutils literal notranslate"><span class="pre">ffpos</span></code><a class="headerlink" href="#ffpos" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: CPS family identifier within household (not used in tax-calculation logic)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+</div>
+<div class="section" id="fips">
+<h2><code class="docutils literal notranslate"><span class="pre">fips</span></code><a class="headerlink" href="#fips" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: FIPS state code (not used in tax-calculation logic)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+</div>
+<div class="section" id="h-seq">
+<h2><code class="docutils literal notranslate"><span class="pre">h_seq</span></code><a class="headerlink" href="#h-seq" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: CPS household sequence number (not used in tax-calculation logic)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+</div>
+<div class="section" id="data-source">
+<h2><code class="docutils literal notranslate"><span class="pre">data_source</span></code><a class="headerlink" href="#data-source" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 1 if unit is created primarily from IRS-SOI PUF data; 0 if created primarily from CPS data (not used in tax-calculation logic)<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: sample construction info</p>
+</div>
+<div class="section" id="k1bx14p">
+<h2><code class="docutils literal notranslate"><span class="pre">k1bx14p</span></code><a class="headerlink" href="#k1bx14p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Partner self-employment earnings/loss for taxpayer (included in e26270 total)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1065 (Schedule K-1) box 14</p>
+</div>
+<div class="section" id="k1bx14s">
+<h2><code class="docutils literal notranslate"><span class="pre">k1bx14s</span></code><a class="headerlink" href="#k1bx14s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Partner self-employment earnings/loss for spouse (included in e26270 total)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1065 (Schedule K-1) box 14</p>
+</div>
+<div class="section" id="mcaid-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">mcaid_ben</span></code><a class="headerlink" href="#mcaid-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="mcare-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">mcare_ben</span></code><a class="headerlink" href="#mcare-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="n24">
+<h2><code class="docutils literal notranslate"><span class="pre">n24</span></code><a class="headerlink" href="#n24" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="nu05">
+<h2><code class="docutils literal notranslate"><span class="pre">nu05</span></code><a class="headerlink" href="#nu05" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Number of dependents under 5 years old<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="nu13">
+<h2><code class="docutils literal notranslate"><span class="pre">nu13</span></code><a class="headerlink" href="#nu13" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Number of dependents under 13 years old<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="nu18">
+<h2><code class="docutils literal notranslate"><span class="pre">nu18</span></code><a class="headerlink" href="#nu18" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Number of people under 18 years old in the filing unit<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="n1820">
+<h2><code class="docutils literal notranslate"><span class="pre">n1820</span></code><a class="headerlink" href="#n1820" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Number of people age 18-20 years old in the filing unit<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="n21">
+<h2><code class="docutils literal notranslate"><span class="pre">n21</span></code><a class="headerlink" href="#n21" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Number of people 21 years old or older in the filing unit<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: imputed from CPS data</p>
+</div>
+<div class="section" id="other-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">other_ben</span></code><a class="headerlink" href="#other-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Non-imputed benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: determined using government benefit program data</p>
+</div>
+<div class="section" id="p08000">
+<h2><code class="docutils literal notranslate"><span class="pre">p08000</span></code><a class="headerlink" href="#p08000" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Other tax credits (but not including Sch R credit)<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 53<br />
+2014-2016: 1040 line 54</p>
+</div>
+<div class="section" id="p22250">
+<h2><code class="docutils literal notranslate"><span class="pre">p22250</span></code><a class="headerlink" href="#p22250" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch D: Net short-term capital gains/losses<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 7</p>
+</div>
+<div class="section" id="p23250">
+<h2><code class="docutils literal notranslate"><span class="pre">p23250</span></code><a class="headerlink" href="#p23250" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch D: Net long-term capital gains/losses<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 Sch D line 15</p>
+</div>
+<div class="section" id="e87521">
+<h2><code class="docutils literal notranslate"><span class="pre">e87521</span></code><a class="headerlink" href="#e87521" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total tentative AmOppCredit amount for all students<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 8863 Part I line 1 and 8863 Part III line 30</p>
+</div>
+<div class="section" id="s006">
+<h2><code class="docutils literal notranslate"><span class="pre">s006</span></code><a class="headerlink" href="#s006" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Filing unit sampling weight; appears as WEIGHT variable in tc CLI minimal output<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_puf, taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2013-2016: not used in filing unit tax calculations</p>
+</div>
+<div class="section" id="snap-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">snap_ben</span></code><a class="headerlink" href="#snap-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed SNAP benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="housing-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">housing_ben</span></code><a class="headerlink" href="#housing-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed housing benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="ssi-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">ssi_ben</span></code><a class="headerlink" href="#ssi-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed SSI benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="tanf-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">tanf_ben</span></code><a class="headerlink" href="#tanf-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed TANF benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="vet-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">vet_ben</span></code><a class="headerlink" href="#vet-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed Veteran’s benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="wic-ben">
+<h2><code class="docutils literal notranslate"><span class="pre">wic_ben</span></code><a class="headerlink" href="#wic-ben" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Imputed WIC benefits<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>: taxdata_cps<br />
+<em>IRS Form Location:</em><br />
+2014-20??: imputed using the C-TAM model</p>
+</div>
+<div class="section" id="pt-sstb-income">
+<h2><code class="docutils literal notranslate"><span class="pre">PT_SSTB_income</span></code><a class="headerlink" href="#pt-sstb-income" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Value of one implies business income is from a specified service trade or business (SSTB); value of zero implies business income is from a qualified trade or business<br />
+<em>Datatype</em>: int<br />
+<em>Availability</em>:<br />
+<em>IRS Form Location:</em><br />
+2018-20??: specified in custom data</p>
+</div>
+<div class="section" id="pt-binc-w2-wages">
+<h2><code class="docutils literal notranslate"><span class="pre">PT_binc_w2_wages</span></code><a class="headerlink" href="#pt-binc-w2-wages" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Filing unit’s share of total W-2 wages paid by the pass-through business<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>:<br />
+<em>IRS Form Location:</em><br />
+2018-20??: specified in custom data</p>
+</div>
+<div class="section" id="pt-ubia-property">
+<h2><code class="docutils literal notranslate"><span class="pre">PT_ubia_property</span></code><a class="headerlink" href="#pt-ubia-property" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Filing unit’s share of total business property owned by the pass-through business<br />
+<em>Datatype</em>: float<br />
+<em>Availability</em>:<br />
+<em>IRS Form Location:</em><br />
+2018-20??: specified in custom data</p>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="policy_params.html" title="previous page">Policy parameters</a>
+    <a class='right-next' id="next-link" href="output_vars.html" title="next page">Output variables</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

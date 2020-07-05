@@ -1,0 +1,1403 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Output variables &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Assumption parameters" href="assumption_params.html" />
+    <link rel="prev" title="Input variables" href="input_vars.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  
+  <ul class="nav sidenav_l1">
+<li class="navbar-special">
+<p class="margin-caption">Usage</p>
+</li>
+  <li class="">
+    <a href="../usage/starting.html">Getting started</a>
+  </li>
+  <li class="">
+    <a href="../usage/overview.html">Structural overview</a>
+  </li>
+  <li class="active">
+    <a href="index.html">User guide</a>
+  <ul class="nav sidenav_l2">
+    <li class="">
+      <a href="python_interface.html">Python interface</a>
+    </li>
+    <li class="">
+      <a href="cli.html">Command-line interface</a>
+    </li>
+    <li class="">
+      <a href="policy_params.html">Policy parameters</a>
+    </li>
+    <li class="">
+      <a href="input_vars.html">Input variables</a>
+    </li>
+    <li class="active">
+      <a href="">Output variables</a>
+    </li>
+    <li class="">
+      <a href="assumption_params.html">Assumption parameters</a>
+    </li>
+  </ul>
+  </li>
+  <li class="">
+    <a href="../recipes/index.html">Recipes</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">About</p>
+</li>
+  <li class="">
+    <a href="../about/history.html">History</a>
+  </li>
+  <li class="">
+    <a href="../about/roadmap.html">Roadmap</a>
+  </li>
+  <li class="">
+    <a href="../about/releases.html">Release history</a>
+  </li>
+  <li class="">
+    <a href="../about/changes.html">Change history</a>
+  </li>
+  <li class="">
+    <a href="../about/upgrading.html">Upgrading to Tax-Calculator 2.0</a>
+  </li>
+  <li class="">
+    <a href="../about/license.html">License</a>
+  </li>
+<li class="navbar-special">
+<p class="margin-caption">Contributing</p>
+</li>
+  <li class="">
+    <a href="../contributing/contributor_guide.html">Contributor guide</a>
+  </li>
+  <li class="">
+    <a href="../contributing/pr_workflow.html">Pull request workflow</a>
+  </li>
+  <li class="">
+    <a href="../contributing/param_naming.html">Policy parameter naming and placing conventions</a>
+  </li>
+  <li class="">
+    <a href="../contributing/testing.html">Testing</a>
+  </li>
+</ul>
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/guide/output_vars.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fguide/output_vars.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/guide/output_vars.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
+
+<nav id="bd-toc-nav">
+    <ul class="nav section-nav flex-column">
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#niit" class="nav-link">niit</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#combined" class="nav-link">combined</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#earned" class="nav-link">earned</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#earned-p" class="nav-link">earned_p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#earned-s" class="nav-link">earned_s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#was-plus-sey-p" class="nav-link">was_plus_sey_p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#was-plus-sey-s" class="nav-link">was_plus_sey_s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#eitc" class="nav-link">eitc</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#rptc" class="nav-link">rptc</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#rptc-p" class="nav-link">rptc_p</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#rptc-s" class="nav-link">rptc_s</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#exact" class="nav-link">exact</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#expanded-income" class="nav-link">expanded_income</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#iitax" class="nav-link">iitax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#num" class="nav-link">num</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#othertaxes" class="nav-link">othertaxes</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#payrolltax" class="nav-link">payrolltax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#refund" class="nav-link">refund</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#sep" class="nav-link">sep</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#sey" class="nav-link">sey</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#standard" class="nav-link">standard</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#surtax" class="nav-link">surtax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#taxbc" class="nav-link">taxbc</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c00100" class="nav-link">c00100</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c01000" class="nav-link">c01000</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c02500" class="nav-link">c02500</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c02900" class="nav-link">c02900</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c03260" class="nav-link">c03260</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c04470" class="nav-link">c04470</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c04600" class="nav-link">c04600</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#qbided" class="nav-link">qbided</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c04800" class="nav-link">c04800</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c05200" class="nav-link">c05200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c05700" class="nav-link">c05700</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c05800" class="nav-link">c05800</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07100" class="nav-link">c07100</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07180" class="nav-link">c07180</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07200" class="nav-link">c07200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07220" class="nav-link">c07220</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07230" class="nav-link">c07230</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07240" class="nav-link">c07240</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07260" class="nav-link">c07260</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07300" class="nav-link">c07300</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07400" class="nav-link">c07400</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c07600" class="nav-link">c07600</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c08000" class="nav-link">c08000</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c09200" class="nav-link">c09200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c09600" class="nav-link">c09600</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c10960" class="nav-link">c10960</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c11070" class="nav-link">c11070</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c17000" class="nav-link">c17000</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e17500-capped" class="nav-link">e17500_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c18300" class="nav-link">c18300</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e18400-capped" class="nav-link">e18400_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e18500-capped" class="nav-link">e18500_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c19200" class="nav-link">c19200</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e19200-capped" class="nav-link">e19200_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c19700" class="nav-link">c19700</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e19800-capped" class="nav-link">e19800_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e20100-capped" class="nav-link">e20100_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c20500" class="nav-link">c20500</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#g20500-capped" class="nav-link">g20500_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c20800" class="nav-link">c20800</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#e20400-capped" class="nav-link">e20400_capped</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c21040" class="nav-link">c21040</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c21060" class="nav-link">c21060</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c23650" class="nav-link">c23650</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c59660" class="nav-link">c59660</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c62100" class="nav-link">c62100</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#c87668" class="nav-link">c87668</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#care-deduction" class="nav-link">care_deduction</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ctc-new" class="nav-link">ctc_new</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#odc" class="nav-link">odc</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#personal-refundable-credit" class="nav-link">personal_refundable_credit</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#personal-nonrefundable-credit" class="nav-link">personal_nonrefundable_credit</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#charity-credit" class="nav-link">charity_credit</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#dwks10" class="nav-link">dwks10</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#dwks13" class="nav-link">dwks13</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#dwks14" class="nav-link">dwks14</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#dwks19" class="nav-link">dwks19</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#fstax" class="nav-link">fstax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#invinc-agi-ec" class="nav-link">invinc_agi_ec</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#invinc-ec-base" class="nav-link">invinc_ec_base</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#lumpsum-tax" class="nav-link">lumpsum_tax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#pre-c04600" class="nav-link">pre_c04600</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#codtc-limited" class="nav-link">codtc_limited</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ptax-amc" class="nav-link">ptax_amc</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ptax-oasdi" class="nav-link">ptax_oasdi</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ptax-was" class="nav-link">ptax_was</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#setax" class="nav-link">setax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ymod" class="nav-link">ymod</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ymod1" class="nav-link">ymod1</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#ubi" class="nav-link">ubi</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#taxable-ubi" class="nav-link">taxable_ubi</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#nontaxable-ubi" class="nav-link">nontaxable_ubi</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#mtr-paytax" class="nav-link">mtr_paytax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#mtr-inctax" class="nav-link">mtr_inctax</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#aftertax-income" class="nav-link">aftertax_income</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#benefit-cost-total" class="nav-link">benefit_cost_total</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#benefit-value-total" class="nav-link">benefit_value_total</a>
+        </li>
+    
+    </ul>
+</nav>
+
+
+
+<div class="tocsection editthispage">
+    <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/guide/output_vars.md">
+        <i class="fas fa-pencil-alt"></i> Edit this page
+    </a>
+</div>
+
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="output-variables">
+<h1>Output variables<a class="headerlink" href="#output-variables" title="Permalink to this headline">¶</a></h1>
+<p>This section contains documentation of output variables in a format that is easy to search and print.
+The output variables are ordered alphabetically by name.
+There are no subsections, just a long list of output variables that Tax-Calculator is programmed to calculate.</p>
+<div class="section" id="niit">
+<h2><code class="docutils literal notranslate"><span class="pre">niit</span></code><a class="headerlink" href="#niit" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Net Investment Income Tax from Form 8960<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 60b<br />
+2014-2016: 1040 line 62b</p>
+</div>
+<div class="section" id="combined">
+<h2><code class="docutils literal notranslate"><span class="pre">combined</span></code><a class="headerlink" href="#combined" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sum of iitax and payrolltax and lumpsum_tax<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="earned">
+<h2><code class="docutils literal notranslate"><span class="pre">earned</span></code><a class="headerlink" href="#earned" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="earned-p">
+<h2><code class="docutils literal notranslate"><span class="pre">earned_p</span></code><a class="headerlink" href="#earned-p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="earned-s">
+<h2><code class="docutils literal notranslate"><span class="pre">earned_s</span></code><a class="headerlink" href="#earned-s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="was-plus-sey-p">
+<h2><code class="docutils literal notranslate"><span class="pre">was_plus_sey_p</span></code><a class="headerlink" href="#was-plus-sey-p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="was-plus-sey-s">
+<h2><code class="docutils literal notranslate"><span class="pre">was_plus_sey_s</span></code><a class="headerlink" href="#was-plus-sey-s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="eitc">
+<h2><code class="docutils literal notranslate"><span class="pre">eitc</span></code><a class="headerlink" href="#eitc" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Earned Income Credit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 64a<br />
+2014-2016: 1040 line 66a</p>
+</div>
+<div class="section" id="rptc">
+<h2><code class="docutils literal notranslate"><span class="pre">rptc</span></code><a class="headerlink" href="#rptc" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Refundable Payroll Tax Credit for filing unit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="rptc-p">
+<h2><code class="docutils literal notranslate"><span class="pre">rptc_p</span></code><a class="headerlink" href="#rptc-p" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Refundable Payroll Tax Credit for taxpayer<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="rptc-s">
+<h2><code class="docutils literal notranslate"><span class="pre">rptc_s</span></code><a class="headerlink" href="#rptc-s" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Refundable Payroll Tax Credit for spouse<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="exact">
+<h2><code class="docutils literal notranslate"><span class="pre">exact</span></code><a class="headerlink" href="#exact" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: int<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="expanded-income">
+<h2><code class="docutils literal notranslate"><span class="pre">expanded_income</span></code><a class="headerlink" href="#expanded-income" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Broad income measure that includes benefit_value_total<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="iitax">
+<h2><code class="docutils literal notranslate"><span class="pre">iitax</span></code><a class="headerlink" href="#iitax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 61 minus line 56 minus line 60a<br />
+2014-2016: 1040 line 63 minus line 57 minus line 62a</p>
+</div>
+<div class="section" id="num">
+<h2><code class="docutils literal notranslate"><span class="pre">num</span></code><a class="headerlink" href="#num" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 2 when MARS is 2 (married filing jointly); otherwise 1<br />
+<em>Datatype</em>: int<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 lines 1-5</p>
+</div>
+<div class="section" id="othertaxes">
+<h2><code class="docutils literal notranslate"><span class="pre">othertaxes</span></code><a class="headerlink" href="#othertaxes" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Other taxes: sum of niit, e09700, e09800 and e09900 (included in c09200)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: sum of 1040 lines 57 through 60<br />
+2014-2016: sum of 1040 lines 58 through 62</p>
+</div>
+<div class="section" id="payrolltax">
+<h2><code class="docutils literal notranslate"><span class="pre">payrolltax</span></code><a class="headerlink" href="#payrolltax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: OASDI+HI FICA plus 1040 lines 56 and 60a<br />
+2014-2016: OASDI+HI FICA plus 1040 lines 57 and 62a</p>
+</div>
+<div class="section" id="refund">
+<h2><code class="docutils literal notranslate"><span class="pre">refund</span></code><a class="headerlink" href="#refund" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total refundable income tax credits<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="sep">
+<h2><code class="docutils literal notranslate"><span class="pre">sep</span></code><a class="headerlink" href="#sep" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: 2 when MARS is 3 (married filing separately); otherwise 1<br />
+<em>Datatype</em>: int<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 lines 1-5</p>
+</div>
+<div class="section" id="sey">
+<h2><code class="docutils literal notranslate"><span class="pre">sey</span></code><a class="headerlink" href="#sey" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="standard">
+<h2><code class="docutils literal notranslate"><span class="pre">standard</span></code><a class="headerlink" href="#standard" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Standard deduction (zero for itemizers)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 40<br />
+2018-20??: 1040 line 8</p>
+</div>
+<div class="section" id="surtax">
+<h2><code class="docutils literal notranslate"><span class="pre">surtax</span></code><a class="headerlink" href="#surtax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="taxbc">
+<h2><code class="docutils literal notranslate"><span class="pre">taxbc</span></code><a class="headerlink" href="#taxbc" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Regular tax on regular taxable income before credits<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 44</p>
+</div>
+<div class="section" id="c00100">
+<h2><code class="docutils literal notranslate"><span class="pre">c00100</span></code><a class="headerlink" href="#c00100" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Adjusted Gross Income (AGI)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 37<br />
+2018-20??: 1040 line 7</p>
+</div>
+<div class="section" id="c01000">
+<h2><code class="docutils literal notranslate"><span class="pre">c01000</span></code><a class="headerlink" href="#c01000" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c02500">
+<h2><code class="docutils literal notranslate"><span class="pre">c02500</span></code><a class="headerlink" href="#c02500" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Social security (OASDI) benefits included in AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 20b</p>
+</div>
+<div class="section" id="c02900">
+<h2><code class="docutils literal notranslate"><span class="pre">c02900</span></code><a class="headerlink" href="#c02900" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total of all ‘above the line’ income adjustments to get AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 36</p>
+</div>
+<div class="section" id="c03260">
+<h2><code class="docutils literal notranslate"><span class="pre">c03260</span></code><a class="headerlink" href="#c03260" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c04470">
+<h2><code class="docutils literal notranslate"><span class="pre">c04470</span></code><a class="headerlink" href="#c04470" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemized deductions after phase-out (zero for non-itemizers)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 40<br />
+2018-20??: 1040 line 8</p>
+</div>
+<div class="section" id="c04600">
+<h2><code class="docutils literal notranslate"><span class="pre">c04600</span></code><a class="headerlink" href="#c04600" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Personal exemptions after phase-out<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 42<br />
+2018-20??:</p>
+</div>
+<div class="section" id="qbided">
+<h2><code class="docutils literal notranslate"><span class="pre">qbided</span></code><a class="headerlink" href="#qbided" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Qualified Business Income (QBI) deduction<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2017:<br />
+2018-20??: 1040 line 9</p>
+</div>
+<div class="section" id="c04800">
+<h2><code class="docutils literal notranslate"><span class="pre">c04800</span></code><a class="headerlink" href="#c04800" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Regular taxable income<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2017: 1040 line 43<br />
+2018-20??: 1040 line 10</p>
+</div>
+<div class="section" id="c05200">
+<h2><code class="docutils literal notranslate"><span class="pre">c05200</span></code><a class="headerlink" href="#c05200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Tax amount from Sch X,Y,X tables<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c05700">
+<h2><code class="docutils literal notranslate"><span class="pre">c05700</span></code><a class="headerlink" href="#c05700" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c05800">
+<h2><code class="docutils literal notranslate"><span class="pre">c05800</span></code><a class="headerlink" href="#c05800" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total (regular + AMT) income tax liability before credits (equals taxbc plus c09600)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 46<br />
+2014-2016: 1040 line 47</p>
+</div>
+<div class="section" id="c07100">
+<h2><code class="docutils literal notranslate"><span class="pre">c07100</span></code><a class="headerlink" href="#c07100" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Total non-refundable credits used to reduce positive tax liability<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 46 minus 1040 line 55<br />
+2014-2016: 1040 line 47 minus 1040 line 56</p>
+</div>
+<div class="section" id="c07180">
+<h2><code class="docutils literal notranslate"><span class="pre">c07180</span></code><a class="headerlink" href="#c07180" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Credit for child and dependent care expenses from Form 2441<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 48<br />
+2014-2016: 1040 line 49</p>
+</div>
+<div class="section" id="c07200">
+<h2><code class="docutils literal notranslate"><span class="pre">c07200</span></code><a class="headerlink" href="#c07200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Schedule R credit for the elderly and the disabled<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c07220">
+<h2><code class="docutils literal notranslate"><span class="pre">c07220</span></code><a class="headerlink" href="#c07220" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Child tax credit (adjusted) from Form 8812<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 51<br />
+2014-2016: 1040 line 52</p>
+</div>
+<div class="section" id="c07230">
+<h2><code class="docutils literal notranslate"><span class="pre">c07230</span></code><a class="headerlink" href="#c07230" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Education tax credits non-refundable amount from Form 8863 (includes c87668)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 8863 line 19 and 1040 line 49<br />
+2014-2016: 8863 line 19 and 1040 line 50</p>
+</div>
+<div class="section" id="c07240">
+<h2><code class="docutils literal notranslate"><span class="pre">c07240</span></code><a class="headerlink" href="#c07240" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c07260">
+<h2><code class="docutils literal notranslate"><span class="pre">c07260</span></code><a class="headerlink" href="#c07260" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c07300">
+<h2><code class="docutils literal notranslate"><span class="pre">c07300</span></code><a class="headerlink" href="#c07300" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c07400">
+<h2><code class="docutils literal notranslate"><span class="pre">c07400</span></code><a class="headerlink" href="#c07400" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c07600">
+<h2><code class="docutils literal notranslate"><span class="pre">c07600</span></code><a class="headerlink" href="#c07600" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c08000">
+<h2><code class="docutils literal notranslate"><span class="pre">c08000</span></code><a class="headerlink" href="#c08000" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c09200">
+<h2><code class="docutils literal notranslate"><span class="pre">c09200</span></code><a class="headerlink" href="#c09200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Income tax liability (including othertaxes) after non-refundable credits are used, but before refundable credits are applied<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 61<br />
+2014-2016: 1040 line 63</p>
+</div>
+<div class="section" id="c09600">
+<h2><code class="docutils literal notranslate"><span class="pre">c09600</span></code><a class="headerlink" href="#c09600" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Alternative Minimum Tax (AMT) liability<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 1040 line 45</p>
+</div>
+<div class="section" id="c10960">
+<h2><code class="docutils literal notranslate"><span class="pre">c10960</span></code><a class="headerlink" href="#c10960" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: American Opportunity Credit refundable amount from Form 8863<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 8863 line 8 and 1040 line 66<br />
+2014-2016: 8863 line 8 and 1040 line 68</p>
+</div>
+<div class="section" id="c11070">
+<h2><code class="docutils literal notranslate"><span class="pre">c11070</span></code><a class="headerlink" href="#c11070" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Child tax credit (refunded) from Form 8812<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 65<br />
+2014-2016: 1040 line 67</p>
+</div>
+<div class="section" id="c17000">
+<h2><code class="docutils literal notranslate"><span class="pre">c17000</span></code><a class="headerlink" href="#c17000" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Medical expenses deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="e17500-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">e17500_capped</span></code><a class="headerlink" href="#e17500-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Medical expenses, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c18300">
+<h2><code class="docutils literal notranslate"><span class="pre">c18300</span></code><a class="headerlink" href="#c18300" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: State and local taxes plus real estate taxes deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="e18400-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">e18400_capped</span></code><a class="headerlink" href="#e18400-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: State and local income taxes deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="e18500-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">e18500_capped</span></code><a class="headerlink" href="#e18500-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: State and local real estate taxes deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c19200">
+<h2><code class="docutils literal notranslate"><span class="pre">c19200</span></code><a class="headerlink" href="#c19200" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Interest deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="e19200-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">e19200_capped</span></code><a class="headerlink" href="#e19200-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Interest deduction deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c19700">
+<h2><code class="docutils literal notranslate"><span class="pre">c19700</span></code><a class="headerlink" href="#c19700" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Charity contributions deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="e19800-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">e19800_capped</span></code><a class="headerlink" href="#e19800-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Charity cash contributions deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="e20100-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">e20100_capped</span></code><a class="headerlink" href="#e20100-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Charity noncash contributions deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c20500">
+<h2><code class="docutils literal notranslate"><span class="pre">c20500</span></code><a class="headerlink" href="#c20500" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Net casualty or theft loss deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="g20500-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">g20500_capped</span></code><a class="headerlink" href="#g20500-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Gross casualty or theft loss deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c20800">
+<h2><code class="docutils literal notranslate"><span class="pre">c20800</span></code><a class="headerlink" href="#c20800" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Net limited miscellaneous deductions deducted (component of pre-limitation c21060 total)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="e20400-capped">
+<h2><code class="docutils literal notranslate"><span class="pre">e20400_capped</span></code><a class="headerlink" href="#e20400-capped" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Sch A: Gross miscellaneous deductions deductible, capped as a decimal fraction of AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c21040">
+<h2><code class="docutils literal notranslate"><span class="pre">c21040</span></code><a class="headerlink" href="#c21040" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemized deductions that are phased out<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c21060">
+<h2><code class="docutils literal notranslate"><span class="pre">c21060</span></code><a class="headerlink" href="#c21060" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Itemized deductions before phase-out (zero for non-itemizers)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c23650">
+<h2><code class="docutils literal notranslate"><span class="pre">c23650</span></code><a class="headerlink" href="#c23650" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c59660">
+<h2><code class="docutils literal notranslate"><span class="pre">c59660</span></code><a class="headerlink" href="#c59660" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="c62100">
+<h2><code class="docutils literal notranslate"><span class="pre">c62100</span></code><a class="headerlink" href="#c62100" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Alternative Minimum Tax (AMT) taxable income<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2016: 6251 line 28</p>
+</div>
+<div class="section" id="c87668">
+<h2><code class="docutils literal notranslate"><span class="pre">c87668</span></code><a class="headerlink" href="#c87668" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: American Opportunity Credit non-refundable amount from Form 8863 (included in c07230)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="care-deduction">
+<h2><code class="docutils literal notranslate"><span class="pre">care_deduction</span></code><a class="headerlink" href="#care-deduction" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="ctc-new">
+<h2><code class="docutils literal notranslate"><span class="pre">ctc_new</span></code><a class="headerlink" href="#ctc-new" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="odc">
+<h2><code class="docutils literal notranslate"><span class="pre">odc</span></code><a class="headerlink" href="#odc" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Other Dependent Credit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="personal-refundable-credit">
+<h2><code class="docutils literal notranslate"><span class="pre">personal_refundable_credit</span></code><a class="headerlink" href="#personal-refundable-credit" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Personal refundable credit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="personal-nonrefundable-credit">
+<h2><code class="docutils literal notranslate"><span class="pre">personal_nonrefundable_credit</span></code><a class="headerlink" href="#personal-nonrefundable-credit" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Personal nonrefundable credit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="charity-credit">
+<h2><code class="docutils literal notranslate"><span class="pre">charity_credit</span></code><a class="headerlink" href="#charity-credit" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Credit for charitable giving<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="dwks10">
+<h2><code class="docutils literal notranslate"><span class="pre">dwks10</span></code><a class="headerlink" href="#dwks10" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="dwks13">
+<h2><code class="docutils literal notranslate"><span class="pre">dwks13</span></code><a class="headerlink" href="#dwks13" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="dwks14">
+<h2><code class="docutils literal notranslate"><span class="pre">dwks14</span></code><a class="headerlink" href="#dwks14" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="dwks19">
+<h2><code class="docutils literal notranslate"><span class="pre">dwks19</span></code><a class="headerlink" href="#dwks19" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="fstax">
+<h2><code class="docutils literal notranslate"><span class="pre">fstax</span></code><a class="headerlink" href="#fstax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="invinc-agi-ec">
+<h2><code class="docutils literal notranslate"><span class="pre">invinc_agi_ec</span></code><a class="headerlink" href="#invinc-agi-ec" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="invinc-ec-base">
+<h2><code class="docutils literal notranslate"><span class="pre">invinc_ec_base</span></code><a class="headerlink" href="#invinc-ec-base" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="lumpsum-tax">
+<h2><code class="docutils literal notranslate"><span class="pre">lumpsum_tax</span></code><a class="headerlink" href="#lumpsum-tax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Lumpsum (or head) tax; appears as LSTAX variable in tc CLI minimal output<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="pre-c04600">
+<h2><code class="docutils literal notranslate"><span class="pre">pre_c04600</span></code><a class="headerlink" href="#pre-c04600" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Personal exemption before phase-out<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="codtc-limited">
+<h2><code class="docutils literal notranslate"><span class="pre">codtc_limited</span></code><a class="headerlink" href="#codtc-limited" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="ptax-amc">
+<h2><code class="docutils literal notranslate"><span class="pre">ptax_amc</span></code><a class="headerlink" href="#ptax-amc" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Additional Medicare Tax from Form 8959 (included in payrolltax)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 60a<br />
+2014-2016: 1040 line 62a</p>
+</div>
+<div class="section" id="ptax-oasdi">
+<h2><code class="docutils literal notranslate"><span class="pre">ptax_oasdi</span></code><a class="headerlink" href="#ptax-oasdi" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: OASDI FICA plus 1040 line 56<br />
+2014-2016: OASDI FICA plus 1040 line 57</p>
+</div>
+<div class="section" id="ptax-was">
+<h2><code class="docutils literal notranslate"><span class="pre">ptax_was</span></code><a class="headerlink" href="#ptax-was" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Employee + employer OASDI + HI FICA tax<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: OASDHI FICA<br />
+2014-2016: OASDHI FICA</p>
+</div>
+<div class="section" id="setax">
+<h2><code class="docutils literal notranslate"><span class="pre">setax</span></code><a class="headerlink" href="#setax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Self-employment tax<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-2013: 1040 line 56<br />
+2014-2016: 1040 line 57</p>
+</div>
+<div class="section" id="ymod">
+<h2><code class="docutils literal notranslate"><span class="pre">ymod</span></code><a class="headerlink" href="#ymod" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="ymod1">
+<h2><code class="docutils literal notranslate"><span class="pre">ymod1</span></code><a class="headerlink" href="#ymod1" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: search taxcalc/calcfunctions.py for how calculated and used<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="ubi">
+<h2><code class="docutils literal notranslate"><span class="pre">ubi</span></code><a class="headerlink" href="#ubi" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Universal Basic Income benefit for filing unit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="taxable-ubi">
+<h2><code class="docutils literal notranslate"><span class="pre">taxable_ubi</span></code><a class="headerlink" href="#taxable-ubi" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Amount of UBI benefit included in AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="nontaxable-ubi">
+<h2><code class="docutils literal notranslate"><span class="pre">nontaxable_ubi</span></code><a class="headerlink" href="#nontaxable-ubi" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Amount of UBI benefit excluded from AGI<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="mtr-paytax">
+<h2><code class="docutils literal notranslate"><span class="pre">mtr_paytax</span></code><a class="headerlink" href="#mtr-paytax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Marginal payroll tax rate (in percentage terms) on extra taxpayer earnings (e00200p)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="mtr-inctax">
+<h2><code class="docutils literal notranslate"><span class="pre">mtr_inctax</span></code><a class="headerlink" href="#mtr-inctax" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Marginal income tax rate (in percentage terms) on extra taxpayer earnings (e00200p)<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="aftertax-income">
+<h2><code class="docutils literal notranslate"><span class="pre">aftertax_income</span></code><a class="headerlink" href="#aftertax-income" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: After tax income is equal to expanded_income minus combined<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="benefit-cost-total">
+<h2><code class="docutils literal notranslate"><span class="pre">benefit_cost_total</span></code><a class="headerlink" href="#benefit-cost-total" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Government cost of all benefits received by tax unit<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+<div class="section" id="benefit-value-total">
+<h2><code class="docutils literal notranslate"><span class="pre">benefit_value_total</span></code><a class="headerlink" href="#benefit-value-total" title="Permalink to this headline">¶</a></h2>
+<p><em>Description</em>: Consumption value of all benefits received by tax unit, which is included in expanded_income<br />
+<em>Datatype</em>: float<br />
+<em>IRS Form Location:</em><br />
+2013-20??: calculated variable</p>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="input_vars.html" title="previous page">Input variables</a>
+    <a class='right-next' id="next-link" href="assumption_params.html" title="next page">Assumption parameters</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>
