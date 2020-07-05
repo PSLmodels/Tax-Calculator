@@ -15,7 +15,7 @@ import make_io_vars
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
-TAXCALC_PATH = os.path.join(CURDIR_PATH, '../../../..', 'taxcalc')
+TAXCALC_PATH = os.path.join(CURDIR_PATH, '../../..', 'taxcalc')
 
 # INPUT_PATH = os.path.join(CURDIR_PATH, INPUT_FILENAME)
 # Use TCJA to determine whether policies change in 2026.
@@ -25,7 +25,7 @@ IOVARS_PATH = os.path.join(TAXCALC_PATH, 'records_variables.json')
 CONSUMPTION_PATH = os.path.join(TAXCALC_PATH, 'consumption.json')
 GROWDIFF_PATH = os.path.join(TAXCALC_PATH, 'growdiff.json')
 TEMPLATE_PATH = os.path.join(CURDIR_PATH, '../templates')
-OUTPUT_PATH = os.path.join(CURDIR_PATH, '..')
+OUTPUT_PATH = os.path.join(CURDIR_PATH, '..')   
 
 START_YEAR = 2013
 END_YEAR_SHORT = 2020

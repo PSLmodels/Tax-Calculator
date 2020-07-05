@@ -6,7 +6,7 @@ import os
 
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
-TAXCALC_PATH = os.path.join(CURDIR_PATH, '../../../..', 'taxcalc')
+TAXCALC_PATH = os.path.join(CURDIR_PATH, '../../..', 'taxcalc')
 # Use TCJA to determine whether policies change in 2026.
 TCJA_PATH = os.path.join(TAXCALC_PATH, 'reforms/TCJA.json')
 
