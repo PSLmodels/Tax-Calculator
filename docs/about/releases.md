@@ -1,5 +1,5 @@
-TAX-CALCULATOR RELEASE HISTORY
-==============================
+Release history
+===============
 Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed)
 for a complete commit history.
 

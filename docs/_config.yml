@@ -2,3 +2,4 @@
 title: Tax-Calculator
 author: Policy Simulation Library
 logo: PSL.svg
+exclude_patterns: [usage/uguide/make, usage/uguide/templates]

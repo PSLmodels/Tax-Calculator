@@ -24,6 +24,9 @@
 - file: about/license
 - file: about/history
 - file: about/roadmap
+- file: about/releases
+- file: about/changes
+- file: about/upgrading
 - header: Contributing
 - file: contributing/contributor_guide
 - file: contributing/pr_workflow

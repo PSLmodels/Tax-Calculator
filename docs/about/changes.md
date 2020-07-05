@@ -1,5 +1,5 @@
-TAX-CALCULATOR CHANGE HISTORY
-=============================
+Change history
+==============
 
 Changes in release 2.9.0 on 2020-03-18
 --------------------------------------
