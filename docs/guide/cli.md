@@ -15,7 +15,8 @@ To check your installation of `tc`, enter the following command:
 tc --test
 ```
 
-Expected output (after a number of seconds) is `PASSED TEST`. If you get `FAILED TEST`, something went wrong in the installation process. If the installation test fails, please report your experience by [creating a new issue](https://github.com/PSLmodels/Tax-Calculator/issues).
+Expected output (after a number of seconds) is `PASSED TEST`.
+If you get `FAILED TEST`, something went wrong in the installation process. If the installation test fails, please report your experience by [creating a new issue](https://github.com/PSLmodels/Tax-Calculator/issues).
 
 If your installation passes the test, you are ready to begin using `tc` to analyze tax reforms. Continue reading this section for information about how to do that. But if you want a quick hint about the range of `tc` capabilities, enter the following:
 
@@ -219,15 +220,15 @@ The HTML files containing the graphs can be viewed in your browser.
 
 Here is what the average tax rate graph in `cps-24-#-ref3-#-atr.html` looks like.
 
-![atr graph](../../_static/atr.png)
+![atr graph](../_static/atr.png)
 
 Here is what the marginal tax rate graph in `cps-24-#-ref3-#-mtr.html` looks like:
 
-![mtr graph](../../_static/mtr.png)
+![mtr graph](../_static/mtr.png)
 
 Here is what the percentage change in aftertax income graph in `cps-24-#-ref3-#-pch.html` looks like:
 
-![pch graph](../../_static/pch.png)
+![pch graph](../_static/pch.png)
 
 There is yet another `tc` output option that writes to the screen results from a normative welfare analysis of the specified policy reform. This `--ceeu` option produces experimental results that make sense only with input files that contain representative samples of the population such as the `cps.csv` file. The name of this option stands for certainty-equivalent expected utility. If you want to use this output option, you should read the commented Python source code for the `ce_aftertax_expanded_income` function in the `taxcalc/utils.py` file in the [Tax-Calculator repository](https://github.com/PSLmodels/Tax-Calculator).
 
@@ -253,7 +254,16 @@ Given that `tc` output can be written to either CSV-formatted files or SQLite3 d
 
 Here we give some examples of using the `sqlite3` command-line tool that is part of the Anaconda distribution (so it is always available when using Tax-Calculator). The first step, of course, is to use the `--sqldb` option when running `tc`. Then you can use the `sqlite3` tool interactively or use it to execute SQL scripts you have saved in a text file. We'll provide examples of both those approaches. There are many online tutorials on the SQL select command; if you want to learn more, search the Internet.
 
-First, we provide a simple example of using `sqlite3` interactively. This approach is ideal for exploratory data analysis. Our example uses the `cps.csv` file as input, but you can do the following with the output from any input file that has weights (`s006`). Also, we specify no policy reform file, so the output is for current-law policy. What you cannot see from the following record of the analysis is that the `sqlite3` tool keeps a command history, so pressing the up-arrow key will bring up the prior command for editing. This feature reduces substantially the amount of typing required to conduct exploratory data analysis.
+First, we provide a simple example of using `sqlite3` interactively.
+This approach is ideal for exploratory data analysis.
+Our example uses the `cps.csv` file as input, but you can do the following with
+the output from any input file that has weights (`s006`).
+Also, we specify no policy reform file, so the output is for current-law policy.
+What you cannot see from the following record of the analysis is that the
+`sqlite3` tool keeps a command history, so pressing the up-arrow key will bring
+up the prior command for editing.
+This feature reduces substantially the amount of typing required to conduct
+exploratory data analysis.
 
 ```
 $ tc cps.csv 2016 --sqldb
@@ -270,7 +280,12 @@ sqlite> YOUR FINAL SQL COMMAND GOES HERE
 sqlite> .quit
 ```
 
-Second, we provide a simple example of using `sqlite3` with SQL commands stored in a text file. This approach is useful if you want to tabulate many different output files in the same way. This second example assumes that the first example has already been done. Note that on Windows you should replace `cat` with `type`.
+Second, we provide a simple example of using `sqlite3` with SQL commands stored
+in a text file.
+This approach is useful if you want to tabulate many different output files in
+the same way.
+This second example assumes that the first example has already been done.
+Note that on Windows you should replace `cat` with `type`.
 
 ```
 $ cat tab.sql
@@ -324,6 +339,22 @@ bin number | weighted count | mean NON-NEGATIVE MTR in bin
 6|0.015|66.76
 ```
 
-The `cat` command writes the contents of the `tab.sql` file to stdout. We do nothing but that in the first command in order to show you the file contents. The second command pipes the contents of the `tab.sql` file into the `sqlite3` tool, which executes the SQL statements and writes the tabulation results to stdout. (If you're wondering about the validity of those high marginal tax rates, rest assured that all filing units with marginal income tax rates greater than sixty percent have been checked by hand and are valid: most are caught in the rapid phase-out of non-refundable education credits or in the phase-in of taxation of social security benefits. The negative marginal tax rates are caused by refundable credits, primarily the earned income tax credit.)
+The `cat` command writes the contents of the `tab.sql` file to stdout.
+We do nothing but that in the first command in order to show you the file
+contents.
+The second command pipes the contents of the `tab.sql` file into the `sqlite3`
+tool, which executes the SQL statements and writes the tabulation results to
+stdout.
+(If you're wondering about the validity of those high marginal tax rates,
+rest assured that all filing units with marginal income tax rates greater than
+sixty percent have been checked by hand and are valid:
+most are caught in the rapid phase-out of non-refundable education credits or
+in the phase-in of taxation of social security benefits.
+The negative marginal tax rates are caused by refundable credits,
+primarily the earned income tax credit.)
 
-If you want to use the `sqlite3` tool to tabulate the changes caused by a reform, use `tc` to generate two database dump files (one for current-law policy and the other for your reform) and then use the SQLite3 ATTACH command to make both database files available in your SQLite tabulation session.
+If you want to use the `sqlite3` tool to tabulate the changes caused by a
+reform, use `tc` to generate two database dump files
+(one for current-law policy and the other for your reform)
+and then use the SQLite3 ATTACH command to make both database files available
+in your SQLite tabulation session.
