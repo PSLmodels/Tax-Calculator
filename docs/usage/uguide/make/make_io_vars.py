@@ -3,20 +3,23 @@ import pandas as pd
 import numpy as np
 
 
-def make_io_vars(path):
+def make_io_vars(path, iotype):
     """ Create string of information for input or output variables.
 
     Args:
         path: Path to records_variables.json.
+        iotype: 'read' to create DataFrame for input variables, 'calc' for
+            output variables.
 
     Returns:
-        String with all information for all input and output variables.
+        String with all information for input or output variables.
     """
     def title(df):
-        return '###  `' + df.index + '`  \n'
+        return '##  `' + df.index + '`  \n'
 
     def required(df):
-        return np.where(df.required, '**_Required Input Variable_**  \n', '')
+        return np.where(df.required == True, '**_Required Input Variable_**  \n',
+            '')
 
     def description(df):
         return '_Description_: ' + df.desc + '  \n'
@@ -24,7 +27,7 @@ def make_io_vars(path):
     def datatype(df):
         return '_Datatype_: ' + df.type + '  \n'
 
-    def availability:
+    def availability(df):
         return '_Availability_: ' + df.availability + '  \n'
 
     def form_one(row):
@@ -38,24 +41,26 @@ def make_io_vars(path):
         return df.apply(form_one, axis=1)
 
     # Create DataFrame with one record per variable.
-    df = create_io_df(path)
-    # Create content.
-    df['content'] = (title(df) + required(df) + description(df) + datatype(df) +
-        availability(df) + form(df))
-    # Add section headers when section changes.
-    df['new_section'] = ~df.section.eq(df.section.shift()) & (df.section > '')
-    df.content = np.where(df.new_section, '## ' + df.section + '  \n' + df.content,
-        df.content)
+    df = create_io_df(path, iotype)
+    # Create txt, a pandas Series.
+    txt = title(df)
+    if iotype == 'read':
+        txt += required(df)
+    txt += description(df) + datatype(df)
+    if iotype == 'read':
+        txt += availability(df)
+    txt += form(df)
     # Return single string.
-    return '\n\n'.join(df.content)
+    return '\n\n'.join(txt)
 
 
-def create_io_df(path):
-    """ Read variables for iotype ('read' for input or 'calc' for output) from
-        path, integrate them into text, and return the integrated text.
+def create_io_df(path, iotype):
+    """ Create a DataFrame from JSON representing input or output variables.
 
     Args:
         path: Path to records_variables.json.
+        iotype: 'read' to create DataFrame for input variables, 'calc' for
+            output variables.
 
     Returns:
         DataFrame including input and output variables.
@@ -66,10 +71,4 @@ def create_io_df(path):
     variables = tc.json_to_dict(json_text)
     assert isinstance(variables, dict)
     # Create DataFrames for input and output variables.
-    indf = pd.DataFrame(iovars['read']).transpose()
-    outdf = pd.DataFrame(iovars['calc']).transpose()
-    # Add a section title.
-    indf['section'] = 'Input Variables'
-    outdf['section'] = 'Output Variables'
-    # Return both.
-    return pd.concat([indf, outdf])
+    return pd.DataFrame(variables[iotype]).transpose()

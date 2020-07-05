@@ -11,6 +11,7 @@ import os
 import sys
 # Other scripts in this folder.
 import make_params
+import make_io_vars
 
 CURDIR_PATH = os.path.abspath(os.path.dirname(__file__))
 
@@ -42,15 +43,13 @@ def main():
     assumption_param_text = ('## Growdiff\n\n' + growdiff_param_text +
         '\n\n## Consumption\n\n' + consumption_param_text)
     write_file(assumption_param_text, 'assumption_params')
-    # augment text variable with information from JSON files
-    # text = io_variables('read', IOVARS_PATH, text)
-    # text = io_variables('calc', IOVARS_PATH, text)
-    # text = assumption_params('consumption', CONSUMPTION_PATH, text)
-    # text = assumption_params('growdiff', GROWDIFF_PATH, text)
-
-    # normal return code
+    # Input and output variables.
+    input_var_text = make_io_vars.make_io_vars(IOVARS_PATH, 'read')
+    write_file(input_var_text, 'input_vars')
+    output_var_text = make_io_vars.make_io_vars(IOVARS_PATH, 'calc')
+    write_file(output_var_text, 'output_vars')
+    # Normal return code
     return 0
-# end of main function code
 
 
 def write_file(text, file):

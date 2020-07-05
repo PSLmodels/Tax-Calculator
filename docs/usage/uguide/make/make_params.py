@@ -14,6 +14,7 @@ START_YEAR = 2013
 END_YEAR_SHORT = 2020
 END_YEAR_LONG = 2027
 
+# Order for policy_params.md.
 SECTION_1_ORDER = ['Parameter Indexing',
                    'Payroll Taxes',
                    'Social Security Taxability',
