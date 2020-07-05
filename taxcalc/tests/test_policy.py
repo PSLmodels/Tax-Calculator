@@ -610,7 +610,7 @@ def test_section_titles(tests_path):
         for line in md_text.splitlines():
             # This is shown as an empty case in current law policy and
             # validation.
-            if line.startswith('## Other Parameters (not in Tax-Brain webapp)'):
+            if line.startswith('## Other Parameters (not in Tax-Brain webapp'):
                 sdict[''] = {}
                 sdict[''][''] = 0
                 continue
@@ -749,7 +749,7 @@ def test_section_titles(tests_path):
             assert sec2title in clp_dict[sec1title]
     # check validity of parameter section titles in docs/uguide.htmx skeleton
     path = os.path.join(tests_path, '..', '..', 'docs', 'usage', 'uguide',
-        'policy_params.md')
+                        'policy_params.md')
     with open(path, 'r') as md_file:
         md_text = md_file.read()
     md_dict = generate_section_dictionary(md_text)
