@@ -35,10 +35,12 @@ def main():
     # Policy parameters.
     policy_param_text = make_params.make_params(POLICY_PATH, 'policy')
     write_file(policy_param_text, 'policy_params')
+    # Assumption parameters, created separately for growdiff and consumption.
+    growdiff_param_text = make_params.make_params(GROWDIFF_PATH, 'growdiff')
     consumption_param_text = make_params.make_params(CONSUMPTION_PATH,
         'consumption')
-    growdiff_param_text = make_params.make_params(GROWDIFF_PATH, 'growdiff')
-    assumption_param_text = consumption_param_text + growdiff_param_text
+    assumption_param_text = ('## Growdiff\n\n' + growdiff_param_text +
+        '\n\n## Consumption\n\n' + consumption_param_text)
     write_file(assumption_param_text, 'assumption_params')
     # augment text variable with information from JSON files
     # text = io_variables('read', IOVARS_PATH, text)
