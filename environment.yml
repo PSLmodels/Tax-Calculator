@@ -1,7 +1,6 @@
 name: taxcalc-dev
 channels:
   - conda-forge
-  - pslmodels
 dependencies:
 - python
 - "numpy>=1.14"
@@ -16,7 +15,3 @@ dependencies:
 - pylint
 - coverage
 - "paramtools>=0.14.0"
-- behresp
-- pip
-- pip:
-  - jupyter-book
