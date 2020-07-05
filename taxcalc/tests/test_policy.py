@@ -748,7 +748,7 @@ def test_section_titles(tests_path):
         for sec2title in valid_dict[sec1title]:
             assert sec2title in clp_dict[sec1title]
     # check validity of parameter section titles in docs/uguide.htmx skeleton
-    path = os.path.join(tests_path, '..', '..', 'docs', 'usage', 'uguide',
+    path = os.path.join(tests_path, '..', '..', 'docs', 'guide',
                         'policy_params.md')
     with open(path, 'r') as md_file:
         md_text = md_file.read()
