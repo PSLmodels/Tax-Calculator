@@ -101,31 +101,31 @@ def paramtextdf(df, ptype):
         ptype: 
     """
     def title(df):
-        return '####  `' + df.index + '`'
+        return '####  `' + df.index + '`  \n'
     
     def long_name(df):
-        return '_Long Name:_ ' + df.title
+        return '_Long Name:_ ' + df.title + '  \n'
 
     def description(df):
-        return '_Description:_ ' + df.description
+        return '_Description:_ ' + df.description + '  \n'
     
     def notes(df):
-        return np.where(df.notes == '', '', '_Notes:_ ' + df.notes)
+        return np.where(df.notes == '', '', '_Notes:_ ' + df.notes + '  \n')
     
     def effect_puf_cps_one(row):
         return ('_Has An Effect When Using:_' +
                 ' _PUF data:_ ' + boolstr(row.compatible_data['puf']) +
-                ' _CPS data:_ ' + boolstr(row.compatible_data['cps']))
+                ' _CPS data:_ ' + boolstr(row.compatible_data['cps']) + '  \n')
     
     def effect_puf_cps(df):
         return df.apply(effect_puf_cps_one, axis=1)
                 
     def inflation_indexed(df):
         return ('_Can Be Inflation Indexed:_ ' + boolstr(df.indexable) +
-                ' _Is Inflation Indexed:_ ' + boolstr(df.indexed))
+                ' _Is Inflation Indexed:_ ' + boolstr(df.indexed) + '  \n')
         
     def value_type(df):
-        return '_Value Type:_ ' + df.type
+        return '_Value Type:_ ' + df.type + '  \n'
     
     def known_values_one(row):
         # Requires non-vectorizable functions.
@@ -147,7 +147,7 @@ def paramtextdf(df, ptype):
         return df.apply(known_values_one, axis=1)
     
     def default_value_one(row):
-        return '_Default Value:_ ' + str(row.value[0]['value'])
+        return '_Default Value:_ ' + str(row.value[0]['value']) + '  \n'
 
     def default_value(df):
         return df.apply(default_value_one, axis=1)
@@ -157,27 +157,27 @@ def paramtextdf(df, ptype):
         return ('_Valid Range:_' +
                 ' min = ' + str(r['min']) +
                 ' and max = ' + str(r['max']) + '  \n' +
-                '_Out-of-Range Action:_ ' + r.get('level', 'error'))
+                '_Out-of-Range Action:_ ' + r.get('level', 'error') + '  \n')
     
     def valid_range(df):
         return df.apply(valid_range_one, axis=1)
     
-    text = title(df) + '  \n'
+    text = title(df)
     # Add "long name" for growdiff and consumption parameters.
     if ptype != 'policy':
-        text += long_name(df) + '  \n'
-    text += description(df) + '  \n'
+        text += long_name(df)
+    text += description(df)
     if ptype == 'policy':
-        text += notes(df) + '  \n'
-        text += effect_puf_cps(df) + '  \n'
-        text += inflation_indexed(df) + '  \n'
-    text += value_type(df) + '  \n'
+        text += notes(df)
+        text += effect_puf_cps(df)
+        text += inflation_indexed(df)
+    text += value_type(df)
     if ptype == 'policy':
         # Skip the newline because it's part of the loop.
         text += known_values(df)
     else:
-        text += default_value(df) + '  \n'
-    text += valid_range(df) + '\n'
+        text += default_value(df)
+    text += valid_range(df)
     return text
 
 

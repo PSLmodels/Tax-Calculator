@@ -4,7 +4,7 @@ Policy parameters
 This section contains documentation of policy parameters in a format that is
 easy to search and print.
 The policy parameters are grouped here as they are are in the
-[Tax-Brain webapp](https://www.compmodels.org/PSLmodels/Tax-Brain/).
+[Tax-Brain webapp](https://www.compute.studio/PSLmodels/Tax-Brain/).
 Parameters understood by Tax-Calculator and the `tc` CLI,
 but not available on Tax-Brain,
 are placed in an Other Parameters group at the end of the section.
@@ -36,7 +36,7 @@ _Known Values:_
 2025: -0.0025  
 2026: -0.0025  
 _Valid Range:_ min = -0.005 and max = 0.005  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Payroll Taxes
@@ -45,7 +45,6 @@ _Out-of-Range Action:_ error
 
 ####  `AMEDT_ec`  
 _Description:_ The Additional Medicare Tax rate, AMEDT_rt, applies to all earnings in excess of this excluded amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -59,12 +58,11 @@ _Known Values:_
 2018: [200000.0, 250000.0, 125000.0, 200000.0, 200000.0]  
 2019: [200000.0, 250000.0, 125000.0, 200000.0, 200000.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMEDT_rt`  
 _Description:_ This is the rate applied to the portion of Medicare wages, RRTA compensation and self-employment income exceeding the Additional Medicare Tax earning exclusion.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -77,14 +75,13 @@ _Known Values:_
 2018: 0.009  
 2019: 0.009  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Medicare FICA
 
 ####  `FICA_mc_trt`  
 _Description:_ Medicare FICA rate, including both employer and employee.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -97,14 +94,13 @@ _Known Values:_
 2018: 0.029  
 2019: 0.029  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Social Security FICA
 
 ####  `FICA_ss_trt`  
 _Description:_ Social Security FICA rate, including both employer and employee.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -117,7 +113,7 @@ _Known Values:_
 2018: 0.124  
 2019: 0.124  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `SS_Earnings_c`  
@@ -135,12 +131,11 @@ _Known Values:_
 2018: 128400.0  
 2019: 132900.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `SS_Earnings_thd`  
 _Description:_ Individual earnings above this threshold are subjected to Social Security (OASDI) payroll tax, in addition to earnings below the maximum taxable earnings threshold.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -153,7 +148,7 @@ _Known Values:_
 2018: 9e+99  
 2019: 9e+99  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Social Security Taxability
@@ -162,7 +157,6 @@ _Out-of-Range Action:_ error
 
 ####  `SS_thd50`  
 _Description:_ The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -176,14 +170,13 @@ _Known Values:_
 2018: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]  
 2019: [25000.0, 32000.0, 25000.0, 25000.0, 25000.0]  
 _Valid Range:_ min = 0 and max = SS_thd85  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Threshold For Social Security Benefit Taxability 2
 
 ####  `SS_thd85`  
 _Description:_ The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -197,7 +190,7 @@ _Known Values:_
 2018: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]  
 2019: [34000.0, 44000.0, 34000.0, 34000.0, 34000.0]  
 _Valid Range:_ min = SS_thd50 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Above The Line Deductions
@@ -219,7 +212,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_Dependents_Child_c`  
@@ -237,12 +230,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_Dependents_Elder_c`  
 _Description:_ A taxpayer can take an above the line deduction up to this amount if they have an elderly dependent. The Trump 2016 campaign proposal was for $5000.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -255,12 +247,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_Dependents_thd`  
 _Description:_ A taxpayer can only claim the dependent care deduction if their total income is below this level. The Trump 2016 campaign proposal was for 250000 single, 500000 joint, 250000 separate, 500000 head of household].  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -274,7 +265,7 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Misc. Adjustment Haircuts
@@ -294,7 +285,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_SelfEmploymentTax_hc`  
@@ -312,7 +303,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_SelfEmp_HealthIns_hc`  
@@ -330,7 +321,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_KEOGH_SEP_hc`  
@@ -348,7 +339,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_EarlyWithdraw_hc`  
@@ -366,7 +357,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_AlimonyPaid_hc`  
@@ -391,7 +382,7 @@ _Known Values:_
 2025: 1.0  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_AlimonyReceived_hc`  
@@ -416,7 +407,7 @@ _Known Values:_
 2025: 0.0  
 2026: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_EducatorExpenses_hc`  
@@ -434,7 +425,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_HSADeduction_hc`  
@@ -452,7 +443,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_IRAContributions_hc`  
@@ -470,7 +461,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_DomesticProduction_hc`  
@@ -495,7 +486,7 @@ _Known Values:_
 2025: 1.0  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_Tuition_hc`  
@@ -513,7 +504,7 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Misc. Exclusions
@@ -533,12 +524,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ALD_BusinessLosses_c`  
 _Description:_ Business losses in excess of this amount may not be deducted from AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -559,7 +549,7 @@ _Known Values:_
 2025: [289199.4, 578398.79, 289199.4, 289199.4, 578398.79]  
 2026: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Personal Exemptions
@@ -568,7 +558,6 @@ _Out-of-Range Action:_ error
 
 ####  `II_em`  
 _Description:_ Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -588,14 +577,13 @@ _Known Values:_
 2025: 0.0  
 2026: 4880.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Personal Exemption Phaseout Rate
 
 ####  `II_prt`  
 _Description:_ Personal exemption amount will decrease by this rate for each dollar of AGI exceeding exemption phaseout start.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -608,14 +596,13 @@ _Known Values:_
 2018: 0.02  
 2019: 0.02  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Repeal for Dependents Under Age 18
 
 ####  `II_no_em_nu18`  
 _Description:_ Total personal exemptions will be decreased by the number of dependents under the age of 18.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -628,7 +615,7 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Standard Deduction
@@ -637,7 +624,6 @@ _Out-of-Range Action:_ error
 
 ####  `STD_Aged`  
 _Description:_ To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -651,14 +637,13 @@ _Known Values:_
 2018: [1600.0, 1300.0, 1300.0, 1600.0, 1300.0]  
 2019: [1650.0, 1300.0, 1300.0, 1650.0, 1300.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Standard Deduction Amount
 
 ####  `STD`  
 _Description:_ Amount filing unit can use as a standard deduction.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -679,7 +664,7 @@ _Known Values:_
 2025: [13836.2, 27672.42, 13836.2, 20811.01, 27672.42]  
 2026: [7651.0, 15303.0, 7651.0, 11266.0, 15303.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Nonrefundable Credits
@@ -688,7 +673,6 @@ _Out-of-Range Action:_ error
 
 ####  `CDCC_c`  
 _Description:_ The maximum amount of credit allowed for each qualifying dependent.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -701,12 +685,11 @@ _Known Values:_
 2018: 3000.0  
 2019: 3000.0  
 _Valid Range:_ min = 0 and max = 3000  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CDCC_ps`  
 _Description:_ For taxpayers with AGI over this amount, the credit is reduced by one percentage point each $2000 of AGI over this amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -719,12 +702,11 @@ _Known Values:_
 2018: 15000.0  
 2019: 15000.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CDCC_crt`  
 _Description:_ The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the CDCC_ps level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -737,7 +719,7 @@ _Known Values:_
 2018: 35.0  
 2019: 35.0  
 _Valid Range:_ min = 0 and max = 100  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Misc. Credit Limits
@@ -757,7 +739,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_ForeignTax_hc`  
@@ -775,7 +757,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_ResidentialEnergy_hc`  
@@ -793,7 +775,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_GeneralBusiness_hc`  
@@ -811,7 +793,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_MinimumTax_hc`  
@@ -829,7 +811,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_AmOppRefundable_hc`  
@@ -847,7 +829,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_AmOppNonRefundable_hc`  
@@ -865,7 +847,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_SchR_hc`  
@@ -883,7 +865,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_OtherCredits_hc`  
@@ -901,7 +883,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_Education_hc`  
@@ -919,14 +901,13 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Personal Nonrefundable Credit
 
 ####  `II_credit_nr`  
 _Description:_ This credit amount is not refundable and is phased out based on AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -940,12 +921,11 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_credit_nr_ps`  
 _Description:_ The personal nonrefundable credit amount will be reduced for taxpayers with AGI higher than this threshold level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -959,12 +939,11 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_credit_nr_prt`  
 _Description:_ The personal nonrefundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_nr_ps threshold.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -977,7 +956,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Child/Dependent Credits
@@ -986,7 +965,6 @@ _Out-of-Range Action:_ error
 
 ####  `ACTC_c`  
 _Description:_ This refundable credit is applied to child dependents and phases out exactly like the CTC amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1006,12 +984,11 @@ _Known Values:_
 2025: 1600.0  
 2026: 1000.0  
 _Valid Range:_ min = 0 and max = CTC_c  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ACTC_rt`  
 _Description:_ This is the fraction of earnings used in calculating the ACTC, which is a partially refundable credit that supplements the CTC for some taxpayers.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1024,12 +1001,11 @@ _Known Values:_
 2018: 0.15  
 2019: 0.15  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ACTC_rt_bonus_under5family`  
 _Description:_ For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1042,12 +1018,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ACTC_Income_thd`  
 _Description:_ The portion of earned income below this threshold does not count as base for the Additional Child Tax Credit.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1067,12 +1042,11 @@ _Known Values:_
 2025: 2500.0  
 2026: 3000.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ACTC_ChildNum`  
 _Description:_ Families with this number of qualified children or more may qualify for a different formula to calculate the Additional Child Tax Credit, which is a partially refundable credit that supplements the Child Tax Credit for some taxpayers.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
@@ -1085,14 +1059,13 @@ _Known Values:_
 2018: 3  
 2019: 3  
 _Valid Range:_ min = 0 and max = 99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Child Tax Credit
 
 ####  `CTC_c`  
 _Description:_ The maximum nonrefundable credit allowed for each child.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1112,12 +1085,11 @@ _Known Values:_
 2025: 2000.0  
 2026: 1000.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_c_under5_bonus`  
 _Description:_ The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1130,12 +1102,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_ps`  
 _Description:_ Child tax credit begins to decrease when MAGI is above this level; read descriptions of the dependent credit amounts for how they phase out when MAGI is above this level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1156,12 +1127,11 @@ _Known Values:_
 2025: [200000.0, 400000.0, 200000.0, 200000.0, 400000.0]  
 2026: [75000.0, 110000.0, 55000.0, 75000.0, 75000.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_prt`  
 _Description:_ The amount of the credit starts to decrease at this rate if MAGI is higher than child tax credit phaseout start.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1174,7 +1144,7 @@ _Known Values:_
 2018: 0.05  
 2019: 0.05  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Other Dependent Tax Credit
@@ -1201,7 +1171,7 @@ _Known Values:_
 2025: 500.0  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Itemized Deductions
@@ -1210,7 +1180,6 @@ _Out-of-Range Action:_ error
 
 ####  `ID_Casualty_frt`  
 _Description:_ Taxpayers are eligible to deduct the portion of their gross casualty losses exceeding this fraction of AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1223,12 +1192,11 @@ _Known Values:_
 2018: 0.1  
 2019: 0.1  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_Casualty_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of casualty expense deduction allowed.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1248,12 +1216,11 @@ _Known Values:_
 2025: 1.0  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_Casualty_c`  
 _Description:_ The amount of casualty expense deduction is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1267,14 +1234,13 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Ceiling On The Amount Of Itemized Deductions Allowed
 
 ####  `ID_c`  
 _Description:_ The amount of itemized deductions is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1288,12 +1254,11 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_AmountCap_rt`  
 _Description:_ The gross allowable amount of specified itemized deductions is capped at this percent of AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1306,12 +1271,11 @@ _Known Values:_
 2018: 9e+99  
 2019: 9e+99  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_AmountCap_Switch`  
 _Description:_ The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -1325,14 +1289,13 @@ _Known Values:_
 2018: [True, True, True, True, True, True, True]  
 2019: [True, True, True, True, True, True, True]  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Ceiling On The Benefit Of Itemized Deductions As A Percent Of Deductible Expenses
 
 ####  `ID_BenefitCap_rt`  
 _Description:_ The benefit from specified itemized deductions is capped at this percent of the total deductible expenses.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1345,12 +1308,11 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_BenefitCap_Switch`  
 _Description:_ The cap on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -1364,7 +1326,7 @@ _Known Values:_
 2018: [True, True, True, True, True, True, True]  
 2019: [True, True, True, True, True, True, True]  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Charity
@@ -1391,7 +1353,7 @@ _Known Values:_
 2025: 0.6  
 2026: 0.5  
 _Valid Range:_ min = 0 and max = 0.6  
-_Out-of-Range Action:_ warn
+_Out-of-Range Action:_ warn  
 
 
 ####  `ID_Charity_crt_noncash`  
@@ -1409,7 +1371,7 @@ _Known Values:_
 2018: 0.3  
 2019: 0.3  
 _Valid Range:_ min = 0 and max = 0.3  
-_Out-of-Range Action:_ warn
+_Out-of-Range Action:_ warn  
 
 
 ####  `ID_Charity_frt`  
@@ -1427,12 +1389,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_Charity_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of charity expense deduction allowed.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1445,12 +1406,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_Charity_c`  
 _Description:_ The amount of charity expense deduction is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1464,12 +1424,11 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_Charity_f`  
 _Description:_ Only charitable giving in excess of this dollar amount is eligible for a deduction.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1483,14 +1442,13 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Interest Paid
 
 ####  `ID_InterestPaid_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of interest paid deduction allowed.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1503,12 +1461,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_InterestPaid_c`  
 _Description:_ The amount of interest paid deduction is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1522,14 +1479,13 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Itemized Deduction Limitation
 
 ####  `ID_ps`  
 _Description:_ The itemized deductions will be reduced for taxpayers with AGI higher than this level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1550,7 +1506,7 @@ _Known Values:_
 2025: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2026: [315093.0, 378112.0, 189056.0, 346603.0, 378112.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_prt`  
@@ -1575,12 +1531,11 @@ _Known Values:_
 2025: 0.0  
 2026: 0.03  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_crt`  
 _Description:_ The phaseout amount is capped at this fraction of the original total deduction.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1600,7 +1555,7 @@ _Known Values:_
 2025: 1.0  
 2026: 0.8  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Medical Expenses
@@ -1627,7 +1582,7 @@ _Known Values:_
 2025: 0.075  
 2026: 0.075  
 _Valid Range:_ min = 0.075 and max = 0.1  
-_Out-of-Range Action:_ warn
+_Out-of-Range Action:_ warn  
 
 
 ####  `ID_Medical_frt_add4aged`  
@@ -1645,12 +1600,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = -0.025 and max = 0.0  
-_Out-of-Range Action:_ warn
+_Out-of-Range Action:_ warn  
 
 
 ####  `ID_Medical_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of medical expense deduction allowed.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1663,12 +1617,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_Medical_c`  
 _Description:_ The amount of medical expense deduction is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1682,7 +1635,7 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Miscellaneous
@@ -1702,12 +1655,11 @@ _Known Values:_
 2018: 0.02  
 2019: 0.02  
 _Valid Range:_ min = 0.02 and max = 1  
-_Out-of-Range Action:_ warn
+_Out-of-Range Action:_ warn  
 
 
 ####  `ID_Miscellaneous_hc`  
 _Description:_ This decimal fraction can be applied to limit the amount of miscellaneous expense deduction allowed.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1727,12 +1679,11 @@ _Known Values:_
 2025: 1.0  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_Miscellaneous_c`  
 _Description:_ The amount of miscellaneous expense deduction is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1746,14 +1697,13 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### State And Local Income And Sales Taxes
 
 ####  `ID_StateLocalTax_hc`  
 _Description:_ This decimal fraction reduces the state and local income and sales tax deduction.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1766,12 +1716,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_StateLocalTax_crt`  
 _Description:_ The total deduction for state and local taxes is capped at this fraction of AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1784,12 +1733,11 @@ _Known Values:_
 2018: 9e+99  
 2019: 9e+99  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_StateLocalTax_c`  
 _Description:_ The amount of state and local income and sales taxes deduction is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1803,14 +1751,13 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### State And Local Taxes And Real Estate Taxes
 
 ####  `ID_AllTaxes_hc`  
 _Description:_ This decimal fraction reduces all state and local taxes paid eligible to deduct in itemized deduction.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1823,12 +1770,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_AllTaxes_c`  
 _Description:_ The amount of state and local income, sales and real estate tax deductions is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1849,14 +1795,13 @@ _Known Values:_
 2025: [10000.0, 10000.0, 5000.0, 10000.0, 10000.0]  
 2026: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### State, Local, And Foreign Real Estate Taxes
 
 ####  `ID_RealEstate_hc`  
 _Description:_ This decimal fraction reduces real estate taxes paid eligible to deduct in itemized deduction.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1869,12 +1814,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_RealEstate_crt`  
 _Description:_ The total deduction for all real estate taxes is capped at this fraction of AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1887,12 +1831,11 @@ _Known Values:_
 2018: 9e+99  
 2019: 9e+99  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_RealEstate_c`  
 _Description:_ The amount of real estate taxes deduction is limited to this dollar amount.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1906,14 +1849,13 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Surtax On Itemized Deduction Benefits Above An AGI Threshold
 
 ####  `ID_BenefitSurtax_trt`  
 _Description:_ The benefit from specified itemized deductions exceeding the credit is taxed at this rate. A surtax rate of 1 strictly limits the benefit from specified itemized deductions to the specified credit. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1926,12 +1868,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_BenefitSurtax_crt`  
 _Description:_ The surtax on specified itemized deductions applies to benefits in excess of this fraction of AGI. In http://www.nber.org/papers/w16921, Feldstein, Feenberg, and MacGuineas propose a credit of 2% of AGI against a 100% tax rate; in their proposal, however, a broader set of tax benefits, including the employer provided health exclusion, would be taxed.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1944,12 +1885,11 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_BenefitSurtax_em`  
 _Description:_ This amount is subtracted from itemized deduction benefits in the calculation of the itemized deduction benefit surtax. With ID_BenefitSurtax_crt set to 0.0 and ID_BenefitSurtax_trt set to 1.0, this amount serves as a dollar limit on the value of itemized deductions.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -1963,12 +1903,11 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ID_BenefitSurtax_Switch`  
 _Description:_ The surtax on itemized deduction benefits applies to the benefits derived from the itemized deductions specified with this parameter.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -1982,7 +1921,7 @@ _Known Values:_
 2018: [True, True, True, True, True, True, True]  
 2019: [True, True, True, True, True, True, True]  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Capital Gains And Dividends
@@ -1991,7 +1930,6 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_CG_rt1`  
 _Description:_ Capital gain and qualified dividends (stacked on top of regular income) below threshold 1 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2004,12 +1942,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_CG_brk1`  
 _Description:_ The gains and dividends, stacked last, of AMT taxable income below this are taxed at AMT capital gain rate 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2023,12 +1960,11 @@ _Known Values:_
 2018: [38600.0, 77200.0, 38600.0, 51700.0, 77200.0]  
 2019: [39375.0, 78750.0, 39375.0, 52750.0, 78750.0]  
 _Valid Range:_ min = 0 and max = AMT_CG_brk2  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_CG_rt2`  
 _Description:_ Capital gain and qualified dividend (stacked on top of regular income) below threshold 2 and above threshold 1 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2041,12 +1977,11 @@ _Known Values:_
 2018: 0.15  
 2019: 0.15  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_CG_brk2`  
 _Description:_ The gains and dividends, stacked last, of AMT taxable income below this threshold and above bracket 1 are taxed at AMT capital gain rate 2.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2060,12 +1995,11 @@ _Known Values:_
 2018: [425800.0, 479000.0, 239500.0, 452400.0, 479000.0]  
 2019: [434550.0, 488850.0, 244425.0, 461700.0, 488850.0]  
 _Valid Range:_ min = AMT_CG_brk1 and max = AMT_CG_brk3  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_CG_rt3`  
 _Description:_ The capital gain and qualified dividend (stacked on top of regular income) above threshold 2 and below threshold 3 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2078,12 +2012,11 @@ _Known Values:_
 2018: 0.2  
 2019: 0.2  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_CG_brk3`  
 _Description:_ The gains and dividends, stacked last, of AMT taxable income below this and above bracket 2 are taxed at capital gain rate 3; above thisthey are taxed at AMT capital gain rate 4.  Default value is essentially infinity.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2097,12 +2030,11 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = AMT_CG_brk2 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_CG_rt4`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2115,14 +2047,13 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Regular - Long Term Capital Gains And Qualified Dividends
 
 ####  `CG_rt1`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are below threshold 1 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2135,12 +2066,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_brk1`  
 _Description:_ The gains and dividends (stacked on top of regular income) below this are taxed at capital gain rate 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2154,12 +2084,11 @@ _Known Values:_
 2018: [38600.0, 77200.0, 38600.0, 51700.0, 77200.0]  
 2019: [39375.0, 78750.0, 39375.0, 52750.0, 78750.0]  
 _Valid Range:_ min = 0 and max = CG_brk2  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_rt2`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are below threshold 2 and above threshold 1 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2172,12 +2101,11 @@ _Known Values:_
 2018: 0.15  
 2019: 0.15  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_brk2`  
 _Description:_ The gains and dividends (stacked on top of regular income) below this and above top of bracket 1 are taxed at capital gain rate 2.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2191,12 +2119,11 @@ _Known Values:_
 2018: [425800.0, 479000.0, 239500.0, 452400.0, 479000.0]  
 2019: [434550.0, 488850.0, 244425.0, 461700.0, 488850.0]  
 _Valid Range:_ min = CG_brk1 and max = CG_brk3  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_rt3`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 2 and below threshold 3 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2209,12 +2136,11 @@ _Known Values:_
 2018: 0.2  
 2019: 0.2  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_brk3`  
 _Description:_ The gains and dividends (stacked on top of regular income) below this and above top of bracket 2 are taxed at the capital gain rate 3; above this they are taxed at capital gain rate 4.  Default value is essentially infinity.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2228,12 +2154,11 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = CG_brk2 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_rt4`  
 _Description:_ The capital gain and dividends (stacked on top of regular income) that are above threshold 3 are taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2246,14 +2171,13 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Tax All Capital Gains And Dividends The Same As Regular Taxable Income
 
 ####  `CG_nodiff`  
 _Description:_ Specifies whether or not long term capital gains and qualified dividends are taxed like regular taxable income.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -2266,12 +2190,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_ec`  
 _Description:_ Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2284,12 +2207,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CG_reinvest_ec_rt`  
 _Description:_ Positive value used only if long term capital gains and qualified dividends taxed no differently than regular taxable income.  To limit the exclusion to capital gains and dividends invested within one year, set to statutory exclusion rate times the fraction of capital gains and qualified dividends in excess of the exclusion that are assumed to be reinvested within the year.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2302,7 +2224,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Personal Income
@@ -2311,7 +2233,6 @@ _Out-of-Range Action:_ error
 
 ####  `AMT_em`  
 _Description:_ The amount of AMT taxable income exempted from AMT.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2332,12 +2253,11 @@ _Known Values:_
 2025: [81316.07, 126680.67, 63340.34, 81316.07, 126680.67]  
 2026: [65429.0, 101818.0, 50909.0, 65429.0, 101818.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_prt`  
 _Description:_ AMT exemption will decrease at this rate for each dollar of AMT taxable income exceeding AMT phaseout start.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2350,12 +2270,11 @@ _Known Values:_
 2018: 0.25  
 2019: 0.25  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_em_ps`  
 _Description:_ AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2376,12 +2295,11 @@ _Known Values:_
 2025: [578739.05, 1157478.07, 578739.05, 578739.05, 1157478.07]  
 2026: [145437.0, 193876.0, 96938.0, 145437.0, 193876.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_rt1`  
 _Description:_ The tax rate applied to the portion of AMT taxable income below the surtax threshold, AMT bracket 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2394,12 +2312,11 @@ _Known Values:_
 2018: 0.26  
 2019: 0.26  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_brk1`  
 _Description:_ AMT taxable income below this is subject to AMT rate 1 and above it is subject to AMT rate 1 + the additional AMT rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2412,7 +2329,7 @@ _Known Values:_
 2018: 191100.0  
 2019: 194800.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_rt2`  
@@ -2430,14 +2347,13 @@ _Known Values:_
 2018: 0.02  
 2019: 0.02  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Pass-Through
 
 ####  `PT_rt1`  
 _Description:_ The lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2457,12 +2373,11 @@ _Known Values:_
 2025: 0.1  
 2026: 0.1  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_brk1`  
 _Description:_ Income from sole proprietorships, partnerships and S-corporations below this threshold is taxed at tax rate 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2483,12 +2398,11 @@ _Known Values:_
 2025: [11000.91, 22001.83, 11000.91, 15707.49, 22001.83]  
 2026: [11236.0, 22472.0, 11236.0, 16086.0, 22472.0]  
 _Valid Range:_ min = 0 and max = PT_brk2  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_rt2`  
 _Description:_ The second lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 2 and above tax bracket 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2508,12 +2422,11 @@ _Known Values:_
 2025: 0.12  
 2026: 0.15  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_brk2`  
 _Description:_ Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 1 is taxed at tax rate 2.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2534,12 +2447,11 @@ _Known Values:_
 2025: [44769.19, 89538.41, 44769.19, 59937.99, 89538.41]  
 2026: [45728.0, 91455.0, 45728.0, 61211.0, 91455.0]  
 _Valid Range:_ min = PT_brk1 and max = PT_brk3  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_rt3`  
 _Description:_ The third lowest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 3 and above tax bracket 2.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2559,12 +2471,11 @@ _Known Values:_
 2025: 0.22  
 2026: 0.25  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_brk3`  
 _Description:_ Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 2 is taxed at tax rate 3.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2585,12 +2496,11 @@ _Known Values:_
 2025: [95492.5, 190985.01, 95492.5, 95492.5, 190985.01]  
 2026: [110735.0, 184477.0, 92239.0, 158089.0, 184477.0]  
 _Valid Range:_ min = PT_brk2 and max = PT_brk4  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_rt4`  
 _Description:_ The tax rate applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 4 and above tax bracket 3.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2610,12 +2520,11 @@ _Known Values:_
 2025: 0.24  
 2026: 0.28  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_brk4`  
 _Description:_ Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 3 is taxed at tax rate 4.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2636,12 +2545,11 @@ _Known Values:_
 2025: [182280.7, 364561.36, 182280.7, 182252.33, 364561.36]  
 2026: [230928.0, 281174.0, 140587.0, 256051.0, 281174.0]  
 _Valid Range:_ min = PT_brk3 and max = PT_brk5  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_rt5`  
 _Description:_ The third highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 5 and above tax bracket 4.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2661,12 +2569,11 @@ _Known Values:_
 2025: 0.32  
 2026: 0.33  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_brk5`  
 _Description:_ Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 4 is taxed at tax rate 5.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2687,12 +2594,11 @@ _Known Values:_
 2025: [231472.93, 462945.87, 231472.93, 231472.93, 462945.87]  
 2026: [502101.0, 502101.0, 251050.0, 502101.0, 502101.0]  
 _Valid Range:_ min = PT_brk4 and max = PT_brk6  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_rt6`  
 _Description:_ The second higher tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 6 and above tax bracket 5.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2712,12 +2618,11 @@ _Known Values:_
 2025: 0.35  
 2026: 0.35  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_brk6`  
 _Description:_ Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 5 is taxed at tax rate 6.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2738,12 +2643,11 @@ _Known Values:_
 2025: [578739.05, 694475.51, 347237.73, 578739.05, 694475.51]  
 2026: [504149.0, 567168.0, 283584.0, 535659.0, 567168.0]  
 _Valid Range:_ min = PT_brk5 and max = PT_brk7  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_rt7`  
 _Description:_ The highest tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations below tax bracket 7 and above tax bracket 6.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2763,12 +2667,11 @@ _Known Values:_
 2025: 0.37  
 2026: 0.396  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_brk7`  
 _Description:_ Income from sole proprietorships, partnerships and S-corporations below this threshold and above tax bracket 6 is taxed at tax rate 7. Default value is essentially infinity.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2782,12 +2685,11 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = PT_brk6 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_rt8`  
 _Description:_ The extra tax rate, applied to the portion of income from sole proprietorships, partnerships and S-corporations above the tax bracket 7.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2800,7 +2702,7 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_EligibleRate_active`  
@@ -2818,7 +2720,7 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_EligibleRate_passive`  
@@ -2836,7 +2738,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_wages_active_income`  
@@ -2854,12 +2756,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_top_stacking`  
 _Description:_ Whether taxable income eligible for PT rate schedule is stacked on top of regular taxable income.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -2872,7 +2773,7 @@ _Known Values:_
 2018: True  
 2019: True  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_qbid_rt`  
@@ -2897,12 +2798,11 @@ _Known Values:_
 2025: 0.2  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_qbid_taxinc_thd`  
 _Description:_ Pre-QBID taxable income above this lower threshold implies the QBID amount begins to be limited.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -2923,12 +2823,11 @@ _Known Values:_
 2025: [182252.33, 364504.65, 182280.7, 182252.33, 364504.65]  
 2026: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_qbid_taxinc_gap`  
 _Description:_ Pre-QBID taxable income above this upper threshold implies the QBID amount is even more limited.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2949,12 +2848,11 @@ _Known Values:_
 2025: [50000.0, 100000.0, 50000.0, 50000.0, 100000.0]  
 2026: [1.0, 1.0, 1.0, 1.0, 1.0]  
 _Valid Range:_ min = 1 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_qbid_w2_wages_rt`  
 _Description:_ QBID is capped at this fraction of W-2 wages paid by the pass-through business if pre-QBID taxable income is above the QBID thresholds.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2974,12 +2872,11 @@ _Known Values:_
 2025: 0.5  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_qbid_alt_w2_wages_rt`  
 _Description:_ QBID is capped at this fraction of W-2 wages paid by the pass-through business plus some fraction of business property if pre-QBID taxable income is above the QBID thresholds and the alternative cap is higher than the main wage-only cap.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -2999,12 +2896,11 @@ _Known Values:_
 2025: 0.25  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `PT_qbid_alt_property_rt`  
 _Description:_ QBID is capped at this fraction of business property owned plus some fraction of W-2 wages paid by the pass-through business if pre-QBID taxable income is above the QBID thresholds and the alternative cap is higher than the main wage-only cap.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3024,14 +2920,13 @@ _Known Values:_
 2025: 0.025  
 2026: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Regular: Non-AMT, Non-Pass-Through
 
 ####  `II_rt1`  
 _Description:_ The lowest tax rate, applied to the portion of taxable income below tax bracket 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3051,12 +2946,11 @@ _Known Values:_
 2025: 0.1  
 2026: 0.1  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_brk1`  
 _Description:_ Taxable income below this threshold is taxed at tax rate 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3077,12 +2971,11 @@ _Known Values:_
 2025: [11000.91, 22001.83, 11000.91, 15707.49, 22001.83]  
 2026: [11236.0, 22472.0, 11236.0, 16086.0, 22472.0]  
 _Valid Range:_ min = 0 and max = II_brk2  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_rt2`  
 _Description:_ The second lowest tax rate, applied to the portion of taxable income below tax bracket 2 and above tax bracket 1.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3102,12 +2995,11 @@ _Known Values:_
 2025: 0.12  
 2026: 0.15  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_brk2`  
 _Description:_ Income below this threshold and above tax bracket 1 is taxed at tax rate 2.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3128,12 +3020,11 @@ _Known Values:_
 2025: [44769.19, 89538.41, 44769.19, 59937.99, 89538.41]  
 2026: [45728.0, 91455.0, 45728.0, 61211.0, 91455.0]  
 _Valid Range:_ min = II_brk1 and max = II_brk3  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_rt3`  
 _Description:_ The third lowest tax rate, applied to the portion of taxable income below tax bracket 3 and above tax bracket 2.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3153,12 +3044,11 @@ _Known Values:_
 2025: 0.22  
 2026: 0.25  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_brk3`  
 _Description:_ Income below this threshold and above tax bracket 2 is taxed at tax rate 3.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3179,12 +3069,11 @@ _Known Values:_
 2025: [95492.5, 190985.01, 95492.5, 95492.5, 190985.01]  
 2026: [110735.0, 184477.0, 92239.0, 158089.0, 184477.0]  
 _Valid Range:_ min = II_brk2 and max = II_brk4  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_rt4`  
 _Description:_ The tax rate applied to the portion of taxable income below tax bracket 4 and above tax bracket 3.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3204,12 +3093,11 @@ _Known Values:_
 2025: 0.24  
 2026: 0.28  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_brk4`  
 _Description:_ Income below this threshold and above tax bracket 3 is taxed at tax rate 4.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3230,12 +3118,11 @@ _Known Values:_
 2025: [182280.7, 364561.36, 182280.7, 182252.33, 364561.36]  
 2026: [230928.0, 281174.0, 140587.0, 256051.0, 281174.0]  
 _Valid Range:_ min = II_brk3 and max = II_brk5  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_rt5`  
 _Description:_ The third highest tax rate, applied to the portion of taxable income below tax bracket 5 and above tax bracket 4.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3255,12 +3142,11 @@ _Known Values:_
 2025: 0.32  
 2026: 0.33  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_brk5`  
 _Description:_ Income below this threshold and above tax bracket 4 is taxed at tax rate 5.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3281,12 +3167,11 @@ _Known Values:_
 2025: [231472.93, 462945.87, 231472.93, 231472.93, 462945.87]  
 2026: [502101.0, 502101.0, 251050.0, 502101.0, 502101.0]  
 _Valid Range:_ min = II_brk4 and max = II_brk6  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_rt6`  
 _Description:_ The second higher tax rate, applied to the portion of taxable income below tax bracket 6 and above tax bracket 5.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3306,12 +3191,11 @@ _Known Values:_
 2025: 0.35  
 2026: 0.35  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_brk6`  
 _Description:_ Income below this threshold and above tax bracket 5 is taxed at tax rate 6.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3332,12 +3216,11 @@ _Known Values:_
 2025: [578739.05, 694475.51, 347237.73, 578739.05, 694475.51]  
 2026: [504149.0, 567168.0, 283584.0, 535659.0, 567168.0]  
 _Valid Range:_ min = II_brk5 and max = II_brk7  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_rt7`  
 _Description:_ The tax rate applied to the portion of taxable income below tax bracket 7 and above tax bracket 6.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3357,12 +3240,11 @@ _Known Values:_
 2025: 0.37  
 2026: 0.396  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_brk7`  
 _Description:_ Income below this threshold and above tax bracket 6 is taxed at tax rate 7; income above this threshold is taxed at tax rate 8.  Default value is essentially infinity.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3376,12 +3258,11 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = II_brk6 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_rt8`  
 _Description:_ The tax rate applied to the portion of taxable income above tax bracket 7.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3394,7 +3275,7 @@ _Known Values:_
 2018: 1.0  
 2019: 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Other Taxes
@@ -3403,7 +3284,6 @@ _Out-of-Range Action:_ error
 
 ####  `NIIT_thd`  
 _Description:_ If modified AGI is more than this threshold, filing unit is subject to the Net Investment Income Tax.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3417,12 +3297,11 @@ _Known Values:_
 2018: [200000.0, 250000.0, 125000.0, 200000.0, 250000.0]  
 2019: [200000.0, 250000.0, 125000.0, 200000.0, 250000.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `NIIT_PT_taxed`  
 _Description:_ false ==> partnership and S-corp income excluded from NIIT base; true ==> partnership and S-corp income is in NIIT base.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -3435,12 +3314,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `NIIT_rt`  
 _Description:_ If modified AGI exceeds NIIT_thd, all net investment income is taxed at this rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3453,7 +3331,7 @@ _Known Values:_
 2018: 0.038  
 2019: 0.038  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Refundable Credits
@@ -3462,7 +3340,6 @@ _Out-of-Range Action:_ error
 
 ####  `EITC_c`  
 _Description:_ This is the maximum amount of earned income credit taxpayers are eligible for; it depends on how many kids they have.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3476,12 +3353,11 @@ _Known Values:_
 2018: [519.0, 3461.0, 5716.0, 6431.0]  
 2019: [529.0, 3526.0, 5828.0, 6557.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_rt`  
 _Description:_ Pre-phaseout credit is minimum of this rate times earnings and the maximum earned income credit.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3495,12 +3371,11 @@ _Known Values:_
 2018: [0.0765, 0.34, 0.4, 0.45]  
 2019: [0.0765, 0.34, 0.4, 0.45]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_basic_frac`  
 _Description:_ This fraction of EITC_c is always paid as a credit and one minus this fraction is applied to the phasein rate, EITC_rt.  This fraction is zero under current law.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3513,12 +3388,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0.0 and max = 1.0  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_prt`  
 _Description:_ Earned income credit begins to decrease at the this rate when AGI is higher than earned income credit phaseout start AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3532,12 +3406,11 @@ _Known Values:_
 2018: [0.0765, 0.1598, 0.2106, 0.2106]  
 2019: [0.0765, 0.1598, 0.2106, 0.2106]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_ps`  
 _Description:_ If AGI is higher than this threshold, the amount of EITC will start to decrease at the phaseout rate.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3551,12 +3424,11 @@ _Known Values:_
 2018: [8490.0, 18660.0, 18660.0, 18660.0]  
 2019: [8650.0, 19030.0, 19030.0, 19030.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_ps_MarriedJ`  
 _Description:_ This is the additional amount added on the regular phaseout start amount for taxpayers with filling status of married filing jointly.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3570,12 +3442,11 @@ _Known Values:_
 2018: [5680.0, 5690.0, 5690.0, 5690.0]  
 2019: [5800.0, 5790.0, 5790.0, 5790.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_MinEligAge`  
 _Description:_ For a childless filing unit, at least one individual's age needs to be no less than this age (but no greater than the EITC_MaxEligAge) in order to be eligible for an earned income tax credit.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
@@ -3588,12 +3459,11 @@ _Known Values:_
 2018: 25  
 2019: 25  
 _Valid Range:_ min = 0 and max = 125  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_MaxEligAge`  
 _Description:_ For a childless filing unit, at least one individual's age needs to be no greater than this age (but no less than the EITC_MinEligAge) in order to be eligible for an earned income tax credit.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
@@ -3606,12 +3476,11 @@ _Known Values:_
 2018: 64  
 2019: 64  
 _Valid Range:_ min = 0 and max = 125  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_InvestIncome_c`  
 _Description:_ The EITC amount is reduced when investment income exceeds this ceiling.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3624,12 +3493,11 @@ _Known Values:_
 2018: 3500.0  
 2019: 3600.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_excess_InvestIncome_rt`  
 _Description:_ The EITC amount is reduced at this rate per dollar of investment income exceeding the ceiling.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3642,12 +3510,11 @@ _Known Values:_
 2018: 9e+99  
 2019: 9e+99  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_indiv`  
 _Description:_ Current-law value is false implying EITC is filing-unit based; a value of true implies EITC is computed for each individual wage earner.  The additional phaseout start for joint filers is not affected by this parameter, nor are investment income and age eligibilty rules.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -3660,12 +3527,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `EITC_sep_filers_elig`  
 _Description:_ Current-law value is false, implying ineligibility.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -3678,7 +3544,7 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### New Refundable Child Tax Credit
@@ -3698,12 +3564,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_c_under5_bonus`  
 _Description:_ The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3716,12 +3581,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_for_all`  
 _Description:_ The maximum amount of the new refundable child tax credit does not depend on AGI when true; otherwise, see CTC_new_rt.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -3734,7 +3598,7 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_rt`  
@@ -3752,12 +3616,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_ps`  
 _Description:_ The total amount of new child tax credit is reduced for taxpayers with AGI higher than this level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3771,12 +3634,11 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_prt`  
 _Description:_ The total amount of the new child tax credit is reduced at this rate per dollar exceeding the phaseout starting AGI, CTC_new_ps.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3789,7 +3651,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_refund_limited`  
@@ -3807,7 +3669,7 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_refund_limit_payroll_rt`  
@@ -3825,7 +3687,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CTC_new_refund_limited_all_payroll`  
@@ -3843,14 +3705,13 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Personal Refundable Credit
 
 ####  `II_credit`  
 _Description:_ This credit amount is fully refundable and is phased out based on AGI. It is available to tax units who would otherwise not file.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3864,12 +3725,11 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_credit_ps`  
 _Description:_ The personal refundable credit amount will be reduced for taxpayers with AGI higher than this threshold level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -3883,12 +3743,11 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_credit_prt`  
 _Description:_ The personal refundable credit amount will be reduced at this rate for each dollar of AGI exceeding the II_credit_ps threshold.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3901,7 +3760,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### Refundable Payroll Tax Credit
@@ -3921,7 +3780,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `RPTC_rt`  
@@ -3939,7 +3798,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Surtaxes
@@ -3948,7 +3807,6 @@ _Out-of-Range Action:_ error
 
 ####  `LST`  
 _Description:_ The lump-sum tax is levied on every member of a tax filing unit. The lump-sum tax is included only in combined taxes; it is not included in income or payroll taxes.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3961,14 +3819,13 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = -9e+99 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### New AGI Surtax
 
 ####  `AGI_surtax_trt`  
 _Description:_ The surtax rate is applied to the portion of Adjusted Gross Income above the AGI surtax threshold.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3981,12 +3838,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AGI_surtax_thd`  
 _Description:_ The aggregate gross income above this AGI surtax threshold is taxed at surtax rate on AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4000,14 +3856,13 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### New Minimum Tax
 
 ####  `FST_AGI_trt`  
 _Description:_ Individual income taxes and the employee share of payroll taxes are credited against this minimum tax, so the surtax is the difference between the tax rate times AGI and the credited taxes. The new minimum tax is similar to the Fair Share Tax, except that no credits are exempted from the base.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -4020,12 +3875,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `FST_AGI_thd_lo`  
 _Description:_ A taxpayer is only subject to the new minimum tax if they exceed this level of AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4039,12 +3893,11 @@ _Known Values:_
 2018: [1000000.0, 1000000.0, 500000.0, 1000000.0, 1000000.0]  
 2019: [1000000.0, 1000000.0, 500000.0, 1000000.0, 1000000.0]  
 _Valid Range:_ min = 0 and max = FST_AGI_thd_hi  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `FST_AGI_thd_hi`  
 _Description:_ The new minimum tax will be fully phased in at this level of AGI. If there is no phase-in, this upper threshold should be set equal to the lower AGI threshold.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4058,7 +3911,7 @@ _Known Values:_
 2018: [2000000.0, 2000000.0, 1000000.0, 2000000.0, 2000000.0]  
 2019: [2000000.0, 2000000.0, 1000000.0, 2000000.0, 2000000.0]  
 _Valid Range:_ min = FST_AGI_thd_lo and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Universal Basic Income
@@ -4067,7 +3920,6 @@ _Out-of-Range Action:_ error
 
 ####  `UBI_u18`  
 _Description:_ UBI benefit provided to people under 18.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4080,12 +3932,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `UBI_1820`  
 _Description:_ UBI benefit provided to people 18-20 years of age.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4098,12 +3949,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `UBI_21`  
 _Description:_ UBI benefit provided to people 21 and over.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4116,14 +3966,13 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ### UBI Taxability
 
 ####  `UBI_ecrt`  
 _Description:_ One minus this fraction of UBI benefits are taxable and will be added to AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -4136,7 +3985,7 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Benefits
@@ -4145,7 +3994,6 @@ _Out-of-Range Action:_ error
 
 ####  `BEN_ssi_repeal`  
 _Description:_ SSI benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4158,12 +4006,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_housing_repeal`  
 _Description:_ Housing benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4176,12 +4023,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_snap_repeal`  
 _Description:_ SNAP benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4194,12 +4040,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_tanf_repeal`  
 _Description:_ TANF benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4212,12 +4057,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_vet_repeal`  
 _Description:_ Veterans benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4230,12 +4074,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_wic_repeal`  
 _Description:_ WIC benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4248,12 +4091,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_mcare_repeal`  
 _Description:_ Medicare benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4266,12 +4108,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_mcaid_repeal`  
 _Description:_ Medicaid benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4284,12 +4125,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_oasdi_repeal`  
 _Description:_ Social Security benefits (e02400) can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4302,12 +4142,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_ui_repeal`  
 _Description:_ Unemployment insurance benefits (e02300) can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4320,12 +4159,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_other_repeal`  
 _Description:_ Other benefits can be repealed by switching this parameter to true.  
-  
 _Has An Effect When Using:_ _PUF data:_ False _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4338,14 +4176,13 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Other Parameters (not in Tax-Brain webapp)
 
 ####  `SS_percentage1`  
 _Description:_ Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -4358,12 +4195,11 @@ _Known Values:_
 2018: 0.5  
 2019: 0.5  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `SS_percentage2`  
 _Description:_ Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -4376,12 +4212,11 @@ _Known Values:_
 2018: 0.85  
 2019: 0.85  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `II_em_ps`  
 _Description:_ If taxpayers' AGI is above this level, their personal exemption will start to decrease at the personal exemption phaseout rate (PEP provision).  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4395,12 +4230,11 @@ _Known Values:_
 2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `STD_Dep`  
 _Description:_ This is the maximum standard deduction for dependents.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4413,12 +4247,11 @@ _Known Values:_
 2018: 1050.0  
 2019: 1100.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `STD_allow_charity_ded_nonitemizers`  
 _Description:_ Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4431,12 +4264,11 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_child_em`  
 _Description:_ The child's AMT exemption is capped by this amount plus the child's earned income.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4449,12 +4281,11 @@ _Known Values:_
 2018: 7600.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_child_em_c_age`  
 _Description:_ Individuals under this age must use the child AMT exemption rules.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ int  
@@ -4467,12 +4298,11 @@ _Known Values:_
 2018: 18  
 2019: 18  
 _Valid Range:_ min = 0 and max = 30  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AMT_em_pe`  
 _Description:_ The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4492,12 +4322,11 @@ _Known Values:_
 2025: 832100.39  
 2026: 300574.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `LLC_Expense_c`  
 _Description:_ The maximum expense eligible for lifetime learning credit, per child.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -4510,12 +4339,11 @@ _Known Values:_
 2018: 10000.0  
 2019: 10000.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ETC_pe_Single`  
 _Description:_ The education tax credit will be zero for those taxpayers of single filing status with modified AGI (in thousands) higher than this level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4528,12 +4356,11 @@ _Known Values:_
 2018: 67.0  
 2019: 68.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ETC_pe_Married`  
 _Description:_ The education tax credit will be zero for those taxpayers of married filing status with modified AGI level (in thousands) higher than this level.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ False  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
@@ -4546,7 +4373,7 @@ _Known Values:_
 2018: 134.0  
 2019: 136.0  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_Charity_rt`  
@@ -4564,12 +4391,11 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_Charity_f`  
 _Description:_ Only charitable giving in excess of this dollar amount is eligible for the charity credit.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -4583,12 +4409,11 @@ _Known Values:_
 2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
 2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `CR_Charity_frt`  
 _Description:_ Only charitable giving in excess of this decimal fraction of AGI is eligible for the charity credit.  
-  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -4601,4 +4426,4 @@ _Known Values:_
 2018: 0.0  
 2019: 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  

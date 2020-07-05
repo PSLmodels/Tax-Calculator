@@ -14,7 +14,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABOOK extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ACGNS`  
@@ -23,7 +23,7 @@ _Description:_ Default projection is in growfactors.csv file.  ACGNS extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ACPIM`  
@@ -32,7 +32,7 @@ _Description:_ Default projection is in growfactors.csv file.  ACPIM extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ACPIU`  
@@ -41,7 +41,7 @@ _Description:_ Default projection is in growfactors.csv file.  ACPIU is the pric
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ADIVS`  
@@ -50,7 +50,7 @@ _Description:_ Default projection is in growfactors.csv file.  ADIVS extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AINTS`  
@@ -59,7 +59,7 @@ _Description:_ Default projection is in growfactors.csv file.  AINTS extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AIPD`  
@@ -68,7 +68,7 @@ _Description:_ Default projection is in growfactors.csv file.  AIPD extrapolates
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ASCHCI`  
@@ -77,7 +77,7 @@ _Description:_ Default projection is in growfactors.csv file.  ASCHCI extrapolat
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ASCHCL`  
@@ -86,7 +86,7 @@ _Description:_ Default projection is in growfactors.csv file.  ASCHCL extrapolat
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ASCHEI`  
@@ -95,7 +95,7 @@ _Description:_ Default projection is in growfactors.csv file.  ASCHEI extrapolat
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ASCHEL`  
@@ -104,7 +104,7 @@ _Description:_ Default projection is in growfactors.csv file.  ASCHEL extrapolat
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ASCHF`  
@@ -113,7 +113,7 @@ _Description:_ Default projection is in growfactors.csv file.  ASCHF extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ASOCSEC`  
@@ -122,7 +122,7 @@ _Description:_ Default projection is in growfactors.csv file.  ASOCSEC extrapola
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ATXPY`  
@@ -131,7 +131,7 @@ _Description:_ Default projection is in growfactors.csv file.  ATXPY extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AUCOMP`  
@@ -140,7 +140,7 @@ _Description:_ Default projection is in growfactors.csv file.  AUCOMP extrapolat
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `AWAGE`  
@@ -149,7 +149,7 @@ _Description:_ Default projection is in growfactors.csv file.  AWAGE extrapolate
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENOTHER`  
@@ -158,7 +158,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENOTHER extrapo
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENMCARE`  
@@ -167,7 +167,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENMCARE extrapo
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENMCAID`  
@@ -176,7 +176,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENMCAID extrapo
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENSSI`  
@@ -185,7 +185,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENSSI extrapola
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENSNAP`  
@@ -194,7 +194,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENSNAP extrapol
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENWIC`  
@@ -203,7 +203,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENWIC extrapola
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENHOUSING`  
@@ -212,7 +212,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENHOUSING extra
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENTANF`  
@@ -221,7 +221,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENTANF extrapol
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `ABENVET`  
@@ -230,7 +230,7 @@ _Description:_ Default projection is in growfactors.csv file.  ABENVET extrapola
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = -10 and max = 10  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ## Consumption
@@ -241,7 +241,7 @@ _Description:_ Defined as dollar change in medical-expense consumption divided b
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `MPC_e18400`  
@@ -250,7 +250,7 @@ _Description:_ Defined as dollar change in state-and-local-taxes consumption div
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `MPC_e19800`  
@@ -259,7 +259,7 @@ _Description:_ Defined as dollar change in charity-cash-contribution consumption
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `MPC_e20400`  
@@ -268,7 +268,7 @@ _Description:_ Defined as dollar change in miscellaneous-deduction-expense consu
 _Value Type:_ float  
 _Default Value:_ 0.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_housing_value`  
@@ -277,7 +277,7 @@ _Description:_ Consumption value per dollar of housing benefits, all of which ar
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_snap_value`  
@@ -286,7 +286,7 @@ _Description:_ Consumption value per dollar of SNAP benefits, all of which are i
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_tanf_value`  
@@ -295,7 +295,7 @@ _Description:_ Consumption value per dollar of TANF benefits, some of which are 
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_vet_value`  
@@ -304,7 +304,7 @@ _Description:_ Consumption value per dollar of veterans benefits, some of which 
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 2  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_wic_value`  
@@ -313,7 +313,7 @@ _Description:_ Consumption value per dollar of WIC benefits, all of which are in
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_mcare_value`  
@@ -322,7 +322,7 @@ _Description:_ Consumption value per dollar of Medicare benefits, all of which a
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 2  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_mcaid_value`  
@@ -331,7 +331,7 @@ _Description:_ Consumption value per dollar of Medicaid benefits, all of which a
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 2  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
 
 
 ####  `BEN_other_value`  
@@ -340,4 +340,4 @@ _Description:_ Consumption value per dollar of other benefits, some of which are
 _Value Type:_ float  
 _Default Value:_ 1.0  
 _Valid Range:_ min = 0 and max = 1  
-_Out-of-Range Action:_ error
+_Out-of-Range Action:_ error  
