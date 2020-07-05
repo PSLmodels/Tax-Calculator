@@ -8,7 +8,7 @@ category rules. In some cases, parameter names have a subcategory that
 conveys additional information about the role the parameter plays (see
 Examples below).
 
-# Tax categories
+## Tax categories
 
 Tax categories are uppercase:
 
@@ -48,12 +48,12 @@ Tax categories are uppercase:
 
    **`STD`**: Standard Deduction
 
-# Parameter role
+## Parameter role
 
 Abbreviates for the role the parameter plays in the tax rules are
 usually lowercase:
 
-   **`c`**: ceiling (or use **`Max** especially for integer variables)
+   **`c`**: ceiling (or use **`Max`** especially for integer variables)
 
    **`e`**: end
 
@@ -61,7 +61,7 @@ usually lowercase:
 
    **`em`**: exemption
 
-   **`f`**: floor (or use **`Min** especially for integer variables)
+   **`f`**: floor (or use **`Min`** especially for integer variables)
 
    **`hc`**: haircut
 
@@ -77,7 +77,7 @@ usually lowercase:
 
 Combine abbreviations to create more complex roles: frt = floor rate.
 
-# Examples
+## Examples
 
    **`AMT_em`**: Alternative Minimum Tax exemption amount
 
@@ -95,13 +95,13 @@ Combine abbreviations to create more complex roles: frt = floor rate.
    **`EITC_MinEligAge`**: Earned Income Tax Credit minimum eligibility
    age for those with no EITC-eligible children
 
-# Placing new parameters in `policy_current_law.json`
+## Placing new parameters in `policy_current_law.json`
 
 All new policy parameters should be added to the
 `policy_current_law.json` file in a location that is near conceptually
 similar parameters.
 Be sure to specify the `section_1` and `section_2` values of each new parameter so that it appears in an appropriate place on the [Tax-Brain
-webapp](https://www.compmodels.org/PSLmodels/Tax-Brain/) input page.
+webapp](https://www.compute.studio/PSLmodels/Tax-Brain/) input page.
 If the new parameter is not supposed to appear on the input page of
 the Tax-Brain webapp, set the value of `section_1` and `section_2` to
 an empty string.

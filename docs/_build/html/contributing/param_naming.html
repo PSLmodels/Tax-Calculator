@@ -88,9 +88,6 @@
 <p class="margin-caption">About</p>
 </li>
   <li class="">
-    <a href="../about/license.html">License</a>
-  </li>
-  <li class="">
     <a href="../about/history.html">History</a>
   </li>
   <li class="">
@@ -104,6 +101,9 @@
   </li>
   <li class="">
     <a href="../about/upgrading.html">Upgrading to Tax-Calculator 2.0</a>
+  </li>
+  <li class="">
+    <a href="../about/license.html">License</a>
   </li>
 <li class="navbar-special">
 <p class="margin-caption">Contributing</p>
@@ -183,9 +183,28 @@
         
     </div>
     <div class="d-none d-md-block col-md-2 bd-toc show">
+<div class="tocsection onthispage pt-5 pb-3">
+    <i class="fas fa-list"></i> On this page
+</div>
 
 <nav id="bd-toc-nav">
     <ul class="nav section-nav flex-column">
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#tax-categories" class="nav-link">Tax categories</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#parameter-role" class="nav-link">Parameter role</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#examples" class="nav-link">Examples</a>
+        </li>
+    
+        <li class="nav-item toc-entry toc-h2">
+            <a href="#placing-new-parameters-in-policy-current-law-json" class="nav-link">Placing new parameters in policy_current_law.json</a>
+        </li>
     
     </ul>
 </nav>
@@ -206,9 +225,8 @@ is an abbreviation for the role the parameter plays in those tax
 category rules. In some cases, parameter names have a subcategory that
 conveys additional information about the role the parameter plays (see
 Examples below).</p>
-</div>
 <div class="section" id="tax-categories">
-<h1>Tax categories<a class="headerlink" href="#tax-categories" title="Permalink to this headline">¶</a></h1>
+<h2>Tax categories<a class="headerlink" href="#tax-categories" title="Permalink to this headline">¶</a></h2>
 <p>Tax categories are uppercase:</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">ACTC</span></code></strong>: Additional Child Tax Credit</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">ALD</span></code></strong>: Above-the-Line Deduction</p>
@@ -230,14 +248,14 @@ Examples below).</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">STD</span></code></strong>: Standard Deduction</p>
 </div>
 <div class="section" id="parameter-role">
-<h1>Parameter role<a class="headerlink" href="#parameter-role" title="Permalink to this headline">¶</a></h1>
+<h2>Parameter role<a class="headerlink" href="#parameter-role" title="Permalink to this headline">¶</a></h2>
 <p>Abbreviates for the role the parameter plays in the tax rules are
 usually lowercase:</p>
-<p><strong><code class="docutils literal notranslate"><span class="pre">c</span></code></strong>: ceiling (or use <strong>`Max</strong> especially for integer variables)</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">c</span></code></strong>: ceiling (or use <strong><code class="docutils literal notranslate"><span class="pre">Max</span></code></strong> especially for integer variables)</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">e</span></code></strong>: end</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">ec</span></code></strong>: exclusion</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">em</span></code></strong>: exemption</p>
-<p><strong><code class="docutils literal notranslate"><span class="pre">f</span></code></strong>: floor (or use <strong>`Min</strong> especially for integer variables)</p>
+<p><strong><code class="docutils literal notranslate"><span class="pre">f</span></code></strong>: floor (or use <strong><code class="docutils literal notranslate"><span class="pre">Min</span></code></strong> especially for integer variables)</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">hc</span></code></strong>: haircut</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">p</span></code></strong>: phaseout</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">rt</span></code></strong>: rate (always expressed as a decimal, rather than a percentage, rate)</p>
@@ -247,7 +265,7 @@ usually lowercase:</p>
 <p>Combine abbreviations to create more complex roles: frt = floor rate.</p>
 </div>
 <div class="section" id="examples">
-<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
 <p><strong><code class="docutils literal notranslate"><span class="pre">AMT_em</span></code></strong>: Alternative Minimum Tax exemption amount</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">ID_ps</span></code></strong>: Itemized Deduction phaseout Adjusted Gross Income start (Pease)</p>
 <p><strong><code class="docutils literal notranslate"><span class="pre">AMT_brk1</span></code></strong>: Alternative Minimum Tax first rate bracket top</p>
@@ -259,15 +277,16 @@ additional income base</p>
 age for those with no EITC-eligible children</p>
 </div>
 <div class="section" id="placing-new-parameters-in-policy-current-law-json">
-<h1>Placing new parameters in <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code><a class="headerlink" href="#placing-new-parameters-in-policy-current-law-json" title="Permalink to this headline">¶</a></h1>
+<h2>Placing new parameters in <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code><a class="headerlink" href="#placing-new-parameters-in-policy-current-law-json" title="Permalink to this headline">¶</a></h2>
 <p>All new policy parameters should be added to the
 <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code> file in a location that is near conceptually
 similar parameters.
-Be sure to specify the <code class="docutils literal notranslate"><span class="pre">section_1</span></code> and <code class="docutils literal notranslate"><span class="pre">section_2</span></code> values of each new parameter so that it appears in an appropriate place on the <a class="reference external" href="https://www.compmodels.org/PSLmodels/Tax-Brain/">Tax-Brain
+Be sure to specify the <code class="docutils literal notranslate"><span class="pre">section_1</span></code> and <code class="docutils literal notranslate"><span class="pre">section_2</span></code> values of each new parameter so that it appears in an appropriate place on the <a class="reference external" href="https://www.compute.studio/PSLmodels/Tax-Brain/">Tax-Brain
 webapp</a> input page.
 If the new parameter is not supposed to appear on the input page of
 the Tax-Brain webapp, set the value of <code class="docutils literal notranslate"><span class="pre">section_1</span></code> and <code class="docutils literal notranslate"><span class="pre">section_2</span></code> to
 an empty string.</p>
+</div>
 </div>
 
 

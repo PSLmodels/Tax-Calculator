@@ -21,12 +21,12 @@
     - file: recipes/recipe05
     - file: recipes/recipe06
 - header: About
-- file: about/license
 - file: about/history
 - file: about/roadmap
 - file: about/releases
 - file: about/changes
 - file: about/upgrading
+- file: about/license
 - header: Contributing
 - file: contributing/contributor_guide
 - file: contributing/pr_workflow
