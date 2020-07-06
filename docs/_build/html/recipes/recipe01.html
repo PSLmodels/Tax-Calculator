@@ -172,46 +172,44 @@
         </button>
         
         <div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-            class="fas fa-download"></i></button>
+            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+                    class="fas fa-download"></i></button>
 
-    
-    <div class="dropdown-buttons">
-        <!-- ipynb file if we had a myst markdown file -->
-        <a class="dropdown-buttons"
-            href="../_sources/recipes/recipe01.ipynb"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download notebook file" data-toggle="tooltip"
-                data-placement="left">.ipynb</button></a>
-        <!-- Download raw file -->
-        <a class="dropdown-buttons" href="../_sources/recipes/recipe01.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                data-placement="left">.md</button></a>
-        <!-- Download PDF via print -->
-        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-    </div>
-    
-</div>
+            
+            <div class="dropdown-buttons">
+                <!-- ipynb file if we had a myst markdown file -->
+                
+                <!-- Download raw file -->
+                <a class="dropdown-buttons" href="../_sources/recipes/recipe01.ipynb"><button type="button"
+                        class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                        data-placement="left">.ipynb</button></a>
+                <!-- Download PDF via print -->
+                <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+                    onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+            </div>
+            
+        </div>
+
         <!-- Source interaction buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-    <div class="dropdown-buttons sourcebuttons">
-        <a class="repository-button"
-            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
-                data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                    class="fab fa-github"></i>repository</button></a>
-        <a class="issues-button"
-            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Frecipes/recipe01.html&body=Your%20issue%20content%20here."><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/recipes/recipe01.md"><button
-                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-    </div>
-</div>
-
+        
+        <div class="dropdown-buttons-trigger">
+            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+                aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+            <div class="dropdown-buttons sourcebuttons">
+                <a class="repository-button"
+                    href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                        data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                            class="fab fa-github"></i>repository</button></a>
+                <a class="issues-button"
+                    href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Frecipes/recipe01.html&body=Your%20issue%20content%20here."><button
+                        type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                        title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+                <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/recipes/recipe01.ipynb"><button
+                        type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                        title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+            </div>
+        </div>
+        
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
@@ -219,24 +217,29 @@
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
-
-<div class="dropdown-buttons-trigger">
-    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
-    <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/PSLmodels/Tax-Calculator/master?urlpath=tree/recipes/recipe01.md"><button type="button"
-                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
-                data-placement="left"><img class="binder-button-logo"
-                    src="../_static/images/logo_binder.svg"
-                    alt="Interact on binder">Binder</button></a>
+        <div class="dropdown-buttons-trigger">
+            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+                aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+            <div class="dropdown-buttons">
+                
+                <a class="binder-button" href="https://mybinder.org/v2/gh/PSLmodels/Tax-Calculator/master?urlpath=tree/recipes/recipe01.ipynb"><button type="button"
+                        class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                        data-placement="left"><img class="binder-button-logo"
+                            src="../_static/images/logo_binder.svg"
+                            alt="Interact on binder">Binder</button></a>
+                
+                
+                
+                <a class="colab-button" href="https://colab.research.google.com/github/PSLmodels/Tax-Calculator/blob/master/recipes/recipe01.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
+                        title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
+                            src="../_static/images/logo_colab.png"
+                            alt="Interact on Colab">Colab</button></a>
+                
+                
+            </div>
+        </div>
         
-        
-        
-        
-    </div>
-</div>
-
     </div>
     <div class="d-none d-md-block col-md-2 bd-toc show">
 
@@ -249,7 +252,7 @@
 
 
 <div class="tocsection editthispage">
-    <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/recipes/recipe01.md">
+    <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/recipes/recipe01.ipynb">
         <i class="fas fa-pencil-alt"></i> Edit this page
     </a>
 </div>
@@ -272,15 +275,16 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
 
-<span class="c1"># Read an &quot;old&quot; reform file</span>
+<span class="c1"># read an &quot;old&quot; reform file from Tax-Calculator website</span>
 <span class="c1"># (&quot;old&quot; means the reform file is defined relative to pre-TCJA policy)</span>
-<span class="n">REFORMS_PATH</span> <span class="o">=</span> <span class="s1">&#39;../../taxcalc/reforms/&#39;</span>
+<span class="n">REFORMS_URL</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/&#39;</span>
+               <span class="s1">&#39;PSLmodels/Tax-Calculator/master/taxcalc/reforms/&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify reform dictionary for pre-TCJA policy</span>
-<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;2017_law.json&#39;</span><span class="p">)</span>
+<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_URL</span> <span class="o">+</span> <span class="s1">&#39;2017_law.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify reform dictionary for TCJA as passed by Congress in late 2017</span>
-<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;TCJA.json&#39;</span><span class="p">)</span>
+<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_URL</span> <span class="o">+</span> <span class="s1">&#39;TCJA.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify Policy object for pre-TCJA policy</span>
 <span class="n">bpolicy</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>

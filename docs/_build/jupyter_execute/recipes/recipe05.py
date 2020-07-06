@@ -7,7 +7,7 @@ This recipe introduces a powerful technique for customizing the operation of Tax
 This calculator-customization technique is used in this recipe to redefine expanded income in a way that allows the
 redefined income measure to be used seamlessly with all the other (table and graph) methods of the Calculator class.
 The basic idea behind the calculator-customization technique is to derive a customized Calculator class from the Tax-Calculator Calculator class.
-This is a standard {doc}`object-oriented programming <../usage/overview>` technique.
+This is a standard [object-oriented programming](https://pslmodels.github.io/Tax-Calculator/tc_overview.html) technique.
 
 Recipe that illustrates how to customize the taxcalc Calculator class so that
 it can seamlessly use an alternative definition of expanded income.
@@ -94,13 +94,14 @@ class Calculator(tc.Calculator):
 
 # read an "old" reform file from Tax-Calculator website
 # ("old" means the reform file is defined relative to pre-TCJA policy)
-REFORMS_PATH = '../../taxcalc/reforms/'
+REFORMS_URL = ('https://raw.githubusercontent.com/'
+               'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
 
 # specify reform dictionary for pre-TCJA policy
-reform1 = tc.Policy.read_json_reform(REFORMS_PATH + '2017_law.json')
+reform1 = tc.Policy.read_json_reform(REFORMS_URL + '2017_law.json')
 
 # specify reform dictionary for TCJA as passed by Congress in late 2017
-reform2 = tc.Policy.read_json_reform(REFORMS_PATH + 'TCJA.json')
+reform2 = tc.Policy.read_json_reform(REFORMS_URL + 'TCJA.json')
 
 # specify Policy object for pre-TCJA policy
 bpolicy = tc.Policy()
