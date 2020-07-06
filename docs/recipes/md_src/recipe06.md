@@ -37,6 +37,8 @@ call it a pseudo cost-of-living refund to emphasize that it is not meant
 to be an accurate representation of the Cost-of-Living Refund proposal.
 
 ```{code-cell} ipython3
+:tags: [remove-cell]
+
 # Install conda and taxcalc if in Google Colab.
 import sys
 if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:

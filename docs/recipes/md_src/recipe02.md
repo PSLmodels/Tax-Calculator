@@ -17,6 +17,8 @@ This is an advanced recipe that should be followed only after mastering the basi
 This recipe shows how to analyze the behavioral responses to a tax reform using the Behavioral-Responses behresp package.
 
 ```{code-cell} ipython3
+:tags: [remove-cell]
+
 # Install conda and taxcalc if in Google Colab.
 import sys
 if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:

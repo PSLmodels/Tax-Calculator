@@ -4,6 +4,18 @@ This is an advanced recipe that should be followed only after mastering the basi
 This recipe shows how to estimate the reform response in charitable giving when the response elasticities vary by earnings group.
 It employs the groupby technique used in the Creating a Custom Table recipe, so you might want to read that recipe first.
 
+# Install conda and taxcalc if in Google Colab.
+import sys
+if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
+    !wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    !bash Miniconda3-latest-Linux-x86_64.sh -bfp /usr/local
+    # Append path to be able to run packages installed with conda
+    # This must correspond to the conda Python version, which may differ from
+    # the base Colab Python installation.
+    sys.path.append('/usr/local/lib/python3.7/site-packages')
+    # Install PSL packages from Anaconda
+    !yes | conda install -c PSLmodels taxcalc behresp
+
 import taxcalc as tc
 import pandas as pd
 import numpy as np

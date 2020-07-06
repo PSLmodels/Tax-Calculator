@@ -5,6 +5,7 @@ Mastering this recipe is a prerequisite for all the other recipes in this cookbo
 
 ## Imports
 
+# Install conda and taxcalc if in Google Colab.
 import sys
 if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
     !wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -14,7 +15,7 @@ if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
     # the base Colab Python installation.
     sys.path.append('/usr/local/lib/python3.7/site-packages')
     # Install PSL packages from Anaconda
-    !yes | conda install -c PSLmodels taxcalc
+    !yes | conda install -c PSLmodels taxcalc behresp
 
 import taxcalc as tc
 import pandas as pd

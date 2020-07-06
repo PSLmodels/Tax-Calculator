@@ -23,6 +23,18 @@ reform analyzed here is not exactly like the Cost-of-Living Refund, so we
 call it a pseudo cost-of-living refund to emphasize that it is not meant
 to be an accurate representation of the Cost-of-Living Refund proposal.
 
+# Install conda and taxcalc if in Google Colab.
+import sys
+if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
+    !wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    !bash Miniconda3-latest-Linux-x86_64.sh -bfp /usr/local
+    # Append path to be able to run packages installed with conda
+    # This must correspond to the conda Python version, which may differ from
+    # the base Colab Python installation.
+    sys.path.append('/usr/local/lib/python3.7/site-packages')
+    # Install PSL packages from Anaconda
+    !yes | conda install -c PSLmodels taxcalc
+
 import numpy as np
 import taxcalc as tc
 

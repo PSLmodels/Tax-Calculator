@@ -356,16 +356,15 @@ methods.</p>
 
 <span class="c1"># top-level logic of program that uses customized Calculator class</span>
 
-<span class="c1"># read an &quot;old&quot; reform file from Tax-Calculator website</span>
+<span class="c1"># read an &quot;old&quot; reform file</span>
 <span class="c1"># (&quot;old&quot; means the reform file is defined relative to pre-TCJA policy)</span>
-<span class="n">REFORMS_URL</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;https://raw.githubusercontent.com/&#39;</span>
-               <span class="s1">&#39;PSLmodels/Tax-Calculator/master/taxcalc/reforms/&#39;</span><span class="p">)</span>
+<span class="n">REFORMS_PATH</span> <span class="o">=</span> <span class="s1">&#39;../../taxcalc/reforms/&#39;</span>
 
 <span class="c1"># specify reform dictionary for pre-TCJA policy</span>
-<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_URL</span> <span class="o">+</span> <span class="s1">&#39;2017_law.json&#39;</span><span class="p">)</span>
+<span class="n">reform1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;2017_law.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify reform dictionary for TCJA as passed by Congress in late 2017</span>
-<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_URL</span> <span class="o">+</span> <span class="s1">&#39;TCJA.json&#39;</span><span class="p">)</span>
+<span class="n">reform2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="n">REFORMS_PATH</span> <span class="o">+</span> <span class="s1">&#39;TCJA.json&#39;</span><span class="p">)</span>
 
 <span class="c1"># specify Policy object for pre-TCJA policy</span>
 <span class="n">bpolicy</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>

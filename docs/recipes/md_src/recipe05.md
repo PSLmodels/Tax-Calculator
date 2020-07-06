@@ -32,6 +32,8 @@ but can be customized by adding new data and methods or by overriding inherited
 methods.
 
 ```{code-cell} ipython3
+:tags: [remove-cell]
+
 # Install conda and taxcalc if in Google Colab.
 import sys
 if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
@@ -122,16 +124,15 @@ class Calculator(tc.Calculator):
 
 # top-level logic of program that uses customized Calculator class
 
-# read an "old" reform file from Tax-Calculator website
+# read an "old" reform file
 # ("old" means the reform file is defined relative to pre-TCJA policy)
-REFORMS_URL = ('https://raw.githubusercontent.com/'
-               'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
+REFORMS_PATH = '../../taxcalc/reforms/'
 
 # specify reform dictionary for pre-TCJA policy
-reform1 = tc.Policy.read_json_reform(REFORMS_URL + '2017_law.json')
+reform1 = tc.Policy.read_json_reform(REFORMS_PATH + '2017_law.json')
 
 # specify reform dictionary for TCJA as passed by Congress in late 2017
-reform2 = tc.Policy.read_json_reform(REFORMS_URL + 'TCJA.json')
+reform2 = tc.Policy.read_json_reform(REFORMS_PATH + 'TCJA.json')
 
 # specify Policy object for pre-TCJA policy
 bpolicy = tc.Policy()

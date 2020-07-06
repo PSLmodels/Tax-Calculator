@@ -18,6 +18,8 @@ This recipe shows how to estimate the reform response in charitable giving when 
 It employs the groupby technique used in the Creating a Custom Table recipe, so you might want to read that recipe first.
 
 ```{code-cell} ipython3
+:tags: [remove-cell]
+
 # Install conda and taxcalc if in Google Colab.
 import sys
 if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
