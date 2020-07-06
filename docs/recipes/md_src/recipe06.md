@@ -6,8 +6,8 @@ jupytext:
     format_version: '0.8'
     jupytext_version: 1.5.0
 kernelspec:
-  display_name: Python
-  language: python3
+  display_name: Python 3
+  language: python
   name: python3
 ---
 
@@ -35,6 +35,20 @@ tax policy circles during 2019 as a replacement for the EITC.  But the
 reform analyzed here is not exactly like the Cost-of-Living Refund, so we
 call it a pseudo cost-of-living refund to emphasize that it is not meant
 to be an accurate representation of the Cost-of-Living Refund proposal.
+
+```{code-cell} ipython3
+# Install conda and taxcalc if in Google Colab.
+import sys
+if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
+    !wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    !bash Miniconda3-latest-Linux-x86_64.sh -bfp /usr/local
+    # Append path to be able to run packages installed with conda
+    # This must correspond to the conda Python version, which may differ from
+    # the base Colab Python installation.
+    sys.path.append('/usr/local/lib/python3.7/site-packages')
+    # Install PSL packages from Anaconda
+    !yes | conda install -c PSLmodels taxcalc
+```
 
 ```{code-cell} ipython3
 :hide-output: false

@@ -6,8 +6,8 @@ jupytext:
     format_version: '0.8'
     jupytext_version: 1.5.0
 kernelspec:
-  display_name: Python
-  language: python3
+  display_name: Python 3
+  language: python
   name: python3
 ---
 
@@ -15,6 +15,20 @@ kernelspec:
 
 This is an advanced recipe that should be followed only after mastering the basic recipe.
 This recipe shows how to prepare a custom table.
+
+```{code-cell} ipython3
+# Install conda and taxcalc if in Google Colab.
+import sys
+if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
+    !wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    !bash Miniconda3-latest-Linux-x86_64.sh -bfp /usr/local
+    # Append path to be able to run packages installed with conda
+    # This must correspond to the conda Python version, which may differ from
+    # the base Colab Python installation.
+    sys.path.append('/usr/local/lib/python3.7/site-packages')
+    # Install PSL packages from Anaconda
+    !yes | conda install -c PSLmodels taxcalc
+```
 
 ```{code-cell} ipython3
 :hide-output: false

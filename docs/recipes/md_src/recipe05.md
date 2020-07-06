@@ -6,8 +6,8 @@ jupytext:
     format_version: '0.8'
     jupytext_version: 1.5.0
 kernelspec:
-  display_name: Python
-  language: python3
+  display_name: Python 3
+  language: python
   name: python3
 ---
 
@@ -20,7 +20,7 @@ This recipe introduces a powerful technique for customizing the operation of Tax
 This calculator-customization technique is used in this recipe to redefine expanded income in a way that allows the
 redefined income measure to be used seamlessly with all the other (table and graph) methods of the Calculator class.
 The basic idea behind the calculator-customization technique is to derive a customized Calculator class from the Tax-Calculator Calculator class.
-This is a standard {doc}`object-oriented programming <../usage/overview>` technique.
+This is a standard [object-oriented programming](https://pslmodels.github.io/Tax-Calculator/tc_overview.html) technique.
 
 Recipe that illustrates how to customize the taxcalc Calculator class so that
 it can seamlessly use an alternative definition of expanded income.
@@ -30,6 +30,20 @@ programming: a child class is derived from a parent class and then customized.
 The derived child class inherits all the data and methods of the parent class,
 but can be customized by adding new data and methods or by overriding inherited
 methods.
+
+```{code-cell} ipython3
+# Install conda and taxcalc if in Google Colab.
+import sys
+if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
+    !wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    !bash Miniconda3-latest-Linux-x86_64.sh -bfp /usr/local
+    # Append path to be able to run packages installed with conda
+    # This must correspond to the conda Python version, which may differ from
+    # the base Colab Python installation.
+    sys.path.append('/usr/local/lib/python3.7/site-packages')
+    # Install PSL packages from Anaconda
+    !yes | conda install -c PSLmodels taxcalc
+```
 
 ```{code-cell} ipython3
 :hide-output: false
@@ -110,13 +124,14 @@ class Calculator(tc.Calculator):
 
 # read an "old" reform file from Tax-Calculator website
 # ("old" means the reform file is defined relative to pre-TCJA policy)
-REFORMS_PATH = '../../taxcalc/reforms/'
+REFORMS_URL = ('https://raw.githubusercontent.com/'
+               'PSLmodels/Tax-Calculator/master/taxcalc/reforms/')
 
 # specify reform dictionary for pre-TCJA policy
-reform1 = tc.Policy.read_json_reform(REFORMS_PATH + '2017_law.json')
+reform1 = tc.Policy.read_json_reform(REFORMS_URL + '2017_law.json')
 
 # specify reform dictionary for TCJA as passed by Congress in late 2017
-reform2 = tc.Policy.read_json_reform(REFORMS_PATH + 'TCJA.json')
+reform2 = tc.Policy.read_json_reform(REFORMS_URL + 'TCJA.json')
 
 # specify Policy object for pre-TCJA policy
 bpolicy = tc.Policy()
