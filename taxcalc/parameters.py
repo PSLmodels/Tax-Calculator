@@ -242,8 +242,8 @@ class Parameters(pt.Parameters):
             to_delete = {}
             for param in params:
                 if (
-                    param == "parameter_indexing_CPI_offset"
-                    or param in self._wage_indexed
+                    param == "parameter_indexing_CPI_offset" or
+                    param in self._wage_indexed
                 ):
                     continue
                 if param.endswith("-indexed"):
