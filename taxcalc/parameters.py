@@ -206,7 +206,8 @@ class Parameters(pt.Parameters):
         if params.get("parameter_indexing_CPI_offset") is not None:
             # Update parameter_indexing_CPI_offset with new value.
             cpi_adj = super().adjust(
-                {"parameter_indexing_CPI_offset": params["parameter_indexing_CPI_offset"]}, **kwargs
+                {"parameter_indexing_CPI_offset":
+                 params["parameter_indexing_CPI_offset"]}, **kwargs
             )
             # turn off extend now that parameter_indexing_CPI_offset
             # has been updated.
@@ -214,7 +215,8 @@ class Parameters(pt.Parameters):
             # Get first year in which parameter_indexing_CPI_offset
             # is changed.
             cpi_min_year = min(
-                cpi_adj["parameter_indexing_CPI_offset"], key=lambda vo: vo["year"]
+                cpi_adj["parameter_indexing_CPI_offset"],
+                key=lambda vo: vo["year"]
             )
 
             rate_adjustment_vals = self.select_gte(
@@ -239,7 +241,10 @@ class Parameters(pt.Parameters):
             init_vals = {}
             to_delete = {}
             for param in params:
-                if param == "parameter_indexing_CPI_offset" or param in self._wage_indexed:
+                if (
+                    param == "parameter_indexing_CPI_offset"
+                    or param in self._wage_indexed
+                ):
                     continue
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]

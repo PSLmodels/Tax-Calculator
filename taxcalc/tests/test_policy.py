@@ -1207,10 +1207,16 @@ class TestAdjust:
         without any other parameters.
         """
         pol1 = Policy()
-        pol1.implement_reform({"parameter_indexing_CPI_offset": {2021: -0.001}})
+        pol1.implement_reform(
+            {"parameter_indexing_CPI_offset": {2021: -0.001}}
+        )
 
         pol2 = Policy()
-        pol2.adjust({"parameter_indexing_CPI_offset": [{"year": 2021, "value": -0.001}]})
+        pol2.adjust(
+            {"parameter_indexing_CPI_offset": [
+                {"year": 2021, "value": -0.001}
+            ]}
+        )
 
         cmp_policy_objs(pol1, pol2)
 
@@ -1408,7 +1414,8 @@ class TestAdjust:
         pol2 = Policy()
         pol2.adjust(
             {
-                "parameter_indexing_CPI_offset": [{"year": 2020, "value": -0.005}],
+                "parameter_indexing_CPI_offset":
+                    [{"year": 2020, "value": -0.005}],
                 "CTC_c-indexed": [{"year": 2020, "value": True}],
             }
         )
