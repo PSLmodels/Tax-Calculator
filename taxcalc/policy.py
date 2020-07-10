@@ -124,9 +124,9 @@ class Policy(Parameters):
 
     def set_rates(self):
         """Initialize taxcalc indexing data."""
-        cpi_vals = [vo["value"] for vo in self._data["CPI_offset"]["value"]]
-        # extend cpi_offset values through budget window if they
-        # have not been extended already.
+        cpi_vals = [vo["value"] for vo in self._data["parameter_indexing_CPI_offset"]["value"]]
+        # extend parameter_indexing_CPI_offset values through budget window
+        # if they have not been extended already.
         cpi_vals = cpi_vals + cpi_vals[-1:] * (
             self.end_year - self.start_year + 1 - len(cpi_vals)
         )

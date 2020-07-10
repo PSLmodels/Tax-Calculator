@@ -897,19 +897,21 @@ def test_reform_with_scalar_vector_errors():
 
 def test_index_offset_reform():
     """
-    Test a reform that includes both a change in CPI_offset and a change in
-    a variable's indexed status in the same year.
+    Test a reform that includes both a change in parameter_indexing_CPI_offset
+    and a change in a variable's indexed status in the same year.
     """
-    # create policy0 to extract inflation rates before any CPI_offset
+    # create policy0 to extract inflation rates before any
+    # parameter_indexing_CPI_offset
     policy0 = Policy()
-    policy0.implement_reform({'CPI_offset': {2017: 0}})
+    policy0.implement_reform({'parameter_indexing_CPI_offset': {2017: 0}})
     cpiu_rates = policy0.inflation_rates()
 
     reform1 = {'CTC_c-indexed': {2020: True}}
     policy1 = Policy()
     policy1.implement_reform(reform1)
     offset = -0.005
-    reform2 = {'CTC_c-indexed': {2020: True}, 'CPI_offset': {2020: offset}}
+    reform2 = {'CTC_c-indexed': {2020: True},
+               'parameter_indexing_CPI_offset': {2020: offset}}
     policy2 = Policy()
     policy2.implement_reform(reform2)  # caused T-C crash before PR#2364
     # extract from policy1 and policy2 the parameter values of CTC_c
@@ -938,11 +940,11 @@ def test_index_offset_reform():
 
 def test_cpi_offset_affect_on_prior_years():
     """
-    Test that CPI_offset does not have affect on inflation
-    rates in earlier years.
+    Test that parameter_indexing_CPI_offset does not have affect
+    on inflation rates in earlier years.
     """
-    reform1 = {'CPI_offset': {2022: 0}}
-    reform2 = {'CPI_offset': {2022: -0.005}}
+    reform1 = {'parameter_indexing_CPI_offset': {2022: 0}}
+    reform2 = {'parameter_indexing_CPI_offset': {2022: -0.005}}
     p1 = Policy()
     p2 = Policy()
     p1.implement_reform(reform1)
@@ -968,13 +970,13 @@ def test_cpi_offset_affect_on_prior_years():
 def test_cpi_offset_on_reverting_params():
     """
     Test that params that revert to their pre-TCJA values
-    in 2026 revert if a CPI_offset is specified.
+    in 2026 revert if a parameter_indexing_CPI_offset is specified.
     """
-    reform0 = {'CPI_offset': {2020: -0.001}}
+    reform0 = {'parameter_indexing_CPI_offset': {2020: -0.001}}
     reform1 = {'STD': {2017: [6350, 12700, 6350, 9350, 12700]},
-               'CPI_offset': {2020: -0.001}}
+               'parameter_indexing_CPI_offset': {2020: -0.001}}
     reform2 = {'STD': {2020: [10000, 20000, 10000, 10000, 20000]},
-               'CPI_offset': {2020: -0.001}}
+               'parameter_indexing_CPI_offset': {2020: -0.001}}
 
     p0 = Policy()
     p1 = Policy()
@@ -1201,18 +1203,19 @@ class TestAdjust:
 
     def test_apply_cpi_offset(self):
         """
-        Test applying the CPI_offset parameter without any other parameters.
+        Test applying the parameter_indexing_CPI_offset parameter
+        without any other parameters.
         """
         pol1 = Policy()
-        pol1.implement_reform({"CPI_offset": {2021: -0.001}})
+        pol1.implement_reform({"parameter_indexing_CPI_offset": {2021: -0.001}})
 
         pol2 = Policy()
-        pol2.adjust({"CPI_offset": [{"year": 2021, "value": -0.001}]})
+        pol2.adjust({"parameter_indexing_CPI_offset": [{"year": 2021, "value": -0.001}]})
 
         cmp_policy_objs(pol1, pol2)
 
         pol0 = Policy()
-        pol0.implement_reform({"CPI_offset": {2021: 0}})
+        pol0.implement_reform({"parameter_indexing_CPI_offset": {2021: 0}})
 
         init_rates = pol0.inflation_rates()
         new_rates = pol2.inflation_rates()
@@ -1220,7 +1223,7 @@ class TestAdjust:
         start_ix = 2021 - pol2.start_year
 
         exp_rates = copy.deepcopy(new_rates)
-        exp_rates[start_ix:] -= pol2._CPI_offset[start_ix:]
+        exp_rates[start_ix:] -= pol2._parameter_indexing_CPI_offset[start_ix:]
         np.testing.assert_allclose(init_rates, exp_rates)
 
         # make sure values prior to 2021 were not affected.
@@ -1393,18 +1396,19 @@ class TestAdjust:
 
     def test_adj_CPI_offset_and_index_status(self):
         """
-        Test changing CPI_offset and another parameter simultaneously.
+        Test changing parameter_indexing_CPI_offset and another
+        parameter simultaneously.
         """
         pol1 = Policy()
         pol1.implement_reform({
             "CTC_c-indexed": {2020: True},
-            "CPI_offset": {2020: -0.005}},
+            "parameter_indexing_CPI_offset": {2020: -0.005}},
         )
 
         pol2 = Policy()
         pol2.adjust(
             {
-                "CPI_offset": [{"year": 2020, "value": -0.005}],
+                "parameter_indexing_CPI_offset": [{"year": 2020, "value": -0.005}],
                 "CTC_c-indexed": [{"year": 2020, "value": True}],
             }
         )
@@ -1413,12 +1417,12 @@ class TestAdjust:
 
         # Check no difference prior to 2020
         pol0 = Policy()
-        pol0.implement_reform({"CPI_offset": {2020: 0}})
+        pol0.implement_reform({"parameter_indexing_CPI_offset": {2020: 0}})
         cmp_policy_objs(
             pol0,
             pol2,
             year_range=range(pol2.start_year, 2020 + 1),
-            exclude=["CPI_offset"]
+            exclude=["parameter_indexing_CPI_offset"]
         )
 
         pol2.set_state(year=[2021, 2022])

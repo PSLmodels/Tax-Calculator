@@ -150,11 +150,13 @@ class Parameters(pt.Parameters):
         Custom adjust method that handles special indexing logic. The logic
         is:
 
-        1. If "CPI_offset" is adjusted, first set CPI_offset to zero before
-           implementing the adjusted CPI_offset to avoid stacking adjustments.
-           Then, revert all values of indexed parameters to the 'known' values:
+        1. If "parameter_indexing_CPI_offset" is adjusted, first set
+        parameter_indexing_CPI_offset to zero before implementing the
+        adjusted parameter_indexing_CPI_offset to avoid stacking adjustments.
+        Then, revert all values of indexed parameters to the 'known' values:
             a. The current values of parameters that are being adjusted are
-                deleted after the first year in which CPI_offset is adjusted.
+                deleted after the first year in which
+                parameter_indexing_CPI_offset is adjusted.
             b. The current values of parameters that are not being adjusted
                 (i.e. are not in params) are deleted after the last known year,
                 with the exception of parameters that revert to their pre-TCJA
@@ -176,7 +178,7 @@ class Parameters(pt.Parameters):
                 parameter through the remaining years or until the -indexed
                 status changes again.
         3. Update all parameters that are not indexing related, i.e. they are
-            not "CPI_offset" or do not end with "-indexed".
+            not "parameter_indexing_CPI_offset" or do not end with "-indexed".
         4. Return parsed adjustment with all adjustments, including "-indexed"
             parameters.
 
@@ -194,34 +196,40 @@ class Parameters(pt.Parameters):
 
         params = self.read_params(params_or_path)
 
-        # Check if CPI_offset is adjusted. If so, reset values of all indexed
-        # parameters after year where CPI_offset is changed. If CPI_offset is
-        # changed multiple times, then reset values after the first year in
-        # which the CPI_offset is changed.
+        # Check if parameter_indexing_CPI_offset is adjusted. If so, reset
+        # values of all indexed parameters after year where
+        # parameter_indexing_CPI_offset is changed. If
+        # parameter_indexing_CPI_offset is changed multiple times, then
+        # reset values after the first year in which the
+        # parameter_indexing_CPI_offset is changed.
         needs_reset = []
-        if params.get("CPI_offset") is not None:
-            # Update CPI_offset with new value.
+        if params.get("parameter_indexing_CPI_offset") is not None:
+            # Update parameter_indexing_CPI_offset with new value.
             cpi_adj = super().adjust(
-                {"CPI_offset": params["CPI_offset"]}, **kwargs
+                {"parameter_indexing_CPI_offset": params["parameter_indexing_CPI_offset"]}, **kwargs
             )
-            # turn off extend now that CPI_offset has been updated.
+            # turn off extend now that parameter_indexing_CPI_offset
+            # has been updated.
             self.label_to_extend = None
-            # Get first year in which CPI_offset is changed.
+            # Get first year in which parameter_indexing_CPI_offset
+            # is changed.
             cpi_min_year = min(
-                cpi_adj["CPI_offset"], key=lambda vo: vo["year"]
+                cpi_adj["parameter_indexing_CPI_offset"], key=lambda vo: vo["year"]
             )
 
             rate_adjustment_vals = self.select_gte(
-                "CPI_offset", year=cpi_min_year["year"]
+                "parameter_indexing_CPI_offset", year=cpi_min_year["year"]
             )
-            # "Undo" any existing CPI_offset for years after CPI_offset has
+            # "Undo" any existing parameter_indexing_CPI_offset for
+            # years after parameter_indexing_CPI_offset has
             # been updated.
             self._inflation_rates = self._inflation_rates[
                 :cpi_min_year["year"] - self.start_year
             ] + self._gfactors.price_inflation_rates(
                 cpi_min_year["year"], self.LAST_BUDGET_YEAR)
 
-            # Then apply new CPI_offset values to inflation rates
+            # Then apply new parameter_indexing_CPI_offset values to
+            # inflation rates
             for cpi_vo in rate_adjustment_vals:
                 self._inflation_rates[
                     cpi_vo["year"] - self.start_year
@@ -231,7 +239,7 @@ class Parameters(pt.Parameters):
             init_vals = {}
             to_delete = {}
             for param in params:
-                if param == "CPI_offset" or param in self._wage_indexed:
+                if param == "parameter_indexing_CPI_offset" or param in self._wage_indexed:
                     continue
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
@@ -297,7 +305,7 @@ class Parameters(pt.Parameters):
             for param in self._data:
                 if (
                     param in params or
-                    param == "CPI_offset" or
+                    param == "parameter_indexing_CPI_offset" or
                     param in self._wage_indexed
                 ):
                     continue
