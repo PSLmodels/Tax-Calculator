@@ -64,60 +64,134 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  
-  <ul class="nav sidenav_l1">
-<li class="navbar-special">
-<p class="margin-caption">Usage</p>
-</li>
-  <li class="">
-    <a href="../usage/starting.html">Getting started</a>
-  </li>
-  <li class="">
-    <a href="../usage/overview.html">Structural overview</a>
-  </li>
-  <li class="">
-    <a href="../guide/index.html">User guide</a>
-  </li>
-  <li class="">
-    <a href="../recipes/index.html">Recipes</a>
-  </li>
-<li class="navbar-special">
-<p class="margin-caption">About</p>
-</li>
-  <li class="">
-    <a href="history.html">History</a>
-  </li>
-  <li class="">
-    <a href="roadmap.html">Roadmap</a>
-  </li>
-  <li class="active">
-    <a href="">Release history</a>
-  </li>
-  <li class="">
-    <a href="changes.html">Change history</a>
-  </li>
-  <li class="">
-    <a href="upgrading.html">Upgrading to Tax-Calculator 2.0</a>
-  </li>
-  <li class="">
-    <a href="license.html">License</a>
-  </li>
-<li class="navbar-special">
-<p class="margin-caption">Contributing</p>
-</li>
-  <li class="">
-    <a href="../contributing/contributor_guide.html">Contributor guide</a>
-  </li>
-  <li class="">
-    <a href="../contributing/pr_workflow.html">Pull request workflow</a>
-  </li>
-  <li class="">
-    <a href="../contributing/param_naming.html">Policy parameter naming and placing conventions</a>
-  </li>
-  <li class="">
-    <a href="../contributing/testing.html">Testing</a>
-  </li>
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
 </ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
+   Testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pycodestyle
+    </span>
+   </code>
+   (the program formerly known as pep8)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#testing-with-pytest">
+   Testing with pytest
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#interpreting-test-results">
+   Interpreting test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#updating-test-results">
+   Updating test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#optional-coding-style-testing-with-pylint">
+   Optional coding style testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pylint
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
 </nav>
 
  <!-- To handle the deprecated key -->
@@ -146,44 +220,43 @@
         </button>
         
         <div class="dropdown-buttons-trigger">
-            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
-                    class="fas fa-download"></i></button>
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
 
-            
-            <div class="dropdown-buttons">
-                <!-- ipynb file if we had a myst markdown file -->
-                
-                <!-- Download raw file -->
-                <a class="dropdown-buttons" href="../_sources/about/releases.md"><button type="button"
-                        class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
-                        data-placement="left">.md</button></a>
-                <!-- Download PDF via print -->
-                <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
-                    onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
-            </div>
-            
-        </div>
-
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/about/releases.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
         <!-- Source interaction buttons -->
-        
-        <div class="dropdown-buttons-trigger">
-            <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
-                aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
-            <div class="dropdown-buttons sourcebuttons">
-                <a class="repository-button"
-                    href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
-                        data-toggle="tooltip" data-placement="left" title="Source repository"><i
-                            class="fab fa-github"></i>repository</button></a>
-                <a class="issues-button"
-                    href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/releases.html&body=Your%20issue%20content%20here."><button
-                        type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                        title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
-                <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/about/releases.md"><button
-                        type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
-                        title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
-            </div>
-        </div>
-        
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/releases.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/about/releases.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
 
         <!-- Full screen (wrap in <a> to have style consistency -->
         <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
@@ -191,343 +264,414 @@
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
-        
+
     </div>
+
+    <!-- Table of contents -->
     <div class="d-none d-md-block col-md-2 bd-toc show">
-<div class="tocsection onthispage pt-5 pb-3">
-    <i class="fas fa-list"></i> On this page
-</div>
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-9-0">
+   2020-03-18 Release 2.9.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-8-0">
+   2020-02-28 Release 2.8.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-7-0">
+   2019-12-13 Release 2.7.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-6-0">
+   2019-10-31 Release 2.6.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-5-0">
+   2019-08-06 Release 2.5.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-4-2">
+   2019-06-28 Release 2.4.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-4-1">
+   2019-06-26 Release 2.4.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-4-0">
+   2019-06-25 Release 2.4.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-3-0">
+   2019-06-08 Release 2.3.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-2-0">
+   2019-05-20 Release 2.2.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-1-0">
+   2019-05-09 Release 2.1.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-0-1">
+   2019-04-17 Release 2.0.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-2-0-0">
+   2019-04-15 Release 2.0.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-1-2-0">
+   2019-03-24 Release 1.2.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-1-1-0">
+   2019-03-17 Release 1.1.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-1-0-1">
+   2019-02-26 Release 1.0.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-1-0-0">
+   2019-02-22 Release 1.0.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-24-0">
+   2018-12-14 Release 0.24.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-23-4">
+   2018-12-13 Release 0.23.4
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-23-3">
+   2018-12-05 Release 0.23.3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-23-2">
+   2018-11-22 Release 0.23.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-23-1">
+   2018-11-20 Release 0.23.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-23-0">
+   2018-11-13 Release 0.23.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-22-2">
+   2018-10-26 Release 0.22.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-22-1">
+   2018-10-25 Release 0.22.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-22-0">
+   2018-10-24 Release 0.22.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-21-0-first-release-compatible-only-with-python-3-6">
+   2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-20-3-last-release-compatible-with-python-2-7">
+   2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-20-2">
+   2018-08-10 Release 0.20.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-20-1">
+   2018-05-21 Release 0.20.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-20-0">
+   2018-05-18 Release 0.20.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-19-0">
+   2018-04-19 Release 0.19.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-18-0">
+   2018-03-30 Release 0.18.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-17-0">
+   2018-03-16 Release 0.17.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-16-2">
+   2018-03-09 Release 0.16.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-16-1">
+   2018-02-16 Release 0.16.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-16-0">
+   2018-02-13 Release 0.16.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-15-2">
+   2018-01-30 Release 0.15.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-15-1">
+   2018-01-20 Release 0.15.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-15-0">
+   2018-01-18 Release 0.15.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-14-3">
+   2017-12-24 Release 0.14.3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-14-2">
+   2017-12-19 Release 0.14.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-14-1">
+   2017-12-15 Release 0.14.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-14-0">
+   2017-12-11 Release 0.14.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-13-2">
+   2017-11-17 Release 0.13.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-13-1">
+   2017-11-10 Release 0.13.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-13-0">
+   2017-11-07 Release 0.13.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-12-0">
+   2017-10-20 Release 0.12.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-11-0">
+   2017-09-21 Release 0.11.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-10-2">
+   2017-09-13 Release 0.10.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-10-1">
+   2017-09-08 Release 0.10.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-10-0">
+   2017-08-28 Release 0.10.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-9-2">
+   2017-07-26 Release 0.9.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-9-1">
+   2017-07-06 Release 0.9.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-9-0">
+   2017-06-14 Release 0.9.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-8-5">
+   2017-06-08 Release 0.8.5
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-8-4">
+   2017-05-12 Release 0.8.4
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-8-3">
+   2017-05-01 Release 0.8.3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-8-2">
+   2017-04-13 Release 0.8.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-8-1">
+   2017-04-13 Release 0.8.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-8-0">
+   2017-03-24 Release 0.8.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-9">
+   2017-03-08 Release 0.7.9
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-8">
+   2017-03-01 Release 0.7.8
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-7">
+   2017-02-16 Release 0.7.7
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-6">
+   2017-02-15 Release 0.7.6
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-5">
+   2017-01-31 Release 0.7.5
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-4">
+   2017-01-24 Release 0.7.4
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-3">
+   2017-01-24 Release 0.7.3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-2">
+   2016-12-05 Release 0.7.2
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-1">
+   2016-11-15 Release 0.7.1
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-7-0">
+   2016-11-09 Release 0.7.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-6-9">
+   2016-11-09 Release 0.6.9
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-6-8">
+   2016-10-07 Release 0.6.8
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-6-7">
+   2016-09-29 Release 0.6.7
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-6-6">
+   2016-08-13 Release 0.6.6
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-6-5">
+   2016-07-12 Release 0.6.5
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-6-4">
+   2016-06-17 Release 0.6.4
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-0-6-3">
+   2016-05-09 Release 0.6.3
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#before-release-0-6-2">
+   Before Release 0.6.2
+  </a>
+ </li>
+</ul>
 
-<nav id="bd-toc-nav">
-    <ul class="nav section-nav flex-column">
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-9-0" class="nav-link">2020-03-18 Release 2.9.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-8-0" class="nav-link">2020-02-28 Release 2.8.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-7-0" class="nav-link">2019-12-13 Release 2.7.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-6-0" class="nav-link">2019-10-31 Release 2.6.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-5-0" class="nav-link">2019-08-06 Release 2.5.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-4-2" class="nav-link">2019-06-28 Release 2.4.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-4-1" class="nav-link">2019-06-26 Release 2.4.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-4-0" class="nav-link">2019-06-25 Release 2.4.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-3-0" class="nav-link">2019-06-08 Release 2.3.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-2-0" class="nav-link">2019-05-20 Release 2.2.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-1-0" class="nav-link">2019-05-09 Release 2.1.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-0-1" class="nav-link">2019-04-17 Release 2.0.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-2-0-0" class="nav-link">2019-04-15 Release 2.0.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-1-2-0" class="nav-link">2019-03-24 Release 1.2.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-1-1-0" class="nav-link">2019-03-17 Release 1.1.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-1-0-1" class="nav-link">2019-02-26 Release 1.0.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-1-0-0" class="nav-link">2019-02-22 Release 1.0.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-24-0" class="nav-link">2018-12-14 Release 0.24.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-23-4" class="nav-link">2018-12-13 Release 0.23.4</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-23-3" class="nav-link">2018-12-05 Release 0.23.3</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-23-2" class="nav-link">2018-11-22 Release 0.23.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-23-1" class="nav-link">2018-11-20 Release 0.23.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-23-0" class="nav-link">2018-11-13 Release 0.23.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-22-2" class="nav-link">2018-10-26 Release 0.22.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-22-1" class="nav-link">2018-10-25 Release 0.22.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-22-0" class="nav-link">2018-10-24 Release 0.22.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-21-0-first-release-compatible-only-with-python-3-6" class="nav-link">2018-09-11 Release 0.21.0 : first release compatible only with Python 3.6</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-20-3-last-release-compatible-with-python-2-7" class="nav-link">2018-09-06 Release 0.20.3 : LAST RELEASE COMPATIBLE WITH PYTHON 2.7</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-20-2" class="nav-link">2018-08-10 Release 0.20.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-20-1" class="nav-link">2018-05-21 Release 0.20.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-20-0" class="nav-link">2018-05-18 Release 0.20.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-19-0" class="nav-link">2018-04-19 Release 0.19.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-18-0" class="nav-link">2018-03-30 Release 0.18.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-17-0" class="nav-link">2018-03-16 Release 0.17.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-16-2" class="nav-link">2018-03-09 Release 0.16.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-16-1" class="nav-link">2018-02-16 Release 0.16.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-16-0" class="nav-link">2018-02-13 Release 0.16.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-15-2" class="nav-link">2018-01-30 Release 0.15.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-15-1" class="nav-link">2018-01-20 Release 0.15.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-15-0" class="nav-link">2018-01-18 Release 0.15.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-14-3" class="nav-link">2017-12-24 Release 0.14.3</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-14-2" class="nav-link">2017-12-19 Release 0.14.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-14-1" class="nav-link">2017-12-15 Release 0.14.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-14-0" class="nav-link">2017-12-11 Release 0.14.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-13-2" class="nav-link">2017-11-17 Release 0.13.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-13-1" class="nav-link">2017-11-10 Release 0.13.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-13-0" class="nav-link">2017-11-07 Release 0.13.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-12-0" class="nav-link">2017-10-20 Release 0.12.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-11-0" class="nav-link">2017-09-21 Release 0.11.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-10-2" class="nav-link">2017-09-13 Release 0.10.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-10-1" class="nav-link">2017-09-08 Release 0.10.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-10-0" class="nav-link">2017-08-28 Release 0.10.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-9-2" class="nav-link">2017-07-26 Release 0.9.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-9-1" class="nav-link">2017-07-06 Release 0.9.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-9-0" class="nav-link">2017-06-14 Release 0.9.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-8-5" class="nav-link">2017-06-08 Release 0.8.5</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-8-4" class="nav-link">2017-05-12 Release 0.8.4</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-8-3" class="nav-link">2017-05-01 Release 0.8.3</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-8-2" class="nav-link">2017-04-13 Release 0.8.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-8-1" class="nav-link">2017-04-13 Release 0.8.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-8-0" class="nav-link">2017-03-24 Release 0.8.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-9" class="nav-link">2017-03-08 Release 0.7.9</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-8" class="nav-link">2017-03-01 Release 0.7.8</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-7" class="nav-link">2017-02-16 Release 0.7.7</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-6" class="nav-link">2017-02-15 Release 0.7.6</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-5" class="nav-link">2017-01-31 Release 0.7.5</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-4" class="nav-link">2017-01-24 Release 0.7.4</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-3" class="nav-link">2017-01-24 Release 0.7.3</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-2" class="nav-link">2016-12-05 Release 0.7.2</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-1" class="nav-link">2016-11-15 Release 0.7.1</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-7-0" class="nav-link">2016-11-09 Release 0.7.0</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-6-9" class="nav-link">2016-11-09 Release 0.6.9</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-6-8" class="nav-link">2016-10-07 Release 0.6.8</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-6-7" class="nav-link">2016-09-29 Release 0.6.7</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-6-6" class="nav-link">2016-08-13 Release 0.6.6</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-6-5" class="nav-link">2016-07-12 Release 0.6.5</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-6-4" class="nav-link">2016-06-17 Release 0.6.4</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#release-0-6-3" class="nav-link">2016-05-09 Release 0.6.3</a>
-        </li>
-    
-        <li class="nav-item toc-entry toc-h2">
-            <a href="#before-release-0-6-2" class="nav-link">Before Release 0.6.2</a>
-        </li>
-    
-    </ul>
-</nav>
-
-
-
-<div class="tocsection editthispage">
-    <a href="https://github.com/PSLmodels/Tax-Calculator/edit/master/about/releases.md">
-        <i class="fas fa-pencil-alt"></i> Edit this page
-    </a>
-</div>
-
+        </nav>
     </div>
 </div>
     <div id="main-content" class="row">

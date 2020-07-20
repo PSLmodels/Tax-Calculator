@@ -166,6 +166,13 @@ blockquote {
 div.highlight {
   background: none; }
 
+.thebelab-cell {
+  border: none !important; }
+
+button.thebe-launch-button {
+  height: 2.5em;
+  font-size: 1em; }
+
 /*********************************************
 * Top Bar *
 *********************************************/
@@ -357,9 +364,8 @@ button.topbarbtn img {
     overflow: hidden;
     position: relative;
     padding-top: 0; }
-  .bd-sidebar li + li.navbar-special {
-    margin-top: 1em; }
-  .bd-sidebar p.margin-caption {
+  .bd-sidebar p.caption {
+    margin-top: 1em;
     margin-bottom: 0;
     font-size: 1.2em; }
   .bd-sidebar li > a > i {
@@ -410,18 +416,26 @@ div.navbar-brand-box a.navbar-brand {
 nav.bd-links {
   margin-left: 0px;
   max-height: none !important; }
-  nav.bd-links ul.nav li {
+  nav.bd-links p.caption {
+    font-size: 1.4em; }
+    nav.bd-links p.caption:first-child {
+      margin-top: 0; }
+  nav.bd-links ul {
+    list-style: none; }
+  nav.bd-links li {
     width: 100%; }
-  nav.bd-links ul.sidenav_l1 > li {
+  nav.bd-links li.toctree-l1 {
     font-size: 1.2em; }
-  nav.bd-links ul.sidenav_l2 {
+  nav.bd-links li.toctree-l2, nav.bd-links li.toctree-l3, nav.bd-links li.toctree-l4, nav.bd-links li.toctree-l5 {
     font-size: .8em; }
-  nav.bd-links ul.nav > li > a {
-    padding-left: 0rem !important;
-    padding-right: 0rem !important; }
-  nav.bd-links ul.nav ul {
-    padding-left: 1rem !important;
-    padding-right: 0rem !important; }
+  nav.bd-links > ul.nav {
+    padding-left: 0px !important; }
+    nav.bd-links > ul.nav ul {
+      padding-left: 1rem !important;
+      padding-right: 0rem !important; }
+    nav.bd-links > ul.nav a {
+      padding-left: 0rem !important;
+      padding-right: 0rem !important; }
 
 @media (min-width: 768px) {
   .bd-sidebar, .bd-topbar-whitespace {
@@ -432,37 +446,6 @@ nav.bd-links {
 *********************************************/
 .prev-next-bottom {
   height: 3em; }
-
-.thebelab-cell {
-  position: relative;
-  z-index: 999;
-  border: 0 !important;
-  border-radius: 0 !important;
-  margin-top: 0 !important;
-  margin-bottom: 8px !important; }
-
-.thebelab-button {
-  z-index: 999;
-  display: inline-block;
-  padding: 0.35em 1.2em;
-  margin: 0px 1px;
-  border-radius: 0.12em;
-  box-sizing: border-box;
-  text-decoration: none;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 300;
-  text-align: center;
-  transition: all 0.2s;
-  background-color: #dddddd;
-  border: 0.05em solid white;
-  color: #000000; }
-
-.thebelab-button:hover {
-  border: 0.05em solid black;
-  background-color: #fcfcfc; }
-
-div.jp-OutputArea-output {
-  padding: 5px; }
 
 /*********************************************
 * Print-specific CSS *

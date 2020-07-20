@@ -317,6 +317,16 @@ div.highlight {
     background: none;
 }
 
+// Thebelab over-rides
+.thebelab-cell {
+    border: none !important;
+}
+
+button.thebe-launch-button {
+    height: 2.5em;
+    font-size: 1em;
+}
+
 
 /*********************************************
 * Top Bar *
@@ -627,11 +637,8 @@ button.topbarbtn img {
     }
 
     // Captions
-    li + li.navbar-special {
+    p.caption {
         margin-top: 1em;
-    }
-
-    p.margin-caption {
         margin-bottom: 0;
         font-size: 1.2em;
     }
@@ -707,26 +714,45 @@ nav.bd-links {
     margin-left: 0px;
     max-height: none !important;
 
-    ul.nav li {
+    p.caption {
+        font-size: 1.4em;
+
+        &:first-child {
+            margin-top: 0;
+        }
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    li {
         width: 100%;
     }
 
-    ul.sidenav_l1 > li {
+    li.toctree-l1 {
         font-size: 1.2em
     }
 
-    ul.sidenav_l2  {
+    li.toctree-l2, li.toctree-l3, li.toctree-l4, li.toctree-l5  {
         font-size: .8em
     }
 
-    ul.nav > li > a {
-        padding-left: 0rem !important;
-        padding-right: 0rem !important;
-    }
+    > ul.nav {
+        // Make sure the first items don't have any padding
+        padding-left: 0px !important;
 
-    ul.nav ul {
-        padding-left: 1rem !important;
-        padding-right: 0rem !important;
+        // Subsequent items should have padding
+        ul {
+            padding-left: 1rem !important;
+            padding-right: 0rem !important;
+        }
+
+        // Links don't have the padding, uls do
+        a {
+            padding-left: 0rem !important;
+            padding-right: 0rem !important;
+        }
     }
 }
 
@@ -743,47 +769,6 @@ nav.bd-links {
 *********************************************/
 .prev-next-bottom {
     height: 3em;
-}
-
-
-// Thebelab buttons
-.thebelab-cell {
-    // To ensure that thebelab cells are always the top of the Z-stack
-    position: relative;
-    z-index: 999;
-
-    // Remove styling since we use our own
-    border: 0 !important;
-    border-radius: 0 !important;
-    margin-top: 0 !important;
-    margin-bottom: 8px !important;
-}
-
-.thebelab-button {
-    z-index: 999;
-    display: inline-block;
-    padding: 0.35em 1.2em;
-    margin: 0px 1px;
-    border-radius: 0.12em;
-    box-sizing:  border-box;
-    text-decoration: none;
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-    text-align: center;
-    transition: all 0.2s;
-    background-color: #dddddd;
-    border: 0.05em solid white;
-    color: #000000;
-}
-
-.thebelab-button:hover{
-    border: 0.05em solid black;
-    background-color: #fcfcfc;
-}
-
-
-div.jp-OutputArea-output {
-    padding: 5px;
 }
 
 @import 'print';
