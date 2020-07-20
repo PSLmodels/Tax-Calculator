@@ -22,7 +22,7 @@
 // - 6: AMT_em*
 // - 7: ALD_*
 // - 8: ID_* (can safely ignore WARNINGs about values for several parameters)
-// - 9: CPI_offset
+// - 9: parameter_indexing_CPI_offset
 // Note: II_brk*, PT_brk*, STD, II_em are rounded to nearest integer value
 {
     "II_rt1": {"2018": 0.10,
@@ -153,5 +153,5 @@
                             "2026": 0},
     "ID_Medical_frt": {"2017": 0.075,
                        "2019": 0.075},
-    "CPI_offset": {"2017": -0.0025}  
+    "parameter_indexing_CPI_offset": {"2017": -0.0025}  
 }
