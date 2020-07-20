@@ -3,9 +3,6 @@ title: Tax-Calculator
 author: Policy Simulation Library
 logo: PSL.svg
 exclude_patterns: [guide/make, guide/templates, recipes/md_src, '**/README.md']
-launch_buttons:
-  colab_url: "https://colab.research.google.com"
-  binderhub_url: "https://mybinder.org"
 repository:
   url: https://github.com/PSLmodels/Tax-Calculator
   book_path: docs
