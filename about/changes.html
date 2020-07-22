@@ -1,0 +1,688 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Change history &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Upgrading to Tax-Calculator 2.0" href="upgrading.html" />
+    <link rel="prev" title="Release history" href="releases.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
+   Testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pycodestyle
+    </span>
+   </code>
+   (the program formerly known as pep8)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#testing-with-pytest">
+   Testing with pytest
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#interpreting-test-results">
+   Interpreting test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#updating-test-results">
+   Updating test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#optional-coding-style-testing-with-pylint">
+   Optional coding style testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pylint
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/about/changes.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fabout/changes.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/about/changes.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-9-0-on-2020-03-18">
+   Changes in release 2.9.0 on 2020-03-18
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-8-0-on-2020-02-28">
+   Changes in release 2.8.0 on 2020-02-28
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-7-0-on-2019-12-13">
+   Changes in release 2.7.0 on 2019-12-13
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-6-0-on-2019-10-31">
+   Changes in release 2.6.0 on 2019-10-31
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-5-0-on-2019-08-06">
+   Changes in release 2.5.0 on 2019-08-06
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-4-2-on-2019-06-28">
+   Changes in release 2.4.2 on 2019-06-28
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-4-1-on-2019-06-26">
+   Changes in release 2.4.1 on 2019-06-26
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-4-0-on-2019-06-25">
+   Changes in release 2.4.0 on 2019-06-25
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-3-0-on-2019-06-08">
+   Changes in release 2.3.0 on 2019-06-08
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-2-0-on-2019-05-20">
+   Changes in release 2.2.0 on 2019-05-20
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-1-0-on-2019-05-09">
+   Changes in release 2.1.0 on 2019-05-09
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-0-1-on-2019-04-17">
+   Changes in release 2.0.1 on 2019-04-17
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-2-0-0-on-2019-04-15">
+   Changes in release 2.0.0 on 2019-04-15
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-1-2-0-on-2019-03-24">
+   Changes in release 1.2.0 on 2019-03-24
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-1-1-0-on-2019-03-17">
+   Changes in release 1.1.0 on 2019-03-17
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-1-0-1-on-2019-02-26">
+   Changes in release 1.0.1 on 2019-02-26
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-1-0-0-on-2019-02-22">
+   Changes in release 1.0.0 on 2019-02-22
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-24-0-on-2018-12-14">
+   Changes in release 0.24.0 on 2018-12-14
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-23-4-on-2018-12-13">
+   Changes in release 0.23.4 on 2018-12-13
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-23-3-on-2018-12-05">
+   Changes in release 0.23.3 on 2018-12-05
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-23-2-on-2018-11-22">
+   Changes in release 0.23.2 on 2018-11-22
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-23-1-on-2018-11-20">
+   Changes in release 0.23.1 on 2018-11-20
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-23-0-on-2018-11-13">
+   Changes in release 0.23.0 on 2018-11-13
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-22-2-on-2018-10-26">
+   Changes in release 0.22.2 on 2018-10-26
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-22-1-on-2018-10-25">
+   Changes in release 0.22.1 on 2018-10-25
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-22-0-on-2018-10-24">
+   Changes in release 0.22.0 on 2018-10-24
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-21-0-on-2018-09-11">
+   Changes in release 0.21.0 on 2018-09-11
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-release-0-20-3-on-2018-09-06">
+   Changes in release 0.20.3 on 2018-09-06
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#changes-in-releases-before-0-20-3">
+   Changes in releases before 0.20.3
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="change-history">
+<h1>Change history<a class="headerlink" href="#change-history" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="changes-in-release-2-9-0-on-2020-03-18">
+<h2>Changes in release 2.9.0 on 2020-03-18<a class="headerlink" href="#changes-in-release-2-9-0-on-2020-03-18" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>New baseline data and growth projections based on CBO’s January 28, 2020 report, “The Budget and Economic Outlook: 2020 to 2030.”</p></li>
+<li><p>Previously, the personal exemption phaseout (PEP) was not reinstated in 2026 alongside the personal exemption under current law. This bug is now fixed, and PEP is reinstated.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-8-0-on-2020-02-28">
+<h2>Changes in release 2.8.0 on 2020-02-28<a class="headerlink" href="#changes-in-release-2-8-0-on-2020-02-28" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement release.</strong></p>
+<ul class="simple">
+<li><p>Update 2019 policy parameters with IRS published values</p></li>
+<li><p>Allows users a greater range when modifying input data with Tax-Calculator’s growdiff capabilities</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-7-0-on-2019-12-13">
+<h2>Changes in release 2.7.0 on 2019-12-13<a class="headerlink" href="#changes-in-release-2-7-0-on-2019-12-13" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Improve versioning process for use with pip installation</p></li>
+<li><p>New notification and documentation about when data extrapolation are not conducted by Tax-Calculator on startup</p></li>
+<li><p>Fix a bug with the CPI_offset parameter</p></li>
+<li><p>Fix the incorrect application of inflation indexing to the ceiling on SALT deductions</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-6-0-on-2019-10-31">
+<h2>Changes in release 2.6.0 on 2019-10-31<a class="headerlink" href="#changes-in-release-2-6-0-on-2019-10-31" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement release.</strong></p>
+<ul class="simple">
+<li><p>Add an additional version of recipe04 from the Tax-Calculator cookbook that shows how to use the Python Data Analysis Library (pandas) in applying different response elasticities to different earnings groups</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-5-0-on-2019-08-06">
+<h2>Changes in release 2.5.0 on 2019-08-06<a class="headerlink" href="#changes-in-release-2-5-0-on-2019-08-06" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Add to the income tax a refundable payroll tax credit (RPTC) that can be used to emulate a payroll tax exemption</p></li>
+<li><p>Allow reforms that specify a <code class="docutils literal notranslate"><span class="pre">CPI_offset</span></code> change in the same year as a tax policy parameter’s indexing status is changed</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-4-2-on-2019-06-28">
+<h2>Changes in release 2.4.2 on 2019-06-28<a class="headerlink" href="#changes-in-release-2-4-2-on-2019-06-28" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is a bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Add farm income to qualified business income</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-4-1-on-2019-06-26">
+<h2>Changes in release 2.4.1 on 2019-06-26<a class="headerlink" href="#changes-in-release-2-4-1-on-2019-06-26" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is a bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Add taxable-income cap to qualified business income deduction logic</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-4-0-on-2019-06-25">
+<h2>Changes in release 2.4.0 on 2019-06-25<a class="headerlink" href="#changes-in-release-2-4-0-on-2019-06-25" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement release.</strong></p>
+<ul class="simple">
+<li><p>Improve calculation of qualified business income deduction</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-3-0-on-2019-06-08">
+<h2>Changes in release 2.3.0 on 2019-06-08<a class="headerlink" href="#changes-in-release-2-3-0-on-2019-06-08" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement release.</strong></p>
+<ul class="simple">
+<li><p>Redo validation tests using newest version of TAXSIM-27</p></li>
+<li><p>Simplify Records class internal logic by adding generic Data class</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-2-0-on-2019-05-20">
+<h2>Changes in release 2.2.0 on 2019-05-20<a class="headerlink" href="#changes-in-release-2-2-0-on-2019-05-20" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Add “Analyzing a Non-Parametric Reform” cookbook recipe that shows how analyze reforms that cannot be represented using existing policy parameters</p></li>
+<li><p>Add option to specify table and graph quantiles that have equal numbers of people rather than equal numbers of filing units</p></li>
+<li><p>Add “Redefining Expanded Income” cookbook recipe</p></li>
+<li><p>Correct treatment of tuition and fees deduction in 2018 and subsequent years</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-1-0-on-2019-05-09">
+<h2>Changes in release 2.1.0 on 2019-05-09<a class="headerlink" href="#changes-in-release-2-1-0-on-2019-05-09" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement release.</strong></p>
+<ul class="simple">
+<li><p>Provide option to specify simpler JSON reform files</p></li>
+<li><p>Reorganize Tax-Calculator documentation</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-0-1-on-2019-04-17">
+<h2>Changes in release 2.0.1 on 2019-04-17<a class="headerlink" href="#changes-in-release-2-0-1-on-2019-04-17" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is a bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Fix minor flaw in definition of EITC investment income</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-2-0-0-on-2019-04-15">
+<h2>Changes in release 2.0.0 on 2019-04-15<a class="headerlink" href="#changes-in-release-2-0-0-on-2019-04-15" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
+<p>Read <a class="reference external" href="UPGRADING.md#upgrading-to-tax-calculator-20">this document</a> to understand what you need to do before using Tax-Calculator 2.0.</p>
+<ul class="simple">
+<li><p>Simplify and standardize the way that policy reforms (and assumption changes) are specified in both JSON files and Python dictionaies</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-1-2-0-on-2019-03-24">
+<h2>Changes in release 1.2.0 on 2019-03-24<a class="headerlink" href="#changes-in-release-1-2-0-on-2019-03-24" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Add JSON reform file for tax provisions in Sanders-DeFazio “Social Security Expansion Act”</p></li>
+<li><p>Fix minor bugs related to the new <code class="docutils literal notranslate"><span class="pre">_SS_Earnings_thd</span></code> policy parameter used in several payroll tax reforms</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-1-1-0-on-2019-03-17">
+<h2>Changes in release 1.1.0 on 2019-03-17<a class="headerlink" href="#changes-in-release-1-1-0-on-2019-03-17" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is an enhancement release.</strong></p>
+<ul class="simple">
+<li><p>Provide more flexibility in specifying structural EITC reforms that make the credit more individualized</p></li>
+<li><p>Use new data input files that are based on the January 2019 CBO economic projection and that extend budget years through 2029</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-1-0-1-on-2019-02-26">
+<h2>Changes in release 1.0.1 on 2019-02-26<a class="headerlink" href="#changes-in-release-1-0-1-on-2019-02-26" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is a bug-fix release.</strong></p>
+<ul class="simple">
+<li><p>Fix logic so that the six components of total itemized deductions add up to pre-limitation total itemized deductions</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-1-0-0-on-2019-02-22">
+<h2>Changes in release 1.0.0 on 2019-02-22<a class="headerlink" href="#changes-in-release-1-0-0-on-2019-02-22" title="Permalink to this headline">¶</a></h2>
+<p><strong>This is a major release with changes that make Tax-Calculator
+incompatible with earlier releases.</strong></p>
+<ul class="simple">
+<li><p>Redefine the meaning of the <code class="docutils literal notranslate"><span class="pre">_CTC_c</span></code> policy parameter and remove five old reform parameters that are incompatible with current law</p></li>
+<li><p>Remove the Behavior class from Tax-Calculator and rely instead on the <code class="docutils literal notranslate"><span class="pre">response</span></code> function in the Behavioral-Responses behresp package</p></li>
+<li><p>Move the <code class="docutils literal notranslate"><span class="pre">quantity_response</span></code> function to the Behavioral-Responses behresp package</p></li>
+<li><p>Add new economic-variable growth factors and sample weights based on using the August-2018 CBO ten-year projection</p></li>
+<li><p>Fix logic of computing nonrefundable tax credits for children under 17 and for other dependents in years starting with 2018</p></li>
+<li><p>Add actual 2018 values for all tax policy parameters</p></li>
+<li><p>Add a <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/Larson2019.json">reform file</a> that characterizes the payroll and income tax aspects of the Larson Social Security 2100 Act</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-24-0-on-2018-12-14">
+<h2>Changes in release 0.24.0 on 2018-12-14<a class="headerlink" href="#changes-in-release-0-24-0-on-2018-12-14" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Make taxcalc packages available for Python 3.7 as well as for Python 3.6.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-23-4-on-2018-12-13">
+<h2>Changes in release 0.23.4 on 2018-12-13<a class="headerlink" href="#changes-in-release-0-23-4-on-2018-12-13" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fix obscure bug regarding rules for determining eligibility for the child AMT exemption that was discovered during recent validation work.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-23-3-on-2018-12-05">
+<h2>Changes in release 0.23.3 on 2018-12-05<a class="headerlink" href="#changes-in-release-0-23-3-on-2018-12-05" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Fix minor error in calculation of AMT for those in the 18 to 23 age range.  This changes estimated aggregate income tax liability in 2018 by only 0.06 of one percent.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-23-2-on-2018-11-22">
+<h2>Changes in release 0.23.2 on 2018-11-22<a class="headerlink" href="#changes-in-release-0-23-2-on-2018-11-22" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Make create_diagnostic_table utility function work better when using the Behavioral-Responses behresp package.  This is illustrated in <a class="reference external" href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html#recipe02">cookbook recipe
+2</a>.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-23-1-on-2018-11-20">
+<h2>Changes in release 0.23.1 on 2018-11-20<a class="headerlink" href="#changes-in-release-0-23-1-on-2018-11-20" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add ability to pass pandas DataFrame as the adjust_ratios argument to Records class constructor.  This makes the adjust_ratios argument like the data and weights arguments in this respect.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-23-0-on-2018-11-13">
+<h2>Changes in release 0.23.0 on 2018-11-13<a class="headerlink" href="#changes-in-release-0-23-0-on-2018-11-13" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Remove confusing filer variable from list of usable input variables.  This will generate a message that Tax-Calculator is ignoring the filer variable as long as input data contain a variable with that name.</p></li>
+<li><p>Remove useless start_year and num_years arguments of constructor for the Policy, Consumption, and GrowDiff classes.</p></li>
+<li><p>Add deprecated warning to Behavior class constructor and documentation because Behavior class will be removed from Tax-Calculator in the near future.</p></li>
+<li><p>Revise <a class="reference external" href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html#recipe02">cookbook recipe 2</a> to show use of new Behavioral-Responses behresp package as alternative to deprecated Behavior class.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-22-2-on-2018-10-26">
+<h2>Changes in release 0.22.2 on 2018-10-26<a class="headerlink" href="#changes-in-release-0-22-2-on-2018-10-26" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add _EITC_basic_frac policy parameter so that an Earned and Basic Income Tax Credit (EBITC) reform can be analyzed.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-22-1-on-2018-10-25">
+<h2>Changes in release 0.22.1 on 2018-10-25<a class="headerlink" href="#changes-in-release-0-22-1-on-2018-10-25" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Add Records class read_cps_data static method to make it easier to test other models in the Policy Simulation Library collection of USA tax models.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-22-0-on-2018-10-24">
+<h2>Changes in release 0.22.0 on 2018-10-24<a class="headerlink" href="#changes-in-release-0-22-0-on-2018-10-24" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Refactor tbi functions so that other models in the Policy Simulation Library (PSL) collection of USA tax models can easily produce the tables expected by TaxBrain.</p></li>
+<li><p>Add ability to read online JSON reform/assumption files located at URLs beginning with ‘http’.  This is illustrated in <a class="reference external" href="https://PSLmodels.github.io/Tax-Calculator/cookbook.html#recipe01">cookbook recipe 1</a>.</p></li>
+<li><p>Fix bug in create_difference_table utility function that affected accuracy of the ubi variable and benefit-total variables in the difference table.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-21-0-on-2018-09-11">
+<h2>Changes in release 0.21.0 on 2018-09-11<a class="headerlink" href="#changes-in-release-0-21-0-on-2018-09-11" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Require Python 3.6 to run Tax-Calculator source code or conda package.  This change is being made because pandas is dropping development for Python 2.7 beginning in 2019.</p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-release-0-20-3-on-2018-09-06">
+<h2>Changes in release 0.20.3 on 2018-09-06<a class="headerlink" href="#changes-in-release-0-20-3-on-2018-09-06" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Incorporate new PUF input data that include imputed values of itemizeable expenses for non-itemizers.  This enables simulation of reforms that lower the standard deduction below where is was before TCJA when using PUF.</p></li>
+<li><p>Incorporate new PUF input data that include imputed values of pension contributions.  This increases payroll tax revenue because (unlike the income tax) it taxes pension contributions when using PUF.</p></li>
+<li><p>Fix other-benefits values in CPS input data.  This is relevant primarily for users simulating the repeal of other benefits as part a UBI reform, but it also affects expanded income in the distribution tables when using CPS.</p></li>
+<li><p><strong>LAST RELEASE COMPATIBLE WITH PYTHON 2.7</strong></p></li>
+</ul>
+</div>
+<div class="section" id="changes-in-releases-before-0-20-3">
+<h2>Changes in releases before 0.20.3<a class="headerlink" href="#changes-in-releases-before-0-20-3" title="Permalink to this headline">¶</a></h2>
+<p>See more technical descriptions of changes in releases before 0.20.3
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#2018-08-10-release-0202">here</a>.</p>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="releases.html" title="previous page">Release history</a>
+    <a class='right-next' id="next-link" href="upgrading.html" title="next page">Upgrading to Tax-Calculator 2.0</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,619 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Contributor guide &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pull request workflow" href="pr_workflow.html" />
+    <link rel="prev" title="License" href="../about/license.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
+   Testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pycodestyle
+    </span>
+   </code>
+   (the program formerly known as pep8)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#testing-with-pytest">
+   Testing with pytest
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#interpreting-test-results">
+   Interpreting test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#updating-test-results">
+   Updating test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#optional-coding-style-testing-with-pylint">
+   Optional coding style testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pylint
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/contributing/contributor_guide.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fcontributing/contributor_guide.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/contributing/contributor_guide.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setup-python">
+   Setup Python
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#setup-git">
+   Setup Git
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#workflow">
+   Workflow
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="contributor-guide">
+<h1>Contributor guide<a class="headerlink" href="#contributor-guide" title="Permalink to this headline">¶</a></h1>
+<p>The purpose of this guide is to get you to the point where you can
+make improvements to the Tax-Calculator and share them with the rest
+of the development team as a GitHub pull request.
+This document assumes that you have read <a class="reference internal" href="../usage/starting.html"><span class="doc">Getting started</span></a> and
+<a class="reference internal" href="../recipes/index.html"><span class="doc">Recipes</span></a>.</p>
+<p>If the objective of your Tax-Calculator improvement is to add the
+ability to analyze a tax reform that cannot be analyzed using existing
+policy parameters, then you need to follow the steps described in this
+paragraph <strong>before</strong> preparing a pull request.
+(a) Modify <a class="reference internal" href="../recipes/recipe06.html"><span class="doc">Recipe 6: Analyzing a Non-Parametric Reform</span></a> to
+analyze the kind of tax reform you want to add to the list of reforms
+that can be analyzed parametricly by Tax-Calculator.
+(b) Raise a Tax-Calculator issue in which you show your modified recipe 6 that
+simulates the reform and provide some numerical results that
+illustrate the effects of the reform.
+In the course of the conversation about your issue, you may be asked to prepare a pull request that would allow this reform to be analyzed using new policy parameters and associated logic.
+If so, follow the directions below when preparing that pull request.</p>
+<p>We keep track of Tax-Calculator source code using the <a class="reference external" href="https://git-scm.com/">Git version
+control system</a> via
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#git">GitHub</a>.  We
+don’t expect you to be an expert Git user.
+Where possible, we link toGit and GitHub documentation to help with some of the unfamiliar terminology (often from this <a class="reference external" href="https://help.github.com/articles/github-glossary/">glossary of GitHub
+terms</a>.
+Following the next steps will get you up and running and contributing to
+Tax-Calculator even if you’ve never used anything like Git and GitHub.
+But if you are unfamiliar with the concept of version control, you
+should read an introductory tutorial online.
+A good tutorial can be found
+<a class="reference external" href="https://homes.cs.washington.edu/~mernst/advice/version-control.html">here</a>.</p>
+<p>If you have already completed the <a class="reference external" href="#setup-python">Setup Python</a> and
+<a class="reference external" href="#setup-Git">Setup Git</a> sections, please skip to <a class="reference external" href="#workflow">Workflow</a>.</p>
+<div class="section" id="setup-python">
+<h2>Setup Python<a class="headerlink" href="#setup-python" title="Permalink to this headline">¶</a></h2>
+<p>Follow the <a class="reference external" href="https://PSLmodels.github.io/Tax-Calculator/tc_starting.html">getting started instructions</a>,
+but be sure to skip step 2, because the installation of the <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code>
+package will interfere with the testing of changes in the source code.</p>
+<p>If you are new to or have limited experience with Python, you should
+read some introductory tutorials available online.  One such tutorial
+is <a class="reference external" href="https://lectures.quantecon.org/py/">Quantitative Economics with
+Python</a>.</p>
+</div>
+<div class="section" id="setup-git">
+<h2>Setup Git<a class="headerlink" href="#setup-git" title="Permalink to this headline">¶</a></h2>
+<ol>
+<li><p>Create a free GitHub user account from the <a class="reference external" href="https://github.com/">GitHub home
+page</a>.</p></li>
+<li><p>Install Git on your local computer by following steps 1-4
+<a class="reference external" href="https://help.github.com/articles/set-up-git/">here</a>.</p></li>
+<li><p>Tell Git to remember your GitHub password by following steps 1-4
+<a class="reference external" href="https://help.github.com/articles/caching-your-github-password-in-git/">here</a>.</p></li>
+<li><p>Sign in to GitHub and create your own
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#remote">remote</a>
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#repository">repository</a>
+(or “repo” for short) of Tax-Calculator by clicking on
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#fork">Fork</a> in
+the upper right corner of the <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">Tax-Calculator GitHub
+page</a>. Select your
+username when asked “Where should we fork this repository?”</p></li>
+<li><p>From your command line, navigate to the directory on your computer
+where you would like your local repo to live.</p></li>
+<li><p>Create a local repo by entering at the command line the text after
+the <code class="docutils literal notranslate"><span class="pre">$</span></code> character on Mac and Linux (or the <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> character on Windows).
+This step creates a directory called Tax-Calculator in
+the directory that you specified in the prior step:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="p">[</span><span class="n">github</span><span class="o">-</span><span class="n">username</span><span class="p">]</span><span class="o">/</span><span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>From your command line or terminal, navigate to your local
+Tax-Calculator directory.</p></li>
+<li><p>Make it easier to
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#push">push</a> your
+local work to others and
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#pull">pull</a>
+others’ work to your local computer by entering at the command
+line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span>
+<span class="n">git</span> <span class="n">remote</span> <span class="n">add</span> <span class="n">upstream</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PSLmodels</span><span class="o">/</span><span class="n">Tax</span><span class="o">-</span><span class="n">Calculator</span><span class="o">.</span><span class="n">git</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a conda environment with all of the necessary packages to
+execute Tax-Calculator source code in the Tax-Calculator directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span>
+</pre></div>
+</div>
+</li>
+<li><p>The prior command will create a conda environment called <code class="docutils literal notranslate"><span class="pre">taxcalc-dev</span></code>.
+Activate this environment as follows if working on Mac or Linux:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">activate</span> <span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>If you are working on Windows, use the following from the command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activate</span> <span class="n">taxcalc</span><span class="o">-</span><span class="n">dev</span>
+</pre></div>
+</div>
+<p>Important Note: never conda install the taxcalc package in the
+taxcalc-dev environment because the taxcalc source code and the
+installed package will conflict.</p>
+</li>
+<li><p>To check that everything is working properly, run the following at
+the command line in the Tax-Calculator directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">taxcalc</span>
+<span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;not requires_pufcsv and not pre_release&quot;</span> <span class="o">-</span><span class="n">n4</span>
+</pre></div>
+</div>
+<p>If you do have a copy of the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file used by Tax-Calculator,
+then on the second line above omit the <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">requires_pufcsv</span> <span class="pre">and</span></code>
+expression so as to execute <code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">-m</span> <span class="pre">&quot;not</span> <span class="pre">pre_release&quot;</span> <span class="pre">-n4</span></code>.</p>
+<p>If all the tests pass, you’re good to go. If they don’t pass, enter
+the following updates at the command line and then try running the
+tests again:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="n">conda</span>
+<span class="n">conda</span> <span class="n">env</span> <span class="n">update</span>
+</pre></div>
+</div>
+<p>For more detail on Tax-Calculator testing procedures, read <a class="reference internal" href="testing.html"><span class="doc">Testing</span></a>.
+If the tests still don’t pass, please contact us.</p>
+</li>
+</ol>
+<p>If you’ve made it this far, you’ve successfully made a remote copy (a
+fork) of central Tax-Calculator repo. That remote repo is hosted on
+GitHub.com. You’ve also created a local repo — a
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#clone">clone</a> —
+that lives on your computer and only you can see; you will make your
+changes to the Tax-Calculator by editing the files in the
+Tax-Calculator directory on your computer and then submitting those
+changes to your local repo. As a new contributor, you will push your
+changes from your local repo to your remote repo when you’re ready to
+share that work with the team.</p>
+<p>Don’t be alarmed if the above paragraph is confusing. The following
+section introduces some standard Git practices and guides you through
+the contribution process.</p>
+</div>
+<div class="section" id="workflow">
+<h2>Workflow<a class="headerlink" href="#workflow" title="Permalink to this headline">¶</a></h2>
+<p>The following text describes a typical workflow for changing
+Tax-Calculator.  Different workflows may be necessary in some
+situations, in which case other contributors are here to help.</p>
+<ol>
+<li><p>Before you edit the Tax-Calculator source code on your computer,
+make sure you have the latest version of the central Tax-Calculator
+repository by executing the <strong>four</strong> Git commands listed in
+substeps <code class="docutils literal notranslate"><span class="pre">a-d</span></code> (or alternatively by executing just substeps <code class="docutils literal notranslate"><span class="pre">a</span></code> and
+<code class="docutils literal notranslate"><span class="pre">e</span></code>):</p>
+<p>a. Tell Git to switch to the master branch in your local repo.
+Navigate to your local Tax-Calculator directory and enter the
+following text at the command line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+</pre></div>
+</div>
+<p>b. Download all of the content from the central Tax-Calculator repo
+using the Git
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#fetch">fetch</a>
+command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">fetch</span> <span class="n">upstream</span>
+</pre></div>
+</div>
+<p>c. Update your local master branch to contain the latest content of
+the central master branch using the Git
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#merge">merge</a>
+command. This step ensures that you are working with the latest
+version of the Tax-Calculator on your computer:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">merge</span> <span class="n">upstream</span><span class="o">/</span><span class="n">master</span>
+</pre></div>
+</div>
+<p>d. Push the updated master branch in your local repo to your GitHub
+repo using the Git
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#push">push</a>
+command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+</div>
+<p>e. As an alternative to executing substeps <code class="docutils literal notranslate"><span class="pre">a-d</span></code>, you can
+simply execute substeps <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">e</span></code>.  If you are working on Mac
+or Linux, execute these commands in the Tax-Calculator directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+<span class="o">./</span><span class="n">gitsync</span>
+</pre></div>
+</div>
+<p>If you are working on Windows, execute these commands in the
+Tax-Calculator directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="n">master</span>
+<span class="n">gitsync</span>
+</pre></div>
+</div>
+</li>
+<li><p>Create a new
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#branch">branch</a>
+on your local computer in the Tax-Calculator directory. Think of
+your branches as a way to organize your projects. If you want to
+work on this documentation, for example, create a separate branch
+for that work. If you want to change the maximum child care tax
+credit in the Tax-Calculator, create a different branch for that
+project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="o">-</span><span class="n">b</span> <span class="p">[</span><span class="n">new</span><span class="o">-</span><span class="n">branch</span><span class="o">-</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>If your changes involve creating a new tax policy parameter, be
+sure to read about the Tax-Calculator <a class="reference internal" href="param_naming.html"><span class="doc">Policy parameter naming and placing conventions</span></a>.</p></li>
+<li><p>As you make changes, frequently check that your changes do not
+introduce bugs or degrade the accuracy of the Tax-Calculator.
+To do this, run the following commands from the command line from inside
+the Tax-Calculator/taxcalc directory::</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycodestyle</span> <span class="o">.</span>
+<span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;not requires_pufcsv and not pre_release&quot;</span> <span class="o">-</span><span class="n">n4</span>
+</pre></div>
+</div>
+<p>Consult <a class="reference internal" href="testing.html"><span class="doc">Testing</span></a> for more details.</p>
+<p>If the tests do not pass, try to fix the issue by using the
+information provided by the error message. If this isn’t possible
+or doesn’t work, we are here to help.</p>
+</li>
+<li><p>Now you’re ready to
+<a class="reference external" href="https://help.github.com/articles/github-glossary/#commit">commit</a>
+your changes to your local repo using the commands described in
+this step. You need to use the Git <code class="docutils literal notranslate"><span class="pre">add</span></code> command only if your
+branch creates one or more new files that you want to include in
+the repository.  Use the Git <code class="docutils literal notranslate"><span class="pre">status</span></code> command to see which files
+you have edited and which files are new:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">status</span>
+</pre></div>
+</div>
+<p>If adding a new file, use the Git <code class="docutils literal notranslate"><span class="pre">add</span></code> command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">add</span> <span class="p">[</span><span class="n">new</span><span class="o">-</span><span class="n">filename</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>As a rule, do not add large files. If you’d like to add a file that is
+larger than 25 MB, please contact the other contributors and ask how to
+proceed.</p>
+<p>The actual commit of code changes (and possibly new files) to your
+local repository is accomplished with this sort of command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">commit</span> <span class="o">-</span><span class="n">a</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;[description-of-your-commit]&quot;</span>
+</pre></div>
+</div>
+<p>where you should replace the bracketed text inside the quotation
+marks with a short (no more than about 70 characters) description
+of your changes.</p>
+<p><strong>Tip</strong>: Committing often is a good idea as Git keeps a record of
+your changes. This means that you can always revert to a previous
+version of your work if you need to.</p>
+</li>
+<li><p>Periodically, make sure that the branch you created in step 2
+is in sync with the changes other contributors are making to
+the central master branch by fetching upstream and merging
+upstream/master into your branch:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">fetch</span> <span class="n">upstream</span>
+<span class="n">git</span> <span class="n">merge</span> <span class="n">upstream</span><span class="o">/</span><span class="n">master</span>
+</pre></div>
+</div>
+<p>You may need to resolve conflicts that arise when another
+contributor changed the same section of code that you are
+changing. Feel free to ask other contributors for guidance
+if this happens to you. If you do need to fix a merge
+conflict, run the tests (step 4) again fixing.</p>
+</li>
+<li><p>When you are ready for other team members to review your code, make
+your final commit and push your local branch to your remote repo:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">push</span> <span class="n">origin</span> <span class="p">[</span><span class="n">new</span><span class="o">-</span><span class="n">branch</span><span class="o">-</span><span class="n">name</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>From the <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">central GitHub Tax-Calculator
+page</a>, open a
+<a class="reference external" href="https://help.github.com/articles/creating-a-pull-request/#creating-the-pull-request">pull request</a>
+containing the changes in your local branch.</p></li>
+<li><p>When you open a GitHub pull request, a code coverage report will be
+automatically generated.  If your branch adds new code that is not
+tested, the code coverage percent will decline and the number of
+untested statements (“misses” in the report) will increase.  If
+this happens, you need to add to your branch one or more tests of
+your newly added code.  Add tests so that the number of untested
+statements is the same as it is on the master branch.</p></li>
+</ol>
+<p><strong>IMPORTANT NOTE:</strong> you can always make more changes on your local
+branch, commit them (step 6), and push them to your remote repo (step
+7), and these changes will be automatically incorporated into your
+pull request.</p>
+<p>You should now read the more detailed <a class="reference internal" href="pr_workflow.html"><span class="doc">Pull request workflow</span></a> document.</p>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="../about/license.html" title="previous page">License</a>
+    <a class='right-next' id="next-link" href="pr_workflow.html" title="next page">Pull request workflow</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

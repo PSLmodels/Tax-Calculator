@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Testing &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Policy parameter naming and placing conventions" href="param_naming.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
+   Testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pycodestyle
+    </span>
+   </code>
+   (the program formerly known as pep8)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="#testing-with-pytest">
+   Testing with pytest
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="#interpreting-test-results">
+   Interpreting test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="#updating-test-results">
+   Updating test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="#optional-coding-style-testing-with-pylint">
+   Optional coding style testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pylint
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/contributing/testing.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fcontributing/testing.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/contributing/testing.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="testing">
+<h1>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h1>
+<p>This description of Tax-Calculator testing procedures is written for a
+person who wants to contribute changes to Tax-Calculator source code.</p>
+<p>It assumes that you have read <a class="reference internal" href="contributor_guide.html"><span class="doc">Contributor guide</span></a> and <a class="reference internal" href="param_naming.html"><span class="doc">Policy parameter naming and placing conventions</span></a>,
+have forked the <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">central GitHub Tax-Calculator
+repository</a>
+to your GitHub account, and have cloned that forked copy to your local
+computer.</p>
+<p>This document also assumes that you have read <a class="reference internal" href="pr_workflow.html"><span class="doc">Pull request workflow</span></a>
+so that you understand where the testing procedures fit into
+the broader workflow of preparing a pull request that changes
+Tax-Calculator source code.</p>
+<p>Currently there are two phases of testing.</p>
+</div>
+<div class="section" id="testing-with-pycodestyle-the-program-formerly-known-as-pep8">
+<h1>Testing with <code class="docutils literal notranslate"><span class="pre">pycodestyle</span></code> (the program formerly known as pep8)<a class="headerlink" href="#testing-with-pycodestyle-the-program-formerly-known-as-pep8" title="Permalink to this headline">¶</a></h1>
+<p>The first phase of testing checks the formatting of the Python code
+against a PEP8-like standard.  Assuming you are in the top-level
+directory of the repository, run these tests by doing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycodestyle</span> <span class="n">taxcalc</span>
+</pre></div>
+</div>
+<p>No messages indicate the tests pass.  Fix any errors.  When you
+pass all these PEP8-like tests, proceed to the second phase of testing.</p>
+<p>If you are proposing changes in a JSON file, then you should also run
+the following test:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pycodestyle</span> <span class="o">--</span><span class="n">ignore</span><span class="o">=</span><span class="n">E501</span><span class="p">,</span><span class="n">E121</span> <span class="n">PATH_TO_JSON_FILE</span>
+</pre></div>
+</div>
+<p>where you replace <code class="docutils literal notranslate"><span class="pre">PATH_TO_JSON_FILE</span></code> with the relative path to the
+JSON file you changed.  So, for example, if you edited the
+<code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code> file in the <code class="docutils literal notranslate"><span class="pre">taxcalc</span></code> subdirectory, you
+would replace <code class="docutils literal notranslate"><span class="pre">PATH_TO_JSON_FILE</span></code> with
+<code class="docutils literal notranslate"><span class="pre">taxcalc/policy_current_law.json</span></code>.</p>
+</div>
+<div class="section" id="testing-with-pytest">
+<h1>Testing with pytest<a class="headerlink" href="#testing-with-pytest" title="Permalink to this headline">¶</a></h1>
+<p>There are two variants of this second testing phase depending on
+whether or not you have access to a file called <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> that
+contains a representative sample of tax filing units derived from
+the IRS-SOI PUF data.</p>
+<p>A brief description of the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file is followed by
+instructions on how to run the two variants of the second-phase tests.</p>
+<p>The Tax-Calculator <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file has been constructed by the core
+development team by merging information from the most recent publicly
+available IRS-SOI PUF file and from the Census CPS file for the
+corresponding year.  If you have acquired from IRS the most recent SOI
+PUF file and want to execute the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code>
+file, contact the core development team to discuss your options.</p>
+<p>If you have access to the Tax-Calculator <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file, you should
+have access to the private GitHub repository <code class="docutils literal notranslate"><span class="pre">taxpuf</span></code>, from which
+updates of the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> are distributed.  When you receive a private
+email announcing a new version of the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file, be sure to
+execute a <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">update</span> <span class="pre">...</span> <span class="pre">taxpuf</span></code> command (as described in the
+<code class="docutils literal notranslate"><span class="pre">taxpuf</span></code> repository’s README file) before executing the tests
+described below.</p>
+<p><strong>NO PUF.CSV</strong>: If you do not have access to the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file (or if
+you want to do just a quick test), run the second-phase of testing as
+follows at the command prompt in the tax-calculator directory at the
+top of the repository directory tree:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">taxcalc</span>
+<span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;not requires_pufcsv and not pre_release&quot;</span> <span class="o">-</span><span class="n">n4</span>
+<span class="n">cd</span> <span class="o">..</span>
+</pre></div>
+</div>
+<p>This will start executing a pytest suite containing hundreds of tests,
+but will skip the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file as input and
+the tests that are executed only just before a new release is being
+prepared.  Depending on your computer, the execution time for this
+incomplete suite of tests is roughly one minute.  The <code class="docutils literal notranslate"><span class="pre">-n4</span></code> option
+calls for using as many as four CPU cores for parallel execution of the
+tests.  If you want sequential execution of the tests (which will
+take at least twice as long to execute), simply omit the <code class="docutils literal notranslate"><span class="pre">-n4</span></code> option.</p>
+<p><strong>HAVE PUF.CSV</strong>: If you do have access to the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file, copy it
+into the Tax-Calculator directory at the top of the repository
+directory tree (but <strong>never</strong> add it to your repository) and run the
+second-phase of testing as follows at the command prompt in the
+top-level directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">taxcalc</span>
+<span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="s2">&quot;not pre_release&quot;</span> <span class="o">-</span><span class="n">n4</span>
+<span class="n">cd</span> <span class="o">..</span>
+</pre></div>
+</div>
+<p>This will start executing a pytest suite containing hundreds of tests,
+including the tests that require the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file as input but excluding
+the tests that are executed only just before a new release is being
+prepared. Depending on your computer, the execution time for this suite
+of unit tests is roughly two minutes.  The <code class="docutils literal notranslate"><span class="pre">-n4</span></code> option calls for
+using as many as four CPU cores for parallel execution of the tests.
+If you want sequential execution of the tests (which will take at
+least twice as long to execute), simply omit the <code class="docutils literal notranslate"><span class="pre">-n4</span></code> option.</p>
+<p>Just before releasing a new version of Tax-Calculator or just after
+adding a new parameter to <code class="docutils literal notranslate"><span class="pre">policy_current_law.json</span></code>, you should also
+execute the pre-release tests using this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">taxcalc</span>
+<span class="n">pytest</span> <span class="o">-</span><span class="n">m</span> <span class="n">pre_release</span> <span class="o">-</span><span class="n">n4</span>
+<span class="n">cd</span> <span class="o">..</span>
+</pre></div>
+</div>
+<p>But if you execute the pre_release tests well before releasing a new
+version of Tax-Calculator, be sure <strong>not</strong> to include the updated
+<code class="docutils literal notranslate"><span class="pre">docs/index.html</span></code> file in your commit.  After checking that you can
+make a <code class="docutils literal notranslate"><span class="pre">docs/index.html</span></code> file that is correct, revert to the old
+version of <code class="docutils literal notranslate"><span class="pre">docs/index.html</span></code> by executing this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">checkout</span> <span class="o">--</span> <span class="n">docs</span><span class="o">/</span><span class="n">index</span><span class="o">.</span><span class="n">html</span>
+</pre></div>
+</div>
+<p>Following this procedure will ensure that the documentation is not
+updated before the Tax-Calculator release is available.</p>
+</div>
+<div class="section" id="interpreting-test-results">
+<h1>Interpreting test results<a class="headerlink" href="#interpreting-test-results" title="Permalink to this headline">¶</a></h1>
+<p>If you are adding an enhancement that expands the capabilities of the
+Tax-Calculator, then all the tests you can run should pass before you
+submit a pull request containing the enhancement.  In addition, it
+would be highly desirable to add a test to the pytest suite, which is
+located in the <code class="docutils literal notranslate"><span class="pre">taxcalc/tests</span></code> directory, that somehow checks that
+your enhancement is working as you expect it to work.</p>
+<p>On the other hand, if you think you have found a bug in the
+Tax-Calculator source code, the first thing to do is add a test to the
+pytest suite that demonstrates how the source code produces an
+incorrect result (that is, the test fails because the result is
+incorrect).  Then change the source code to fix the bug and
+demonstrate that the newly-added test, which used to fail, now passes.</p>
+</div>
+<div class="section" id="updating-test-results">
+<h1>Updating test results<a class="headerlink" href="#updating-test-results" title="Permalink to this headline">¶</a></h1>
+<p>After an enhancement or bug fix, you may be convinced that the new and
+different second-phase test results are, in fact, correct.  How do you
+eliminate the test failures?  For all but the few tests that require
+the <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> file or the <code class="docutils literal notranslate"><span class="pre">cps.csv</span></code> file as input, simply edit the
+appropriate <code class="docutils literal notranslate"><span class="pre">taxcalc/tests/test_*.py</span></code> file so that the test passes
+when you rerun pytest.  If there are failures for the tests that write
+results files, read the test error message for instructions about how
+to update the test results.</p>
+</div>
+<div class="section" id="optional-coding-style-testing-with-pylint">
+<h1>Optional coding style testing with <code class="docutils literal notranslate"><span class="pre">pylint</span></code><a class="headerlink" href="#optional-coding-style-testing-with-pylint" title="Permalink to this headline">¶</a></h1>
+<p>There is another tool, <code class="docutils literal notranslate"><span class="pre">pylint</span></code>, that warns about deviations from a
+broader set coding styles than does <code class="docutils literal notranslate"><span class="pre">pycodestyle</span></code>.  The use of
+<code class="docutils literal notranslate"><span class="pre">pylint</span></code>, while being the number one recommendation in the <a class="reference external" href="https://google.github.io/styleguide/pyguide.html">Google
+Python Style Guide</a>,
+is strictly-speaking optional for Tax-Calculator work.  But several
+important files in the repository are maintained in a way that their
+coding style does not generate any <code class="docutils literal notranslate"><span class="pre">pylint</span></code> warnings.  You can
+determine which files these are by looking for the comments near the
+top of the file that begin <code class="docutils literal notranslate"><span class="pre">#</span> <span class="pre">CODING-STYLE</span> <span class="pre">CHECKS:</span></code>.  If there is a
+line in these comments that mentions <code class="docutils literal notranslate"><span class="pre">pylint</span></code>, then this file is being
+tested with <code class="docutils literal notranslate"><span class="pre">pylint</span></code>.  It is highly recommended that, if you are
+proposing changes in one these files, you check your work by running
+the <code class="docutils literal notranslate"><span class="pre">pylint</span></code> command listed in that file’s coding-style comment.</p>
+<p>Make sure you have an up-to-date version of <code class="docutils literal notranslate"><span class="pre">pylint</span></code> installed on your
+computer by entering at the operating system command prompt:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pylint</span> <span class="o">--</span><span class="n">version</span>
+</pre></div>
+</div>
+<p>If you get a no-such-command error, install <code class="docutils literal notranslate"><span class="pre">pylint</span></code> as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="n">pylint</span>
+</pre></div>
+</div>
+<p>If you do have <code class="docutils literal notranslate"><span class="pre">pylint</span></code> installed, but the version is before 1.8.4,
+then get a more recent version as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="n">pylint</span>
+</pre></div>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="param_naming.html" title="previous page">Policy parameter naming and placing conventions</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

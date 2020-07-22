@@ -1,0 +1,1002 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Recipe 2: Estimating Behavioral Response to Reform &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Recipe 3: Creating a Custom Table" href="recipe03.html" />
+    <link rel="prev" title="Recipe 1: Directly Comparing Two Reforms" href="recipe01.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="reference internal" href="index.html">
+   Recipes
+  </a>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="recipe00.html">
+     Basic Recipe: Static Analysis of a Simple Reform
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="recipe01.html">
+     Recipe 1: Directly Comparing Two Reforms
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Recipe 2: Estimating Behavioral Response to Reform
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="recipe03.html">
+     Recipe 3: Creating a Custom Table
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="recipe04.html">
+     Recipe 4: Estimating Differential Reform Response
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="recipe04_pandas.html">
+     Recipe 4: Estimating Differential Reform Response - pandas version
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="recipe05.html">
+     Recipe 5: Redefining Expanded Income
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="recipe06.html">
+     Recipe 6: Analyzing a Non-Parametric Reform
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
+   Testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pycodestyle
+    </span>
+   </code>
+   (the program formerly known as pep8)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#testing-with-pytest">
+   Testing with pytest
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#interpreting-test-results">
+   Interpreting test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#updating-test-results">
+   Updating test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html#optional-coding-style-testing-with-pylint">
+   Optional coding style testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pylint
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/recipes/recipe02.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.ipynb</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Frecipes/recipe02.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/recipes/recipe02.ipynb"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="recipe-2-estimating-behavioral-response-to-reform">
+<h1>Recipe 2: Estimating Behavioral Response to Reform<a class="headerlink" href="#recipe-2-estimating-behavioral-response-to-reform" title="Permalink to this headline">¶</a></h1>
+<p>This is an advanced recipe that should be followed only after mastering the basic recipe.
+This recipe shows how to analyze the behavioral responses to a tax reform using the Behavioral-Responses behresp package.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
+<span class="kn">import</span> <span class="nn">behresp</span>
+
+<span class="c1"># use publicly-available CPS input file</span>
+<span class="n">recs</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">()</span>
+
+<span class="c1"># specify baseline Calculator object representing current-law policy</span>
+<span class="n">pol</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="p">()</span>
+<span class="n">calc1</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+
+<span class="n">CYR</span> <span class="o">=</span> <span class="mi">2020</span>
+
+<span class="c1"># calculate aggregate current-law income tax liabilities for cyr</span>
+<span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+<span class="n">itax_rev1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+
+<span class="c1"># specify Calculator object for static analysis of reform policy</span>
+<span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformA.json&#39;</span><span class="p">))</span>
+<span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+
+<span class="c1"># calculate reform income tax liabilities for cyr under static assumptions</span>
+<span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+<span class="n">itax_rev2sa</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+
+<span class="c1"># specify assumed non-zero response-function substitution elasticity</span>
+<span class="n">response_elasticities</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sub&#39;</span><span class="p">:</span> <span class="mf">0.25</span><span class="p">}</span>
+
+<span class="c1"># specify Calculator object for analysis of reform with behavioral responses</span>
+<span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+<span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
+
+<span class="c1"># calculate reform income tax liabilities for CYR with behavioral response</span>
+<span class="n">itax_rev2br</span> <span class="o">=</span> <span class="p">(</span><span class="n">df2br</span><span class="p">[</span><span class="s1">&#39;iitax&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="n">df2br</span><span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+<span class="c1"># print total income tax revenue estimates for CYR</span>
+<span class="c1"># (estimates in billons of dollars)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_CURRENT_LAW_P__itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM_STATIC__itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev2sa</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM_DYNAMIC_itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev2br</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>2020_CURRENT_LAW_P__itax_rev($B)= 1430.743
+2020_REFORM_STATIC__itax_rev($B)= 1423.661
+2020_REFORM_DYNAMIC_itax_rev($B)= 1413.293
+</pre></div>
+</div>
+</div>
+</div>
+<p>Create multi-year diagnostic tables for</p>
+<ol class="simple">
+<li><p>baseline,</p></li>
+<li><p>reform excluding behavioral responses, and</p></li>
+<li><p>reform including behavioral responses</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NUM_YEARS</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># number of diagnostic table years beginning with CYR</span>
+<span class="n">dtable1</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">diagnostic_table</span><span class="p">(</span><span class="n">NUM_YEARS</span><span class="p">)</span>
+<span class="n">dtable2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">diagnostic_table</span><span class="p">(</span><span class="n">NUM_YEARS</span><span class="p">)</span>
+<span class="n">dvar_list3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">year_list3</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">CYR</span> <span class="o">+</span> <span class="n">NUM_YEARS</span><span class="p">):</span>
+    <span class="n">calc1</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+    <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+    <span class="n">_</span><span class="p">,</span> <span class="n">df2br</span> <span class="o">=</span> <span class="n">behresp</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="n">calc1</span><span class="p">,</span> <span class="n">calc2</span><span class="p">,</span> <span class="n">response_elasticities</span><span class="p">)</span>
+    <span class="n">dvar_list3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">df2br</span><span class="p">)</span>
+    <span class="n">year_list3</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+<span class="n">dtable3</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">create_diagnostic_table</span><span class="p">(</span><span class="n">dvar_list3</span><span class="p">,</span> <span class="n">year_list3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Diagnostic table for baseline:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dtable1</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>2020</th>
+      <th>2021</th>
+      <th>2022</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Returns (#m)</th>
+      <td>167.510</td>
+      <td>169.750</td>
+      <td>171.930</td>
+    </tr>
+    <tr>
+      <th>AGI ($b)</th>
+      <td>12081.707</td>
+      <td>12624.263</td>
+      <td>13145.018</td>
+    </tr>
+    <tr>
+      <th>Itemizers (#m)</th>
+      <td>33.100</td>
+      <td>33.800</td>
+      <td>34.690</td>
+    </tr>
+    <tr>
+      <th>Itemized Deduction ($b)</th>
+      <td>935.939</td>
+      <td>967.582</td>
+      <td>1016.742</td>
+    </tr>
+    <tr>
+      <th>Standard Deduction Filers (#m)</th>
+      <td>134.410</td>
+      <td>135.950</td>
+      <td>137.240</td>
+    </tr>
+    <tr>
+      <th>Standard Deduction ($b)</th>
+      <td>2382.421</td>
+      <td>2463.196</td>
+      <td>2543.217</td>
+    </tr>
+    <tr>
+      <th>Personal Exemption ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Taxable Income ($b)</th>
+      <td>9264.215</td>
+      <td>9713.414</td>
+      <td>10129.576</td>
+    </tr>
+    <tr>
+      <th>Regular Tax ($b)</th>
+      <td>1588.955</td>
+      <td>1673.211</td>
+      <td>1752.027</td>
+    </tr>
+    <tr>
+      <th>AMT Income ($b)</th>
+      <td>11415.741</td>
+      <td>11935.474</td>
+      <td>12417.671</td>
+    </tr>
+    <tr>
+      <th>AMT Liability ($b)</th>
+      <td>1.491</td>
+      <td>1.526</td>
+      <td>1.558</td>
+    </tr>
+    <tr>
+      <th>AMT Filers (#m)</th>
+      <td>0.680</td>
+      <td>0.690</td>
+      <td>0.690</td>
+    </tr>
+    <tr>
+      <th>Tax before Credits ($b)</th>
+      <td>1590.446</td>
+      <td>1674.736</td>
+      <td>1753.585</td>
+    </tr>
+    <tr>
+      <th>Refundable Credits ($b)</th>
+      <td>76.236</td>
+      <td>76.315</td>
+      <td>77.573</td>
+    </tr>
+    <tr>
+      <th>Nonrefundable Credits ($b)</th>
+      <td>94.900</td>
+      <td>96.523</td>
+      <td>97.774</td>
+    </tr>
+    <tr>
+      <th>Reform Surtaxes ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Other Taxes ($b)</th>
+      <td>11.433</td>
+      <td>11.964</td>
+      <td>12.526</td>
+    </tr>
+    <tr>
+      <th>Ind Income Tax ($b)</th>
+      <td>1430.743</td>
+      <td>1513.862</td>
+      <td>1590.763</td>
+    </tr>
+    <tr>
+      <th>Payroll Taxes ($b)</th>
+      <td>1325.975</td>
+      <td>1386.091</td>
+      <td>1442.765</td>
+    </tr>
+    <tr>
+      <th>Combined Liability ($b)</th>
+      <td>2756.718</td>
+      <td>2899.953</td>
+      <td>3033.528</td>
+    </tr>
+    <tr>
+      <th>With Income Tax &lt;= 0 (#m)</th>
+      <td>59.110</td>
+      <td>59.530</td>
+      <td>60.090</td>
+    </tr>
+    <tr>
+      <th>With Combined Tax &lt;= 0 (#m)</th>
+      <td>38.760</td>
+      <td>39.420</td>
+      <td>40.260</td>
+    </tr>
+    <tr>
+      <th>UBI Benefits ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Total Benefits, Consumption Value ($b)</th>
+      <td>3109.108</td>
+      <td>3297.957</td>
+      <td>3503.088</td>
+    </tr>
+    <tr>
+      <th>Total Benefits Cost ($b)</th>
+      <td>3109.108</td>
+      <td>3297.957</td>
+      <td>3503.088</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Diagnostic table for reform, excluding behavioral responses:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dtable2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>2020</th>
+      <th>2021</th>
+      <th>2022</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Returns (#m)</th>
+      <td>167.510</td>
+      <td>169.750</td>
+      <td>171.930</td>
+    </tr>
+    <tr>
+      <th>AGI ($b)</th>
+      <td>12081.707</td>
+      <td>12624.263</td>
+      <td>13145.018</td>
+    </tr>
+    <tr>
+      <th>Itemizers (#m)</th>
+      <td>33.030</td>
+      <td>33.730</td>
+      <td>34.610</td>
+    </tr>
+    <tr>
+      <th>Itemized Deduction ($b)</th>
+      <td>933.241</td>
+      <td>965.027</td>
+      <td>1013.815</td>
+    </tr>
+    <tr>
+      <th>Standard Deduction Filers (#m)</th>
+      <td>134.480</td>
+      <td>136.020</td>
+      <td>137.320</td>
+    </tr>
+    <tr>
+      <th>Standard Deduction ($b)</th>
+      <td>2383.809</td>
+      <td>2464.550</td>
+      <td>2544.827</td>
+    </tr>
+    <tr>
+      <th>Personal Exemption ($b)</th>
+      <td>333.334</td>
+      <td>344.504</td>
+      <td>356.215</td>
+    </tr>
+    <tr>
+      <th>Taxable Income ($b)</th>
+      <td>9011.004</td>
+      <td>9451.253</td>
+      <td>9858.636</td>
+    </tr>
+    <tr>
+      <th>Regular Tax ($b)</th>
+      <td>1579.369</td>
+      <td>1664.122</td>
+      <td>1743.689</td>
+    </tr>
+    <tr>
+      <th>AMT Income ($b)</th>
+      <td>11418.092</td>
+      <td>11937.685</td>
+      <td>12420.167</td>
+    </tr>
+    <tr>
+      <th>AMT Liability ($b)</th>
+      <td>1.558</td>
+      <td>1.594</td>
+      <td>1.635</td>
+    </tr>
+    <tr>
+      <th>AMT Filers (#m)</th>
+      <td>0.710</td>
+      <td>0.720</td>
+      <td>0.720</td>
+    </tr>
+    <tr>
+      <th>Tax before Credits ($b)</th>
+      <td>1580.927</td>
+      <td>1665.715</td>
+      <td>1745.324</td>
+    </tr>
+    <tr>
+      <th>Refundable Credits ($b)</th>
+      <td>79.004</td>
+      <td>79.124</td>
+      <td>80.659</td>
+    </tr>
+    <tr>
+      <th>Nonrefundable Credits ($b)</th>
+      <td>89.696</td>
+      <td>91.280</td>
+      <td>92.488</td>
+    </tr>
+    <tr>
+      <th>Reform Surtaxes ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Other Taxes ($b)</th>
+      <td>11.433</td>
+      <td>11.964</td>
+      <td>12.526</td>
+    </tr>
+    <tr>
+      <th>Ind Income Tax ($b)</th>
+      <td>1423.661</td>
+      <td>1507.275</td>
+      <td>1584.703</td>
+    </tr>
+    <tr>
+      <th>Payroll Taxes ($b)</th>
+      <td>1325.975</td>
+      <td>1386.091</td>
+      <td>1442.765</td>
+    </tr>
+    <tr>
+      <th>Combined Liability ($b)</th>
+      <td>2749.636</td>
+      <td>2893.366</td>
+      <td>3027.468</td>
+    </tr>
+    <tr>
+      <th>With Income Tax &lt;= 0 (#m)</th>
+      <td>61.310</td>
+      <td>61.710</td>
+      <td>62.370</td>
+    </tr>
+    <tr>
+      <th>With Combined Tax &lt;= 0 (#m)</th>
+      <td>39.110</td>
+      <td>39.800</td>
+      <td>40.630</td>
+    </tr>
+    <tr>
+      <th>UBI Benefits ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Total Benefits, Consumption Value ($b)</th>
+      <td>3109.108</td>
+      <td>3297.957</td>
+      <td>3503.088</td>
+    </tr>
+    <tr>
+      <th>Total Benefits Cost ($b)</th>
+      <td>3109.108</td>
+      <td>3297.957</td>
+      <td>3503.088</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<p>Diagnostic table for reform, including behavioral responses:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">dtable3</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>2020</th>
+      <th>2021</th>
+      <th>2022</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Returns (#m)</th>
+      <td>167.510</td>
+      <td>169.750</td>
+      <td>171.930</td>
+    </tr>
+    <tr>
+      <th>AGI ($b)</th>
+      <td>12059.423</td>
+      <td>12599.813</td>
+      <td>13118.735</td>
+    </tr>
+    <tr>
+      <th>Itemizers (#m)</th>
+      <td>32.990</td>
+      <td>33.700</td>
+      <td>34.580</td>
+    </tr>
+    <tr>
+      <th>Itemized Deduction ($b)</th>
+      <td>931.927</td>
+      <td>963.754</td>
+      <td>1012.542</td>
+    </tr>
+    <tr>
+      <th>Standard Deduction Filers (#m)</th>
+      <td>134.530</td>
+      <td>136.050</td>
+      <td>137.350</td>
+    </tr>
+    <tr>
+      <th>Standard Deduction ($b)</th>
+      <td>2384.573</td>
+      <td>2465.148</td>
+      <td>2545.379</td>
+    </tr>
+    <tr>
+      <th>Personal Exemption ($b)</th>
+      <td>333.334</td>
+      <td>344.504</td>
+      <td>356.215</td>
+    </tr>
+    <tr>
+      <th>Taxable Income ($b)</th>
+      <td>8988.663</td>
+      <td>9426.789</td>
+      <td>9832.403</td>
+    </tr>
+    <tr>
+      <th>Regular Tax ($b)</th>
+      <td>1569.117</td>
+      <td>1653.068</td>
+      <td>1731.937</td>
+    </tr>
+    <tr>
+      <th>AMT Income ($b)</th>
+      <td>11396.832</td>
+      <td>11914.300</td>
+      <td>12394.970</td>
+    </tr>
+    <tr>
+      <th>AMT Liability ($b)</th>
+      <td>1.628</td>
+      <td>1.675</td>
+      <td>1.710</td>
+    </tr>
+    <tr>
+      <th>AMT Filers (#m)</th>
+      <td>0.720</td>
+      <td>0.730</td>
+      <td>0.730</td>
+    </tr>
+    <tr>
+      <th>Tax before Credits ($b)</th>
+      <td>1570.745</td>
+      <td>1654.743</td>
+      <td>1733.647</td>
+    </tr>
+    <tr>
+      <th>Refundable Credits ($b)</th>
+      <td>78.722</td>
+      <td>78.843</td>
+      <td>80.409</td>
+    </tr>
+    <tr>
+      <th>Nonrefundable Credits ($b)</th>
+      <td>89.942</td>
+      <td>91.531</td>
+      <td>92.729</td>
+    </tr>
+    <tr>
+      <th>Reform Surtaxes ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Other Taxes ($b)</th>
+      <td>11.212</td>
+      <td>11.730</td>
+      <td>12.286</td>
+    </tr>
+    <tr>
+      <th>Ind Income Tax ($b)</th>
+      <td>1413.293</td>
+      <td>1496.099</td>
+      <td>1572.796</td>
+    </tr>
+    <tr>
+      <th>Payroll Taxes ($b)</th>
+      <td>1325.624</td>
+      <td>1385.648</td>
+      <td>1442.241</td>
+    </tr>
+    <tr>
+      <th>Combined Liability ($b)</th>
+      <td>2738.918</td>
+      <td>2881.747</td>
+      <td>3015.037</td>
+    </tr>
+    <tr>
+      <th>With Income Tax &lt;= 0 (#m)</th>
+      <td>61.130</td>
+      <td>61.530</td>
+      <td>62.220</td>
+    </tr>
+    <tr>
+      <th>With Combined Tax &lt;= 0 (#m)</th>
+      <td>38.980</td>
+      <td>39.660</td>
+      <td>40.530</td>
+    </tr>
+    <tr>
+      <th>UBI Benefits ($b)</th>
+      <td>0.000</td>
+      <td>0.000</td>
+      <td>0.000</td>
+    </tr>
+    <tr>
+      <th>Total Benefits, Consumption Value ($b)</th>
+      <td>3109.108</td>
+      <td>3297.957</td>
+      <td>3503.088</td>
+    </tr>
+    <tr>
+      <th>Total Benefits Cost ($b)</th>
+      <td>3109.108</td>
+      <td>3297.957</td>
+      <td>3503.088</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="recipe01.html" title="previous page">Recipe 1: Directly Comparing Two Reforms</a>
+    <a class='right-next' id="next-link" href="recipe03.html" title="next page">Recipe 3: Creating a Custom Table</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

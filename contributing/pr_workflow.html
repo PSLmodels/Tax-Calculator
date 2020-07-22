@@ -1,0 +1,413 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pull request workflow &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Policy parameter naming and placing conventions" href="param_naming.html" />
+    <link rel="prev" title="Contributor guide" href="contributor_guide.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html">
+   Testing
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
+   Testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pycodestyle
+    </span>
+   </code>
+   (the program formerly known as pep8)
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#testing-with-pytest">
+   Testing with pytest
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#interpreting-test-results">
+   Interpreting test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#updating-test-results">
+   Updating test results
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="testing.html#optional-coding-style-testing-with-pylint">
+   Optional coding style testing with
+   <code class="docutils literal notranslate">
+    <span class="pre">
+     pylint
+    </span>
+   </code>
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/contributing/pr_workflow.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fcontributing/pr_workflow.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/contributing/pr_workflow.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#steps-in-the-workflow">
+   Steps in the workflow
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="pull-request-workflow">
+<h1>Pull request workflow<a class="headerlink" href="#pull-request-workflow" title="Permalink to this headline">¶</a></h1>
+<p>This description of the git/GitHub workflow is written for a person
+who wants to contribute changes to Tax-Calculator source code.
+It assumes that you have read the <a class="reference internal" href="contributor_guide.html"><span class="doc">Contributor guide</span></a> and
+and <a class="reference internal" href="param_naming.html"><span class="doc">Policy parameter naming and placing conventions</span></a>,
+have forked the <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">central GitHub Tax-Calculator
+repository</a>
+to your GitHub account, and have cloned that forked copy to your local computer.</p>
+<p>This document describes the steps you should follow when developing a
+pull request on your local computer and submitting it to GitHub for
+review.</p>
+<p>After you have forked and cloned the central GitHub Tax-Calculator
+repository, you have access to three copies of the repository: the
+central repository (called <code class="docutils literal notranslate"><span class="pre">upstream</span></code>), the forked repository in your
+personal GitHub account (called <code class="docutils literal notranslate"><span class="pre">origin</span></code>), and the repository on your
+local computer, which is where you will prepare a pull request using
+git.
+git and GitHub are powerful and flexible, so there may be
+alternative ways to accomplish the results generated by the following
+workflow.
+But the following is the workflow commonly used by the core
+developers of Tax-Calculator.</p>
+<div class="section" id="steps-in-the-workflow">
+<h2>Steps in the workflow<a class="headerlink" href="#steps-in-the-workflow" title="Permalink to this headline">¶</a></h2>
+<p>It is essential to take each step in the order described here.</p>
+<p>We assume that you are at the operating system command prompt in
+the top-level directory of the Tax-Calculator repository on your
+local computer.
+(The top-level directory is the parent directory of the taxcalc subdirectory.)</p>
+<ol class="simple">
+<li><p>Make sure you are on the <code class="docutils literal notranslate"><span class="pre">master</span></code> branch by doing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">branch</span></code> to
+confirm the asterisk is marking <code class="docutils literal notranslate"><span class="pre">master</span></code>; if not on the <code class="docutils literal notranslate"><span class="pre">master</span></code>
+branch, do <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">master</span></code> to change the active branch.</p></li>
+<li><p>Make sure your <code class="docutils literal notranslate"><span class="pre">master</span></code> branch is synchronized with the <code class="docutils literal notranslate"><span class="pre">upstream</span></code>
+and <code class="docutils literal notranslate"><span class="pre">origin</span></code> repositories by executing <code class="docutils literal notranslate"><span class="pre">./gitsync</span></code> (on Mac OS X or
+Linux) or <code class="docutils literal notranslate"><span class="pre">gitsync</span></code> (on Windows).</p></li>
+<li><p>Create a new branch that will contain your proposed source-code
+changes by doing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">-b</span> <span class="pre">BNAME</span></code> (where you type in the name
+of your branch in place of <code class="docutils literal notranslate"><span class="pre">BNAME</span></code>).</p></li>
+<li><p>In your favorite text editor, revise one or more existing files and
+save the changes.
+If you want to add a new file to the Tax-Calculator
+repository, create and save the new file in your editor and then do
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">add</span> <span class="pre">FNAME</span></code> (where you type in the name of your new file in place
+of <code class="docutils literal notranslate"><span class="pre">FNAME</span></code>).  If you want to delete an existing file in the
+Tax-Calculator repository, then do <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">rm</span> <span class="pre">FNAME</span></code> (where you type in
+the name of the file you want to delete in place of <code class="docutils literal notranslate"><span class="pre">FNAME</span></code>).  If you
+want to rename an existing file in the Tax-Calculator repository, then do <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">mv</span> <span class="pre">OLDNAME</span> <span class="pre">NEWNAME</span></code> (where you type in the name of the file
+you want to rename in place of <code class="docutils literal notranslate"><span class="pre">OLDNAME</span></code> and type in the new name of
+the file in place of <code class="docutils literal notranslate"><span class="pre">NEWNAME</span></code>).</p></li>
+<li><p>Next test your proposed source-code changes in two ways: for coding
+style and for substantive results.
+Read <a class="reference internal" href="testing.html"><span class="doc">Testing</span></a> for how to conduct these tests on your local computer.</p></li>
+<li><p>When you have successfully tested your changes, commit the changes
+to your local repository by doing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">commit</span> <span class="pre">-a</span> <span class="pre">-m</span> <span class="pre">&quot;MESSAGE&quot;</span></code> (where
+you type in a short — no more than about 70 characters —
+description of the changes in place of <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code>).
+Note that it is essential to use the quotation marks around the <code class="docutils literal notranslate"><span class="pre">MESSAGE</span></code> because it
+will typically contain spaces.</p></li>
+</ol>
+<p><strong>NOTE THAT SOME PULL REQUESTS CYCLE THROUGH STEPS 4-6 MORE THAN ONCE</strong></p>
+<ol class="simple">
+<li><p>When finished with the development of your pull request, submit it
+to GitHub for review by doing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">push</span> <span class="pre">origin</span> <span class="pre">BNAME</span></code> (where you type
+in the branch name you used in step 3 in place of <code class="docutils literal notranslate"><span class="pre">BNAME</span></code>).</p></li>
+<li><p>Then in your browser go to the <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator">central GitHub Tax-Calculator
+repository</a>
+and you should see an invitation to create a pull request based on the
+branch you just pushed to <code class="docutils literal notranslate"><span class="pre">origin</span></code>.
+Accept that invitation, write a meaningful title, add a description of the reason for and nature of
+your proposed source-code changes, and then click on the “Create”
+button.</p></li>
+</ol>
+<p><strong>IF ASKED TO MAKE CHANGES, REPEAT STEPS 4-7 ON YOUR DEVELOPMENT BRANCH</strong></p>
+<p>To get back on your development branch, do <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">checkout</span> <span class="pre">BNAME</span></code> (where
+you type in the branch name you used in step 3 in place of <code class="docutils literal notranslate"><span class="pre">BNAME</span></code>).</p>
+<ol class="simple">
+<li><p>After your pull request is merged into the <code class="docutils literal notranslate"><span class="pre">upstream</span></code> <code class="docutils literal notranslate"><span class="pre">master</span></code>
+branch, repeat steps 1-2 in order to synchronize your <code class="docutils literal notranslate"><span class="pre">origin</span></code> and
+<code class="docutils literal notranslate"><span class="pre">local</span></code> repositories with the new <code class="docutils literal notranslate"><span class="pre">master</span></code> branch in the <code class="docutils literal notranslate"><span class="pre">upstream</span></code>
+repository.
+You should also delete the now redundant development
+branch from your local computer by doing <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">branch</span> <span class="pre">-d</span> <span class="pre">BNAME</span></code> (where
+you type in the branch name you used in step 3 in place of <code class="docutils literal notranslate"><span class="pre">BNAME</span></code>).</p></li>
+</ol>
+</div>
+</div>
+
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="contributor_guide.html" title="previous page">Contributor guide</a>
+    <a class='right-next' id="next-link" href="param_naming.html" title="next page">Policy parameter naming and placing conventions</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>
