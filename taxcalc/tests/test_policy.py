@@ -600,27 +600,30 @@ def test_section_titles(tests_path):
     Check section titles in policy_current_law.json and uguide.htmx files.
     """
     # pylint: disable=too-many-locals
-    def generate_section_dictionary(html_text):
+    def generate_section_dictionary(md_text):
         """
         Returns dictionary of section titles that is
         structured like the VALID_SECTION dictionary (see below) and
         extracted from the specified html_text.
         """
         sdict = dict()
-        for line in html_text.splitlines():
-            if line == '<!--  @  -->':  # the last policy parameter line
-                sdict[''] = {'': 0}
-                break  # out of line loop
-            secline = (line.startswith('<!--') and
-                       line.endswith('-->') and
-                       '@' in line)
-            if secline:
-                info = line.replace('<!--', '', 1).replace('-->', '', 1)
-                seclist = info.split('@', 1)
-                sec1 = seclist[0].strip()
-                sec2 = seclist[1].strip()
-                if sec1 not in sdict:
-                    sdict[sec1] = {}
+        for line in md_text.splitlines():
+            # This is shown as an empty case in current law policy and
+            # validation.
+            if line.startswith('## Other Parameters (not in Tax-Brain webapp'):
+                sdict[''] = {}
+                sdict[''][''] = 0
+                continue
+            sec2line = line.startswith('### ')
+            sec1line = line.startswith('## ')
+            # Create outer-layer dictionary entry for sec1.
+            if sec1line:
+                sec1 = line.replace('##', '', 1).strip()
+                sdict[sec1] = {}
+            # Create inner dictionary entry for sec1-sec2.
+            # Note that sec1 will have been defined from a previous loop.
+            if sec2line:
+                sec2 = line.replace('###', '', 1).strip()
                 sdict[sec1][sec2] = 0
         return sdict
     # begin main logic of test_section_titles
@@ -745,22 +748,23 @@ def test_section_titles(tests_path):
         for sec2title in valid_dict[sec1title]:
             assert sec2title in clp_dict[sec1title]
     # check validity of parameter section titles in docs/uguide.htmx skeleton
-    path = os.path.join(tests_path, '..', '..', 'docs', 'uguide.htmx')
-    with open(path, 'r') as htmxfile:
-        htmx_text = htmxfile.read()
-    htmxdict = generate_section_dictionary(htmx_text)
-    # ... make sure every htmxdict section title is in valid_dict
-    for sec1title in htmxdict:
-        assert isinstance(htmxdict[sec1title], dict)
+    path = os.path.join(tests_path, '..', '..', 'docs', 'guide',
+                        'policy_params.md')
+    with open(path, 'r') as md_file:
+        md_text = md_file.read()
+    md_dict = generate_section_dictionary(md_text)
+    # ... make sure every md_dict section title is in valid_dict
+    for sec1title in md_dict:
+        assert isinstance(md_dict[sec1title], dict)
         assert sec1title in valid_dict
-        for sec2title in htmxdict[sec1title]:
+        for sec2title in md_dict[sec1title]:
             assert sec2title in valid_dict[sec1title]
-    # ... make sure every valid_dict section title is in htmxdict
+    # ... make sure every valid_dict section title is in md_dict
     for sec1title in valid_dict:
         assert isinstance(valid_dict[sec1title], dict)
-        assert sec1title in htmxdict
+        assert sec1title in md_dict
         for sec2title in valid_dict[sec1title]:
-            assert sec2title in htmxdict[sec1title]
+            assert sec2title in md_dict[sec1title]
 
 
 def test_description_punctuation(tests_path):

@@ -1,0 +1,13 @@
+# Book settings
+title: Tax-Calculator
+author: Policy Simulation Library
+logo: PSL.svg
+exclude_patterns: [guide/make, guide/templates, recipes/md_src, '**/README.md']
+repository:
+  url: https://github.com/PSLmodels/Tax-Calculator
+  book_path: docs
+  branch: master
+html:
+  use_edit_page_button: true
+  use_repository_button: true
+  use_issues_button: true
