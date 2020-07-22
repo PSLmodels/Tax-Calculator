@@ -5,6 +5,7 @@ on:
       - master
 jobs:
   build-and-deploy:
+    if: github.repository == ‘PSLmodels/Tax-Calculator’
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,8 +25,8 @@ jobs:
         shell: bash -l {0}
         run: |
           pip install jupyter-book
-          pip install -e .
           conda install -c pslmodels behresp
+          pip install -e .
           cd docs
           jb build .
 
