@@ -554,7 +554,7 @@
   "56": {
       "baseline": "policy_current_law.json",
       "start_year": 2017,
-      "value": {"CPI_offset": 0.0025},
+      "value": {"parameter_indexing_CPI_offset": 0},
       "name": "Repeal TCJA chained CPI indexing",
       "output_type": "iitax",
       "compare_with": {}

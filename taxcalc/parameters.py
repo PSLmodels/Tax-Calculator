@@ -9,6 +9,7 @@ import numpy as np
 import requests
 
 import taxcalc
+from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import json_to_dict
 
 
@@ -149,12 +150,18 @@ class Parameters(pt.Parameters):
         Custom adjust method that handles special indexing logic. The logic
         is:
 
-        1. If "CPI_offset" is adjusted, revert all values of indexed parameters
-            to the 'known' values:
+        1. If "parameter_indexing_CPI_offset" is adjusted, first set
+        parameter_indexing_CPI_offset to zero before implementing the
+        adjusted parameter_indexing_CPI_offset to avoid stacking adjustments.
+        Then, revert all values of indexed parameters to the 'known' values:
             a. The current values of parameters that are being adjusted are
-                deleted after the first year in which CPI_offset is adjusted.
+                deleted after the first year in which
+                parameter_indexing_CPI_offset is adjusted.
             b. The current values of parameters that are not being adjusted
-                (i.e. are not in params) are deleted after the last known year.
+                (i.e. are not in params) are deleted after the last known year,
+                with the exception of parameters that revert to their pre-TCJA
+                values in 2026. Instead, these (2026) parameter values are
+                recalculated using the new inflation rates.
             After the 'unknown' values have been deleted, the last known value
             is extrapolated through the budget window. If there are indexed
             parameters in the adjustment, they will be included in the final
@@ -171,17 +178,11 @@ class Parameters(pt.Parameters):
                 parameter through the remaining years or until the -indexed
                 status changes again.
         3. Update all parameters that are not indexing related, i.e. they are
-            not "CPI_offset" or do not end with "-indexed".
+            not "parameter_indexing_CPI_offset" or do not end with "-indexed".
         4. Return parsed adjustment with all adjustments, including "-indexed"
             parameters.
 
         Notable side-effects:
-            - All values of indexed parameters, including default values, are
-                wiped out after the first year in which the "CPI_offset" is
-                changed. This is only necessary because Tax-Calculator
-                hard-codes inflated values. If Tax-Calculator only hard-coded
-                values that were changed for non-inflation related reasons,
-                then this would not be necessary for default values.
             - All values of a parameter whose indexed status is adjusted are
               wiped out after the year in which the value is adjusted for the
               same hard-coding reason.
@@ -191,29 +192,46 @@ class Parameters(pt.Parameters):
         label_to_extend = self.label_to_extend
         array_first = self.array_first
         self.array_first = False
+        self._gfactors = GrowFactors()
 
         params = self.read_params(params_or_path)
 
-        # Check if CPI_offset is adjusted. If so, reset values of all indexed
-        # parameters after year where CPI_offset is changed. If CPI_offset is
-        # changed multiple times, then reset values after the first year in
-        # which the CPI_offset is changed.
+        # Check if parameter_indexing_CPI_offset is adjusted. If so, reset
+        # values of all indexed parameters after year where
+        # parameter_indexing_CPI_offset is changed. If
+        # parameter_indexing_CPI_offset is changed multiple times, then
+        # reset values after the first year in which the
+        # parameter_indexing_CPI_offset is changed.
         needs_reset = []
-        if params.get("CPI_offset") is not None:
-            # Update CPI_offset with new value.
+        if params.get("parameter_indexing_CPI_offset") is not None:
+            # Update parameter_indexing_CPI_offset with new value.
             cpi_adj = super().adjust(
-                {"CPI_offset": params["CPI_offset"]}, **kwargs
+                {"parameter_indexing_CPI_offset":
+                 params["parameter_indexing_CPI_offset"]}, **kwargs
             )
-            # turn off extend now that CPI_offset has been updated.
+            # turn off extend now that parameter_indexing_CPI_offset
+            # has been updated.
             self.label_to_extend = None
-            # Get first year in which CPI_offset is changed.
+            # Get first year in which parameter_indexing_CPI_offset
+            # is changed.
             cpi_min_year = min(
-                cpi_adj["CPI_offset"], key=lambda vo: vo["year"]
+                cpi_adj["parameter_indexing_CPI_offset"],
+                key=lambda vo: vo["year"]
             )
-            # Apply new CPI_offset values to inflation rates
+
             rate_adjustment_vals = self.select_gte(
-                "CPI_offset", year=cpi_min_year["year"]
+                "parameter_indexing_CPI_offset", year=cpi_min_year["year"]
             )
+            # "Undo" any existing parameter_indexing_CPI_offset for
+            # years after parameter_indexing_CPI_offset has
+            # been updated.
+            self._inflation_rates = self._inflation_rates[
+                :cpi_min_year["year"] - self.start_year
+            ] + self._gfactors.price_inflation_rates(
+                cpi_min_year["year"], self.LAST_BUDGET_YEAR)
+
+            # Then apply new parameter_indexing_CPI_offset values to
+            # inflation rates
             for cpi_vo in rate_adjustment_vals:
                 self._inflation_rates[
                     cpi_vo["year"] - self.start_year
@@ -223,7 +241,10 @@ class Parameters(pt.Parameters):
             init_vals = {}
             to_delete = {}
             for param in params:
-                if param == "CPI_offset" or param in self._wage_indexed:
+                if (
+                    param == "parameter_indexing_CPI_offset" or
+                    param in self._wage_indexed
+                ):
                     continue
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
@@ -241,13 +262,55 @@ class Parameters(pt.Parameters):
             super().adjust(init_vals, **kwargs)
 
             # 1.b For all others, these are years after last_known_year.
+            last_known_year = max(cpi_min_year["year"], self._last_known_year)
+            # calculate 2026 value, using new inflation rates, for parameters
+            # that revert to their pre-TCJA values.
+            long_params = ['II_brk7', 'II_brk6', 'II_brk5', 'II_brk4',
+                           'II_brk3', 'II_brk2', 'II_brk1',
+                           'PT_brk7', 'PT_brk6', 'PT_brk5', 'PT_brk4',
+                           'PT_brk3', 'PT_brk2', 'PT_brk1',
+                           'PT_qbid_taxinc_thd',
+                           'ALD_BusinessLosses_c',
+                           'STD', 'II_em', 'II_em_ps',
+                           'AMT_em', 'AMT_em_ps', 'AMT_em_pe',
+                           'ID_ps', 'ID_AllTaxes_c']
+            final_ifactor = 1.0
+            pyear = 2017  # prior year before TCJA first implemented
+            fyear = 2026  # final year in which parameter values revert to
+            # pre-TCJA values
+            # construct final-year inflation factor from prior year
+            # NOTE: pvalue[t+1] = pvalue[t] * ( 1 + irate[t] )
+            for year in range(pyear, fyear):
+                final_ifactor *= 1 + \
+                    self._inflation_rates[year - self.start_year]
+
+            long_param_vals = defaultdict(list)
+            # compute final year parameter value
+            for param in long_params:
+                # only revert param in 2026 if it's not in revision
+                if params.get(param) is None:
+                    # grab param values from 2017
+                    vos = self.select_eq(param, year=pyear)
+                    # use final_ifactor to inflate from 2017 to 2026
+                    for vo in vos:
+                        long_param_vals[param].append(
+                            # Create new dict to avoid modifying the original
+                            dict(
+                                vo,
+                                value=min(9e99, round(
+                                    vo["value"] * final_ifactor, 0)),
+                                year=fyear,
+                            )
+                        )
+                    needs_reset.append(param)
+            super().adjust(long_param_vals, **kwargs)
+
             init_vals = {}
             to_delete = {}
-            last_known_year = max(cpi_min_year["year"], self._last_known_year)
             for param in self._data:
                 if (
                     param in params or
-                    param == "CPI_offset" or
+                    param == "parameter_indexing_CPI_offset" or
                     param in self._wage_indexed
                 ):
                     continue
@@ -257,8 +320,8 @@ class Parameters(pt.Parameters):
                         True,
                         {"year": last_known_year}
                     )
-                    to_delete[param] = self.select_gt(
-                        param, year=last_known_year
+                    to_delete[param] = self.select_eq(
+                        param, strict=True, _auto=True
                     )
                     needs_reset.append(param)
 

@@ -15,3 +15,9 @@ read-the-docs/_build/
 
 # IRS-SOI PUF data file
 puf.csv
+
+# Jupyter notebook checkpoints
+*.ipynb_checkpoints*
+
+# Built documentation
+docs/_build/

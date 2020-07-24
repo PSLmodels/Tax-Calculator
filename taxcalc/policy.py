@@ -53,7 +53,14 @@ class Policy(Parameters):
         'FilerCredit_c': 'is a removed parameter name',
         'ALD_InvInc_ec_base_RyanBrady': 'is a removed parameter name',
         # TODO: following parameter renamed in PR 2292 merged on 2019-04-15
-        'cpi_offset': 'was renamed CPI_offset in release 2.0.0',
+        "cpi_offset": (
+            "was renamed parameter_indexing_CPI_offset. "
+            "See documentation for change in usage."
+        ),
+        "CPI_offset": (
+            "was renamed parameter_indexing_CPI_offset. "
+            "See documentation for change in usage."
+        ),
         # TODO: following parameters renamed in PR 2345 merged on 2019-06-24
         'PT_excl_rt':
         'was renamed PT_qbid_rt in release 2.4.0',
@@ -124,9 +131,12 @@ class Policy(Parameters):
 
     def set_rates(self):
         """Initialize taxcalc indexing data."""
-        cpi_vals = [vo["value"] for vo in self._data["CPI_offset"]["value"]]
-        # extend cpi_offset values through budget window if they
-        # have not been extended already.
+        cpi_vals = [
+            vo["value"] for
+            vo in self._data["parameter_indexing_CPI_offset"]["value"]
+        ]
+        # extend parameter_indexing_CPI_offset values through budget window
+        # if they have not been extended already.
         cpi_vals = cpi_vals + cpi_vals[-1:] * (
             self.end_year - self.start_year + 1 - len(cpi_vals)
         )

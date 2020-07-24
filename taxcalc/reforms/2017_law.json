@@ -13,7 +13,7 @@
 // - Set pre-TCJA above the line deduction policy (7)
 // - Set pre-TCJA itemized deduction policy (8)
 // Reform_Parameter_Map:
-// - 0: CPI_offset
+// - 0: parameter_indexing_CPI_offset
 // - 1: II_rt?/II_brk? and PT_rt?/PT_brk?
 // - 2: six PT_qbid_* parameters
 // - 3: STD and II_em parameters
@@ -26,7 +26,7 @@
 // NOTE: this reform projects pre-TCJA 2017 parameter values forward using the
 //       unchained CPI-U price index.
 {
-    "CPI_offset": {"2017": 0.0025},
+    "parameter_indexing_CPI_offset": {"2017": 0},
     "II_rt1": {"2018": 0.10},
     "II_brk1": {"2017": [9325, 18650, 9325, 13350, 18650]},
     "II_rt2": {"2018": 0.15},

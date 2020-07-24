@@ -600,27 +600,30 @@ def test_section_titles(tests_path):
     Check section titles in policy_current_law.json and uguide.htmx files.
     """
     # pylint: disable=too-many-locals
-    def generate_section_dictionary(html_text):
+    def generate_section_dictionary(md_text):
         """
         Returns dictionary of section titles that is
         structured like the VALID_SECTION dictionary (see below) and
         extracted from the specified html_text.
         """
         sdict = dict()
-        for line in html_text.splitlines():
-            if line == '<!--  @  -->':  # the last policy parameter line
-                sdict[''] = {'': 0}
-                break  # out of line loop
-            secline = (line.startswith('<!--') and
-                       line.endswith('-->') and
-                       '@' in line)
-            if secline:
-                info = line.replace('<!--', '', 1).replace('-->', '', 1)
-                seclist = info.split('@', 1)
-                sec1 = seclist[0].strip()
-                sec2 = seclist[1].strip()
-                if sec1 not in sdict:
-                    sdict[sec1] = {}
+        for line in md_text.splitlines():
+            # This is shown as an empty case in current law policy and
+            # validation.
+            if line.startswith('## Other Parameters (not in Tax-Brain webapp'):
+                sdict[''] = {}
+                sdict[''][''] = 0
+                continue
+            sec2line = line.startswith('### ')
+            sec1line = line.startswith('## ')
+            # Create outer-layer dictionary entry for sec1.
+            if sec1line:
+                sec1 = line.replace('##', '', 1).strip()
+                sdict[sec1] = {}
+            # Create inner dictionary entry for sec1-sec2.
+            # Note that sec1 will have been defined from a previous loop.
+            if sec2line:
+                sec2 = line.replace('###', '', 1).strip()
                 sdict[sec1][sec2] = 0
         return sdict
     # begin main logic of test_section_titles
@@ -745,22 +748,23 @@ def test_section_titles(tests_path):
         for sec2title in valid_dict[sec1title]:
             assert sec2title in clp_dict[sec1title]
     # check validity of parameter section titles in docs/uguide.htmx skeleton
-    path = os.path.join(tests_path, '..', '..', 'docs', 'uguide.htmx')
-    with open(path, 'r') as htmxfile:
-        htmx_text = htmxfile.read()
-    htmxdict = generate_section_dictionary(htmx_text)
-    # ... make sure every htmxdict section title is in valid_dict
-    for sec1title in htmxdict:
-        assert isinstance(htmxdict[sec1title], dict)
+    path = os.path.join(tests_path, '..', '..', 'docs', 'guide',
+                        'policy_params.md')
+    with open(path, 'r') as md_file:
+        md_text = md_file.read()
+    md_dict = generate_section_dictionary(md_text)
+    # ... make sure every md_dict section title is in valid_dict
+    for sec1title in md_dict:
+        assert isinstance(md_dict[sec1title], dict)
         assert sec1title in valid_dict
-        for sec2title in htmxdict[sec1title]:
+        for sec2title in md_dict[sec1title]:
             assert sec2title in valid_dict[sec1title]
-    # ... make sure every valid_dict section title is in htmxdict
+    # ... make sure every valid_dict section title is in md_dict
     for sec1title in valid_dict:
         assert isinstance(valid_dict[sec1title], dict)
-        assert sec1title in htmxdict
+        assert sec1title in md_dict
         for sec2title in valid_dict[sec1title]:
-            assert sec2title in htmxdict[sec1title]
+            assert sec2title in md_dict[sec1title]
 
 
 def test_description_punctuation(tests_path):
@@ -897,14 +901,21 @@ def test_reform_with_scalar_vector_errors():
 
 def test_index_offset_reform():
     """
-    Test a reform that includes both a change in CPI_offset and a change in
-    a variable's indexed status in the same year.
+    Test a reform that includes both a change in parameter_indexing_CPI_offset
+    and a change in a variable's indexed status in the same year.
     """
+    # create policy0 to extract inflation rates before any
+    # parameter_indexing_CPI_offset
+    policy0 = Policy()
+    policy0.implement_reform({'parameter_indexing_CPI_offset': {2017: 0}})
+    cpiu_rates = policy0.inflation_rates()
+
     reform1 = {'CTC_c-indexed': {2020: True}}
     policy1 = Policy()
     policy1.implement_reform(reform1)
     offset = -0.005
-    reform2 = {'CTC_c-indexed': {2020: True}, 'CPI_offset': {2020: offset}}
+    reform2 = {'CTC_c-indexed': {2020: True},
+               'parameter_indexing_CPI_offset': {2020: offset}}
     policy2 = Policy()
     policy2.implement_reform(reform2)  # caused T-C crash before PR#2364
     # extract from policy1 and policy2 the parameter values of CTC_c
@@ -924,7 +935,8 @@ def test_index_offset_reform():
     assert pvalue2[2021] > pvalue2[2020]
     # ... calculate expected pvalue2[2021] from offset and pvalue1 values
     indexrate1 = pvalue1[2021] / pvalue1[2020] - 1.
-    expindexrate = indexrate1 + offset
+    syear = Policy.JSON_START_YEAR
+    expindexrate = cpiu_rates[2020 - syear] + offset
     expvalue = round(pvalue2[2020] * (1. + expindexrate), 2)
     # ... compare expected value with actual value of pvalue2 for 2021
     assert np.allclose([expvalue], [pvalue2[2021]])
@@ -932,13 +944,15 @@ def test_index_offset_reform():
 
 def test_cpi_offset_affect_on_prior_years():
     """
-    Test that CPI_offset does not have affect on inflation
-    rates in earlier years.
+    Test that parameter_indexing_CPI_offset does not have affect
+    on inflation rates in earlier years.
     """
-    reform = {'CPI_offset': {2022: -0.005}}
+    reform1 = {'parameter_indexing_CPI_offset': {2022: 0}}
+    reform2 = {'parameter_indexing_CPI_offset': {2022: -0.005}}
     p1 = Policy()
     p2 = Policy()
-    p2.implement_reform(reform)
+    p1.implement_reform(reform1)
+    p2.implement_reform(reform2)
 
     start_year = p1.start_year
     p1_rates = np.array(p1.inflation_rates())
@@ -955,6 +969,39 @@ def test_cpi_offset_affect_on_prior_years():
         p1_rates[2022 - start_year],
         p2_rates[2022 - start_year] - (-0.005)
     )
+
+
+def test_cpi_offset_on_reverting_params():
+    """
+    Test that params that revert to their pre-TCJA values
+    in 2026 revert if a parameter_indexing_CPI_offset is specified.
+    """
+    reform0 = {'parameter_indexing_CPI_offset': {2020: -0.001}}
+    reform1 = {'STD': {2017: [6350, 12700, 6350, 9350, 12700]},
+               'parameter_indexing_CPI_offset': {2020: -0.001}}
+    reform2 = {'STD': {2020: [10000, 20000, 10000, 10000, 20000]},
+               'parameter_indexing_CPI_offset': {2020: -0.001}}
+
+    p0 = Policy()
+    p1 = Policy()
+    p2 = Policy()
+    p0.implement_reform(reform0)
+    p1.implement_reform(reform1)
+    p2.implement_reform(reform2)
+
+    ryear = 2026
+    syear = Policy.JSON_START_YEAR
+
+    # STD was reverted in 2026
+    # atol=0.5 because ppp.py rounds params to nearest int
+    assert np.allclose(
+        p0._STD[ryear - syear],
+        p1._STD[ryear - syear], atol=0.5)
+
+    # STD was not reverted in 2026 if included in revision
+    assert not np.allclose(
+        p1._STD[ryear - syear],
+        p2._STD[ryear - syear], atol=0.5)
 
 
 class TestAdjust:
@@ -1160,17 +1207,25 @@ class TestAdjust:
 
     def test_apply_cpi_offset(self):
         """
-        Test applying the CPI_offset parameter without any other parameters.
+        Test applying the parameter_indexing_CPI_offset parameter
+        without any other parameters.
         """
         pol1 = Policy()
-        pol1.implement_reform({"CPI_offset": {2021: -0.001}})
+        pol1.implement_reform(
+            {"parameter_indexing_CPI_offset": {2021: -0.001}}
+        )
 
         pol2 = Policy()
-        pol2.adjust({"CPI_offset": [{"year": 2021, "value": -0.001}]})
+        pol2.adjust(
+            {"parameter_indexing_CPI_offset": [
+                {"year": 2021, "value": -0.001}
+            ]}
+        )
 
         cmp_policy_objs(pol1, pol2)
 
         pol0 = Policy()
+        pol0.implement_reform({"parameter_indexing_CPI_offset": {2021: 0}})
 
         init_rates = pol0.inflation_rates()
         new_rates = pol2.inflation_rates()
@@ -1178,7 +1233,7 @@ class TestAdjust:
         start_ix = 2021 - pol2.start_year
 
         exp_rates = copy.deepcopy(new_rates)
-        exp_rates[start_ix:] -= pol2._CPI_offset[start_ix:]
+        exp_rates[start_ix:] -= pol2._parameter_indexing_CPI_offset[start_ix:]
         np.testing.assert_allclose(init_rates, exp_rates)
 
         # make sure values prior to 2021 were not affected.
@@ -1351,18 +1406,20 @@ class TestAdjust:
 
     def test_adj_CPI_offset_and_index_status(self):
         """
-        Test changing CPI_offset and another parameter simultaneously.
+        Test changing parameter_indexing_CPI_offset and another
+        parameter simultaneously.
         """
         pol1 = Policy()
         pol1.implement_reform({
             "CTC_c-indexed": {2020: True},
-            "CPI_offset": {2020: -0.005}},
+            "parameter_indexing_CPI_offset": {2020: -0.005}},
         )
 
         pol2 = Policy()
         pol2.adjust(
             {
-                "CPI_offset": [{"year": 2020, "value": -0.005}],
+                "parameter_indexing_CPI_offset":
+                    [{"year": 2020, "value": -0.005}],
                 "CTC_c-indexed": [{"year": 2020, "value": True}],
             }
         )
@@ -1371,11 +1428,12 @@ class TestAdjust:
 
         # Check no difference prior to 2020
         pol0 = Policy()
+        pol0.implement_reform({"parameter_indexing_CPI_offset": {2020: 0}})
         cmp_policy_objs(
             pol0,
             pol2,
             year_range=range(pol2.start_year, 2020 + 1),
-            exclude=["CPI_offset"]
+            exclude=["parameter_indexing_CPI_offset"]
         )
 
         pol2.set_state(year=[2021, 2022])
