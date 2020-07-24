@@ -119,7 +119,7 @@ main.bd-content {
             }
 
             span {
-                font-size: .9em;
+                font-size: .9rem;
             }
         }
 
@@ -146,9 +146,13 @@ main.bd-content {
 
         // Tables from sphinx-tabs
 
-        div.sphinx-tabs > div.menu > a.item {
+        div.sphinx-tabs > div.sphinx-menu {
+            padding: 0;
+        }
+
+        div.sphinx-tabs > div.sphinx-menu > a.item {
             width: auto;
-            margin: 0;
+            margin: 0px 0px -1px 0px;
         }
 
         // Footnotes and Citations
@@ -327,6 +331,11 @@ button.thebe-launch-button {
     font-size: 1em;
 }
 
+// toc directive styles
+div.tableofcontents-wrapper p.caption {
+    font-weight: 600 !important;
+    margin-bottom: 0em !important;
+}
 
 /*********************************************
 * Top Bar *

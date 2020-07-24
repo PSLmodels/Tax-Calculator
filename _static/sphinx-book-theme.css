@@ -62,7 +62,7 @@ main.bd-content {
     main.bd-content #main-content div.figure span.caption-number {
       font-weight: bold; }
     main.bd-content #main-content div.figure span {
-      font-size: .9em; }
+      font-size: .9rem; }
   main.bd-content #main-content dl.glossary dd {
     margin-left: 1.5em; }
   main.bd-content #main-content div.contents {
@@ -72,9 +72,11 @@ main.bd-content {
       padding: .5em 0 0 1em; }
   main.bd-content #main-content p.centered {
     text-align: center; }
-  main.bd-content #main-content div.sphinx-tabs > div.menu > a.item {
+  main.bd-content #main-content div.sphinx-tabs > div.sphinx-menu {
+    padding: 0; }
+  main.bd-content #main-content div.sphinx-tabs > div.sphinx-menu > a.item {
     width: auto;
-    margin: 0; }
+    margin: 0px 0px -1px 0px; }
   main.bd-content #main-content span.brackets:before, main.bd-content #main-content a.brackets:before {
     content: "["; }
   main.bd-content #main-content span.brackets:after, main.bd-content #main-content a.brackets:after {
@@ -172,6 +174,10 @@ div.highlight {
 button.thebe-launch-button {
   height: 2.5em;
   font-size: 1em; }
+
+div.tableofcontents-wrapper p.caption {
+  font-weight: 600 !important;
+  margin-bottom: 0em !important; }
 
 /*********************************************
 * Top Bar *
