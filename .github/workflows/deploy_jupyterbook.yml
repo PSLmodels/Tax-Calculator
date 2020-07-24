@@ -24,7 +24,6 @@ jobs:
       - name: Build # Build Jupyter Book
         shell: bash -l {0}
         run: |
-          pip install jupyter-book
           conda install -c pslmodels behresp
           pip install -e .
           cd docs
