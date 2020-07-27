@@ -160,12 +160,12 @@ def sample_dataframe(assump, year, offset):
     sdict[4] = mstat
     # (05) PAGE
     sdict[5] = np.random.randint(assump['min_age'],
-                                         assump['max_age']+1,
-                                         size)
+                                 assump['max_age']+1,
+                                 size)
     # (06) SAGE
     age_diff = np.random.randint(assump['min_age_diff'],
-                                         assump['max_age_diff']+1,
-                                         size)
+                                 assump['max_age_diff']+1,
+                                 size)
     sage = sdict[5] + age_diff
     sdict[6] = np.where(mstat == 2, np.maximum(sage, assump['min_age']), zero)
     # (07-10) DEPX, DEP13, DEP17, DEP18
@@ -195,20 +195,20 @@ def sample_dataframe(assump, year, offset):
     sdict[14] = np.random.randint(0, assump['max_intinc']+1, size) * 1000
     # (15) STCG
     sdict[15] = np.random.randint(assump['min_stcg'],
-                                          assump['max_stcg']+1,
-                                          size) * 1000
+                                  assump['max_stcg']+1,
+                                  size) * 1000
     # (16) LTCG
     sdict[16] = np.random.randint(assump['min_ltcg'],
-                                          assump['max_ltcg']+1,
-                                          size) * 1000
+                                  assump['max_ltcg']+1,
+                                  size) * 1000
     # (17) OTHERPROP
     sdict[17] = np.random.randint(0,
-                                          assump['max_other_prop_inc']+1,
-                                          size) * 1000
+                                  assump['max_other_prop_inc']+1,
+                                  size) * 1000
     # (18) NONPROP
     sdict[18] = np.random.randint(0,
-                                          assump['max_other_nonprop_inc']+1,
-                                          size) * 1000
+                                  assump['max_other_nonprop_inc']+1,
+                                  size) * 1000
     # (19) PENSIONS
     sdict[19] = np.random.randint(0, assump['max_pnben']+1, size) * 1000
     # (20) GSSI
@@ -221,19 +221,19 @@ def sample_dataframe(assump, year, offset):
     sdict[23] = zero
     # (24) PROPTAX
     sdict[24] = np.random.randint(0,
-                                          assump['max_ided_proptax']+1,
-                                          size) * 1000
+                                  assump['max_ided_proptax']+1,
+                                  size) * 1000
     # (25) OTHERITEM
     sdict[25] = np.random.randint(0,
-                                          assump['max_ided_nopref']+1,
-                                          size) * 1000
+                                  assump['max_ided_nopref']+1,
+                                  size) * 1000
     # (26) CHILDCARE (TAXSIM-27 EXPECTS ZERO IF NO QUALIFYING CHILDRED)
     ccexp = np.random.randint(0, assump['max_ccexp']+1, size) * 1000
     sdict[26] = np.where(dep13 > 0, ccexp, zero)
     # (27) MORTGAGE
     sdict[27] = np.random.randint(0,
-                                          assump['max_ided_mortgage']+1,
-                                          size) * 1000
+                                  assump['max_ided_mortgage']+1,
+                                  size) * 1000
     smpl = pd.DataFrame(sdict)
     return smpl
 
