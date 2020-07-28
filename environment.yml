@@ -15,3 +15,6 @@ dependencies:
 - pylint
 - coverage
 - "paramtools>=0.14.0"
+- pip
+- pip:
+    - jupyter-book
