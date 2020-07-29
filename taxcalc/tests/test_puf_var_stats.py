@@ -65,10 +65,10 @@ def create_base_table(test_path):
     # create table_dict with sorted read vars followed by sorted calc vars
     table_dict = dict()
     for var in sorted(read_vars):
-      if "taxdata_puf" in read_var_dict['read'][var]['availability']:
-          table_dict[var] = read_var_dict['read'][var]['desc']
-      else:
-          pass
+        if "taxdata_puf" in read_var_dict['read'][var]['availability']:
+            table_dict[var] = read_var_dict['read'][var]['desc']
+        else:
+            pass
     sorted_calc_vars = sorted(calc_dict.keys())
     for var in sorted_calc_vars:
         table_dict[var] = calc_dict[var]
