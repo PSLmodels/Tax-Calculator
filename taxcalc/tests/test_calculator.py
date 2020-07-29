@@ -717,7 +717,7 @@ def test_n65(cps_subsample):
     """
     recs = Records.cps_constructor(data=cps_subsample)
     calc = Calculator(policy=Policy(), records=recs)
-    assert calc.n65().sum() > 1500
+    assert calc.n65().sum() > 600
 
 
 def test_ce_aftertax_income(cps_subsample):
