@@ -1,49 +1,54 @@
 - file: index
-- header: Usage
-- file: usage/starting
-- file: usage/overview
-- file: guide/index
+- chapter: Usage
   sections:
-    - file: guide/python_interface
-    - file: guide/cli
-    - file: guide/policy_params
-    - file: guide/input_vars
-    - file: guide/output_vars
-    - file: guide/assumption_params
-- file: recipes/index
+    - file: usage/starting
+    - file: usage/overview
+    - file: guide/index
+      sections:
+        - file: guide/python_interface
+        - file: guide/cli
+        - file: guide/policy_params
+        - file: guide/input_vars
+        - file: guide/output_vars
+        - file: guide/assumption_params
+    - file: recipes/index
+      sections:
+      - file: recipes/recipe00
+      - file: recipes/recipe01
+      - file: recipes/recipe02
+      - file: recipes/recipe03
+      - file: recipes/recipe04
+      - file: recipes/recipe04_pandas
+      - file: recipes/recipe05
+      - file: recipes/recipe06
+- chapter: About
   sections:
-    - file: recipes/recipe00
-    - file: recipes/recipe01
-    - file: recipes/recipe02
-    - file: recipes/recipe03
-    - file: recipes/recipe04
-    - file: recipes/recipe04_pandas
-    - file: recipes/recipe05
-    - file: recipes/recipe06
-- header: About
-- file: about/history
-- file: about/roadmap
-- file: about/releases
-- file: about/changes
-- file: about/upgrading
-- file: about/license
-- header: Contributing
-- file: contributing/contributor_guide
-- file: contributing/pr_workflow
-- file: contributing/param_naming
-- file: contributing/testing
-- header: API
-- file: api/public_api
+    - file: about/history
+    - file: about/roadmap
+    - file: about/releases
+    - file: about/changes
+    - file: about/upgrading
+    - file: about/license
+- chapter: Contributing
   sections:
-    - file: api/calcfunctions
-    - file: api/calculator
-    - file: api/consumption
-    - file: api/data
-    - file: api/decorators
-    - file: api/growdiff
-    - file: api/growfactors
-    - file: api/policy
-    - file: api/records
-    - file: api/taxcalcio
-    - file: api/utils
-    - file: api/utilsprvt
+    - file: contributing/contributor_guide
+    - file: contributing/pr_workflow
+    - file: contributing/param_naming
+    - file: contributing/testing
+- chapter: API
+  sections:
+    - file: api/public_api
+      sections:
+        - file: api/calcfunctions
+        - file: api/calculator
+        - file: api/consumption
+        - file: api/data
+        - file: api/decorators
+        - file: api/growdiff
+        - file: api/growfactors
+        - file: api/parameters
+        - file: api/policy
+        - file: api/records
+        - file: api/taxcalcio
+        - file: api/utils
+        - file: api/utilsprvt
