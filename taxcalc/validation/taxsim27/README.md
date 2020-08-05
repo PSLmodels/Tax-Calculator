@@ -36,6 +36,17 @@ In the following results, when we say "same results" we mean that the
 federal individual income tax liabilities and payroll tax liabilities
 being compared have differences of no larger than one cent.
 
+
+Instructions
+------------------
+
+1. Use `taxsim_input.py` to create the `.in` files necessary to input into TAXSIM-27.
+2. Head to the [TAXSIM-27 website](http://users.nber.org/~taxsim/taxsim27/) and under _Upload a file_, place each of the `.in` files in and save the outputs as `LYY.in.out-taxsim`. When you run the TAXSIM-27 simulation, make sure to switch _Show detailed intermediate calculations_ to _on_.
+3. Open each of these `.in.out-taxsim` files and remove the first few lines containing the variable names.
+4. Compress these files in a `.zip` format (make sure to compress the files themselves and **do not** place the files in a folder and compress the folder).
+5. Navigate to `taxcalc/validation` and run `tests.sh`.
+
+
 Validation Results
 ------------------
 
