@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
@@ -28,6 +29,13 @@
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="User guide" href="../guide/index.html" />
@@ -154,42 +162,6 @@
    Testing
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
-   Testing with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pycodestyle
-    </span>
-   </code>
-   (the program formerly known as pep8)
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#testing-with-pytest">
-   Testing with pytest
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#interpreting-test-results">
-   Interpreting test results
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#updating-test-results">
-   Updating test results
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#optional-coding-style-testing-with-pylint">
-   Optional coding style testing with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pylint
-    </span>
-   </code>
-  </a>
- </li>
 </ul>
 
 </nav>
@@ -308,67 +280,138 @@
                 
   <div class="section" id="structural-overview">
 <h1>Structural overview<a class="headerlink" href="#structural-overview" title="Permalink to this headline">¶</a></h1>
-<p>Tax-Calculator has been designed using <a class="reference external" href="https://www.programiz.com/python-programming/object-oriented-programming">object-oriented programming (OOP)</a> principles. There are seven classes and a collection of global utility functions, but most Python programming involves using only a few methods in three classes.</p>
+<p>Tax-Calculator has been designed using <a class="reference external" href="https://www.programiz.com/python-programming/object-oriented-programming">object-oriented programming (OOP)</a>
+principles.
+There are seven classes and a collection of global utility functions,
+but most Python programming involves using only a few methods in three classes.</p>
 <div class="section" id="quick-summary">
 <h2>Quick summary<a class="headerlink" href="#quick-summary" title="Permalink to this headline">¶</a></h2>
-<p>Typical Tax-Calculator usage involves creating two Calculator class objects: both containing the same sample of filing units (that is, Records class object), but each containing a different tax policy (that is, Policy class object). The idea is to compare the calculated tax liabilities of the sample units under the two different tax policies, one of which is usually current-law policy and the other is a tax reform of interest.</p>
+<p>Typical Tax-Calculator usage involves creating two Calculator class objects:
+both containing the same sample of filing units (that is, Records class object),
+but each containing a different tax policy (that is, Policy class object).
+The idea is to compare the calculated tax liabilities of the sample units under
+the two different tax policies,
+one of which is usually current-law policy and the other is a tax reform of
+interest.</p>
 <ul class="simple">
-<li><p><strong>rec</strong> → Records class object.<br />
-Created by <strong>Records()</strong> when containing IRS-SOI-PUF-derived filing-unit data or created by <strong>Records.cps_constructor()</strong> when containing CPS-derived filing-unit data.</p></li>
-<li><p><strong>clp</strong> → Policy class object containing parameters that characterize current-law policy.<br />
-Created by <strong>Policy()</strong>.</p></li>
-<li><p><strong>ref</strong> → Policy class object containing parameters that characterize a tax reform.<br />
-Created using a Python dictionary <strong>refdict</strong> representing the reform by using the <strong>implement_reform(refdict)</strong> method on a Policy object created by <strong>Policy()</strong>. Or created using a JSON file <strong>filename</strong> representing the reform by using the <strong>implement_reform(Policy.read_json_reform(filename))</strong> method on a Policy object created by <strong>Policy()</strong>.</p></li>
-<li><p><strong>calc_clp</strong> → Calculator class object for current-law policy.<br />
-Created by <strong>Calculator(records=rec, policy=clp)</strong>.</p></li>
-<li><p><strong>calc_ref</strong> → Calculator class object for reform policy.<br />
-Created by <strong>Calculator(records=rec, policy=ref)</strong>.</p></li>
-<li><p><strong>calc_all()</strong> → Calculator class method that computes tax liability (and many intermediate variables such as AGI) for each filing-unit.</p></li>
-<li><p><strong>itax_clp</strong> → Variable containing aggregate income tax liebility under current-law policy.<br />
-Created by <strong>weighted_total(‘iitax’)</strong> method called on <strong>calc_clp</strong> object after <strong>calc_all()</strong> called.</p></li>
-<li><p><strong>diff_table</strong> → Pandas DataFrame object containing reform-minus-current-law difference table for income tax liability by expanded-income deciles.<br />
-Created by <strong>calc_clp.difference_table(calc_ref, ‘weighted_deciles’, ‘iitax’)</strong> method called after <strong>calc_all()</strong> has been called on both Calculator objects.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rec</span></code> → Records class object.<br />
+Created by <code class="docutils literal notranslate"><span class="pre">Records()</span></code> when containing IRS-SOI-PUF-derived filing-unit data
+or created by <code class="docutils literal notranslate"><span class="pre">Records.cps_constructor()</span></code> when containing CPS-derived
+filing-unit data.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">clp</span></code> → <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object containing parameters that characterize
+current-law policy.<br />
+Created by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ref</span></code> → <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object containing parameters that characterize a tax
+reform.<br />
+Created using a Python dictionary <code class="docutils literal notranslate"><span class="pre">refdict</span></code> representing the reform by
+using the <code class="docutils literal notranslate"><span class="pre">implement_reform(refdict)</span></code> method on a <code class="docutils literal notranslate"><span class="pre">Policy</span></code> object created
+by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.
+Or created using a JSON file <code class="docutils literal notranslate"><span class="pre">filename</span></code> representing the reform by using
+the <code class="docutils literal notranslate"><span class="pre">implement_reform(Policy.read_json_reform(filename))</span></code> method on a
+<code class="docutils literal notranslate"><span class="pre">Policy</span></code> object created by <code class="docutils literal notranslate"><span class="pre">Policy()</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calc_clp</span></code> → Calculator class object for current-law policy.<br />
+Created by <code class="docutils literal notranslate"><span class="pre">Calculator(records=rec,</span> <span class="pre">policy=clp)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calc_ref</span></code> → Calculator class object for reform policy.<br />
+Created by <code class="docutils literal notranslate"><span class="pre">Calculator(records=rec,</span> <span class="pre">policy=ref)</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">calc_all()</span></code> → Calculator class method that computes tax liability
+(and many intermediate variables such as AGI) for each filing-unit.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">itax_clp</span></code> → Variable containing aggregate income tax liebility under
+current-law policy.<br />
+Created by <code class="docutils literal notranslate"><span class="pre">weighted_total('iitax')</span></code> method called on <code class="docutils literal notranslate"><span class="pre">calc_clp</span></code> object
+after <code class="docutils literal notranslate"><span class="pre">calc_all()</span></code> called.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">diff_table</span></code> → Pandas DataFrame object containing reform-minus-current-law
+difference table for income tax liability by expanded-income deciles.<br />
+Created by
+<code class="docutils literal notranslate"><span class="pre">calc_clp.difference_table(calc_ref,</span> <span class="pre">'weighted_deciles',</span> <span class="pre">'iitax')</span></code> method
+called after <code class="docutils literal notranslate"><span class="pre">calc_all()</span></code> has been called on both Calculator objects.</p></li>
 </ul>
 <p>For examples of Python scripts that use these classes and methods, see
 <a class="reference internal" href="../recipes/index.html"><span class="doc">Recipes</span></a>.</p>
 <p>For detailed documentation and source code for these three classes, see:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py">records.py</a> for Records class and all its methods.</p></li>
-<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py">policy.py</a> for Policy class and all its methods.</p></li>
-<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py">calculator.py</a> for Calculator class and all its methods.</p></li>
+<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py">records.py</a>
+for Records class and all its methods.</p></li>
+<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py">policy.py</a>
+for Policy class and all its methods.</p></li>
+<li><p><a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py">calculator.py</a>
+for Calculator class and all its methods.</p></li>
 </ul>
 </div>
 <div class="section" id="complete-story">
 <h2>Complete story<a class="headerlink" href="#complete-story" title="Permalink to this headline">¶</a></h2>
-<p>Tax-Calculator contains eight basic classes, and a collection of global utility functions, that together provide the full range of Tax-Calculator capabilities. Here is a description of their role in Tax-Calculator and a link to each the detailed documentation and source code for each class and all its methods.</p>
+<p>Tax-Calculator contains eight basic classes, and a collection of global utility
+functions, that together provide the full range of Tax-Calculator capabilities.
+Here is a description of their role in Tax-Calculator and a link to each the
+detailed documentation and source code for each class and all its methods.</p>
 <div class="section" id="classes">
 <h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p><strong>Data</strong> → Contains basic logic for manipulating cross-sectional data that need to have growth factors and sample weights to age the data to years after the data start year.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/data.py">data.py</a>.</p></li>
-<li><p><strong>Records</strong> → Derived from <strong>Data</strong> and contains attributes of each tax filing unit.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py">records.py</a>.</p></li>
-<li><p><strong>GrowFactors</strong> → Contains CBO-derived baseline annual growth factors that are used to specify price inflation and wage growth rates in the <strong>Policy</strong> class object and to specify annual growth factors that are applied to monetary attributes of the filing units in the <strong>Records</strong> class object.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growfactors.py">growfactors.py</a>.</p></li>
-<li><p><strong>Parameters</strong> → Contains basic value extrapolation, revision, and validation logic for time-varying parameters that can be any of four types and can be either scalar-valued or vector-valued.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/parameters.py">parameters.py</a>.</p></li>
-<li><p><strong>Policy</strong> → Derived from <strong>Parameters</strong> and contains tax policy parameters.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py">policy.py</a>.</p></li>
-<li><p><strong>GrowDiff</strong> → Derived from <strong>Parameters</strong> and contains differences from CBO-derived baseline growth factors in the <strong>GrowFactors</strong> class object.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growdiff.py">growdiff.py</a>.</p></li>
-<li><p><strong>Consumption</strong> → Derived from <strong>Parameters</strong> and contains parameters related to consumption that are used in the <strong>Calculator</strong> class object.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/consumption.py">consumption.py</a>.</p></li>
-<li><p><strong>Calculator</strong> → Contains a <strong>Policy</strong> class object, a <strong>Records</strong> class object, and a <strong>Consumption</strong> class object, plus functions that contain the logic required to calculate income and payroll tax liability for each filing unit.<br />
-Documentation and source code are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py">calculator.py</a> and in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py">calcfunctions.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Data</span></code> → Contains basic logic for manipulating cross-sectional data that
+need to have growth factors and sample weights to age the data to years after
+the data start year.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/data.py">data.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Records</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Data</span></code> and contains attributes of each tax filing
+unit.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/records.py">records.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GrowFactors</span></code> → Contains CBO-derived baseline annual growth factors that
+are used to specify price inflation and wage growth rates in the <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class
+object and to specify annual growth factors that are applied to monetary
+attributes of the filing units in the <code class="docutils literal notranslate"><span class="pre">Records</span></code> class object.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growfactors.py">growfactors.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Parameters</span></code> → Contains basic value extrapolation, revision, and validation
+logic for time-varying parameters that can be any of four types and can be
+either scalar-valued or vector-valued.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/parameters.py">parameters.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Policy</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> and contains tax policy parameters.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/policy.py">policy.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GrowDiff</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> and contains differences from
+CBO-derived baseline growth factors in the <code class="docutils literal notranslate"><span class="pre">GrowFactors</span></code> class object.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/growdiff.py">growdiff.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Consumption</span></code> → Derived from <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> and contains parameters related
+to consumption that are used in the <code class="docutils literal notranslate"><span class="pre">Calculator</span></code> class object.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/consumption.py">consumption.py</a>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Calculator</span></code> → Contains a <code class="docutils literal notranslate"><span class="pre">Policy</span></code> class object, a <code class="docutils literal notranslate"><span class="pre">Records</span></code> class object,
+and a <code class="docutils literal notranslate"><span class="pre">Consumption</span></code> class object, plus functions that contain the logic
+required to calculate income and payroll tax liability for each filing unit.<br />
+Documentation and source code are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calculator.py">calculator.py</a> and in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/calcfunctions.py">calcfunctions.py</a>.</p></li>
 </ul>
 </div>
 <div class="section" id="utilities">
 <h3>Utilities<a class="headerlink" href="#utilities" title="Permalink to this headline">¶</a></h3>
-<p>Documentation and source code for the global utility functions are in <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py">utils.py</a>.</p>
+<p>Documentation and source code for the global utility functions are in
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/utils.py">utils.py</a>.</p>
 </div>
 </div>
 </div>
 
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./usage"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
               </div>
               

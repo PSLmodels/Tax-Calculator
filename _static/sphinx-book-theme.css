@@ -82,8 +82,8 @@ main.bd-content {
   main.bd-content #main-content span.brackets:after, main.bd-content #main-content a.brackets:after {
     content: "]"; }
   main.bd-content #main-content .footnote-reference, main.bd-content #main-content a.bibtex.internal {
-    font-size: .8em;
-    vertical-align: top; }
+    font-size: 1em;
+    vertical-align: middle; }
   main.bd-content #main-content dl.footnote span.fn-backref {
     font-size: .8em;
     vertical-align: top;

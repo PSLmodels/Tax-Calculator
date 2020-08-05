@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
@@ -28,6 +29,13 @@
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Recipe 6: Analyzing a Non-Parametric Reform" href="recipe06.html" />
@@ -194,42 +202,6 @@
  <li class="toctree-l1">
   <a class="reference internal" href="../contributing/testing.html">
    Testing
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
-   Testing with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pycodestyle
-    </span>
-   </code>
-   (the program formerly known as pep8)
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#testing-with-pytest">
-   Testing with pytest
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#interpreting-test-results">
-   Interpreting test results
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#updating-test-results">
-   Updating test results
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#optional-coding-style-testing-with-pylint">
-   Optional coding style testing with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pylint
-    </span>
-   </code>
   </a>
  </li>
 </ul>
@@ -489,28 +461,47 @@ Extract of 2018 income-tax difference table by expanded-income decile
 (taxfall is count of funits with cut in income tax in reform 2 vs 1)
 (taxrise is count of funits with rise in income tax in reform 2 vs 1)
         funits(#m)  taxfall(#m)  taxrise(#m)  agg_diff($b)  mean_diff($)  aftertax_income_diff(%)
-0-10n         0.07         0.00         0.00         0.006          94.0                      0.0
-0-10z        15.87         0.00         0.01        -0.000          -0.0                    -10.1
-0-10p         0.34         0.00         0.00         0.000           0.0                      0.0
-10-20        16.29         1.08         0.68        -0.075          -4.6                      0.1
-20-30        16.29         9.95         2.66        -1.531         -94.0                      0.6
-30-40        16.29        12.77         2.12        -3.741        -229.7                      1.0
-40-50        16.29        13.55         2.17        -7.217        -443.1                      1.5
-50-60        16.29        13.78         2.22       -10.153        -623.4                      1.6
-60-70        16.28        13.64         2.45       -12.430        -763.3                      1.5
-70-80        16.29        14.00         2.13       -16.511       -1013.7                      1.5
-80-90        16.29        13.84         2.35       -23.084       -1417.4                      1.4
-90-100       16.29        14.54         1.71       -75.584       -4640.8                      2.1
-ALL         162.86       107.16        18.49      -150.319        -923.0                      1.7
-90-95         8.14         7.15         0.96       -18.297       -2246.9                      1.6
-95-99         6.51         5.97         0.54       -34.982       -5369.6                      2.5
-Top 1%        1.63         1.42         0.20       -22.305      -13695.2                      2.1
+0-10n     0.068451     0.000009     0.000062      0.006433     93.982055                 0.045764
+0-10z    15.873929     0.001666     0.005716     -0.000034     -0.002111               -10.087097
+0-10p     0.343784     0.000000     0.000000      0.000000      0.000000                 0.000000
+10-20    16.286268     1.078534     0.678148     -0.074521     -4.575684                 0.137980
+20-30    16.285811     9.953425     2.660806     -1.530725    -93.991356                 0.622617
+30-40    16.286763    12.771547     2.121851     -3.740868   -229.687632                 1.008274
+40-50    16.285378    13.553376     2.166393     -7.216581   -443.132553                 1.475646
+50-60    16.287181    13.776271     2.222322    -10.153244   -623.388660                 1.611206
+60-70    16.284709    13.638609     2.446125    -12.430439   -763.319711                 1.506934
+70-80    16.288041    14.002625     2.127822    -16.511143  -1013.697273                 1.471819
+80-90    16.285976    13.844933     2.347251    -23.084359  -1417.437860                 1.428239
+90-100   16.286607    14.542679     1.708505    -75.583543  -4640.840366                 2.073811
+ALL     162.862897   107.163673    18.485002   -150.319023   -922.978935                 1.673245
+90-95     8.143226     7.152663     0.964134    -18.297152  -2246.916889                 1.551005
+95-99     6.514736     5.966764     0.540989    -34.981776  -5369.637949                 2.487081
+Top 1%    1.628644     1.423252     0.203383    -22.304615 -13695.201820                 2.107323
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./recipes"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
               </div>
               

@@ -51,7 +51,7 @@ The cross-model validation work with NBER's TAXSIM-27 model is described
 
 ## Latest release
 
-[2.9.0 (2020-03-18)](https://github.com/PSLmodels/Tax-Calculator/blob/master/RELEASES.md#2020-03-18-release-290)
+{doc}`2.9.0 (2020-03-18) <about/releases>`
 
 If you are already using Tax-Calculator, upgrade using the following command:
 

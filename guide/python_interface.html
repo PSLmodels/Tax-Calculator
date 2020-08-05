@@ -13,6 +13,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
     <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
@@ -28,6 +29,13 @@
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Command-line interface" href="cli.html" />
@@ -186,42 +194,6 @@
    Testing
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#testing-with-pycodestyle-the-program-formerly-known-as-pep8">
-   Testing with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pycodestyle
-    </span>
-   </code>
-   (the program formerly known as pep8)
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#testing-with-pytest">
-   Testing with pytest
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#interpreting-test-results">
-   Interpreting test results
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#updating-test-results">
-   Updating test results
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="../contributing/testing.html#optional-coding-style-testing-with-pylint">
-   Optional coding style testing with
-   <code class="docutils literal notranslate">
-    <span class="pre">
-     pylint
-    </span>
-   </code>
-  </a>
- </li>
 </ul>
 
 </nav>
@@ -320,6 +292,25 @@
 <p>If you want to learn more about how to write Python programs that use Tax-Calculator, follow the <a class="reference internal" href="../recipes/index.html"><span class="doc">Recipes</span></a>, which contains a collection of tested recipes that employ both basic and advanced techniques.</p>
 </div>
 
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./guide"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
 
               </div>
               
