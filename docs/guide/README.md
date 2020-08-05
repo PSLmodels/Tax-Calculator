@@ -2,7 +2,7 @@
 
 **Do not edit the following files in this folder:**
 
-* **`assumption_params.md`*
+* **`assumption_params.md`**
 * **`input_vars.md`**
 * **`output_vars.md`**
 * **`policy_params.md`**
