@@ -1025,9 +1025,15 @@ def atr_graph_data(vdf, year,
     avgtax2_series = gdfx.apply(weighted_mean, 'tax2').values[:, 1]
     # compute average tax rates for each included income percentile
     atr1_series = np.zeros(avginc_series.shape)
-    atr1_series[included] = avgtax1_series[included] / avginc_series[included]
+    atr1_series[included] = np.divide(
+        avgtax1_series[included], avginc_series[included],
+        out=np.zeros_like(avgtax1_series[included]),
+        where=avginc_series[included] != 0)
     atr2_series = np.zeros(avginc_series.shape)
-    atr2_series[included] = avgtax2_series[included] / avginc_series[included]
+    atr2_series[included] = np.divide(
+        avgtax2_series[included], avginc_series[included],
+        out=np.zeros_like(avgtax2_series[included]),
+        where=avginc_series[included] != 0)
     # construct DataFrame containing the two atr?_series
     lines = pd.DataFrame()
     lines['base'] = atr1_series
@@ -1192,7 +1198,10 @@ def pch_graph_data(vdf, year, pop_quantiles=False):
     change_series = gdfx.apply(weighted_mean, 'chg_aftinc').values[:, 1]
     # compute percentage change statistic each included income percentile
     pch_series = np.zeros(avginc_series.shape)
-    pch_series[included] = change_series[included] / avginc_series[included]
+    pch_series[included] = np.divide(
+        change_series[included], avginc_series[included],
+        out=np.zeros_like(change_series[included]),
+        where=avginc_series[included] != 0)
     # construct DataFrame containing the pch_series expressed as percent
     line = pd.DataFrame()
     line['pch'] = pch_series * 100
