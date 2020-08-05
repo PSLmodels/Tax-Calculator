@@ -473,7 +473,7 @@ def test_weighted_mean():
     diffs = grouped.apply(weighted_mean, 'tax_diff')
     exp = pd.Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
     exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
+    pd.testing.assert_series_equal(exp, diffs)
 
 
 def test_wage_weighted():
@@ -501,7 +501,7 @@ def test_weighted_sum():
     diffs = grouped.apply(weighted_sum, 'tax_diff')
     exp = pd.Series(data=[16.0, 26.0], index=['a', 'b'])
     exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
+    pd.testing.assert_series_equal(exp, diffs)
 
 
 EPSILON = 1e-5
