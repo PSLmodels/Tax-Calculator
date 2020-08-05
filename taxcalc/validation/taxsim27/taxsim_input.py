@@ -159,81 +159,81 @@ def sample_dataframe(assump, year, offset):
     mstat = np.where(urn < assump['joint_frac'], 2, 1)
     sdict[4] = mstat
     # (05) PAGE
-    sdict[5] = np.random.random_integers(assump['min_age'],
-                                         assump['max_age'],
-                                         size)
+    sdict[5] = np.random.randint(assump['min_age'],
+                                 assump['max_age']+1,
+                                 size)
     # (06) SAGE
-    age_diff = np.random.random_integers(assump['min_age_diff'],
-                                         assump['max_age_diff'],
-                                         size)
+    age_diff = np.random.randint(assump['min_age_diff'],
+                                 assump['max_age_diff']+1,
+                                 size)
     sage = sdict[5] + age_diff
     sdict[6] = np.where(mstat == 2, np.maximum(sage, assump['min_age']), zero)
     # (07-10) DEPX, DEP13, DEP17, DEP18
-    depx = np.random.random_integers(0, assump['max_depx'], size)
-    d18 = np.random.random_integers(0, assump['max_dep18'], size)
+    depx = np.random.randint(0, assump['max_depx']+1, size)
+    d18 = np.random.randint(0, assump['max_dep18']+1, size)
     dep18 = np.where(d18 <= depx, d18, depx)
-    d17 = np.random.random_integers(0, assump['max_dep17'], size)
+    d17 = np.random.randint(0, assump['max_dep17']+1, size)
     dep17 = np.where(d17 <= dep18, d17, dep18)
-    d13 = np.random.random_integers(0, assump['max_dep13'], size)
+    d13 = np.random.randint(0, assump['max_dep13']+1, size)
     dep13 = np.where(d13 <= dep17, d13, dep17)
     sdict[7] = depx
     sdict[8] = dep13
     sdict[9] = dep17
     sdict[10] = dep18
     # (11) PWAGES
-    pwages_yng = np.random.random_integers(0, assump['max_pwages_yng'], size)
-    pwages_old = np.random.random_integers(0, assump['max_pwages_old'], size)
+    pwages_yng = np.random.randint(0, assump['max_pwages_yng']+1, size)
+    pwages_old = np.random.randint(0, assump['max_pwages_old']+1, size)
     sdict[11] = np.where(sdict[5] >= 65, pwages_old, pwages_yng) * 1000
     # (12) SWAGES
-    swages_yng = np.random.random_integers(0, assump['max_swages_yng'], size)
-    swages_old = np.random.random_integers(0, assump['max_swages_old'], size)
+    swages_yng = np.random.randint(0, assump['max_swages_yng']+1, size)
+    swages_old = np.random.randint(0, assump['max_swages_old']+1, size)
     swages = np.where(sdict[6] >= 65, swages_old, swages_yng) * 1000
     sdict[12] = np.where(mstat == 2, swages, zero)
     # (13) DIVIDENDS
-    sdict[13] = np.random.random_integers(0, assump['max_divinc'], size) * 1000
+    sdict[13] = np.random.randint(0, assump['max_divinc']+1, size) * 1000
     # (14) INTREC
-    sdict[14] = np.random.random_integers(0, assump['max_intinc'], size) * 1000
+    sdict[14] = np.random.randint(0, assump['max_intinc']+1, size) * 1000
     # (15) STCG
-    sdict[15] = np.random.random_integers(assump['min_stcg'],
-                                          assump['max_stcg'],
-                                          size) * 1000
+    sdict[15] = np.random.randint(assump['min_stcg'],
+                                  assump['max_stcg']+1,
+                                  size) * 1000
     # (16) LTCG
-    sdict[16] = np.random.random_integers(assump['min_ltcg'],
-                                          assump['max_ltcg'],
-                                          size) * 1000
+    sdict[16] = np.random.randint(assump['min_ltcg'],
+                                  assump['max_ltcg']+1,
+                                  size) * 1000
     # (17) OTHERPROP
-    sdict[17] = np.random.random_integers(0,
-                                          assump['max_other_prop_inc'],
-                                          size) * 1000
+    sdict[17] = np.random.randint(0,
+                                  assump['max_other_prop_inc']+1,
+                                  size) * 1000
     # (18) NONPROP
-    sdict[18] = np.random.random_integers(0,
-                                          assump['max_other_nonprop_inc'],
-                                          size) * 1000
+    sdict[18] = np.random.randint(0,
+                                  assump['max_other_nonprop_inc']+1,
+                                  size) * 1000
     # (19) PENSIONS
-    sdict[19] = np.random.random_integers(0, assump['max_pnben'], size) * 1000
+    sdict[19] = np.random.randint(0, assump['max_pnben']+1, size) * 1000
     # (20) GSSI
-    sdict[20] = np.random.random_integers(0, assump['max_ssben'], size) * 1000
+    sdict[20] = np.random.randint(0, assump['max_ssben']+1, size) * 1000
     # (21) UI
-    sdict[21] = np.random.random_integers(0, assump['max_uiben'], size) * 1000
+    sdict[21] = np.random.randint(0, assump['max_uiben']+1, size) * 1000
     # (22) TRANSFERS (non-taxable in federal income tax)
     sdict[22] = zero
     # (23) RENTPAID (used only in some state income tax laws)
     sdict[23] = zero
     # (24) PROPTAX
-    sdict[24] = np.random.random_integers(0,
-                                          assump['max_ided_proptax'],
-                                          size) * 1000
+    sdict[24] = np.random.randint(0,
+                                  assump['max_ided_proptax']+1,
+                                  size) * 1000
     # (25) OTHERITEM
-    sdict[25] = np.random.random_integers(0,
-                                          assump['max_ided_nopref'],
-                                          size) * 1000
+    sdict[25] = np.random.randint(0,
+                                  assump['max_ided_nopref']+1,
+                                  size) * 1000
     # (26) CHILDCARE (TAXSIM-27 EXPECTS ZERO IF NO QUALIFYING CHILDRED)
-    ccexp = np.random.random_integers(0, assump['max_ccexp'], size) * 1000
+    ccexp = np.random.randint(0, assump['max_ccexp']+1, size) * 1000
     sdict[26] = np.where(dep13 > 0, ccexp, zero)
     # (27) MORTGAGE
-    sdict[27] = np.random.random_integers(0,
-                                          assump['max_ided_mortgage'],
-                                          size) * 1000
+    sdict[27] = np.random.randint(0,
+                                  assump['max_ided_mortgage']+1,
+                                  size) * 1000
     smpl = pd.DataFrame(sdict)
     return smpl
 

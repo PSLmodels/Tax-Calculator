@@ -7,7 +7,7 @@ import pytest
 import importlib
 import numpy as np
 from pandas import DataFrame
-from pandas.util.testing import assert_frame_equal
+from pandas.testing import assert_frame_equal
 import taxcalc
 from taxcalc.decorators import *
 

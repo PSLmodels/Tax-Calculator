@@ -1,18 +1,18 @@
 - file: index
 - chapter: Usage
   sections:
-    - file: usage/starting
-    - file: usage/overview
-    - file: guide/index
-      sections:
-        - file: guide/python_interface
-        - file: guide/cli
-        - file: guide/policy_params
-        - file: guide/input_vars
-        - file: guide/output_vars
-        - file: guide/assumption_params
-    - file: recipes/index
-      sections:
+  - file: usage/starting
+  - file: usage/overview
+  - file: guide/index
+    sections:
+      - file: guide/python_interface
+      - file: guide/cli
+      - file: guide/policy_params
+      - file: guide/input_vars
+      - file: guide/output_vars
+      - file: guide/assumption_params
+  - file: recipes/index
+    sections:
       - file: recipes/recipe00
       - file: recipes/recipe01
       - file: recipes/recipe02

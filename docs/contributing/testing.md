@@ -17,7 +17,7 @@ Tax-Calculator source code.
 
 Currently there are two phases of testing.
 
-# Testing with `pycodestyle` (the program formerly known as pep8)
+## Testing with `pycodestyle` (the program formerly known as pep8)
 
 The first phase of testing checks the formatting of the Python code
 against a PEP8-like standard.  Assuming you are in the top-level
@@ -40,7 +40,7 @@ JSON file you changed.  So, for example, if you edited the
 would replace `PATH_TO_JSON_FILE` with
 `taxcalc/policy_current_law.json`.
 
-# Testing with pytest
+## Testing with pytest
 
 There are two variants of this second testing phase depending on
 whether or not you have access to a file called `puf.csv` that
@@ -125,7 +125,7 @@ git checkout -- docs/index.html
 Following this procedure will ensure that the documentation is not
 updated before the Tax-Calculator release is available.
 
-# Interpreting test results
+## Interpreting test results
 
 If you are adding an enhancement that expands the capabilities of the
 Tax-Calculator, then all the tests you can run should pass before you
@@ -141,7 +141,7 @@ incorrect result (that is, the test fails because the result is
 incorrect).  Then change the source code to fix the bug and
 demonstrate that the newly-added test, which used to fail, now passes.
 
-# Updating test results
+## Updating test results
 
 After an enhancement or bug fix, you may be convinced that the new and
 different second-phase test results are, in fact, correct.  How do you
@@ -152,7 +152,7 @@ when you rerun pytest.  If there are failures for the tests that write
 results files, read the test error message for instructions about how
 to update the test results.
 
-# Optional coding style testing with `pylint`
+## Optional coding style testing with `pylint`
 
 There is another tool, `pylint`, that warns about deviations from a
 broader set coding styles than does `pycodestyle`.  The use of

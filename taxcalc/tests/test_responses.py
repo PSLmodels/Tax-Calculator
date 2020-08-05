@@ -31,12 +31,11 @@ def test_response_json(tests_path):
             con_change = Consumption.read_json_update(jpf_text)
             consumption.update_consumption(con_change)
             del consumption
-            for topkey in['growdiff_baseline', 'growdiff_response']:
+            for topkey in ['growdiff_baseline', 'growdiff_response']:
                 growdiff = GrowDiff()
                 gdiff_change = GrowDiff.read_json_update(jpf_text, topkey)
                 growdiff.update_growdiff(gdiff_change)
                 del growdiff
         else:  # jpf_text is not a valid JSON response assumption file
-            print('test-failing-filename: ' +
-                  jpf)
+            print('test-failing-filename: ' + jpf)
             assert False
