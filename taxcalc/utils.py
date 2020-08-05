@@ -405,10 +405,16 @@ def create_distribution_table(vdf, groupby, income_measure,
                       'count_ItemDed',
                       'count_AMT']
         for col in dist_table.columns:
+            # if col in count_vars:
+            #     dist_table[col] = np.round(dist_table[col] * 1e-6, 2)
+            # else:
+            #     dist_table[col] = np.round(dist_table[col] * 1e-9, 3)
             if col in count_vars:
-                dist_table[col] = np.round(dist_table[col] * 1e-6, 2)
+                dist_table[col] *= 1e-6
+                dist_table.round({col: 2})
             else:
-                dist_table[col] = np.round(dist_table[col] * 1e-9, 3)
+                dist_table[col] *= 1e-9
+                dist_table.round({col: 3})
     # return table as Pandas DataFrame
     vdf.sort_index(inplace=True)
     return dist_table
@@ -478,14 +484,17 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
         # start of additive_stats_dataframe code
         sdf = pd.DataFrame()
         sdf['count'] = gdf.apply(unweighted_sum, 'count').values[:, 1]
-        sdf['tax_cut'] = gdf.apply(count_lt_zero, 'tax_diff').values[:, 1]
-        sdf['tax_inc'] = gdf.apply(count_gt_zero, 'tax_diff').values[:, 1]
-        sdf['tot_change'] = gdf.apply(weighted_sum, 'tax_diff').values[:, 1]
+        sdf['tax_cut'] = gdf.apply(count_lt_zero,
+                                   'tax_diff').values[:, 1]
+        sdf['tax_inc'] = gdf.apply(count_gt_zero,
+                                   'tax_diff').values[:, 1]
+        sdf['tot_change'] = gdf.apply(weighted_sum,
+                                      'tax_diff').values[:, 1]
         sdf['ubi'] = gdf.apply(weighted_sum, 'ubi').values[:, 1]
-        sdf['benefit_cost_total'] = gdf.apply(weighted_sum,
-                                              'benefit_cost_total').values[:, 1]
-        sdf['benefit_value_total'] = gdf.apply(weighted_sum,
-                                               'benefit_value_total').values[:, 1]
+        sdf['benefit_cost_total'] = gdf.apply(
+            weighted_sum, 'benefit_cost_total').values[:, 1]
+        sdf['benefit_value_total'] = gdf.apply(
+            weighted_sum, 'benefit_value_total').values[:, 1]
         sdf['atinc1'] = gdf.apply(weighted_sum, 'atinc1').values[:, 1]
         sdf['atinc2'] = gdf.apply(weighted_sum, 'atinc2').values[:, 1]
         return sdf
@@ -519,18 +528,15 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
         df2['count'] = df2['s006']
     # add table_row column to df2 given specified groupby and income_measure
     if groupby == 'weighted_deciles':
-        dframe = add_quantile_table_row_variable(df2,
-                                                 baseline_expanded_income, 10,
-                                                 pop_quantiles=pop_quantiles,
-                                                 decile_details=True)
+        dframe = add_quantile_table_row_variable(
+            df2, baseline_expanded_income, 10,
+            pop_quantiles=pop_quantiles, decile_details=True)
     elif groupby == 'standard_income_bins':
-        dframe = add_income_table_row_variable(df2,
-                                               baseline_expanded_income,
-                                               STANDARD_INCOME_BINS)
+        dframe = add_income_table_row_variable(
+            df2, baseline_expanded_income, STANDARD_INCOME_BINS)
     elif groupby == 'soi_agi_bins':
-        dframe = add_income_table_row_variable(df2,
-                                               baseline_expanded_income,
-                                               SOI_AGI_BINS)
+        dframe = add_income_table_row_variable(
+            df2, baseline_expanded_income, SOI_AGI_BINS)
     del df2
     # create grouped Pandas DataFrame
     gdf = dframe.groupby('table_row', as_index=False)
@@ -559,25 +565,30 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
     del gdf
     del dframe
     # compute non-additive stats in each table cell
-    count = diff_table['count']
-    diff_table['perc_cut'] = np.where(count > 0.,
-                                      100 * diff_table['tax_cut'] / count,
-                                      0.)
-    diff_table['perc_inc'] = np.where(count > 0.,
-                                      100 * diff_table['tax_inc'] / count,
-                                      0.)
-    diff_table['mean'] = np.where(count > 0.,
-                                  diff_table['tot_change'] / count,
-                                  0.)
+    count = diff_table['count'].values
+    diff_table['perc_cut'] = np.divide(
+        100 * diff_table['tax_cut'].values, count,
+        out=np.zeros_like(diff_table['tax_cut'].values),
+        where=count > 0)
+    diff_table['perc_inc'] = np.divide(
+        100 * diff_table['tax_inc'].values, count,
+        out=np.zeros_like(diff_table['tax_inc'].values),
+        where=count > 0)
+    diff_table['mean'] = np.divide(
+        diff_table['tot_change'].values, count,
+        out=np.zeros_like(diff_table['tot_change'].values),
+        where=count > 0)
     total_change = sum_row['tot_change']
-    diff_table['share_of_change'] = np.where(total_change == 0.,
-                                             np.nan,
-                                             (100 * diff_table['tot_change'] /
-                                              total_change))
-    diff_table['pc_aftertaxinc'] = np.where(diff_table['atinc1'] == 0.,
-                                            np.nan,
-                                            (100 * (diff_table['atinc2'] /
-                                                    diff_table['atinc1'] - 1)))
+    diff_table['share_of_change'] = np.divide(
+        100 * diff_table['tot_change'].values, total_change,
+        out=np.zeros_like(diff_table['tot_change'].values),
+        where=total_change > 0)
+    quotient = np.divide(
+        diff_table['atinc2'].values, diff_table['atinc1'],
+        out=np.zeros_like(diff_table['atinc2'].values),
+        where=diff_table['atinc1'] != 0)
+    diff_table['pc_aftertaxinc'] = np.where(
+        diff_table['atinc1'].values == 0., np.nan, 100 * (quotient - 1))
     # delete intermediate Pandas DataFrame objects
     del diff_table['atinc1']
     del diff_table['atinc2']
@@ -602,12 +613,13 @@ def create_difference_table(vdf1, vdf2, groupby, tax_to_diff,
                   'benefit_cost_total', 'benefit_value_total']
     for col in diff_table.columns:
         if col in count_vars:
-            diff_table[col] = np.round(diff_table[col] * 1e-6, 2)
+            diff_table[col] *= 1e-6
+            diff_table.round({col: 2})
         elif col in scale_vars:
-            diff_table[col] = np.round(diff_table[col] * 1e-9, 3)
+            diff_table[col] *= 1e-9
+            diff_table.round({col: 3})
         else:
-            diff_table[col] = np.round(diff_table[col], 1)
-    # return table as Pandas DataFrame
+            diff_table.round({col: 1})
     return diff_table
 
 
