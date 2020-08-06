@@ -69,7 +69,6 @@ def create_base_table(test_path):
             table_dict[var] = read_var_dict['read'][var]['desc']
         else:
             pass
-        table_dict[var] = read_var_dict['read'][var]['desc']
     sorted_calc_vars = sorted(calc_dict.keys())
     for var in sorted_calc_vars:
         table_dict[var] = calc_dict[var]

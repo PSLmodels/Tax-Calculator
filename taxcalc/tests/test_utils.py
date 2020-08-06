@@ -103,7 +103,7 @@ def test_create_tables(cps_subsample):
                 -0.1,
                 -0.0,
                 -0.6]
-    if not np.allclose(diff[tabcol].values, expected,
+    if not np.allclose(diff[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0, equal_nan=True):
         test_failure = True
         print('diff xbin', tabcol)
@@ -131,7 +131,7 @@ def test_create_tables(cps_subsample):
                 7.2,
                 4.7,
                 0.8]
-    if not np.allclose(diff[tabcol].values, expected,
+    if not np.allclose(diff[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
         print('diff xdec', tabcol)
@@ -155,7 +155,7 @@ def test_create_tables(cps_subsample):
                 13.0,
                 8.5,
                 1.5]
-    if not np.allclose(diff[tabcol].values, expected,
+    if not np.allclose(diff[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
         print('diff xdec', tabcol)
@@ -179,7 +179,7 @@ def test_create_tables(cps_subsample):
                 -0.7,
                 -0.4,
                 -0.1]
-    if not np.allclose(diff[tabcol].values, expected,
+    if not np.allclose(diff[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0, equal_nan=True):
         test_failure = True
         print('diff xdec', tabcol)
@@ -207,7 +207,7 @@ def test_create_tables(cps_subsample):
                 145.6,
                 269.7,
                 478.4]
-    if not np.allclose(dist[tabcol].values, expected,
+    if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
         print('dist xdec', tabcol)
@@ -303,7 +303,7 @@ def test_create_tables(cps_subsample):
                 58.6,
                 316.2,
                 1191.8]
-    if not np.allclose(dist[tabcol], expected,
+    if not np.allclose(dist[tabcol].values.astype('float'), expected,
                        atol=0.1, rtol=0.0):
         test_failure = True
         print('dist xbin', tabcol)
@@ -473,7 +473,7 @@ def test_weighted_mean():
     diffs = grouped.apply(weighted_mean, 'tax_diff')
     exp = pd.Series(data=[16.0 / 12.0, 26.0 / 10.0], index=['a', 'b'])
     exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
+    pd.testing.assert_series_equal(exp, diffs)
 
 
 def test_wage_weighted():
@@ -501,7 +501,7 @@ def test_weighted_sum():
     diffs = grouped.apply(weighted_sum, 'tax_diff')
     exp = pd.Series(data=[16.0, 26.0], index=['a', 'b'])
     exp.index.name = 'label'
-    pd.util.testing.assert_series_equal(exp, diffs)
+    pd.testing.assert_series_equal(exp, diffs)
 
 
 EPSILON = 1e-5
@@ -546,14 +546,17 @@ def test_dist_table_sum_row(cps_subsample):
     tb3, _ = calc.distribution_tables(None, 'weighted_deciles')
     tb4, _ = calc.distribution_tables(None, 'weighted_deciles',
                                       pop_quantiles=True)
-    assert np.allclose(tb1.loc['ALL'], tb2.loc['ALL'])
-    assert np.allclose(tb1.loc['ALL'], tb3.loc['ALL'])
+    assert np.allclose(tb1.loc['ALL'].values.astype('float'),
+                       tb2.loc['ALL'].values.astype('float'))
+    assert np.allclose(tb1.loc['ALL'].values.astype('float'),
+                       tb3.loc['ALL'].values.astype('float'))
     # make sure population count is larger than filing-unit count
     assert tb4.at['ALL', 'count'] > tb1.at['ALL', 'count']
     # make sure population table has same ALL row values as filing-unit table
     for col in ['count', 'count_StandardDed', 'count_ItemDed', 'count_AMT']:
         tb4.at['ALL', col] = tb1.at['ALL', col]
-    assert np.allclose(tb1.loc['ALL'], tb4.loc['ALL'])
+    assert np.allclose(tb1.loc['ALL'].values.astype('float'),
+                       tb4.loc['ALL'].values.astype('float'))
     # make sure population table has same ALL tax liabilities as diagnostic tbl
     dgt = calc.diagnostic_table(1)
     assert np.allclose([tb4.at['ALL', 'iitax'],
@@ -576,14 +579,17 @@ def test_diff_table_sum_row(cps_subsample):
     # create three difference tables and compare their content
     dv1 = calc1.dataframe(DIFF_VARIABLES)
     dv2 = calc2.dataframe(DIFF_VARIABLES)
-    dt1 = create_difference_table(dv1, dv2, 'standard_income_bins', 'iitax')
+    dt1 = create_difference_table(
+        dv1, dv2, 'standard_income_bins', 'iitax')
     dt2 = create_difference_table(dv1, dv2, 'soi_agi_bins', 'iitax')
-    dt3 = create_difference_table(dv1, dv2, 'weighted_deciles', 'iitax',
-                                  pop_quantiles=False)
-    dt4 = create_difference_table(dv1, dv2, 'weighted_deciles', 'iitax',
-                                  pop_quantiles=True)
-    assert np.allclose(dt1.loc['ALL'], dt2.loc['ALL'])
-    assert np.allclose(dt1.loc['ALL'], dt3.loc['ALL'])
+    dt3 = create_difference_table(
+        dv1, dv2, 'weighted_deciles', 'iitax', pop_quantiles=False)
+    dt4 = create_difference_table(
+        dv1, dv2, 'weighted_deciles', 'iitax', pop_quantiles=True)
+    assert np.allclose(dt1.loc['ALL'].values.astype('float'),
+                       dt2.loc['ALL'].values.astype('float'))
+    assert np.allclose(dt1.loc['ALL'].values.astype('float'),
+                       dt3.loc['ALL'].values.astype('float'))
     # make sure population count is larger than filing-unit count
     assert dt4.at['ALL', 'count'] > dt1.at['ALL', 'count']
 
