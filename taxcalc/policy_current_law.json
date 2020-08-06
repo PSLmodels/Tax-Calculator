@@ -13192,9 +13192,9 @@
             "cps": true
         }
     },
-    "CTC_c_under5_bonus": {
-        "title": "Bonus child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.",
+    "CTC_c_under6_bonus": {
+        "title": "Bonus child tax credit maximum for qualifying children under six",
+        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.",
         "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
@@ -14725,9 +14725,9 @@
             "cps": true
         }
     },
-    "ACTC_rt_bonus_under5family": {
-        "title": "Bonus additional child tax credit rate for families with qualifying children under 5",
-        "description": "For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.",
+    "ACTC_rt_bonus_under6family": {
+        "title": "Bonus additional child tax credit rate for families with qualifying children under 6",
+        "description": "For families with qualifying children under 6 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.",
         "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
@@ -14857,9 +14857,9 @@
             "cps": true
         }
     },
-    "CTC_new_c_under5_bonus": {
-        "title": "Bonus new refundable child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.",
+    "CTC_new_c_under6_bonus": {
+        "title": "Bonus new refundable child tax credit maximum for qualifying children under six",
+        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.",
         "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",
