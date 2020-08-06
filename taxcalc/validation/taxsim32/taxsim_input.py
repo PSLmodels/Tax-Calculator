@@ -66,8 +66,16 @@ def main():
     # generate sample as pandas DataFrame
     sample = sample_dataframe(assump, args.YEAR, args.OFFSET)
     # write sample to input file
+    header_col = ['taxsimid', 'year', 'state', 'mstat', 'page', 'sage',
+                  'depx', 'dep13', 'dep17', 'dep18', 'pwages', 'swages',
+                  'dividends', 'intrec', 'stcg', 'ltcg', 'otherprop',
+                  'nonprop', 'pensions', 'gssi', 'ui', 'transfers',
+                  'rentpaid', 'proptax', 'otheritem', 'childcare',
+                  'mortgage', 'scorp', 'pbusinc', 'pprofinc', 'sbusinc',
+                  'sprofinc'
+                ]
     filename = '{}{}.in'.format(args.LETTER, args.YEAR % 100)
-    sample.to_csv(filename, sep=' ', header=False, index=False)
+    sample.to_csv(filename, sep=' ', header=header_col, index=False)
     # return no-error exit code
     return 0
 # end of main function code
@@ -80,7 +88,7 @@ def assumption_set(year, letter):
     adict = dict()
     if letter in VALID_LETTERS:  # <===========================================
         # basic assumption parameters for all ?YY.in samples:
-        adict['sample_size'] = 100000
+        adict['sample_size'] = 2000
         adict['year'] = year  # TAXSIM ivar 2
         # demographic attributes:
         adict['joint_frac'] = 0.60  # fraction of sample with joint MARS
