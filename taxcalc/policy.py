@@ -71,7 +71,8 @@ class Policy(Parameters):
         'PT_excl_wagelim_rt':
         'was renamed PT_qbid_w2_wages_rt in release 2.4.0',
         'CTC_c_under5_bonus': 'was renamed CTC_c_under6_bonus.',
-        'ACTC_rt_bonus_under5family': 'was renamed ACTC_rt_bonus_under6family.',
+        'ACTC_rt_bonus_under5family':
+        'was renamed ACTC_rt_bonus_under6family.',
         'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.'
     }
     # (2) specify which Policy parameters have been redefined recently
