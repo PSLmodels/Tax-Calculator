@@ -1,0 +1,545 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tax-Calculator IO &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tax-Calculator Utilities" href="utils.html" />
+    <link rel="prev" title="Tax-Calculator Records" href="records.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="reference internal" href="public_api.html">
+   Tax-Calculator Python API
+  </a>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calculator.html">
+     Tax-Calculator Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="consumption.html">
+     Tax-Calculator Consumption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="data.html">
+     Tax-Calculator Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="decorators.html">
+     Tax-Calculator Decorators
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growdiff.html">
+     Tax-Calculator GrowDiff
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growfactors.html">
+     Tax-Calculator GrowFactors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="parameters.html">
+     Tax-Calculator Parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="policy.html">
+     Tax-Calculator Policy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="records.html">
+     Tax-Calculator Records
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Tax-Calculator IO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utils.html">
+     Tax-Calculator Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilsprvt.html">
+     Tax-Calculator Private Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/api/taxcalcio.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/taxcalcio.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/api/taxcalcio.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#taxcalc-taxcalcio">
+   taxcalc.taxcalcio
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="tax-calculator-io">
+<span id="taxcalcio"></span><h1>Tax-Calculator IO<a class="headerlink" href="#tax-calculator-io" title="Permalink to this headline">¶</a></h1>
+<p><strong>Tax-Calculator IO</strong></p>
+<div class="section" id="taxcalc-taxcalcio">
+<h2>taxcalc.taxcalcio<a class="headerlink" href="#taxcalc-taxcalcio" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="taxcalc.taxcalcio.TaxCalcIO">
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.taxcalcio.</code><code class="sig-name descname">TaxCalcIO</code><span class="sig-paren">(</span><em class="sig-param">input_data</em>, <em class="sig-param">tax_year</em>, <em class="sig-param">baseline</em>, <em class="sig-param">reform</em>, <em class="sig-param">assump</em>, <em class="sig-param">outdir=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor for the Tax-Calculator Input-Output class.</p>
+<p>TaxCalcIO class constructor call must be followed by init() call.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_data</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em>) – string is name of INPUT file that is CSV formatted containing
+variable names in the Records USABLE_READ_VARS set, or
+Pandas DataFrame is INPUT data containing variable names in
+the Records USABLE_READ_VARS set.  INPUT vsrisbles not in the
+Records USABLE_READ_VARS set can be present but are ignored.</p></li>
+<li><p><strong>tax_year</strong> (<em>integer</em>) – calendar year for which taxes will be computed for INPUT.</p></li>
+<li><p><strong>baseline</strong> (<em>None</em><em> or </em><em>string</em>) – None implies baseline policy is current-law policy, or
+string is name of optional BASELINE file that is a JSON
+reform file.</p></li>
+<li><p><strong>reform</strong> (<em>None</em><em> or </em><em>string</em>) – None implies no policy reform (current-law policy), or
+string is name of optional REFORM file(s).</p></li>
+<li><p><strong>assump</strong> (<em>None</em><em> or </em><em>string</em>) – None implies economic assumptions are standard assumptions,
+or string is name of optional ASSUMP file.</p></li>
+<li><p><strong>outdir</strong> (<em>None</em><em> or </em><em>string</em>) – None implies output files written to current directory,
+or string is name of optional output directory</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>class instance</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#taxcalc.taxcalcio.TaxCalcIO" title="taxcalc.taxcalcio.TaxCalcIO">TaxCalcIO</a></p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.analyze">
+<code class="sig-name descname">analyze</code><span class="sig-paren">(</span><em class="sig-param">writing_output_file=False</em>, <em class="sig-param">output_tables=False</em>, <em class="sig-param">output_graphs=False</em>, <em class="sig-param">dump_varset=None</em>, <em class="sig-param">output_dump=False</em>, <em class="sig-param">output_sqldb=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.analyze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.analyze" title="Permalink to this definition">¶</a></dt>
+<dd><p>Conduct tax analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>writing_output_file</strong> (<em>boolean</em>) – whether or not to generate and write output file</p></li>
+<li><p><strong>output_tables</strong> (<em>boolean</em>) – whether or not to generate and write distributional tables
+to a text file</p></li>
+<li><p><strong>output_graphs</strong> (<em>boolean</em>) – whether or not to generate and write HTML graphs of average
+and marginal tax rates by income percentile</p></li>
+<li><p><strong>dump_varset</strong> (<em>set</em>) – custom set of variables to include in dump and sqldb output;
+None implies include all variables in dump and sqldb output</p></li>
+<li><p><strong>output_dump</strong> (<em>boolean</em>) – whether or not to replace standard output with all input and
+calculated variables using their Tax-Calculator names</p></li>
+<li><p><strong>output_sqldb</strong> (<em>boolean</em>) – whether or not to write SQLite3 database with dump table
+containing same output as written by output_dump to a csv file</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables">
+<code class="sig-name descname">custom_dump_variables</code><span class="sig-paren">(</span><em class="sig-param">tcdumpvars_str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.custom_dump_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return set of variable names extracted from tcdumpvars_str, which
+contains the contents of the tcdumpvars file in the current directory.
+Also, builds self.errmsg if any custom variables are not valid.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.dump_output">
+<code class="sig-name descname">dump_output</code><span class="sig-paren">(</span><em class="sig-param">dump_varset</em>, <em class="sig-param">mtr_inctax</em>, <em class="sig-param">mtr_paytax</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.dump_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.dump_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract dump output and return it as Pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.minimal_output">
+<code class="sig-name descname">minimal_output</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.minimal_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.minimal_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract minimal output and return it as Pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.output_filepath">
+<code class="sig-name descname">output_filepath</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.output_filepath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.output_filepath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return full path to output file named in TaxCalcIO constructor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.tax_year">
+<code class="sig-name descname">tax_year</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.tax_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.tax_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return calendar year for which TaxCalcIO calculations are being done.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.write_decile_table">
+<em class="property">static </em><code class="sig-name descname">write_decile_table</code><span class="sig-paren">(</span><em class="sig-param">dfx</em>, <em class="sig-param">tfile</em>, <em class="sig-param">tkind='Totals'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_decile_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_decile_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to tfile the tkind decile table using dfx DataFrame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.write_doc_file">
+<code class="sig-name descname">write_doc_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_doc_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_doc_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write reform documentation to text file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file">
+<em class="property">static </em><code class="sig-name descname">write_empty_graph_file</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">title</em>, <em class="sig-param">reason</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_empty_graph_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write HTML graph file with title but no graph for specified reason.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.write_graph_files">
+<code class="sig-name descname">write_graph_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_graph_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_graph_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write graphs to HTML files.
+All graphs contain same number of filing units in each quantile.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.write_output_file">
+<code class="sig-name descname">write_output_file</code><span class="sig-paren">(</span><em class="sig-param">output_dump</em>, <em class="sig-param">dump_varset</em>, <em class="sig-param">mtr_paytax</em>, <em class="sig-param">mtr_inctax</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_output_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_output_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write output to CSV-formatted file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">
+<code class="sig-name descname">write_sqldb_file</code><span class="sig-paren">(</span><em class="sig-param">dump_varset</em>, <em class="sig-param">mtr_paytax</em>, <em class="sig-param">mtr_inctax</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_sqldb_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write dump output to SQLite3 database table dump.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.taxcalcio.TaxCalcIO.write_tables_file">
+<code class="sig-name descname">write_tables_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/taxcalcio.html#TaxCalcIO.write_tables_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.taxcalcio.TaxCalcIO.write_tables_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write tables to text file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./api"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="records.html" title="previous page">Tax-Calculator Records</a>
+    <a class='right-next' id="next-link" href="utils.html" title="next page">Tax-Calculator Utilities</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

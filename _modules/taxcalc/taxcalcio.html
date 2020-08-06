@@ -1,0 +1,992 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>taxcalc.taxcalcio &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/mystnb.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  <img src="../../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../api/public_api.html">
+   Tax-Calculator Python API
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2F_modules/taxcalc/taxcalcio.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for taxcalc.taxcalcio</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tax-Calculator Input-Output class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># CODING-STYLE CHECKS:</span>
+<span class="c1"># pycodestyle taxcalcio.py</span>
+<span class="c1"># pylint --disable=locally-disabled taxcalcio.py</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">paramtools</span>
+<span class="kn">from</span> <span class="nn">taxcalc.policy</span> <span class="kn">import</span> <span class="n">Policy</span>
+<span class="kn">from</span> <span class="nn">taxcalc.records</span> <span class="kn">import</span> <span class="n">Records</span>
+<span class="kn">from</span> <span class="nn">taxcalc.consumption</span> <span class="kn">import</span> <span class="n">Consumption</span>
+<span class="kn">from</span> <span class="nn">taxcalc.growdiff</span> <span class="kn">import</span> <span class="n">GrowDiff</span>
+<span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
+<span class="kn">from</span> <span class="nn">taxcalc.calculator</span> <span class="kn">import</span> <span class="n">Calculator</span>
+<span class="kn">from</span> <span class="nn">taxcalc.utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">delete_file</span><span class="p">,</span> <span class="n">write_graph_file</span><span class="p">,</span>
+                           <span class="n">add_quantile_table_row_variable</span><span class="p">,</span>
+                           <span class="n">unweighted_sum</span><span class="p">,</span> <span class="n">weighted_sum</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TaxCalcIO"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO">[docs]</a><span class="k">class</span> <span class="nc">TaxCalcIO</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructor for the Tax-Calculator Input-Output class.</span>
+
+<span class="sd">    TaxCalcIO class constructor call must be followed by init() call.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    input_data: string or Pandas DataFrame</span>
+<span class="sd">        string is name of INPUT file that is CSV formatted containing</span>
+<span class="sd">        variable names in the Records USABLE_READ_VARS set, or</span>
+<span class="sd">        Pandas DataFrame is INPUT data containing variable names in</span>
+<span class="sd">        the Records USABLE_READ_VARS set.  INPUT vsrisbles not in the</span>
+<span class="sd">        Records USABLE_READ_VARS set can be present but are ignored.</span>
+
+<span class="sd">    tax_year: integer</span>
+<span class="sd">        calendar year for which taxes will be computed for INPUT.</span>
+
+<span class="sd">    baseline: None or string</span>
+<span class="sd">        None implies baseline policy is current-law policy, or</span>
+<span class="sd">        string is name of optional BASELINE file that is a JSON</span>
+<span class="sd">        reform file.</span>
+
+<span class="sd">    reform: None or string</span>
+<span class="sd">        None implies no policy reform (current-law policy), or</span>
+<span class="sd">        string is name of optional REFORM file(s).</span>
+
+<span class="sd">    assump: None or string</span>
+<span class="sd">        None implies economic assumptions are standard assumptions,</span>
+<span class="sd">        or string is name of optional ASSUMP file.</span>
+
+<span class="sd">    outdir: None or string</span>
+<span class="sd">        None implies output files written to current directory,</span>
+<span class="sd">        or string is name of optional output directory</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    class instance: TaxCalcIO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">tax_year</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">,</span>
+                 <span class="n">outdir</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+        <span class="c1"># pylint: disable=too-many-branches,too-many-statements</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># check name and existence of INPUT file</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="s1">&#39;x&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># remove any leading directory path from INPUT filename</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+            <span class="c1"># check if fname ends with &quot;.csv&quot;</span>
+            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">):</span>
+                <span class="n">inp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">],</span> <span class="nb">str</span><span class="p">(</span><span class="n">tax_year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;INPUT file name does not end in .csv&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># check existence of INPUT file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;puf.csv&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="o">=</span> <span class="n">input_data</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;cps.csv&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;INPUT file could not be found&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="n">inp</span> <span class="o">=</span> <span class="s1">&#39;df-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">tax_year</span><span class="p">)[</span><span class="mi">2</span><span class="p">:])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;INPUT is neither string nor Pandas DataFrame&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># check name and existence of BASELINE file</span>
+        <span class="n">bas</span> <span class="o">=</span> <span class="s1">&#39;-x&#39;</span>
+        <span class="k">if</span> <span class="n">baseline</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bas</span> <span class="o">=</span> <span class="s1">&#39;-#&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># remove any leading directory path from BASELINE filename</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">baseline</span><span class="p">)</span>
+            <span class="c1"># check if fname ends with &quot;.json&quot;</span>
+            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+                <span class="n">bas</span> <span class="o">=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;BASELINE file name does not end in .json&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># check existence of BASELINE file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">baseline</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;BASELINE file could not be found&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;TaxCalcIO.ctor: baseline is neither None nor str&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># check name(s) and existence of REFORM file(s)</span>
+        <span class="n">ref</span> <span class="o">=</span> <span class="s1">&#39;-x&#39;</span>
+        <span class="k">if</span> <span class="n">reform</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="s1">&#39;-#&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># split any compound reform into list of simple reforms</span>
+            <span class="n">refnames</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">reforms</span> <span class="o">=</span> <span class="n">reform</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">rfm</span> <span class="ow">in</span> <span class="n">reforms</span><span class="p">:</span>
+                <span class="c1"># remove any leading directory path from rfm filename</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">rfm</span><span class="p">)</span>
+                <span class="c1"># check if fname ends with &quot;.json&quot;</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> does not end in .json&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: REFORM file name </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="c1"># check existence of REFORM file</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">rfm</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> could not be found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rfm</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: REFORM file </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                <span class="c1"># add fname to list of refnames used in output file names</span>
+                <span class="n">refnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+            <span class="c1"># create (possibly compound) reform name for output file names</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+            <span class="n">num_refnames</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">refname</span> <span class="ow">in</span> <span class="n">refnames</span><span class="p">:</span>
+                <span class="n">num_refnames</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">num_refnames</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">ref</span> <span class="o">+=</span> <span class="s1">&#39;+&#39;</span>
+                <span class="n">ref</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">refname</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;TaxCalcIO.ctor: reform is neither None nor str&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># check name and existence of ASSUMP file</span>
+        <span class="n">asm</span> <span class="o">=</span> <span class="s1">&#39;-x&#39;</span>
+        <span class="k">if</span> <span class="n">assump</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">asm</span> <span class="o">=</span> <span class="s1">&#39;-#&#39;</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assump</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># remove any leading directory path from ASSUMP filename</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">assump</span><span class="p">)</span>
+            <span class="c1"># check if fname ends with &quot;.json&quot;</span>
+            <span class="k">if</span> <span class="n">fname</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+                <span class="n">asm</span> <span class="o">=</span> <span class="s1">&#39;-</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fname</span><span class="p">[:</span><span class="o">-</span><span class="mi">5</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;ASSUMP file name does not end in .json&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="c1"># check existence of ASSUMP file</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">assump</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;ASSUMP file could not be found&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;TaxCalcIO.ctor: assump is neither None nor str&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># check name and existence of OUTDIR</span>
+        <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">valid_outdir</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># check existence of OUTDIR</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">outdir</span><span class="p">):</span>
+                <span class="n">valid_outdir</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">valid_outdir</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;OUTDIR could not be found&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">valid_outdir</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;TaxCalcIO.ctor: outdir is neither None nor str&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># create OUTPUT file name and delete any existing output files</span>
+        <span class="n">output_filename</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}{}{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">bas</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">asm</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">outdir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span> <span class="o">=</span> <span class="n">output_filename</span>
+            <span class="n">delete_old_files</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">valid_outdir</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outdir</span><span class="p">,</span> <span class="n">output_filename</span><span class="p">)</span>
+            <span class="n">delete_old_files</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">delete_old_files</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">delete_old_files</span><span class="p">:</span>
+            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="p">)</span>
+            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;.db&#39;</span><span class="p">))</span>
+            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-doc.text&#39;</span><span class="p">))</span>
+            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-tab.text&#39;</span><span class="p">))</span>
+            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-atr.html&#39;</span><span class="p">))</span>
+            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-mtr.html&#39;</span><span class="p">))</span>
+            <span class="n">delete_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-pch.html&#39;</span><span class="p">))</span>
+        <span class="c1"># initialize variables whose values are set in init method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">,</span> <span class="n">tax_year</span><span class="p">,</span> <span class="n">baseline</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span> <span class="n">assump</span><span class="p">,</span>
+             <span class="n">aging_input_data</span><span class="p">,</span> <span class="n">exact_calculations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        TaxCalcIO class post-constructor method that completes initialization.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        First five are same as the first five of the TaxCalcIO constructor:</span>
+<span class="sd">            input_data, tax_year, baseline, reform, assump.</span>
+
+<span class="sd">        aging_input_data: boolean</span>
+<span class="sd">            whether or not to extrapolate Records data from data year to</span>
+<span class="sd">            tax_year.</span>
+
+<span class="sd">        exact_calculations: boolean</span>
+<span class="sd">            specifies whether or not exact tax calculations are done without</span>
+<span class="sd">            any smoothing of &quot;stair-step&quot; provisions in the tax law.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-arguments,too-many-locals</span>
+        <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># get policy parameter dictionary from --baseline file</span>
+        <span class="n">basedict</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">read_json_param_objects</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="c1"># get assumption sub-dictionaries</span>
+        <span class="n">paramdict</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">read_json_param_objects</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">assump</span><span class="p">)</span>
+        <span class="c1"># get policy parameter dictionaries from --reform file(s)</span>
+        <span class="n">policydicts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
+            <span class="n">reforms</span> <span class="o">=</span> <span class="n">reform</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;+&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">reforms</span><span class="p">:</span>
+                <span class="n">pdict</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">read_json_param_objects</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="n">policydicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pdict</span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">])</span>
+            <span class="n">paramdict</span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">policydicts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="c1"># remember parameters for reform documentation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span> <span class="o">=</span> <span class="n">paramdict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span> <span class="o">=</span> <span class="n">policydicts</span>
+        <span class="c1"># create gdiff_baseline object</span>
+        <span class="n">gdiff_baseline</span> <span class="o">=</span> <span class="n">GrowDiff</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">update_growdiff</span><span class="p">(</span><span class="n">paramdict</span><span class="p">[</span><span class="s1">&#39;growdiff_baseline&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="c1"># create GrowFactors base object that incorporates gdiff_baseline</span>
+        <span class="n">gfactors_base</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_base</span><span class="p">)</span>
+        <span class="c1"># specify gdiff_response object</span>
+        <span class="n">gdiff_response</span> <span class="o">=</span> <span class="n">GrowDiff</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gdiff_response</span><span class="o">.</span><span class="n">update_growdiff</span><span class="p">(</span><span class="n">paramdict</span><span class="p">[</span><span class="s1">&#39;growdiff_response&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="c1"># create GrowFactors ref object that has all gdiff objects applied</span>
+        <span class="n">gfactors_ref</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="n">gdiff_baseline</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
+        <span class="n">gdiff_response</span><span class="o">.</span><span class="n">apply_to</span><span class="p">(</span><span class="n">gfactors_ref</span><span class="p">)</span>
+        <span class="c1"># create Policy objects:</span>
+        <span class="c1"># ... the baseline Policy object</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_base</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">base</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">basedict</span><span class="p">[</span><span class="s1">&#39;policy&#39;</span><span class="p">],</span>
+                                  <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                  <span class="n">raise_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">base</span><span class="o">.</span><span class="n">parameter_errors</span>
+        <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="c1"># ... the reform Policy object</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">specified_reform</span><span class="p">:</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">poldict</span> <span class="ow">in</span> <span class="n">policydicts</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">poldict</span><span class="p">,</span>
+                                         <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                         <span class="n">raise_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">pol</span><span class="o">.</span><span class="n">parameter_errors</span>
+                <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pol</span> <span class="o">=</span> <span class="n">Policy</span><span class="p">(</span><span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_base</span><span class="p">)</span>
+        <span class="c1"># create Consumption object</span>
+        <span class="n">con</span> <span class="o">=</span> <span class="n">Consumption</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">update_consumption</span><span class="p">(</span><span class="n">paramdict</span><span class="p">[</span><span class="s1">&#39;consumption&#39;</span><span class="p">])</span>
+        <span class="k">except</span> <span class="n">paramtools</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">valerr_msg</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="n">valerr_msg</span><span class="o">.</span><span class="fm">__str__</span><span class="p">()</span>
+        <span class="c1"># check for valid tax_year value</span>
+        <span class="k">if</span> <span class="n">tax_year</span> <span class="o">&lt;</span> <span class="n">pol</span><span class="o">.</span><span class="n">start_year</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;tax_year </span><span class="si">{}</span><span class="s1"> less than policy.start_year </span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tax_year</span><span class="p">,</span> <span class="n">pol</span><span class="o">.</span><span class="n">start_year</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tax_year</span> <span class="o">&gt;</span> <span class="n">pol</span><span class="o">.</span><span class="n">end_year</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;tax_year </span><span class="si">{}</span><span class="s1"> greater than policy.end_year </span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tax_year</span><span class="p">,</span> <span class="n">pol</span><span class="o">.</span><span class="n">end_year</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># any errors imply cannot proceed with calculations</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># set policy to tax_year</span>
+        <span class="n">pol</span><span class="o">.</span><span class="n">set_year</span><span class="p">(</span><span class="n">tax_year</span><span class="p">)</span>
+        <span class="n">base</span><span class="o">.</span><span class="n">set_year</span><span class="p">(</span><span class="n">tax_year</span><span class="p">)</span>
+        <span class="c1"># read input file contents into Records objects</span>
+        <span class="k">if</span> <span class="n">aging_input_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cps_input_data</span><span class="p">:</span>
+                <span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">(</span>
+                    <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">,</span>
+                    <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
+                <span class="p">)</span>
+                <span class="n">recs_base</span> <span class="o">=</span> <span class="n">Records</span><span class="o">.</span><span class="n">cps_constructor</span><span class="p">(</span>
+                    <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_base</span><span class="p">,</span>
+                    <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># if not cps_input_data but aging_input_data</span>
+                <span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+                    <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_ref</span><span class="p">,</span>
+                    <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
+                <span class="p">)</span>
+                <span class="n">recs_base</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span>
+                    <span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+                    <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors_base</span><span class="p">,</span>
+                    <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span>
+                <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># input_data are raw data that are not being aged</span>
+            <span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">input_data</span><span class="p">,</span>
+                           <span class="n">start_year</span><span class="o">=</span><span class="n">tax_year</span><span class="p">,</span>
+                           <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">weights</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">adjust_ratios</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                           <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span><span class="p">)</span>
+            <span class="n">recs_base</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">recs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">tax_year</span> <span class="o">&lt;</span> <span class="n">recs</span><span class="o">.</span><span class="n">data_year</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;tax_year </span><span class="si">{}</span><span class="s1"> less than records.data_year </span><span class="si">{}</span><span class="s1">&#39;</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tax_year</span><span class="p">,</span> <span class="n">recs</span><span class="o">.</span><span class="n">data_year</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># create Calculator objects</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">,</span>
+                               <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                               <span class="n">consumption</span><span class="o">=</span><span class="n">con</span><span class="p">,</span>
+                               <span class="n">sync_years</span><span class="o">=</span><span class="n">aging_input_data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">base</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs_base</span><span class="p">,</span>
+                                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">consumption</span><span class="o">=</span><span class="n">con</span><span class="p">,</span>
+                                    <span class="n">sync_years</span><span class="o">=</span><span class="n">aging_input_data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="TaxCalcIO.custom_dump_variables"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.custom_dump_variables">[docs]</a>    <span class="k">def</span> <span class="nf">custom_dump_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tcdumpvars_str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return set of variable names extracted from tcdumpvars_str, which</span>
+<span class="sd">        contains the contents of the tcdumpvars file in the current directory.</span>
+<span class="sd">        Also, builds self.errmsg if any custom variables are not valid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tcdumpvars_str</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="c1"># change some common delimiter characters into spaces</span>
+        <span class="n">dump_vars_str</span> <span class="o">=</span> <span class="n">tcdumpvars_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">dump_vars_str</span> <span class="o">=</span> <span class="n">dump_vars_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">dump_vars_str</span> <span class="o">=</span> <span class="n">dump_vars_str</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="c1"># split dump_vars_str into a list of dump variables</span>
+        <span class="n">dump_vars_list</span> <span class="o">=</span> <span class="n">dump_vars_str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="c1"># check that all dump_vars_list items are valid</span>
+        <span class="n">recs_vinfo</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># contains records VARINFO only</span>
+        <span class="n">valid_set</span> <span class="o">=</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">|</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">CALCULATED_VARS</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">dump_vars_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_set</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;invalid variable name in tcdumpvars file: </span><span class="si">{}</span><span class="s1">&#39;</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">errmsg</span> <span class="o">+=</span> <span class="s1">&#39;ERROR: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="c1"># add essential variables even if not on custom list</span>
+        <span class="k">if</span> <span class="s1">&#39;RECID&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dump_vars_list</span><span class="p">:</span>
+            <span class="n">dump_vars_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;RECID&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;FLPDYR&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">dump_vars_list</span><span class="p">:</span>
+            <span class="n">dump_vars_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;FLPDYR&#39;</span><span class="p">)</span>
+        <span class="c1"># convert list into a set and return</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">dump_vars_list</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.tax_year"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.tax_year">[docs]</a>    <span class="k">def</span> <span class="nf">tax_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return calendar year for which TaxCalcIO calculations are being done.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">current_year</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.output_filepath"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.output_filepath">[docs]</a>    <span class="k">def</span> <span class="nf">output_filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return full path to output file named in TaxCalcIO constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dirpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.analyze"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.analyze">[docs]</a>    <span class="k">def</span> <span class="nf">analyze</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writing_output_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">output_tables</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">output_graphs</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">dump_varset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">output_dump</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">output_sqldb</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Conduct tax analysis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        writing_output_file: boolean</span>
+<span class="sd">           whether or not to generate and write output file</span>
+
+<span class="sd">        output_tables: boolean</span>
+<span class="sd">           whether or not to generate and write distributional tables</span>
+<span class="sd">           to a text file</span>
+
+<span class="sd">        output_graphs: boolean</span>
+<span class="sd">           whether or not to generate and write HTML graphs of average</span>
+<span class="sd">           and marginal tax rates by income percentile</span>
+
+<span class="sd">        dump_varset: set</span>
+<span class="sd">           custom set of variables to include in dump and sqldb output;</span>
+<span class="sd">           None implies include all variables in dump and sqldb output</span>
+
+<span class="sd">        output_dump: boolean</span>
+<span class="sd">           whether or not to replace standard output with all input and</span>
+<span class="sd">           calculated variables using their Tax-Calculator names</span>
+
+<span class="sd">        output_sqldb: boolean</span>
+<span class="sd">           whether or not to write SQLite3 database with dump table</span>
+<span class="sd">           containing same output as written by output_dump to a csv file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-arguments,too-many-branches,too-many-locals</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">puf_input_data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">reform_warnings</span><span class="p">:</span>
+            <span class="n">warn</span> <span class="o">=</span> <span class="s1">&#39;PARAMETER VALUE WARNING(S):  </span><span class="si">{}</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">&#39;</span>  <span class="c1"># pragma: no cover</span>
+            <span class="nb">print</span><span class="p">(</span>  <span class="c1"># pragma: no cover</span>
+                <span class="n">warn</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;(read documentation for each parameter)&#39;</span><span class="p">,</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">reform_warnings</span><span class="p">,</span>
+                            <span class="s1">&#39;CONTINUING WITH CALCULATIONS...&#39;</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">output_dump</span> <span class="ow">or</span> <span class="n">output_sqldb</span><span class="p">:</span>
+            <span class="c1"># might need marginal tax rates</span>
+            <span class="p">(</span><span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span>
+             <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># definitely do not need marginal tax rates</span>
+            <span class="n">mtr_paytax</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">mtr_inctax</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># extract output if writing_output_file</span>
+        <span class="k">if</span> <span class="n">writing_output_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_output_file</span><span class="p">(</span><span class="n">output_dump</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span>
+                                   <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_doc_file</span><span class="p">()</span>
+        <span class="c1"># optionally write --sqldb output to SQLite3 database</span>
+        <span class="k">if</span> <span class="n">output_sqldb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_sqldb_file</span><span class="p">(</span><span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">)</span>
+        <span class="c1"># optionally write --tables output to text file</span>
+        <span class="k">if</span> <span class="n">output_tables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">calc_base_calculated</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+                <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_tables_file</span><span class="p">()</span>
+        <span class="c1"># optionally write --graphs output to HTML files</span>
+        <span class="k">if</span> <span class="n">output_graphs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">calc_base_calculated</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+                <span class="n">calc_base_calculated</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_graph_files</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.write_output_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_output_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_output_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_dump</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span>
+                          <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write output to CSV-formatted file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">output_dump</span><span class="p">:</span>
+            <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span><span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">)</span>
+            <span class="n">column_order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minimal_output</span><span class="p">()</span>
+            <span class="n">column_order</span> <span class="o">=</span> <span class="n">outdf</span><span class="o">.</span><span class="n">columns</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span>
+        <span class="n">outdf</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">column_order</span><span class="p">,</span>
+                     <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">float_format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%.2f</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">outdf</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.write_doc_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_doc_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_doc_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write reform documentation to text file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">reform_documentation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">doc</span> <span class="o">=</span> <span class="n">Calculator</span><span class="o">.</span><span class="n">reform_documentation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">param_dict</span><span class="p">,</span>
+                                                  <span class="bp">self</span><span class="o">.</span><span class="n">policy_dicts</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">doc_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-doc.text&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">doc_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dfile</span><span class="p">:</span>
+            <span class="n">dfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.write_sqldb_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_sqldb_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_sqldb_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write dump output to SQLite3 database table dump.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">outdf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dump_output</span><span class="p">(</span><span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">outdf</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span>
+        <span class="n">db_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;.db&#39;</span><span class="p">)</span>
+        <span class="n">dbcon</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">db_fname</span><span class="p">)</span>
+        <span class="n">outdf</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;dump&#39;</span><span class="p">,</span> <span class="n">dbcon</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;replace&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">dbcon</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">outdf</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.write_tables_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_tables_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_tables_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write tables to text file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-locals</span>
+        <span class="n">tab_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-tab.text&#39;</span><span class="p">)</span>
+        <span class="c1"># skip tables if there are not some positive weights</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;No tables because sum of weights is not positive</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># create list of results for nontax variables</span>
+        <span class="c1"># - weights don&#39;t change with reform</span>
+        <span class="c1"># - expanded_income may change, so always use baseline expanded income</span>
+        <span class="n">nontax_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;s006&#39;</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">]</span>
+        <span class="n">nontax</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">nontax_vars</span><span class="p">]</span>
+        <span class="c1"># create list of results for tax variables from reform Calculator</span>
+        <span class="n">tax_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;iitax&#39;</span><span class="p">,</span> <span class="s1">&#39;payrolltax&#39;</span><span class="p">,</span> <span class="s1">&#39;lumpsum_tax&#39;</span><span class="p">,</span> <span class="s1">&#39;combined&#39;</span><span class="p">]</span>
+        <span class="n">reform</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">tax_vars</span><span class="p">]</span>
+        <span class="c1"># create DataFrame with tax distribution under reform</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">nontax</span> <span class="o">+</span> <span class="n">reform</span>  <span class="c1"># using expanded_income under baseline policy</span>
+        <span class="n">all_vars</span> <span class="o">=</span> <span class="n">nontax_vars</span> <span class="o">+</span> <span class="n">tax_vars</span>
+        <span class="n">distdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">dist</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">all_vars</span><span class="p">)</span>
+        <span class="c1"># create DataFrame with tax differences (reform - baseline)</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">var</span><span class="p">)</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">tax_vars</span><span class="p">]</span>
+        <span class="n">change</span> <span class="o">=</span> <span class="p">[(</span><span class="n">reform</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="n">base</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tax_vars</span><span class="p">))]</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">nontax</span> <span class="o">+</span> <span class="n">change</span>  <span class="c1"># using expanded_income under baseline policy</span>
+        <span class="n">diffdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span><span class="n">diff</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="n">all_vars</span><span class="p">)</span>
+        <span class="c1"># write each kind of distributional table</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tab_fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tfile</span><span class="p">:</span>
+            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span><span class="n">distdf</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Reform Totals&#39;</span><span class="p">)</span>
+            <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_decile_table</span><span class="p">(</span><span class="n">diffdf</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Differences&#39;</span><span class="p">)</span>
+        <span class="c1"># delete intermediate DataFrame objects</span>
+        <span class="k">del</span> <span class="n">distdf</span>
+        <span class="k">del</span> <span class="n">diffdf</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.write_decile_table"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_decile_table">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">write_decile_table</span><span class="p">(</span><span class="n">dfx</span><span class="p">,</span> <span class="n">tfile</span><span class="p">,</span> <span class="n">tkind</span><span class="o">=</span><span class="s1">&#39;Totals&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write to tfile the tkind decile table using dfx DataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dfx</span> <span class="o">=</span> <span class="n">add_quantile_table_row_variable</span><span class="p">(</span><span class="n">dfx</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span>
+                                              <span class="n">decile_details</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                              <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                              <span class="n">weight_by_income_measure</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">gdfx</span> <span class="o">=</span> <span class="n">dfx</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;table_row&#39;</span><span class="p">,</span> <span class="n">as_index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">rtns_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">unweighted_sum</span><span class="p">,</span> <span class="s1">&#39;s006&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">xinc_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;expanded_income&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">itax_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ptax_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;payrolltax&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">htax_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;lumpsum_tax&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ctax_series</span> <span class="o">=</span> <span class="n">gdfx</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">weighted_sum</span><span class="p">,</span> <span class="s1">&#39;combined&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># write decile table to text file</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="s1">&#39;Weighted Tax </span><span class="si">{}</span><span class="s1"> by Baseline Expanded-Income Decile</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tkind</span><span class="p">))</span>
+        <span class="n">rowfmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}{}{}{}{}{}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">rowfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;    Returns&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;    ExpInc&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;    IncTax&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;    PayTax&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;     LSTax&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;    AllTax&#39;</span><span class="p">)</span>
+        <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="n">rowfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;       (#m)&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;      ($b)&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;      ($b)&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;      ($b)&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;      ($b)&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;      ($b)&#39;</span><span class="p">)</span>
+        <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">rowfmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:9.2f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}{:10.1f}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">decile</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:2d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">decile</span><span class="p">)</span>
+            <span class="n">row</span> <span class="o">+=</span> <span class="n">rowfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rtns_series</span><span class="p">[</span><span class="n">decile</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span>
+                                 <span class="n">xinc_series</span><span class="p">[</span><span class="n">decile</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                                 <span class="n">itax_series</span><span class="p">[</span><span class="n">decile</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                                 <span class="n">ptax_series</span><span class="p">[</span><span class="n">decile</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                                 <span class="n">htax_series</span><span class="p">[</span><span class="n">decile</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                                 <span class="n">ctax_series</span><span class="p">[</span><span class="n">decile</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">)</span>
+            <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="s1">&#39; A&#39;</span>
+        <span class="n">row</span> <span class="o">+=</span> <span class="n">rowfmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rtns_series</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-6</span><span class="p">,</span>
+                             <span class="n">xinc_series</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                             <span class="n">itax_series</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                             <span class="n">ptax_series</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                             <span class="n">htax_series</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">,</span>
+                             <span class="n">ctax_series</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">)</span>
+        <span class="n">tfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">gdfx</span>
+        <span class="k">del</span> <span class="n">rtns_series</span>
+        <span class="k">del</span> <span class="n">xinc_series</span>
+        <span class="k">del</span> <span class="n">itax_series</span>
+        <span class="k">del</span> <span class="n">ptax_series</span>
+        <span class="k">del</span> <span class="n">htax_series</span>
+        <span class="k">del</span> <span class="n">ctax_series</span>
+        <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.write_graph_files"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_graph_files">[docs]</a>    <span class="k">def</span> <span class="nf">write_graph_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write graphs to HTML files.</span>
+<span class="sd">        All graphs contain same number of filing units in each quantile.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pos_wght_sum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mf">0.0</span>
+        <span class="n">fig</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="c1"># average-tax-rate graph</span>
+        <span class="n">atr_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-atr.html&#39;</span><span class="p">)</span>
+        <span class="n">atr_title</span> <span class="o">=</span> <span class="s1">&#39;ATR by Income Percentile&#39;</span>
+        <span class="k">if</span> <span class="n">pos_wght_sum</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">atr_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">write_graph_file</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">atr_fname</span><span class="p">,</span> <span class="n">atr_title</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;No graph because sum of weights is not positive&#39;</span>
+            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_empty_graph_file</span><span class="p">(</span><span class="n">atr_fname</span><span class="p">,</span> <span class="n">atr_title</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+        <span class="c1"># marginal-tax-rate graph</span>
+        <span class="n">mtr_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-mtr.html&#39;</span><span class="p">)</span>
+        <span class="n">mtr_title</span> <span class="o">=</span> <span class="s1">&#39;MTR by Income Percentile&#39;</span>
+        <span class="k">if</span> <span class="n">pos_wght_sum</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">mtr_graph</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">,</span>
+                <span class="n">alt_e00200p_text</span><span class="o">=</span><span class="s1">&#39;Taxpayer Earnings&#39;</span><span class="p">,</span>
+                <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span>
+            <span class="p">)</span>
+            <span class="n">write_graph_file</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">mtr_fname</span><span class="p">,</span> <span class="n">mtr_title</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;No graph because sum of weights is not positive&#39;</span>
+            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_empty_graph_file</span><span class="p">(</span><span class="n">mtr_fname</span><span class="p">,</span> <span class="n">mtr_title</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+        <span class="c1"># percentage-aftertax-income-change graph</span>
+        <span class="n">pch_fname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;-pch.html&#39;</span><span class="p">)</span>
+        <span class="n">pch_title</span> <span class="o">=</span> <span class="s1">&#39;PCH by Income Percentile&#39;</span>
+        <span class="k">if</span> <span class="n">pos_wght_sum</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc_base</span><span class="o">.</span><span class="n">pch_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="p">,</span> <span class="n">pop_quantiles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">write_graph_file</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">pch_fname</span><span class="p">,</span> <span class="n">pch_title</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">reason</span> <span class="o">=</span> <span class="s1">&#39;No graph because sum of weights is not positive&#39;</span>
+            <span class="n">TaxCalcIO</span><span class="o">.</span><span class="n">write_empty_graph_file</span><span class="p">(</span><span class="n">pch_fname</span><span class="p">,</span> <span class="n">pch_title</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fig</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">fig</span>
+            <span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.write_empty_graph_file"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.write_empty_graph_file">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">write_empty_graph_file</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write HTML graph file with title but no graph for specified reason.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">txt</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;&lt;html&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
+               <span class="s1">&#39;&lt;head&gt;&lt;title&gt;</span><span class="si">{}</span><span class="s1">&lt;/title&gt;&lt;/head&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
+               <span class="s1">&#39;&lt;body&gt;&lt;center&lt;h1&gt;</span><span class="si">{}</span><span class="s1">&lt;/h1&gt;&lt;/center&gt;&lt;/body&gt;</span><span class="se">\n</span><span class="s1">&#39;</span>
+               <span class="s1">&#39;&lt;/html&gt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">reason</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">gfile</span><span class="p">:</span>
+            <span class="n">gfile</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.minimal_output"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.minimal_output">[docs]</a>    <span class="k">def</span> <span class="nf">minimal_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract minimal output and return it as Pandas DataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">varlist</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;RECID&#39;</span><span class="p">,</span> <span class="s1">&#39;YEAR&#39;</span><span class="p">,</span> <span class="s1">&#39;WEIGHT&#39;</span><span class="p">,</span> <span class="s1">&#39;INCTAX&#39;</span><span class="p">,</span> <span class="s1">&#39;LSTAX&#39;</span><span class="p">,</span> <span class="s1">&#39;PAYTAX&#39;</span><span class="p">]</span>
+        <span class="n">odict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">scalc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span>
+        <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;RECID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;RECID&#39;</span><span class="p">)</span>  <span class="c1"># id for tax filing unit</span>
+        <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;YEAR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tax_year</span><span class="p">()</span>  <span class="c1"># tax calculation year</span>
+        <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;WEIGHT&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;s006&#39;</span><span class="p">)</span>  <span class="c1"># sample weight</span>
+        <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;INCTAX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>  <span class="c1"># federal income taxes</span>
+        <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;LSTAX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;lumpsum_tax&#39;</span><span class="p">)</span>  <span class="c1"># lump-sum tax</span>
+        <span class="n">odict</span><span class="p">[</span><span class="s1">&#39;PAYTAX&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">scalc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;payrolltax&#39;</span><span class="p">)</span>  <span class="c1"># payroll taxes (ee+er)</span>
+        <span class="n">odf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">odict</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">varlist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">odf</span></div>
+
+<div class="viewcode-block" id="TaxCalcIO.dump_output"><a class="viewcode-back" href="../../api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.dump_output">[docs]</a>    <span class="k">def</span> <span class="nf">dump_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dump_varset</span><span class="p">,</span> <span class="n">mtr_inctax</span><span class="p">,</span> <span class="n">mtr_paytax</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Extract dump output and return it as Pandas DataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recs_vinfo</span> <span class="o">=</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>  <span class="c1"># contains only Records VARINFO</span>
+        <span class="k">if</span> <span class="n">dump_varset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">varset</span> <span class="o">=</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">USABLE_READ_VARS</span> <span class="o">|</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">CALCULATED_VARS</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">varset</span> <span class="o">=</span> <span class="n">dump_varset</span>
+        <span class="c1"># create and return dump output DataFrame</span>
+        <span class="n">odf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">varname</span> <span class="ow">in</span> <span class="n">varset</span><span class="p">:</span>
+            <span class="n">vardata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calc</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">varname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">varname</span> <span class="ow">in</span> <span class="n">recs_vinfo</span><span class="o">.</span><span class="n">INTEGER_VARS</span><span class="p">:</span>
+                <span class="n">odf</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span> <span class="o">=</span> <span class="n">vardata</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">odf</span><span class="p">[</span><span class="n">varname</span><span class="p">]</span> <span class="o">=</span> <span class="n">vardata</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># rounded to nearest cent</span>
+        <span class="c1"># specify mtr values in percentage terms</span>
+        <span class="k">if</span> <span class="s1">&#39;mtr_inctax&#39;</span> <span class="ow">in</span> <span class="n">varset</span><span class="p">:</span>
+            <span class="n">odf</span><span class="p">[</span><span class="s1">&#39;mtr_inctax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mtr_inctax</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;mtr_paytax&#39;</span> <span class="ow">in</span> <span class="n">varset</span><span class="p">:</span>
+            <span class="n">odf</span><span class="p">[</span><span class="s1">&#39;mtr_paytax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mtr_paytax</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="c1"># specify tax calculation year</span>
+        <span class="n">odf</span><span class="p">[</span><span class="s1">&#39;FLPDYR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tax_year</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">odf</span></div></div>
+</pre></div>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    
+  </body>
+</html>

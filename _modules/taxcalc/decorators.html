@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>taxcalc.decorators &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/mystnb.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  <img src="../../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../api/public_api.html">
+   Tax-Calculator Python API
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2F_modules/taxcalc/decorators.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for taxcalc.decorators</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Implement numba JIT decorators used to speed-up the execution</span>
+<span class="sd">of Tax-Calculator functions in the calcfunctions.py module.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># CODING-STYLE CHECKS:</span>
+<span class="c1"># pycodestyle decorators.py</span>
+<span class="c1"># pylint --disable=locally-disabled decorators.py</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">numba</span>
+<span class="kn">from</span> <span class="nn">taxcalc.policy</span> <span class="kn">import</span> <span class="n">Policy</span>
+
+
+<span class="n">DO_JIT</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="c1"># One way to use the Python debugger is to do these two things:</span>
+<span class="c1">#  (a) change the line immediately above this comment from</span>
+<span class="c1">#      &quot;DO_JIT = True&quot; to &quot;DO_JIT = False&quot;, and</span>
+<span class="c1">#  (b) import pdb package and call pdb.set_trace() in either the</span>
+<span class="c1">#      calculator.py or calcfunctions.py file.</span>
+
+
+<div class="viewcode-block" id="id_wrapper"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.id_wrapper">[docs]</a><span class="k">def</span> <span class="nf">id_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">dec_args</span><span class="p">,</span> <span class="o">**</span><span class="n">dec_kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Function wrapper when numba package is not being used during debugging.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">fnc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        wrap function nested in id_wrapper function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">wrapped_f</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            wrapped_f function nested in wrap function.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">fnc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">wrapped_f</span>
+    <span class="k">return</span> <span class="n">wrap</span></div>
+
+
+<span class="k">if</span> <span class="n">DO_JIT</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="s1">&#39;NOTAXCALCJIT&#39;</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">:</span>
+    <span class="n">JIT</span> <span class="o">=</span> <span class="n">id_wrapper</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">JIT</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span>
+
+
+<div class="viewcode-block" id="GetReturnNode"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.GetReturnNode">[docs]</a><span class="k">class</span> <span class="nc">GetReturnNode</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A NodeVisitor to get the return tuple names from a calc-style function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="GetReturnNode.visit_Return"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.GetReturnNode.visit_Return">[docs]</a>    <span class="k">def</span> <span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name,no-self-use</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        visit_Return is used by NodeVisitor.visit method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Tuple</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">e</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">elts</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">]</span></div></div>
+
+
+<div class="viewcode-block" id="create_apply_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.create_apply_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_apply_function_string</span><span class="p">(</span><span class="n">sigout</span><span class="p">,</span> <span class="n">sigin</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a string for a function of the form::</span>
+
+<span class="sd">       def ap_fuc(x_0, x_1, x_2, ...):</span>
+<span class="sd">           for i in range(len(x_0)):</span>
+<span class="sd">               x_0[i], ... = jitted_f(x_j[i], ...)</span>
+<span class="sd">           return x_0[i], ...</span>
+
+<span class="sd">    where the specific args to jitted_f and the number of</span>
+<span class="sd">    values to return is determined by sigout and sigin.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    sigout: iterable of the out arguments</span>
+
+<span class="sd">    sigin: iterable of the in arguments</span>
+
+<span class="sd">    parameters: iterable of which of the args (from in_args) are parameter</span>
+<span class="sd">                variables (as opposed to column records). This influences</span>
+<span class="sd">                how we construct the apply-style function</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    a String representing the function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fstr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+    <span class="n">total_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigin</span><span class="p">)</span>
+    <span class="n">out_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">))]</span>
+    <span class="n">in_args</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;x_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sigout</span><span class="p">),</span> <span class="n">total_len</span><span class="p">)]</span>
+
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;def ap_func(</span><span class="si">{0}</span><span class="s2">):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">)))</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;  for i in range(len(x_0)):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">out_index</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">+</span> <span class="s2">&quot;[i]&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out_args</span><span class="p">]</span>
+    <span class="n">in_index</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">arg</span><span class="p">,</span> <span class="n">_var</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">in_args</span><span class="p">,</span> <span class="n">sigin</span><span class="p">):</span>
+        <span class="n">in_index</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span> <span class="o">+</span> <span class="s2">&quot;[i]&quot;</span> <span class="k">if</span> <span class="n">_var</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">parameters</span> <span class="k">else</span> <span class="n">arg</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; = &quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;jitted_f(&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">in_index</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;  return &quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_args</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fstr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="create_toplevel_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.create_toplevel_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_toplevel_function_string</span><span class="p">(</span><span class="n">args_out</span><span class="p">,</span> <span class="n">args_in</span><span class="p">,</span> <span class="n">pm_or_pf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a string for a function of the form:</span>
+
+<span class="sd">        def hl_func(x_0, x_1, x_2, ...):</span>
+<span class="sd">            outputs = (...) = calc_func(...)</span>
+<span class="sd">            header = [...]</span>
+<span class="sd">            return DataFrame(data, columns=header)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    args_out: iterable of the out arguments</span>
+
+<span class="sd">    args_in: iterable of the in arguments</span>
+
+<span class="sd">    pm_or_pf: iterable of strings for object that holds each arg</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    a String representing the function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fstr</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;def hl_func(pm, pf&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    from pandas import DataFrame</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    import numpy as np</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    import pandas as pd</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    def get_values(x):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        if isinstance(x, pd.Series):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;            return x.values</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        else:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;            return x</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    outputs = </span><span class="se">\\\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">outs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ppp</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pm_or_pf</span><span class="p">,</span> <span class="n">args_out</span> <span class="o">+</span> <span class="n">args_in</span><span class="p">):</span>
+        <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ppp</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">attr</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="p">)</span>
+    <span class="n">outs</span> <span class="o">=</span> <span class="p">[</span><span class="n">m_or_f</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">arg</span> <span class="k">for</span> <span class="n">m_or_f</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pm_or_pf</span><span class="p">,</span> <span class="n">args_out</span><span class="p">)]</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        (&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outs</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;) = </span><span class="se">\\\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;        &quot;</span> <span class="o">+</span> <span class="s2">&quot;applied_f(&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">ppp</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pm_or_pf</span><span class="p">,</span> <span class="n">args_out</span> <span class="o">+</span> <span class="n">args_in</span><span class="p">):</span>
+        <span class="c1"># Bring Policy parameter values down a dimension.</span>
+        <span class="k">if</span> <span class="n">ppp</span> <span class="o">==</span> <span class="s2">&quot;pm&quot;</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">+=</span> <span class="s2">&quot;[0]&quot;</span>
+        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;get_values(&quot;</span> <span class="o">+</span> <span class="n">ppp</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">attr</span> <span class="o">+</span> <span class="s2">&quot;)&quot;</span> <span class="o">+</span> <span class="s2">&quot;, &quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    header = [&quot;</span><span class="p">)</span>
+    <span class="n">col_headers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="n">out</span> <span class="o">+</span> <span class="s2">&quot;&#39;&quot;</span> <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">args_out</span><span class="p">]</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_headers</span><span class="p">))</span>
+    <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;]</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args_out</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    return DataFrame(data=outputs,&quot;</span>
+                   <span class="s2">&quot;columns=header)&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fstr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;    return DataFrame(data=np.column_stack(&quot;</span>
+                   <span class="s2">&quot;outputs),columns=header)&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fstr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="make_apply_function"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.make_apply_function">[docs]</a><span class="k">def</span> <span class="nf">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span>
+                        <span class="n">do_jit</span><span class="o">=</span><span class="n">DO_JIT</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes a calc-style function and creates the necessary Python code for</span>
+<span class="sd">    an apply-style function. Will also jit the function if desired.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func: the calc-style function</span>
+
+<span class="sd">    out_args: list of out arguments for the apply-style function</span>
+
+<span class="sd">    in_args: list of in arguments for the apply-style function</span>
+
+<span class="sd">    parameters: iterable of which of the args (from in_args) are parameter</span>
+<span class="sd">                variables (as opposed to column records).  This influences</span>
+<span class="sd">                how we construct the apply-style function.</span>
+
+<span class="sd">    do_jit: Bool, if True, jit the resulting apply-style function</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    apply-style function</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">do_jit</span><span class="p">:</span>
+        <span class="n">jitted_f</span> <span class="o">=</span> <span class="n">JIT</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">func</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">jitted_f</span> <span class="o">=</span> <span class="n">func</span>
+    <span class="n">apfunc</span> <span class="o">=</span> <span class="n">create_apply_function_string</span><span class="p">(</span><span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+    <span class="n">func_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">apfunc</span><span class="p">,</span> <span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;exec&quot;</span><span class="p">)</span>
+    <span class="n">fakeglobals</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="nb">eval</span><span class="p">(</span><span class="n">func_code</span><span class="p">,</span>  <span class="c1"># pylint: disable=eval-used</span>
+         <span class="p">{</span><span class="s2">&quot;jitted_f&quot;</span><span class="p">:</span> <span class="n">jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">do_jit</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">JIT</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)(</span><span class="n">fakeglobals</span><span class="p">[</span><span class="s1">&#39;ap_func&#39;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s1">&#39;ap_func&#39;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="apply_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.apply_jit">[docs]</a><span class="k">def</span> <span class="nf">apply_jit</span><span class="p">(</span><span class="n">dtype_sig_out</span><span class="p">,</span> <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make a decorator that takes in a calc-style function, handle apply step.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_wrapper function nested in apply_jit function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">theargs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+        <span class="n">jitted_apply</span> <span class="o">=</span> <span class="n">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dtype_sig_out</span><span class="p">,</span>
+                                           <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            wrapper function nested in make_wrapper function.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">in_arrays</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">out_arrays</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">farg</span> <span class="ow">in</span> <span class="n">theargs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">):</span>
+                    <span class="n">in_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">in_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">farg</span> <span class="ow">in</span> <span class="n">dtype_sig_out</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">):</span>
+                    <span class="n">out_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">out_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
+            <span class="n">final_array</span> <span class="o">=</span> <span class="n">out_arrays</span> <span class="o">+</span> <span class="n">in_arrays</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="n">jitted_apply</span><span class="p">(</span><span class="o">*</span><span class="n">final_array</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ans</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+    <span class="k">return</span> <span class="n">make_wrapper</span></div>
+
+
+<div class="viewcode-block" id="iterate_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.iterate_jit">[docs]</a><span class="k">def</span> <span class="nf">iterate_jit</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Public decorator for a calc-style function (see calcfunctions.py) that</span>
+<span class="sd">    transforms the calc-style function into an apply-style function that</span>
+<span class="sd">    can be called by Calculator class methods (see calculator.py).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">make_wrapper</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        make_wrapper function nested in iterate_jit decorator</span>
+<span class="sd">        wraps specified func using apply_jit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-locals</span>
+        <span class="c1"># Get the input arguments from the function</span>
+        <span class="n">in_args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span><span class="o">.</span><span class="n">args</span>
+        <span class="c1"># Get the numba.jit arguments</span>
+        <span class="n">jit_args_list</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">JIT</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;nopython&#39;</span><span class="p">]</span>
+        <span class="n">kwargs_for_jit</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">jit_args_list</span><span class="p">:</span>
+                <span class="n">kwargs_for_jit</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="c1"># Any name that is a parameter</span>
+        <span class="c1"># Boolean flag is given special treatment.</span>
+        <span class="c1"># Identify those names here</span>
+        <span class="n">param_list</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">parameter_list</span><span class="p">()</span>
+        <span class="n">allowed_parameters</span> <span class="o">=</span> <span class="n">param_list</span>
+        <span class="n">allowed_parameters</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">param_list</span><span class="p">)</span>
+        <span class="n">additional_parameters</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">in_args</span> <span class="k">if</span>
+                                 <span class="n">arg</span> <span class="ow">in</span> <span class="n">allowed_parameters</span><span class="p">]</span>
+        <span class="n">additional_parameters</span> <span class="o">+=</span> <span class="n">parameters</span>
+        <span class="c1"># Remote duplicates</span>
+        <span class="n">all_parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">additional_parameters</span><span class="p">))</span>
+
+        <span class="n">src</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getsourcelines</span><span class="p">(</span><span class="n">func</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Discover the return arguments by walking</span>
+        <span class="c1"># the AST of the function</span>
+        <span class="n">grn</span> <span class="o">=</span> <span class="n">GetReturnNode</span><span class="p">()</span>
+        <span class="n">all_out_args</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">ast</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src</span><span class="p">))):</span>
+            <span class="n">all_out_args</span> <span class="o">=</span> <span class="n">grn</span><span class="o">.</span><span class="n">visit</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">all_out_args</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">all_out_args</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t find return statement in function!&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Now create the apply-style possibly-jitted function</span>
+        <span class="n">applied_jitted_f</span> <span class="o">=</span> <span class="n">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span>
+                                               <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">all_out_args</span><span class="p">)),</span>
+                                               <span class="n">in_args</span><span class="p">,</span>
+                                               <span class="n">parameters</span><span class="o">=</span><span class="n">all_parameters</span><span class="p">,</span>
+                                               <span class="n">do_jit</span><span class="o">=</span><span class="n">DO_JIT</span><span class="p">,</span>
+                                               <span class="o">**</span><span class="n">kwargs_for_jit</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            wrapper function nested in make_wrapper function nested</span>
+<span class="sd">            in iterate_jit decorator.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">in_arrays</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">pm_or_pf</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">farg</span> <span class="ow">in</span> <span class="n">all_out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">):</span>
+                    <span class="n">in_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
+                    <span class="n">pm_or_pf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;pm&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">farg</span><span class="p">):</span>
+                    <span class="n">in_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">farg</span><span class="p">))</span>
+                    <span class="n">pm_or_pf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;pf&quot;</span><span class="p">)</span>
+            <span class="c1"># Create the high level function</span>
+            <span class="n">high_level_func</span> <span class="o">=</span> <span class="n">create_toplevel_function_string</span><span class="p">(</span><span class="n">all_out_args</span><span class="p">,</span>
+                                                              <span class="nb">list</span><span class="p">(</span><span class="n">in_args</span><span class="p">),</span>
+                                                              <span class="n">pm_or_pf</span><span class="p">)</span>
+            <span class="n">func_code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">high_level_func</span><span class="p">,</span> <span class="s2">&quot;&lt;string&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;exec&quot;</span><span class="p">)</span>
+            <span class="n">fakeglobals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="nb">eval</span><span class="p">(</span><span class="n">func_code</span><span class="p">,</span>  <span class="c1"># pylint: disable=eval-used</span>
+                 <span class="p">{</span><span class="s2">&quot;applied_f&quot;</span><span class="p">:</span> <span class="n">applied_jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
+            <span class="n">high_level_fn</span> <span class="o">=</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s1">&#39;hl_func&#39;</span><span class="p">]</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="n">high_level_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ans</span>
+
+        <span class="k">return</span> <span class="n">wrapper</span>
+
+    <span class="k">return</span> <span class="n">make_wrapper</span></div>
+</pre></div>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    
+  </body>
+</html>

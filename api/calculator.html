@@ -1,0 +1,990 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tax-Calculator Calculator &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tax-Calculator Consumption" href="consumption.html" />
+    <link rel="prev" title="Tax-Calculator CalcFunctions" href="calcfunctions.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="reference internal" href="public_api.html">
+   Tax-Calculator Python API
+  </a>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Tax-Calculator Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="consumption.html">
+     Tax-Calculator Consumption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="data.html">
+     Tax-Calculator Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="decorators.html">
+     Tax-Calculator Decorators
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growdiff.html">
+     Tax-Calculator GrowDiff
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growfactors.html">
+     Tax-Calculator GrowFactors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="parameters.html">
+     Tax-Calculator Parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="policy.html">
+     Tax-Calculator Policy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="records.html">
+     Tax-Calculator Records
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="taxcalcio.html">
+     Tax-Calculator IO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utils.html">
+     Tax-Calculator Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilsprvt.html">
+     Tax-Calculator Private Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/api/calculator.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/calculator.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/api/calculator.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#taxcalc-calculator">
+   taxcalc.calculator
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="tax-calculator-calculator">
+<span id="calculator"></span><h1>Tax-Calculator Calculator<a class="headerlink" href="#tax-calculator-calculator" title="Permalink to this headline">¶</a></h1>
+<p><strong>Tax-Calculator Calculator</strong></p>
+<div class="section" id="taxcalc-calculator">
+<h2>taxcalc.calculator<a class="headerlink" href="#taxcalc-calculator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="taxcalc.calculator.Calculator">
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.calculator.</code><code class="sig-name descname">Calculator</code><span class="sig-paren">(</span><em class="sig-param">policy=None</em>, <em class="sig-param">records=None</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">sync_years=True</em>, <em class="sig-param">consumption=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor for the Calculator class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>policy</strong> (<em>Policy class object</em>) – this argument must be specified and object is copied for internal use</p></li>
+<li><p><strong>records</strong> (<em>Records class object</em>) – this argument must be specified and object is copied for internal use</p></li>
+<li><p><strong>verbose</strong> (<em>boolean</em>) – specifies whether or not to write to stdout data-loaded and
+data-extrapolated progress reports; default value is false.</p></li>
+<li><p><strong>sync_years</strong> (<em>boolean</em>) – specifies whether or not to synchronize policy year and records year;
+default value is true.</p></li>
+<li><p><strong>consumption</strong> (<em>Consumption class object</em>) – specifies consumption response assumptions used to calculate
+“effective” marginal tax rates; default is None, which implies
+no consumption responses assumed in marginal tax rate calculations;
+when argument is an object it is copied for internal use;
+also specifies consumption value of in-kind benefis with no in-kind
+consumption values specified implying consumption value is equal to
+government cost of providing the in-kind benefits</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError:</strong> – if parameters are not the appropriate type.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>class instance</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#taxcalc.calculator.Calculator" title="taxcalc.calculator.Calculator">Calculator</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The most efficient way to specify current-law and reform Calculator
+objects is as follows:</p>
+<blockquote>
+<div><p>pol = Policy()
+rec = Records()
+calc1 = Calculator(policy=pol, records=rec)  # current-law
+pol.implement_reform(…)
+calc2 = Calculator(policy=pol, records=rec)  # reform</p>
+</div></blockquote>
+<p>All calculations are done on the internal copies of the Policy and
+Records objects passed to each of the two Calculator constructors.</p>
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator._calc_one_year">
+<code class="sig-name descname">_calc_one_year</code><span class="sig-paren">(</span><em class="sig-param">zero_out_calc_vars=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator._calc_one_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator._calc_one_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call all the functions except those in the calc_all() method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator._taxinc_to_amt">
+<code class="sig-name descname">_taxinc_to_amt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator._taxinc_to_amt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator._taxinc_to_amt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call TaxInc through AMT functions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.advance_to_year">
+<code class="sig-name descname">advance_to_year</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.advance_to_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.advance_to_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>The advance_to_year function gives an optional way of implementing
+increment year functionality by immediately specifying the year
+as input.  New year must be at least the current year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.array">
+<code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param">variable_name</em>, <em class="sig-param">variable_value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.array" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>If variable_value is None, return numpy ndarray containing the</dt><dd><p>named variable in embedded Records object.</p>
+</dd>
+<dt>If variable_value is not None, set named variable in embedded Records</dt><dd><p>object to specified variable_value and return None (which can be
+ignored).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.atr_graph">
+<code class="sig-name descname">atr_graph</code><span class="sig-paren">(</span><em class="sig-param">calc</em>, <em class="sig-param">mars='ALL'</em>, <em class="sig-param">atr_measure='combined'</em>, <em class="sig-param">pop_quantiles=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.atr_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.atr_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create average tax rate graph that can be written to an HTML
+file (using the write_graph_file utility function) or shown on
+the screen immediately in an interactive or notebook session
+(following the instructions in the documentation of the
+xtr_graph_plot utility function).  The graph shows the mean
+average tax rate for each expanded-income percentile excluding
+any percentile that includes a filing unit with negative or
+zero basline (self) expanded income.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline,
+where both self and calc have calculated taxes for this year
+before being used by this method</p></li>
+<li><p><strong>mars</strong> (<em>integer</em><em> or </em><em>string</em>) – <p>specifies which filing status subgroup to show in the graph</p>
+<ul>
+<li><p>’ALL’: include all filing units in sample</p></li>
+<li><p>1: include only single filing units</p></li>
+<li><p>2: include only married-filing-jointly filing units</p></li>
+<li><p>3: include only married-filing-separately filing units</p></li>
+<li><p>4: include only head-of-household filing units</p></li>
+</ul>
+</p></li>
+<li><p><strong>atr_measure</strong> (<em>string</em>) – <p>specifies which average tax rate to show on graph’s y axis</p>
+<ul>
+<li><p>’itax’: average individual income tax rate</p></li>
+<li><p>’ptax’: average payroll tax rate</p></li>
+<li><p>’combined’: sum of average income and payroll tax rates</p></li>
+</ul>
+</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>graph that is a bokeh.plotting figure object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.calc_all">
+<code class="sig-name descname">calc_all</code><span class="sig-paren">(</span><em class="sig-param">zero_out_calc_vars=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.calc_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.calc_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call all tax-calculation functions for the current_year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.ce_aftertax_income">
+<code class="sig-name descname">ce_aftertax_income</code><span class="sig-paren">(</span><em class="sig-param">calc</em>, <em class="sig-param">custom_params=None</em>, <em class="sig-param">require_no_agg_tax_change=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.ce_aftertax_income"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.ce_aftertax_income" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary that contains certainty-equivalent of the
+expected utility of after-tax expanded income computed for
+several constant-relative-risk-aversion parameter values
+for each of two Calculator objects: self, which represents
+the pre-reform situation, and calc, which represents the
+post-reform situation, both of which MUST have had calc_call()
+called before being passed to this function.</p>
+<p>IMPORTANT NOTES: These normative welfare calculations are very
+simple.  It is assumed that utility is a function of only
+consumption, and that consumption is equal to after-tax
+income.  This means that any assumed responses that
+change work effort will not affect utility via the
+correpsonding change in leisure.  And any saving response to
+changes in after-tax income do not affect consumption.</p>
+<p>The cmin value is the consumption level below which marginal
+utility is considered to be constant.  This allows the handling
+of filing units with very low or even negative after-tax expanded
+income in the expected-utility and certainty-equivalent calculations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.consump_benval_params">
+<code class="sig-name descname">consump_benval_params</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.consump_benval_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.consump_benval_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return list of benefit-consumption-value parameter values
+in embedded Consumption object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.consump_param">
+<code class="sig-name descname">consump_param</code><span class="sig-paren">(</span><em class="sig-param">param_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.consump_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.consump_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return value of named parameter in embedded Consumption object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.dataframe">
+<code class="sig-name descname">dataframe</code><span class="sig-paren">(</span><em class="sig-param">variable_list</em>, <em class="sig-param">all_vars=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.dataframe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.dataframe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return Pandas DataFrame containing the listed variables from the
+embedded Records object.  If all_vars is True, then the variable_list
+is ignored and all variables used as input to and calculated by the
+Calculator.calc_all() method (which does not include marginal tax
+rates) are included in the returned Pandas DataFrame.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.diagnostic_table">
+<code class="sig-name descname">diagnostic_table</code><span class="sig-paren">(</span><em class="sig-param">num_years</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.diagnostic_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.diagnostic_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate multi-year diagnostic table containing aggregate statistics;
+this method leaves the Calculator object unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num_years</strong> (<em>Integer</em>) – number of years to include in diagnostic table starting
+with the Calculator object’s current_year (must be at least
+one and no more than what would exceed Policy end_year)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pandas DataFrame object containing the multi-year diagnostic table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.difference_table">
+<code class="sig-name descname">difference_table</code><span class="sig-paren">(</span><em class="sig-param">calc</em>, <em class="sig-param">groupby</em>, <em class="sig-param">tax_to_diff</em>, <em class="sig-param">pop_quantiles=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.difference_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.difference_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get results from self and calc, sort them by expanded_income into
+table rows defined by groupby, compute grouped statistics, and
+return tax-difference table as a Pandas dataframe.
+This method leaves the Calculator objects unchanged.
+Note that the returned tables have consistent income groups (based
+on the self expanded_income) even though the baseline expanded_income
+in self and the reform expanded_income in calc are different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – options for input: ‘weighted_deciles’, ‘standard_income_bins’
+determines how the columns in resulting Pandas DataFrame are sorted</p></li>
+<li><p><strong>tax_to_diff</strong> (<em>String object</em>) – options for input: ‘iitax’, ‘payrolltax’, ‘combined’
+specifies which tax to difference</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+<li><p><strong>and typical usage</strong> (<em>Returns</em>) – </p></li>
+<li><p><strong>-------------------------</strong> – </p></li>
+<li><p><strong>= calc1.difference_table</strong><strong>(</strong><strong>calc2</strong><strong>, </strong><strong>'weighted_deciles'</strong><strong>, </strong><strong>'iitax'</strong><strong>)</strong> (<em>diff</em>) – </p></li>
+<li><p><strong>calc1 is a baseline Calculator object</strong> (<em>(</em><em>where</em>) – </p></li>
+<li><p><strong>calc2 is a reform Calculator object</strong><strong>)</strong><strong></strong> (<em>and</em>) – </p></li>
+<li><p><strong>returned diff is a difference table as a Pandas DataFrame</strong> (<em>The</em>) – </p></li>
+<li><p><strong>DIST_TABLE_COLUMNS and groupby rows.</strong> (<em>with</em>) – </p></li>
+<li><p><strong>NOTE</strong> (<em>when groupby is 'weighted_deciles'</em><em>, </em><em>the returned table has three</em>) – extra rows containing top-decile detail consisting of statistics
+for the 0.90-0.95 quantile range (bottom half of top decile),
+for the 0.95-0.99 quantile range, and
+for the 0.99-1.00 quantile range (top one percent); and the
+returned table splits the bottom decile into filing units with
+negative (denoted by a 0-10n row label),
+zero (denoted by a 0-10z row label), and
+positive (denoted by a 0-10p row label) values of the
+specified income_measure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.distribution_tables">
+<code class="sig-name descname">distribution_tables</code><span class="sig-paren">(</span><em class="sig-param">calc</em>, <em class="sig-param">groupby</em>, <em class="sig-param">pop_quantiles=False</em>, <em class="sig-param">scaling=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.distribution_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.distribution_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get results from self and calc, sort them by expanded_income into
+table rows defined by groupby, compute grouped statistics, and
+return tables as a pair of Pandas dataframes.
+This method leaves the Calculator object(s) unchanged.
+Note that the returned tables have consistent income groups (based
+on the self expanded_income) even though the baseline expanded_income
+in self and the reform expanded_income in calc are different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<em>Calculator object</em><em> or </em><em>None</em>) – typically represents the reform while self represents the baseline;
+if calc is None, the second returned table is None</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – <dl class="simple">
+<dt>options for input: ‘weighted_deciles’, ‘standard_income_bins’,</dt><dd><p>’soi_agi_bins’</p>
+</dd>
+</dl>
+<p>determines how the columns in resulting Pandas DataFrame are sorted</p>
+</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+<li><p><strong>scaling</strong> (<em>boolean</em>) – specifies create_distribution_table utility function argument
+that determines whether table entry values are scaled or not</p></li>
+<li><p><strong>and typical usage</strong> (<em>Return</em>) – </p></li>
+<li><p><strong>------------------------</strong> – </p></li>
+<li><p><strong>dist2 = calc1.distribution_tables</strong><strong>(</strong><strong>calc2</strong><strong>, </strong><strong>'weighted_deciles'</strong><strong>)</strong> (<em>dist1</em><em>,</em>) – </p></li>
+<li><p><strong>OR</strong> – </p></li>
+<li><p><strong>_ = calc1.distribution_tables</strong><strong>(</strong><strong>None</strong><strong>, </strong><strong>'weighted_deciles'</strong><strong>)</strong> (<em>dist1</em><em>,</em>) – </p></li>
+<li><p><strong>calc1 is a baseline Calculator object</strong> (<em>(</em><em>where</em>) – </p></li>
+<li><p><strong>calc2 is a reform Calculator object</strong><strong>)</strong><strong></strong> (<em>and</em>) – </p></li>
+<li><p><strong>of the dist1 and optional dist2 is a distribution table as a</strong> (<em>Each</em>) – </p></li>
+<li><p><strong>DataFrame with DIST_TABLE_COLUMNS and groupby rows.</strong> (<em>Pandas</em>) – </p></li>
+<li><p><strong>NOTE</strong> (<em>when groupby is 'weighted_deciles'</em><em>, </em><em>the returned tables have 3</em>) – extra rows containing top-decile detail consisting of statistics
+for the 0.90-0.95 quantile range (bottom half of top decile),
+for the 0.95-0.99 quantile range, and
+for the 0.99-1.00 quantile range (top one percent); and the
+returned table splits the bottom decile into filing units with
+negative (denoted by a 0-10n row label),
+zero (denoted by a 0-10z row label), and
+positive (denoted by a 0-10p row label) values of the
+specified income_measure.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.incarray">
+<code class="sig-name descname">incarray</code><span class="sig-paren">(</span><em class="sig-param">variable_name</em>, <em class="sig-param">variable_add</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.incarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.incarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add variable_add to named variable in embedded Records object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.increment_year">
+<code class="sig-name descname">increment_year</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.increment_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.increment_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Advance all embedded objects to next year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.mtr">
+<code class="sig-name descname">mtr</code><span class="sig-paren">(</span><em class="sig-param">variable_str='e00200p'</em>, <em class="sig-param">negative_finite_diff=False</em>, <em class="sig-param">zero_out_calculated_vars=False</em>, <em class="sig-param">calc_all_already_called=False</em>, <em class="sig-param">wrt_full_compensation=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.mtr"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.mtr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the marginal payroll, individual income, and combined
+tax rates for every tax filing unit, leaving the Calculator object
+in exactly the same state as it would be in after a calc_all() call.</p>
+<p>The marginal tax rates are approximated as the change in tax
+liability caused by a small increase (the finite_diff) in the variable
+specified by the variable_str divided by that small increase in the
+variable, when wrt_full_compensation is false.</p>
+<p>If wrt_full_compensation is true, then the marginal tax rates
+are computed as the change in tax liability divided by the change
+in total compensation caused by the small increase in the variable
+(where the change in total compensation is the sum of the small
+increase in the variable and any increase in the employer share of
+payroll taxes caused by the small increase in the variable).</p>
+<p>If using ‘e00200s’ as variable_str, the marginal tax rate for all
+records where MARS != 2 will be missing.  If you want to perform a
+function such as np.mean() on the returned arrays, you will need to
+account for this.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variable_str</strong> (<em>string</em>) – specifies type of income or expense that is increased to compute
+the marginal tax rates.  See Notes for list of valid variables.</p></li>
+<li><p><strong>negative_finite_diff</strong> (<em>boolean</em>) – specifies whether or not marginal tax rates are computed by
+subtracting (rather than adding) a small finite_diff amount
+to the specified variable.</p></li>
+<li><p><strong>zero_out_calculated_vars</strong> (<em>boolean</em>) – specifies value of zero_out_calc_vars parameter used in calls
+of Calculator.calc_all() method.</p></li>
+<li><p><strong>calc_all_already_called</strong> (<em>boolean</em>) – specifies whether self has already had its Calculor.calc_all()
+method called, in which case this method will not do a final
+calc_all() call but use the incoming embedded Records object
+as the outgoing Records object embedding in self.</p></li>
+<li><p><strong>wrt_full_compensation</strong> (<em>boolean</em>) – specifies whether or not marginal tax rates on earned income
+are computed with respect to (wrt) changes in total compensation
+that includes the employer share of OASDI and HI payroll taxes.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>A tuple of numpy arrays in the following order</em></p></li>
+<li><p><strong>mtr_payrolltax</strong> (<em>an array of marginal payroll tax rates.</em>)</p></li>
+<li><p><strong>mtr_incometax</strong> (<em>an array of marginal individual income tax rates.</em>)</p></li>
+<li><p><strong>mtr_combined</strong> (<em>an array of marginal combined tax rates, which is</em>) – the sum of mtr_payrolltax and mtr_incometax.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The arguments zero_out_calculated_vars and calc_all_already_called
+cannot both be true.</p>
+<p>Valid variable_str values are:
+‘e00200p’, taxpayer wage/salary earnings (also included in e00200);
+‘e00200s’, spouse wage/salary earnings (also included in e00200);
+‘e00900p’, taxpayer Schedule C self-employment income (also in e00900);
+‘e00300’,  taxable interest income;
+‘e00400’,  federally-tax-exempt interest income;
+‘e00600’,  all dividends included in AGI
+‘e00650’,  qualified dividends (also included in e00600)
+‘e01400’,  federally-taxable IRA distribution;
+‘e01700’,  federally-taxable pension benefits;
+‘e02000’,  Schedule E total net income/loss
+‘e02400’,  all social security (OASDI) benefits;
+‘p22250’,  short-term capital gains;
+‘p23250’,  long-term capital gains;
+‘e18500’,  Schedule A real-estate-tax paid;
+‘e19200’,  Schedule A interest paid;
+‘e26270’,  S-corporation/partnership income (also included in e02000);
+‘e19800’,  Charity cash contributions;
+‘e20100’,  Charity non-cash contributions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.mtr_graph">
+<code class="sig-name descname">mtr_graph</code><span class="sig-paren">(</span><em class="sig-param">calc</em>, <em class="sig-param">mars='ALL'</em>, <em class="sig-param">mtr_measure='combined'</em>, <em class="sig-param">mtr_variable='e00200p'</em>, <em class="sig-param">alt_e00200p_text=''</em>, <em class="sig-param">mtr_wrt_full_compen=False</em>, <em class="sig-param">income_measure='expanded_income'</em>, <em class="sig-param">pop_quantiles=False</em>, <em class="sig-param">dollar_weighting=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.mtr_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.mtr_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create marginal tax rate graph that can be written to an HTML
+file (using the write_graph_file utility function) or shown on
+the screen immediately in an interactive or notebook session
+(following the instructions in the documentation of the
+xtr_graph_plot utility function).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p></li>
+<li><p><strong>mars</strong> (<em>integer</em><em> or </em><em>string</em>) – <p>specifies which filing status subgroup to show in the graph</p>
+<ul>
+<li><p>’ALL’: include all filing units in sample</p></li>
+<li><p>1: include only single filing units</p></li>
+<li><p>2: include only married-filing-jointly filing units</p></li>
+<li><p>3: include only married-filing-separately filing units</p></li>
+<li><p>4: include only head-of-household filing units</p></li>
+</ul>
+</p></li>
+<li><p><strong>mtr_measure</strong> (<em>string</em>) – <p>specifies which marginal tax rate to show on graph’s y axis</p>
+<ul>
+<li><p>’itax’: marginal individual income tax rate</p></li>
+<li><p>’ptax’: marginal payroll tax rate</p></li>
+<li><p>’combined’: sum of marginal income and payroll tax rates</p></li>
+</ul>
+</p></li>
+<li><p><strong>mtr_variable</strong> (<em>string</em>) – any string in the Calculator.VALID_MTR_VARS set
+specifies variable to change in order to compute marginal tax rates</p></li>
+<li><p><strong>alt_e00200p_text</strong> (<em>string</em>) – text to use in place of mtr_variable
+when mtr_variable is ‘e00200p’;
+if empty string then use ‘e00200p’</p></li>
+<li><p><strong>mtr_wrt_full_compen</strong> (<em>boolean</em>) – see documentation of Calculator.mtr()
+argument wrt_full_compensation
+(value has an effect only if mtr_variable is ‘e00200p’)</p></li>
+<li><p><strong>income_measure</strong> (<em>string</em>) – <p>specifies which income variable to show on the graph’s x axis</p>
+<ul>
+<li><p>’wages’: wage and salary income (e00200)</p></li>
+<li><p>’agi’: adjusted gross income, AGI (c00100)</p></li>
+<li><dl class="simple">
+<dt>’expanded_income’: broader than AGI (see definition in</dt><dd><p>calcfunctions.py file).</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+<li><p><strong>dollar_weighting</strong> (<em>boolean</em>) – False implies both income_measure percentiles on x axis
+and mtr values for each percentile on the y axis are
+computed without using dollar income_measure weights (just
+sampling weights); True implies both income_measure
+percentiles on x axis and mtr values for each percentile
+on the y axis are computed using dollar income_measure
+weights (in addition to sampling weights).  Specifying
+True produces a graph x axis that shows income_measure
+(not filing unit) percentiles.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>graph that is a bokeh.plotting figure object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.n65">
+<code class="sig-name descname">n65</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.n65"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.n65" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return numpy ndarray containing the number of
+individuals age 65+ in each filing unit.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.pch_graph">
+<code class="sig-name descname">pch_graph</code><span class="sig-paren">(</span><em class="sig-param">calc</em>, <em class="sig-param">pop_quantiles=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.pch_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.pch_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create percentage change in after-tax expanded income graph that
+can be written to an HTML file (using the write_graph_file utility
+function) or shown on the screen immediately in an interactive or
+notebook session (following the instructions in the documentation
+of the xtr_graph_plot utility function).  The graph shows the
+dollar-weighted mean percentage change in after-tax expanded income
+for each expanded-income percentile excluding any percentile that
+includes a filing unit with negative or zero basline (self) expanded
+income.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline,
+where both self and calc have calculated taxes for this year
+before being used by this method</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>graph that is a bokeh.plotting figure object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.policy_param">
+<code class="sig-name descname">policy_param</code><span class="sig-paren">(</span><em class="sig-param">param_name</em>, <em class="sig-param">param_value=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.policy_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.policy_param" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>If param_value is None, return named parameter in</dt><dd><p>embedded Policy object.</p>
+</dd>
+<dt>If param_value is not None, set named parameter in</dt><dd><p>embedded Policy object to specified param_value and
+return None (which can be ignored).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.read_json_param_objects">
+<em class="property">static </em><code class="sig-name descname">read_json_param_objects</code><span class="sig-paren">(</span><em class="sig-param">reform</em>, <em class="sig-param">assump</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.read_json_param_objects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.read_json_param_objects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read JSON reform and assump objects and
+return a composite dictionary containing four key:dict pairs:
+‘policy’:dict, ‘consumption’:dict,
+‘growdiff_baseline’:dict, and ‘growdiff_response’:dict.</p>
+<p>Note that either of the two function arguments can be None.
+If reform is None, the dict in the ‘policy’:dict pair is empty.
+If assump is None, the dict in all the other key:dict pairs is empty.</p>
+<p>Also note that either of the two function arguments can be strings
+containing a valid JSON string (rather than a local filename).</p>
+<p>Either of the two function arguments can also be a valid URL string
+beginning with ‘http’ and pointing to a valid JSON file hosted online.</p>
+<p>The reform file/URL contents or JSON string must be like this:
+{“policy”: {…}} OR {…}
+(in other words, the top-level policy key is optional)
+and the assump file/URL contents or JSON string must be like this:
+{“consumption”: {…},</p>
+<blockquote>
+<div><p>“growdiff_baseline”: {…},
+“growdiff_response”: {…}}</p>
+</div></blockquote>
+<p>The {…} should be empty like this {} if not specifying a policy
+reform or if not specifying any non-default economic assumptions
+of that type.</p>
+<p>The ‘policy’ subdictionary of the returned dictionary is
+suitable as input into the Policy.implement_reform method.</p>
+<p>The ‘consumption’ subdictionary of the returned dictionary is
+suitable as input into the Consumption.update_consumption method.</p>
+<p>The ‘growdiff_baseline’ subdictionary of the returned dictionary is
+suitable as input into the GrowDiff.update_growdiff method.</p>
+<p>The ‘growdiff_response’ subdictionary of the returned dictionary is
+suitable as input into the GrowDiff.update_growdiff method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.reform_documentation">
+<em class="property">static </em><code class="sig-name descname">reform_documentation</code><span class="sig-paren">(</span><em class="sig-param">params</em>, <em class="sig-param">policy_dicts=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.reform_documentation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.reform_documentation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate reform documentation versus current-law policy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> (<em>dict</em>) – dictionary is structured like dict returned from
+the static Calculator.read_json_param_objects() method</p></li>
+<li><p><strong>policy_dicts</strong> (<em>list of dict</em><em> or </em><em>None</em>) – each dictionary in list is a params[‘policy’] dictionary
+representing second and subsequent elements of a compound
+reform; None implies no compound reform with the simple
+reform characterized in the params[‘policy’] dictionary</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>doc</strong> – the documentation for the specified policy reform</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>String</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.restore_records">
+<code class="sig-name descname">restore_records</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.restore_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.restore_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the embedded Records object to the stored Records object
+that was saved in the last call to the store_records() method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.store_records">
+<code class="sig-name descname">store_records</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.store_records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.store_records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make internal copy of embedded Records object that can then be
+restored after interim calculations that make temporary changes
+to the embedded Records object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.total_weight">
+<code class="sig-name descname">total_weight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.total_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.total_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all-filing-unit total of sampling weights.
+NOTE: var_weighted_mean = calc.weighted_total(var)/calc.total_weight()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.weighted_total">
+<code class="sig-name descname">weighted_total</code><span class="sig-paren">(</span><em class="sig-param">variable_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.weighted_total"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.weighted_total" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all-filing-unit weighted total of named Records variable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.calculator.Calculator.zeroarray">
+<code class="sig-name descname">zeroarray</code><span class="sig-paren">(</span><em class="sig-param">variable_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calculator.html#Calculator.zeroarray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.calculator.Calculator.zeroarray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set named variable in embedded Records object to zeros.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./api"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="calcfunctions.html" title="previous page">Tax-Calculator CalcFunctions</a>
+    <a class='right-next' id="next-link" href="consumption.html" title="next page">Tax-Calculator Consumption</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

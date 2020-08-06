@@ -1,0 +1,667 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>taxcalc.records &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/mystnb.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  <img src="../../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../api/public_api.html">
+   Tax-Calculator Python API
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2F_modules/taxcalc/records.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for taxcalc.records</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tax-Calculator tax-filing-unit Records class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># CODING-STYLE CHECKS:</span>
+<span class="c1"># pycodestyle records.py</span>
+<span class="c1"># pylint --disable=locally-disabled records.py</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">taxcalc.data</span> <span class="kn">import</span> <span class="n">Data</span>
+<span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
+<span class="kn">from</span> <span class="nn">taxcalc.utils</span> <span class="kn">import</span> <span class="n">read_egg_csv</span>
+
+
+<div class="viewcode-block" id="Records"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records">[docs]</a><span class="k">class</span> <span class="nc">Records</span><span class="p">(</span><span class="n">Data</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Records is a subclass of the abstract Data class, and therefore,</span>
+<span class="sd">    inherits its methods (none of which are shown here).</span>
+
+<span class="sd">    Constructor for the tax-filing-unit Records class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    data: string or Pandas DataFrame</span>
+<span class="sd">        string describes CSV file in which records data reside;</span>
+<span class="sd">        DataFrame already contains records data;</span>
+<span class="sd">        default value is the string &#39;puf.csv&#39;</span>
+<span class="sd">        NOTE: when using custom data, set this argument to a DataFrame.</span>
+<span class="sd">        NOTE: to use your own data for a specific year with Tax-Calculator,</span>
+<span class="sd">        be sure to read the documentation on creating your own data file and</span>
+<span class="sd">        then construct a Records object like this:</span>
+<span class="sd">        mydata = pd.read_csv(&lt;mydata.csv&gt;)</span>
+<span class="sd">        myrec = Records(data=mydata, start_year=&lt;mydata_year&gt;,</span>
+<span class="sd">                        gfactors=None, weights=None)</span>
+<span class="sd">        NOTE: data=None is allowed but the returned instance contains only</span>
+<span class="sd">              the data variable information in the specified VARINFO file.</span>
+
+<span class="sd">    start_year: integer</span>
+<span class="sd">        specifies calendar year of the input data;</span>
+<span class="sd">        default value is PUFCSV_YEAR.</span>
+<span class="sd">        Note that if specifying your own data (see above NOTE) as being</span>
+<span class="sd">        a custom data set, be sure to explicitly set start_year to the</span>
+<span class="sd">        custom data&#39;s calendar year.</span>
+
+<span class="sd">    gfactors: GrowFactors class instance or None</span>
+<span class="sd">        containing record data growth (or extrapolation) factors.</span>
+
+<span class="sd">    weights: string or Pandas DataFrame or None</span>
+<span class="sd">        string describes CSV file in which weights reside;</span>
+<span class="sd">        DataFrame already contains weights;</span>
+<span class="sd">        None creates empty sample-weights DataFrame;</span>
+<span class="sd">        default value is filename of the PUF weights.</span>
+<span class="sd">        NOTE: when using custom weights, set this argument to a DataFrame.</span>
+<span class="sd">        NOTE: assumes weights are integers that are 100 times the real weights.</span>
+
+<span class="sd">    adjust_ratios: string or Pandas DataFrame or None</span>
+<span class="sd">        string describes CSV file in which adjustment ratios reside;</span>
+<span class="sd">        DataFrame already contains transposed/no-index adjustment ratios;</span>
+<span class="sd">        None creates empty adjustment-ratios DataFrame;</span>
+<span class="sd">        default value is filename of the PUF adjustment ratios.</span>
+<span class="sd">        NOTE: when using custom ratios, set this argument to a DataFrame.</span>
+<span class="sd">        NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:</span>
+<span class="sd">              my_df = pd.read_csv(&#39;&lt;my_ratios.csv&gt;&#39;, index_col=0).transpose()</span>
+
+<span class="sd">    exact_calculations: boolean</span>
+<span class="sd">        specifies whether or not exact tax calculations are done without</span>
+<span class="sd">        any smoothing of stair-step provisions in income tax law;</span>
+<span class="sd">        default value is false.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError:</span>
+<span class="sd">        if data is not the appropriate type.</span>
+<span class="sd">        if taxpayer and spouse variables do not add up to filing-unit total.</span>
+<span class="sd">        if dividends is less than qualified dividends.</span>
+<span class="sd">        if gfactors is not None or a GrowFactors class instance.</span>
+<span class="sd">        if start_year is not an integer.</span>
+<span class="sd">        if files cannot be found.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    class instance: Records</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Typical usage when using PUF input data is as follows::</span>
+
+<span class="sd">        recs = Records()</span>
+
+<span class="sd">    which uses all the default parameters of the constructor, and</span>
+<span class="sd">    therefore, imputed variables are generated to augment the data and</span>
+<span class="sd">    initial-year grow factors are applied to the data.  There are</span>
+<span class="sd">    situations in which you need to specify the values of the Record</span>
+<span class="sd">    constructor&#39;s arguments, but be sure you know exactly what you are</span>
+<span class="sd">    doing when attempting this.</span>
+
+<span class="sd">    Use Records.cps_constructor() to get a Records object instantiated</span>
+<span class="sd">    with CPS input data.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># suppress pylint warning about constructor having too many arguments:</span>
+    <span class="c1"># pylint: disable=too-many-arguments</span>
+    <span class="c1"># suppress pylint warnings about uppercase variable names:</span>
+    <span class="c1"># pylint: disable=invalid-name</span>
+    <span class="c1"># suppress pylint warnings about too many class instance attributes:</span>
+    <span class="c1"># pylint: disable=too-many-instance-attributes</span>
+
+    <span class="n">PUFCSV_YEAR</span> <span class="o">=</span> <span class="mi">2011</span>
+    <span class="n">CPSCSV_YEAR</span> <span class="o">=</span> <span class="mi">2014</span>
+
+    <span class="n">PUF_WEIGHTS_FILENAME</span> <span class="o">=</span> <span class="s1">&#39;puf_weights.csv.gz&#39;</span>
+    <span class="n">PUF_RATIOS_FILENAME</span> <span class="o">=</span> <span class="s1">&#39;puf_ratios.csv&#39;</span>
+    <span class="n">CPS_WEIGHTS_FILENAME</span> <span class="o">=</span> <span class="s1">&#39;cps_weights.csv.gz&#39;</span>
+    <span class="n">CPS_RATIOS_FILENAME</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">CODE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="n">VARINFO_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;records_variables.json&#39;</span>
+    <span class="n">VARINFO_FILE_PATH</span> <span class="o">=</span> <span class="n">CODE_PATH</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">data</span><span class="o">=</span><span class="s1">&#39;puf.csv&#39;</span><span class="p">,</span>
+                 <span class="n">start_year</span><span class="o">=</span><span class="n">PUFCSV_YEAR</span><span class="p">,</span>
+                 <span class="n">gfactors</span><span class="o">=</span><span class="n">GrowFactors</span><span class="p">(),</span>
+                 <span class="n">weights</span><span class="o">=</span><span class="n">PUF_WEIGHTS_FILENAME</span><span class="p">,</span>
+                 <span class="n">adjust_ratios</span><span class="o">=</span><span class="n">PUF_RATIOS_FILENAME</span><span class="p">,</span>
+                 <span class="n">exact_calculations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="c1"># pylint: disable=no-member,too-many-branches</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Records</span><span class="o">.</span><span class="n">CODE_PATH</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">gfactors</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>  <span class="c1"># because there are no data</span>
+        <span class="c1"># read adjustment ratios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ADJ</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_read_ratios</span><span class="p">(</span><span class="n">adjust_ratios</span><span class="p">)</span>
+        <span class="c1"># specify exact value based on exact_calculations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exact</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">exact_calculations</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># specify FLPDYR value based on start_year</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">start_year</span><span class="p">)</span>
+        <span class="c1"># check for valid MARS values</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MARS</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MARS</span><span class="p">,</span> <span class="mi">5</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;not all MARS values in [1,5] range&#39;</span><span class="p">)</span>
+        <span class="c1"># create variables derived from MARS, which is in MUST_READ_VARS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sep</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># check for valid EIC values</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EIC</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                     <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">EIC</span><span class="p">,</span> <span class="mi">3</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;not all EIC values in [0,3] range&#39;</span><span class="p">)</span>
+        <span class="c1"># check that three sets of split-earnings variables have valid values</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;expression &quot;</span><span class="si">{0}</span><span class="s1"> == </span><span class="si">{0}</span><span class="s1">p + </span><span class="si">{0}</span><span class="s1">s&quot; is not true for every record&#39;</span>
+        <span class="n">tol</span> <span class="o">=</span> <span class="mf">0.020001</span>  <span class="c1"># handles &quot;%.2f&quot; rounding errors</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00200</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00200p</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">e00200s</span><span class="p">),</span>
+                           <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;e00200&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00900</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00900p</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">e00900s</span><span class="p">),</span>
+                           <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;e00900&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e02100</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e02100p</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">e02100s</span><span class="p">),</span>
+                           <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;e02100&#39;</span><span class="p">))</span>
+        <span class="c1"># check that spouse income variables have valid values</span>
+        <span class="n">nospouse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MARS</span> <span class="o">!=</span> <span class="mi">2</span>
+        <span class="n">zeros</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">MARS</span><span class="p">[</span><span class="n">nospouse</span><span class="p">])</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not always zero for non-married filing unit&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00200s</span><span class="p">[</span><span class="n">nospouse</span><span class="p">],</span> <span class="n">zeros</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;e00200s&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00900s</span><span class="p">[</span><span class="n">nospouse</span><span class="p">],</span> <span class="n">zeros</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;e00900s&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e02100s</span><span class="p">[</span><span class="n">nospouse</span><span class="p">],</span> <span class="n">zeros</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;e02100s&#39;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">k1bx14s</span><span class="p">[</span><span class="n">nospouse</span><span class="p">],</span> <span class="n">zeros</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;k1bx14s&#39;</span><span class="p">))</span>
+        <span class="c1"># check that ordinary dividends are no less than qualified dividends</span>
+        <span class="n">other_dividends</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">e00600</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">e00650</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00600</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">e00650</span> <span class="o">+</span> <span class="n">other_dividends</span><span class="p">,</span>
+                           <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;expression &quot;e00600 &gt;= e00650&quot; is not true for every record&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">other_dividends</span>
+        <span class="c1"># check that total pension income is no less than taxable pension inc</span>
+        <span class="n">nontaxable_pensions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">e01500</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">e01700</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e01500</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">e01700</span> <span class="o">+</span> <span class="n">nontaxable_pensions</span><span class="p">,</span>
+                           <span class="n">rtol</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">):</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;expression &quot;e01500 &gt;= e01700&quot; is not true for every record&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">nontaxable_pensions</span>
+        <span class="c1"># check that PT_SSTB_income has valid value</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PT_SSTB_income</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                                     <span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">PT_SSTB_income</span><span class="p">,</span> <span class="mi">1</span><span class="p">))):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;not all PT_SSTB_income values are 0 or 1&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Records.cps_constructor"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records.cps_constructor">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">cps_constructor</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                        <span class="n">gfactors</span><span class="o">=</span><span class="n">GrowFactors</span><span class="p">(),</span>
+                        <span class="n">exact_calculations</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Static method returns a Records object instantiated with CPS</span>
+<span class="sd">        input data.  This works in a analogous way to Records(), which</span>
+<span class="sd">        returns a Records object instantiated with PUF input data.</span>
+<span class="sd">        This is a convenience method that eliminates the need to</span>
+<span class="sd">        specify all the details of the CPS input data just as the</span>
+<span class="sd">        default values of the arguments of the Records class constructor</span>
+<span class="sd">        eliminate the need to specify all the details of the PUF input</span>
+<span class="sd">        data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Records</span><span class="o">.</span><span class="n">CODE_PATH</span><span class="p">,</span> <span class="s1">&#39;cps.csv.gz&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gfactors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Records</span><span class="o">.</span><span class="n">CODE_PATH</span><span class="p">,</span>
+                                   <span class="n">Records</span><span class="o">.</span><span class="n">CPS_WEIGHTS_FILENAME</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Records</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                       <span class="n">start_year</span><span class="o">=</span><span class="n">Records</span><span class="o">.</span><span class="n">CPSCSV_YEAR</span><span class="p">,</span>
+                       <span class="n">gfactors</span><span class="o">=</span><span class="n">gfactors</span><span class="p">,</span>
+                       <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+                       <span class="n">adjust_ratios</span><span class="o">=</span><span class="n">Records</span><span class="o">.</span><span class="n">CPS_RATIOS_FILENAME</span><span class="p">,</span>
+                       <span class="n">exact_calculations</span><span class="o">=</span><span class="n">exact_calculations</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Records.increment_year"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records.increment_year">[docs]</a>    <span class="k">def</span> <span class="nf">increment_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add one to current year, and also does</span>
+<span class="sd">        extrapolation, reweighting, adjusting for new current year.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+        <span class="c1"># apply variable adjustment ratios</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_adjust</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Records.read_cps_data"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records.read_cps_data">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_cps_data</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return data in cps.csv.gz as a Pandas DataFrame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">fname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Records</span><span class="o">.</span><span class="n">CODE_PATH</span><span class="p">,</span> <span class="s1">&#39;cps.csv.gz&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fname</span><span class="p">):</span>
+            <span class="n">cpsdf</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in conda package</span>
+            <span class="n">cpsdf</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+        <span class="k">return</span> <span class="n">cpsdf</span></div>
+
+    <span class="c1"># ----- begin private methods of Records class -----</span>
+
+<div class="viewcode-block" id="Records._extrapolate"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records._extrapolate">[docs]</a>    <span class="k">def</span> <span class="nf">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply to variables the grow factor values for specified calendar year.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=too-many-statements,no-member</span>
+        <span class="c1"># put values in local dictionary</span>
+        <span class="n">gfv</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">GrowFactors</span><span class="o">.</span><span class="n">VALID_NAMES</span><span class="p">:</span>
+            <span class="n">gfv</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gfactors</span><span class="o">.</span><span class="n">factor_value</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">year</span><span class="p">)</span>
+        <span class="c1"># apply values to Records variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00200</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AWAGE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00200p</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AWAGE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00200s</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AWAGE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pencon_p</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AWAGE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pencon_s</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AWAGE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00300</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AINTS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AINTS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00600</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ADIVS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00650</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ADIVS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00700</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00800</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00900s</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00900s</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">e00900s</span> <span class="o">*</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHCI&#39;</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">e00900s</span> <span class="o">*</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHCL&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00900p</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e00900p</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">e00900p</span> <span class="o">*</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHCI&#39;</span><span class="p">],</span>
+                                   <span class="bp">self</span><span class="o">.</span><span class="n">e00900p</span> <span class="o">*</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHCL&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e00900</span><span class="p">[:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">e00900p</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">e00900s</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e01100</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACGNS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e01200</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACGNS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e01400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e01500</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e01700</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e02000</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">e02000</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">,</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">e02000</span> <span class="o">*</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHEI&#39;</span><span class="p">],</span>
+                                  <span class="bp">self</span><span class="o">.</span><span class="n">e02000</span> <span class="o">*</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHEL&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e02100</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHF&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e02100p</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHF&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e02100s</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHF&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e02300</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AUCOMP&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e02400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASOCSEC&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03150</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03210</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03220</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03230</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03270</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACPIM&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03240</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03290</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACPIM&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03300</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e03500</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e07240</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e07260</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e07300</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABOOK&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e07400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABOOK&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p08000</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e09700</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e09800</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e09900</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e11200</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="c1"># ITEMIZED DEDUCTIONS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e17500</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACPIM&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e18400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e18500</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e19200</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;AIPD&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e19800</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e20100</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e20400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">g20500</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="c1"># CAPITAL GAINS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p22250</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACGNS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">p23250</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACGNS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e24515</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACGNS&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e24518</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ACGNS&#39;</span><span class="p">]</span>
+        <span class="c1"># SCHEDULE E</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e26270</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHEI&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e27200</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHEI&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k1bx14p</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHEI&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k1bx14s</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ASCHEI&#39;</span><span class="p">]</span>
+        <span class="c1"># MISCELLANOUS SCHEDULES</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e07600</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e32800</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e58990</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e62900</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e87530</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">e87521</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmbtp</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+        <span class="c1"># BENEFITS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">other_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENOTHER&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcare_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENMCARE&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mcaid_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENMCAID&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ssi_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENSSI&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">snap_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENSNAP&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wic_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENWIC&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">housing_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENHOUSING&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tanf_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENTANF&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vet_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENVET&#39;</span><span class="p">]</span>
+        <span class="c1"># remove local dictionary</span>
+        <span class="k">del</span> <span class="n">gfv</span></div>
+
+<div class="viewcode-block" id="Records._adjust"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records._adjust">[docs]</a>    <span class="k">def</span> <span class="nf">_adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adjust value of income variables to match SOI distributions</span>
+<span class="sd">        Note: adjustment must leave variables as numpy.ndarray type</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=no-member</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ADJ</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Interest income</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">e00300</span> <span class="o">*=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ADJ</span><span class="p">[</span><span class="s1">&#39;INT</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">year</span><span class="p">)][</span><span class="bp">self</span><span class="o">.</span><span class="n">agi_bin</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
+
+<div class="viewcode-block" id="Records._read_ratios"><a class="viewcode-back" href="../../api/records.html#taxcalc.records.Records._read_ratios">[docs]</a>    <span class="k">def</span> <span class="nf">_read_ratios</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ratios</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read Records adjustment ratios from file or</span>
+<span class="sd">        use specified transposed/no-index DataFrame as ratios or</span>
+<span class="sd">        create empty DataFrame if None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ratios</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ADJ&#39;</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;nothing&#39;</span><span class="p">:</span> <span class="p">[]}))</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="s1">&#39;INT2013&#39;</span> <span class="ow">in</span> <span class="n">ratios</span><span class="o">.</span><span class="n">columns</span>  <span class="c1"># check for transposed</span>
+            <span class="k">assert</span> <span class="n">ratios</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span>  <span class="c1"># check for no-index</span>
+            <span class="n">ADJ</span> <span class="o">=</span> <span class="n">ratios</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">ratios_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">Records</span><span class="o">.</span><span class="n">CODE_PATH</span><span class="p">,</span> <span class="n">ratios</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">ratios_path</span><span class="p">):</span>
+                <span class="n">ADJ</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ratios_path</span><span class="p">,</span>
+                                  <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># find file in conda package</span>
+                <span class="n">ADJ</span> <span class="o">=</span> <span class="n">read_egg_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">ratios_path</span><span class="p">),</span>
+                                   <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+            <span class="n">ADJ</span> <span class="o">=</span> <span class="n">ADJ</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;ratios is neither None nor a Pandas DataFrame nor a string&#39;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ADJ</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ADJ</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;agi_bin&#39;</span><span class="p">:</span>
+            <span class="n">ADJ</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;agi_bin&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ADJ</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;ADJ&#39;</span><span class="p">,</span> <span class="n">ADJ</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">))</span>
+        <span class="k">del</span> <span class="n">ADJ</span></div></div>
+</pre></div>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    
+  </body>
+</html>

@@ -1,0 +1,1022 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>taxcalc.parameters &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/mystnb.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  <img src="../../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../api/public_api.html">
+   Tax-Calculator Python API
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2F_modules/taxcalc/parameters.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for taxcalc.parameters</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="kn">import</span> <span class="nn">marshmallow</span> <span class="k">as</span> <span class="nn">ma</span>
+<span class="kn">import</span> <span class="nn">paramtools</span> <span class="k">as</span> <span class="nn">pt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+
+<span class="kn">import</span> <span class="nn">taxcalc</span>
+<span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
+<span class="kn">from</span> <span class="nn">taxcalc.utils</span> <span class="kn">import</span> <span class="n">json_to_dict</span>
+
+
+<div class="viewcode-block" id="CompatibleDataSchema"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.CompatibleDataSchema">[docs]</a><span class="k">class</span> <span class="nc">CompatibleDataSchema</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">Schema</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Schema for Compatible data object</span>
+<span class="sd">    {</span>
+<span class="sd">        &quot;compatible_data&quot;: {&quot;data1&quot;: bool, &quot;data2&quot;: bool, ...}</span>
+<span class="sd">    }</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">puf</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">()</span>
+    <span class="n">cps</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Boolean</span><span class="p">()</span></div>
+
+
+<span class="n">pt</span><span class="o">.</span><span class="n">register_custom_type</span><span class="p">(</span>
+    <span class="s2">&quot;compatible_data&quot;</span><span class="p">,</span>
+    <span class="n">ma</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">CompatibleDataSchema</span><span class="p">())</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="Parameters"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters">[docs]</a><span class="k">class</span> <span class="nc">Parameters</span><span class="p">(</span><span class="n">pt</span><span class="o">.</span><span class="n">Parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Base Parameters class that wraps ParamTools, providing parameter indexing</span>
+<span class="sd">    for tax policy in the adjust method and backwards-compatible preserving</span>
+<span class="sd">    layer that supports Tax-Calculator&#39;s conventional reform formatting style</span>
+<span class="sd">    as well as convenience methods like set_Year for classes operating on this</span>
+<span class="sd">    one.</span>
+
+<span class="sd">    The defaults file path may be set through the defaults class attribute</span>
+<span class="sd">    variable or through the old DEFAULTS_FILE_NAME/DEFAULTS_FILE_PATH work</span>
+<span class="sd">    flow.</span>
+
+<span class="sd">    A custom getter method is implemented so that the value of a parameter</span>
+<span class="sd">    over all allowed years can conveniently be retrieved by adding an</span>
+<span class="sd">    underscore before the variable name (e.g. EITC_c vs _EITC_c).</span>
+
+<span class="sd">    Note: Like all pt.Parameters classes the values of attributes</span>
+<span class="sd">    corresponding to a parameter value on this class are ephemeral and the only</span>
+<span class="sd">    way to make permanent changes to this class&#39;sstate is through the set_state</span>
+<span class="sd">    or adjust methods.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">defaults</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">array_first</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">label_to_extend</span> <span class="o">=</span> <span class="s2">&quot;year&quot;</span>
+    <span class="n">uses_extend_func</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="n">REMOVED_PARAMS</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">REDEFINED_PARAMS</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">()</span>
+
+    <span class="c1"># Legacy class attrs</span>
+    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">DEFAULTS_FILE_PATH</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">LAST_KNOWN_YEAR</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_years</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">last_known_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">removed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">redefined</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wage_indexed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># In case we need to wait for this to be called from the</span>
+        <span class="c1"># initialize method for legacy reasons.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">start_year</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">num_years</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULTS_FILE_PATH</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULTS_FILE_NAME</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">defaults</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULTS_FILE_PATH</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">DEFAULTS_FILE_NAME</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">last_known_year</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_known_year</span> <span class="o">=</span> <span class="n">start_year</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">last_known_year</span> <span class="o">&gt;=</span> <span class="n">start_year</span>
+            <span class="k">assert</span> <span class="n">last_known_year</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">LAST_BUDGET_YEAR</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_last_known_year</span> <span class="o">=</span> <span class="n">last_known_year</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_removed_params</span> <span class="o">=</span> <span class="n">removed</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">REMOVED_PARAMS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_redefined_params</span> <span class="o">=</span> <span class="n">redefined</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">REDEFINED_PARAMS</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wage_indexed</span> <span class="o">=</span> <span class="n">wage_indexed</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">WAGE_INDEXED_PARAMS</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">start_year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">JSON_START_YEAR</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="s2">&quot;initial_state&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span>
+        <span class="p">):</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;initial_state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">start_year</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
+            <span class="p">}</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">param</span><span class="p">:</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_params</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="o">!=</span> <span class="s2">&quot;schema&quot;</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="Parameters.adjust"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.adjust">[docs]</a>    <span class="k">def</span> <span class="nf">adjust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_or_path</span><span class="p">,</span> <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implements custom warning and error handling.</span>
+
+<span class="sd">        If print_warnings is True, warnings are printed out and if</span>
+<span class="sd">        print_warnings is False, nothing is printed.</span>
+
+<span class="sd">        ParamTools throws an error if a warning is triggered and</span>
+<span class="sd">        ignore_warnings is False. This method circumvents this behavior.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">print_warnings</span><span class="p">:</span>
+            <span class="n">_data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ignore_warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ignore_warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjust_with_indexing</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ve</span>
+            <span class="k">if</span> <span class="n">print_warnings</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING:&quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">warnings</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ignore_warnings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">_data</span>
+            <span class="n">_warnings</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">adjustment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjust_with_indexing</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="n">_warnings</span>
+            <span class="k">return</span> <span class="n">adjustment</span></div>
+
+<div class="viewcode-block" id="Parameters.adjust_with_indexing"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.adjust_with_indexing">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_with_indexing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params_or_path</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Custom adjust method that handles special indexing logic. The logic</span>
+<span class="sd">        is:</span>
+
+<span class="sd">        1. If &quot;parameter_indexing_CPI_offset&quot; is adjusted, first set</span>
+<span class="sd">        parameter_indexing_CPI_offset to zero before implementing the</span>
+<span class="sd">        adjusted parameter_indexing_CPI_offset to avoid stacking adjustments.</span>
+<span class="sd">        Then, revert all values of indexed parameters to the &#39;known&#39; values:</span>
+<span class="sd">            a. The current values of parameters that are being adjusted are</span>
+<span class="sd">                deleted after the first year in which</span>
+<span class="sd">                parameter_indexing_CPI_offset is adjusted.</span>
+<span class="sd">            b. The current values of parameters that are not being adjusted</span>
+<span class="sd">                (i.e. are not in params) are deleted after the last known year,</span>
+<span class="sd">                with the exception of parameters that revert to their pre-TCJA</span>
+<span class="sd">                values in 2026. Instead, these (2026) parameter values are</span>
+<span class="sd">                recalculated using the new inflation rates.</span>
+<span class="sd">            After the &#39;unknown&#39; values have been deleted, the last known value</span>
+<span class="sd">            is extrapolated through the budget window. If there are indexed</span>
+<span class="sd">            parameters in the adjustment, they will be included in the final</span>
+<span class="sd">            adjustment call (unless their indexed status is changed).</span>
+<span class="sd">        2. If the &quot;indexed&quot; status is updated for any parameter:</span>
+<span class="sd">            a. If a parameter has values that are being adjusted before</span>
+<span class="sd">                the indexed status is adjusted, update those parameters first.</span>
+<span class="sd">            b. Extend the values of that parameter to the year in which</span>
+<span class="sd">                the status is changed.</span>
+<span class="sd">            c. Change the indexed status for the parameter.</span>
+<span class="sd">            d. Update parameter values in adjustment that are adjusted after</span>
+<span class="sd">                the year in which the indexed status changes.</span>
+<span class="sd">            e. Using the new &quot;-indexed&quot; status, extend the values of that</span>
+<span class="sd">                parameter through the remaining years or until the -indexed</span>
+<span class="sd">                status changes again.</span>
+<span class="sd">        3. Update all parameters that are not indexing related, i.e. they are</span>
+<span class="sd">            not &quot;parameter_indexing_CPI_offset&quot; or do not end with &quot;-indexed&quot;.</span>
+<span class="sd">        4. Return parsed adjustment with all adjustments, including &quot;-indexed&quot;</span>
+<span class="sd">            parameters.</span>
+
+<span class="sd">        Notable side-effects:</span>
+<span class="sd">            - All values of a parameter whose indexed status is adjusted are</span>
+<span class="sd">              wiped out after the year in which the value is adjusted for the</span>
+<span class="sd">              same hard-coding reason.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Temporarily turn off extra ops during the intermediary adjustments</span>
+        <span class="c1"># so that expensive and unnecessary operations are not run.</span>
+        <span class="n">label_to_extend</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span>
+        <span class="n">array_first</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_params</span><span class="p">(</span><span class="n">params_or_path</span><span class="p">)</span>
+
+        <span class="c1"># Check if parameter_indexing_CPI_offset is adjusted. If so, reset</span>
+        <span class="c1"># values of all indexed parameters after year where</span>
+        <span class="c1"># parameter_indexing_CPI_offset is changed. If</span>
+        <span class="c1"># parameter_indexing_CPI_offset is changed multiple times, then</span>
+        <span class="c1"># reset values after the first year in which the</span>
+        <span class="c1"># parameter_indexing_CPI_offset is changed.</span>
+        <span class="n">needs_reset</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Update parameter_indexing_CPI_offset with new value.</span>
+            <span class="n">cpi_adj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">:</span>
+                 <span class="n">params</span><span class="p">[</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">]},</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+            <span class="c1"># turn off extend now that parameter_indexing_CPI_offset</span>
+            <span class="c1"># has been updated.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># Get first year in which parameter_indexing_CPI_offset</span>
+            <span class="c1"># is changed.</span>
+            <span class="n">cpi_min_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="n">cpi_adj</span><span class="p">[</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">],</span>
+                <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">vo</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+            <span class="n">rate_adjustment_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gte</span><span class="p">(</span>
+                <span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="c1"># &quot;Undo&quot; any existing parameter_indexing_CPI_offset for</span>
+            <span class="c1"># years after parameter_indexing_CPI_offset has</span>
+            <span class="c1"># been updated.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span><span class="p">[</span>
+                <span class="p">:</span><span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span>
+            <span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">price_inflation_rates</span><span class="p">(</span>
+                <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">LAST_BUDGET_YEAR</span><span class="p">)</span>
+
+            <span class="c1"># Then apply new parameter_indexing_CPI_offset values to</span>
+            <span class="c1"># inflation rates</span>
+            <span class="k">for</span> <span class="n">cpi_vo</span> <span class="ow">in</span> <span class="n">rate_adjustment_vals</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span><span class="p">[</span>
+                    <span class="n">cpi_vo</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span>
+                <span class="p">]</span> <span class="o">+=</span> <span class="n">cpi_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+            <span class="c1"># 1. Delete all unknown values.</span>
+            <span class="c1"># 1.a For revision, these are years specified after cpi_min_year.</span>
+            <span class="n">init_vals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">to_delete</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">param</span> <span class="o">==</span> <span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span> <span class="ow">or</span>
+                    <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_indexed</span>
+                <span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">):</span>
+                    <span class="n">param</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;indexed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_lte</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">],</span>
+                        <span class="kc">True</span><span class="p">,</span>
+                        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]},</span>
+                    <span class="p">)</span>
+                    <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gt</span><span class="p">(</span>
+                        <span class="n">param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">to_delete</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">init_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="c1"># 1.b For all others, these are years after last_known_year.</span>
+            <span class="n">last_known_year</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_known_year</span><span class="p">)</span>
+            <span class="c1"># calculate 2026 value, using new inflation rates, for parameters</span>
+            <span class="c1"># that revert to their pre-TCJA values.</span>
+            <span class="n">long_params</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;II_brk7&#39;</span><span class="p">,</span> <span class="s1">&#39;II_brk6&#39;</span><span class="p">,</span> <span class="s1">&#39;II_brk5&#39;</span><span class="p">,</span> <span class="s1">&#39;II_brk4&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;II_brk3&#39;</span><span class="p">,</span> <span class="s1">&#39;II_brk2&#39;</span><span class="p">,</span> <span class="s1">&#39;II_brk1&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;PT_brk7&#39;</span><span class="p">,</span> <span class="s1">&#39;PT_brk6&#39;</span><span class="p">,</span> <span class="s1">&#39;PT_brk5&#39;</span><span class="p">,</span> <span class="s1">&#39;PT_brk4&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;PT_brk3&#39;</span><span class="p">,</span> <span class="s1">&#39;PT_brk2&#39;</span><span class="p">,</span> <span class="s1">&#39;PT_brk1&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;PT_qbid_taxinc_thd&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;ALD_BusinessLosses_c&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;STD&#39;</span><span class="p">,</span> <span class="s1">&#39;II_em&#39;</span><span class="p">,</span> <span class="s1">&#39;II_em_ps&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;AMT_em&#39;</span><span class="p">,</span> <span class="s1">&#39;AMT_em_ps&#39;</span><span class="p">,</span> <span class="s1">&#39;AMT_em_pe&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;ID_ps&#39;</span><span class="p">,</span> <span class="s1">&#39;ID_AllTaxes_c&#39;</span><span class="p">]</span>
+            <span class="n">final_ifactor</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">pyear</span> <span class="o">=</span> <span class="mi">2017</span>  <span class="c1"># prior year before TCJA first implemented</span>
+            <span class="n">fyear</span> <span class="o">=</span> <span class="mi">2026</span>  <span class="c1"># final year in which parameter values revert to</span>
+            <span class="c1"># pre-TCJA values</span>
+            <span class="c1"># construct final-year inflation factor from prior year</span>
+            <span class="c1"># NOTE: pvalue[t+1] = pvalue[t] * ( 1 + irate[t] )</span>
+            <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pyear</span><span class="p">,</span> <span class="n">fyear</span><span class="p">):</span>
+                <span class="n">final_ifactor</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">+</span> \
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">]</span>
+
+            <span class="n">long_param_vals</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+            <span class="c1"># compute final year parameter value</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">long_params</span><span class="p">:</span>
+                <span class="c1"># only revert param in 2026 if it&#39;s not in revision</span>
+                <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># grab param values from 2017</span>
+                    <span class="n">vos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_eq</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">pyear</span><span class="p">)</span>
+                    <span class="c1"># use final_ifactor to inflate from 2017 to 2026</span>
+                    <span class="k">for</span> <span class="n">vo</span> <span class="ow">in</span> <span class="n">vos</span><span class="p">:</span>
+                        <span class="n">long_param_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="c1"># Create new dict to avoid modifying the original</span>
+                            <span class="nb">dict</span><span class="p">(</span>
+                                <span class="n">vo</span><span class="p">,</span>
+                                <span class="n">value</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="mf">9e99</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span>
+                                    <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">final_ifactor</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span>
+                                <span class="n">year</span><span class="o">=</span><span class="n">fyear</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="p">)</span>
+                    <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">long_param_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">init_vals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">to_delete</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span> <span class="ow">or</span>
+                    <span class="n">param</span> <span class="o">==</span> <span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span> <span class="ow">or</span>
+                    <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_indexed</span>
+                <span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;indexed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_lte</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">],</span>
+                        <span class="kc">True</span><span class="p">,</span>
+                        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">last_known_year</span><span class="p">}</span>
+                    <span class="p">)</span>
+                    <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_eq</span><span class="p">(</span>
+                        <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_auto</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="p">)</span>
+                    <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">to_delete</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">init_vals</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">)</span>
+
+        <span class="c1"># 2. Handle -indexed parameters.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">index_affected</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">):</span>
+                <span class="n">base_param</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">base_param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;indexable&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">base_param</span><span class="si">}</span><span class="s2"> is not indexable.&quot;</span>
+                    <span class="k">raise</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">base_param</span><span class="p">:</span> <span class="n">msg</span><span class="p">}},</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span>
+                    <span class="p">)</span>
+                <span class="n">index_affected</span> <span class="o">|=</span> <span class="p">{</span><span class="n">param</span><span class="p">,</span> <span class="n">base_param</span><span class="p">}</span>
+                <span class="n">indexed_changes</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+                    <span class="n">indexed_changes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">vo</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                        <span class="n">indexed_changes</span><span class="p">[</span><span class="n">vo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;year&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">)]</span> <span class="o">=</span> <span class="n">vo</span><span class="p">[</span>
+                            <span class="s2">&quot;value&quot;</span>
+                        <span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;Index adjustment parameter must be a boolean or &quot;</span>
+                        <span class="s2">&quot;list.&quot;</span>
+                    <span class="p">)</span>
+                    <span class="k">raise</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                        <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="n">base_param</span><span class="p">:</span> <span class="n">msg</span><span class="p">}},</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span>
+                    <span class="p">)</span>
+                <span class="c1"># 2.a Adjust values less than first year in which index status</span>
+                <span class="c1"># was changed.</span>
+                <span class="k">if</span> <span class="n">base_param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                    <span class="n">min_index_change_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">indexed_changes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="n">vos</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_lt</span><span class="p">(</span>
+                        <span class="n">params</span><span class="p">[</span><span class="n">base_param</span><span class="p">],</span>
+                        <span class="kc">False</span><span class="p">,</span>
+                        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">min_index_change_year</span><span class="p">},</span>
+                    <span class="p">)</span>
+                    <span class="k">if</span> <span class="n">vos</span><span class="p">:</span>
+                        <span class="n">min_adj_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vos</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">vo</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">])[</span>
+                            <span class="s2">&quot;year&quot;</span>
+                        <span class="p">]</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+                            <span class="p">{</span>
+                                <span class="n">base_param</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gt</span><span class="p">(</span>
+                                    <span class="n">base_param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">min_adj_year</span>
+                                <span class="p">)</span>
+                            <span class="p">}</span>
+                        <span class="p">)</span>
+                        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">({</span><span class="n">base_param</span><span class="p">:</span> <span class="n">vos</span><span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                            <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="n">base_param</span><span class="p">],</span>
+                            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
+                            <span class="n">label_values</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span>
+                                <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="n">min_index_change_year</span><span class="p">)</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">year</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">indexed_changes</span><span class="p">):</span>
+                    <span class="n">indexed_val</span> <span class="o">=</span> <span class="n">indexed_changes</span><span class="p">[</span><span class="n">year</span><span class="p">]</span>
+                    <span class="c1"># Get and delete all default values after year where</span>
+                    <span class="c1"># indexed status changed.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
+                        <span class="p">{</span><span class="n">base_param</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gt</span><span class="p">(</span><span class="n">base_param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)}</span>
+                    <span class="p">)</span>
+
+                    <span class="c1"># 2.b Extend values for this parameter to the year where</span>
+                    <span class="c1"># the indexed status changes.</span>
+                    <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+                            <span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="n">base_param</span><span class="p">],</span>
+                            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">,</span>
+                            <span class="n">label_values</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span>
+                                <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                            <span class="p">),</span>
+                        <span class="p">)</span>
+
+                    <span class="c1"># 2.c Set indexed status.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">base_param</span><span class="p">][</span><span class="s2">&quot;indexed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">indexed_val</span>
+
+                    <span class="c1"># 2.d Adjust with values greater than or equal to current</span>
+                    <span class="c1"># year in params</span>
+                    <span class="k">if</span> <span class="n">base_param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                        <span class="n">vos</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_gte</span><span class="p">(</span>
+                            <span class="n">params</span><span class="p">[</span><span class="n">base_param</span><span class="p">],</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">year</span><span class="p">}</span>
+                        <span class="p">)</span>
+                        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">({</span><span class="n">base_param</span><span class="p">:</span> <span class="n">vos</span><span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+                    <span class="c1"># 2.e Extend values through remaining years.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">[</span><span class="n">base_param</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;year&quot;</span><span class="p">)</span>
+
+                <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">base_param</span><span class="p">)</span>
+        <span class="c1"># Re-instate ops.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span> <span class="o">=</span> <span class="n">label_to_extend</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span> <span class="o">=</span> <span class="n">array_first</span>
+
+        <span class="c1"># Filter out &quot;-indexed&quot; params.</span>
+        <span class="n">nonindexed_params</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">param</span><span class="p">:</span> <span class="n">val</span>
+            <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">index_affected</span>
+        <span class="p">}</span>
+
+        <span class="n">needs_reset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">needs_reset</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">nonindexed_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">needs_reset</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_state</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">needs_reset</span><span class="p">)</span>
+
+        <span class="c1"># 3. Do adjustment for all non-indexing related parameters.</span>
+        <span class="n">adj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">nonindexed_params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># 4. Add indexing params back for return to user.</span>
+        <span class="n">adj</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="n">param</span><span class="p">:</span> <span class="n">val</span>
+                <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">index_affected</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">adj</span></div>
+
+<div class="viewcode-block" id="Parameters.get_index_rate"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.get_index_rate">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">label_to_extend_val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initalize indexing data and return the indexing rate value</span>
+<span class="sd">        depending on the parameter name and label_to_extend_val, the value of</span>
+<span class="sd">        label_to_extend.</span>
+<span class="sd">        Returns: rate to use for indexing.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_rates</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_indexed</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">wage_growth_rates</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">label_to_extend_val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inflation_rates</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">label_to_extend_val</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Parameters.set_rates"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.set_rates">[docs]</a>    <span class="k">def</span> <span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        This method is implemented by classes inheriting</span>
+<span class="sd">        Parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">wage_growth_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="ow">or</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">inflation_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">year</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span><span class="p">[</span><span class="n">year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="ow">or</span> <span class="p">[]</span>
+
+    <span class="c1"># alias methods below</span>
+<div class="viewcode-block" id="Parameters.initialize"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">num_years</span><span class="p">,</span> <span class="n">last_known_year</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="n">removed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">redefined</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">wage_indexed</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                   <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Legacy method for initializing a Parameters instance. Projects</span>
+<span class="sd">        should use the __init__ method in the future.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># case where project hasn&#39;t been initialized yet.</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_data&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">start_year</span><span class="p">,</span> <span class="n">num_years</span><span class="p">,</span> <span class="n">last_known_year</span><span class="o">=</span><span class="n">last_known_year</span><span class="p">,</span>
+                <span class="n">removed</span><span class="o">=</span><span class="n">removed</span><span class="p">,</span> <span class="n">redefined</span><span class="o">=</span><span class="n">redefined</span><span class="p">,</span>
+                <span class="n">wage_indexed</span><span class="o">=</span><span class="n">wage_indexed</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Parameters._update"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters._update">[docs]</a>    <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">revision</span><span class="p">,</span> <span class="n">print_warnings</span><span class="p">,</span> <span class="n">raise_errors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A translation layer on top of Parameters.adjust. Projects</span>
+<span class="sd">        that have historically used the `_update` method with</span>
+<span class="sd">        Tax-Calculator styled adjustments can continue to do so</span>
+<span class="sd">        without making any changes to how they handle adjustments.</span>
+
+<span class="sd">        Converts reforms that are compatible with Tax-Calculator:</span>
+
+<span class="sd">        adjustment = {</span>
+<span class="sd">            &quot;standard_deduction&quot;: {2024: [10000.0, 10000.0]},</span>
+<span class="sd">            &quot;ss_rate&quot;: {2024: 0.2}</span>
+<span class="sd">        }</span>
+
+<span class="sd">        into reforms that are compatible with ParamTools:</span>
+
+<span class="sd">        {</span>
+<span class="sd">            &#39;standard_deduction&#39;: [</span>
+<span class="sd">                {&#39;year&#39;: 2024, &#39;marital_status&#39;: &#39;single&#39;, &#39;value&#39;: 10000.0},</span>
+<span class="sd">                {&#39;year&#39;: 2024, &#39;marital_status&#39;: &#39;joint&#39;, &#39;value&#39;: 10000.0}</span>
+<span class="sd">            ],</span>
+<span class="sd">            &#39;ss_rate&#39;: [{&#39;year&#39;: 2024, &#39;value&#39;: 0.2}]}</span>
+<span class="sd">        }</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">revision</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="s2">&quot;Revision must be a dictionary.&quot;</span><span class="p">}},</span>
+                <span class="kc">None</span>
+            <span class="p">)</span>
+        <span class="n">new_params</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">revision</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> is not a string.&quot;</span>
+                <span class="k">raise</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}},</span>
+                    <span class="kc">None</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="ow">and</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>
+            <span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_removed_params</span> <span class="ow">and</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_removed_params</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_removed_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="k">elif</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_redefined_params</span> <span class="ow">and</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redefined_params</span>
+                <span class="p">):</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_redefined_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Parameter </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> does not exist.&quot;</span>
+                <span class="k">raise</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}},</span>
+                    <span class="kc">None</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">yearval</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">new_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">year</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">yearval</span><span class="p">}]</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">yearval</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;str&quot;</span> <span class="ow">and</span>
+                        <span class="nb">isinstance</span><span class="p">(</span><span class="n">yearval</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                    <span class="p">):</span>
+                        <span class="n">new_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">+=</span> <span class="p">[{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">yearval</span><span class="p">}]</span>
+                        <span class="k">continue</span>
+
+                    <span class="n">yearval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">yearval</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span>
+                        <span class="n">yearval</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+                    <span class="p">):</span>
+                        <span class="n">exp_dims</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span>
+                        <span class="k">if</span> <span class="n">exp_dims</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">():</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> is not an array &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;parameter.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">yearval</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> has </span><span class="si">{</span><span class="n">yearval</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> elements &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;but should only have </span><span class="si">{</span><span class="n">exp_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;elements.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> is an array parameter with &quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">exp_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> elements.&quot;</span>
+                            <span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                            <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}},</span>
+                            <span class="kc">None</span>
+                        <span class="p">)</span>
+
+                    <span class="n">value_objects</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">from_array</span><span class="p">(</span>
+                        <span class="n">param</span><span class="p">,</span>
+                        <span class="n">yearval</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="n">yearval</span><span class="o">.</span><span class="n">shape</span><span class="p">)),</span>
+                        <span class="n">year</span><span class="o">=</span><span class="n">year</span>
+                    <span class="p">)</span>
+                    <span class="n">new_params</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">+=</span> <span class="n">value_objects</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> must be a year:value dictionary &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;if you are not using the new adjust method.&quot;</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">pt</span><span class="o">.</span><span class="n">ValidationError</span><span class="p">(</span>
+                    <span class="p">{</span><span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;schema&quot;</span><span class="p">:</span> <span class="n">msg</span><span class="p">}},</span>
+                    <span class="kc">None</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span>
+            <span class="n">new_params</span><span class="p">,</span>
+            <span class="n">print_warnings</span><span class="o">=</span><span class="n">print_warnings</span><span class="p">,</span>
+            <span class="n">raise_errors</span><span class="o">=</span><span class="n">raise_errors</span>
+        <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">set_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">current_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_grid</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">start_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateless_label_grid</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">end_year</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateless_label_grid</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">num_years</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameter_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">parameter_errors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+
+<div class="viewcode-block" id="Parameters._read_json_revision"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters._read_json_revision">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">topkey</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Read JSON revision specified by obj and topkey</span>
+<span class="sd">        returning a single revision dictionary suitable for</span>
+<span class="sd">        use with the Parameters._update method.</span>
+<span class="sd">        The obj function argument can be None or a string, where the</span>
+<span class="sd">        string contains a local filename, a URL beginning with &#39;http&#39;</span>
+<span class="sd">        pointing to a valid JSON file hosted online, or valid JSON</span>
+<span class="sd">        text.</span>
+<span class="sd">        The topkey argument must be a string containing the top-level</span>
+<span class="sd">        key in a compound-revision JSON text for which a revision</span>
+<span class="sd">        dictionary is returned.  If the specified topkey is not among</span>
+<span class="sd">        the top-level JSON keys, the obj is assumed to be a</span>
+<span class="sd">        non-compound-revision JSON text for the specified topkey.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># embedded function used only in _read_json_revision staticmethod</span>
+        <span class="k">def</span> <span class="nf">convert_year_to_int</span><span class="p">(</span><span class="n">syr_dict</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">            Converts specified syr_dict, which has string years as secondary</span>
+<span class="sd">            keys, into a dictionary with the same structure but having integer</span>
+<span class="sd">            years as secondary keys.</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="n">iyr_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">pkey</span><span class="p">,</span> <span class="n">sdict</span> <span class="ow">in</span> <span class="n">syr_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pkey</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                <span class="n">iyr_dict</span><span class="p">[</span><span class="n">pkey</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sdict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">skey</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">sdict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">skey</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+                    <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">skey</span><span class="p">)</span>
+                    <span class="n">iyr_dict</span><span class="p">[</span><span class="n">pkey</span><span class="p">][</span><span class="n">year</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+            <span class="k">return</span> <span class="n">iyr_dict</span>
+        <span class="c1"># end of embedded function</span>
+        <span class="c1"># process the main function arguments</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;obj is neither None nor a string&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topkey</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;topkey=</span><span class="si">{}</span><span class="s1"> is not a string&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topkey</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;obj does not end with &quot;.json&quot;: </span><span class="si">{}</span><span class="s1">&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;obj does not end with &quot;.json&quot;: </span><span class="si">{}</span><span class="s1">&#39;</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+            <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="n">req</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="n">obj</span>
+        <span class="c1"># strip out //-comments without changing line numbers</span>
+        <span class="n">json_txt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;//.*&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">txt</span><span class="p">)</span>
+        <span class="c1"># convert JSON text into a Python dictionary</span>
+        <span class="n">full_dict</span> <span class="o">=</span> <span class="n">json_to_dict</span><span class="p">(</span><span class="n">json_txt</span><span class="p">)</span>
+        <span class="c1"># check top-level key contents of dictionary</span>
+        <span class="k">if</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="n">full_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">single_dict</span> <span class="o">=</span> <span class="n">full_dict</span><span class="p">[</span><span class="n">topkey</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">single_dict</span> <span class="o">=</span> <span class="n">full_dict</span>
+        <span class="c1"># convert string year to integer year in dictionary and return</span>
+        <span class="k">return</span> <span class="n">convert_year_to_int</span><span class="p">(</span><span class="n">single_dict</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">(</span><span class="n">meta_data</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_state</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">years_in_revision</span><span class="p">(</span><span class="n">revision</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return list of years in specified revision dictionary, which is</span>
+<span class="sd">        assumed to have a param:year:value format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">revision</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+        <span class="n">years</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">paramdata</span> <span class="ow">in</span> <span class="n">revision</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">paramdata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">year</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">paramdata</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">year</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">year</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">years</span><span class="p">:</span>
+                    <span class="n">years</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">year</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">years</span>
+
+<div class="viewcode-block" id="Parameters.__getattr__"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.__getattr__">[docs]</a>    <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Allows the user to get the value of a parameter over all years,</span>
+<span class="sd">        not just the ones that are active.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="n">attr</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="s2">&quot;_data&quot;</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_array</span><span class="p">(</span>
+                <span class="n">attr</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">year</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> not definied.&quot;</span><span class="p">)</span></div></div>
+</pre></div>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    
+  </body>
+</html>

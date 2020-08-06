@@ -1,0 +1,856 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tax-Calculator Parameters &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tax-Calculator Policy" href="policy.html" />
+    <link rel="prev" title="Tax-Calculator GrowFactors" href="growfactors.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="reference internal" href="public_api.html">
+   Tax-Calculator Python API
+  </a>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calculator.html">
+     Tax-Calculator Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="consumption.html">
+     Tax-Calculator Consumption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="data.html">
+     Tax-Calculator Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="decorators.html">
+     Tax-Calculator Decorators
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growdiff.html">
+     Tax-Calculator GrowDiff
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growfactors.html">
+     Tax-Calculator GrowFactors
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Tax-Calculator Parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="policy.html">
+     Tax-Calculator Policy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="records.html">
+     Tax-Calculator Records
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="taxcalcio.html">
+     Tax-Calculator IO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utils.html">
+     Tax-Calculator Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilsprvt.html">
+     Tax-Calculator Private Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/api/parameters.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/parameters.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/api/parameters.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#taxcalc-parameters">
+   taxcalc.parameters
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="tax-calculator-parameters">
+<span id="parameters"></span><h1>Tax-Calculator Parameters<a class="headerlink" href="#tax-calculator-parameters" title="Permalink to this headline">¶</a></h1>
+<p><strong>Tax-Calculator Parameters</strong></p>
+<div class="section" id="taxcalc-parameters">
+<h2>taxcalc.parameters<a class="headerlink" href="#taxcalc-parameters" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="taxcalc.parameters.CompatibleDataSchema">
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.parameters.</code><code class="sig-name descname">CompatibleDataSchema</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#CompatibleDataSchema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.CompatibleDataSchema" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schema for Compatible data object
+{</p>
+<blockquote>
+<div><p>“compatible_data”: {“data1”: bool, “data2”: bool, …}</p>
+</div></blockquote>
+<p>}</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="taxcalc.parameters.Parameters">
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.parameters.</code><code class="sig-name descname">Parameters</code><span class="sig-paren">(</span><em class="sig-param">start_year=None</em>, <em class="sig-param">num_years=None</em>, <em class="sig-param">last_known_year=None</em>, <em class="sig-param">removed=None</em>, <em class="sig-param">redefined=None</em>, <em class="sig-param">wage_indexed=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base Parameters class that wraps ParamTools, providing parameter indexing
+for tax policy in the adjust method and backwards-compatible preserving
+layer that supports Tax-Calculator’s conventional reform formatting style
+as well as convenience methods like set_Year for classes operating on this
+one.</p>
+<p>The defaults file path may be set through the defaults class attribute
+variable or through the old DEFAULTS_FILE_NAME/DEFAULTS_FILE_PATH work
+flow.</p>
+<p>A custom getter method is implemented so that the value of a parameter
+over all allowed years can conveniently be retrieved by adding an
+underscore before the variable name (e.g. EITC_c vs _EITC_c).</p>
+<p>Note: Like all pt.Parameters classes the values of attributes
+corresponding to a parameter value on this class are ephemeral and the only
+way to make permanent changes to this class’sstate is through the set_state
+or adjust methods.</p>
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.__getattr__">
+<code class="sig-name descname">__getattr__</code><span class="sig-paren">(</span><em class="sig-param">attr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.__getattr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.__getattr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allows the user to get the value of a parameter over all years,
+not just the ones that are active.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters._read_json_revision">
+<em class="property">static </em><code class="sig-name descname">_read_json_revision</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">topkey</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters._read_json_revision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters._read_json_revision" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read JSON revision specified by obj and topkey
+returning a single revision dictionary suitable for
+use with the Parameters._update method.
+The obj function argument can be None or a string, where the
+string contains a local filename, a URL beginning with ‘http’
+pointing to a valid JSON file hosted online, or valid JSON
+text.
+The topkey argument must be a string containing the top-level
+key in a compound-revision JSON text for which a revision
+dictionary is returned.  If the specified topkey is not among
+the top-level JSON keys, the obj is assumed to be a
+non-compound-revision JSON text for the specified topkey.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters._update">
+<code class="sig-name descname">_update</code><span class="sig-paren">(</span><em class="sig-param">revision</em>, <em class="sig-param">print_warnings</em>, <em class="sig-param">raise_errors</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters._update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters._update" title="Permalink to this definition">¶</a></dt>
+<dd><p>A translation layer on top of Parameters.adjust. Projects
+that have historically used the <cite>_update</cite> method with
+Tax-Calculator styled adjustments can continue to do so
+without making any changes to how they handle adjustments.</p>
+<p>Converts reforms that are compatible with Tax-Calculator:</p>
+<dl class="simple">
+<dt>adjustment = {</dt><dd><p>“standard_deduction”: {2024: [10000.0, 10000.0]},
+“ss_rate”: {2024: 0.2}</p>
+</dd>
+</dl>
+<p>}</p>
+<p>into reforms that are compatible with ParamTools:</p>
+<dl>
+<dt>{</dt><dd><dl class="simple">
+<dt>‘standard_deduction’: [</dt><dd><p>{‘year’: 2024, ‘marital_status’: ‘single’, ‘value’: 10000.0},
+{‘year’: 2024, ‘marital_status’: ‘joint’, ‘value’: 10000.0}</p>
+</dd>
+</dl>
+<p>],
+‘ss_rate’: [{‘year’: 2024, ‘value’: 0.2}]}</p>
+</dd>
+</dl>
+<p>}</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.adjust">
+<code class="sig-name descname">adjust</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">print_warnings=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.adjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements custom warning and error handling.</p>
+<p>If print_warnings is True, warnings are printed out and if
+print_warnings is False, nothing is printed.</p>
+<p>ParamTools throws an error if a warning is triggered and
+ignore_warnings is False. This method circumvents this behavior.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">adjust</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">print_warnings=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Implements custom warning and error handling.</p>
+<p>If print_warnings is True, warnings are printed out and if
+print_warnings is False, nothing is printed.</p>
+<p>ParamTools throws an error if a warning is triggered and
+ignore_warnings is False. This method circumvents this behavior.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.adjust_with_indexing">
+<code class="sig-name descname">adjust_with_indexing</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust_with_indexing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.adjust_with_indexing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Custom adjust method that handles special indexing logic. The logic
+is:</p>
+<p>1. If “parameter_indexing_CPI_offset” is adjusted, first set
+parameter_indexing_CPI_offset to zero before implementing the
+adjusted parameter_indexing_CPI_offset to avoid stacking adjustments.
+Then, revert all values of indexed parameters to the ‘known’ values:</p>
+<blockquote>
+<div><ol class="loweralpha simple">
+<li><dl class="simple">
+<dt>The current values of parameters that are being adjusted are</dt><dd><p>deleted after the first year in which
+parameter_indexing_CPI_offset is adjusted.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>The current values of parameters that are not being adjusted</dt><dd><p>(i.e. are not in params) are deleted after the last known year,
+with the exception of parameters that revert to their pre-TCJA
+values in 2026. Instead, these (2026) parameter values are
+recalculated using the new inflation rates.</p>
+</dd>
+</dl>
+</li>
+</ol>
+<p>After the ‘unknown’ values have been deleted, the last known value
+is extrapolated through the budget window. If there are indexed
+parameters in the adjustment, they will be included in the final
+adjustment call (unless their indexed status is changed).</p>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><dl class="simple">
+<dt>If the “indexed” status is updated for any parameter:</dt><dd><ol class="loweralpha simple">
+<li><dl class="simple">
+<dt>If a parameter has values that are being adjusted before</dt><dd><p>the indexed status is adjusted, update those parameters first.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Extend the values of that parameter to the year in which</dt><dd><p>the status is changed.</p>
+</dd>
+</dl>
+</li>
+<li><p>Change the indexed status for the parameter.</p></li>
+<li><dl class="simple">
+<dt>Update parameter values in adjustment that are adjusted after</dt><dd><p>the year in which the indexed status changes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Using the new “-indexed” status, extend the values of that</dt><dd><p>parameter through the remaining years or until the -indexed
+status changes again.</p>
+</dd>
+</dl>
+</li>
+</ol>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Update all parameters that are not indexing related, i.e. they are</dt><dd><p>not “parameter_indexing_CPI_offset” or do not end with “-indexed”.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Return parsed adjustment with all adjustments, including “-indexed”</dt><dd><p>parameters.</p>
+</dd>
+</dl>
+</li>
+</ol>
+<dl class="simple">
+<dt>Notable side-effects:</dt><dd><ul class="simple">
+<li><p>All values of a parameter whose indexed status is adjusted are
+wiped out after the year in which the value is adjusted for the
+same hard-coding reason.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.clear_state">
+<code class="sig-name descname">clear_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.clear_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.clear_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the state of the <cite>Parameters</cite> instance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.delete">
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">ignore_warnings=False</em>, <em class="sig-param">raise_errors=True</em>, <em class="sig-param">extend_adj=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete value objects in params_or_path.</p>
+<p>Returns: adjustment for deleting parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>marshmallow.exceptions.ValidationError if data is not valid.</strong> – </p></li>
+<li><p><strong>ParameterUpdateException if label values do not match at</strong> – least one existing value item’s corresponding label values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.extend">
+<code class="sig-name descname">extend</code><span class="sig-paren">(</span><em class="sig-param">label: Optional[str] = None</em>, <em class="sig-param">label_values: Optional[List[Any]] = None</em>, <em class="sig-param">params: Optional[List[str]] = None</em>, <em class="sig-param">raise_errors: bool = True</em>, <em class="sig-param">ignore_warnings: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.extend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extend parameters along <cite>label</cite>.</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><cite>label</cite>: Label to extend values along. By default, <cite>label_to_extend</cite>
+is used.</p></li>
+<li><p><cite>label_values</cite>: values of <cite>label</cite> to extend. By default, this is a grid
+created from the valid values of <cite>label_to_extend</cite>.</p></li>
+<li><p><cite>params</cite>: Parameters to extend. By default, all parameters are extended.</p></li>
+<li><p><cite>raise_errors</cite>: Whether <cite>adjust</cite> should raise or store errors.</p></li>
+<li><p><cite>ignore_warnings</cite>: Whether <cite>adjust</cite> should raise or ignore warnings.</p></li>
+</ul>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>InconsistentLabelsException</cite>: Value objects do not have consistent
+labels.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.extend_func">
+<code class="sig-name descname">extend_func</code><span class="sig-paren">(</span><em class="sig-param">param: str</em>, <em class="sig-param">extend_vo: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">known_vo: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">extend_grid: List</em>, <em class="sig-param">label: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.extend_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.extend_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function for applying indexing rates to parameter values as they
+are extended. Projects may implement their own <cite>extend_func</cite> by
+overriding this one. Projects need to write their own <cite>indexing_rate</cite>
+method for returning the correct indexing rate for a given parameter
+and value of <cite>label</cite>.</p>
+<p><strong>Returns</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>extend_vo</cite>: New <cite>ValueObject</cite>.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.from_array">
+<code class="sig-name descname">from_array</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">array=None</em>, <em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.from_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.from_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert NumPy array to a Value object.</p>
+<p><strong>Parameters</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>param</cite>: Name of parameter to convert to a list of value objects.</p></li>
+<li><p><cite>array</cite>: Optionally, provide a NumPy array to convert into a list
+of value objects. If not specified, the value at <cite>self.param</cite> will
+be used.</p></li>
+<li><p><cite>labels</cite>: Optionally, override instance state.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Returns</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>List of <cite>ValueObjects</cite></p></li>
+</ul>
+</div></blockquote>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>InconsistentLabelsException</cite>: Value objects do not have consistent
+labels.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.get_index_rate">
+<code class="sig-name descname">get_index_rate</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">label_to_extend_val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.get_index_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initalize indexing data and return the indexing rate value
+depending on the parameter name and label_to_extend_val, the value of
+label_to_extend.
+Returns: rate to use for indexing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt>
+<code class="sig-name descname">get_index_rate</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">label_to_extend_val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link">[source]</span></a></dt>
+<dd><p>Initalize indexing data and return the indexing rate value
+depending on the parameter name and label_to_extend_val, the value of
+label_to_extend.
+Returns: rate to use for indexing.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.initialize">
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param">start_year</em>, <em class="sig-param">num_years</em>, <em class="sig-param">last_known_year=None</em>, <em class="sig-param">removed=None</em>, <em class="sig-param">redefined=None</em>, <em class="sig-param">wage_indexed=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Legacy method for initializing a Parameters instance. Projects
+should use the __init__ method in the future.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.items" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate using python dictionary .items() syntax.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return parameter names.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.read_params">
+<code class="sig-name descname">read_params</code><span class="sig-paren">(</span><em class="sig-param">params_or_path: Union[str, pathlib.Path, IO[AnyStr], Dict[str, any]], storage_options: Optional[Dict[str, Any]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.read_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.read_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read JSON data of the form:</p>
+<ul class="simple">
+<li><p>Python <cite>dict</cite>.</p></li>
+<li><p>JSON string.</p></li>
+<li><p>Local file path.</p></li>
+<li><dl class="simple">
+<dt>Any URL readable by fsspec. For example:</dt><dd><ul>
+<li><p>s3: <cite>s3://paramtools-test/defaults.json</cite></p></li>
+<li><p>gcs: <cite>gs://paramtools-dev/defaults.json</cite></p></li>
+<li><p>http: <cite>https://somedomain.com/defaults.json</cite></p></li>
+<li><p>github: <cite>github://PSLmodels:ParamTools&#64;master/paramtools/tests/defaults.json</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Returns</strong>
+- <cite>params</cite>: Python Dict created from JSON file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.set_rates">
+<code class="sig-name descname">set_rates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.set_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.set_rates" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method is implemented by classes inheriting
+Parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets state for the Parameters instance. The <cite>_state</cite>, <cite>label_grid</cite>, and
+parameter attributes are all updated with the new state.</p>
+<p>Use the <cite>view_state</cite> method to inspect the current state of the instance,
+and use the <cite>clear_state</cite> method to revert to the default state.</p>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>ValidationError</cite> if the labels kwargs contain labels that are not
+specified in schema.json or if the label values fail the
+validator set for the corresponding label in schema.json.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.sort_values">
+<code class="sig-name descname">sort_values</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">has_meta_data=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.sort_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.sort_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort value objects for all parameters in <cite>data</cite> according
+to the order specified in <cite>schema</cite>.</p>
+<p><strong>Parameters</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>data</cite>: Parameter data to be sorted. This should be a
+<cite>dict</cite> of parameter names and values. If <cite>data</cite> is <cite>None</cite>,
+the current values will be sorted.</p></li>
+<li><p><cite>has_meta_data</cite>: Whether parameter values should be accessed
+directly or through the “value” attribute.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Returns</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Sorted data.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.specification">
+<code class="sig-name descname">specification</code><span class="sig-paren">(</span><em class="sig-param">use_state: bool = True</em>, <em class="sig-param">meta_data: bool = False</em>, <em class="sig-param">include_empty: bool = False</em>, <em class="sig-param">serializable: bool = False</em>, <em class="sig-param">sort_values: bool = False</em>, <em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.specification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.specification" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query value(s) of all parameters along labels specified in
+<cite>labels</cite>.</p>
+<p><strong>Parameters</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>use_state</cite>: Use the instance’s state for the select operation.</p></li>
+<li><p><cite>meta_data</cite>: Include information like the parameter
+<cite>description</cite> and title.</p></li>
+<li><p><cite>include_empty</cite>: Include parameters that do not meet the label query.</p></li>
+<li><p><cite>serializable</cite>: Return data that is compatible with <cite>json.dumps</cite>.</p></li>
+<li><p><cite>sort_values</cite>: Sort values by the <cite>label</cite> order.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Returns</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>dict</cite> of parameter names and data.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.to_array">
+<code class="sig-name descname">to_array</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.to_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.to_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a Value object to an n-labelal array. The list of Value
+objects must span the specified parameter space. The parameter space
+is defined by inspecting the label validators in schema.json
+and the state attribute of the Parameters instance.</p>
+<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="simple">
+<li><p><cite>param</cite>: Name of parameter that will be used to create array.</p></li>
+<li><p><cite>labels</cite>: Optionally, override instance state.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Returns</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>arr</cite>: NumPy array created from list of value objects.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>Raises</strong></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><cite>InconsistentLabelsException</cite>: Value objects do not have consistent
+labels.</p></li>
+<li><p><cite>SparseValueObjectsException</cite>: Value object does not span the
+entire space specified by the Order object.</p></li>
+<li><p><cite>ParamToolsError</cite>: Parameter is an array type and has labels.
+This is not supported by ParamTools when using array_first.</p></li>
+</ul>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return instance as python dictionary.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.parameters.Parameters.view_state">
+<code class="sig-name descname">view_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.view_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.view_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Access the label state of the <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./api"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="growfactors.html" title="previous page">Tax-Calculator GrowFactors</a>
+    <a class='right-next' id="next-link" href="policy.html" title="next page">Tax-Calculator Policy</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

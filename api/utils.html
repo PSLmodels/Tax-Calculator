@@ -1,0 +1,947 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tax-Calculator Utilities &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tax-Calculator Private Utilities" href="utilsprvt.html" />
+    <link rel="prev" title="Tax-Calculator IO" href="taxcalcio.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="reference internal" href="public_api.html">
+   Tax-Calculator Python API
+  </a>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calculator.html">
+     Tax-Calculator Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="consumption.html">
+     Tax-Calculator Consumption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="data.html">
+     Tax-Calculator Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="decorators.html">
+     Tax-Calculator Decorators
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growdiff.html">
+     Tax-Calculator GrowDiff
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growfactors.html">
+     Tax-Calculator GrowFactors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="parameters.html">
+     Tax-Calculator Parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="policy.html">
+     Tax-Calculator Policy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="records.html">
+     Tax-Calculator Records
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="taxcalcio.html">
+     Tax-Calculator IO
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Tax-Calculator Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilsprvt.html">
+     Tax-Calculator Private Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/api/utils.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/utils.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/api/utils.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-taxcalc.utils">
+   taxcalc.utils
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="tax-calculator-utilities">
+<span id="utils"></span><h1>Tax-Calculator Utilities<a class="headerlink" href="#tax-calculator-utilities" title="Permalink to this headline">¶</a></h1>
+<p><strong>Tax-Calculator Utilities</strong></p>
+<div class="section" id="module-taxcalc.utils">
+<span id="taxcalc-utils"></span><h2>taxcalc.utils<a class="headerlink" href="#module-taxcalc.utils" title="Permalink to this headline">¶</a></h2>
+<p>PUBLIC low-level utility functions for Tax-Calculator.</p>
+<dl class="function">
+<dt id="taxcalc.utils.unweighted_sum">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">unweighted_sum</code><span class="sig-paren">(</span><em class="sig-param">dframe</em>, <em class="sig-param">col_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#unweighted_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.unweighted_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return unweighted sum of Pandas DataFrame col_name items.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.weighted_sum">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">weighted_sum</code><span class="sig-paren">(</span><em class="sig-param">dframe</em>, <em class="sig-param">col_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#weighted_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.weighted_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return weighted sum of Pandas DataFrame col_name items.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.add_quantile_table_row_variable">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">add_quantile_table_row_variable</code><span class="sig-paren">(</span><em class="sig-param">dframe</em>, <em class="sig-param">income_measure</em>, <em class="sig-param">num_quantiles</em>, <em class="sig-param">pop_quantiles=False</em>, <em class="sig-param">decile_details=False</em>, <em class="sig-param">weight_by_income_measure=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#add_quantile_table_row_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.add_quantile_table_row_variable" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div><p>Add a variable to specified Pandas DataFrame, dframe, that specifies
+the table row and is called ‘table_row’.</p>
+<p>When weight_by_income_measure=False, the rows hold an equal number of
+people if pop_quantiles=True or an equal number of filing units if
+pop_quantiles=False.</p>
+<p>When weight_by_income_measure=True, the rows hold an equal number
+of income dollars.</p>
+<p>This function assumes that specified dframe contains columns for
+the specified income_measure and for sample weights, s006, and when
+pop_quantiles=True, number of exemptions, XTOT.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>.  When num_quantiles is 10 and decile_details is True,</dt><dd><p>the bottom decile is broken up into three subgroups
+(neg, zero, and pos income_measure)
+and the top decile is broken into three subgroups
+(90-95, 95-99, and top 1%).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.add_income_table_row_variable">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">add_income_table_row_variable</code><span class="sig-paren">(</span><em class="sig-param">dframe</em>, <em class="sig-param">income_measure</em>, <em class="sig-param">bin_edges</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#add_income_table_row_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.add_income_table_row_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a variable to specified Pandas DataFrame, dframe, that specifies the
+table row and is called ‘table_row’.  The rows are defined by the
+specified bin_edges function argument.  Note that the bin groupings
+are LEFT INCLUSIVE, which means that bin_edges=[1,2,3,4] implies these
+three bin groupings: [1,2), [2,3), [3,4).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dframe</strong> (<em>Pandas DataFrame</em>) – the object to which we are adding bins</p></li>
+<li><p><strong>income_measure</strong> (<em>String</em>) – specifies income variable used to construct bins</p></li>
+<li><p><strong>bin_edges</strong> (<em>list of scalar bin edges</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dframe</strong> – the original input plus the added ‘table_row’ column</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pandas DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.get_sums">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">get_sums</code><span class="sig-paren">(</span><em class="sig-param">dframe</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#get_sums"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.get_sums" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute unweighted sum of items in each column of Pandas DataFrame, dframe.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Pandas Series object containing column sums indexed by dframe column names.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.create_distribution_table">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">create_distribution_table</code><span class="sig-paren">(</span><em class="sig-param">vdf</em>, <em class="sig-param">groupby</em>, <em class="sig-param">income_measure</em>, <em class="sig-param">pop_quantiles=False</em>, <em class="sig-param">scaling=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_distribution_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.create_distribution_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get results from vdf, sort them by expanded_income based on groupby,
+and return them as a table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vdf</strong> (<em>Pandas DataFrame including columns named in DIST_TABLE_COLUMNS list</em>) – for example, an object returned from the distribution_table_dataframe
+function in the Calculator distribution_tables method</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – <dl class="simple">
+<dt>options for input: ‘weighted_deciles’ or</dt><dd><p>’standard_income_bins’ or ‘soi_agi_bins’</p>
+</dd>
+</dl>
+<p>determines how the rows in the resulting Pandas DataFrame are sorted</p>
+</p></li>
+<li><p><strong>income_measure</strong> (<em>String object</em>) – options for input: ‘expanded_income’ or ‘expanded_income_baseline’
+determines which variable is used to sort rows</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+<li><p><strong>scaling</strong> (<em>boolean</em>) – specifies whether or not table entry values are scaled</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>distribution table as a Pandas DataFrame with DIST_TABLE_COLUMNS and</em></p></li>
+<li><p><em>groupby rows.</em></p></li>
+<li><p><strong>NOTE</strong> (<em>when groupby is ‘weighted_deciles’, the returned table has three</em>) – extra rows containing top-decile detail consisting of statistics
+for the 0.90-0.95 quantile range (bottom half of top decile),
+for the 0.95-0.99 quantile range, and
+for the 0.99-1.00 quantile range (top one percent); and the
+returned table splits the bottom decile into filing units with
+negative (denoted by a 0-10n row label),
+zero (denoted by a 0-10z row label), and
+positive (denoted by a 0-10p row label) values of the
+specified income_measure.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.create_difference_table">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">create_difference_table</code><span class="sig-paren">(</span><em class="sig-param">vdf1</em>, <em class="sig-param">vdf2</em>, <em class="sig-param">groupby</em>, <em class="sig-param">tax_to_diff</em>, <em class="sig-param">pop_quantiles=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_difference_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.create_difference_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get results from two different vdf, construct tax difference results,
+and return the difference statistics as a table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vdf1</strong> (<em>Pandas DataFrame including columns named in DIFF_VARIABLES list</em>) – for example, object returned from a dataframe(DIFF_VARIABLES) call
+on the basesline Calculator object</p></li>
+<li><p><strong>vdf2</strong> (<em>Pandas DataFrame including columns in the DIFF_VARIABLES list</em>) – for example, object returned from a dataframe(DIFF_VARIABLES) call
+on the reform Calculator object</p></li>
+<li><p><strong>groupby</strong> (<em>String object</em>) – <dl class="simple">
+<dt>options for input: ‘weighted_deciles’ or</dt><dd><p>’standard_income_bins’ or ‘soi_agi_bins’</p>
+</dd>
+</dl>
+<p>determines how the rows in the resulting Pandas DataFrame are sorted</p>
+</p></li>
+<li><p><strong>tax_to_diff</strong> (<em>String object</em>) – options for input: ‘iitax’, ‘payrolltax’, ‘combined’
+specifies which tax to difference</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not weighted_deciles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>difference table as a Pandas DataFrame with DIFF_TABLE_COLUMNS and</em></p></li>
+<li><p><em>groupby rows.</em></p></li>
+<li><p><strong>NOTE</strong> (<em>when groupby is ‘weighted_deciles’, the returned table has three</em>) – extra rows containing top-decile detail consisting of statistics
+for the 0.90-0.95 quantile range (bottom half of top decile),
+for the 0.95-0.99 quantile range, and
+for the 0.99-1.00 quantile range (top one percent); and the
+returned table splits the bottom decile into filing units with
+negative (denoted by a 0-10n row label),
+zero (denoted by a 0-10z row label), and
+positive (denoted by a 0-10p row label) values of the
+specified income_measure.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.create_diagnostic_table">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">create_diagnostic_table</code><span class="sig-paren">(</span><em class="sig-param">dframe_list</em>, <em class="sig-param">year_list</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#create_diagnostic_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.create_diagnostic_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract diagnostic table from list of Pandas DataFrame objects
+returned from a Calculator dataframe(DIST_VARIABLES) call for
+each year in the specified list of years.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dframe_list</strong> (<em>list of Pandas DataFrame objects containing the variables</em>) – </p></li>
+<li><p><strong>year_list</strong> (<em>list of calendar years corresponding to the dframe_list</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Pandas DataFrame object containing the diagnostic table</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.mtr_graph_data">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">mtr_graph_data</code><span class="sig-paren">(</span><em class="sig-param">vdf</em>, <em class="sig-param">year</em>, <em class="sig-param">mars='ALL'</em>, <em class="sig-param">mtr_measure='combined'</em>, <em class="sig-param">mtr_variable='e00200p'</em>, <em class="sig-param">alt_e00200p_text=''</em>, <em class="sig-param">mtr_wrt_full_compen=False</em>, <em class="sig-param">income_measure='expanded_income'</em>, <em class="sig-param">pop_quantiles=False</em>, <em class="sig-param">dollar_weighting=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#mtr_graph_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.mtr_graph_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare marginal tax rate data needed by xtr_graph_plot utility function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vdf</strong> (<em>a Pandas DataFrame object containing variables and marginal tax rates</em>) – (See Calculator.mtr_graph method for required elements of vdf.)</p></li>
+<li><p><strong>year</strong> (<em>integer</em>) – specifies calendar year of the data in vdf</p></li>
+<li><p><strong>mars</strong> (<em>integer</em><em> or </em><em>string</em>) – <p>specifies which filing status subgroup to show in the graph</p>
+<ul>
+<li><p>’ALL’: include all filing units in sample</p></li>
+<li><p>1: include only single filing units</p></li>
+<li><p>2: include only married-filing-jointly filing units</p></li>
+<li><p>3: include only married-filing-separately filing units</p></li>
+<li><p>4: include only head-of-household filing units</p></li>
+</ul>
+</p></li>
+<li><p><strong>mtr_measure</strong> (<em>string</em>) – <p>specifies which marginal tax rate to show on graph’s y axis</p>
+<ul>
+<li><p>’itax’: marginal individual income tax rate</p></li>
+<li><p>’ptax’: marginal payroll tax rate</p></li>
+<li><p>’combined’: sum of marginal income and payroll tax rates</p></li>
+</ul>
+</p></li>
+<li><p><strong>mtr_variable</strong> (<em>string</em>) – any string in the Calculator.VALID_MTR_VARS set
+specifies variable to change in order to compute marginal tax rates</p></li>
+<li><p><strong>alt_e00200p_text</strong> (<em>string</em>) – text to use in place of mtr_variable when mtr_variable is ‘e00200p’;
+if empty string then use ‘e00200p’</p></li>
+<li><p><strong>mtr_wrt_full_compen</strong> (<em>boolean</em>) – see documentation of Calculator.mtr() argument wrt_full_compensation
+(value has an effect only if mtr_variable is ‘e00200p’)</p></li>
+<li><p><strong>income_measure</strong> (<em>string</em>) – <p>specifies which income variable to show on the graph’s x axis</p>
+<ul>
+<li><p>’wages’: wage and salary income (e00200)</p></li>
+<li><p>’agi’: adjusted gross income, AGI (c00100)</p></li>
+<li><p>’expanded_income’: sum of AGI, non-taxable interest income,
+non-taxable social security benefits, and employer share of
+FICA taxes.</p></li>
+</ul>
+</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not quantiles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+<li><p><strong>dollar_weighting</strong> (<em>boolean</em>) – False implies both income_measure percentiles on x axis and
+mtr values for each percentile on the y axis are computed
+without using dollar income_measure weights (just sampling weights);
+True implies both income_measure percentiles on x axis and
+mtr values for each percentile on the y axis are computed
+using dollar income_measure weights (in addition to sampling weights).
+Specifying True produces a graph x axis that shows income_measure
+(not filing unit) percentiles.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary object suitable for passing to xtr_graph_plot utility function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.atr_graph_data">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">atr_graph_data</code><span class="sig-paren">(</span><em class="sig-param">vdf</em>, <em class="sig-param">year</em>, <em class="sig-param">mars='ALL'</em>, <em class="sig-param">atr_measure='combined'</em>, <em class="sig-param">pop_quantiles=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#atr_graph_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.atr_graph_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare average tax rate data needed by xtr_graph_plot utility function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vdf</strong> (<em>a Pandas DataFrame object containing variables and tax liabilities</em>) – (See Calculator.atr_graph method for required elements of vdf.)</p></li>
+<li><p><strong>year</strong> (<em>integer</em>) – specifies calendar year of the data in vdf</p></li>
+<li><p><strong>mars</strong> (<em>integer</em><em> or </em><em>string</em>) – <p>specifies which filing status subgroup to show in the graph</p>
+<ul>
+<li><p>’ALL’: include all filing units in sample</p></li>
+<li><p>1: include only single filing units</p></li>
+<li><p>2: include only married-filing-jointly filing units</p></li>
+<li><p>3: include only married-filing-separately filing units</p></li>
+<li><p>4: include only head-of-household filing units</p></li>
+</ul>
+</p></li>
+<li><p><strong>atr_measure</strong> (<em>string</em>) – <p>specifies which average tax rate to show on graph’s y axis</p>
+<ul>
+<li><p>’itax’: average individual income tax rate</p></li>
+<li><p>’ptax’: average payroll tax rate</p></li>
+<li><p>’combined’: sum of average income and payroll tax rates</p></li>
+</ul>
+</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not quantiles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary object suitable for passing to xtr_graph_plot utility function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.xtr_graph_plot">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">xtr_graph_plot</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">width=850</em>, <em class="sig-param">height=500</em>, <em class="sig-param">xlabel=''</em>, <em class="sig-param">ylabel=''</em>, <em class="sig-param">title=''</em>, <em class="sig-param">legendloc='bottom_right'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#xtr_graph_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.xtr_graph_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot marginal/average tax rate graph using data returned from either the
+mtr_graph_data function or the atr_graph_data function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dictionary object returned from ?tr_graph_data</em><em>(</em><em>) </em><em>utility function</em>) – </p></li>
+<li><p><strong>width</strong> (<em>integer</em>) – width of plot expressed in pixels</p></li>
+<li><p><strong>height</strong> (<em>integer</em>) – height of plot expressed in pixels</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label; if ‘’, then use label generated by ?tr_graph_data</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label; if ‘’, then use label generated by ?tr_graph_data</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – graph title; if ‘’, then use title generated by ?tr_graph_data</p></li>
+<li><p><strong>legendloc</strong> (<em>string</em>) – options: ‘top_right’, ‘top_left’, ‘bottom_left’, ‘bottom_right’
+specifies location of the legend in the plot</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bokeh.plotting figure object containing a raster graphics plot</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>USAGE EXAMPLE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">gdata</span> <span class="o">=</span> <span class="n">mtr_graph_data</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">gplot</span> <span class="o">=</span> <span class="n">xtr_graph_plot</span><span class="p">(</span><span class="n">gdata</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>THEN when working interactively in a Python notebook:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bp</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">gplot</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>OR when executing script using Python command-line interpreter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bio</span><span class="o">.</span><span class="n">output_file</span><span class="p">(</span><span class="s1">&#39;graph-name.html&#39;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;?TR by Income Percentile&#39;</span><span class="p">)</span>
+<span class="n">bio</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">gplot</span><span class="p">)</span>  <span class="p">[</span><span class="n">OR</span> <span class="n">bio</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">gplot</span><span class="p">)</span> <span class="n">WILL</span> <span class="n">JUST</span> <span class="n">WRITE</span> <span class="n">FILE</span> <span class="n">TO</span> <span class="n">DISK</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>WILL VISUALIZE GRAPH IN BROWSER AND WRITE GRAPH TO SPECIFIED HTML FILE</p>
+<p>To convert the visualized graph into a PNG-formatted file, click on
+the “Save” icon on the Toolbar (located in the top-right corner of
+the visualized graph) and a PNG-formatted file will written to your
+Download directory.</p>
+<p>The ONLY output option the bokeh.plotting figure has is HTML format,
+which (as described above) can be converted into a PNG-formatted
+raster graphics file.  There is no option to make the bokeh.plotting
+figure generate a vector graphics file such as an EPS file.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.pch_graph_data">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">pch_graph_data</code><span class="sig-paren">(</span><em class="sig-param">vdf</em>, <em class="sig-param">year</em>, <em class="sig-param">pop_quantiles=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#pch_graph_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.pch_graph_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepare percentage change in after-tax expanded income data needed by
+pch_graph_plot utility function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vdf</strong> (<em>a Pandas DataFrame object containing variables</em>) – (See Calculator.pch_graph method for required elements of vdf.)</p></li>
+<li><p><strong>year</strong> (<em>integer</em>) – specifies calendar year of the data in vdf</p></li>
+<li><p><strong>pop_quantiles</strong> (<em>boolean</em>) – specifies whether or not quantiles contain an equal number
+of people (True) or an equal number of filing units (False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary object suitable for passing to pch_graph_plot utility function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.pch_graph_plot">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">pch_graph_plot</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">width=850</em>, <em class="sig-param">height=500</em>, <em class="sig-param">xlabel=''</em>, <em class="sig-param">ylabel=''</em>, <em class="sig-param">title=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#pch_graph_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.pch_graph_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot percentage change in after-tax expanded income using data returned
+from the pch_graph_data function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>dictionary object returned from ?tr_graph_data</em><em>(</em><em>) </em><em>utility function</em>) – </p></li>
+<li><p><strong>width</strong> (<em>integer</em>) – width of plot expressed in pixels</p></li>
+<li><p><strong>height</strong> (<em>integer</em>) – height of plot expressed in pixels</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label; if ‘’, then use label generated by pch_graph_data</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label; if ‘’, then use label generated by pch_graph_data</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – graph title; if ‘’, then use title generated by pch_graph_data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bokeh.plotting figure object containing a raster graphics plot</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>See Notes to xtr_graph_plot function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.write_graph_file">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">write_graph_file</code><span class="sig-paren">(</span><em class="sig-param">figure</em>, <em class="sig-param">filename</em>, <em class="sig-param">title</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#write_graph_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.write_graph_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write HTML file named filename containing figure.
+The title is the text displayed in the browser tab.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>figure</strong> (<em>bokeh.plotting figure object</em>) – </p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – name of HTML file to which figure is written; should end in .html</p></li>
+<li><p><strong>title</strong> (<em>string</em>) – text displayed in browser tab when HTML file is displayed in browser</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Nothing</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.isoelastic_utility_function">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">isoelastic_utility_function</code><span class="sig-paren">(</span><em class="sig-param">consumption</em>, <em class="sig-param">crra</em>, <em class="sig-param">cmin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#isoelastic_utility_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.isoelastic_utility_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate and return utility of consumption.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>consumption</strong> (<em>float</em>) – consumption for a filing unit</p></li>
+<li><p><strong>crra</strong> (<em>non-negative float</em>) – constant relative risk aversion parameter</p></li>
+<li><p><strong>cmin</strong> (<em>positive float</em>) – consumption level below which marginal utility is assumed to be constant</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>utility of consumption</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.expected_utility">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">expected_utility</code><span class="sig-paren">(</span><em class="sig-param">consumption</em>, <em class="sig-param">probability</em>, <em class="sig-param">crra</em>, <em class="sig-param">cmin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#expected_utility"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.expected_utility" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate and return expected utility of consumption.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>consumption</strong> (<em>numpy array</em>) – consumption for each filing unit</p></li>
+<li><p><strong>probability</strong> (<em>numpy array</em>) – samplying probability of each filing unit</p></li>
+<li><p><strong>crra</strong> (<em>non-negative float</em>) – constant relative risk aversion parameter of isoelastic utility function</p></li>
+<li><p><strong>cmin</strong> (<em>positive float</em>) – consumption level below which marginal utility is assumed to be constant</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>expected utility of consumption array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.certainty_equivalent">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">certainty_equivalent</code><span class="sig-paren">(</span><em class="sig-param">exputil</em>, <em class="sig-param">crra</em>, <em class="sig-param">cmin</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#certainty_equivalent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.certainty_equivalent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate and return certainty-equivalent of exputil of consumption
+assuming an isoelastic utility function with crra and cmin as parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>exputil</strong> (<em>float</em>) – expected utility value</p></li>
+<li><p><strong>crra</strong> (<em>non-negative float</em>) – constant relative risk aversion parameter of isoelastic utility function</p></li>
+<li><p><strong>cmin</strong> (<em>positive float</em>) – consumption level below which marginal utility is assumed to be constant</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>certainty-equivalent of specified expected utility, exputil</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.ce_aftertax_expanded_income">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">ce_aftertax_expanded_income</code><span class="sig-paren">(</span><em class="sig-param">df1</em>, <em class="sig-param">df2</em>, <em class="sig-param">custom_params=None</em>, <em class="sig-param">require_no_agg_tax_change=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#ce_aftertax_expanded_income"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.ce_aftertax_expanded_income" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return dictionary that contains certainty-equivalent of the
+expected utility of after-tax expanded income computed for
+several constant-relative-risk-aversion parameter values
+for each of two Pandas DataFrame objects: df1, which represents
+the pre-reform situation, and df2, which represents the
+post-reform situation.  Both DataFrame objects must contain
+‘s006’, ‘combined’, and ‘expanded_income’ columns.</p>
+<p>IMPORTANT NOTES: These normative welfare calculations are very simple.
+It is assumed that utility is a function of only consumption, and that
+consumption is equal to after-tax income.  This means that any assumed
+responses that change work effort will not affect utility via the
+correpsonding change in leisure.  And any saving response to changes
+in after-tax income do not affect consumption.</p>
+<p>The cmin value is the consumption level below which marginal utility
+is considered to be constant.  This allows the handling of filing units
+with very low or even negative after-tax expanded income in the
+expected-utility and certainty-equivalent calculations.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.read_egg_csv">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">read_egg_csv</code><span class="sig-paren">(</span><em class="sig-param">fname</em>, <em class="sig-param">index_col=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#read_egg_csv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.read_egg_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read from egg the file named fname that contains CSV data and
+return pandas DataFrame containing the data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.read_egg_json">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">read_egg_json</code><span class="sig-paren">(</span><em class="sig-param">fname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#read_egg_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.read_egg_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read from egg the file named fname that contains JSON data and
+return dictionary containing the data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.delete_file">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">delete_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#delete_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.delete_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove specified file if it exists.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.bootstrap_se_ci">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">bootstrap_se_ci</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">seed</em>, <em class="sig-param">num_samples</em>, <em class="sig-param">statistic</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#bootstrap_se_ci"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.bootstrap_se_ci" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return bootstrap estimate of standard error of statistic and
+bootstrap estimate of 100*(1-2*alpha)% confidence interval for statistic
+in a dictionary along with specified seed and nun_samples (B) and alpha.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.utils.json_to_dict">
+<code class="sig-prename descclassname">taxcalc.utils.</code><code class="sig-name descname">json_to_dict</code><span class="sig-paren">(</span><em class="sig-param">json_text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/utils.html#json_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.utils.json_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert specified JSON text into an ordered Python dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>json_text</strong> (<em>string</em>) – JSON text.</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError:</strong> – if json_text contains a JSON syntax error.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>dictionary</strong> – JSON data expressed as an ordered Python dictionary.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>collections.OrderedDict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./api"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="taxcalcio.html" title="previous page">Tax-Calculator IO</a>
+    <a class='right-next' id="next-link" href="utilsprvt.html" title="next page">Tax-Calculator Private Utilities</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

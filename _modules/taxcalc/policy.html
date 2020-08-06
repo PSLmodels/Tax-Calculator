@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>taxcalc.policy &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <script src="../../_static/togglebutton.js"></script>
+    <script src="../../_static/clipboard.min.js"></script>
+    <script src="../../_static/copybutton.js"></script>
+    <script src="../../_static/mystnb.js"></script>
+    <script src="../../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../../index.html">
+  
+  <img src="../../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../../api/public_api.html">
+   Tax-Calculator Python API
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2F_modules/taxcalc/policy.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <h1>Source code for taxcalc.policy</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Tax-Calculator federal tax policy Policy class.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># CODING-STYLE CHECKS:</span>
+<span class="c1"># pycodestyle policy.py</span>
+<span class="c1"># pylint --disable=locally-disabled policy.py</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">taxcalc.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
+<span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
+
+
+<div class="viewcode-block" id="Policy"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy">[docs]</a><span class="k">class</span> <span class="nc">Policy</span><span class="p">(</span><span class="n">Parameters</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Policy is a subclass of the abstract Parameters class, and</span>
+<span class="sd">    therefore, inherits its methods (none of which are shown here).</span>
+
+<span class="sd">    Constructor for the federal tax policy class.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    gfactors: GrowFactors class instance</span>
+<span class="sd">        containing price inflation rates and wage growth rates</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError:</span>
+<span class="sd">        if gfactors is not a GrowFactors class instance or None.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    class instance: Policy</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">DEFAULTS_FILE_NAME</span> <span class="o">=</span> <span class="s1">&#39;policy_current_law.json&#39;</span>
+    <span class="n">DEFAULTS_FILE_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="n">JSON_START_YEAR</span> <span class="o">=</span> <span class="mi">2013</span>  <span class="c1"># remains the same unless earlier data added</span>
+    <span class="n">LAST_KNOWN_YEAR</span> <span class="o">=</span> <span class="mi">2019</span>  <span class="c1"># last year for which indexed param vals are known</span>
+    <span class="c1"># should increase LAST_KNOWN_YEAR by one every calendar year</span>
+    <span class="n">LAST_BUDGET_YEAR</span> <span class="o">=</span> <span class="mi">2030</span>  <span class="c1"># last extrapolation year</span>
+    <span class="c1"># should increase LAST_BUDGET_YEAR by one every calendar year</span>
+    <span class="n">DEFAULT_NUM_YEARS</span> <span class="o">=</span> <span class="n">LAST_BUDGET_YEAR</span> <span class="o">-</span> <span class="n">JSON_START_YEAR</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="c1"># NOTE: the following three data structures use internal parameter names:</span>
+    <span class="c1"># (1) specify which Policy parameters have been removed or renamed</span>
+    <span class="n">REMOVED_PARAMS</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># following five parameters removed in PR 2223 merged on 2019-02-06</span>
+        <span class="s1">&#39;DependentCredit_Child_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;DependentCredit_Nonchild_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;DependentCredit_before_CTC&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;FilerCredit_c&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ALD_InvInc_ec_base_RyanBrady&#39;</span><span class="p">:</span> <span class="s1">&#39;is a removed parameter name&#39;</span><span class="p">,</span>
+        <span class="c1"># TODO: following parameter renamed in PR 2292 merged on 2019-04-15</span>
+        <span class="s2">&quot;cpi_offset&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;was renamed parameter_indexing_CPI_offset. &quot;</span>
+            <span class="s2">&quot;See documentation for change in usage.&quot;</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;CPI_offset&quot;</span><span class="p">:</span> <span class="p">(</span>
+            <span class="s2">&quot;was renamed parameter_indexing_CPI_offset. &quot;</span>
+            <span class="s2">&quot;See documentation for change in usage.&quot;</span>
+        <span class="p">),</span>
+        <span class="c1"># TODO: following parameters renamed in PR 2345 merged on 2019-06-24</span>
+        <span class="s1">&#39;PT_excl_rt&#39;</span><span class="p">:</span>
+        <span class="s1">&#39;was renamed PT_qbid_rt in release 2.4.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_excl_wagelim_thd&#39;</span><span class="p">:</span>
+        <span class="s1">&#39;was renamed PT_qbid_taxinc_thd in release 2.4.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_excl_wagelim_prt&#39;</span><span class="p">:</span>
+        <span class="s1">&#39;was renamed PT_qbid_taxinc_gap in release 2.4.0&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PT_excl_wagelim_rt&#39;</span><span class="p">:</span>
+        <span class="s1">&#39;was renamed PT_qbid_w2_wages_rt in release 2.4.0&#39;</span>
+    <span class="p">}</span>
+    <span class="c1"># (2) specify which Policy parameters have been redefined recently</span>
+    <span class="n">REDEFINED_PARAMS</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="c1"># (3) specify which Policy parameters are wage (rather than price) indexed</span>
+    <span class="n">WAGE_INDEXED_PARAMS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SS_Earnings_c&#39;</span><span class="p">,</span> <span class="s1">&#39;SS_Earnings_thd&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gfactors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">only_reading_defaults</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># put JSON contents of DEFAULTS_FILE_NAME into self._vals dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># handle gfactors argument</span>
+        <span class="k">if</span> <span class="n">gfactors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gfactors</span><span class="p">,</span> <span class="n">GrowFactors</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span> <span class="o">=</span> <span class="n">gfactors</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;gfactors is not None or a GrowFactors instance&#39;</span><span class="p">)</span>
+        <span class="c1"># read default parameters and initialize</span>
+        <span class="n">syr</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">JSON_START_YEAR</span>
+        <span class="n">lyr</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">LAST_BUDGET_YEAR</span>
+        <span class="n">nyrs</span> <span class="o">=</span> <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULT_NUM_YEARS</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">syr</span><span class="p">,</span> <span class="n">nyrs</span><span class="p">,</span> <span class="n">Policy</span><span class="o">.</span><span class="n">LAST_KNOWN_YEAR</span><span class="p">,</span>
+                        <span class="n">Policy</span><span class="o">.</span><span class="n">REMOVED_PARAMS</span><span class="p">,</span>
+                        <span class="n">Policy</span><span class="o">.</span><span class="n">REDEFINED_PARAMS</span><span class="p">,</span>
+                        <span class="n">Policy</span><span class="o">.</span><span class="n">WAGE_INDEXED_PARAMS</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Policy.read_json_reform"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.read_json_reform">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read_json_reform</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a reform dictionary suitable for use with implement_reform</span>
+<span class="sd">        method generated from the specified JSON object, which can be None or</span>
+<span class="sd">        a string containing a local filename, a URL beginning with &#39;http&#39;</span>
+<span class="sd">        pointing to a valid JSON file hosted online, or a valid JSON text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Parameters</span><span class="o">.</span><span class="n">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;policy&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Policy.implement_reform"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.implement_reform">[docs]</a>    <span class="k">def</span> <span class="nf">implement_reform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reform</span><span class="p">,</span>
+                         <span class="n">print_warnings</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Implement reform using Tax-Calculator syled reforms/adjustments. Users</span>
+<span class="sd">        may also use the adjust method with ParamTools styled reforms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># need to do conversion:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_update</span><span class="p">(</span><span class="n">reform</span><span class="p">,</span> <span class="n">print_warnings</span><span class="p">,</span> <span class="n">raise_errors</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Policy.parameter_list"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.parameter_list">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">parameter_list</span><span class="p">():</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns list of parameter names in the policy_current_law.json file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULTS_FILE_PATH</span><span class="p">,</span>
+            <span class="n">Policy</span><span class="o">.</span><span class="n">DEFAULTS_FILE_NAME</span>
+        <span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">defaults</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>  <span class="c1"># pylint: disable=protected-access</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">defaults</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;schema&quot;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Policy.set_rates"><a class="viewcode-back" href="../../api/policy.html#taxcalc.policy.Policy.set_rates">[docs]</a>    <span class="k">def</span> <span class="nf">set_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize taxcalc indexing data.&quot;&quot;&quot;</span>
+        <span class="n">cpi_vals</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="k">for</span>
+            <span class="n">vo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="p">]</span>
+        <span class="c1"># extend parameter_indexing_CPI_offset values through budget window</span>
+        <span class="c1"># if they have not been extended already.</span>
+        <span class="n">cpi_vals</span> <span class="o">=</span> <span class="n">cpi_vals</span> <span class="o">+</span> <span class="n">cpi_vals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">:]</span> <span class="o">*</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">cpi_offset</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">+</span> <span class="n">ix</span><span class="p">):</span> <span class="n">val</span>
+            <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cpi_vals</span><span class="p">)</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span> <span class="o">=</span> <span class="n">GrowFactors</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_inflation_rates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">rate</span> <span class="o">+</span> <span class="n">cpi_offset</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">start_year</span> <span class="o">+</span> <span class="n">ix</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">rate</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">price_inflation_rates</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_wage_growth_rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gfactors</span><span class="o">.</span><span class="n">wage_growth_rates</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">start_year</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">end_year</span>
+        <span class="p">)</span></div></div>
+</pre></div>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../../_static/js/index.js"></script>
+    
+  </body>
+</html>

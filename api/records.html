@@ -1,0 +1,537 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tax-Calculator Records &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tax-Calculator IO" href="taxcalcio.html" />
+    <link rel="prev" title="Tax-Calculator Policy" href="policy.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="reference internal" href="public_api.html">
+   Tax-Calculator Python API
+  </a>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calculator.html">
+     Tax-Calculator Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="consumption.html">
+     Tax-Calculator Consumption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="data.html">
+     Tax-Calculator Data
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="decorators.html">
+     Tax-Calculator Decorators
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growdiff.html">
+     Tax-Calculator GrowDiff
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growfactors.html">
+     Tax-Calculator GrowFactors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="parameters.html">
+     Tax-Calculator Parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="policy.html">
+     Tax-Calculator Policy
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Tax-Calculator Records
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="taxcalcio.html">
+     Tax-Calculator IO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utils.html">
+     Tax-Calculator Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilsprvt.html">
+     Tax-Calculator Private Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/api/records.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/records.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/api/records.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#taxcalc-records">
+   taxcalc.records
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="tax-calculator-records">
+<span id="records"></span><h1>Tax-Calculator Records<a class="headerlink" href="#tax-calculator-records" title="Permalink to this headline">¶</a></h1>
+<p><strong>Tax-Calculator Records</strong></p>
+<div class="section" id="taxcalc-records">
+<h2>taxcalc.records<a class="headerlink" href="#taxcalc-records" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="taxcalc.records.Records">
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.records.</code><code class="sig-name descname">Records</code><span class="sig-paren">(</span><em class="sig-param">data='puf.csv'</em>, <em class="sig-param">start_year=2011</em>, <em class="sig-param">gfactors=&lt;taxcalc.growfactors.GrowFactors object&gt;</em>, <em class="sig-param">weights='puf_weights.csv.gz'</em>, <em class="sig-param">adjust_ratios='puf_ratios.csv'</em>, <em class="sig-param">exact_calculations=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Records is a subclass of the abstract Data class, and therefore,
+inherits its methods (none of which are shown here).</p>
+<p>Constructor for the tax-filing-unit Records class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em>) – <p>string describes CSV file in which records data reside;
+DataFrame already contains records data;
+default value is the string ‘puf.csv’
+NOTE: when using custom data, set this argument to a DataFrame.
+NOTE: to use your own data for a specific year with Tax-Calculator,
+be sure to read the documentation on creating your own data file and
+then construct a Records object like this:
+mydata = pd.read_csv(&lt;mydata.csv&gt;)
+myrec = Records(data=mydata, start_year=&lt;mydata_year&gt;,</p>
+<blockquote>
+<div><p>gfactors=None, weights=None)</p>
+</div></blockquote>
+<dl class="simple">
+<dt>NOTE: data=None is allowed but the returned instance contains only</dt><dd><p>the data variable information in the specified VARINFO file.</p>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>start_year</strong> (<em>integer</em>) – specifies calendar year of the input data;
+default value is PUFCSV_YEAR.
+Note that if specifying your own data (see above NOTE) as being
+a custom data set, be sure to explicitly set start_year to the
+custom data’s calendar year.</p></li>
+<li><p><strong>gfactors</strong> (<em>GrowFactors class instance</em><em> or </em><em>None</em>) – containing record data growth (or extrapolation) factors.</p></li>
+<li><p><strong>weights</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em><em> or </em><em>None</em>) – string describes CSV file in which weights reside;
+DataFrame already contains weights;
+None creates empty sample-weights DataFrame;
+default value is filename of the PUF weights.
+NOTE: when using custom weights, set this argument to a DataFrame.
+NOTE: assumes weights are integers that are 100 times the real weights.</p></li>
+<li><p><strong>adjust_ratios</strong> (<em>string</em><em> or </em><em>Pandas DataFrame</em><em> or </em><em>None</em>) – <p>string describes CSV file in which adjustment ratios reside;
+DataFrame already contains transposed/no-index adjustment ratios;
+None creates empty adjustment-ratios DataFrame;
+default value is filename of the PUF adjustment ratios.
+NOTE: when using custom ratios, set this argument to a DataFrame.
+NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:</p>
+<blockquote>
+<div><p>my_df = pd.read_csv(‘&lt;my_ratios.csv&gt;’, index_col=0).transpose()</p>
+</div></blockquote>
+</p></li>
+<li><p><strong>exact_calculations</strong> (<em>boolean</em>) – specifies whether or not exact tax calculations are done without
+any smoothing of stair-step provisions in income tax law;
+default value is false.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError:</strong> – if data is not the appropriate type.
+    if taxpayer and spouse variables do not add up to filing-unit total.
+    if dividends is less than qualified dividends.
+    if gfactors is not None or a GrowFactors class instance.
+    if start_year is not an integer.
+    if files cannot be found.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>class instance</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#taxcalc.records.Records" title="taxcalc.records.Records">Records</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Typical usage when using PUF input data is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">recs</span> <span class="o">=</span> <span class="n">Records</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>which uses all the default parameters of the constructor, and
+therefore, imputed variables are generated to augment the data and
+initial-year grow factors are applied to the data.  There are
+situations in which you need to specify the values of the Record
+constructor’s arguments, but be sure you know exactly what you are
+doing when attempting this.</p>
+<p>Use Records.cps_constructor() to get a Records object instantiated
+with CPS input data.</p>
+<dl class="method">
+<dt id="taxcalc.records.Records._adjust">
+<code class="sig-name descname">_adjust</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._adjust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adjust value of income variables to match SOI distributions
+Note: adjustment must leave variables as numpy.ndarray type</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.records.Records._extrapolate">
+<code class="sig-name descname">_extrapolate</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._extrapolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._extrapolate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply to variables the grow factor values for specified calendar year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.records.Records._read_ratios">
+<code class="sig-name descname">_read_ratios</code><span class="sig-paren">(</span><em class="sig-param">ratios</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._read_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._read_ratios" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read Records adjustment ratios from file or
+use specified transposed/no-index DataFrame as ratios or
+create empty DataFrame if None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.records.Records.cps_constructor">
+<em class="property">static </em><code class="sig-name descname">cps_constructor</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">gfactors=&lt;taxcalc.growfactors.GrowFactors object&gt;</em>, <em class="sig-param">exact_calculations=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records.cps_constructor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records.cps_constructor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static method returns a Records object instantiated with CPS
+input data.  This works in a analogous way to Records(), which
+returns a Records object instantiated with PUF input data.
+This is a convenience method that eliminates the need to
+specify all the details of the CPS input data just as the
+default values of the arguments of the Records class constructor
+eliminate the need to specify all the details of the PUF input
+data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.records.Records.increment_year">
+<code class="sig-name descname">increment_year</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records.increment_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records.increment_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add one to current year, and also does
+extrapolation, reweighting, adjusting for new current year.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="taxcalc.records.Records.read_cps_data">
+<em class="property">static </em><code class="sig-name descname">read_cps_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records.read_cps_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records.read_cps_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return data in cps.csv.gz as a Pandas DataFrame.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./api"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="policy.html" title="previous page">Tax-Calculator Policy</a>
+    <a class='right-next' id="next-link" href="taxcalcio.html" title="next page">Tax-Calculator IO</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>

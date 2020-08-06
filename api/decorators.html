@@ -1,0 +1,525 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Tax-Calculator Decorators &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="../_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../_static/togglebutton.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/mystnb.js"></script>
+    <script src="../_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tax-Calculator GrowDiff" href="growdiff.html" />
+    <link rel="prev" title="Tax-Calculator Data" href="data.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="../index.html">
+  
+  <img src="../_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/changes.html">
+   Change history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="../contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="reference internal" href="public_api.html">
+   Tax-Calculator Python API
+  </a>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calculator.html">
+     Tax-Calculator Calculator
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="consumption.html">
+     Tax-Calculator Consumption
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="data.html">
+     Tax-Calculator Data
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     Tax-Calculator Decorators
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growdiff.html">
+     Tax-Calculator GrowDiff
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="growfactors.html">
+     Tax-Calculator GrowFactors
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="parameters.html">
+     Tax-Calculator Parameters
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="policy.html">
+     Tax-Calculator Policy
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="records.html">
+     Tax-Calculator Records
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="taxcalcio.html">
+     Tax-Calculator IO
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utils.html">
+     Tax-Calculator Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="utilsprvt.html">
+     Tax-Calculator Private Utilities
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="calcfunctions.html">
+     Tax-Calculator CalcFunctions
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="../_sources/api/decorators.rst"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.rst</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fapi/decorators.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/api/decorators.rst"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> On this page
+        </div>
+        <nav id="bd-toc-nav">
+            <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-taxcalc.decorators">
+   taxcalc.decorators
+  </a>
+ </li>
+</ul>
+
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="tax-calculator-decorators">
+<span id="decorators"></span><h1>Tax-Calculator Decorators<a class="headerlink" href="#tax-calculator-decorators" title="Permalink to this headline">¶</a></h1>
+<p><strong>Tax-Calculator Decorators</strong></p>
+<div class="section" id="module-taxcalc.decorators">
+<span id="taxcalc-decorators"></span><h2>taxcalc.decorators<a class="headerlink" href="#module-taxcalc.decorators" title="Permalink to this headline">¶</a></h2>
+<p>Implement numba JIT decorators used to speed-up the execution
+of Tax-Calculator functions in the calcfunctions.py module.</p>
+<dl class="function">
+<dt id="taxcalc.decorators.id_wrapper">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">id_wrapper</code><span class="sig-paren">(</span><em class="sig-param">*dec_args</em>, <em class="sig-param">**dec_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#id_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.id_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wrapper when numba package is not being used during debugging.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.decorators.create_apply_function_string">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">create_apply_function_string</code><span class="sig-paren">(</span><em class="sig-param">sigout</em>, <em class="sig-param">sigin</em>, <em class="sig-param">parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#create_apply_function_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.create_apply_function_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a string for a function of the form:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ap_fuc</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_0</span><span class="p">)):</span>
+        <span class="n">x_0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">...</span> <span class="o">=</span> <span class="n">jitted_f</span><span class="p">(</span><span class="n">x_j</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">...</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x_0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">...</span>
+</pre></div>
+</div>
+<p>where the specific args to jitted_f and the number of
+values to return is determined by sigout and sigin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sigout</strong> (<em>iterable of the out arguments</em>) – </p></li>
+<li><p><strong>sigin</strong> (<em>iterable of the in arguments</em>) – </p></li>
+<li><p><strong>parameters</strong> (<em>iterable of which of the args</em><em> (</em><em>from in_args</em><em>) </em><em>are parameter</em>) – variables (as opposed to column records). This influences
+how we construct the apply-style function</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>a String representing the function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.decorators.create_toplevel_function_string">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">create_toplevel_function_string</code><span class="sig-paren">(</span><em class="sig-param">args_out</em>, <em class="sig-param">args_in</em>, <em class="sig-param">pm_or_pf</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#create_toplevel_function_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.create_toplevel_function_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a string for a function of the form:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>def hl_func(x_0, x_1, x_2, …):</dt><dd><p>outputs = (…) = calc_func(…)
+header = […]
+return DataFrame(data, columns=header)</p>
+</dd>
+</dl>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args_out</strong> (<em>iterable of the out arguments</em>) – </p></li>
+<li><p><strong>args_in</strong> (<em>iterable of the in arguments</em>) – </p></li>
+<li><p><strong>pm_or_pf</strong> (<em>iterable of strings for object that holds each arg</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>a String representing the function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.decorators.make_apply_function">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">make_apply_function</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">out_args</em>, <em class="sig-param">in_args</em>, <em class="sig-param">parameters</em>, <em class="sig-param">do_jit=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#make_apply_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.make_apply_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a calc-style function and creates the necessary Python code for
+an apply-style function. Will also jit the function if desired.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>the calc-style function</em>) – </p></li>
+<li><p><strong>out_args</strong> (<em>list of out arguments for the apply-style function</em>) – </p></li>
+<li><p><strong>in_args</strong> (<em>list of in arguments for the apply-style function</em>) – </p></li>
+<li><p><strong>parameters</strong> (<em>iterable of which of the args</em><em> (</em><em>from in_args</em><em>) </em><em>are parameter</em>) – variables (as opposed to column records).  This influences
+how we construct the apply-style function.</p></li>
+<li><p><strong>do_jit</strong> (<em>Bool</em><em>, </em><em>if True</em><em>, </em><em>jit the resulting apply-style function</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>apply-style function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.decorators.apply_jit">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">apply_jit</code><span class="sig-paren">(</span><em class="sig-param">dtype_sig_out</em>, <em class="sig-param">dtype_sig_in</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#apply_jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.apply_jit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a decorator that takes in a calc-style function, handle apply step.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="taxcalc.decorators.iterate_jit">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">iterate_jit</code><span class="sig-paren">(</span><em class="sig-param">parameters=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#iterate_jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.iterate_jit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public decorator for a calc-style function (see calcfunctions.py) that
+transforms the calc-style function into an apply-style function that
+can be called by Calculator class methods (see calculator.py).</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="taxcalc.decorators.GetReturnNode">
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">GetReturnNode</code><a class="reference internal" href="../_modules/taxcalc/decorators.html#GetReturnNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.GetReturnNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>A NodeVisitor to get the return tuple names from a calc-style function.</p>
+<dl class="method">
+<dt id="taxcalc.decorators.GetReturnNode.visit_Return">
+<code class="sig-name descname">visit_Return</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#GetReturnNode.visit_Return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.GetReturnNode.visit_Return" title="Permalink to this definition">¶</a></dt>
+<dd><p>visit_Return is used by NodeVisitor.visit method.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./api"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="data.html" title="previous page">Tax-Calculator Data</a>
+    <a class='right-next' id="next-link" href="growdiff.html" title="next page">Tax-Calculator GrowDiff</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="../_static/js/index.js"></script>
+    
+  </body>
+</html>
