@@ -23,15 +23,32 @@
       - file: recipes/recipe06
 - chapter: About
   sections:
-  - file: about/history
-  - file: about/roadmap
-  - file: about/releases
-  - file: about/changes
-  - file: about/upgrading
-  - file: about/license
+    - file: about/history
+    - file: about/roadmap
+    - file: about/releases
+    - file: about/changes
+    - file: about/upgrading
+    - file: about/license
 - chapter: Contributing
   sections:
-  - file: contributing/contributor_guide
-  - file: contributing/pr_workflow
-  - file: contributing/param_naming
-  - file: contributing/testing
+    - file: contributing/contributor_guide
+    - file: contributing/pr_workflow
+    - file: contributing/param_naming
+    - file: contributing/testing
+- chapter: API
+  sections:
+    - file: api/public_api
+      sections:
+        - file: api/calcfunctions
+        - file: api/calculator
+        - file: api/consumption
+        - file: api/data
+        - file: api/decorators
+        - file: api/growdiff
+        - file: api/growfactors
+        - file: api/parameters
+        - file: api/policy
+        - file: api/records
+        - file: api/taxcalcio
+        - file: api/utils
+        - file: api/utilsprvt

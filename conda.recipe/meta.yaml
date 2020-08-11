@@ -14,6 +14,7 @@ requirements:
     - "bokeh>=1.4.0"
     - requests
     - numba
+    - paramtools
 
   run:
     - python
@@ -22,6 +23,7 @@ requirements:
     - "bokeh>=1.4.0"
     - requests
     - numba
+    - paramtools
 
 test:
   commands:
