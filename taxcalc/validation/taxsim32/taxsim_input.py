@@ -88,7 +88,7 @@ def assumption_set(year, letter):
     adict = dict()
     if letter in VALID_LETTERS:  # <===========================================
         # basic assumption parameters for all ?YY.in samples:
-        adict['sample_size'] = 2000
+        adict['sample_size'] = 100000
         adict['year'] = year  # TAXSIM ivar 2
         # demographic attributes:
         adict['joint_frac'] = 0.60  # fraction of sample with joint MARS
