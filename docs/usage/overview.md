@@ -43,7 +43,7 @@ reform.
 *   `calc_all()` → Calculator class method that computes tax liability
 (and many intermediate variables such as AGI) for each filing-unit.
 
-*   `itax_clp` → Variable containing aggregate income tax liebility under
+*   `itax_clp` → Variable containing aggregate income tax liability under
 current-law policy.  
     Created by `weighted_total('iitax')` method called on `calc_clp` object
     after `calc_all()` called.
