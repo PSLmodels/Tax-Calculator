@@ -1,0 +1,33 @@
+// JSON "reform" file that specifies changes in current-law policy that
+// are required to make Tax-Calculator work like TAXSIM-27.
+//
+// (1) AMT_child_em_c_age = 24 (rather than 18)
+//     Whether to set this parameter to 18 or 24 is arbitary because
+//     neither model has enough information to apply correctly the child
+//     AMT exemption rules.  Information on full-time student status and
+//     whether taxpayers provide more than half of their support are required
+//     to apply the rules correctly.  Tax-Calculator makes the arbitrary
+//     assumption that only those under 18 are required to use the child
+//     AMT exemption rules, while TAXSIM-27 makes the arbitrary assumption
+//     that all those under 24 are required to use the child AMT exemption.
+//     (This change was introduced for assumption set b and higher.)
+//
+// (2) EITC_excess_InvestIncome_rt = 1.0 (rather than 9e99)
+//     The rate at which the EITC amount is reduced per dollar of investment
+//     income in excess of the EITC investment income ceiling is infinity under
+//     current law (that is, any investment income in excess of the ceiling
+//     causes EITC ineligibility).  However, TAXSIM-27 assumes it is one, so
+//     that the EITC amount is reduced a dollar for each dollar of excess
+//     investment income.  This difference in the parameter value leads to
+//     many EITC differences in the randomly-generated validation samples,
+//     with some of the differences being in the thousands of dollars.  This
+//     non-current-law assumption in TAXSIM-27 is presumably made to reduce
+//     the magnitude of model-calculated marginal tax rates with respect to
+//     investment income in cases where a marginal increase in investment
+//     income takes a filing unit above the ceiling.
+//
+{
+    "AMT_child_em_c_age": {"2013": 24},
+
+    "EITC_excess_InvestIncome_rt": {"2013": 1.0}
+}
