@@ -1,19 +1,19 @@
-Validation of Tax-Calculator against Internet TAXSIM-27
+Validation of Tax-Calculator against Internet TAXSIM-32
 =======================================================
 
 The general cross-model validation process described
 [here](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/README.md#validation-of-tax-calculator-logic)
 is being executed in this directory using
-[TAXSIM-27](https://users.nber.org/~taxsim/taxsim27/).
+[TAXSIM-32](https://users.nber.org/~taxsim/taxsim27/).
 
-We are in the process of comparing Tax-Calculator and TAXSIM-27
+We are in the process of comparing Tax-Calculator and TAXSIM-32
 results generated from several assumption sets in the `taxsim_in.py`
 script for years beginning with 2017.  Each INPUT file is
-used to generate a TAXSIM-27 OUTPUT file by uploading it to the
-TAXSIM-27 website and requesting detailed intermediate calculations.
+used to generate a TAXSIM-32 OUTPUT file by uploading it to the
+TAXSIM-32 website and requesting detailed intermediate calculations.
 And each INPUT file is translated into a CSV-formatted input file that
 is read by the Tax-Calculator `tc` CLI tool to generate output that is
-then transformed into an OUTPUT file having the TAXSIM-27 format.
+then transformed into an OUTPUT file having the TAXSIM-32 format.
 Finally, these two OUTPUT files are compared using the `taxdiffs.tcl`
 script.  See the `test.sh` scripts in this directory for more details.
 
@@ -27,7 +27,7 @@ randomly-generated values.
 
 In order to handle known differences in assumptions between the two
 models, we use the `taxsim_emulation.json` "reform" file to make
-Tax-Calculator operate like TAXSIM-27.  See the
+Tax-Calculator operate like TAXSIM-32.  See the
 [`taxsim_emulation.json`
 file](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/validation/taxsim27/taxsim_emulation.json)
 for details.
@@ -40,7 +40,7 @@ being compared have differences of no larger than one cent.
 Instructions
 ------------------
 
-1. Run `input_setup.py` to create the `.in` and `.in.out-taxsim` files necessary to input into TAXSIM-27.
+1. Run `input_setup.py` to create the `.in` and `.in.out-taxsim` files necessary to input into TAXSIM-32.
 3. Open each of these `.in.out-taxsim` files, remove the first few lines containing the variable names and change all delimiters to whitespace.
 4. Compress these files in a `.zip` format (make sure to compress the files themselves – **do not** place the files in a folder and compress the folder).
 5. Navigate to `taxcalc/validation` and run `tests_32.sh`.
@@ -51,12 +51,12 @@ Validation Results
 
 **a17 ASSUMPTION SET**:
 
-2017 INPUT file that specifies the first twelve of the TAXSIM-27
+2017 INPUT file that specifies the first twelve of the TAXSIM-32
 input variables, which include demographic variables and labor income,
-but sets to zero all the TAXSIM-27 input variables numbered from 13
+but sets to zero all the TAXSIM-32 input variables numbered from 13
 through 27.
 
-Validation results using the then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-32 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
@@ -64,17 +64,17 @@ Validation results using the then current-version of TAXSIM-27 on these dates:
 
 **b17 ASSUMPTION SET**:
 
-2017 INPUT file that specifies the first twenty-one of the TAXSIM-27
+2017 INPUT file that specifies the first twenty-one of the TAXSIM-32
 input variables, which include demographic variables, labor income,
 capital income, and federally-taxable benefits, but set to zero all
-the other six TAXSIM-27 input variables.  Two of those six are always
+the other six TAXSIM-32 input variables.  Two of those six are always
 set to zero because they specify trasfer income that is not taxed
 under the federal income tax or because they specify rent paid that
 does not affect federal income tax liability.  Three of the remaining
 four input variables are itemized expense amounts and the fourth is
 child-care expenses.
 
-Validation results using the then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-32 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
@@ -82,10 +82,10 @@ Validation results using the then current-version of TAXSIM-27 on these dates:
 
 **c17 ASSUMPTION SET**:
 
-2017 INPUT file that specifies all the non-state TAXSIM-27 input
+2017 INPUT file that specifies all the non-state TAXSIM-32 input
 variables to be randomly generated values.
 
-Validation results using the then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-32 on these dates:
 1. 2018-12-17 : same results
 2. 2019-01-29 : same results
 3. 2019-03-30 : same results
@@ -93,24 +93,24 @@ Validation results using the then current-version of TAXSIM-27 on these dates:
 
 **a18 ASSUMPTION SET**:
 
-2018 INPUT file that specifies the first twelve of the TAXSIM-27
+2018 INPUT file that specifies the first twelve of the TAXSIM-32
 input variables, which include demographic variables and labor income,
-but sets to zero all the TAXSIM-27 input variables numbered from 13
+but sets to zero all the TAXSIM-32 input variables numbered from 13
 through 27.  (This is the same logic as used to generate the **a17**
 sample except that a different stream of random numbers is used so that
 the 100,000 filing units are completely different.)
 
-Validation results using the then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-32 on these dates:
 1. 2019-01-29 : same results (other dependent credit not included in ovar 22)
 2. 2019-03-30 : same results (other dependent credit now included in ovar 22)
 3. 2019-06-05 : same results (other dependent credit now included in ovar 22)
 
 **b18 ASSUMPTION SET**:
 
-2018 INPUT file that specifies the first twenty-one of the TAXSIM-27
+2018 INPUT file that specifies the first twenty-one of the TAXSIM-32
 input variables, which include demographic variables, labor income,
 capital income, and federally-taxable benefits, but set to zero all
-the other six TAXSIM-27 input variables.  Two of those six are always
+the other six TAXSIM-32 input variables.  Two of those six are always
 set to zero because they specify trasfer income that is not taxed
 under the federal income tax or because they specify rent paid that
 does not affect federal income tax liability.  Three of the remaining
@@ -119,18 +119,18 @@ child-care expenses.  (This is the same logic as used to generate the
 **b17** sample except that a different stream of random numbers is
 used so that the 100,000 filing units are completely different.)
 
-Validation results using the then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-32 on these dates:
 1. 2019-03-30 : same results except for 422 itax diffs with largest being $13.00
 2. 2019-06-05 : same results (other dependent credit now included in ovar 22)
 
 **c18 ASSUMPTION SET**:
 
-2018 INPUT file that specifies all the non-state TAXSIM-27 input
+2018 INPUT file that specifies all the non-state TAXSIM-32 input
 variables to be randomly generated values.  (This is the same logic as
 used to generate the **c17** sample except that a different stream of
 random numbers is used so that the 100,000 filing units are completely
 different.)
 
-Validation results using the then current-version of TAXSIM-27 on these dates:
+Validation results using the then current-version of TAXSIM-32 on these dates:
 1. 2019-03-30 : same results except for 327 itax diffs with largest being $13.00
 2. 2019-06-05 : same results (other dependent credit now included in ovar 22)
