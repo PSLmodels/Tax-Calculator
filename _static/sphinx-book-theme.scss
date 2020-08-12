@@ -168,14 +168,12 @@ main.bd-content {
 
         .footnote-reference, a.bibtex.internal {
             font-size: 1em;
-            vertical-align: middle;
         }
 
         dl.footnote {
 
             span.fn-backref {
-                font-size: .8em;
-                vertical-align: top;
+                font-size: 1em;
                 padding-left:.1em;
             }
 
@@ -601,10 +599,6 @@ button.topbarbtn img {
         background: #c1c1c1;
     }
 
-    @media (min-width: $breakpoint-md) {
-        opacity: 0.6;
-    }
-
     // Hide the scrollbar until hover on wide screens
     @media (min-width: $breakpoint-lg) {
         &:not(:hover) {
@@ -618,10 +612,6 @@ button.topbarbtn img {
               background: #FFFFFF;
             }
         }
-    }
-
-    &:hover {
-        opacity: 1;
     }
 
     h1.site-logo {
@@ -647,7 +637,7 @@ button.topbarbtn img {
 
     // Captions
     p.caption {
-        margin-top: 1em;
+        margin-top: 1.25em;
         margin-bottom: 0;
         font-size: 1.2em;
     }
@@ -657,6 +647,13 @@ button.topbarbtn img {
         font-size: .8em;
         margin-left: 0.3em;
     }
+}
+
+.toc-h1, .toc-h2, .toc-h3, .toc-h4 {
+    > a {
+        font-size: 0.9em;
+    }
+    font-size: 1em;
 }
 
 .site-navigation, .site-navigation.collapsing {
@@ -680,6 +677,11 @@ button.topbarbtn img {
 
         &.collapsing {
             height: 0px !important;
+        }
+
+        // If we're only a single page, sidebar should hide at narrow widths.
+        &.single-page {
+            display: none;
         }
     }
 }
@@ -724,7 +726,9 @@ nav.bd-links {
     max-height: none !important;
 
     p.caption {
-        font-size: 1.4em;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        font-weight: bold;
 
         &:first-child {
             margin-top: 0;
@@ -739,28 +743,26 @@ nav.bd-links {
         width: 100%;
     }
 
-    li.toctree-l1 {
-        font-size: 1.2em
-    }
-
-    li.toctree-l2, li.toctree-l3, li.toctree-l4, li.toctree-l5  {
-        font-size: .8em
+    li.toctree-l1, li.toctree-l2, li.toctree-l3, li.toctree-l4, li.toctree-l5  {
+        > a {
+            font-size: 0.9em;
+        }
+        font-size: 1em;
     }
 
     > ul.nav {
         // Make sure the first items don't have any padding
-        padding-left: 0px !important;
+        padding-left: 0;
 
         // Subsequent items should have padding
         ul {
-            padding-left: 1rem !important;
-            padding-right: 0rem !important;
+            // Only left padding
+            padding: 0 0 0 1rem;
         }
 
-        // Links don't have the padding, uls do
+        // Links don't have the horizontal padding, uls do
         a {
-            padding-left: 0rem !important;
-            padding-right: 0rem !important;
+            padding: .25rem 0 !important;
         }
     }
 }
