@@ -72,7 +72,7 @@ def main():
                   'nonprop', 'pensions', 'gssi', 'ui', 'transfers',
                   'rentpaid', 'proptax', 'otheritem', 'childcare',
                   'mortgage', 'scorp', 'pbusinc', 'pprofinc', 'sbusinc',
-                  'sprofinc'
+                  'sprofinc', 'idtl'
                 ]
     filename = '{}{}.in'.format(args.LETTER, args.YEAR % 100)
     sample.to_csv(filename, sep=' ', header=header_col, index=False)
@@ -267,6 +267,8 @@ def sample_dataframe(assump, year, offset):
     sdict[32] = np.random.randint(0,
                                   assump['max_sprof_inc']+1,
                                   size) * 1000
+    # (33) IDTL: variable to request intermediate calculations
+    sdict[33] = 2
 
 
 
