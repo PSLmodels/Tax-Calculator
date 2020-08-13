@@ -1,3 +1,6 @@
+"""
+Generates TAXSIM-32 `.in` input files and downloads `.in.out-taxsim` output files
+"""
 import pandas as pd
 import os, glob
 from zipfile import ZipFile

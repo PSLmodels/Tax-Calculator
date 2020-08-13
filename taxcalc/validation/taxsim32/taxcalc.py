@@ -10,8 +10,8 @@ parser = argparse.ArgumentParser(
     prog='',
     usage=usage_str,
     description=('Call Tax-Calculator tc CLI reading input data from '
-                 'specified TAXSIM-27 input file and writing output '
-                 'in TAXSIM-27 output format to a file with the '
+                 'specified TAXSIM-32 input file and writing output '
+                 'in TAXSIM-32 output format to a file with the '
                  'specified input file name plus the .out-taxcalc '
                  'extension.'))
 
@@ -66,7 +66,7 @@ def calc_tc_output():
     os.remove(file_temp2)
 
 
-# convert Tax-Calculator output to TAXSIM-27 format
+# convert Tax-Calculator output to TAXSIM-32 format
 def convert_to_taxsim():
     file_out = taxsim_in + ".out-taxcalc"
     command = "python process_taxcalc_output.py " + taxsim_out_csv + \

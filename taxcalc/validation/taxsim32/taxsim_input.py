@@ -125,7 +125,7 @@ def assumption_set(year, letter):
         adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
         adict['max_scorp_inc'] = 0  # TAXSIM ivar 28
         adict['max_pbus_inc'] = 0  # TAXSIM ivar 29
-        adict['max_pprof_inc'] = 0  # TAXSIM ivar 30
+        adict['max_pprof_inc'] = 1  # TAXSIM ivar 30
         adict['max_sbus_inc'] = 0  # TAXSIM ivar 31
         adict['max_sprof_inc'] = 0  # TAXSIM ivar 32
         # end if letter in VALID_LETTERS

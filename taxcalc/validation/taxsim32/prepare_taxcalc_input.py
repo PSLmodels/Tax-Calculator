@@ -24,7 +24,7 @@ def main():
         description=('Translates TAXSIM-32 input file into a Tax-Calculator '
                      'CSV-formatted tc input file. '
                      'Any pre-existing OUTPUT file contents are overwritten. '
-                     'For details on Internet TAXSIM version 27 INPUT '
+                     'For details on Internet TAXSIM version 32 INPUT '
                      'format, go to '
                      'https://users.nber.org/~taxsim/taxsim32/'))
     parser.add_argument('INPUT', nargs='?', default='',
@@ -53,6 +53,7 @@ def main():
     # read TAXSIM-32 INPUT file into a pandas DataFrame
     ivar = pd.read_csv(args.INPUT, delim_whitespace=True,
                        header=0, index_col=False, names=range(1, 33))
+    # Drop 'idtl' which is used to generate intermediate calculations from TAXSIM-32
     ivar.drop(columns=32)
     # translate INPUT variables into OUTPUT variables
     invar = translate(ivar)
@@ -108,7 +109,10 @@ def translate(ivar):
     invar['e18400'] = ivar.loc[:, 25]
     invar['e32800'] = ivar.loc[:, 26]
     invar['e19200'] = ivar.loc[:, 27]
+    invar['e26270'] = ivar.loc[:, 28] # # TAXSIM-32 variable 28 - need to calculate QBI income
+    # TAXSIM-32 variable 29 - need to calculate QBI income
     # invar['PT_SSTB_income'] = ivar.loc[:, 30]
+    # TAXSIM-32 variable 31 - need to calculate QBI income
     return invar
 
 
