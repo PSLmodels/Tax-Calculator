@@ -1,5 +1,6 @@
 """
-Generates TAXSIM-32 `.in` input files and downloads `.in.out-taxsim` output files
+Generates TAXSIM-32 `.in` input files, downloads `.in.out-taxsim` output files,
+prepares files for Tax Calculator and zips them
 """
 import pandas as pd
 import os, glob
@@ -35,7 +36,36 @@ def get_ftp_output():
         os.system(f'curl -u taxsim:02138 ftp://taxsimftp.nber.org/tmp/userid.txm32 -o {file_out}')
 
 
+def change_delim():
+    for file in glob.glob("*.in.out-taxsim"):
+        # Read in the file
+        with open(file, 'r') as fin:
+          filedata = fin.read()
+
+        # Replace the target string
+        filedata = filedata.replace(',', ' ')
+
+        # Write the file out again
+        with open(file, 'w') as fout:
+          fout.write(filedata)
+
+def remove_header():
+    for file in glob.glob("*.in.out-taxsim"):
+        with open(file, 'r') as fin:
+            data = fin.read().splitlines(True)
+        with open(file, 'w') as fout:
+            fout.writelines(data[1:])
+
+def zip_files():
+    for file in glob.glob("*.in.out-taxsim"):
+        with ZipFile('output-taxsim.zip','w') as zipf:
+            zipf.write(file)
+
+
 
 if __name__ == '__main__':
     get_inputs()
     get_ftp_output()
+    change_delim()
+    remove_header()
+    zip_files()

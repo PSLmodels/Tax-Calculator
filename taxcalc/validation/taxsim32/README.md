@@ -40,9 +40,7 @@ being compared have differences of no larger than one cent.
 Instructions
 ------------------
 
-1. Run `input_setup.py` to create the `.in` and `.in.out-taxsim` files necessary to input into TAXSIM-32.
-3. Open each of these `.in.out-taxsim` files, remove the first few lines containing the variable names and change all delimiters to whitespace.
-4. Compress these files in a `.zip` format (make sure to compress the files themselves – **do not** place the files in a folder and compress the folder).
+1. Run `input_setup.py` to create the `.in` and `.in.out-taxsim` files (placed in `output-taxsim.zip`) to input into TAXSIM-32.
 5. Navigate to `taxcalc/validation` and run `tests_32.sh`.
 
 
