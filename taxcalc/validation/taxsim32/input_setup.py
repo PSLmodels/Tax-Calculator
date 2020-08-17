@@ -57,8 +57,8 @@ def remove_header():
             fout.writelines(data[1:])
 
 def zip_files():
-    for file in glob.glob("*.in.out-taxsim"):
-        with ZipFile('output-taxsim.zip','w') as zipf:
+    with ZipFile('output-taxsim.zip','w') as zipf:
+        for file in glob.glob("*.in.out-taxsim"):
             zipf.write(file)
 
 

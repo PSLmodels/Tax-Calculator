@@ -109,9 +109,9 @@ def translate(ivar):
     invar['e18400'] = ivar.loc[:, 25]
     invar['e32800'] = ivar.loc[:, 26]
     invar['e19200'] = ivar.loc[:, 27]
-    invar['e26270'] = ivar.loc[:, 28] # # TAXSIM-32 variable 28 - need to calculate QBI income
+    invar['e26270'] = ivar.loc[:, 28] # TAXSIM-32 variable 28 - need to calculate QBI income
     # TAXSIM-32 variable 29 - need to calculate QBI income
-    # invar['PT_SSTB_income'] = ivar.loc[:, 30]
+    invar['PT_SSTB_income'] = np.where(ivar.loc[:, 30] > 0, 1, 0)
     # TAXSIM-32 variable 31 - need to calculate QBI income
     return invar
 
