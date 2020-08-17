@@ -73,7 +73,7 @@ def main():
                   'rentpaid', 'proptax', 'otheritem', 'childcare',
                   'mortgage', 'scorp', 'pbusinc', 'pprofinc', 'sbusinc',
                   'sprofinc', 'idtl'
-                ]
+                  ]
     filename = '{}{}.in'.format(args.LETTER, args.YEAR % 100)
     sample.to_csv(filename, sep=' ', header=header_col, index=False)
     # return no-error exit code
@@ -271,8 +271,6 @@ def sample_dataframe(assump, year, offset):
                                   size) * 1000
     # (33) IDTL: variable to request intermediate calculations
     sdict[33] = 2
-
-
 
     smpl = pd.DataFrame(sdict)
     return smpl

@@ -11,8 +11,12 @@
 echo "STARTING WITH VALIDATION TESTS : `date`"
 # execute tests several at a time
 
-echo "In taxsim32 directory, executing test.sh using a17, b17, c17 data..."
 cd taxsim32
+echo "Gathering taxsim32 output and preparing input files..."
+python input_setup.py
+
+echo "In taxsim32 directory, executing test.sh using a17, b17, c17 data..."
+
 ./test.sh a17 &
 ./test.sh b17 &
 ./test.sh c17 &

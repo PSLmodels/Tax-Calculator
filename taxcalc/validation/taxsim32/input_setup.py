@@ -3,9 +3,11 @@ Generates TAXSIM-32 `.in` input files, downloads `.in.out-taxsim` output files,
 prepares files for Tax Calculator and zips them
 """
 import pandas as pd
-import os, glob
+import os
+import glob
 from zipfile import ZipFile
 # requires curl
+
 
 def get_inputs():
     """
@@ -23,31 +25,35 @@ def get_inputs():
 
 def get_ftp_output():
     """
-    Uses `curl` to upload assumption set input files and save taxsim-32 output files
+    Uses `curl` to upload assumption set input files
+    and save taxsim-32 output files
     """
     letters = ['a', 'b', 'c']
     years = ['17', '18']
     file_list = [str(x+y + '.in') for x in letters for y in years]
 
-
     for f in file_list:
         file_out = f + '.out-taxsim'
-        os.system(f'curl -u taxsim:02138 -T {f} ftp://taxsimftp.nber.org/tmp/userid')
-        os.system(f'curl -u taxsim:02138 ftp://taxsimftp.nber.org/tmp/userid.txm32 -o {file_out}')
+        os.system(
+            f'curl -u taxsim:02138 -T {f} ftp://taxsimftp.nber.org/tmp/userid')
+        c_out = 'curl -u taxsim:02138 '
+        + 'ftp://taxsimftp.nber.org/tmp/userid.txm32' + f'-o {file_out}'
+        os.system(c_out)
 
 
 def change_delim():
     for file in glob.glob("*.in.out-taxsim"):
         # Read in the file
         with open(file, 'r') as fin:
-          filedata = fin.read()
+            filedata = fin.read()
 
         # Replace the target string
         filedata = filedata.replace(',', ' ')
 
         # Write the file out again
         with open(file, 'w') as fout:
-          fout.write(filedata)
+            fout.write(filedata)
+
 
 def remove_header():
     for file in glob.glob("*.in.out-taxsim"):
@@ -56,11 +62,11 @@ def remove_header():
         with open(file, 'w') as fout:
             fout.writelines(data[1:])
 
+
 def zip_files():
-    with ZipFile('output-taxsim.zip','w') as zipf:
+    with ZipFile('output-taxsim.zip', 'w') as zipf:
         for file in glob.glob("*.in.out-taxsim"):
             zipf.write(file)
-
 
 
 if __name__ == '__main__':
