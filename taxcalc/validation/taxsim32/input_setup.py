@@ -36,8 +36,8 @@ def get_ftp_output():
         file_out = f + '.out-taxsim'
         os.system(
             f'curl -u taxsim:02138 -T {f} ftp://taxsimftp.nber.org/tmp/userid')
-        c_out = 'curl -u taxsim:02138 '
-        + 'ftp://taxsimftp.nber.org/tmp/userid.txm32' + f'-o {file_out}'
+        c_out = str('curl -u taxsim:02138 ' +
+                    'ftp://taxsimftp.nber.org/tmp/userid.txm32 -o ' + file_out)
         os.system(c_out)
 
 
