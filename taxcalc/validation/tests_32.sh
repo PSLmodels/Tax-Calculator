@@ -15,16 +15,16 @@ cd taxsim32
 echo "Gathering taxsim32 output and preparing input files..."
 python input_setup.py
 
-echo "In taxsim32 directory, executing test.sh using a17, b17, c17 data..."
-
-./test.sh a17 &
-./test.sh b17 &
-./test.sh c17 &
-wait
 echo "In taxsim32 directory, executing test.sh using a18, b18, c18 data..."
+
 ./test.sh a18 &
 ./test.sh b18 &
 ./test.sh c18 &
+wait
+echo "In taxsim32 directory, executing test.sh using a19, b19, c19 data..."
+./test.sh a19 &
+./test.sh b19 &
+./test.sh c19 &
 wait
 cd ..
 # cd someothermodel

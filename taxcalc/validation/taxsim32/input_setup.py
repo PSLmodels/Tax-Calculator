@@ -14,7 +14,7 @@ def get_inputs():
     Runs taxsim_input.py for all combinations of year and assumption sets
     """
     letters = ['a', 'b', 'c']
-    years = ['2017', '2018']
+    years = ['2018', '2019']
 
     name_list = [str(y + ' ' + x) for x in letters for y in years]
 
@@ -29,7 +29,7 @@ def get_ftp_output():
     and save taxsim-32 output files
     """
     letters = ['a', 'b', 'c']
-    years = ['17', '18']
+    years = ['18', '19']
     file_list = [str(x+y + '.in') for x in letters for y in years]
 
     for f in file_list:

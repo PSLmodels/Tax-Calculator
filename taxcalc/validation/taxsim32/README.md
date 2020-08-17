@@ -40,8 +40,7 @@ being compared have differences of no larger than one cent.
 Instructions
 ------------------
 
-1. Run `input_setup.py` to create the `.in` and `.in.out-taxsim` files (placed in `output-taxsim.zip`) to input into TAXSIM-32.
-5. Navigate to `taxcalc/validation` and run `tests_32.sh`.
+1. Navigate to `taxcalc/validation` and run `tests_32.sh`.
 
 
 Validation Results
