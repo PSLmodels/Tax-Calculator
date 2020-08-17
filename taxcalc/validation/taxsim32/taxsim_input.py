@@ -125,7 +125,7 @@ def assumption_set(year, letter):
         adict['max_ided_mortgage'] = 0  # TAXSIM ivar 27
         adict['max_scorp_inc'] = 0  # TAXSIM ivar 28
         adict['max_pbus_inc'] = 0  # TAXSIM ivar 29
-        adict['max_pprof_inc'] = 1  # TAXSIM ivar 30
+        adict['max_pprof_inc'] = 0  # TAXSIM ivar 30
         adict['max_sbus_inc'] = 0  # TAXSIM ivar 31
         adict['max_sprof_inc'] = 0  # TAXSIM ivar 32
         # end if letter in VALID_LETTERS
@@ -142,6 +142,7 @@ def assumption_set(year, letter):
         adict['max_pnben'] = 60  # TAXSIM ivar 19
         adict['max_ssben'] = 60  # TAXSIM ivar 20
         adict['max_uiben'] = 10  # TAXSIM ivar 21
+        adict['max_pprof_inc'] = 1  # TAXSIM ivar 30
     if letter == 'c':  # <=====================================================
         # childcare expense amount:
         adict['max_ccexp'] = 10  # TAXSIM ivar 26
@@ -149,6 +150,7 @@ def assumption_set(year, letter):
         adict['max_ided_proptax'] = 30  # TAXSIM ivar 24
         adict['max_ided_nopref'] = 10  # TAXSIM ivar 25
         adict['max_ided_mortgage'] = 40  # TAXSIM ivar 27
+        adict['max_scorp_inc'] = 30  # TAXSIM ivar 28
     return adict
 
 
