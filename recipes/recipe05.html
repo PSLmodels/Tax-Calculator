@@ -440,7 +440,7 @@ methods.</p>
 <span class="n">iitax_rev2</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">weighted_total</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
 
 <span class="c1"># construct reform-vs-baseline difference table with results for income deciles</span>
-<span class="n">diff_table</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">difference_table</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="s1">&#39;weighted_deciles&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+<span class="n">diff_table</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">difference_table</span><span class="p">(</span><span class="n">calc2</span><span class="p">,</span> <span class="s1">&#39;standard_income_bins&#39;</span><span class="p">,</span> <span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
 <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">diff_table</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
 <span class="n">diff_extract</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">()</span>
 <span class="n">dif_colnames</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="s1">&#39;tax_cut&#39;</span><span class="p">,</span> <span class="s1">&#39;tax_inc&#39;</span><span class="p">,</span>
@@ -466,29 +466,27 @@ methods.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1422.968
-2018_REFORM2_iitax_rev($B)= 1272.649
+<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1490.621
+2018_REFORM2_iitax_rev($B)= 1318.628
 
 Extract of 2018 income-tax difference table by expanded-income decile
 (taxfall is count of funits with cut in income tax in reform 2 vs 1)
 (taxrise is count of funits with rise in income tax in reform 2 vs 1)
-        funits(#m)  taxfall(#m)  taxrise(#m)  agg_diff($b)  mean_diff($)  aftertax_income_diff(%)
-0-10n     0.068451     0.000009     0.000062      0.006433     93.982055                 0.045764
-0-10z    15.873929     0.001666     0.005716     -0.000034     -0.002111               -10.087097
-0-10p     0.343784     0.000000     0.000000      0.000000      0.000000                 0.000000
-10-20    16.286268     1.078534     0.678148     -0.074521     -4.575684                 0.137980
-20-30    16.285811     9.953425     2.660806     -1.530725    -93.991356                 0.622617
-30-40    16.286763    12.771547     2.121851     -3.740868   -229.687632                 1.008274
-40-50    16.285378    13.553376     2.166393     -7.216581   -443.132553                 1.475646
-50-60    16.287181    13.776271     2.222322    -10.153244   -623.388660                 1.611206
-60-70    16.284709    13.638609     2.446125    -12.430439   -763.319711                 1.506934
-70-80    16.288041    14.002625     2.127822    -16.511143  -1013.697273                 1.471819
-80-90    16.285976    13.844933     2.347251    -23.084359  -1417.437860                 1.428239
-90-100   16.286607    14.542679     1.708505    -75.583543  -4640.840366                 2.073811
-ALL     162.862897   107.163673    18.485002   -150.319023   -922.978935                 1.673245
-90-95     8.143226     7.152663     0.964134    -18.297152  -2246.916889                 1.551005
-95-99     6.514736     5.966764     0.540989    -34.981776  -5369.637949                 2.487081
-Top 1%    1.628644     1.423252     0.203383    -22.304615 -13695.201820                 2.107323
+           funits(#m) taxfall(#m) taxrise(#m) agg_diff($b) mean_diff($) aftertax_income_diff(%)
+&lt;$0K         0.139124           0           0            0            0                       0
+=$0K           29.361  0.00398284  0.00256599 -0.000287359  -0.00978711                -10.9947
+$0-10K        32.6342      2.4395     1.48106    -0.192404     -5.89577                0.153202
+$10-20K       21.2155     11.4005     3.74961     -1.57495     -74.2359                0.523949
+$20-30K       18.4881     13.4157     3.11783     -3.83301     -207.323                0.911481
+$30-40K       16.8463     13.3099     2.78059     -7.11432     -422.308                 1.39848
+$40-50K       13.3335     11.0923     1.91614     -8.32639     -624.471                 1.66377
+$50-75K       22.9225     20.2617     2.36473     -20.2522     -883.508                 1.78165
+$75-100K      13.7307     12.3925      1.2298     -16.2928      -1186.6                 1.73044
+$100-200K     21.7543     19.7221     1.93615     -41.9197     -1926.96                  1.8326
+$200-500K     7.84776     7.23654    0.604507     -43.9066     -5594.79                 2.66207
+$500-1000K    1.14915     1.07263   0.0765177     -15.3413     -13350.1                 2.85443
+&gt;$1000K      0.514758    0.428676   0.0860823     -13.2397     -25720.2                 1.98472
+ALL           199.937     112.776     19.3456     -171.994      -860.24                 1.89689
 </pre></div>
 </div>
 </div>

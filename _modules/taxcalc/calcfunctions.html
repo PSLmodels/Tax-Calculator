@@ -1548,7 +1548,7 @@
                       <span class="n">e07240</span><span class="p">,</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">,</span>
                       <span class="n">c07200</span><span class="p">,</span>
                       <span class="n">CTC_c</span><span class="p">,</span> <span class="n">CTC_ps</span><span class="p">,</span> <span class="n">CTC_prt</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">ODC_c</span><span class="p">,</span>
-                      <span class="n">CTC_c_under5_bonus</span><span class="p">,</span> <span class="n">nu05</span><span class="p">,</span>
+                      <span class="n">CTC_c_under6_bonus</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span>
                       <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes amounts on &quot;Child Tax Credit and Credit for Other Dependents</span>
@@ -1556,7 +1556,7 @@
 <span class="sd">    nonrefundable tax credits.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Worksheet Part 1</span>
-    <span class="n">line1</span> <span class="o">=</span> <span class="n">CTC_c</span> <span class="o">*</span> <span class="n">n24</span> <span class="o">+</span> <span class="n">CTC_c_under5_bonus</span> <span class="o">*</span> <span class="n">nu05</span>
+    <span class="n">line1</span> <span class="o">=</span> <span class="n">CTC_c</span> <span class="o">*</span> <span class="n">n24</span> <span class="o">+</span> <span class="n">CTC_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
     <span class="n">line2</span> <span class="o">=</span> <span class="n">ODC_c</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">n24</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
     <span class="n">line3</span> <span class="o">=</span> <span class="n">line1</span> <span class="o">+</span> <span class="n">line2</span>
     <span class="n">modAGI</span> <span class="o">=</span> <span class="n">c00100</span>  <span class="c1"># no foreign earned income exclusion to add to AGI (line6)</span>
@@ -1877,7 +1877,7 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">codtc_limited</span><span class="p">,</span> <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
-                  <span class="n">ACTC_rt</span><span class="p">,</span> <span class="n">nu05</span><span class="p">,</span> <span class="n">ACTC_rt_bonus_under5family</span><span class="p">,</span> <span class="n">ACTC_ChildNum</span><span class="p">,</span>
+                  <span class="n">ACTC_rt</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">ACTC_rt_bonus_under6family</span><span class="p">,</span> <span class="n">ACTC_ChildNum</span><span class="p">,</span>
                   <span class="n">ptax_was</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">c59660</span><span class="p">,</span> <span class="n">e11200</span><span class="p">,</span>
                   <span class="n">c11070</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1892,10 +1892,10 @@
         <span class="n">line5</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line3</span><span class="p">,</span> <span class="n">line4</span><span class="p">)</span>
         <span class="n">line7</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">earned</span> <span class="o">-</span> <span class="n">ACTC_Income_thd</span><span class="p">)</span>
         <span class="c1"># accommodate ACTC rate bonus for families with children under 5</span>
-        <span class="k">if</span> <span class="n">nu05</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">nu06</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">ACTC_rate</span> <span class="o">=</span> <span class="n">ACTC_rt</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">ACTC_rate</span> <span class="o">=</span> <span class="n">ACTC_rt</span> <span class="o">+</span> <span class="n">ACTC_rt_bonus_under5family</span>
+            <span class="n">ACTC_rate</span> <span class="o">=</span> <span class="n">ACTC_rt</span> <span class="o">+</span> <span class="n">ACTC_rt_bonus_under6family</span>
         <span class="n">line8</span> <span class="o">=</span> <span class="n">ACTC_rate</span> <span class="o">*</span> <span class="n">line7</span>
         <span class="k">if</span> <span class="n">n24</span> <span class="o">&lt;</span> <span class="n">ACTC_ChildNum</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">line8</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
@@ -1936,18 +1936,18 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">CTC_new</span><span class="p">(</span><span class="n">CTC_new_c</span><span class="p">,</span> <span class="n">CTC_new_rt</span><span class="p">,</span> <span class="n">CTC_new_c_under5_bonus</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">CTC_new</span><span class="p">(</span><span class="n">CTC_new_c</span><span class="p">,</span> <span class="n">CTC_new_rt</span><span class="p">,</span> <span class="n">CTC_new_c_under6_bonus</span><span class="p">,</span>
             <span class="n">CTC_new_ps</span><span class="p">,</span> <span class="n">CTC_new_prt</span><span class="p">,</span> <span class="n">CTC_new_for_all</span><span class="p">,</span>
             <span class="n">CTC_new_refund_limited</span><span class="p">,</span> <span class="n">CTC_new_refund_limit_payroll_rt</span><span class="p">,</span>
             <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span>
-            <span class="n">n24</span><span class="p">,</span> <span class="n">nu05</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span>
+            <span class="n">n24</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span>
             <span class="n">ctc_new</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes new refundable child tax credit using specified parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">n24</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">posagi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">ctc_new</span> <span class="o">=</span> <span class="n">CTC_new_c</span> <span class="o">*</span> <span class="n">n24</span> <span class="o">+</span> <span class="n">CTC_new_c_under5_bonus</span> <span class="o">*</span> <span class="n">nu05</span>
+        <span class="n">ctc_new</span> <span class="o">=</span> <span class="n">CTC_new_c</span> <span class="o">*</span> <span class="n">n24</span> <span class="o">+</span> <span class="n">CTC_new_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_new_for_all</span><span class="p">:</span>
             <span class="n">ctc_new</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">CTC_new_rt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">)</span>
         <span class="n">ymax</span> <span class="o">=</span> <span class="n">CTC_new_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
