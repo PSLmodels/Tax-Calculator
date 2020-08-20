@@ -359,7 +359,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
+def UBI(nu18, n1820, n21, age_head, age_spouse, elderly_dependents,
+        UBI_u18, UBI_1820, UBI_2164, UBI_65, UBI_ecrt,
         ubi, taxable_ubi, nontaxable_ubi):
     """
     Calculates total and taxable Universal Basic Income (UBI) amount.
@@ -372,11 +373,19 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
     n21: Number of people in the tax unit age 21+
 
+    age_head: Age of filer head.
+
+    age_spouse: Age of spouse.
+
+    elderly_dependents: Number of elderly dependents.
+
     UBI_u18: UBI benefit for those under 18
 
     UBI_1820: UBI benefit for those between 18 to 20
 
-    UBI_21: UBI benefit for those 21 or more
+    UBI_2164: UBI benefit for those between 21 to 64
+
+    UBI_65: UBI benefit for those aged 65 or older
 
     UBI_ecrt: Fraction of UBI benefits that are not included in AGI
 
@@ -388,7 +397,9 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
     nontaxable_ubi: amount of UBI that is nontaxable
     """
-    ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n21 * UBI_21
+    n65 = ((age_head >= 65).astype(int) + (age_spouse >= 65).astype(int) +
+           elderly_dependents)
+    ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n2164 * UBI_2164 + n65 * UBI_65
     taxable_ubi = ubi * (1. - UBI_ecrt)
     nontaxable_ubi = ubi - taxable_ubi
     return ubi, taxable_ubi, nontaxable_ubi
