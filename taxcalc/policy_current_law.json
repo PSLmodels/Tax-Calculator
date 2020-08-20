@@ -5777,38 +5777,38 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
                 "idedtype": "med",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "sltx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "retx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "cas",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "misc",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "int",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "char",
+                "year": 2013,
                 "value": true
             }
         ],
@@ -5860,38 +5860,38 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
                 "idedtype": "med",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "sltx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "retx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "cas",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "misc",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "int",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "char",
+                "year": 2013,
                 "value": true
             }
         ],
@@ -6140,38 +6140,38 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
                 "idedtype": "med",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "sltx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "retx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "cas",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "misc",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "int",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "char",
+                "year": 2013,
                 "value": true
             }
         ],
@@ -13709,143 +13709,143 @@
         "value": [
             {
                 "year": 2013,
-                "value": 487.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 487.0
             },
             {
                 "year": 2013,
-                "value": 3250.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 3250.0
             },
             {
                 "year": 2013,
-                "value": 5372.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5372.0
             },
             {
                 "year": 2013,
-                "value": 6044.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 6044.0
             },
             {
                 "year": 2014,
-                "value": 496.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 496.0
             },
             {
                 "year": 2014,
-                "value": 3305.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 3305.0
             },
             {
                 "year": 2014,
-                "value": 5460.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5460.0
             },
             {
                 "year": 2014,
-                "value": 6143.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 6143.0
             },
             {
                 "year": 2015,
-                "value": 503.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 503.0
             },
             {
                 "year": 2015,
-                "value": 3359.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 3359.0
             },
             {
                 "year": 2015,
-                "value": 5548.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5548.0
             },
             {
                 "year": 2015,
-                "value": 6242.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 6242.0
             },
             {
                 "year": 2016,
-                "value": 506.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 506.0
             },
             {
                 "year": 2016,
-                "value": 3373.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 3373.0
             },
             {
                 "year": 2016,
-                "value": 5572.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5572.0
             },
             {
                 "year": 2016,
-                "value": 6269.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 6269.0
             },
             {
                 "year": 2017,
-                "value": 510.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 510.0
             },
             {
                 "year": 2017,
-                "value": 3400.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 3400.0
             },
             {
                 "year": 2017,
-                "value": 5616.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5616.0
             },
             {
                 "year": 2017,
-                "value": 6318.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 6318.0
             },
             {
                 "year": 2018,
-                "value": 519.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 519.0
             },
             {
                 "year": 2018,
-                "value": 3461.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 3461.0
             },
             {
                 "year": 2018,
-                "value": 5716.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5716.0
             },
             {
                 "year": 2018,
-                "value": 6431.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 6431.0
             },
             {
                 "year": 2019,
-                "value": 529.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 529.0
             },
             {
                 "year": 2019,
-                "value": 3526.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 3526.0
             },
             {
                 "year": 2019,
-                "value": 5828.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5828.0
             },
             {
                 "year": 2019,
-                "value": 6557.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 6557.0
             }
         ],
         "validators": {
@@ -13871,23 +13871,23 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.0765,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 0.0765
             },
             {
                 "year": 2013,
-                "value": 0.34,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 0.34
             },
             {
                 "year": 2013,
-                "value": 0.4,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 0.4
             },
             {
                 "year": 2013,
-                "value": 0.45,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 0.45
             }
         ],
         "validators": {
@@ -13963,23 +13963,23 @@
         "value": [
             {
                 "year": 2013,
-                "value": 0.0765,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 0.0765
             },
             {
                 "year": 2013,
-                "value": 0.1598,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 0.1598
             },
             {
                 "year": 2013,
-                "value": 0.2106,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 0.2106
             },
             {
                 "year": 2013,
-                "value": 0.2106,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 0.2106
             }
         ],
         "validators": {
@@ -14005,143 +14005,143 @@
         "value": [
             {
                 "year": 2013,
-                "value": 7970.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 7970.0
             },
             {
                 "year": 2013,
-                "value": 17530.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 17530.0
             },
             {
                 "year": 2013,
-                "value": 17530.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 17530.0
             },
             {
                 "year": 2013,
-                "value": 17530.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 17530.0
             },
             {
                 "year": 2014,
-                "value": 8110.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 8110.0
             },
             {
                 "year": 2014,
-                "value": 17830.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 17830.0
             },
             {
                 "year": 2014,
-                "value": 17830.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 17830.0
             },
             {
                 "year": 2014,
-                "value": 17830.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 17830.0
             },
             {
                 "year": 2015,
-                "value": 8250.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 8250.0
             },
             {
                 "year": 2015,
-                "value": 18150.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 18150.0
             },
             {
                 "year": 2015,
-                "value": 18150.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 18150.0
             },
             {
                 "year": 2015,
-                "value": 18150.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 18150.0
             },
             {
                 "year": 2016,
-                "value": 8270.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 8270.0
             },
             {
                 "year": 2016,
-                "value": 18190.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 18190.0
             },
             {
                 "year": 2016,
-                "value": 18190.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 18190.0
             },
             {
                 "year": 2016,
-                "value": 18190.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 18190.0
             },
             {
                 "year": 2017,
-                "value": 8340.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 8340.0
             },
             {
                 "year": 2017,
-                "value": 18340.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 18340.0
             },
             {
                 "year": 2017,
-                "value": 18340.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 18340.0
             },
             {
                 "year": 2017,
-                "value": 18340.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 18340.0
             },
             {
                 "year": 2018,
-                "value": 8490.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 8490.0
             },
             {
                 "year": 2018,
-                "value": 18660.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 18660.0
             },
             {
                 "year": 2018,
-                "value": 18660.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 18660.0
             },
             {
                 "year": 2018,
-                "value": 18660.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 18660.0
             },
             {
                 "year": 2019,
-                "value": 8650.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 8650.0
             },
             {
                 "year": 2019,
-                "value": 19030.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 19030.0
             },
             {
                 "year": 2019,
-                "value": 19030.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 19030.0
             },
             {
                 "year": 2019,
-                "value": 19030.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 19030.0
             }
         ],
         "validators": {
@@ -14167,143 +14167,143 @@
         "value": [
             {
                 "year": 2013,
-                "value": 5340.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 5340.0
             },
             {
                 "year": 2013,
-                "value": 5340.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 5340.0
             },
             {
                 "year": 2013,
-                "value": 5340.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5340.0
             },
             {
                 "year": 2013,
-                "value": 5340.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 5340.0
             },
             {
                 "year": 2014,
-                "value": 5430.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 5430.0
             },
             {
                 "year": 2014,
-                "value": 5430.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 5430.0
             },
             {
                 "year": 2014,
-                "value": 5430.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5430.0
             },
             {
                 "year": 2014,
-                "value": 5430.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 5430.0
             },
             {
                 "year": 2015,
-                "value": 5500.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 5500.0
             },
             {
                 "year": 2015,
-                "value": 5500.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 5500.0
             },
             {
                 "year": 2015,
-                "value": 5500.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5500.0
             },
             {
                 "year": 2015,
-                "value": 5500.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 5500.0
             },
             {
                 "year": 2016,
-                "value": 5550.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 5550.0
             },
             {
                 "year": 2016,
-                "value": 5550.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 5550.0
             },
             {
                 "year": 2016,
-                "value": 5550.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5550.0
             },
             {
                 "year": 2016,
-                "value": 5550.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 5550.0
             },
             {
                 "year": 2017,
-                "value": 5590.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 5590.0
             },
             {
                 "year": 2017,
-                "value": 5590.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 5590.0
             },
             {
                 "year": 2017,
-                "value": 5590.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5590.0
             },
             {
                 "year": 2017,
-                "value": 5590.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 5590.0
             },
             {
                 "year": 2018,
-                "value": 5680.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 5680.0
             },
             {
                 "year": 2018,
-                "value": 5690.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 5690.0
             },
             {
                 "year": 2018,
-                "value": 5690.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5690.0
             },
             {
                 "year": 2018,
-                "value": 5690.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 5690.0
             },
             {
                 "year": 2019,
-                "value": 5800.0,
-                "EIC": "0kids"
+                "EIC": "0kids",
+                "value": 5800.0
             },
             {
                 "year": 2019,
-                "value": 5790.0,
-                "EIC": "1kid"
+                "EIC": "1kid",
+                "value": 5790.0
             },
             {
                 "year": 2019,
-                "value": 5790.0,
-                "EIC": "2kids"
+                "EIC": "2kids",
+                "value": 5790.0
             },
             {
                 "year": 2019,
-                "value": 5790.0,
-                "EIC": "3+kids"
+                "EIC": "3+kids",
+                "value": 5790.0
             }
         ],
         "validators": {

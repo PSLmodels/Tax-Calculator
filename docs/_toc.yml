@@ -1,5 +1,5 @@
 - file: index
-- chapter: Usage
+- part: Usage
   sections:
   - file: usage/starting
   - file: usage/overview
@@ -21,7 +21,7 @@
       - file: recipes/recipe04_pandas
       - file: recipes/recipe05
       - file: recipes/recipe06
-- chapter: About
+- part: About
   sections:
     - file: about/history
     - file: about/roadmap
@@ -29,13 +29,13 @@
     - file: about/changes
     - file: about/upgrading
     - file: about/license
-- chapter: Contributing
+- part: Contributing
   sections:
     - file: contributing/contributor_guide
     - file: contributing/pr_workflow
     - file: contributing/param_naming
     - file: contributing/testing
-- chapter: API
+- part: API
   sections:
     - file: api/public_api
       sections:
