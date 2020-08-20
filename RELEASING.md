@@ -34,6 +34,17 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> run `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
 
+====> ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION <====
+
+--> add or update `run` list in `requirements` section of `conda.recipe/meta.yaml`
+
+--> add or update package in `environment.yaml`
+    (this may have already been done in the PR that added or updated the
+     dependency.)
+
+--> update `dev_pkgs` list in `test_4package.py:test_for_consistency` and make sure
+    the updated test passes
+
 ====> CREATE NEW BEHRESP PACKAGES (if necessary) <====
 
 --> create Behavioral-Responses packages
