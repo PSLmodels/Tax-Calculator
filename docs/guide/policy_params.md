@@ -3952,8 +3952,25 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
-####  `UBI_21`  
-_Description:_ UBI benefit provided to people 21 and over.  
+####  `UBI_2164`  
+_Description:_ UBI benefit provided to people 21-64 years of age.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `UBI_65`  
+_Description:_ UBI benefit provided to people 65 and over.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
 _Value Type:_ float  
