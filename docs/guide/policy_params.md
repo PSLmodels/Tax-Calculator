@@ -14,7 +14,7 @@ are placed in an Other Parameters group at the end of the section.
 
 ### Offsets
 
-####  `CPI_offset`  
+####  `parameter_indexing_CPI_offset`  
 _Description:_ Values are zero before 2017; reforms that introduce indexing with chained CPI would have values around -0.0025 beginning in the year before the first year policy parameters will have values computed with chained CPI.  
 _Notes:_ See April 2013 CBO report entitled 'What Would Be the Effect on the Deficit of Using the Chained CPI to Index Benefit Programs and the Tax Code?', which includes this: 'The chained CPI grows more slowly than the traditional CPI does: an average of about 0.25 percentage points more slowly per year over the past decade.' <https://www.cbo.gov/publication/44089>  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
@@ -1004,8 +1004,8 @@ _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error  
 
 
-####  `ACTC_rt_bonus_under5family`  
-_Description:_ For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.  
+####  `ACTC_rt_bonus_under6family`  
+_Description:_ For families with qualifying children under 6 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -1088,8 +1088,8 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
-####  `CTC_c_under5_bonus`  
-_Description:_ The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.  
+####  `CTC_c_under6_bonus`  
+_Description:_ The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
@@ -3567,8 +3567,8 @@ _Valid Range:_ min = 0 and max = 9e+99
 _Out-of-Range Action:_ error  
 
 
-####  `CTC_new_c_under5_bonus`  
-_Description:_ The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.  
+####  `CTC_new_c_under6_bonus`  
+_Description:_ The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
 _Value Type:_ float  
