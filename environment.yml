@@ -4,7 +4,7 @@ channels:
 dependencies:
 - python
 - "numpy>=1.14"
-- "pandas>=0.23"
+- "pandas==1.0.1"
 - "bokeh>=1.4.0"
 - requests
 - numba
