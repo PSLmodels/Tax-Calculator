@@ -609,7 +609,8 @@
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">UBI</span><span class="p">(</span><span class="n">nu18</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">UBI_u18</span><span class="p">,</span> <span class="n">UBI_1820</span><span class="p">,</span> <span class="n">UBI_21</span><span class="p">,</span> <span class="n">UBI_ecrt</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">UBI</span><span class="p">(</span><span class="n">nu18</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">elderly_dependents</span><span class="p">,</span>
+        <span class="n">UBI_u18</span><span class="p">,</span> <span class="n">UBI_1820</span><span class="p">,</span> <span class="n">UBI_2164</span><span class="p">,</span> <span class="n">UBI_65</span><span class="p">,</span> <span class="n">UBI_ecrt</span><span class="p">,</span>
         <span class="n">ubi</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span> <span class="n">nontaxable_ubi</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates total and taxable Universal Basic Income (UBI) amount.</span>
@@ -622,11 +623,19 @@
 
 <span class="sd">    n21: Number of people in the tax unit age 21+</span>
 
+<span class="sd">    age_head: Age of filer head.</span>
+
+<span class="sd">    age_spouse: Age of spouse.</span>
+
+<span class="sd">    elderly_dependents: Number of elderly dependents.</span>
+
 <span class="sd">    UBI_u18: UBI benefit for those under 18</span>
 
 <span class="sd">    UBI_1820: UBI benefit for those between 18 to 20</span>
 
-<span class="sd">    UBI_21: UBI benefit for those 21 or more</span>
+<span class="sd">    UBI_2164: UBI benefit for those between 21 to 64</span>
+
+<span class="sd">    UBI_65: UBI benefit for those aged 65 or older</span>
 
 <span class="sd">    UBI_ecrt: Fraction of UBI benefits that are not included in AGI</span>
 
@@ -638,7 +647,12 @@
 
 <span class="sd">    nontaxable_ubi: amount of UBI that is nontaxable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">ubi</span> <span class="o">=</span> <span class="n">nu18</span> <span class="o">*</span> <span class="n">UBI_u18</span> <span class="o">+</span> <span class="n">n1820</span> <span class="o">*</span> <span class="n">UBI_1820</span> <span class="o">+</span> <span class="n">n21</span> <span class="o">*</span> <span class="n">UBI_21</span>
+    <span class="c1"># Calculate number of people age 65+ as 1 if head is 65+, plus 1 if spouse</span>
+    <span class="c1"># is 65+, plus number of elderly dependents.</span>
+    <span class="n">n65</span> <span class="o">=</span> <span class="p">(</span><span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">)</span> <span class="o">+</span> <span class="n">elderly_dependents</span>
+    <span class="n">n2164</span> <span class="o">=</span> <span class="n">n21</span> <span class="o">-</span> <span class="n">n65</span>
+    <span class="k">assert</span> <span class="n">n2164</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+    <span class="n">ubi</span> <span class="o">=</span> <span class="n">nu18</span> <span class="o">*</span> <span class="n">UBI_u18</span> <span class="o">+</span> <span class="n">n1820</span> <span class="o">*</span> <span class="n">UBI_1820</span> <span class="o">+</span> <span class="n">n2164</span> <span class="o">*</span> <span class="n">UBI_2164</span> <span class="o">+</span> <span class="n">n65</span> <span class="o">*</span> <span class="n">UBI_65</span>
     <span class="n">taxable_ubi</span> <span class="o">=</span> <span class="n">ubi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">UBI_ecrt</span><span class="p">)</span>
     <span class="n">nontaxable_ubi</span> <span class="o">=</span> <span class="n">ubi</span> <span class="o">-</span> <span class="n">taxable_ubi</span>
     <span class="k">return</span> <span class="n">ubi</span><span class="p">,</span> <span class="n">taxable_ubi</span><span class="p">,</span> <span class="n">nontaxable_ubi</span>
