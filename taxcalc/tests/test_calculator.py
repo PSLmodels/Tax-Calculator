@@ -623,7 +623,8 @@ def test_distribution_tables(cps_subsample):
     reform = {
         'UBI_u18': {2014: 1000},
         'UBI_1820': {2014: 1000},
-        'UBI_21': {2014: 1000}
+        'UBI_2164': {2014: 1000},
+        'UBI_65': {2014: 1000}
     }
     pol.implement_reform(reform)
     assert not pol.parameter_errors
