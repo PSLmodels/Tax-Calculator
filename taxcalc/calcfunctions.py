@@ -397,8 +397,12 @@ def UBI(nu18, n1820, n21, age_head, age_spouse, elderly_dependents,
 
     nontaxable_ubi: amount of UBI that is nontaxable
     """
+    # Calculate number of people age 65+ as 1 if head is 65+, plus 1 if spouse
+    # is 65+, plus number of elderly dependents.
     n65 = ((age_head >= 65).astype(int) + (age_spouse >= 65).astype(int) +
            elderly_dependents)
+    n2164 = n21 - n65
+    assert n2164 >= 0
     ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n2164 * UBI_2164 + n65 * UBI_65
     taxable_ubi = ubi * (1. - UBI_ecrt)
     nontaxable_ubi = ubi - taxable_ubi
