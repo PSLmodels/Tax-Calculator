@@ -1345,7 +1345,7 @@
             },
             {
                 "year": 2026,
-                "value": 4880.0
+                "value": 4691.0
             }
         ],
         "validators": {
@@ -1547,27 +1547,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 316457.0
+                "value": 302907.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 379748.0
+                "value": 363489.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 189874.0
+                "value": 181744.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 348102.0
+                "value": 333198.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 379748.0
+                "value": 363489.0
             }
         ],
         "validators": {
@@ -1821,27 +1821,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 7651.0
+                "value": 7355.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 15303.0
+                "value": 14711.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 7651.0
+                "value": 7355.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 11266.0
+                "value": 10831.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 15303.0
+                "value": 14711.0
             }
         ],
         "validators": {
@@ -5375,27 +5375,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 315093.0
+                "value": 302907.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 378112.0
+                "value": 363489.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 189056.0
+                "value": 181744.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 346603.0
+                "value": 333198.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 378112.0
+                "value": 363489.0
             }
         ],
         "validators": {
@@ -7920,27 +7920,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 22472.0
+                "value": 21603.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 16086.0
+                "value": 15464.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 22472.0
+                "value": 21603.0
             }
         ],
         "validators": {
@@ -8196,27 +8196,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 91455.0
+                "value": 87918.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 61211.0
+                "value": 58844.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 91455.0
+                "value": 87918.0
             }
         ],
         "validators": {
@@ -8472,27 +8472,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 110735.0
+                "value": 106452.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 184477.0
+                "value": 177343.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 92239.0
+                "value": 88671.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 158089.0
+                "value": 151975.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 184477.0
+                "value": 177343.0
             }
         ],
         "validators": {
@@ -8748,27 +8748,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 230928.0
+                "value": 221997.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 281174.0
+                "value": 270300.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 140587.0
+                "value": 135150.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 256051.0
+                "value": 246148.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 281174.0
+                "value": 270300.0
             }
         ],
         "validators": {
@@ -9024,27 +9024,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 251050.0
+                "value": 241341.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 502101.0
+                "value": 482682.0
             }
         ],
         "validators": {
@@ -9300,27 +9300,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 504149.0
+                "value": 484651.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 567168.0
+                "value": 545233.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 283584.0
+                "value": 272616.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 535659.0
+                "value": 514942.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 567168.0
+                "value": 545233.0
             }
         ],
         "validators": {
@@ -9878,27 +9878,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 22472.0
+                "value": 21603.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 16086.0
+                "value": 15464.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 22472.0
+                "value": 21603.0
             }
         ],
         "validators": {
@@ -10154,27 +10154,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 91455.0
+                "value": 87918.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 61211.0
+                "value": 58844.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 91455.0
+                "value": 87918.0
             }
         ],
         "validators": {
@@ -10430,27 +10430,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 110735.0
+                "value": 106452.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 184477.0
+                "value": 177343.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 92239.0
+                "value": 88671.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 158089.0
+                "value": 151975.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 184477.0
+                "value": 177343.0
             }
         ],
         "validators": {
@@ -10706,27 +10706,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 230928.0
+                "value": 221997.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 281174.0
+                "value": 270300.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 140587.0
+                "value": 135150.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 256051.0
+                "value": 246148.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 281174.0
+                "value": 270300.0
             }
         ],
         "validators": {
@@ -10982,27 +10982,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 251050.0
+                "value": 241341.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 502101.0
+                "value": 482682.0
             }
         ],
         "validators": {
@@ -11258,27 +11258,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 504149.0
+                "value": 484651.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 567168.0
+                "value": 545233.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 283584.0
+                "value": 272616.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 535659.0
+                "value": 514942.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 567168.0
+                "value": 545233.0
             }
         ],
         "validators": {
@@ -12546,27 +12546,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 65429.0
+                "value": 62898.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 101818.0
+                "value": 97880.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 50909.0
+                "value": 48940.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 65429.0
+                "value": 62898.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 101818.0
+                "value": 97880.0
             }
         ],
         "validators": {
@@ -12794,27 +12794,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 145437.0
+                "value": 139812.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 193876.0
+                "value": 186378.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 96938.0
+                "value": 93189.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 145437.0
+                "value": 139812.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 193876.0
+                "value": 186378.0
             }
         ],
         "validators": {
@@ -13046,7 +13046,7 @@
             },
             {
                 "year": 2026,
-                "value": 300574.0
+                "value": 288949.0
             }
         ],
         "validators": {
@@ -13709,143 +13709,143 @@
         "value": [
             {
                 "year": 2013,
-                "EIC": "0kids",
-                "value": 487.0
+                "value": 487.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2013,
-                "EIC": "1kid",
-                "value": 3250.0
+                "value": 3250.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2013,
-                "EIC": "2kids",
-                "value": 5372.0
+                "value": 5372.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2013,
-                "EIC": "3+kids",
-                "value": 6044.0
+                "value": 6044.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2014,
-                "EIC": "0kids",
-                "value": 496.0
+                "value": 496.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2014,
-                "EIC": "1kid",
-                "value": 3305.0
+                "value": 3305.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2014,
-                "EIC": "2kids",
-                "value": 5460.0
+                "value": 5460.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2014,
-                "EIC": "3+kids",
-                "value": 6143.0
+                "value": 6143.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2015,
-                "EIC": "0kids",
-                "value": 503.0
+                "value": 503.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2015,
-                "EIC": "1kid",
-                "value": 3359.0
+                "value": 3359.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2015,
-                "EIC": "2kids",
-                "value": 5548.0
+                "value": 5548.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2015,
-                "EIC": "3+kids",
-                "value": 6242.0
+                "value": 6242.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2016,
-                "EIC": "0kids",
-                "value": 506.0
+                "value": 506.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2016,
-                "EIC": "1kid",
-                "value": 3373.0
+                "value": 3373.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2016,
-                "EIC": "2kids",
-                "value": 5572.0
+                "value": 5572.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2016,
-                "EIC": "3+kids",
-                "value": 6269.0
+                "value": 6269.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2017,
-                "EIC": "0kids",
-                "value": 510.0
+                "value": 510.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2017,
-                "EIC": "1kid",
-                "value": 3400.0
+                "value": 3400.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2017,
-                "EIC": "2kids",
-                "value": 5616.0
+                "value": 5616.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2017,
-                "EIC": "3+kids",
-                "value": 6318.0
+                "value": 6318.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2018,
-                "EIC": "0kids",
-                "value": 519.0
+                "value": 519.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2018,
-                "EIC": "1kid",
-                "value": 3461.0
+                "value": 3461.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2018,
-                "EIC": "2kids",
-                "value": 5716.0
+                "value": 5716.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2018,
-                "EIC": "3+kids",
-                "value": 6431.0
+                "value": 6431.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2019,
-                "EIC": "0kids",
-                "value": 529.0
+                "value": 529.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2019,
-                "EIC": "1kid",
-                "value": 3526.0
+                "value": 3526.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2019,
-                "EIC": "2kids",
-                "value": 5828.0
+                "value": 5828.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2019,
-                "EIC": "3+kids",
-                "value": 6557.0
+                "value": 6557.0,
+                "EIC": "3+kids"
             }
         ],
         "validators": {
@@ -13871,23 +13871,23 @@
         "value": [
             {
                 "year": 2013,
-                "EIC": "0kids",
-                "value": 0.0765
+                "value": 0.0765,
+                "EIC": "0kids"
             },
             {
                 "year": 2013,
-                "EIC": "1kid",
-                "value": 0.34
+                "value": 0.34,
+                "EIC": "1kid"
             },
             {
                 "year": 2013,
-                "EIC": "2kids",
-                "value": 0.4
+                "value": 0.4,
+                "EIC": "2kids"
             },
             {
                 "year": 2013,
-                "EIC": "3+kids",
-                "value": 0.45
+                "value": 0.45,
+                "EIC": "3+kids"
             }
         ],
         "validators": {
@@ -13963,23 +13963,23 @@
         "value": [
             {
                 "year": 2013,
-                "EIC": "0kids",
-                "value": 0.0765
+                "value": 0.0765,
+                "EIC": "0kids"
             },
             {
                 "year": 2013,
-                "EIC": "1kid",
-                "value": 0.1598
+                "value": 0.1598,
+                "EIC": "1kid"
             },
             {
                 "year": 2013,
-                "EIC": "2kids",
-                "value": 0.2106
+                "value": 0.2106,
+                "EIC": "2kids"
             },
             {
                 "year": 2013,
-                "EIC": "3+kids",
-                "value": 0.2106
+                "value": 0.2106,
+                "EIC": "3+kids"
             }
         ],
         "validators": {
@@ -14005,143 +14005,143 @@
         "value": [
             {
                 "year": 2013,
-                "EIC": "0kids",
-                "value": 7970.0
+                "value": 7970.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2013,
-                "EIC": "1kid",
-                "value": 17530.0
+                "value": 17530.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2013,
-                "EIC": "2kids",
-                "value": 17530.0
+                "value": 17530.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2013,
-                "EIC": "3+kids",
-                "value": 17530.0
+                "value": 17530.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2014,
-                "EIC": "0kids",
-                "value": 8110.0
+                "value": 8110.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2014,
-                "EIC": "1kid",
-                "value": 17830.0
+                "value": 17830.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2014,
-                "EIC": "2kids",
-                "value": 17830.0
+                "value": 17830.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2014,
-                "EIC": "3+kids",
-                "value": 17830.0
+                "value": 17830.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2015,
-                "EIC": "0kids",
-                "value": 8250.0
+                "value": 8250.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2015,
-                "EIC": "1kid",
-                "value": 18150.0
+                "value": 18150.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2015,
-                "EIC": "2kids",
-                "value": 18150.0
+                "value": 18150.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2015,
-                "EIC": "3+kids",
-                "value": 18150.0
+                "value": 18150.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2016,
-                "EIC": "0kids",
-                "value": 8270.0
+                "value": 8270.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2016,
-                "EIC": "1kid",
-                "value": 18190.0
+                "value": 18190.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2016,
-                "EIC": "2kids",
-                "value": 18190.0
+                "value": 18190.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2016,
-                "EIC": "3+kids",
-                "value": 18190.0
+                "value": 18190.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2017,
-                "EIC": "0kids",
-                "value": 8340.0
+                "value": 8340.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2017,
-                "EIC": "1kid",
-                "value": 18340.0
+                "value": 18340.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2017,
-                "EIC": "2kids",
-                "value": 18340.0
+                "value": 18340.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2017,
-                "EIC": "3+kids",
-                "value": 18340.0
+                "value": 18340.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2018,
-                "EIC": "0kids",
-                "value": 8490.0
+                "value": 8490.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2018,
-                "EIC": "1kid",
-                "value": 18660.0
+                "value": 18660.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2018,
-                "EIC": "2kids",
-                "value": 18660.0
+                "value": 18660.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2018,
-                "EIC": "3+kids",
-                "value": 18660.0
+                "value": 18660.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2019,
-                "EIC": "0kids",
-                "value": 8650.0
+                "value": 8650.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2019,
-                "EIC": "1kid",
-                "value": 19030.0
+                "value": 19030.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2019,
-                "EIC": "2kids",
-                "value": 19030.0
+                "value": 19030.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2019,
-                "EIC": "3+kids",
-                "value": 19030.0
+                "value": 19030.0,
+                "EIC": "3+kids"
             }
         ],
         "validators": {
@@ -14167,143 +14167,143 @@
         "value": [
             {
                 "year": 2013,
-                "EIC": "0kids",
-                "value": 5340.0
+                "value": 5340.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2013,
-                "EIC": "1kid",
-                "value": 5340.0
+                "value": 5340.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2013,
-                "EIC": "2kids",
-                "value": 5340.0
+                "value": 5340.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2013,
-                "EIC": "3+kids",
-                "value": 5340.0
+                "value": 5340.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2014,
-                "EIC": "0kids",
-                "value": 5430.0
+                "value": 5430.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2014,
-                "EIC": "1kid",
-                "value": 5430.0
+                "value": 5430.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2014,
-                "EIC": "2kids",
-                "value": 5430.0
+                "value": 5430.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2014,
-                "EIC": "3+kids",
-                "value": 5430.0
+                "value": 5430.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2015,
-                "EIC": "0kids",
-                "value": 5500.0
+                "value": 5500.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2015,
-                "EIC": "1kid",
-                "value": 5500.0
+                "value": 5500.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2015,
-                "EIC": "2kids",
-                "value": 5500.0
+                "value": 5500.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2015,
-                "EIC": "3+kids",
-                "value": 5500.0
+                "value": 5500.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2016,
-                "EIC": "0kids",
-                "value": 5550.0
+                "value": 5550.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2016,
-                "EIC": "1kid",
-                "value": 5550.0
+                "value": 5550.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2016,
-                "EIC": "2kids",
-                "value": 5550.0
+                "value": 5550.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2016,
-                "EIC": "3+kids",
-                "value": 5550.0
+                "value": 5550.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2017,
-                "EIC": "0kids",
-                "value": 5590.0
+                "value": 5590.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2017,
-                "EIC": "1kid",
-                "value": 5590.0
+                "value": 5590.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2017,
-                "EIC": "2kids",
-                "value": 5590.0
+                "value": 5590.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2017,
-                "EIC": "3+kids",
-                "value": 5590.0
+                "value": 5590.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2018,
-                "EIC": "0kids",
-                "value": 5680.0
+                "value": 5680.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2018,
-                "EIC": "1kid",
-                "value": 5690.0
+                "value": 5690.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2018,
-                "EIC": "2kids",
-                "value": 5690.0
+                "value": 5690.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2018,
-                "EIC": "3+kids",
-                "value": 5690.0
+                "value": 5690.0,
+                "EIC": "3+kids"
             },
             {
                 "year": 2019,
-                "EIC": "0kids",
-                "value": 5800.0
+                "value": 5800.0,
+                "EIC": "0kids"
             },
             {
                 "year": 2019,
-                "EIC": "1kid",
-                "value": 5790.0
+                "value": 5790.0,
+                "EIC": "1kid"
             },
             {
                 "year": 2019,
-                "EIC": "2kids",
-                "value": 5790.0
+                "value": 5790.0,
+                "EIC": "2kids"
             },
             {
                 "year": 2019,
-                "EIC": "3+kids",
-                "value": 5790.0
+                "value": 5790.0,
+                "EIC": "3+kids"
             }
         ],
         "validators": {
