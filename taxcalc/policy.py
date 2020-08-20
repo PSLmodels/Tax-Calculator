@@ -73,7 +73,8 @@ class Policy(Parameters):
         'CTC_c_under5_bonus': 'was renamed CTC_c_under6_bonus.',
         'ACTC_rt_bonus_under5family':
         'was renamed ACTC_rt_bonus_under6family.',
-        'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.'
+        'CTC_new_c_under5_bonus': 'was renamed CTC_new_c_under6_bonus.',
+        'UBI_21': 'was split into UBI_2164 and UBI_65.'
     }
     # (2) specify which Policy parameters have been redefined recently
     REDEFINED_PARAMS = {}

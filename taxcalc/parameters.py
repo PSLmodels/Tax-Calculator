@@ -737,4 +737,4 @@ class Parameters(pt.Parameters):
                 attr[1:], year=list(range(self.start_year, self.end_year + 1))
             )
         else:
-            raise AttributeError(f"{attr} not definied.")
+            raise AttributeError(f"{attr} not defined.")

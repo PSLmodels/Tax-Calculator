@@ -623,7 +623,8 @@ def test_distribution_tables(cps_subsample):
     reform = {
         'UBI_u18': {2014: 1000},
         'UBI_1820': {2014: 1000},
-        'UBI_21': {2014: 1000}
+        'UBI_2164': {2014: 1000},
+        'UBI_65': {2014: 1000}
     }
     pol.implement_reform(reform)
     assert not pol.parameter_errors
@@ -865,7 +866,7 @@ def test_calc_all_benefits_amounts(cps_subsample):
     Testing how benefits are handled in the calc_all method
     '''
     # set a reform with a positive UBI amount
-    ubi_ref = {'UBI_21': {2020: 1000}}
+    ubi_ref = {'UBI_2164': {2020: 1000}}
 
     # create baseline calculator
     pol = Policy()
