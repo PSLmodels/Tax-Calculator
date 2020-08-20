@@ -23,15 +23,13 @@ jobs:
 
       - name: Build # Build Jupyter Book
         shell: bash -l {0}
-        # run: |
-        #   TODO: what steps need to be filled in here?
-        #   pip install jupyter-book
-        #   conda install -c pslmodels behresp
-        #   pip install -e .
-        #   cd docs
-        #   jb build .
+        run: |
+          pip install jupyter-book
+          conda install -c pslmodels behresp
+          pip install -e .
+          python docs/guide/make/make_uguide.py
 
-        - name: Deploy
+      - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
