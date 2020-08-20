@@ -527,9 +527,9 @@
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },
-    "nu05": {
+    "nu06": {
       "type": "int",
-      "desc": "Number of dependents under 5 years old",
+      "desc": "Number of dependents under 6 years old",
       "form": {"2013-2016": "imputed from CPS data"},
       "availability": "taxdata_puf, taxdata_cps"
     },

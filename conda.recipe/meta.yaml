@@ -10,18 +10,20 @@ requirements:
   build:
     - python
     - "numpy>=1.14"
-    - "pandas>=0.23"
+    - "pandas>=1.1.0"
     - "bokeh>=1.4.0"
     - requests
     - numba
+    - paramtools
 
   run:
     - python
     - "numpy>=1.14"
-    - "pandas>=0.23"
+    - "pandas>=1.1.0"
     - "bokeh>=1.4.0"
     - requests
     - numba
+    - paramtools
 
 test:
   commands:
