@@ -1,7 +1,7 @@
 name: Build and Deploy Jupyter Book
 on:
   push:
-    branches:    
+    branches:
       - master
 jobs:
   build-and-deploy:
@@ -29,6 +29,8 @@ jobs:
           pip install -e .
           cd docs
           jb build .
+          cd ..
+          python docs/guide/make/make_uguide.py
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
