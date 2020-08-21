@@ -359,7 +359,8 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
 
 
 @iterate_jit(nopython=True)
-def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
+def UBI(nu18, n1820, n21, age_head, age_spouse, elderly_dependents,
+        UBI_u18, UBI_1820, UBI_2164, UBI_65, UBI_ecrt,
         ubi, taxable_ubi, nontaxable_ubi):
     """
     Calculates total and taxable Universal Basic Income (UBI) amount.
@@ -372,11 +373,19 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
     n21: Number of people in the tax unit age 21+
 
+    age_head: Age of filer head.
+
+    age_spouse: Age of spouse.
+
+    elderly_dependents: Number of elderly dependents.
+
     UBI_u18: UBI benefit for those under 18
 
     UBI_1820: UBI benefit for those between 18 to 20
 
-    UBI_21: UBI benefit for those 21 or more
+    UBI_2164: UBI benefit for those between 21 to 64
+
+    UBI_65: UBI benefit for those aged 65 or older
 
     UBI_ecrt: Fraction of UBI benefits that are not included in AGI
 
@@ -388,7 +397,12 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
     nontaxable_ubi: amount of UBI that is nontaxable
     """
-    ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n21 * UBI_21
+    # Calculate number of people age 65+ as 1 if head is 65+, plus 1 if spouse
+    # is 65+, plus number of elderly dependents.
+    n65 = (age_head >= 65) + (age_spouse >= 65) + elderly_dependents
+    n2164 = n21 - n65
+    assert n2164 >= 0
+    ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n2164 * UBI_2164 + n65 * UBI_65
     taxable_ubi = ubi * (1. - UBI_ecrt)
     nontaxable_ubi = ubi - taxable_ubi
     return ubi, taxable_ubi, nontaxable_ubi
@@ -1298,7 +1312,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       e07240, CR_RetirementSavings_hc,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
-                      CTC_c_under5_bonus, nu05,
+                      CTC_c_under6_bonus, nu06,
                       c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
@@ -1306,7 +1320,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     nonrefundable tax credits.
     """
     # Worksheet Part 1
-    line1 = CTC_c * n24 + CTC_c_under5_bonus * nu05
+    line1 = CTC_c * n24 + CTC_c_under6_bonus * nu06
     line2 = ODC_c * max(0, XTOT - n24 - num)
     line3 = line1 + line2
     modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
@@ -1627,7 +1641,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
 @iterate_jit(nopython=True)
 def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
-                  ACTC_rt, nu05, ACTC_rt_bonus_under5family, ACTC_ChildNum,
+                  ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
     """
@@ -1642,10 +1656,10 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
         line5 = min(line3, line4)
         line7 = max(0., earned - ACTC_Income_thd)
         # accommodate ACTC rate bonus for families with children under 5
-        if nu05 == 0:
+        if nu06 == 0:
             ACTC_rate = ACTC_rt
         else:
-            ACTC_rate = ACTC_rt + ACTC_rt_bonus_under5family
+            ACTC_rate = ACTC_rt + ACTC_rt_bonus_under6family
         line8 = ACTC_rate * line7
         if n24 < ACTC_ChildNum:
             if line8 > 0.:
@@ -1686,18 +1700,18 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 
 @iterate_jit(nopython=True)
-def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under5_bonus,
+def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             CTC_new_refund_limited_all_payroll, payrolltax,
-            n24, nu05, c00100, MARS, ptax_oasdi, c09200,
+            n24, nu06, c00100, MARS, ptax_oasdi, c09200,
             ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
     """
     if n24 > 0:
         posagi = max(c00100, 0.)
-        ctc_new = CTC_new_c * n24 + CTC_new_c_under5_bonus * nu05
+        ctc_new = CTC_new_c * n24 + CTC_new_c_under6_bonus * nu06
         if not CTC_new_for_all:
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
         ymax = CTC_new_ps[MARS - 1]

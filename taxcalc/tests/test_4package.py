@@ -37,7 +37,9 @@ def test_for_consistency(tests_path):
         'pycodestyle',
         'pylint',
         'coverage',
-        "paramtools>=0.14.0"
+        "paramtools>=0.14.2",
+        "pip",
+        "jupyter-book",
     ])
     # read conda.recipe/meta.yaml requirements
     meta_file = os.path.join(tests_path, '..', '..',
@@ -53,7 +55,15 @@ def test_for_consistency(tests_path):
                              'environment.yml')
     with open(envr_file, 'r') as stream:
         envr = yaml.safe_load(stream)
-    env = set(envr['dependencies'])
+
+    env = []
+    for dep in envr["dependencies"]:
+        if isinstance(dep, dict):
+            assert list(dep.keys()) == ["pip"]
+            env += dep["pip"]
+        else:
+            env.append(dep)
+    env = set(env)
     # confirm that extras in env (relative to run) equal the dev_pkgs set
     extras = env - run
     assert extras == dev_pkgs
