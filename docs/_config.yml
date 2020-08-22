@@ -5,7 +5,7 @@ logo: PSL.svg
 exclude_patterns: [guide/make, guide/templates, recipes/md_src, '**/README.md']
 repository:
   url: https://github.com/PSLmodels/Tax-Calculator
-  book_path: docs
+  path_to_book: docs
   branch: master
 html:
   use_edit_page_button: true
