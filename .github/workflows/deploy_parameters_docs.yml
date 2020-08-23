@@ -1,8 +1,8 @@
 name: Build and Deploy Jupyter Book
 on:
-  push:
-    branches:    
-      - master
+  release:
+    types: [published]
+
 jobs:
   build-and-deploy:
     if: github.repository == 'PSLmodels/Tax-Calculator'
@@ -27,8 +27,7 @@ jobs:
           pip install jupyter-book
           conda install -c pslmodels behresp
           pip install -e .
-          cd docs
-          jb build .
+          python docs/guide/make/make_uguide.py
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
