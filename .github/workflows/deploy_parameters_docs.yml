@@ -28,6 +28,8 @@ jobs:
           conda install -c pslmodels behresp
           pip install -e .
           python docs/guide/make/make_uguide.py
+          cd docs
+          jb build .
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@releases/v3
