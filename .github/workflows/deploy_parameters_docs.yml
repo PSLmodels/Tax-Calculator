@@ -1,8 +1,11 @@
-name: Test that Jupyter Book builds
-on: [push, pull_request]
+name: Build and Deploy Jupyter Book with Parameter Documentation
+on:
+  release:
+    types: [published]
 
 jobs:
   build-and-deploy:
+    if: github.repository == 'PSLmodels/Tax-Calculator'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,3 +30,10 @@ jobs:
           python docs/guide/make/make_uguide.py
           cd docs
           jb build .
+
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs/_build/html # The folder the action should deploy.
