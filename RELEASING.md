@@ -4,7 +4,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 ```
 ====> CREATE NEW TAXCALC PACKAGES <====
 
---> on branch X-Y-Z, edit RELEASES.md and CHANGES.md to finalize X.Y.Z info
+--> on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
 
 --> specify release X.Y.Z in setup.py and taxcalc/__init__.py
 
