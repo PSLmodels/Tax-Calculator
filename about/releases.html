@@ -37,7 +37,7 @@
     <script async="async" src="../_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Change history" href="changes.html" />
+    <link rel="next" title="Upgrading to Tax-Calculator 2.0" href="upgrading.html" />
     <link rel="prev" title="Roadmap" href="roadmap.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -117,11 +117,6 @@
  <li class="toctree-l1 current active">
   <a class="current reference internal" href="#">
    Release history
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="changes.html">
-   Change history
   </a>
  </li>
  <li class="toctree-l1">
@@ -257,6 +252,11 @@
         </div>
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-3-0-0">
+   2020-08-22 Release 3.0.0
+  </a>
+ </li>
  <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-2-9-0">
    2020-03-18 Release 2.9.0
@@ -666,6 +666,34 @@
 <h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this headline">¶</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<div class="section" id="release-3-0-0">
+<h2>2020-08-22 Release 3.0.0<a class="headerlink" href="#release-3-0-0" title="Permalink to this headline">¶</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2474">#2474</a>)</p>
+<p><strong>This is a major release with changes that make Tax-Calculator incompatible with earlier releases.</strong></p>
+<p><strong>API Changes</strong></p>
+<ul class="simple">
+<li><p>Adopt the <a class="reference external" href="https://github.com/PSLmodels/ParamTools">ParamTools library</a> for parameter processing and validation, allowing easier integration with other projects that rely on ParamTools, less code for the Tax-Calculator project to maintain, and other benefits for Tax-Calculator users. Backwards compatibiltiy was maintained except for a minor API change: The parameter values that are accessible as instance attributes (e.g. pol.II_em) are not casted down into a lower dimension. So, if the year is 2017, then pol.II_em returns [4050.0] instead of 4050.0. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2401">#2401</a> by Hank Doupe]</p></li>
+<li><p>CPI_offset was replaced by parameter_indexing_CPI_offset, which has slightly different behavior: When parameter_indexing_CPI_offset is specified in a reform, that value is no longer added to the existing parameter_indexing_CPI_offset as was the case with CPI_offset. Rather, the specified value becomes the offset from the baseline unchained CPI. This new behavior is consistent with what is expected from all other Tax-Calculator parameters. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2413">#2413</a> by Peter Metz]</p></li>
+<li><p>Replace the variable reporting the number of dependents under 5 years old (nu05) with the number under 6 years old (nu06) to support recent policy proposals. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2443">#2443</a> by Peter Metz, with primary work in <a class="reference external" href="https://github.com/PSLmodels/taxdata/pull/329">TaxData PR #329</a> by Anderson Frailey]</p></li>
+<li><p>Remove the changes.md file to consolidate version reporting in this file, releases.md. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2474">#2474</a> by Matt Jensen]</p></li>
+</ul>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Enable Windows users to convert TAXSIM input files to the interface required by Tax-Calculator’s tc Command Line Interface by replacing validation script taxcalc.sh with taxcalc.py [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2408">#2408</a> by Peter Metz based on feedback from Ernie Tedeschi]</p></li>
+<li><p>Add automated testing for Python 3.8 to ensure a bug-free experience for users on the latest version of Python. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2414">#2414</a> by Hank Doupe]</p></li>
+<li><p>Include UBI amounts, when introduced by user reforms, to variables that report total benefits. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2418">#2418</a> by Jason DeBacker]</p></li>
+<li><p>Improve <a class="reference external" href="https://pslmodels.github.io/Tax-Calculator/">documentation site</a> with <a class="reference external" href="https://jupyterbook.org/intro.html">Jupyter Book</a> [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2420">#2420</a> by Max Ghenis with auxiliary PRs by Jason DeBacker]</p></li>
+<li><p>Add documentation for the Tax-Calculator API to the docs site. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2441">#2441</a> by Jason DeBacker]</p></li>
+<li><p>Add documentation for Tax-Calculator parameters to the docs site. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2450">#2450</a> by Hank Doupe]</p></li>
+<li><p>Port from SAS to Python the creation of the CPS tax unit file that is packaged with Tax-Calculator. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2444">#2444</a> by Peter Metz, with primary work in <a class="reference external" href="https://github.com/PSLmodels/taxdata/pull/314">TaxData PR #314</a> by Anderson Frailey]</p></li>
+<li><p>Update the Tax-Calculator baseline  or the CBO’s July 2 report, “An Update to the Economic Outlook: 2020-2030.” [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2462">#2462</a> by Peter Metz, with primary work in <a class="reference external" href="https://github.com/PSLmodels/taxdata/pull/314">TaxData PR #332</a> by Jacob Chuslo]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Adjustments to the CPI_offset set under current law previously  overwrite the scheduled expiration of TCJA tax cut for parameters that are inflation indexed. The adoption of the new parameter_indexing_CPI_offset fixes this bug. We are unware of any users encountering this issue. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2413">#2413</a> by Peter Metz]</p></li>
+</ul>
+</div>
 <div class="section" id="release-2-9-0">
 <h2>2020-03-18 Release 2.9.0<a class="headerlink" href="#release-2-9-0" title="Permalink to this headline">¶</a></h2>
 <p>(last merged pull request is
@@ -2961,7 +2989,7 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
     <div class='prev-next-bottom'>
         
     <a class='left-prev' id="prev-link" href="roadmap.html" title="previous page">Roadmap</a>
-    <a class='right-next' id="next-link" href="changes.html" title="next page">Change history</a>
+    <a class='right-next' id="next-link" href="upgrading.html" title="next page">Upgrading to Tax-Calculator 2.0</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">
