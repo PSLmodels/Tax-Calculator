@@ -121,3 +121,58 @@ span.pasted-inline img {
 tbody span.pasted-inline img {
   max-height: none;
 }
+
+/* Font colors for translated ANSI escape sequences
+Color values are adapted from share/jupyter/nbconvert/templates/classic/static/style.css
+*/
+div.highlight .-Color-Bold {
+  font-weight: bold;
+}
+div.highlight .-Color[class*=-Black] {
+  color :#3E424D
+}
+div.highlight .-Color[class*=-Red] {
+  color: #E75C58
+}
+div.highlight .-Color[class*=-Green] {
+  color: #00A250
+}
+div.highlight .-Color[class*=-Yellow] {
+  color: yellow
+}
+div.highlight .-Color[class*=-Blue] {
+  color: #208FFB
+}
+div.highlight .-Color[class*=-Magenta] {
+  color: #D160C4
+}
+div.highlight .-Color[class*=-Cyan] {
+  color: #60C6C8
+}
+div.highlight .-Color[class*=-White] {
+  color: #C5C1B4
+}
+div.highlight .-Color[class*=-BGBlack] {
+  background-color: #3E424D
+}
+div.highlight .-Color[class*=-BGRed] {
+  background-color: #E75C58
+}
+div.highlight .-Color[class*=-BGGreen] {
+  background-color: #00A250
+}
+div.highlight .-Color[class*=-BGYellow] {
+  background-color: yellow
+}
+div.highlight .-Color[class*=-BGBlue] {
+  background-color: #208FFB
+}
+div.highlight .-Color[class*=-BGMagenta] {
+  background-color: #D160C4
+}
+div.highlight .-Color[class*=-BGCyan] {
+  background-color: #60C6C8
+}
+div.highlight .-Color[class*=-BGWhite] {
+  background-color: #C5C1B4
+}

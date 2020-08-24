@@ -24,7 +24,6 @@
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/mystnb.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -315,7 +314,7 @@ This recipe shows how to estimate the reform response in charitable giving when 
 It employs the groupby technique used in the Creating a Custom Table recipe, so you might want to read that recipe first.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
 <span class="kn">import</span> <span class="nn">behresp</span>
 
 <span class="c1"># use publicly-available CPS input file</span>
@@ -398,8 +397,7 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>
-Response in Charitable Giving by Earnings Group
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Response in Charitable Giving by Earnings Group
 Earnings Group    	 Num(#M)	Resp($B)	 Resp(%)
 [-9e+99, 50000)   	 153.673	   0.606	    0.37
 [50000, 9e+99)    	  51.771	   2.720	    1.86

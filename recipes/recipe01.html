@@ -24,7 +24,6 @@
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
-    <script src="../_static/mystnb.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -316,7 +315,7 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 (instead of reform files on your computer’s disk).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">taxcalc</span> <span class="k">as</span> <span class="nn">tc</span>
 
 <span class="c1"># read an &quot;old&quot; reform file</span>
@@ -378,9 +377,8 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1490.622
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1490.622
 2018_REFORM2_iitax_rev($B)= 1318.628
-
 </pre></div>
 </div>
 </div>
@@ -388,7 +386,7 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <p>Print reform2-vs-reform1 difference table</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Extract of </span><span class="si">{}</span><span class="s1"> income-tax difference table by expanded-income decile&#39;</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Extract of </span><span class="si">{}</span><span class="s1"> income-tax difference table by expanded-income decile&#39;</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">title</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(taxfall is count of funits with cut in income tax in reform 2 vs 1)&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(taxrise is count of funits with rise in income tax in reform 2 vs 1)&#39;</span><span class="p">)</span>
@@ -397,26 +395,26 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Extract of 2018 income-tax difference table by expanded-income decile
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Extract of 2018 income-tax difference table by expanded-income decile
 (taxfall is count of funits with cut in income tax in reform 2 vs 1)
 (taxrise is count of funits with rise in income tax in reform 2 vs 1)
         funits(#m)  taxfall(#m)  taxrise(#m)  agg_diff($b)  mean_diff($)  aftertax_income_diff(%)
-0-10n     0.106585     0.000000     0.000000      0.000000      0.000000                 0.000000
-0-10z     8.200964     0.000000     0.000000      0.000000      0.000000                      NaN
-0-10p    11.685544     0.145729     0.017773     -0.010031     -0.858403                 0.026886
-10-20    19.993379     6.131286     2.879208     -0.737282    -36.876308                 0.307117
-20-30    19.992590     9.819025     2.904122     -1.767789    -88.422187                 0.388099
-30-40    19.995314     8.928170     2.495154     -3.420389   -171.059528                 0.551945
-40-50    19.993436    10.540007     2.490796     -5.754637   -287.826313                 0.746778
-50-60    19.994152    12.663991     2.070555     -8.569910   -428.620835                 0.894647
-60-70    19.992890    13.910415     1.784819    -11.604895   -580.451123                 0.964668
-70-80    19.994268    15.376689     1.552446    -16.537168   -827.095476                 1.080738
-80-90    19.993895    17.040071     1.620336    -26.070610  -1303.928552                 1.277742
-90-100   19.993808    18.220631     1.530360    -97.520960  -4877.557973                 2.180188
-ALL     199.936825   112.776014    19.345569   -171.993672   -860.240085                 1.396031
-90-95     9.996300     9.017015     0.757695    -23.229363  -2323.796032                 1.660532
-95-99     7.997983     7.390026     0.586730    -41.609762  -5202.531695                 2.400130
-Top 1%    1.999525     1.813590     0.185935    -32.681835 -16344.800972                 2.438041
+0-10n         0.05         0.00         0.00         0.006         131.3                      0.0
+0-10z         0.91         0.00         0.00         0.000           0.0                      NaN
+0-10p        15.33         4.86         1.69        -0.655         -42.7                      0.4
+10-20        16.29         9.07         1.87        -1.894        -116.3                      0.5
+20-30        16.29         8.56         1.62        -3.339        -205.0                      0.7
+30-40        16.29         9.70         1.85        -5.138        -315.5                      0.8
+40-50        16.29        10.84         1.75        -6.737        -413.6                      0.9
+50-60        16.29        10.86         2.05        -8.111        -498.1                      0.9
+60-70        16.29        11.94         1.98       -10.640        -653.4                      0.9
+70-80        16.29        13.28         1.75       -15.309        -940.0                      1.1
+80-90        16.29        13.55         2.24       -22.922       -1407.5                      1.2
+90-100       16.29        14.50         1.68       -75.581       -4640.4                      1.9
+ALL         162.86       107.16        18.49      -150.319        -923.0                      1.3
+90-95         8.14         7.13         0.93       -18.071       -2218.8                      1.4
+95-99         6.51         5.95         0.54       -35.267       -5413.7                      2.3
+Top 1%        1.63         1.42         0.20       -22.243      -13655.5                      2.0
 </pre></div>
 </div>
 </div>
