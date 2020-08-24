@@ -23,6 +23,7 @@ for a complete commit history.
 - Include UBI amounts, when introduced by user reforms, to variables that report total benefits. [[#2418](https://github.com/PSLmodels/Tax-Calculator/pull/2418) by Jason DeBacker]
 - Improve [documentation site](https://pslmodels.github.io/Tax-Calculator/) with [Jupyter Book](https://jupyterbook.org/intro.html) [[#2420](https://github.com/PSLmodels/Tax-Calculator/pull/2420) by Max Ghenis with auxiliary PRs by Jason DeBacker]
 - Add documentation for the Tax-Calculator API to the docs site. [[#2441](https://github.com/PSLmodels/Tax-Calculator/pull/2441) by Jason DeBacker]
+- Add documentation for Tax-Calculator parameters to the docs site. [[#2450](https://github.com/PSLmodels/Tax-Calculator/pull/2450) by Hank Doupe]
 - Port from SAS to Python the creation of the CPS tax unit file that is packaged with Tax-Calculator. [[#2444](https://github.com/PSLmodels/Tax-Calculator/pull/2444) by Peter Metz, with primary work in [TaxData PR #314](https://github.com/PSLmodels/taxdata/pull/314) by Anderson Frailey]
 - Update the Tax-Calculator baseline  or the CBO's July 2 report, "An Update to the Economic Outlook: 2020-2030." [[#2462](https://github.com/PSLmodels/Tax-Calculator/pull/2462) by Peter Metz, with primary work in [TaxData PR #332](https://github.com/PSLmodels/taxdata/pull/314) by Jacob Chuslo]
 
