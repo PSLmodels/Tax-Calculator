@@ -1,4 +1,4 @@
-name: Build and Deploy Jupyter Book
+name: Build and Deploy Jupyter Book with Parameter Documentation
 on:
   release:
     types: [published]
