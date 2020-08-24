@@ -12,10 +12,17 @@ html:
   use_repository_button: true
   use_issues_button: true
 
-  #######################################################################################
+######################################################
 # Advanced and power-user settings
 sphinx:
   extra_extensions          : ['sphinx.ext.autodoc', 'sphinx.ext.mathjax',
                                'sphinx.ext.viewcode', 'sphinx.ext.napoleon',
                                'alabaster']   # A list of extra extensions to load by Sphinx.
   config                    :   # key-value pairs to directly over-ride the Sphinx configuration
+
+#####################################################
+# LaTeX information
+latex:
+  latex_engine           : 'xelatex'
+  latex_documents:
+    targetname           : book.tex

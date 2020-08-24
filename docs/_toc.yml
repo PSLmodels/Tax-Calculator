@@ -54,4 +54,4 @@
         - file: api/utilsprvt
 - part: Citations of Tax-Calculator
   sections: 
-    - file: citations.md
+    - file: citations
