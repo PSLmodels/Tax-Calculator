@@ -8,10 +8,15 @@ export BRANCH_NAME=citations-$DATE
 git checkout -b $BRANCH_NAME
 
 curl -H 'Zotero-API-Version: 2' -H 'Zotero-API-Key: MiQBsz0ilWhpsmQJyqeO2TzU' 'https://api.zotero.org/groups/2524233/items?format=bibtex' --output citations.bib
+cd citation_pull
+python generate_cite_list.py
+
+# return to home directory
+cd ..
 
 git status
 git add -A
-git commit -m "Update citations for date $DATE"
+git commit -m "Update citations and hidden_cite.md for date $DATE"
 git push origin catalog-$DATE
 git checkout master
 git pull --no-edit origin $BRANCH_NAME
