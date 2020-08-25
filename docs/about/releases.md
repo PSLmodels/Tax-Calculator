@@ -4,6 +4,32 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2020-08-24 Release 3.0.0
+------------------------
+(last merged pull request is
+[#2474](https://github.com/PSLmodels/Tax-Calculator/pull/2474))
+
+**This is a major release with changes that make Tax-Calculator incompatible with earlier releases.**
+
+**API Changes**
+- Adopt the [ParamTools library](https://github.com/PSLmodels/ParamTools) for parameter processing and validation, allowing easier integration with other projects that rely on ParamTools, less code for the Tax-Calculator project to maintain, and other benefits for Tax-Calculator users. Backwards compatibiltiy was maintained except for a minor API change: The parameter values that are accessible as instance attributes (e.g. pol.II_em) are not casted down into a lower dimension. So, if the year is 2017, then pol.II_em returns [4050.0] instead of 4050.0. [[#2401](https://github.com/PSLmodels/Tax-Calculator/pull/2401) by Hank Doupe]
+- CPI_offset was replaced by parameter_indexing_CPI_offset, which has slightly different behavior: When parameter_indexing_CPI_offset is specified in a reform, that value is no longer added to the existing parameter_indexing_CPI_offset as was the case with CPI_offset. Rather, the specified value becomes the offset from the baseline unchained CPI. This new behavior is consistent with what is expected from all other Tax-Calculator parameters. [[#2413](https://github.com/PSLmodels/Tax-Calculator/pull/2413) by Peter Metz]
+- Replace the variable reporting the number of dependents under 5 years old (nu05) with the number under 6 years old (nu06) to support recent policy proposals. [[#2443](https://github.com/PSLmodels/Tax-Calculator/pull/2443) by Peter Metz, with primary work in [TaxData PR #329](https://github.com/PSLmodels/taxdata/pull/329) by Anderson Frailey]
+- Remove the changes.md file to consolidate version reporting in this file, releases.md. [[#2474](https://github.com/PSLmodels/Tax-Calculator/pull/2474) by Matt Jensen]
+
+**New Features**
+- Enable Windows users to convert TAXSIM input files to the interface required by Tax-Calculator's tc Command Line Interface by replacing validation script taxcalc.sh with taxcalc.py [[#2408](https://github.com/PSLmodels/Tax-Calculator/pull/2408) by Peter Metz based on feedback from Ernie Tedeschi]
+- Add automated testing for Python 3.8 to ensure a bug-free experience for users on the latest version of Python. [[#2414](https://github.com/PSLmodels/Tax-Calculator/pull/2414) by Hank Doupe]
+- Include UBI amounts, when introduced by user reforms, to variables that report total benefits. [[#2418](https://github.com/PSLmodels/Tax-Calculator/pull/2418) by Jason DeBacker]
+- Improve [documentation site](https://pslmodels.github.io/Tax-Calculator/) with [Jupyter Book](https://jupyterbook.org/intro.html) [[#2420](https://github.com/PSLmodels/Tax-Calculator/pull/2420) by Max Ghenis with auxiliary PRs by Jason DeBacker]
+- Add documentation for the Tax-Calculator API to the docs site. [[#2441](https://github.com/PSLmodels/Tax-Calculator/pull/2441) by Jason DeBacker]
+- Add documentation for Tax-Calculator parameters to the docs site. [[#2450](https://github.com/PSLmodels/Tax-Calculator/pull/2450) by Hank Doupe]
+- Port from SAS to Python the creation of the CPS tax unit file that is packaged with Tax-Calculator. [[#2444](https://github.com/PSLmodels/Tax-Calculator/pull/2444) by Peter Metz, with primary work in [TaxData PR #314](https://github.com/PSLmodels/taxdata/pull/314) by Anderson Frailey]
+- Update the Tax-Calculator baseline  or the CBO's July 2 report, "An Update to the Economic Outlook: 2020-2030." [[#2462](https://github.com/PSLmodels/Tax-Calculator/pull/2462) by Peter Metz, with primary work in [TaxData PR #332](https://github.com/PSLmodels/taxdata/pull/314) by Jacob Chuslo]
+
+**Bug Fixes**
+- Adjustments to the CPI_offset set under current law previously  overwrite the scheduled expiration of TCJA tax cut for parameters that are inflation indexed. The adoption of the new parameter_indexing_CPI_offset fixes this bug. We are unware of any users encountering this issue. [[#2413](https://github.com/PSLmodels/Tax-Calculator/pull/2413) by Peter Metz]
+
 2020-03-18 Release 2.9.0
 ------------------------
 (last merged pull request is
