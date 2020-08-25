@@ -1345,7 +1345,7 @@
             },
             {
                 "year": 2026,
-                "value": 4880.0
+                "value": 4691.0
             }
         ],
         "validators": {
@@ -1547,27 +1547,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 316457.0
+                "value": 302907.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 379748.0
+                "value": 363489.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 189874.0
+                "value": 181744.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 348102.0
+                "value": 333198.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 379748.0
+                "value": 363489.0
             }
         ],
         "validators": {
@@ -1821,27 +1821,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 7651.0
+                "value": 7355.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 15303.0
+                "value": 14711.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 7651.0
+                "value": 7355.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 11266.0
+                "value": 10831.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 15303.0
+                "value": 14711.0
             }
         ],
         "validators": {
@@ -5375,27 +5375,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 315093.0
+                "value": 302907.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 378112.0
+                "value": 363489.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 189056.0
+                "value": 181744.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 346603.0
+                "value": 333198.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 378112.0
+                "value": 363489.0
             }
         ],
         "validators": {
@@ -5777,38 +5777,38 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
                 "idedtype": "med",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "sltx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "retx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "cas",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "misc",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "int",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "char",
+                "year": 2013,
                 "value": true
             }
         ],
@@ -5860,38 +5860,38 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
                 "idedtype": "med",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "sltx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "retx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "cas",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "misc",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "int",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "char",
+                "year": 2013,
                 "value": true
             }
         ],
@@ -6140,38 +6140,38 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
                 "idedtype": "med",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "sltx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "retx",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "cas",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "misc",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "int",
+                "year": 2013,
                 "value": true
             },
             {
-                "year": 2013,
                 "idedtype": "char",
+                "year": 2013,
                 "value": true
             }
         ],
@@ -7920,27 +7920,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 22472.0
+                "value": 21603.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 16086.0
+                "value": 15464.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 22472.0
+                "value": 21603.0
             }
         ],
         "validators": {
@@ -8196,27 +8196,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 91455.0
+                "value": 87918.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 61211.0
+                "value": 58844.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 91455.0
+                "value": 87918.0
             }
         ],
         "validators": {
@@ -8472,27 +8472,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 110735.0
+                "value": 106452.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 184477.0
+                "value": 177343.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 92239.0
+                "value": 88671.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 158089.0
+                "value": 151975.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 184477.0
+                "value": 177343.0
             }
         ],
         "validators": {
@@ -8748,27 +8748,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 230928.0
+                "value": 221997.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 281174.0
+                "value": 270300.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 140587.0
+                "value": 135150.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 256051.0
+                "value": 246148.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 281174.0
+                "value": 270300.0
             }
         ],
         "validators": {
@@ -9024,27 +9024,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 251050.0
+                "value": 241341.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 502101.0
+                "value": 482682.0
             }
         ],
         "validators": {
@@ -9300,27 +9300,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 504149.0
+                "value": 484651.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 567168.0
+                "value": 545233.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 283584.0
+                "value": 272616.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 535659.0
+                "value": 514942.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 567168.0
+                "value": 545233.0
             }
         ],
         "validators": {
@@ -9878,27 +9878,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 22472.0
+                "value": 21603.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 11236.0
+                "value": 10802.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 16086.0
+                "value": 15464.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 22472.0
+                "value": 21603.0
             }
         ],
         "validators": {
@@ -10154,27 +10154,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 91455.0
+                "value": 87918.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 45728.0
+                "value": 43959.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 61211.0
+                "value": 58844.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 91455.0
+                "value": 87918.0
             }
         ],
         "validators": {
@@ -10430,27 +10430,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 110735.0
+                "value": 106452.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 184477.0
+                "value": 177343.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 92239.0
+                "value": 88671.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 158089.0
+                "value": 151975.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 184477.0
+                "value": 177343.0
             }
         ],
         "validators": {
@@ -10706,27 +10706,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 230928.0
+                "value": 221997.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 281174.0
+                "value": 270300.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 140587.0
+                "value": 135150.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 256051.0
+                "value": 246148.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 281174.0
+                "value": 270300.0
             }
         ],
         "validators": {
@@ -10982,27 +10982,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 251050.0
+                "value": 241341.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 502101.0
+                "value": 482682.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 502101.0
+                "value": 482682.0
             }
         ],
         "validators": {
@@ -11258,27 +11258,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 504149.0
+                "value": 484651.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 567168.0
+                "value": 545233.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 283584.0
+                "value": 272616.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 535659.0
+                "value": 514942.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 567168.0
+                "value": 545233.0
             }
         ],
         "validators": {
@@ -12546,27 +12546,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 65429.0
+                "value": 62898.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 101818.0
+                "value": 97880.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 50909.0
+                "value": 48940.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 65429.0
+                "value": 62898.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 101818.0
+                "value": 97880.0
             }
         ],
         "validators": {
@@ -12794,27 +12794,27 @@
             {
                 "year": 2026,
                 "MARS": "single",
-                "value": 145437.0
+                "value": 139812.0
             },
             {
                 "year": 2026,
                 "MARS": "mjoint",
-                "value": 193876.0
+                "value": 186378.0
             },
             {
                 "year": 2026,
                 "MARS": "mseparate",
-                "value": 96938.0
+                "value": 93189.0
             },
             {
                 "year": 2026,
                 "MARS": "headhh",
-                "value": 145437.0
+                "value": 139812.0
             },
             {
                 "year": 2026,
                 "MARS": "widow",
-                "value": 193876.0
+                "value": 186378.0
             }
         ],
         "validators": {
@@ -13046,7 +13046,7 @@
             },
             {
                 "year": 2026,
-                "value": 300574.0
+                "value": 288949.0
             }
         ],
         "validators": {
@@ -13192,9 +13192,9 @@
             "cps": true
         }
     },
-    "CTC_c_under5_bonus": {
-        "title": "Bonus child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.",
+    "CTC_c_under6_bonus": {
+        "title": "Bonus child tax credit maximum for qualifying children under six",
+        "description": "The maximum amount of child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.",
         "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Child Tax Credit",
@@ -14725,9 +14725,9 @@
             "cps": true
         }
     },
-    "ACTC_rt_bonus_under5family": {
-        "title": "Bonus additional child tax credit rate for families with qualifying children under 5",
-        "description": "For families with qualifying children under 5 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.",
+    "ACTC_rt_bonus_under6family": {
+        "title": "Bonus additional child tax credit rate for families with qualifying children under 6",
+        "description": "For families with qualifying children under 6 years old, this bonus rate is added to the fraction of earnings (additional child tax credit rate) used in calculating the ACTC.",
         "notes": "",
         "section_1": "Child/Dependent Credits",
         "section_2": "Additional Child Tax Credit",
@@ -14857,9 +14857,9 @@
             "cps": true
         }
     },
-    "CTC_new_c_under5_bonus": {
-        "title": "Bonus new refundable child tax credit maximum for qualifying children under five",
-        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 5 years old.",
+    "CTC_new_c_under6_bonus": {
+        "title": "Bonus new refundable child tax credit maximum for qualifying children under six",
+        "description": "The maximum amount of the new refundable child tax credit allowed for each child is increased by this amount for qualifying children under 6 years old.",
         "notes": "",
         "section_1": "Refundable Credits",
         "section_2": "New Refundable Child Tax Credit",

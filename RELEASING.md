@@ -4,7 +4,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 ```
 ====> CREATE NEW TAXCALC PACKAGES <====
 
---> on branch X-Y-Z, edit RELEASES.md and CHANGES.md to finalize X.Y.Z info
+--> on branch X-Y-Z, edit RELEASES.md to finalize X.Y.Z info
 
 --> specify release X.Y.Z in setup.py and taxcalc/__init__.py
 
@@ -18,9 +18,7 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> cd taxcalc/validation ; ./tests.sh ; .fix. ; cd ../..
 
---> cd docs ; ./uguide_results.sh ; .fix. ; python make_uguide.py
-
---> specify release X.Y.Z in index.htmx ; python make_tc_pages.py
+--> specify release X.Y.Z in index.md
 
 --> cd .. ; make clean  [to remove taxcalc package]
 
@@ -34,27 +32,20 @@ RELEASING TAX-CALCULATOR CONDA PACKAGES
 
 --> run `pbrelease Tax-Calculator taxcalc X.Y.Z` [to build and upload packages]
 
+====> ADD NEW DEPENDENCY OR UPDATE MINIMUM REQUIRED VERSION <====
+
+--> add or update `run` list in `requirements` section of `conda.recipe/meta.yaml`
+
+--> add or update package in `environment.yaml`
+    (this may have already been done in the PR that added or updated the
+     dependency.)
+
+--> update `dev_pkgs` list in `test_4package.py:test_for_consistency` and make sure
+    the updated test passes
+
 ====> CREATE NEW BEHRESP PACKAGES (if necessary) <====
 
 --> create Behavioral-Responses packages
-
-====> CREATE NEW PYTHON COOKBOOK <====
-
---> run `conda install -c PSLmodels behresp --yes`  [to make behresp available]
-
---> on new branch X-Y-Z-cookbook
-
---> cd docs/cookbook ; python test_recipes.py ; .fix. ; python make_cookbook.py
-
---> merge X-Y-Z-cookbook branch and push to origin
-
---> merge X-Y-Z-cookbook branch into master branch on GitHub
-
---> on local master branch, ./gitsync
-
---> execute `touch docs/index.html`
---> execute `touch docs/uguide.html`
---> execute `touch docs/cookbook.html`
 
 ====> NOTIFY OTHER DEVELOPERS <====
 

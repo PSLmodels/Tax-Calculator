@@ -24,5 +24,6 @@ jobs:
           pip install jupyter-book
           conda install -c pslmodels behresp
           pip install -e .
+          python docs/guide/make/make_uguide.py
           cd docs
           jb build .
