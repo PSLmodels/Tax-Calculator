@@ -17,7 +17,7 @@ cd ..
 git status
 git add -A
 git commit -m "Update citations and hidden_cite.md for date $DATE"
-git push origin catalog-$DATE
+git push --set-upstream origin catalog-$DATE
 git checkout master
 git pull --no-edit origin $BRANCH_NAME
 git push origin master

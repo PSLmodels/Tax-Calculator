@@ -37,8 +37,8 @@ This document details the mechanisms for nightly automated updates to the Tax-Ca
 
 Once the plist file is specified and saved, the user types the following into the command line to load the agent:
 
-`launchctl load ~Library/LaunchAgents/[PLIST FILENAME]`
+`launchctl load ~/Library/LaunchAgents/[PLIST FILENAME]`
 
 To unload the agent, the user types:
 
-`launchctl unload ~Library/LaunchAgents/[PLIST FILENAME]`
+`launchctl unload ~/Library/LaunchAgents/[PLIST FILENAME]`
