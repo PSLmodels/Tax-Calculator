@@ -1,0 +1,469 @@
+
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Citations and use cases of Tax-Calculator &#8212; Tax-Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
+    <link href="_static/css/index.css" rel="stylesheet">
+    <link rel="stylesheet" href="_static/sphinx-book-theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="_static/togglebutton.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/sphinx-book-theme.js"></script>
+    <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
+    <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
+    <script >
+        const thebe_selector = ".thebe"
+        const thebe_selector_input = "pre"
+        const thebe_selector_output = ".output"
+    </script>
+    <script async="async" src="_static/sphinx-thebe.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Tax-Calculator Private Utilities" href="api/utilsprvt.html" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docsearch:language" content="en">
+
+
+
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="80">
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<div class="col-12 col-md-3 bd-sidebar site-navigation show" id="site-navigation">
+    
+        <div class="navbar-brand-box">
+<a class="navbar-brand text-wrap" href="index.html">
+  
+  <img src="_static/PSL.svg" class="logo" alt="logo">
+  
+  
+  <h1 class="site-logo" id="site-title">Tax-Calculator</h1>
+  
+</a>
+</div>
+
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form>
+
+<nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
+  <p class="caption">
+ <span class="caption-text">
+  Usage
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="usage/starting.html">
+   Getting started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="usage/overview.html">
+   Structural overview
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="guide/index.html">
+   User guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="recipes/index.html">
+   Recipes
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  About
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="about/history.html">
+   History
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="about/roadmap.html">
+   Roadmap
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="about/releases.html">
+   Release history
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="about/upgrading.html">
+   Upgrading to Tax-Calculator 2.0
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="about/license.html">
+   License
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Contributing
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing/contributor_guide.html">
+   Contributor guide
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing/pr_workflow.html">
+   Pull request workflow
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing/param_naming.html">
+   Policy parameter naming and placing conventions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="contributing/testing.html">
+   Testing
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  API
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="api/public_api.html">
+   Tax-Calculator Python API
+  </a>
+ </li>
+</ul>
+<p class="caption">
+ <span class="caption-text">
+  Citations of Tax-Calculator
+ </span>
+</p>
+<ul class="current nav sidenav_l1">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Citations and use cases of Tax-Calculator
+  </a>
+ </li>
+</ul>
+
+</nav>
+
+ <!-- To handle the deprecated key -->
+
+</div>
+
+
+          
+
+
+          
+<main class="col py-md-3 pl-md-4 bd-content overflow-auto" role="main">
+    
+    <div class="row topbar fixed-top container-xl">
+    <div class="col-12 col-md-3 bd-topbar-whitespace site-navigation show">
+    </div>
+    <div class="col pl-2 topbar-main">
+        
+        <button id="navbar-toggler" class="navbar-toggler ml-0" type="button" data-toggle="collapse"
+            data-toggle="tooltip" data-placement="bottom" data-target=".site-navigation" aria-controls="navbar-menu"
+            aria-expanded="true" aria-label="Toggle navigation" aria-controls="site-navigation"
+            title="Toggle navigation" data-toggle="tooltip" data-placement="left">
+            <i class="fas fa-bars"></i>
+            <i class="fas fa-arrow-left"></i>
+            <i class="fas fa-arrow-up"></i>
+        </button>
+        
+        <div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn" aria-label="Download this page"><i
+            class="fas fa-download"></i></button>
+
+    
+    <div class="dropdown-buttons">
+        <!-- ipynb file if we had a myst markdown file -->
+        
+        <!-- Download raw file -->
+        <a class="dropdown-buttons" href="_sources/zcitations.md"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
+                data-placement="left">.md</button></a>
+        <!-- Download PDF via print -->
+        <button type="button" id="download-print" class="btn btn-secondary topbarbtn" title="Print to PDF"
+            onClick="window.print()" data-toggle="tooltip" data-placement="left">.pdf</button>
+    </div>
+    
+</div>
+        <!-- Source interaction buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Connect with source repository"><i class="fab fa-github"></i></button>
+    <div class="dropdown-buttons sourcebuttons">
+        <a class="repository-button"
+            href="https://github.com/PSLmodels/Tax-Calculator"><button type="button" class="btn btn-secondary topbarbtn"
+                data-toggle="tooltip" data-placement="left" title="Source repository"><i
+                    class="fab fa-github"></i>repository</button></a>
+        <a class="issues-button"
+            href="https://github.com/PSLmodels/Tax-Calculator/issues/new?title=Issue%20on%20page%20%2Fzcitations.html&body=Your%20issue%20content%20here."><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
+        <a class="edit-button" href="https://github.com/PSLmodels/Tax-Calculator/edit/master/docs/zcitations.md"><button
+                type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
+                title="Edit this page"><i class="fas fa-pencil-alt"></i>suggest edit</button></a>
+    </div>
+</div>
+
+
+        <!-- Full screen (wrap in <a> to have style consistency -->
+        <a class="full-screen-button"><button type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip"
+                data-placement="bottom" onclick="toggleFullScreen()" title="Fullscreen mode"><i
+                    class="fas fa-expand"></i></button></a>
+
+        <!-- Launch buttons -->
+
+    </div>
+
+    <!-- Table of contents -->
+    <div class="d-none d-md-block col-md-2 bd-toc show">
+        <div class="tocsection onthispage pt-5 pb-3">
+            <i class="fas fa-list"></i> Contents
+        </div>
+        <nav id="bd-toc-nav">
+            
+        </nav>
+    </div>
+</div>
+    <div id="main-content" class="row">
+        <div class="col-12 col-md-9 pl-md-3 pr-md-0">
+        
+              <div>
+                
+  <div class="section" id="citations-and-use-cases-of-tax-calculator">
+<h1>Citations and use cases of Tax-Calculator<a class="headerlink" href="#citations-and-use-cases-of-tax-calculator" title="Permalink to this headline">¶</a></h1>
+<p id="bibtex-bibliography-zcitations-0"><dl class="citation">
+<dt class="bibtex label" id="aei-charitable-2018"><span class="brackets">AEI18</span></dt>
+<dd><p>AEI. Charitable giving and the Tax Cuts and Jobs Act. Technical Report, AEI, June 2018. URL: <a class="reference external" href="https://www.aei.org/research-products/report/charitable-giving-and-the-tax-cuts-and-jobs-act/">https://www.aei.org/research-products/report/charitable-giving-and-the-tax-cuts-and-jobs-act/</a>.</p>
+</dd>
+<dt class="bibtex label" id="batchelder-taxing-2019"><span class="brackets">BK19</span></dt>
+<dd><p>Lily L. Batchelder and David Kamin. Taxing the Rich: Issues and Options. SSRN Scholarly Paper ID 3452274, Social Science Research Network, Rochester, NY, September 2019.</p>
+</dd>
+<dt class="bibtex label" id="boyd-new-2020"><span class="brackets">Boy20</span></dt>
+<dd><p>Don Boyd. A New Synthetic Data Set for Tax Policy Analysis. <em>Quantitative Notes</em>, 2:7, 2020. URL: <a class="reference external" href="https://www.openrg.com/reports/SynData_QN.pdf">https://www.openrg.com/reports/SynData_QN.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="brill-tax-2016"><span class="brackets">Bri16a</span></dt>
+<dd><p>Alex Brill. Tax reform: Ryan-Brady plan is a better way. Technical Report, AEI, October 2016. URL: <a class="reference external" href="https://www.aei.org/research-products/report/tax-reform-ryan-brady-plan-is-a-better-way/">https://www.aei.org/research-products/report/tax-reform-ryan-brady-plan-is-a-better-way/</a>.</p>
+</dd>
+<dt class="bibtex label" id="brill-understanding-2016"><span class="brackets">Bri16b</span></dt>
+<dd><p>Alex Brill. Understanding middle-class tax cuts. Technical Report, AEI, April 2016. URL: <a class="reference external" href="https://www.aei.org/research-products/report/understanding-middle-class-tax-cuts/">https://www.aei.org/research-products/report/understanding-middle-class-tax-cuts/</a>.</p>
+</dd>
+<dt class="bibtex label" id="brill-testimony-2017"><span class="brackets">Bri17a</span></dt>
+<dd><p>Alex Brill. Testimony: The opportunities for individual tax reform. September 2017.</p>
+</dd>
+<dt class="bibtex label" id="brill-aei-2017"><span class="brackets">Bri17b</span></dt>
+<dd><p>Alex Brill. AEI Tax Brief: Child Tax Credit Options. September 2017. URL: <a class="reference external" href="https://www.aei.org/research-products/one-pager/aei-tax-brief-child-tax-credit-options/">https://www.aei.org/research-products/one-pager/aei-tax-brief-child-tax-credit-options/</a>.</p>
+</dd>
+<dt class="bibtex label" id="brill-aei-2017-1"><span class="brackets">Bri17c</span></dt>
+<dd><p>Alex Brill. AEI Tax Brief: Increasing the Standard Deduction. September 2017. URL: <a class="reference external" href="https://www.aei.org/research-products/one-pager/aei-tax-brief-increasing-the-standard-deduction/">https://www.aei.org/research-products/one-pager/aei-tax-brief-increasing-the-standard-deduction/</a>.</p>
+</dd>
+<dt class="bibtex label" id="brill-aei-2017-2"><span class="brackets">Bri17d</span></dt>
+<dd><p>Alex Brill. AEI Tax Brief: Repealing the personal exemption. September 2017. URL: <a class="reference external" href="https://www.aei.org/research-products/one-pager/aei-tax-brief-repealing-the-personal-exemption/">https://www.aei.org/research-products/one-pager/aei-tax-brief-repealing-the-personal-exemption/</a>.</p>
+</dd>
+<dt class="bibtex label" id="brill-effects-2018"><span class="brackets">BI18</span></dt>
+<dd><p>Alex Brill and Benedict Ippolito. The effects of tax reform on the medical deduction \textbar  AEI. <em>Tax Notes</em>, May 2018. URL: <a class="reference external" href="https://www.aei.org/articles/the-effects-of-tax-reform-on-the-medical-deduction/">https://www.aei.org/articles/the-effects-of-tax-reform-on-the-medical-deduction/</a>.</p>
+</dd>
+<dt class="bibtex label" id="bui-what-2017"><span class="brackets">BC17</span></dt>
+<dd><p>Quoctrung Bui and Ben Casselman. What the Tax Bill Would Look Like for 25,000 Middle-Class Families. <em>The New York Times</em>, November 2017. URL: <a class="reference external" href="https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html, https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html">https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html, https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html</a>.</p>
+</dd>
+<dt class="bibtex label" id="casselman-how-2017"><span class="brackets">Cas17</span></dt>
+<dd><p>Ben Casselman. How to Build a Tax Calculator That’s Actually Useful. <em>The New York Times</em>, December 2017. URL: <a class="reference external" href="https://www.nytimes.com/2017/12/19/insider/how-to-build-a-tax-calculator-thats-actually-useful.html">https://www.nytimes.com/2017/12/19/insider/how-to-build-a-tax-calculator-thats-actually-useful.html</a>.</p>
+</dd>
+<dt class="bibtex label" id="debacker-estimating-2017"><span class="brackets">DeB17a</span></dt>
+<dd><p>Jason DeBacker. Estimating the Effects of Business Tax Reform on Output. <em>Quantitative Notes</em>, 2:4, 2017. URL: <a class="reference external" href="https://www.openrg.com/reports/CCC_Output_QN.pdf">https://www.openrg.com/reports/CCC_Output_QN.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="debacker-impacts-2017"><span class="brackets">DeB17b</span></dt>
+<dd><p>Jason DeBacker. Impacts of Business Tax Reform on Investment Incentives for the Retail Industry. <em>Quantitative Notes</em>, 1:2, 2017. URL: <a class="reference external" href="https://www.openrg.com/reports/Retail_QN_091817.pdf">https://www.openrg.com/reports/Retail_QN_091817.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="debacker-dynamic-2018"><span class="brackets">DE18</span></dt>
+<dd><p>Jason DeBacker and Richard W Evans. Dynamic Analysis of Tax Cuts and Jobs Act. <em>Quantitative Notes</em>, 1:6, 2018. URL: <a class="reference external" href="https://www.openrg.com/reports/QN_ogusa_TCJA.pdf">https://www.openrg.com/reports/QN_ogusa_TCJA.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="debacker-integrating-2019"><span class="brackets">DEP19</span></dt>
+<dd><p>Jason DeBacker, Richard W. Evans, and Kerk L. Phillips. Integrating Microsimulation Models of Tax Policy into a DGE Macroeconomic Model. <em>Public Finance Review</em>, 47(2):207–275, March 2019. URL: <a class="reference external" href="https://doi.org/10.1177/1091142118816744">https://doi.org/10.1177/1091142118816744</a>, <a class="reference external" href="https://doi.org/10.1177/1091142118816744">doi:10.1177/1091142118816744</a>.</p>
+</dd>
+<dt class="bibtex label" id="debacker-revenue-2019"><span class="brackets">DF19</span></dt>
+<dd><p>Jason DeBacker and Anderson Frailey. Revenue and Macroeconomic Effects of a 70% Marginal Tax Rate. <em>Quantitative Notes</em>, 1:5, 2019.</p>
+</dd>
+<dt class="bibtex label" id="evans-dynamic-2017"><span class="brackets">Eva17</span></dt>
+<dd><p>Richard W Evans. Dynamic Analysis of Corporate Income Tax Rate Cut. <em>Quantitative Notes</em>, 4:6, 2017. URL: <a class="reference external" href="https://www.openrg.com/reports/QN_CorpCut.pdf">https://www.openrg.com/reports/QN_CorpCut.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="evans-dynamic-2018"><span class="brackets">Eva18</span></dt>
+<dd><p>Richard W Evans. Dynamic Analysis of EITC Expansion. <em>Quantitative Notes</em>, 2:14, 2018. URL: <a class="reference external" href="https://www.openrg.com/reports/QN_EITC_v1.1.pdf">https://www.openrg.com/reports/QN_EITC_v1.1.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="evans-government-2017"><span class="brackets">EH17</span></dt>
+<dd><p>Richard W Evans and Haylee Ham. Government Revenue and Distributional Effects of Tax Cuts and Jobs Act. <em>Quantitative Notes</em>, 3:4, 2017. URL: <a class="reference external" href="https://www.openrg.com/reports/TCJA_taxcalc.pdf">https://www.openrg.com/reports/TCJA_taxcalc.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="fischer-baum-analysis-2018"><span class="brackets">FB18</span></dt>
+<dd><p>Reuben Fischer-Baum. Analysis \textbar  Will your taxes go up or down in 2018 under the new tax bill? <em>Washington Post</em>, January 2018. URL: <a class="reference external" href="https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/">https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/</a>.</p>
+</dd>
+<dt class="bibtex label" id="committee-for-a-responsible-federal-budget-choices-2020"><span class="brackets">faRFB20</span></dt>
+<dd><p>Committee for a Responsible Federal Budget. Choices for Financing Medicare for All. Technical Report, Committee for a Responsible Federal Budget, March 2020. URL: <a class="reference external" href="http://www.crfb.org/papers/choices-financing-medicare-all">http://www.crfb.org/papers/choices-financing-medicare-all</a>.</p>
+</dd>
+<dt class="bibtex label" id="furman-preliminary-2018"><span class="brackets">Fur18</span></dt>
+<dd><p>Jason Furman. Some Preliminary Macroeconomics of the Tax Cuts and Jobs Act. January 2018. URL: <a class="reference external" href="https://www.piie.com/system/files/documents/furman20180106ppt.pdf">https://www.piie.com/system/files/documents/furman20180106ppt.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="ghenis-distributional-2020"><span class="brackets">Ghe20</span></dt>
+<dd><p>Max Ghenis. Distributional analysis of Andrew Yang’s Freedom Dividend. January 2020. URL: <a class="reference external" href="https://medium.com/ubicenter/distributional-analysis-of-andrew-yangs-freedom-dividend-d8dab818bf1b">https://medium.com/ubicenter/distributional-analysis-of-andrew-yangs-freedom-dividend-d8dab818bf1b</a>.</p>
+</dd>
+<dt class="bibtex label" id="hassett-dynamic-2015"><span class="brackets">Has15</span></dt>
+<dd><p>Kevin Hassett. On the Dynamic Scoring of Fiscal Policy. July 2015. URL: <a class="reference external" href="https://www.aei.org/press/on-the-dynamic-scoring-of-fiscal-policy/">https://www.aei.org/press/on-the-dynamic-scoring-of-fiscal-policy/</a>.</p>
+</dd>
+<dt class="bibtex label" id="hassett-reaching-2016"><span class="brackets">Has16</span></dt>
+<dd><p>Kevin Hassett. Reaching America’s potential: Delivering growth and opportunity for all Americans. February 2016. URL: <a class="reference external" href="https://www.aei.org/research-products/speech/statement-before-the-house-ways-and-means-committee/">https://www.aei.org/research-products/speech/statement-before-the-house-ways-and-means-committee/</a>.</p>
+</dd>
+<dt class="bibtex label" id="jensen-transparency-2020"><span class="brackets">Jen20</span></dt>
+<dd><p>Matt Jensen. Transparency for Congress’s Scorekeepers. <em>National Affairs</em>, 2020. URL: <a class="reference external" href="https://www.nationalaffairs.com/publications/detail/transparency-for-congresss-scorekeepers">https://www.nationalaffairs.com/publications/detail/transparency-for-congresss-scorekeepers</a>.</p>
+</dd>
+<dt class="bibtex label" id="mathur-70-2019"><span class="brackets">Mat19a</span></dt>
+<dd><p>Aparna Mathur. A 70 percent tax rate on the rich may be smart politics, but is not smart economics \textbar  AEI. <em>Bloomberg Tax</em>, January 2019. URL: <a class="reference external" href="https://www.aei.org/articles/a-70-tax-rate-on-the-rich-may-be-smart-politics-but-is-not-smart-economics/">https://www.aei.org/articles/a-70-tax-rate-on-the-rich-may-be-smart-politics-but-is-not-smart-economics/</a>.</p>
+</dd>
+<dt class="bibtex label" id="mathur-rethinking-2019"><span class="brackets">Mat19b</span></dt>
+<dd><p>Aparna Mathur. Rethinking the Green New Deal: Using Climate Policy to Address Inequality. <em>National Tax Journal</em>, 70(4):693–722, December 2019. URL: <a class="reference external" href="http://www.ntanet.org/NTJ/72/4/ntj-v72n04p693-722-Rehinking-the-Green-New-Deal.html">http://www.ntanet.org/NTJ/72/4/ntj-v72n04p693-722-Rehinking-the-Green-New-Deal.html</a>, <a class="reference external" href="https://doi.org/10.17310/ntj.2019.4.03">doi:10.17310/ntj.2019.4.03</a>.</p>
+</dd>
+<dt class="bibtex label" id="mathur-tax-2019"><span class="brackets">Mat19c</span></dt>
+<dd><p>Aparna Mathur. The Tax Cuts and Jobs Act: Anything but a simple tax reform \textbar  AEI. <em>Bloomberg Tax</em>, March 2019. URL: <a class="reference external" href="https://www.aei.org/articles/the-tax-cuts-and-jobs-act-anything-but-a-simple-tax-reform/">https://www.aei.org/articles/the-tax-cuts-and-jobs-act-anything-but-a-simple-tax-reform/</a>.</p>
+</dd>
+<dt class="bibtex label" id="mathur-leaving-2016"><span class="brackets">MH16</span></dt>
+<dd><p>Aparna Mathur and Adele Hunter. Leaving Childless Taxpayers Behind in the Tax Code \textbar  AEI. <em>Tax Notes</em>, July 2016. Library Catalog: www.aei.org Section: Public Economics. URL: <a class="reference external" href="https://www.aei.org/articles/leaving-childless-taxpayers-behind-in-the-tax-code/">https://www.aei.org/articles/leaving-childless-taxpayers-behind-in-the-tax-code/</a>.</p>
+</dd>
+<dt class="bibtex label" id="mathur-estimating-2019"><span class="brackets">MK19</span></dt>
+<dd><p>Aparna Mathur and Cody Kallen. Estimating the distributional implications of the Tax Cuts and Jobs Act. Technical Report, AEI, February 2019. URL: <a class="reference external" href="https://www.aei.org/research-products/working-paper/estimating-the-distributional-implications-of-the-tax-cuts-and-jobs-act/">https://www.aei.org/research-products/working-paper/estimating-the-distributional-implications-of-the-tax-cuts-and-jobs-act/</a>.</p>
+</dd>
+<dt class="bibtex label" id="matthews-house-2016"><span class="brackets">Mat16</span></dt>
+<dd><p>Dylan Matthews. House Republicans are proposing a big corporate tax cut that Walmart hates. <em>Vox</em>, December 2016. URL: <a class="reference external" href="https://www.vox.com/2016/12/25/14069822/corporate-tax-border-adjustability">https://www.vox.com/2016/12/25/14069822/corporate-tax-border-adjustability</a>.</p>
+</dd>
+<dt class="bibtex label" id="nelson-macroeconomic-2019"><span class="brackets">NP19</span></dt>
+<dd><p>Jaeger Nelson and Kerk Phillips. Macroeconomic Effects of Reducing OASI Benefits: A Comparison of Seven Overlapping-Generations Models. <em>National Tax Journal</em>, 70(4):671–692, December 2019. URL: <a class="reference external" href="http://www.ntanet.org/NTJ/72/4/ntj-v72n04p671-692-Macroeconomic-Effects-of-Reducing-OASI-Benefits.html">http://www.ntanet.org/NTJ/72/4/ntj-v72n04p671-692-Macroeconomic-Effects-of-Reducing-OASI-Benefits.html</a>, <a class="reference external" href="https://doi.org/10.17310/ntj.2019.4.02">doi:10.17310/ntj.2019.4.02</a>.</p>
+</dd>
+<dt class="bibtex label" id="council-of-economic-advisors-economic-2019"><span class="brackets">oEA19a</span></dt>
+<dd><p>Council of Economic Advisors. Economic Report of the President. Technical Report PR 45.9, Council of Economic Advisors, March 2019. URL: <a class="reference external" href="https://www.govinfo.gov/content/pkg/ERP-2019/pdf/ERP-2019.pdf">https://www.govinfo.gov/content/pkg/ERP-2019/pdf/ERP-2019.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="council-of-economic-advisors-evaluating-2019"><span class="brackets">oEA19b</span></dt>
+<dd><p>Council of Economic Advisors. Evaluating the Anticipated Effects of Changes to the Mortgage Interest Deduction. Technical Report, Council of Economic Advisors, November 2019. URL: <a class="reference external" href="https://www.whitehouse.gov/sites/whitehouse.gov/files/images/Effects%20of%20Changes%20to%20the%20Mortgage%20Interest%20Deduction%20FINAL.pdf">https://www.whitehouse.gov/sites/whitehouse.gov/files/images/Effects%20of%20Changes%20to%20the%20Mortgage%20Interest%20Deduction%20FINAL.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="pearce-tax-2017"><span class="brackets">PBCM17</span></dt>
+<dd><p>Adam Pearce, Quoctrung Bui, Ben Casselman, and Blacki Migliozzi. Tax Bill Calculator: Will Your Taxes Go Up or Down? <em>The New York Times</em>, December 2017. URL: <a class="reference external" href="https://www.nytimes.com/interactive/2017/12/17/upshot/tax-calculator.html, https://www.nytimes.com/interactive/2017/12/17/upshot/tax-calculator.html">https://www.nytimes.com/interactive/2017/12/17/upshot/tax-calculator.html, https://www.nytimes.com/interactive/2017/12/17/upshot/tax-calculator.html</a>.</p>
+</dd>
+<dt class="bibtex label" id="rubin-republicans-2016"><span class="brackets">Rub16a</span></dt>
+<dd><p>Richard Rubin. Republicans’ Radical New Business-Tax Proposal, Simplified (Sort Of). December 2016. URL: <a class="reference external" href="https://blogs.wsj.com/economics/2016/12/26/republicans-radical-new-business-tax-proposal-simplified-sort-of/">https://blogs.wsj.com/economics/2016/12/26/republicans-radical-new-business-tax-proposal-simplified-sort-of/</a>.</p>
+</dd>
+<dt class="bibtex label" id="rubin-why-2016"><span class="brackets">Rub16b</span></dt>
+<dd><p>Richard Rubin. Why It’s So Hard to Get Rid of Tax ‘Loopholes’. August 2016. URL: <a class="reference external" href="https://web.archive.org/web/20160819134156/http://blogs.wsj.com/economics/2016/08/18/why-its-so-hard-to-get-rid-of-tax-loopholes/">https://web.archive.org/web/20160819134156/http://blogs.wsj.com/economics/2016/08/18/why-its-so-hard-to-get-rid-of-tax-loopholes/</a>.</p>
+</dd>
+<dt class="bibtex label" id="tankersley-search-2016"><span class="brackets">Tan16</span></dt>
+<dd><p>Jim Tankersley. The search for the best middle-class tax cut. <em>Washington Post</em>, April 2016. URL: <a class="reference external" href="https://www.washingtonpost.com/news/wonk/wp/2016/04/14/the-search-for-the-best-middle-class-tax-cut/">https://www.washingtonpost.com/news/wonk/wp/2016/04/14/the-search-for-the-best-middle-class-tax-cut/</a>.</p>
+</dd>
+<dt class="bibtex label" id="tedeschi-for-2017"><span class="brackets">Ted17</span></dt>
+<dd><p>Ernie Tedeschi. For the Non-Rich, the Child Tax Credit Is the Key to Tax Reform. <em>The New York Times</em>, October 2017. URL: <a class="reference external" href="https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html, https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html">https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html, https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html</a>.</p>
+</dd>
+<dt class="bibtex label" id="tedeschi-analysis-2019"><span class="brackets">Ted19</span></dt>
+<dd><p>Ernie Tedeschi. An Analysis of the Earned Basic Income Tax Credit. March 2019. URL: <a class="reference external" href="https://drive.google.com/file/d/1Ko0kQXP7FEdzdvGJq4N7MmRbemFNH8Xp/view?mkt_tok=eyJpIjoiWVRRMFpqTXhOVGcwTkRBNSIsInQiOiJzNk5CWkpqOUlzeGc4Z0ZRUXYwSnRXT0ZZSGVwczNwa3A3UVwvUWdKaEVuc2E2TE91NUVUcjVEU1doMEdsSnpcL1BIVzE4U2NzeGZFOENBWmhiUlwvbDhUSUxsQVJ4cXJJTDJYcExsdElUV0xkMFFaRzJoMlRtTGNOZWM3RHZHeDNBUSJ9&amp;usp=embed_facebook">https://drive.google.com/file/d/1Ko0kQXP7FEdzdvGJq4N7MmRbemFNH8Xp/view?mkt_tok=eyJpIjoiWVRRMFpqTXhOVGcwTkRBNSIsInQiOiJzNk5CWkpqOUlzeGc4Z0ZRUXYwSnRXT0ZZSGVwczNwa3A3UVwvUWdKaEVuc2E2TE91NUVUcjVEU1doMEdsSnpcL1BIVzE4U2NzeGZFOENBWmhiUlwvbDhUSUxsQVJ4cXJJTDJYcExsdElUV0xkMFFaRzJoMlRtTGNOZWM3RHZHeDNBUSJ9&amp;usp=embed_facebook</a>.</p>
+</dd>
+<dt class="bibtex label" id="viard-economic-2019"><span class="brackets">Via19</span></dt>
+<dd><p>Alan D. Viard. An Economic Analysis of the TCJA’s Larger Standard Deduction. <em>Tax Notes</em>, April 2019. URL: <a class="reference external" href="https://www.aei.org/wp-content/uploads/2019/04/On-the-Margin-April-1-2019.pdf">https://www.aei.org/wp-content/uploads/2019/04/On-the-Margin-April-1-2019.pdf</a>.</p>
+</dd>
+<dt class="bibtex label" id="viard-taxes-2018"><span class="brackets">VS18</span></dt>
+<dd><p>Alan D. Viard and Sita Nataraj Slavov. Taxes, transfers, progressivity, and redistribution: Part III \textbar  AEI. <em>Tax Notes</em>, November 2018. URL: <a class="reference external" href="https://www.aei.org/articles/taxes-transfers-progressivity-and-redistribution-part-3/">https://www.aei.org/articles/taxes-transfers-progressivity-and-redistribution-part-3/</a>.</p>
+</dd>
+<dt class="bibtex label" id="viard-wrong-2020"><span class="brackets">VS20</span></dt>
+<dd><p>Alan D. Viard and Sita Nataraj Slavov. The Wrong Way to Make Social Security and Medicare More Progressive. <em>Tax Notes</em>, June 2020. URL: <a class="reference external" href="https://www.taxnotes.com/tax-notes-federal/social-welfare-taxation/wrong-way-make-social-security-and-medicare-more-progressive/2019/09/16/29wpk">https://www.taxnotes.com/tax-notes-federal/social-welfare-taxation/wrong-way-make-social-security-and-medicare-more-progressive/2019/09/16/29wpk</a>.</p>
+</dd>
+<dt class="bibtex label" id="yellin-see-2017"><span class="brackets">YP17</span></dt>
+<dd><p>Tal Yellin and Sam Petulla. See how the tax bill affects your paycheck. <em>CNN</em>, December 2017. URL: <a class="reference external" href="https://www.cnn.com/2017/12/13/politics/calculate-americans-taxes-senate-reform-bill/index.html">https://www.cnn.com/2017/12/13/politics/calculate-americans-taxes-senate-reform-bill/index.html</a>.</p>
+</dd>
+</dl>
+</p>
+</div>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+        </div>
+    </div>
+    
+    
+    <div class='prev-next-bottom'>
+        
+    <a class='left-prev' id="prev-link" href="api/utilsprvt.html" title="previous page">Tax-Calculator Private Utilities</a>
+
+    </div>
+    <footer class="footer mt-5 mt-md-0">
+    <div class="container">
+      <p>
+        
+          By Policy Simulation Library<br/>
+        
+            &copy; Copyright 2020.<br/>
+      </p>
+    </div>
+  </footer>
+</main>
+
+
+      </div>
+    </div>
+
+    <script src="_static/js/index.js"></script>
+    
+  </body>
+</html>
