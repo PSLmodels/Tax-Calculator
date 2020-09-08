@@ -536,7 +536,8 @@ class Calculator():
                            'e02400', 'p22250',
                            'p23250', 'e18500',
                            'e19200', 'e26270',
-                           'e19800', 'e20100']
+                           'e19800', 'e20100',
+                           'k1bx14p']
 
     def mtr(self, variable_str='e00200p',
             negative_finite_diff=False,
@@ -622,7 +623,8 @@ class Calculator():
         'e19200',  Schedule A interest paid;
         'e26270',  S-corporation/partnership income (also included in e02000);
         'e19800',  Charity cash contributions;
-        'e20100',  Charity non-cash contributions.
+        'e20100',  Charity non-cash contributions;
+        'k1bx14p', Partnership income (also included in e26270 and e02000).
         """
         # pylint: disable=too-many-arguments,too-many-statements
         # pylint: disable=too-many-locals,too-many-branches
@@ -649,6 +651,9 @@ class Calculator():
             divincome_var = self.array('e00600')
         elif variable_str == 'e26270':
             scheincome_var = self.array('e02000')
+        elif variable_str == 'k1bx14p':
+            scheincome_var = self.array('e02000')
+            scorpincome_var = self.array('e26270')
         # calculate level of taxes after a marginal increase in income
         self.array(variable_str, variable + finite_diff)
         if variable_str == 'e00200p':
@@ -661,6 +666,9 @@ class Calculator():
             self.array('e00600', divincome_var + finite_diff)
         elif variable_str == 'e26270':
             self.array('e02000', scheincome_var + finite_diff)
+        elif variable_str == 'k1bx14p':
+            self.array('e02000', scheincome_var + finite_diff)
+            self.array('e26270', scorpincome_var + finite_diff)
         if self.__consumption.has_response():
             self.__consumption.response(self.__records, finite_diff)
         self.calc_all(zero_out_calc_vars=zero_out_calculated_vars)
@@ -711,6 +719,9 @@ class Calculator():
             del divincome_var
         elif variable_str == 'e26270':
             del scheincome_var
+        elif variable_str == 'k1bx14p':
+            del scheincome_var
+            del scorpincome_var
         del payrolltax_chng
         del incometax_chng
         del combined_taxes_chng
