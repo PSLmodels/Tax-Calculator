@@ -172,6 +172,9 @@ def test_calculator_mtr(cps_subsample):
     (_, _, mtr_combined) = calc.mtr(variable_str='e26270',
                                     calc_all_already_called=True)
     assert isinstance(mtr_combined, np.ndarray)
+    (_, _, mtr_combined) = calc.mtr(variable_str='k1bx14p',
+                                    calc_all_already_called=True)
+    assert isinstance(mtr_combined, np.ndarray)
     (_, _, mtr_combined) = calc.mtr(variable_str='e00200p',
                                     calc_all_already_called=True)
     assert np.allclose(mtr_combined, mtr_cmb)
