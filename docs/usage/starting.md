@@ -26,7 +26,7 @@ Download a Tax-Calculator `taxcalc` package for your computer by executing
 this command from the command prompt:
 
 ```
-conda install -c PSLmodels taxcalc
+conda install -c PSLmodels -c conda-forge taxcalc
 ```
 
 This command will also install all the Python packages required by
