@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tax-Calculator Parameters &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -26,8 +27,6 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -71,7 +70,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -246,6 +252,10 @@
 
  <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
 </div>
 
 
@@ -344,9 +354,9 @@
 <p><strong>Tax-Calculator Parameters</strong></p>
 <div class="section" id="taxcalc-parameters">
 <h2>taxcalc.parameters<a class="headerlink" href="#taxcalc-parameters" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="taxcalc.parameters.CompatibleDataSchema">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.parameters.</code><code class="sig-name descname">CompatibleDataSchema</code><span class="sig-paren">(</span><em class="sig-param">*, only: Union[Sequence[str], Set[str]] = None, exclude: Union[Sequence[str], Set[str]] = (), many: bool = False, context: Dict = None, load_only: Union[Sequence[str], Set[str]] = (), dump_only: Union[Sequence[str], Set[str]] = (), partial: Union[bool, Sequence[str], Set[str]] = False, unknown: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#CompatibleDataSchema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.CompatibleDataSchema" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.parameters.</code><code class="sig-name descname">CompatibleDataSchema</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">only</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Sequence<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Set<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">exclude</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Sequence<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Set<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">many</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">load_only</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Sequence<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Set<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">dump_only</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Sequence<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Set<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">()</span></em>, <em class="sig-param"><span class="n">partial</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>bool<span class="p">, </span>Sequence<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Set<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">unknown</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#CompatibleDataSchema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.CompatibleDataSchema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schema for Compatible data object
 {</p>
 <blockquote>
@@ -355,9 +365,9 @@
 <p>}</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="taxcalc.parameters.Parameters">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.parameters.</code><code class="sig-name descname">Parameters</code><span class="sig-paren">(</span><em class="sig-param">start_year=None</em>, <em class="sig-param">num_years=None</em>, <em class="sig-param">last_known_year=None</em>, <em class="sig-param">removed=None</em>, <em class="sig-param">redefined=None</em>, <em class="sig-param">wage_indexed=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.parameters.</code><code class="sig-name descname">Parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_year</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_years</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">last_known_year</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">removed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">redefined</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">wage_indexed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base Parameters class that wraps ParamTools, providing parameter indexing
 for tax policy in the adjust method and backwards-compatible preserving
 layer that supports Tax-Calculator’s conventional reform formatting style
@@ -373,16 +383,16 @@ underscore before the variable name (e.g. EITC_c vs _EITC_c).</p>
 corresponding to a parameter value on this class are ephemeral and the only
 way to make permanent changes to this class’sstate is through the set_state
 or adjust methods.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.__getattr__">
-<code class="sig-name descname">__getattr__</code><span class="sig-paren">(</span><em class="sig-param">attr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.__getattr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.__getattr__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__getattr__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">attr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.__getattr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.__getattr__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Allows the user to get the value of a parameter over all years,
 not just the ones that are active.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters._read_json_revision">
-<em class="property">static </em><code class="sig-name descname">_read_json_revision</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">topkey</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters._read_json_revision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters._read_json_revision" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">_read_json_revision</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">topkey</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters._read_json_revision"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters._read_json_revision" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read JSON revision specified by obj and topkey
 returning a single revision dictionary suitable for
 use with the Parameters._update method.
@@ -397,9 +407,9 @@ the top-level JSON keys, the obj is assumed to be a
 non-compound-revision JSON text for the specified topkey.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters._update">
-<code class="sig-name descname">_update</code><span class="sig-paren">(</span><em class="sig-param">revision</em>, <em class="sig-param">print_warnings</em>, <em class="sig-param">raise_errors</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters._update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters._update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">revision</span></em>, <em class="sig-param"><span class="n">print_warnings</span></em>, <em class="sig-param"><span class="n">raise_errors</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters._update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters._update" title="Permalink to this definition">¶</a></dt>
 <dd><p>A translation layer on top of Parameters.adjust. Projects
 that have historically used the <cite>_update</cite> method with
 Tax-Calculator styled adjustments can continue to do so
@@ -425,9 +435,9 @@ without making any changes to how they handle adjustments.</p>
 <p>}</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.adjust">
-<code class="sig-name descname">adjust</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">print_warnings=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.adjust" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">adjust</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params_or_path</span></em>, <em class="sig-param"><span class="n">print_warnings</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.adjust" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implements custom warning and error handling.</p>
 <p>If print_warnings is True, warnings are printed out and if
 print_warnings is False, nothing is printed.</p>
@@ -435,9 +445,9 @@ print_warnings is False, nothing is printed.</p>
 ignore_warnings is False. This method circumvents this behavior.</p>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="sig-name descname">adjust</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">print_warnings=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust"><span class="viewcode-link">[source]</span></a></dt>
+<dl class="py method">
+<dt id="id0">
+<code class="sig-name descname">adjust</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params_or_path</span></em>, <em class="sig-param"><span class="n">print_warnings</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#id0" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implements custom warning and error handling.</p>
 <p>If print_warnings is True, warnings are printed out and if
 print_warnings is False, nothing is printed.</p>
@@ -445,9 +455,9 @@ print_warnings is False, nothing is printed.</p>
 ignore_warnings is False. This method circumvents this behavior.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.adjust_with_indexing">
-<code class="sig-name descname">adjust_with_indexing</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust_with_indexing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.adjust_with_indexing" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">adjust_with_indexing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params_or_path</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.adjust_with_indexing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.adjust_with_indexing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Custom adjust method that handles special indexing logic. The logic
 is:</p>
 <p>1. If “parameter_indexing_CPI_offset” is adjusted, first set
@@ -526,15 +536,15 @@ same hard-coding reason.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.clear_state">
 <code class="sig-name descname">clear_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.clear_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.clear_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the state of the <cite>Parameters</cite> instance.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.delete">
-<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param">params_or_path</em>, <em class="sig-param">ignore_warnings=False</em>, <em class="sig-param">raise_errors=True</em>, <em class="sig-param">extend_adj=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.delete" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params_or_path</span></em>, <em class="sig-param"><span class="n">ignore_warnings</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">raise_errors</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">extend_adj</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete value objects in params_or_path.</p>
 <p>Returns: adjustment for deleting parameters.</p>
 <dl class="field-list simple">
@@ -547,9 +557,9 @@ same hard-coding reason.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.extend">
-<code class="sig-name descname">extend</code><span class="sig-paren">(</span><em class="sig-param">label: Optional[str] = None</em>, <em class="sig-param">label_values: Optional[List[Any]] = None</em>, <em class="sig-param">params: Optional[List[str]] = None</em>, <em class="sig-param">raise_errors: bool = True</em>, <em class="sig-param">ignore_warnings: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.extend" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">extend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">label_values</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">params</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">raise_errors</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">ignore_warnings</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.extend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extend parameters along <cite>label</cite>.</p>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
@@ -570,7 +580,7 @@ labels.</p></li>
 </div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.extend_func">
 <code class="sig-name descname">extend_func</code><span class="sig-paren">(</span><em class="sig-param">param: str</em>, <em class="sig-param">extend_vo: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">known_vo: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">extend_grid: List</em>, <em class="sig-param">label: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.extend_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.extend_func" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for applying indexing rates to parameter values as they
@@ -586,9 +596,9 @@ and value of <cite>label</cite>.</p>
 </div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.from_array">
-<code class="sig-name descname">from_array</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">array=None</em>, <em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.from_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.from_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">from_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">array</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">labels</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.from_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.from_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert NumPy array to a Value object.</p>
 <p><strong>Parameters</strong></p>
 <blockquote>
@@ -615,46 +625,46 @@ labels.</p></li>
 </div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.get_index_rate">
-<code class="sig-name descname">get_index_rate</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">label_to_extend_val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.get_index_rate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_index_rate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">label_to_extend_val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.get_index_rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initalize indexing data and return the indexing rate value
 depending on the parameter name and label_to_extend_val, the value of
 label_to_extend.
 Returns: rate to use for indexing.</p>
 </dd></dl>
 
-<dl class="method">
-<dt>
-<code class="sig-name descname">get_index_rate</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">label_to_extend_val</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link">[source]</span></a></dt>
+<dl class="py method">
+<dt id="id1">
+<code class="sig-name descname">get_index_rate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="n">label_to_extend_val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.get_index_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#id1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initalize indexing data and return the indexing rate value
 depending on the parameter name and label_to_extend_val, the value of
 label_to_extend.
 Returns: rate to use for indexing.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.initialize">
-<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param">start_year</em>, <em class="sig-param">num_years</em>, <em class="sig-param">last_known_year=None</em>, <em class="sig-param">removed=None</em>, <em class="sig-param">redefined=None</em>, <em class="sig-param">wage_indexed=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.initialize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">initialize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start_year</span></em>, <em class="sig-param"><span class="n">num_years</span></em>, <em class="sig-param"><span class="n">last_known_year</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">removed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">redefined</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">wage_indexed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.initialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.initialize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Legacy method for initializing a Parameters instance. Projects
 should use the __init__ method in the future.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.items">
 <code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.items" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate using python dictionary .items() syntax.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.keys">
 <code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return parameter names.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.read_params">
-<code class="sig-name descname">read_params</code><span class="sig-paren">(</span><em class="sig-param">params_or_path: Union[str, pathlib.Path, IO[AnyStr], Dict[str, any]], storage_options: Optional[Dict[str, Any]] = None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.read_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.read_params" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">read_params</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params_or_path</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>str<span class="p">, </span>pathlib.Path<span class="p">, </span>IO<span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>any<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">storage_options</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.read_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.read_params" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read JSON data of the form:</p>
 <ul class="simple">
 <li><p>Python <cite>dict</cite>.</p></li>
@@ -675,16 +685,16 @@ should use the __init__ method in the future.</p>
 - <cite>params</cite>: Python Dict created from JSON file.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.set_rates">
 <code class="sig-name descname">set_rates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters.set_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.set_rates" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method is implemented by classes inheriting
 Parameters.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.set_state">
-<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.set_state" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">labels</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.set_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets state for the Parameters instance. The <cite>_state</cite>, <cite>label_grid</cite>, and
 parameter attributes are all updated with the new state.</p>
 <p>Use the <cite>view_state</cite> method to inspect the current state of the instance,
@@ -699,9 +709,9 @@ validator set for the corresponding label in schema.json.</p></li>
 </div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.sort_values">
-<code class="sig-name descname">sort_values</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">has_meta_data=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.sort_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.sort_values" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">sort_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">has_meta_data</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.sort_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.sort_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sort value objects for all parameters in <cite>data</cite> according
 to the order specified in <cite>schema</cite>.</p>
 <p><strong>Parameters</strong></p>
@@ -722,9 +732,9 @@ directly or through the “value” attribute.</p></li>
 </div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.specification">
-<code class="sig-name descname">specification</code><span class="sig-paren">(</span><em class="sig-param">use_state: bool = True</em>, <em class="sig-param">meta_data: bool = False</em>, <em class="sig-param">include_empty: bool = False</em>, <em class="sig-param">serializable: bool = False</em>, <em class="sig-param">sort_values: bool = False</em>, <em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.specification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.specification" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">specification</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">use_state</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">meta_data</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">include_empty</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">serializable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">sort_values</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">labels</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.specification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.specification" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query value(s) of all parameters along labels specified in
 <cite>labels</cite>.</p>
 <p><strong>Parameters</strong></p>
@@ -746,9 +756,9 @@ directly or through the “value” attribute.</p></li>
 </div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.to_array">
-<code class="sig-name descname">to_array</code><span class="sig-paren">(</span><em class="sig-param">param</em>, <em class="sig-param">**labels</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.to_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.to_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">labels</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.to_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.to_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a Value object to an n-labelal array. The list of Value
 objects must span the specified parameter space. The parameter space
 is defined by inspecting the label validators in schema.json
@@ -779,13 +789,13 @@ This is not supported by ParamTools when using array_first.</p></li>
 </div></blockquote>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.to_dict">
 <code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.to_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return instance as python dictionary.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.parameters.Parameters.view_state">
 <code class="sig-name descname">view_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.view_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.view_state" title="Permalink to this definition">¶</a></dt>
 <dd><p>Access the label state of the <code class="docutils literal notranslate"><span class="pre">Parameters</span></code> instance.</p>

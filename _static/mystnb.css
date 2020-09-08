@@ -52,7 +52,9 @@ div.section div.jupyter_container {
 /* Text outputs from cells */
 .cell_output .output.text_plain,
 .cell_output .output.traceback,
-.cell_output .output.stream  {
+.cell_output .output.stream,
+.cell_output .output.stderr
+  {
   background: #fcfcfc;
   margin-top: 1em;
   margin-bottom: 0em;
@@ -60,8 +62,13 @@ div.section div.jupyter_container {
 }
 
 .cell_output .output.text_plain,
-.cell_output .output.stream {
+.cell_output .output.stream,
+.cell_output .output.stderr {
   border: 1px solid #f7f7f7;
+}
+
+.cell_output .output.stderr {
+  background: #fdd;
 }
 
 .cell_output .output.traceback {

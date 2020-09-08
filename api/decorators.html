@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tax-Calculator Decorators &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -26,8 +27,6 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -71,7 +70,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -246,6 +252,10 @@
 
  <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
 </div>
 
 
@@ -346,15 +356,15 @@
 <span id="taxcalc-decorators"></span><h2>taxcalc.decorators<a class="headerlink" href="#module-taxcalc.decorators" title="Permalink to this headline">¶</a></h2>
 <p>Implement numba JIT decorators used to speed-up the execution
 of Tax-Calculator functions in the calcfunctions.py module.</p>
-<dl class="function">
-<dt id="taxcalc.decorators.id_wrapper">
-<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">id_wrapper</code><span class="sig-paren">(</span><em class="sig-param">*dec_args</em>, <em class="sig-param">**dec_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#id_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.id_wrapper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function wrapper when numba package is not being used during debugging.</p>
+<dl class="py function">
+<dt id="taxcalc.decorators.apply_jit">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">apply_jit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_sig_out</span></em>, <em class="sig-param"><span class="n">dtype_sig_in</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#apply_jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.apply_jit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a decorator that takes in a calc-style function, handle apply step.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="taxcalc.decorators.create_apply_function_string">
-<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">create_apply_function_string</code><span class="sig-paren">(</span><em class="sig-param">sigout</em>, <em class="sig-param">sigin</em>, <em class="sig-param">parameters</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#create_apply_function_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.create_apply_function_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">create_apply_function_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sigout</span></em>, <em class="sig-param"><span class="n">sigin</span></em>, <em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#create_apply_function_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.create_apply_function_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a string for a function of the form:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">ap_fuc</span><span class="p">(</span><span class="n">x_0</span><span class="p">,</span> <span class="n">x_1</span><span class="p">,</span> <span class="n">x_2</span><span class="p">,</span> <span class="o">...</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x_0</span><span class="p">)):</span>
@@ -382,9 +392,9 @@ how we construct the apply-style function</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="taxcalc.decorators.create_toplevel_function_string">
-<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">create_toplevel_function_string</code><span class="sig-paren">(</span><em class="sig-param">args_out</em>, <em class="sig-param">args_in</em>, <em class="sig-param">pm_or_pf</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#create_toplevel_function_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.create_toplevel_function_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">create_toplevel_function_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args_out</span></em>, <em class="sig-param"><span class="n">args_in</span></em>, <em class="sig-param"><span class="n">pm_or_pf</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#create_toplevel_function_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.create_toplevel_function_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a string for a function of the form:</p>
 <blockquote>
 <div><dl class="simple">
@@ -411,9 +421,23 @@ return DataFrame(data, columns=header)</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
+<dt id="taxcalc.decorators.id_wrapper">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">id_wrapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">dec_args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">dec_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#id_wrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.id_wrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function wrapper when numba package is not being used during debugging.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="taxcalc.decorators.iterate_jit">
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">iterate_jit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#iterate_jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.iterate_jit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Public decorator for a calc-style function (see calcfunctions.py) that
+transforms the calc-style function into an apply-style function that
+can be called by Calculator class methods (see calculator.py).</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="taxcalc.decorators.make_apply_function">
-<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">make_apply_function</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">out_args</em>, <em class="sig-param">in_args</em>, <em class="sig-param">parameters</em>, <em class="sig-param">do_jit=True</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#make_apply_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.make_apply_function" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">make_apply_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">out_args</span></em>, <em class="sig-param"><span class="n">in_args</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">do_jit</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#make_apply_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.make_apply_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a calc-style function and creates the necessary Python code for
 an apply-style function. Will also jit the function if desired.</p>
 <dl class="field-list simple">
@@ -436,27 +460,13 @@ how we construct the apply-style function.</p></li>
 </dl>
 </dd></dl>
 
-<dl class="function">
-<dt id="taxcalc.decorators.apply_jit">
-<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">apply_jit</code><span class="sig-paren">(</span><em class="sig-param">dtype_sig_out</em>, <em class="sig-param">dtype_sig_in</em>, <em class="sig-param">parameters=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#apply_jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.apply_jit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a decorator that takes in a calc-style function, handle apply step.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="taxcalc.decorators.iterate_jit">
-<code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">iterate_jit</code><span class="sig-paren">(</span><em class="sig-param">parameters=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#iterate_jit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.iterate_jit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Public decorator for a calc-style function (see calcfunctions.py) that
-transforms the calc-style function into an apply-style function that
-can be called by Calculator class methods (see calculator.py).</p>
-</dd></dl>
-
-<dl class="class">
+<dl class="py class">
 <dt id="taxcalc.decorators.GetReturnNode">
 <em class="property">class </em><code class="sig-prename descclassname">taxcalc.decorators.</code><code class="sig-name descname">GetReturnNode</code><a class="reference internal" href="../_modules/taxcalc/decorators.html#GetReturnNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.GetReturnNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>A NodeVisitor to get the return tuple names from a calc-style function.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.decorators.GetReturnNode.visit_Return">
-<code class="sig-name descname">visit_Return</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#GetReturnNode.visit_Return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.GetReturnNode.visit_Return" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">visit_Return</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/decorators.html#GetReturnNode.visit_Return"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.decorators.GetReturnNode.visit_Return" title="Permalink to this definition">¶</a></dt>
 <dd><p>visit_Return is used by NodeVisitor.visit method.</p>
 </dd></dl>
 

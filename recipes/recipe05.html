@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recipe 5: Redefining Expanded Income &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -26,8 +27,6 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -71,7 +70,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -216,6 +222,10 @@
 
  <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
 </div>
 
 
@@ -284,6 +294,28 @@
                     class="fas fa-expand"></i></button></a>
 
         <!-- Launch buttons -->
+
+<div class="dropdown-buttons-trigger">
+    <button id="dropdown-buttons-trigger" class="btn btn-secondary topbarbtn"
+        aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
+    <div class="dropdown-buttons">
+        
+        <a class="binder-button" href="https://mybinder.org/v2/gh/PSLmodels/Tax-Calculator/master?urlpath=tree/docs/recipes/recipe05.ipynb"><button type="button"
+                class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
+                data-placement="left"><img class="binder-button-logo"
+                    src="../_static/images/logo_binder.svg"
+                    alt="Interact on binder">Binder</button></a>
+        
+        
+        
+        <a class="colab-button" href="https://colab.research.google.com/github/PSLmodels/Tax-Calculator/blob/master/docs/recipes/recipe05.ipynb"><button type="button" class="btn btn-secondary topbarbtn"
+                title="Launch Colab" data-toggle="tooltip" data-placement="left"><img class="colab-button-logo"
+                    src="../_static/images/logo_colab.png"
+                    alt="Interact on Colab">Colab</button></a>
+        
+        
+    </div>
+</div>
 
     </div>
 
@@ -456,31 +488,6 @@ methods.</p>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(taxfall is count of funits with cut in income tax in reform 2 vs 1)&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;(taxrise is count of funits with rise in income tax in reform 2 vs 1)&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">diff_extract</span><span class="o">.</span><span class="n">to_string</span><span class="p">())</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1490.622
-2018_REFORM2_iitax_rev($B)= 1318.628
-
-Extract of 2018 income-tax difference table by expanded-income decile
-(taxfall is count of funits with cut in income tax in reform 2 vs 1)
-(taxrise is count of funits with rise in income tax in reform 2 vs 1)
-           funits(#m) taxfall(#m) taxrise(#m) agg_diff($b) mean_diff($) aftertax_income_diff(%)
-&lt;$0K         0.139124           0           0            0            0                       0
-=$0K           29.361  0.00398284  0.00256599 -0.000287359  -0.00978711                -10.9947
-$0-10K        32.6342      2.4395     1.48106    -0.192404     -5.89577                0.153202
-$10-20K       21.2155     11.4005     3.74961     -1.57495     -74.2359                0.523949
-$20-30K       18.4881     13.4157     3.11783     -3.83301     -207.323                0.911481
-$30-40K       16.8463     13.3099     2.78059     -7.11432     -422.308                 1.39848
-$40-50K       13.3335     11.0923     1.91614     -8.32639     -624.471                 1.66377
-$50-75K       22.9225     20.2617     2.36473     -20.2522     -883.508                 1.78165
-$75-100K      13.7307     12.3925      1.2298     -16.2928      -1186.6                 1.73044
-$100-200K     21.7543     19.7221     1.93615     -41.9197     -1926.96                  1.8326
-$200-500K     7.84776     7.23654    0.604507     -43.9066     -5594.79                 2.66207
-$500-1000K    1.14915     1.07263   0.0765177     -15.3413     -13350.1                 2.85443
-&gt;$1000K      0.514758    0.428676   0.0860823     -13.2397     -25720.2                 1.98472
-ALL           199.937     112.776     19.3456     -171.994      -860.24                 1.89689
 </pre></div>
 </div>
 </div>

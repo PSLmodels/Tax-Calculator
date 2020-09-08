@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tax-Calculator Data &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -26,8 +27,6 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -71,7 +70,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -246,6 +252,10 @@
 
  <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
 </div>
 
 
@@ -344,9 +354,9 @@
 <p><strong>Tax-Calculator Data</strong></p>
 <div class="section" id="taxcalc-data">
 <h2>taxcalc.data<a class="headerlink" href="#taxcalc-data" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="taxcalc.data.Data">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.data.</code><code class="sig-name descname">Data</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">start_year</em>, <em class="sig-param">gfactors=None</em>, <em class="sig-param">weights=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.data.</code><code class="sig-name descname">Data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">start_year</span></em>, <em class="sig-param"><span class="n">gfactors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inherit from this class for Records and other collections of
 cross-sectional data that need to have growth factors and sample
 weights to age the data to years after the start_year.</p>
@@ -386,42 +396,42 @@ NOTE: assumes weights are integers that are 100 times the real weights.</p></li>
 <dd class="field-even"><p><a class="reference internal" href="#taxcalc.data.Data" title="taxcalc.data.Data">Data</a></p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.data.Data._extrapolate">
-<code class="sig-name descname">_extrapolate</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._extrapolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._extrapolate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_extrapolate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._extrapolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._extrapolate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply to dats variables the growth factor values for specified year.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.data.Data._read_data">
-<code class="sig-name descname">_read_data</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_read_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from file or use specified DataFrame as data.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.data.Data._read_var_info">
 <code class="sig-name descname">_read_var_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_var_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_var_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read Data variables metadata from JSON file and
 specifies static variable name sets listed above.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.data.Data._read_weights">
-<code class="sig-name descname">_read_weights</code><span class="sig-paren">(</span><em class="sig-param">weights</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_weights" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_read_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read sample weights from file or
 use specified DataFrame as weights or
 create empty DataFrame if None.
 NOTE: assumes weights are integers equal to 100 times the real weight.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.data.Data.increment_year">
 <code class="sig-name descname">increment_year</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data.increment_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data.increment_year" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add one to current year; and also does
 extrapolation &amp; reweighting for new current year if aged_data is True.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.data.Data.zero_out_changing_calculated_vars">
 <code class="sig-name descname">zero_out_changing_calculated_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data.zero_out_changing_calculated_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data.zero_out_changing_calculated_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set to zero all variables in the self.CHANGING_CALCULATED_VARS set.</p>

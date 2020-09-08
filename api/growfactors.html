@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tax-Calculator GrowFactors &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -26,8 +27,6 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -71,7 +70,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -246,6 +252,10 @@
 
  <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
 </div>
 
 
@@ -344,9 +354,9 @@
 <p><strong>Tax-Calculator GrowFactors</strong></p>
 <div class="section" id="taxcalc-growfactors">
 <h2>taxcalc.growfactors<a class="headerlink" href="#taxcalc-growfactors" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="taxcalc.growfactors.GrowFactors">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.growfactors.</code><code class="sig-name descname">GrowFactors</code><span class="sig-paren">(</span><em class="sig-param">growfactors_filename='growfactors.csv'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">taxcalc.growfactors.</code><code class="sig-name descname">GrowFactors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">growfactors_filename</span><span class="o">=</span><span class="default_value">'growfactors.csv'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor for the GrowFactors class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -366,27 +376,27 @@ default value is name of file containing baseline grow factors.</p>
 <p class="rubric">Notes</p>
 <p>Typical usage is “gfactor = GrowFactors()”, which produces an object
 containing the default growth factors in the GrowFactors.FILE_NAME file.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.factor_value">
-<code class="sig-name descname">factor_value</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.factor_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.factor_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">factor_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">year</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.factor_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.factor_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return value of factor with specified name for specified year.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.price_inflation_rates">
-<code class="sig-name descname">price_inflation_rates</code><span class="sig-paren">(</span><em class="sig-param">firstyear</em>, <em class="sig-param">lastyear</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.price_inflation_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.price_inflation_rates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">price_inflation_rates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">firstyear</span></em>, <em class="sig-param"><span class="n">lastyear</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.price_inflation_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.price_inflation_rates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return list of price inflation rates rounded to four decimal digits.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">year</em>, <em class="sig-param">diff</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">year</span></em>, <em class="sig-param"><span class="n">diff</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add to self.gfdf[name][year] the specified diff amount.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.wage_growth_rates">
-<code class="sig-name descname">wage_growth_rates</code><span class="sig-paren">(</span><em class="sig-param">firstyear</em>, <em class="sig-param">lastyear</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.wage_growth_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.wage_growth_rates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">wage_growth_rates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">firstyear</span></em>, <em class="sig-param"><span class="n">lastyear</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.wage_growth_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.wage_growth_rates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return list of wage growth rates rounded to four decimal digits.</p>
 </dd></dl>
 

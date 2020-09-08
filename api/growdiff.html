@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tax-Calculator GrowDiff &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -26,8 +27,6 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -71,7 +70,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -246,6 +252,10 @@
 
  <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
 </div>
 
 
@@ -344,7 +354,7 @@
 <p><strong>Tax-Calculator GrowDiff</strong></p>
 <div class="section" id="taxcalc-growdiff">
 <h2>taxcalc.growdiff<a class="headerlink" href="#taxcalc-growdiff" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="taxcalc.growdiff.GrowDiff">
 <em class="property">class </em><code class="sig-prename descclassname">taxcalc.growdiff.</code><code class="sig-name descname">GrowDiff</code><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff" title="Permalink to this definition">¶</a></dt>
 <dd><p>GrowDiff is a subclass of the abstract Parameters class, and
@@ -361,31 +371,31 @@ therefore, inherits its methods (none of which are shown here).</p>
 <dd class="field-odd"><p><a class="reference internal" href="#taxcalc.growdiff.GrowDiff" title="taxcalc.growdiff.GrowDiff">GrowDiff</a></p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.apply_to">
-<code class="sig-name descname">apply_to</code><span class="sig-paren">(</span><em class="sig-param">growfactors</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.apply_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.apply_to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">apply_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">growfactors</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.apply_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.apply_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply updated GrowDiff values to specified GrowFactors instance.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.has_any_response">
 <code class="sig-name descname">has_any_response</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.has_any_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.has_any_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns true if any parameter is non-zero for any year;
 returns false if all parameters are zero in all years.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.read_json_update">
-<em class="property">static </em><code class="sig-name descname">read_json_update</code><span class="sig-paren">(</span><em class="sig-param">obj</em>, <em class="sig-param">topkey</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.read_json_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.read_json_update" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">read_json_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">topkey</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.read_json_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.read_json_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a revision dictionary suitable for use with update_growdiff
 method generated from the specified JSON object, which can be None or
 a string containing a local filename, a URL beginning with ‘http’
 pointing to a valid JSON file hosted online, or a valid JSON text.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.update_growdiff">
-<code class="sig-name descname">update_growdiff</code><span class="sig-paren">(</span><em class="sig-param">revision</em>, <em class="sig-param">print_warnings=True</em>, <em class="sig-param">raise_errors=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.update_growdiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.update_growdiff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_growdiff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">revision</span></em>, <em class="sig-param"><span class="n">print_warnings</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">raise_errors</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.update_growdiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.update_growdiff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update growdiff default values using specified revision dictionary.
 See Parameters._update for argument documentation and details about
 the expected structure of the revision dictionary.</p>

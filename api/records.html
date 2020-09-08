@@ -2,9 +2,10 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tax-Calculator Records &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="../_static/css/index.css" rel="stylesheet">
@@ -14,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -26,8 +27,6 @@
     <script src="../_static/copybutton.js"></script>
     <script src="../_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -71,7 +70,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -246,6 +252,10 @@
 
  <!-- To handle the deprecated key -->
 
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
+
 </div>
 
 
@@ -344,7 +354,7 @@
 <p><strong>Tax-Calculator Records</strong></p>
 <div class="section" id="taxcalc-records">
 <h2>taxcalc.records<a class="headerlink" href="#taxcalc-records" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="py class">
 <dt id="taxcalc.records.Records">
 <em class="property">class </em><code class="sig-prename descclassname">taxcalc.records.</code><code class="sig-name descname">Records</code><span class="sig-paren">(</span><em class="sig-param">data='puf.csv'</em>, <em class="sig-param">start_year=2011</em>, <em class="sig-param">gfactors=&lt;taxcalc.growfactors.GrowFactors object&gt;</em>, <em class="sig-param">weights='puf_weights.csv.gz'</em>, <em class="sig-param">adjust_ratios='puf_ratios.csv'</em>, <em class="sig-param">exact_calculations=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records" title="Permalink to this definition">¶</a></dt>
 <dd><p>Records is a subclass of the abstract Data class, and therefore,
@@ -425,28 +435,28 @@ constructor’s arguments, but be sure you know exactly what you are
 doing when attempting this.</p>
 <p>Use Records.cps_constructor() to get a Records object instantiated
 with CPS input data.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.records.Records._adjust">
-<code class="sig-name descname">_adjust</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._adjust" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_adjust</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._adjust"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._adjust" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adjust value of income variables to match SOI distributions
 Note: adjustment must leave variables as numpy.ndarray type</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.records.Records._extrapolate">
-<code class="sig-name descname">_extrapolate</code><span class="sig-paren">(</span><em class="sig-param">year</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._extrapolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._extrapolate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_extrapolate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._extrapolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._extrapolate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply to variables the grow factor values for specified calendar year.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.records.Records._read_ratios">
-<code class="sig-name descname">_read_ratios</code><span class="sig-paren">(</span><em class="sig-param">ratios</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._read_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._read_ratios" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">_read_ratios</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ratios</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records._read_ratios"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records._read_ratios" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read Records adjustment ratios from file or
 use specified transposed/no-index DataFrame as ratios or
 create empty DataFrame if None</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.records.Records.cps_constructor">
 <em class="property">static </em><code class="sig-name descname">cps_constructor</code><span class="sig-paren">(</span><em class="sig-param">data=None</em>, <em class="sig-param">gfactors=&lt;taxcalc.growfactors.GrowFactors object&gt;</em>, <em class="sig-param">exact_calculations=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records.cps_constructor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records.cps_constructor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Static method returns a Records object instantiated with CPS
@@ -459,14 +469,14 @@ eliminate the need to specify all the details of the PUF input
 data.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.records.Records.increment_year">
 <code class="sig-name descname">increment_year</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records.increment_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records.increment_year" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add one to current year, and also does
 extrapolation, reweighting, adjusting for new current year.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="taxcalc.records.Records.read_cps_data">
 <em class="property">static </em><code class="sig-name descname">read_cps_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/records.html#Records.read_cps_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.records.Records.read_cps_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return data in cps.csv.gz as a Pandas DataFrame.</p>

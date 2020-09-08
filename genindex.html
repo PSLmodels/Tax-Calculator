@@ -1,11 +1,11 @@
 
 
-
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Index &#8212; Tax-Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" integrity="sha384-KA6wR/X5RY4zFAHpv/CnoG2UW1uogYfdnP67Uv7eULvTveboZJg0qUpmJZb5VqzN" crossorigin="anonymous">
     <link href="_static/css/index.css" rel="stylesheet">
@@ -15,7 +15,7 @@
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css" />
-    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-dropdown.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/sphinx-book-theme.js"></script>
     <script src="_static/jquery.js"></script>
@@ -27,8 +27,6 @@
     <script src="_static/copybutton.js"></script>
     <script src="_static/sphinx-book-theme.js"></script>
     <script >var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.18.0/dist/embed-amd.js"></script>
     <script async="async" src="https://unpkg.com/thebelab@latest/lib/index.js"></script>
     <script >
         const thebe_selector = ".thebe"
@@ -70,7 +68,14 @@
 </form>
 
 <nav class="bd-links" id="bd-docs-nav" aria-label="Main navigation">
-  <p class="caption">
+  <ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="index.html">
+   Tax-Calculator
+  </a>
+ </li>
+</ul>
+<p class="caption">
  <span class="caption-text">
   Usage
  </span>
@@ -172,6 +177,10 @@
 </nav>
 
  <!-- To handle the deprecated key -->
+
+<div class="navbar_extra_footer">
+  Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+</div>
 
 </div>
 
@@ -320,7 +329,7 @@
 </li>
       <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.Adj">Adj() (in module taxcalc.calcfunctions)</a>
 </li>
-      <li><a href="api/parameters.html#taxcalc.parameters.Parameters.adjust">adjust() (taxcalc.parameters.Parameters method)</a>, <a href="api/parameters.html#taxcalc.parameters.Parameters.adjust">[1]</a>
+      <li><a href="api/parameters.html#id0">adjust() (taxcalc.parameters.Parameters method)</a>, <a href="api/parameters.html#taxcalc.parameters.Parameters.adjust">[1]</a>
 </li>
       <li><a href="api/parameters.html#taxcalc.parameters.Parameters.adjust_with_indexing">adjust_with_indexing() (taxcalc.parameters.Parameters method)</a>
 </li>
@@ -464,7 +473,7 @@
 </li>
       <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.EITC">EITC() (in module taxcalc.calcfunctions)</a>
 </li>
-      <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.EITCamount">EITCamount (in module taxcalc.calcfunctions)</a>
+      <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.EITCamount">EITCamount() (in module taxcalc.calcfunctions)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -502,7 +511,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.GainsTax">GainsTax() (in module taxcalc.calcfunctions)</a>
 </li>
-      <li><a href="api/parameters.html#taxcalc.parameters.Parameters.get_index_rate">get_index_rate() (taxcalc.parameters.Parameters method)</a>, <a href="api/parameters.html#taxcalc.parameters.Parameters.get_index_rate">[1]</a>
+      <li><a href="api/parameters.html#id1">get_index_rate() (taxcalc.parameters.Parameters method)</a>, <a href="api/parameters.html#taxcalc.parameters.Parameters.get_index_rate">[1]</a>
 </li>
       <li><a href="api/utils.html#taxcalc.utils.get_sums">get_sums() (in module taxcalc.utils)</a>
 </li>
@@ -596,6 +605,19 @@
 </li>
       <li><a href="api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.minimal_output">minimal_output() (taxcalc.taxcalcio.TaxCalcIO method)</a>
 </li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="api/calcfunctions.html#module-taxcalc.calcfunctions">taxcalc.calcfunctions</a>
+</li>
+        <li><a href="api/decorators.html#module-taxcalc.decorators">taxcalc.decorators</a>
+</li>
+        <li><a href="api/utils.html#module-taxcalc.utils">taxcalc.utils</a>
+</li>
+        <li><a href="api/utilsprvt.html#module-taxcalc.utilsprvt">taxcalc.utilsprvt</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/calculator.html#taxcalc.calculator.Calculator.mtr">mtr() (taxcalc.calculator.Calculator method)</a>
@@ -696,7 +718,7 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.SchR">SchR() (in module taxcalc.calcfunctions)</a>
 </li>
-      <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.SchXYZ">SchXYZ (in module taxcalc.calcfunctions)</a>
+      <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.SchXYZ">SchXYZ() (in module taxcalc.calcfunctions)</a>
 </li>
       <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.SchXYZTax">SchXYZTax() (in module taxcalc.calcfunctions)</a>
 </li>
@@ -728,19 +750,39 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO.tax_year">tax_year() (taxcalc.taxcalcio.TaxCalcIO method)</a>
 </li>
-      <li><a href="api/calcfunctions.html#module-taxcalc.calcfunctions">taxcalc.calcfunctions (module)</a>
+      <li>
+    taxcalc.calcfunctions
+
+      <ul>
+        <li><a href="api/calcfunctions.html#module-taxcalc.calcfunctions">module</a>
 </li>
-      <li><a href="api/decorators.html#module-taxcalc.decorators">taxcalc.decorators (module)</a>
+      </ul></li>
+      <li>
+    taxcalc.decorators
+
+      <ul>
+        <li><a href="api/decorators.html#module-taxcalc.decorators">module</a>
 </li>
-      <li><a href="api/utils.html#module-taxcalc.utils">taxcalc.utils (module)</a>
+      </ul></li>
+      <li>
+    taxcalc.utils
+
+      <ul>
+        <li><a href="api/utils.html#module-taxcalc.utils">module</a>
 </li>
-      <li><a href="api/utilsprvt.html#module-taxcalc.utilsprvt">taxcalc.utilsprvt (module)</a>
-</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    taxcalc.utilsprvt
+
+      <ul>
+        <li><a href="api/utilsprvt.html#module-taxcalc.utilsprvt">module</a>
+</li>
+      </ul></li>
       <li><a href="api/taxcalcio.html#taxcalc.taxcalcio.TaxCalcIO">TaxCalcIO (class in taxcalc.taxcalcio)</a>
 </li>
-      <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.Taxes">Taxes (in module taxcalc.calcfunctions)</a>
+      <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.Taxes">Taxes() (in module taxcalc.calcfunctions)</a>
 </li>
       <li><a href="api/calcfunctions.html#taxcalc.calcfunctions.TaxInc">TaxInc() (in module taxcalc.calcfunctions)</a>
 </li>
