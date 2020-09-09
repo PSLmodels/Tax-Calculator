@@ -2,4 +2,5 @@
 
 ```{bibliography} ../citations.bib
 :all:
+:style: unsrtalpha
 ```
