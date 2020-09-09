@@ -789,7 +789,8 @@
                            <span class="s1">&#39;e02400&#39;</span><span class="p">,</span> <span class="s1">&#39;p22250&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;p23250&#39;</span><span class="p">,</span> <span class="s1">&#39;e18500&#39;</span><span class="p">,</span>
                            <span class="s1">&#39;e19200&#39;</span><span class="p">,</span> <span class="s1">&#39;e26270&#39;</span><span class="p">,</span>
-                           <span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="s1">&#39;e20100&#39;</span><span class="p">]</span>
+                           <span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="s1">&#39;e20100&#39;</span><span class="p">,</span>
+                           <span class="s1">&#39;k1bx14p&#39;</span><span class="p">]</span>
 
 <div class="viewcode-block" id="Calculator.mtr"><a class="viewcode-back" href="../../api/calculator.html#taxcalc.calculator.Calculator.mtr">[docs]</a>    <span class="k">def</span> <span class="nf">mtr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variable_str</span><span class="o">=</span><span class="s1">&#39;e00200p&#39;</span><span class="p">,</span>
             <span class="n">negative_finite_diff</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -875,7 +876,8 @@
 <span class="sd">        &#39;e19200&#39;,  Schedule A interest paid;</span>
 <span class="sd">        &#39;e26270&#39;,  S-corporation/partnership income (also included in e02000);</span>
 <span class="sd">        &#39;e19800&#39;,  Charity cash contributions;</span>
-<span class="sd">        &#39;e20100&#39;,  Charity non-cash contributions.</span>
+<span class="sd">        &#39;e20100&#39;,  Charity non-cash contributions;</span>
+<span class="sd">        &#39;k1bx14p&#39;, Partnership income (also included in e26270 and e02000).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># pylint: disable=too-many-arguments,too-many-statements</span>
         <span class="c1"># pylint: disable=too-many-locals,too-many-branches</span>
@@ -902,6 +904,9 @@
             <span class="n">divincome_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e00600&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">variable_str</span> <span class="o">==</span> <span class="s1">&#39;e26270&#39;</span><span class="p">:</span>
             <span class="n">scheincome_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02000&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">variable_str</span> <span class="o">==</span> <span class="s1">&#39;k1bx14p&#39;</span><span class="p">:</span>
+            <span class="n">scheincome_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02000&#39;</span><span class="p">)</span>
+            <span class="n">scorpincome_var</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e26270&#39;</span><span class="p">)</span>
         <span class="c1"># calculate level of taxes after a marginal increase in income</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable_str</span><span class="p">,</span> <span class="n">variable</span> <span class="o">+</span> <span class="n">finite_diff</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">variable_str</span> <span class="o">==</span> <span class="s1">&#39;e00200p&#39;</span><span class="p">:</span>
@@ -914,6 +919,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e00600&#39;</span><span class="p">,</span> <span class="n">divincome_var</span> <span class="o">+</span> <span class="n">finite_diff</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">variable_str</span> <span class="o">==</span> <span class="s1">&#39;e26270&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02000&#39;</span><span class="p">,</span> <span class="n">scheincome_var</span> <span class="o">+</span> <span class="n">finite_diff</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">variable_str</span> <span class="o">==</span> <span class="s1">&#39;k1bx14p&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e02000&#39;</span><span class="p">,</span> <span class="n">scheincome_var</span> <span class="o">+</span> <span class="n">finite_diff</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;e26270&#39;</span><span class="p">,</span> <span class="n">scorpincome_var</span> <span class="o">+</span> <span class="n">finite_diff</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">has_response</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">,</span> <span class="n">finite_diff</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">calc_all</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="n">zero_out_calculated_vars</span><span class="p">)</span>
@@ -964,6 +972,9 @@
             <span class="k">del</span> <span class="n">divincome_var</span>
         <span class="k">elif</span> <span class="n">variable_str</span> <span class="o">==</span> <span class="s1">&#39;e26270&#39;</span><span class="p">:</span>
             <span class="k">del</span> <span class="n">scheincome_var</span>
+        <span class="k">elif</span> <span class="n">variable_str</span> <span class="o">==</span> <span class="s1">&#39;k1bx14p&#39;</span><span class="p">:</span>
+            <span class="k">del</span> <span class="n">scheincome_var</span>
+            <span class="k">del</span> <span class="n">scorpincome_var</span>
         <span class="k">del</span> <span class="n">payrolltax_chng</span>
         <span class="k">del</span> <span class="n">incometax_chng</span>
         <span class="k">del</span> <span class="n">combined_taxes_chng</span>
