@@ -3,6 +3,7 @@ channels:
   - conda-forge
 dependencies:
 - python
+- curl
 - "numpy>=1.14"
 - "pandas>=1.1.0"
 - "bokeh>=1.4.0"
