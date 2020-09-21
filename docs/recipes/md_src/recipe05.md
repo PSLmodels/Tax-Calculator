@@ -42,8 +42,9 @@ if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
     # Append path to be able to run packages installed with conda
     # This must correspond to the conda Python version, which may differ from
     # the base Colab Python installation.
-    sys.path.append('/usr/local/lib/python3.7/site-packages')
+    sys.path.append('/usr/local/lib/python3.8/site-packages')
     # Install PSL packages from Anaconda
+    !yes | conda install -c conda-forge paramtools
     !yes | conda install -c PSLmodels taxcalc
 ```
 
