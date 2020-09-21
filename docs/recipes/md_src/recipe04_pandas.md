@@ -31,7 +31,7 @@ if 'google.colab' in sys.modules and 'taxcalc' not in sys.modules:
     sys.path.append('/usr/local/lib/python3.8/site-packages')
     # Install PSL packages from Anaconda
     !yes | conda install -c conda-forge paramtools
-    !yes | conda install -c PSLmodels taxcalc
+    !yes | conda install -c PSLmodels taxcalc behresp
 ```
 
 ```{code-cell} ipython3
