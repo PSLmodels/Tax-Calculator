@@ -872,7 +872,7 @@ def test_qbid_limit_switch():
     ref = {"PT_qbid_limit_switch": {2019: False}}
 
     # filing unit has $500,000 in wages and $100,000 in QBI. Since
-    # the household is above the taxable income limitation threshold, 
+    # the household is above the taxable income limitation threshold,
     # with full wage/capital limitations, it does not receive a QBI
     # deduction. With sufficent wage/capital to avoid the limitation,
     # the filing unit receives a deduction of:
@@ -882,7 +882,7 @@ def test_qbid_limit_switch():
 
     funit_df = pd.read_csv(StringIO(VARS + FUNIT))
     recs = Records(data=funit_df, start_year=cy,
-                    gfactors=None, weights=None)
+                   gfactors=None, weights=None)
 
     calc_base = Calculator(policy=Policy(), records=recs)
     calc_base.calc_all()

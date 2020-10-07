@@ -791,7 +791,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
            e02100, e27200, e00650, c01000,
            PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
            PT_qbid_rt, PT_qbid_taxinc_thd, PT_qbid_taxinc_gap,
-           PT_qbid_w2_wages_rt, PT_qbid_alt_w2_wages_rt, 
+           PT_qbid_w2_wages_rt, PT_qbid_alt_w2_wages_rt,
            PT_qbid_alt_property_rt, PT_qbid_limit_switch,
            c04800, qbided):
     """
@@ -815,7 +815,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
                 qbided = 0.
             # if PT_qbid_limit_switch is True, apply wage/capital
             # limitations.
-            elif PT_qbid_limit_switch:  
+            elif PT_qbid_limit_switch:
                 wage_cap = PT_binc_w2_wages * PT_qbid_w2_wages_rt
                 alt_cap = (PT_binc_w2_wages * PT_qbid_alt_w2_wages_rt +
                            PT_ubia_property * PT_qbid_alt_property_rt)
@@ -838,7 +838,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
                     qbided = qbid_adjusted - adj
             # if PT_qbid_limit_switch is False, assume all taxpayers
             # have sufficient wage expenses and capital income to avoid
-            # QBID limitations.            
+            # QBID limitations.
             else:
                 qbided = qbid_before_limits
         # apply taxinc cap (assuning cap rate is equal to PT_qbid_rt)
