@@ -863,6 +863,42 @@ def test_qbid_calculation():
     assert np.allclose(tc_df.qbided, tpc_df.qbid)
 
 
+def test_qbid_limit_switch():
+    """
+    Test Calculator's switch to implement wage/capital limitations
+    on QBI deduction.
+    """
+    cy = 2019
+    ref = {"PT_qbid_limit_switch": {2019: False}}
+
+    # filing unit has $500,000 in wages and $100,000 in QBI. Since
+    # the household is above the taxable income limitation threshold, 
+    # with full wage/capital limitations, it does not receive a QBI
+    # deduction. With sufficent wage/capital to avoid the limitation,
+    # the filing unit receives a deduction of:
+    # $100,000 * 20% = $20,000.
+    VARS = 'RECID,MARS,e00200s,e00200p,e00200,e26270,e02000\n'
+    FUNIT = '1,2,250000,250000,500000,100000,100000'
+
+    funit_df = pd.read_csv(StringIO(VARS + FUNIT))
+    recs = Records(data=funit_df, start_year=cy,
+                    gfactors=None, weights=None)
+
+    calc_base = Calculator(policy=Policy(), records=recs)
+    calc_base.calc_all()
+
+    qbid_base = calc_base.array('qbided')
+    assert np.equal(qbid_base, 0)
+
+    pol_ref = Policy()
+    pol_ref.implement_reform(ref)
+    calc_ref = Calculator(policy=pol_ref, records=recs)
+    calc_ref.calc_all()
+
+    qbid_ref = calc_ref.array('qbided')
+    assert np.equal(qbid_ref, 20000)
+
+
 def test_calc_all_benefits_amounts(cps_subsample):
     '''
     Testing how benefits are handled in the calc_all method
