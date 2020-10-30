@@ -3763,6 +3763,94 @@ _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error  
 
 
+### Refundable Child and Dependent Care Credit
+
+####  `CDCC_new_c`  
+_Description:_ The maximum refundable credit allowed for each qualifying dependent.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `CDCC_new_deps_max`  
+_Description:_ The refundable child & dependent care credit will be applied up to this many dependents.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ int  
+_Known Values:_  
+2013: 10  
+2014: 10  
+2015: 10  
+2016: 10  
+2017: 10  
+2018: 10  
+2019: 10  
+_Valid Range:_ min = 0 and max = 10  
+_Out-of-Range Action:_ error  
+
+
+####  `CDCC_new_frac`  
+_Description:_ Child care costs are multiplied by this fraction to calculate the refundable child & dependent care credit amount.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 1.0  
+2014: 1.0  
+2015: 1.0  
+2016: 1.0  
+2017: 1.0  
+2018: 1.0  
+2019: 1.0  
+_Valid Range:_ min = 0 and max = 1.0  
+_Out-of-Range Action:_ error  
+
+
+####  `CDCC_new_ps`  
+_Description:_ The total amount of the refundable child & dependent care credit is reduced for taxpayers with AGI higher than this level.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
+_Value Type:_ float  
+_Known Values:_  
+ for: [single, mjoint, mseparate, headhh, widow]  
+2013: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2014: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2015: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2016: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2017: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2018: [0.0, 0.0, 0.0, 0.0, 0.0]  
+2019: [0.0, 0.0, 0.0, 0.0, 0.0]  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
+####  `CDCC_new_prt`  
+_Description:_ The total amount of the refundable child & dependent care credit is reduced at this rate per dollar exceeding the phaseout starting AGI, CDCC_new_ps.  
+_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
+_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
+_Value Type:_ float  
+_Known Values:_  
+2013: 0.0  
+2014: 0.0  
+2015: 0.0  
+2016: 0.0  
+2017: 0.0  
+2018: 0.0  
+2019: 0.0  
+_Valid Range:_ min = 0 and max = 9e+99  
+_Out-of-Range Action:_ error  
+
+
 ### Refundable Payroll Tax Credit
 
 ####  `RPTC_c`  

@@ -529,6 +529,13 @@ _IRS Form Location:_
 2013-20??: calculated variable  
 
 
+##  `cdcc_new`  
+_Description_: search taxcalc/calcfunctions.py for how calculated and used  
+_Datatype_: float  
+_IRS Form Location:_  
+2013-20??: calculated variable  
+
+
 ##  `odc`  
 _Description_: Other Dependent Credit  
 _Datatype_: float  
