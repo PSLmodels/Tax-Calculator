@@ -707,6 +707,7 @@ def test_section_titles(tests_path):
         'Refundable Credits': {
             'Earned Income Tax Credit': 0,
             'New Refundable Child Tax Credit': 0,
+            'Refundable Child and Dependent Care Credit': 0,
             'Personal Refundable Credit': 0,
             'Refundable Payroll Tax Credit': 0
         },
