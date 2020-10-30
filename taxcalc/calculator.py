@@ -16,7 +16,7 @@ from taxcalc.calcfunctions import (TaxInc, SchXYZTax, GainsTax, AGIsurtax,
                                    DependentCare, ALD_InvInc_ec_base, CapGains,
                                    SSBenefits, UBI, AGI, ItemDedCap, ItemDed,
                                    StdDed, AdditionalMedicareTax, F2441, EITC,
-                                   RefundablePayrollTaxCredit,
+                                   RefundablePayrollTaxCredit, CDCC_new,
                                    ChildDepTaxCredit, AdditionalCTC, CTC_new,
                                    PersonalTaxCredit, SchR,
                                    AmOppCreditParts, EducationTaxCredit,
@@ -1444,4 +1444,5 @@ class Calculator():
         AdditionalCTC(self.__policy, self.__records)
         C1040(self.__policy, self.__records)
         CTC_new(self.__policy, self.__records)
+        CDCC_new(self.__policy, self.__records)
         IITAX(self.__policy, self.__records)

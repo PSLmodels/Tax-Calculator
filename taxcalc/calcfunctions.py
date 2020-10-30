@@ -1189,6 +1189,26 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     return c07180
 
 
+@iterate_jit(nopython=True)
+def CDCC_new(MARS, c00100, f2441, e32800, CDCC_new_c, CDCC_new_frac,
+             CDCC_new_ps, CDCC_new_prt, CDCC_new_deps_max, cdcc_new):
+    """
+    Calculates a fully refundable child and dependent care credit, cdcc_new.
+    """
+    # cdcc_new may be applied to a limited number of dependents
+    max_credit = min(f2441, CDCC_new_deps_max) * CDCC_new_c
+    # cdcc_new may be limited by a percentage of child care costs
+    cdcc_new = max(0., min(e32800 * CDCC_new_frac, max_credit))
+
+    positiveagi = max(c00100, 0.)
+    phaseout_start = CDCC_new_ps[MARS - 1]
+    if positiveagi > phaseout_start:
+        cdcc_new = max(0., cdcc_new - CDCC_new_prt * (positiveagi
+                       - phaseout_start))
+
+    return cdcc_new
+
+
 @JIT(nopython=True)
 def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
                phaseout_start, agi, phaseout_rate):
@@ -1720,14 +1740,13 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
-          c09200, payrolltax,
-          eitc, refund, iitax, combined):
+          c09200, cdcc_new, payrolltax, eitc, refund, iitax, combined):
     """
     Computes final taxes.
     """
     eitc = c59660
     refund = (eitc + c11070 + c10960 +
-              personal_refundable_credit + ctc_new + rptc)
+              personal_refundable_credit + ctc_new + rptc + cdcc_new)
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)
