@@ -12365,7 +12365,7 @@
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
         "indexable": true,
-        "indexed": false,
+        "indexed": true,
         "type": "float",
         "value": [
             {
@@ -12601,8 +12601,8 @@
             }
         },
         "compatible_data": {
-            "puf": false,
-            "cps": false
+            "puf": true,
+            "cps": true
         }
     },
     "AMT_em": {
