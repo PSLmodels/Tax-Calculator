@@ -1,203 +1,221 @@
-Use cases
-=========
+Recorded use cases
+==================
 
-\[1\] Committee for a Responsible Federal Budget. Choices for Financing
+\[1\] Timothy Fitzgerald, Kevin Hassett, Cody Kallen, and Casey
+Mulligan. An Analysis of Vice President Biden's Economic Agenda: The
+Long Run Impacts of Its Regulation, Taxes, and Spending\*. October 2020.
+URL:
+<https://www.hoover.org/research/analysis-vice-president-bidens-economic-agenda-long-run-impacts>.
+
+\[2\] Kyle Pomerleau. An analysis of Joe Biden's tax proposals, October
+2020 update. October 2020. Section: Economics. URL:
+<https://www.aei.org/research-products/report/an-analysis-of-joe-bidens-tax-proposals-october-2020-update/>.
+
+\[3\] Richard Rubin. How Biden's Tax Plan Would Affect Five American
+Households. Wall Street Journal, September 2020. URL:
+<https://www.wsj.com/articles/how-bidens-tax-plan-might-affect-five-american-households-11599739200>.
+
+\[4\] Kyle Pomerleau. The tax burden on business investment under Joe
+Biden's tax proposals. September 2020. Section: Economics. URL:
+<https://www.aei.org/research-products/report/the-tax-burden-on-business-investment-under-joe-bidens-tax-proposals/>.
+
+\[5\] Max Ghenis and Nate Silver. Poverty and inequality effects of new
+unemployment benefits, payroll tax cuts, and universal payments. July
+2020. URL: <https://covid.ubicenter.org/fpuc.html>.
+
+\[6\] Kyle Pomerleau. An analysis of Joe Biden\'s tax proposals. June
+2020. Section: Economics. URL:
+<https://www.aei.org/research-products/report/an-analysis-of-joe-bidens-tax-proposals/>.
+
+\[7\] Kyle Pomerleau. Eligible dependents in the CARES Act and HEROES
+Act economic relief payments. May 2020. Section: Economics. URL:
+<https://www.aei.org/economics/eligible-dependents-in-the-cares-act-and-heroes-act-economic-relief-payments/>.
+
+\[8\] Don Boyd. A New Synthetic Data Set for Tax Policy Analysis.
+Quantitative Notes, 2:7, May 2020. URL:
+<https://www.openrg.com/reports/SynData_QN.pdf>.
+
+\[9\] Kyle Pomerleau. The CARES Act: Who will get a rebate and how much?
+March 2020. Section: Economics. URL:
+<https://www.aei.org/economics/the-care-act-who-will-get-a-rebate-and-how-much/>.
+
+\[10\] Committee for a Responsible Federal Budget. Choices for Financing
 Medicare for All. Technical Report, Committee for a Responsible Federal
 Budget, March 2020. URL:
 <http://www.crfb.org/papers/choices-financing-medicare-all>.
 
-\[2\] Matt Jensen. Transparency for Congress\'s Scorekeepers. National
+\[11\] Matt Jensen. Transparency for Congress\'s Scorekeepers. National
 Affairs, 2020. URL:
 <https://www.nationalaffairs.com/publications/detail/transparency-for-congresss-scorekeepers>.
 
-\[3\] Don Boyd. A New Synthetic Data Set for Tax Policy Analysis.
-Quantitative Notes, 2:7, 2020. URL:
-<https://www.openrg.com/reports/SynData_QN.pdf>.
-
-\[4\] Jaeger Nelson and Kerk Phillips. Macroeconomic Effects of Reducing
-OASI Benefits: A Comparison of Seven Overlapping-Generations Models.
-National Tax Journal, 70(4):671--692, December 2019. URL:
+\[12\] Jaeger Nelson and Kerk Phillips. Macroeconomic Effects of
+Reducing OASI Benefits: A Comparison of Seven Overlapping-Generations
+Models. National Tax Journal, 70(4):671--692, December 2019. URL:
 <http://www.ntanet.org/NTJ/72/4/ntj-v72n04p671-692-Macroeconomic-Effects-of-Reducing-OASI-Benefits.html>,
 doi:10.17310/ntj.2019.4.02.
 
-\[5\] Aparna Mathur. Rethinking the Green New Deal: Using Climate Policy
-to Address Inequality. National Tax Journal, 70(4):693--722, December
-2019. URL:
+\[13\] Aparna Mathur. Rethinking the Green New Deal: Using Climate
+Policy to Address Inequality. National Tax Journal, 70(4):693--722,
+December 2019. URL:
 <http://www.ntanet.org/NTJ/72/4/ntj-v72n04p693-722-Rehinking-the-Green-New-Deal.html>,
 doi:10.17310/ntj.2019.4.03.
 
-\[6\] Alan D. Viard and Sita Nataraj Slavov. The Wrong Way to Make
+\[14\] Alan D. Viard and Sita Nataraj Slavov. The Wrong Way to Make
 Social Security and Medicare More Progressive. Tax Notes, September
 2019. URL:
 <https://www.taxnotes.com/tax-notes-federal/social-welfare-taxation/wrong-way-make-social-security-and-medicare-more-progressive/2019/09/16/29wpk>.
 
-\[7\] Lily L. Batchelder and David Kamin. Taxing the Rich: Issues and
+\[15\] Lily L. Batchelder and David Kamin. Taxing the Rich: Issues and
 Options. SSRN Scholarly Paper ID 3452274, Social Science Research
 Network, Rochester, NY, September 2019.
 
-\[8\] Max Ghenis. Distributional analysis of Andrew Yang's Freedom
+\[16\] Max Ghenis. Distributional analysis of Andrew Yang's Freedom
 Dividend. June 2019. URL:
 <https://medium.com/ubicenter/distributional-analysis-of-andrew-yangs-freedom-dividend-d8dab818bf1b>.
 
-\[9\] Alan D. Viard. An Economic Analysis of the TCJA's Larger Standard
+\[17\] Alan D. Viard. An Economic Analysis of the TCJA's Larger Standard
 Deduction. Tax Notes, April 2019. URL:
 <https://www.aei.org/wp-content/uploads/2019/04/On-the-Margin-April-1-2019.pdf>.
 
-\[10\] Aparna Mathur. The Tax Cuts and Jobs Act: Anything but a simple
+\[18\] Aparna Mathur. The Tax Cuts and Jobs Act: Anything but a simple
 tax reform \\textbar AEI. Bloomberg Tax, March 2019. URL:
 <https://www.aei.org/articles/the-tax-cuts-and-jobs-act-anything-but-a-simple-tax-reform/>.
 
-\[11\] Ernie Tedeschi. An Analysis of the Earned Basic Income Tax
+\[19\] Ernie Tedeschi. An Analysis of the Earned Basic Income Tax
 Credit. March 2019. URL:
 <https://drive.google.com/file/d/1Ko0kQXP7FEdzdvGJq4N7MmRbemFNH8Xp/view?mkt_tok=eyJpIjoiWVRRMFpqTXhOVGcwTkRBNSIsInQiOiJzNk5CWkpqOUlzeGc4Z0ZRUXYwSnRXT0ZZSGVwczNwa3A3UVwvUWdKaEVuc2E2TE91NUVUcjVEU1doMEdsSnpcL1BIVzE4U2NzeGZFOENBWmhiUlwvbDhUSUxsQVJ4cXJJTDJYcExsdElUV0xkMFFaRzJoMlRtTGNOZWM3RHZHeDNBUSJ9&usp=embed_facebook>.
 
-\[12\] Council of Economic Advisors. Economic Report of the President.
+\[20\] Council of Economic Advisors. Economic Report of the President.
 Technical Report PR 45.9, Council of Economic Advisors, March 2019. URL:
 <https://www.govinfo.gov/content/pkg/ERP-2019/pdf/ERP-2019.pdf>.
 
-\[13\] Aparna Mathur and Cody Kallen. Estimating the distributional
+\[21\] Aparna Mathur and Cody Kallen. Estimating the distributional
 implications of the Tax Cuts and Jobs Act. Technical Report, AEI,
 February 2019. URL:
 <https://www.aei.org/research-products/working-paper/estimating-the-distributional-implications-of-the-tax-cuts-and-jobs-act/>.
 
-\[14\] Jason DeBacker, Richard W. Evans, and Kerk L. Phillips.
+\[22\] Jason DeBacker, Richard W. Evans, and Kerk L. Phillips.
 Integrating Microsimulation Models of Tax Policy into a DGE
 Macroeconomic Model. Public Finance Review, 47(2):207--275, February
 2019. URL: <https://doi.org/10.1177/1091142118816744>,
 doi:10.1177/1091142118816744.
 
-\[15\] Aparna Mathur. A 70 percent tax rate on the rich may be smart
+\[23\] Aparna Mathur. A 70 percent tax rate on the rich may be smart
 politics, but is not smart economics \\textbar AEI. Bloomberg Tax,
 January 2019. URL:
 <https://www.aei.org/articles/a-70-tax-rate-on-the-rich-may-be-smart-politics-but-is-not-smart-economics/>.
 
-\[16\] Jason DeBacker and Anderson Frailey. Revenue and Macroeconomic
+\[24\] Jason DeBacker and Anderson Frailey. Revenue and Macroeconomic
 Effects of a 70% Marginal Tax Rate. Quantitative Notes, 1:5, 2019.
 
-\[17\] Alan D. Viard and Sita Nataraj Slavov. Taxes, transfers,
+\[25\] Alan D. Viard and Sita Nataraj Slavov. Taxes, transfers,
 progressivity, and redistribution: Part III \\textbar AEI. Tax Notes,
 November 2018. URL:
 <https://www.aei.org/articles/taxes-transfers-progressivity-and-redistribution-part-3/>.
 
-\[18\] AEI. Charitable giving and the Tax Cuts and Jobs Act. Technical
+\[26\] AEI. Charitable giving and the Tax Cuts and Jobs Act. Technical
 Report, AEI, June 2018. URL:
 <https://www.aei.org/research-products/report/charitable-giving-and-the-tax-cuts-and-jobs-act/>.
 
-\[19\] Alex Brill and Benedict Ippolito. The effects of tax reform on
+\[27\] Alex Brill and Benedict Ippolito. The effects of tax reform on
 the medical deduction \\textbar AEI. Tax Notes, May 2018. URL:
 <https://www.aei.org/articles/the-effects-of-tax-reform-on-the-medical-deduction/>.
 
-\[20\] Reuben Fischer-Baum. Analysis \\textbar Will your taxes go up or
+\[28\] Reuben Fischer-Baum. Analysis \\textbar Will your taxes go up or
 down in 2018 under the new tax bill? Washington Post, January 2018. URL:
 <https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/>.
 
-\[21\] Jason Furman. Some Preliminary Macroeconomics of the Tax Cuts and
+\[29\] Jason Furman. Some Preliminary Macroeconomics of the Tax Cuts and
 Jobs Act. January 2018. URL:
 <https://www.piie.com/system/files/documents/furman20180106ppt.pdf>.
 
-\[22\] Richard W Evans. Dynamic Analysis of EITC Expansion. Quantitative
+\[30\] Richard W Evans. Dynamic Analysis of EITC Expansion. Quantitative
 Notes, 2:14, 2018. URL:
 <https://www.openrg.com/reports/QN_EITC_v1.1.pdf>.
 
-\[23\] Jason DeBacker and Richard W Evans. Dynamic Analysis of Tax Cuts
+\[31\] Jason DeBacker and Richard W Evans. Dynamic Analysis of Tax Cuts
 and Jobs Act. Quantitative Notes, 1:6, 2018. URL:
 <https://www.openrg.com/reports/QN_ogusa_TCJA.pdf>.
 
-\[24\] Tal Yellin and Sam Petulla. See how the tax bill affects your
+\[32\] Tal Yellin and Sam Petulla. See how the tax bill affects your
 paycheck. CNN, December 2017. URL:
 <https://www.cnn.com/2017/12/13/politics/calculate-americans-taxes-senate-reform-bill/index.html>.
 
-\[25\] Ben Casselman. How to Build a Tax Calculator That's Actually
+\[33\] Ben Casselman. How to Build a Tax Calculator That's Actually
 Useful. The New York Times, December 2017. URL:
 <https://www.nytimes.com/2017/12/19/insider/how-to-build-a-tax-calculator-thats-actually-useful.html>.
 
-\[26\] Adam Pearce, Quoctrung Bui, Ben Casselman, and Blacki Migliozzi.
+\[34\] Adam Pearce, Quoctrung Bui, Ben Casselman, and Blacki Migliozzi.
 Tax Bill Calculator: Will Your Taxes Go Up or Down? The New York Times,
 December 2017. URL:
 <https://www.nytimes.com/interactive/2017/12/17/upshot/tax-calculator.html>,
 <https://www.nytimes.com/interactive/2017/12/17/upshot/tax-calculator.html>.
 
-\[27\] Quoctrung Bui and Ben Casselman. What the Tax Bill Would Look
+\[35\] Quoctrung Bui and Ben Casselman. What the Tax Bill Would Look
 Like for 25,000 Middle-Class Families. The New York Times, November
 2017. URL:
 <https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html>,
 <https://www.nytimes.com/interactive/2017/11/28/upshot/what-the-tax-bill-would-look-like-for-25000-middle-class-families.html>.
 
-\[28\] Council of Economic Advisors. Evaluating the Anticipated Effects
+\[36\] Council of Economic Advisors. Evaluating the Anticipated Effects
 of Changes to the Mortgage Interest Deduction. Technical Report, Council
 of Economic Advisors, November 2017. URL:
 <https://www.whitehouse.gov/sites/whitehouse.gov/files/images/Effects%20of%20Changes%20to%20the%20Mortgage%20Interest%20Deduction%20FINAL.pdf>.
 
-\[29\] Ernie Tedeschi. For the Non-Rich, the Child Tax Credit Is the Key
+\[37\] Ernie Tedeschi. For the Non-Rich, the Child Tax Credit Is the Key
 to Tax Reform. The New York Times, October 2017. URL:
 <https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html>,
 <https://www.nytimes.com/interactive/2017/10/17/upshot/tax-reform-winners-losers-child-tax-credit.html>.
 
-\[30\] Alex Brill. Testimony: The opportunities for individual tax
+\[38\] Alex Brill. Testimony: The opportunities for individual tax
 reform. September 2017.
 
-\[31\] Alex Brill. AEI Tax Brief: Repealing the personal exemption.
+\[39\] Alex Brill. AEI Tax Brief: Repealing the personal exemption.
 September 2017. URL:
 <https://www.aei.org/research-products/one-pager/aei-tax-brief-repealing-the-personal-exemption/>.
 
-\[32\] Alex Brill. AEI Tax Brief: Increasing the Standard Deduction.
+\[40\] Alex Brill. AEI Tax Brief: Increasing the Standard Deduction.
 September 2017. URL:
 <https://www.aei.org/research-products/one-pager/aei-tax-brief-increasing-the-standard-deduction/>.
 
-\[33\] Alex Brill. AEI Tax Brief: Child Tax Credit Options. September
+\[41\] Alex Brill. AEI Tax Brief: Child Tax Credit Options. September
 2017. URL:
 <https://www.aei.org/research-products/one-pager/aei-tax-brief-child-tax-credit-options/>.
 
-\[34\] Jason DeBacker. Impacts of Business Tax Reform on Investment
+\[42\] Jason DeBacker. Impacts of Business Tax Reform on Investment
 Incentives for the Retail Industry. Quantitative Notes, 1:2, 2017. URL:
 <https://www.openrg.com/reports/Retail_QN_091817.pdf>.
 
-\[35\] Richard W Evans and Haylee Ham. Government Revenue and
+\[43\] Richard W Evans and Haylee Ham. Government Revenue and
 Distributional Effects of Tax Cuts and Jobs Act. Quantitative Notes,
 3:4, 2017. URL: <https://www.openrg.com/reports/TCJA_taxcalc.pdf>.
 
-\[36\] Jason DeBacker. Estimating the Effects of Business Tax Reform on
+\[44\] Jason DeBacker. Estimating the Effects of Business Tax Reform on
 Output. Quantitative Notes, 2:4, 2017. URL:
 <https://www.openrg.com/reports/CCC_Output_QN.pdf>.
 
-\[37\] Richard W Evans. Dynamic Analysis of Corporate Income Tax Rate
+\[45\] Richard W Evans. Dynamic Analysis of Corporate Income Tax Rate
 Cut. Quantitative Notes, 4:6, 2017. URL:
 <https://www.openrg.com/reports/QN_CorpCut.pdf>.
 
-\[38\] Richard Rubin. Republicans' Radical New Business-Tax Proposal,
+\[46\] Richard Rubin. Republicans' Radical New Business-Tax Proposal,
 Simplified (Sort Of). December 2016. URL:
 <https://blogs.wsj.com/economics/2016/12/26/republicans-radical-new-business-tax-proposal-simplified-sort-of/>.
 
-\[39\] Dylan Matthews. House Republicans are proposing a big corporate
+\[47\] Dylan Matthews. House Republicans are proposing a big corporate
 tax cut that Walmart hates. Vox, December 2016. URL:
 <https://www.vox.com/2016/12/25/14069822/corporate-tax-border-adjustability>.
 
-\[40\] Alex Brill. Tax reform: Ryan-Brady plan is a better way.
+\[48\] Alex Brill. Tax reform: Ryan-Brady plan is a better way.
 Technical Report, AEI, October 2016. URL:
 <https://www.aei.org/research-products/report/tax-reform-ryan-brady-plan-is-a-better-way/>.
 
-\[41\] Richard Rubin. Why It's So Hard to Get Rid of Tax 'Loopholes'.
+\[49\] Richard Rubin. Why It's So Hard to Get Rid of Tax 'Loopholes'.
 August 2016. URL:
 <https://web.archive.org/web/20160819134156/http://blogs.wsj.com/economics/2016/08/18/why-its-so-hard-to-get-rid-of-tax-loopholes/>.
 
-\[42\] Aparna Mathur and Adele Hunter. Leaving Childless Taxpayers
+\[50\] Aparna Mathur and Adele Hunter. Leaving Childless Taxpayers
 Behind in the Tax Code \\textbar AEI. Tax Notes, July 2016. Library
 Catalog: [www.aei.org](http://www.aei.org) Section: Public Economics.
 URL:
 <https://www.aei.org/articles/leaving-childless-taxpayers-behind-in-the-tax-code/>.
-
-\[43\] Jim Tankersley. The search for the best middle-class tax cut.
-Washington Post, April 2016. URL:
-<https://www.washingtonpost.com/news/wonk/wp/2016/04/14/the-search-for-the-best-middle-class-tax-cut/>.
-
-\[44\] Alex Brill. Understanding middle-class tax cuts. Technical
-Report, AEI, April 2016. URL:
-<https://www.aei.org/research-products/report/understanding-middle-class-tax-cuts/>.
-
-\[45\] Kevin Hassett. Reaching America\'s potential: Delivering growth
-and opportunity for all Americans. February 2016. URL:
-<https://www.aei.org/research-products/speech/statement-before-the-house-ways-and-means-committee/>.
-
-\[46\] Kevin Hassett. On the Dynamic Scoring of Fiscal Policy. July
-2015. URL:
-<https://www.aei.org/press/on-the-dynamic-scoring-of-fiscal-policy/>.
