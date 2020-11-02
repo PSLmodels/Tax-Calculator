@@ -219,3 +219,19 @@ Behind in the Tax Code \\textbar AEI. Tax Notes, July 2016. Library
 Catalog: [www.aei.org](http://www.aei.org) Section: Public Economics.
 URL:
 <https://www.aei.org/articles/leaving-childless-taxpayers-behind-in-the-tax-code/>.
+
+\[51\] Jim Tankersley. The search for the best middle-class tax cut.
+Washington Post, April 2016. URL:
+<https://www.washingtonpost.com/news/wonk/wp/2016/04/14/the-search-for-the-best-middle-class-tax-cut/>.
+
+\[52\] Alex Brill. Understanding middle-class tax cuts. Technical
+Report, AEI, April 2016. URL:
+<https://www.aei.org/research-products/report/understanding-middle-class-tax-cuts/>.
+
+\[53\] Kevin Hassett. Reaching America\'s potential: Delivering growth
+and opportunity for all Americans. February 2016. URL:
+<https://www.aei.org/research-products/speech/statement-before-the-house-ways-and-means-committee/>.
+
+\[54\] Kevin Hassett. On the Dynamic Scoring of Fiscal Policy. July
+2015. URL:
+<https://www.aei.org/press/on-the-dynamic-scoring-of-fiscal-policy/>.
