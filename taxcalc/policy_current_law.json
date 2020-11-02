@@ -15239,7 +15239,7 @@
     "CDCC_new_c": {
         "title": "Maximum refundable child & dependent care credit per dependent",
         "description": "The maximum refundable credit allowed for each qualifying dependent.",
-        "notes": "",
+        "notes": "Child/dependent care expenses (e32800) reported in the PUF and CPS files are capped. Therefore, CDCC_new_* should not be used with the PUF or CPS files.",
         "section_1": "Refundable Credits",
         "section_2": "Refundable Child and Dependent Care Credit",
         "indexable": true,
@@ -15282,14 +15282,14 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true
+            "puf": false,
+            "cps": false
         }
     },
     "CDCC_new_deps_max": {
         "title": "Maximum number of children eligible for refundable child & dependent care credit",
         "description": "The refundable child & dependent care credit will be applied up to this many dependents.",
-        "notes": "",
+        "notes": "Child/dependent care expenses (e32800) reported in the PUF and CPS files are capped. Therefore, CDCC_new_* should not be used with the PUF or CPS files.",
         "section_1": "Refundable Credits",
         "section_2": "Refundable Child and Dependent Care Credit",
         "indexable": false,
@@ -15308,14 +15308,14 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true
+            "puf": false,
+            "cps": false
         }
     },
     "CDCC_new_frac": {
         "title": "Fraction of child care costs eligible for refundable child & dependent care credit",
         "description": "Child care costs are multiplied by this fraction to calculate the refundable child & dependent care credit amount.",
-        "notes": "",
+        "notes": "Child/dependent care expenses (e32800) reported in the PUF and CPS files are capped. Therefore, CDCC_new_* should not be used with the PUF or CPS files.",
         "section_1": "Refundable Credits",
         "section_2": "Refundable Child and Dependent Care Credit",
         "indexable": false,
@@ -15334,14 +15334,14 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true
+            "puf": false,
+            "cps": false
         }
     },
     "CDCC_new_ps": {
         "title": "Refundable child & dependent care credit phaseout starting AGI",
         "description": "The total amount of the refundable child & dependent care credit is reduced for taxpayers with AGI higher than this level.",
-        "notes": "",
+        "notes": "Child/dependent care expenses (e32800) reported in the PUF and CPS files are capped. Therefore, CDCC_new_* should not be used with the PUF or CPS files.",
         "section_1": "Refundable Credits",
         "section_2": "Refundable Child and Dependent Care Credit",
         "indexable": true,
@@ -15531,14 +15531,14 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true
+            "puf": false,
+            "cps": false
         }
     },
     "CDCC_new_prt": {
         "title": "Refundable child & dependent care credit phaseout rate",
         "description": "The total amount of the refundable child & dependent care credit is reduced at this rate per dollar exceeding the phaseout starting AGI, CDCC_new_ps.",
-        "notes": "",
+        "notes": "Child/dependent care expenses (e32800) reported in the PUF and CPS files are capped. Therefore, CDCC_new_* should not be used with the PUF or CPS files.",
         "section_1": "Refundable Credits",
         "section_2": "Refundable Child and Dependent Care Credit",
         "indexable": false,
@@ -15557,8 +15557,8 @@
             }
         },
         "compatible_data": {
-            "puf": true,
-            "cps": true
+            "puf": false,
+            "cps": false
         }
     },           
     "FST_AGI_trt": {
