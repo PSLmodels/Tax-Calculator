@@ -1266,7 +1266,9 @@
         <span class="n">dwks30</span> <span class="o">=</span> <span class="n">dwks22</span> <span class="o">+</span> <span class="n">dwks28</span>
         <span class="n">dwks31</span> <span class="o">=</span> <span class="n">dwks21</span> <span class="o">-</span> <span class="n">dwks30</span>
         <span class="n">dwks32</span> <span class="o">=</span> <span class="n">CG_rt3</span> <span class="o">*</span> <span class="n">dwks31</span>
-        <span class="n">hi_base</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">dwks31</span> <span class="o">-</span> <span class="n">CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># compute total taxable CG for additional top bracket</span>
+        <span class="n">cg_all</span> <span class="o">=</span> <span class="n">dwks20</span> <span class="o">+</span> <span class="n">dwks28</span> <span class="o">+</span> <span class="n">dwks31</span>
+        <span class="n">hi_base</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">cg_all</span> <span class="o">-</span> <span class="n">CG_brk3</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">hi_incremental_rate</span> <span class="o">=</span> <span class="n">CG_rt4</span> <span class="o">-</span> <span class="n">CG_rt3</span>
         <span class="n">highest_rate_incremental_tax</span> <span class="o">=</span> <span class="n">hi_incremental_rate</span> <span class="o">*</span> <span class="n">hi_base</span>
         <span class="c1"># break in worksheet lines</span>

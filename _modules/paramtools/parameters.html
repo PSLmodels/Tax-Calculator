@@ -275,24 +275,16 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">reduce</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">marshmallow</span> <span class="kn">import</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">MarshmallowValidationError</span>
 
 <span class="kn">from</span> <span class="nn">paramtools</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">paramtools</span> <span class="kn">import</span> <span class="n">contrib</span>
 <span class="kn">from</span> <span class="nn">paramtools.schema</span> <span class="kn">import</span> <span class="n">ParamToolsSchema</span>
 <span class="kn">from</span> <span class="nn">paramtools.schema_factory</span> <span class="kn">import</span> <span class="n">SchemaFactory</span>
-<span class="kn">from</span> <span class="nn">paramtools.select</span> <span class="kn">import</span> <span class="p">(</span>
-    <span class="n">select</span><span class="p">,</span>
-    <span class="n">select_eq</span><span class="p">,</span>
-    <span class="n">select_ne</span><span class="p">,</span>
-    <span class="n">select_gt</span><span class="p">,</span>
-    <span class="n">select_gte</span><span class="p">,</span>
-    <span class="n">select_lt</span><span class="p">,</span>
-    <span class="n">select_lte</span><span class="p">,</span>
-    <span class="n">make_cmp_func</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span> <span class="nn">paramtools.tree</span> <span class="kn">import</span> <span class="n">Tree</span>
+<span class="kn">from</span> <span class="nn">paramtools.sorted_key_list</span> <span class="kn">import</span> <span class="n">SortedKeyList</span>
 <span class="kn">from</span> <span class="nn">paramtools.typing</span> <span class="kn">import</span> <span class="n">ValueObject</span><span class="p">,</span> <span class="n">FileDictStringLike</span>
 <span class="kn">from</span> <span class="nn">paramtools.exceptions</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">ParamToolsError</span><span class="p">,</span>
@@ -302,6 +294,47 @@
     <span class="n">collision_list</span><span class="p">,</span>
     <span class="n">ParameterNameCollisionException</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">paramtools.values</span> <span class="kn">import</span> <span class="n">Values</span><span class="p">,</span> <span class="n">union</span><span class="p">,</span> <span class="n">intersection</span>
+
+
+<span class="k">class</span> <span class="nc">ParameterSlice</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;parameters&quot;</span><span class="p">,</span> <span class="s2">&quot;_cache&quot;</span><span class="p">,</span> <span class="s2">&quot;_key_cache&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_key_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter_or_values</span><span class="p">):</span>
+        <span class="n">keyfuncs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keyfuncs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter_or_values</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">parameter_or_values</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span>
+        <span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">parameter_or_values</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parameter_or_values</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parameter_or_values</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown parameter: </span><span class="si">{</span><span class="n">parameter_or_values</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">keyfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_key_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">parameter_or_values</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">keyfunc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">keyfunc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">_validator_schema</span><span class="o">.</span><span class="n">field_keyfunc</span><span class="p">(</span>
+                        <span class="n">parameter_or_values</span>
+                    <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_key_cache</span><span class="p">[</span><span class="n">parameter_or_values</span><span class="p">]</span> <span class="o">=</span> <span class="n">keyfunc</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">parameter_or_values</span><span class="p">]</span> <span class="o">=</span> <span class="n">keyfunc</span>
+                <span class="n">keyfuncs</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">keyfunc</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">Values</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">keyfuncs</span><span class="o">=</span><span class="n">keyfuncs</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">parameter_or_values</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span>
+                <span class="k">return</span> <span class="n">values</span>
+            <span class="k">except</span> <span class="n">contrib</span><span class="o">.</span><span class="n">validate</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ParamToolsError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;There was an error retrieving the field for </span><span class="si">{</span><span class="n">parameter_or_values</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                    <span class="p">{},</span>
+                <span class="p">)</span> <span class="kn">from</span> <span class="nn">ve</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Values</span><span class="p">(</span><span class="n">parameter_or_values</span><span class="p">,</span> <span class="n">keyfuncs</span><span class="o">=</span><span class="n">keyfuncs</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Parameters</span><span class="p">:</span>
@@ -315,6 +348,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">initial_state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">index_rates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">sort_values</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="o">**</span><span class="n">ops</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="n">schemafactory</span> <span class="o">=</span> <span class="n">SchemaFactory</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
@@ -325,6 +359,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">,</span>
         <span class="p">)</span> <span class="o">=</span> <span class="n">schemafactory</span><span class="o">.</span><span class="n">schemas</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label_validators</span> <span class="o">=</span> <span class="n">schemafactory</span><span class="o">.</span><span class="n">label_validators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">keyfuncs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">lv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_validators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">cmp_funcs</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">lv</span><span class="p">,</span> <span class="s2">&quot;cmp_funcs&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cmp_funcs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">keyfuncs</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">cmp_funcs</span><span class="p">()[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_stateless_label_grid</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_validators</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="s2">&quot;grid&quot;</span><span class="p">):</span>
@@ -336,8 +376,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_labels</span><span class="p">(</span><span class="o">**</span><span class="p">(</span><span class="n">initial_state</span> <span class="ow">or</span> <span class="p">{}))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">index_rates</span> <span class="o">=</span> <span class="n">index_rates</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_rates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">ParameterSlice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="c1"># set operators in order of importance:</span>
         <span class="c1"># __init__ arg: most important</span>
@@ -374,6 +414,14 @@
         <span class="k">if</span> <span class="s2">&quot;operators&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_schema</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_schema</span><span class="p">[</span><span class="s2">&quot;operators&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_schema</span><span class="p">[</span><span class="s2">&quot;operators&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">sort_values</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sort_values</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Use params.sel[&quot;</span><span class="si">{</span><span class="n">parameter</span><span class="si">}</span><span class="s1">&quot;] instead of params[&quot;</span><span class="si">{</span><span class="n">parameter</span><span class="si">}</span><span class="s1">&quot;].&#39;</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Parameters.set_state"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -520,46 +568,36 @@
                 <span class="n">extend_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateless_label_grid</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span><span class="p">]</span>
                 <span class="n">to_delete</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
                 <span class="n">backup</span> <span class="o">=</span> <span class="p">{}</span>
-                <span class="n">cmp_funcs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_validators</span><span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span>
-                <span class="p">]</span><span class="o">.</span><span class="n">cmp_funcs</span><span class="p">()</span>
-                <span class="n">gt_cmp_func</span> <span class="o">=</span> <span class="n">make_cmp_func</span><span class="p">(</span><span class="n">cmp_funcs</span><span class="p">[</span><span class="s2">&quot;gt&quot;</span><span class="p">],</span> <span class="n">all_or_any</span><span class="o">=</span><span class="nb">all</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">vos</span> <span class="ow">in</span> <span class="n">parsed_params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="k">for</span> <span class="n">vo</span> <span class="ow">in</span> <span class="n">utils</span><span class="o">.</span><span class="n">grid_sort</span><span class="p">(</span>
                         <span class="n">vos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span><span class="p">,</span> <span class="n">extend_grid</span>
                     <span class="p">):</span>
 
                         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span> <span class="ow">in</span> <span class="n">vo</span><span class="p">:</span>
-                            <span class="n">query_args</span> <span class="o">=</span> <span class="p">{</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span><span class="p">]</span>
-                            <span class="p">}</span>
                             <span class="k">if</span> <span class="n">clobber</span><span class="p">:</span>
-                                <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-                                <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+                                <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
                             <span class="k">else</span><span class="p">:</span>
-                                <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_eq</span><span class="p">(</span>
-                                    <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_auto</span><span class="o">=</span><span class="kc">True</span>
+                                <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;_auto&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span>
+
+                            <span class="n">queryset</span> <span class="o">&amp;=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span>
+                                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                <span class="o">**</span><span class="p">{</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span>
+                                    <span class="p">]</span>
+                                <span class="p">},</span>
+                            <span class="p">)</span>
+                            <span class="n">other_labels</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">filter_labels</span><span class="p">(</span>
+                                <span class="n">vo</span><span class="p">,</span>
+                                <span class="n">drop</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;_auto&quot;</span><span class="p">],</span>
+                            <span class="p">)</span>
+                            <span class="k">if</span> <span class="n">other_labels</span><span class="p">:</span>
+                                <span class="n">queryset</span> <span class="o">&amp;=</span> <span class="n">intersection</span><span class="p">(</span>
+                                    <span class="n">queryset</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                                    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other_labels</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
                                 <span class="p">)</span>
-                                <span class="n">tree</span> <span class="o">=</span> <span class="kc">None</span>
-                            <span class="n">gt</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span>
-                                <span class="n">queryset</span><span class="p">,</span>
-                                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                <span class="n">cmp_func</span><span class="o">=</span><span class="n">gt_cmp_func</span><span class="p">,</span>
-                                <span class="n">labels</span><span class="o">=</span><span class="n">query_args</span><span class="p">,</span>
-                                <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">,</span>
-                            <span class="p">)</span>
-                            <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">+=</span> <span class="n">select_eq</span><span class="p">(</span>
-                                <span class="n">gt</span><span class="p">,</span>
-                                <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                                <span class="n">labels</span><span class="o">=</span><span class="n">utils</span><span class="o">.</span><span class="n">filter_labels</span><span class="p">(</span>
-                                    <span class="n">vo</span><span class="p">,</span>
-                                    <span class="n">drop</span><span class="o">=</span><span class="p">[</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span><span class="p">,</span>
-                                        <span class="s2">&quot;value&quot;</span><span class="p">,</span>
-                                        <span class="s2">&quot;_auto&quot;</span><span class="p">,</span>
-                                    <span class="p">],</span>
-                                <span class="p">),</span>
-                            <span class="p">)</span>
+
+                            <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="n">queryset</span><span class="p">)</span>
                     <span class="c1"># make copy of value objects since they</span>
                     <span class="c1"># are about to be modified</span>
                     <span class="n">backup</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
@@ -825,7 +863,15 @@
             <span class="n">parsed_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_labels</span><span class="p">(</span><span class="o">**</span><span class="n">labels</span><span class="p">)</span>
             <span class="n">label_grid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">parsed_labels</span><span class="p">)</span>
             <span class="n">state</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">parsed_labels</span><span class="p">)</span>
-        <span class="n">value_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_eq</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state</span><span class="p">:</span>
+            <span class="n">value_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">values</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">])</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">value_items</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([])</span>
 
@@ -866,15 +912,31 @@
             <span class="n">exp_grid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">value_order</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
             <span class="c1"># preserve label value order for each value object by</span>
             <span class="c1"># iterating over label_order.</span>
-            <span class="n">actual</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">actual</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
                 <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">vo</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">label_order</span><span class="p">)</span> <span class="k">for</span> <span class="n">vo</span> <span class="ow">in</span> <span class="n">value_items</span><span class="p">]</span>
             <span class="p">)</span>
             <span class="n">missing</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">exp_grid</span> <span class="k">if</span> <span class="n">d</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">actual</span><span class="p">]</span>
             <span class="p">)</span>
+            <span class="n">counter</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+            <span class="n">extra</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">comb</span> <span class="ow">in</span> <span class="n">actual</span><span class="p">:</span>
+                <span class="n">counter</span><span class="p">[</span><span class="n">comb</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">counter</span><span class="p">[</span><span class="n">comb</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">duplicates</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">comb</span><span class="p">,</span> <span class="n">counter</span><span class="p">[</span><span class="n">comb</span><span class="p">]))</span>
+                <span class="k">if</span> <span class="n">comb</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exp_grid</span><span class="p">:</span>
+                    <span class="n">extra</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">comb</span><span class="p">)</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Missing combinations:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Extra combinations:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">extra</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">if</span> <span class="n">duplicates</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;Duplicate combinations:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">duplicates</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="k">raise</span> <span class="n">SparseValueObjectsException</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;The Value objects for </span><span class="si">{</span><span class="n">param</span><span class="si">}</span><span class="s2"> do not span the specified &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;parameter space. Missing combinations:</span><span class="se">\n\t</span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;parameter space. </span><span class="si">{</span><span class="n">msg</span><span class="si">}</span><span class="s2">&quot;</span>
             <span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">list_2_tuple</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -932,7 +994,15 @@
             <span class="n">label_grid</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">parsed_labels</span><span class="p">)</span>
             <span class="n">state</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">parsed_labels</span><span class="p">)</span>
 
-        <span class="n">value_items</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_eq</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state</span><span class="p">:</span>
+            <span class="n">value_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">intersection</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value_items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">])</span>
         <span class="n">label_order</span><span class="p">,</span> <span class="n">value_order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_resolve_order</span><span class="p">(</span>
             <span class="n">param</span><span class="p">,</span> <span class="n">value_items</span><span class="p">,</span> <span class="n">label_grid</span>
         <span class="p">)</span>
@@ -993,7 +1063,6 @@
             <span class="n">extend_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateless_label_grid</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
 
         <span class="n">cmp_funcs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">label_validators</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">cmp_funcs</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="n">extend_grid</span><span class="p">)</span>
-        <span class="n">gt_cmp_func</span> <span class="o">=</span> <span class="n">make_cmp_func</span><span class="p">(</span><span class="n">cmp_funcs</span><span class="p">[</span><span class="s2">&quot;gt&quot;</span><span class="p">],</span> <span class="n">all_or_any</span><span class="o">=</span><span class="nb">all</span><span class="p">)</span>
 
         <span class="n">adjustment</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -1008,22 +1077,25 @@
                     <span class="k">continue</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">extended_vos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">hashable_vo</span><span class="p">)</span>
-                <span class="n">gt</span> <span class="o">=</span> <span class="n">select</span><span class="p">(</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
-                    <span class="kc">False</span><span class="p">,</span>
-                    <span class="n">gt_cmp_func</span><span class="p">,</span>
-                    <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span><span class="n">label</span><span class="p">]},</span>
-                    <span class="n">tree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">),</span>
-                <span class="p">)</span>
-                <span class="n">eq</span> <span class="o">=</span> <span class="n">select_eq</span><span class="p">(</span>
-                    <span class="n">gt</span><span class="p">,</span>
-                    <span class="kc">False</span><span class="p">,</span>
-                    <span class="n">utils</span><span class="o">.</span><span class="n">filter_labels</span><span class="p">(</span><span class="n">vo</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="s2">&quot;_auto&quot;</span><span class="p">]),</span>
-                <span class="p">)</span>
-                <span class="n">extended_vos</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">hashable_value_object</span><span class="p">,</span> <span class="n">eq</span><span class="p">))</span>
-                <span class="n">eq</span> <span class="o">+=</span> <span class="p">[</span><span class="n">vo</span><span class="p">]</span>
 
-                <span class="n">defined_vals</span> <span class="o">=</span> <span class="p">{</span><span class="n">eq_vo</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">for</span> <span class="n">eq_vo</span> <span class="ow">in</span> <span class="n">eq</span><span class="p">}</span>
+                <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">gt</span><span class="p">(</span>
+                    <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span><span class="n">label</span><span class="p">]}</span>
+                <span class="p">)</span>
+
+                <span class="n">other_labels</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">filter_labels</span><span class="p">(</span>
+                    <span class="n">vo</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="s2">&quot;_auto&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">other_labels</span><span class="p">:</span>
+                    <span class="n">queryset</span> <span class="o">&amp;=</span> <span class="n">intersection</span><span class="p">(</span>
+                        <span class="n">queryset</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">oth_label</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                        <span class="k">for</span> <span class="n">oth_label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">other_labels</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="p">)</span>
+                <span class="n">extended_vos</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                    <span class="nb">map</span><span class="p">(</span><span class="n">utils</span><span class="o">.</span><span class="n">hashable_value_object</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">queryset</span><span class="p">))</span>
+                <span class="p">)</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">as_values</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">vo</span><span class="p">])</span>
+
+                <span class="n">defined_vals</span> <span class="o">=</span> <span class="p">{</span><span class="n">eq_vo</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">for</span> <span class="n">eq_vo</span> <span class="ow">in</span> <span class="n">queryset</span><span class="p">}</span>
 
                 <span class="n">missing_vals</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
                     <span class="nb">set</span><span class="p">(</span><span class="n">extend_grid</span><span class="p">)</span> <span class="o">-</span> <span class="n">defined_vals</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">cmp_funcs</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">]</span>
@@ -1033,23 +1105,23 @@
                     <span class="k">continue</span>
 
                 <span class="n">extended</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">vo</span> <span class="ow">in</span> <span class="n">eq</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">vo</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
                     <span class="n">extended</span><span class="p">[</span><span class="n">vo</span><span class="p">[</span><span class="n">label</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vo</span><span class="p">)</span>
 
-                <span class="n">skl</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">SortedKeyList</span><span class="p">(</span><span class="n">extended</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cmp_funcs</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
+                <span class="n">skl</span> <span class="o">=</span> <span class="n">SortedKeyList</span><span class="p">(</span><span class="n">extended</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">cmp_funcs</span><span class="p">[</span><span class="s2">&quot;key&quot;</span><span class="p">])</span>
 
                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">missing_vals</span><span class="p">:</span>
                     <span class="n">lte_val</span> <span class="o">=</span> <span class="n">skl</span><span class="o">.</span><span class="n">lte</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">lte_val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="n">closest_val</span> <span class="o">=</span> <span class="n">lte_val</span>
+                        <span class="n">closest_val</span> <span class="o">=</span> <span class="n">lte_val</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">closest_val</span> <span class="o">=</span> <span class="n">skl</span><span class="o">.</span><span class="n">gte</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                        <span class="n">closest_val</span> <span class="o">=</span> <span class="n">skl</span><span class="o">.</span><span class="n">gte</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
                     <span class="k">if</span> <span class="n">closest_val</span> <span class="ow">in</span> <span class="n">extended</span><span class="p">:</span>
                         <span class="n">value_objects</span> <span class="o">=</span> <span class="n">extended</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">closest_val</span><span class="p">)</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">value_objects</span> <span class="o">=</span> <span class="n">select_eq</span><span class="p">(</span>
-                            <span class="n">eq</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">closest_val</span><span class="p">}</span>
+                        <span class="n">value_objects</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span>
+                            <span class="n">strict</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">closest_val</span><span class="p">}</span>
                         <span class="p">)</span>
                     <span class="c1"># In practice, value_objects has length one.</span>
                     <span class="c1"># Theoretically, there could be multiple if the inital value</span>
@@ -1064,8 +1136,8 @@
                             <span class="n">utils</span><span class="o">.</span><span class="n">hashable_value_object</span><span class="p">(</span><span class="n">value_object</span><span class="p">)</span>
                         <span class="p">)</span>
                         <span class="n">extended</span><span class="p">[</span><span class="n">val</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
-                        <span class="n">skl</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                        <span class="n">adjustment</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">_auto</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+                        <span class="n">skl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                        <span class="n">adjustment</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">_auto</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="c1"># Ensure that the adjust method of paramtools.Parameter is used</span>
         <span class="c1"># in case the child class also implements adjust.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_adjust</span><span class="p">(</span>
@@ -1179,6 +1251,7 @@
         <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">spec</span> <span class="o">=</span> <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">spec</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">spec</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">collision_list</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">ParameterNameCollisionException</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;The paramter name, &#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">&#39;, is already used by the Parameters object.&quot;</span>
@@ -1228,53 +1301,41 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_validator_schema</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">schema</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">np_type</span>
         <span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">op</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s2">&quot;exact_match&quot;</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;exact_match&#39; has been deprecated in favor of &#39;strict&#39;.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">strict</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;exact_match&quot;</span><span class="p">)</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">res</span> <span class="o">&amp;=</span> <span class="n">union</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">_cmp</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">element</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">value</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">&amp;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">_cmp</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">select_eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">select_eq</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
-            <span class="n">strict</span><span class="p">,</span>
-            <span class="n">labels</span><span class="p">,</span>
-            <span class="n">tree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s2">&quot;eq&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">select_ne</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">select_ne</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
-            <span class="n">strict</span><span class="p">,</span>
-            <span class="n">labels</span><span class="p">,</span>
-            <span class="n">tree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s2">&quot;ne&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">select_gt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">select_gt</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
-            <span class="n">strict</span><span class="p">,</span>
-            <span class="n">labels</span><span class="p">,</span>
-            <span class="n">tree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s2">&quot;gt&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">select_gte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">select_gte</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
-            <span class="n">strict</span><span class="p">,</span>
-            <span class="n">labels</span><span class="p">,</span>
-            <span class="n">tree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s2">&quot;gte&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">select_lt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">select_lt</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
-            <span class="n">strict</span><span class="p">,</span>
-            <span class="n">labels</span><span class="p">,</span>
-            <span class="n">tree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s2">&quot;lt&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">select_lte</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">select_lte</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span>
-            <span class="n">strict</span><span class="p">,</span>
-            <span class="n">labels</span><span class="p">,</span>
-            <span class="n">tree</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">),</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="s2">&quot;lte&quot;</span><span class="p">,</span> <span class="n">strict</span><span class="p">,</span> <span class="o">**</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_update_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">new_values</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1294,14 +1355,40 @@
 <span class="sd">            For now, no exceptions are raised by this method.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">curr_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="p">:</span>
-            <span class="n">curr_tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">curr_tree</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="n">vos</span><span class="o">=</span><span class="n">curr_values</span><span class="p">,</span> <span class="n">label_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">label_grid</span><span class="p">)</span>
-        <span class="n">new_tree</span> <span class="o">=</span> <span class="n">Tree</span><span class="p">(</span><span class="n">vos</span><span class="o">=</span><span class="n">new_values</span><span class="p">,</span> <span class="n">label_grid</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">label_grid</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_tree</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_tree</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_search_trees</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_tree</span>
+        <span class="n">param_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">param_values</span><span class="p">))</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_values</span>
+            <span class="k">return</span>
+        <span class="k">for</span> <span class="n">new_vo</span> <span class="ow">in</span> <span class="n">new_values</span><span class="p">:</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">filter_labels</span><span class="p">(</span><span class="n">new_vo</span><span class="p">,</span> <span class="n">drop</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">new_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">curr_vo</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]:</span>
+                        <span class="n">curr_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">param_values</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+                <span class="k">continue</span>
+
+            <span class="n">to_update</span> <span class="o">=</span> <span class="n">intersection</span><span class="p">(</span>
+                <span class="n">param_values</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">value</span><span class="p">})</span>
+                <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">labels</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">param_values</span><span class="o">.</span><span class="n">labels</span> <span class="ow">and</span> <span class="n">label</span> <span class="o">!=</span> <span class="s2">&quot;_auto&quot;</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">to_update</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">new_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">to_update</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">curr_vo</span> <span class="ow">in</span> <span class="n">to_update</span><span class="p">:</span>
+                        <span class="n">curr_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">new_vo</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;_auto&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                            <span class="n">curr_vo</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;_auto&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">new_vo</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">param_values</span><span class="o">.</span><span class="n">add</span><span class="p">([</span><span class="n">new_vo</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][:]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">param_values</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_parse_validation_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Parse validation messages from marshmallow&quot;&quot;&quot;</span>
@@ -1439,7 +1526,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">def</span> <span class="nf">keyfunc</span><span class="p">(</span><span class="n">vo</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">label_values</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">vo</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">vo</span> <span class="ow">and</span> <span class="n">label_values</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">label_values</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">vo</span><span class="p">[</span><span class="n">label</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
@@ -1461,10 +1548,9 @@
         <span class="c1"># iterate over labels so that the first label&#39;s order</span>
         <span class="c1"># takes precedence.</span>
         <span class="n">label_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateless_label_grid</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">label_grid</span><span class="p">))</span>
 
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">label_grid</span><span class="p">):</span>
                 <span class="n">label_values</span> <span class="o">=</span> <span class="n">label_grid</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
                 <span class="n">pfunc</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
                     <span class="n">keyfunc</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">label_values</span><span class="o">=</span><span class="n">label_values</span>
@@ -1479,12 +1565,19 @@
 
             <span class="c1"># Only update attributes when array first is off, since</span>
             <span class="c1"># value order will not affect how arrays are constructed.</span>
-            <span class="k">if</span> <span class="n">update_attrs</span> <span class="ow">and</span> <span class="n">has_meta_data</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span><span class="p">:</span>
-                <span class="n">attr_vals</span> <span class="o">=</span> <span class="n">select_eq</span><span class="p">(</span>
-                    <span class="n">data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">],</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
-                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">update_attrs</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">:</span>
+                    <span class="n">attr_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">]</span>
+                    <span class="n">active</span> <span class="o">=</span> <span class="n">intersection</span><span class="p">(</span>
+                        <span class="n">attr_vals</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">attr_vals</span><span class="o">.</span><span class="n">labels</span>
+                    <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">active</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
                 <span class="n">sorted_values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span>
-                    <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="n">attr_vals</span><span class="p">},</span> <span class="n">has_meta_data</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="p">{</span><span class="n">param</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">active</span><span class="p">)},</span> <span class="n">has_meta_data</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)[</span><span class="n">param</span><span class="p">]</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">,</span> <span class="n">sorted_values</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span></div>
