@@ -12359,8 +12359,8 @@
         }
     },
     "PT_qbid_ps": {
-        "title": "QBID phaseout AGI start",
-        "description": "QBID begins to decrease when AGI is above this level.",
+        "title": "QBID phaseout taxable income start",
+        "description": "QBID begins to decrease when pre-QBID taxable income is above this level.",
         "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",
@@ -12557,7 +12557,7 @@
     },
     "PT_qbid_prt": {
         "title": "QBID phaseout rate",
-        "description": "QBID will decrease at this rate for each dollar of AGI exceeding QBID phaseout start.",
+        "description": "QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.",
         "notes": "",
         "section_1": "Personal Income",
         "section_2": "Pass-Through",

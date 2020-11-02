@@ -839,9 +839,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
         qbided = min(qbided, taxinc_cap)
 
         # apply qbid phaseout
-        modAGI = c00100
-        if qbided > 0. and modAGI > PT_qbid_ps[MARS - 1]:
-            excess = modAGI - PT_qbid_ps[MARS - 1]
+        if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
+            excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
             qbided = max(0., qbided - PT_qbid_prt * excess)
 
     # calculate taxable income after qualified business income deduction
