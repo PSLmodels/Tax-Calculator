@@ -25,8 +25,8 @@
     href="../_static/vendor/lato_latin-ext/1.44.1/index.css">
 
     
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.2d2078699c18a0efb88233928e1cf6ed.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -236,6 +236,18 @@
   </a>
  </li>
 </ul>
+<p class="caption">
+ <span class="caption-text">
+  Tax-Calculator use cases
+ </span>
+</p>
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../use_cases.html">
+   Recorded use cases
+  </a>
+ </li>
+</ul>
 
 </nav>
 
@@ -392,13 +404,6 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_CURRENT_LAW_P__itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev1</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM_STATIC__itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev2sa</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
 <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_REFORM_DYNAMIC_itax_rev($B)= </span><span class="si">{:.3f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CYR</span><span class="p">,</span> <span class="n">itax_rev2br</span> <span class="o">*</span> <span class="mf">1e-9</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020_CURRENT_LAW_P__itax_rev($B)= 1323.792
-2020_REFORM_STATIC__itax_rev($B)= 1332.149
-2020_REFORM_DYNAMIC_itax_rev($B)= 1318.862
 </pre></div>
 </div>
 </div>
