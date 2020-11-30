@@ -933,3 +933,66 @@ def test_calc_all_benefits_amounts(cps_subsample):
 
     assert np.allclose(ubi_diff, benefit_cost_diff)
     assert np.allclose(ubi_diff, benefit_value_diff)
+
+
+def test_cg_top_rate():
+    """
+    Test top CG bracket and rate.
+    """
+    cy = 2019
+
+    # set NIIT and STD to zero to isolate CG tax rates
+    base = {"NIIT_rt": {2019: 0},
+            "STD": {2019: [0, 0, 0, 0, 0]}}
+
+    # create additional top CG bracket and rate
+    ref = {"CG_brk3": {2019: [1000000, 1000000, 1000000, 1000000, 1000000]},
+           "CG_rt4": {2019: 0.4},
+           "NIIT_rt": {2019: 0},
+           "STD": {2019: [0, 0, 0, 0, 0]}}
+
+    # create one record just below the top CG bracket and one just above
+    VARS = 'RECID,MARS,p23250\n'
+    FUNITS = '1,2,999999\n2,2,1000001\n'
+
+    pol_base = Policy()
+    pol_base.implement_reform(base)
+
+    pol_ref = Policy()
+    pol_ref.implement_reform(ref)
+
+    funit_df = pd.read_csv(StringIO(VARS + FUNITS))
+    recs = Records(data=funit_df, start_year=cy,
+                   gfactors=None, weights=None)
+
+    calc_base = Calculator(policy=pol_base, records=recs)
+    calc_base.calc_all()
+
+    calc_ref = Calculator(policy=pol_ref, records=recs)
+    calc_ref.calc_all()
+
+    # calculate MTRs wrt long term gains
+    mtr_base = calc_base.mtr(variable_str='p23250',
+                             calc_all_already_called=True,
+                             wrt_full_compensation=False)
+    mtr_itax_base = mtr_base[1]
+
+    cg_rt3 = pol_base.to_array('CG_rt3', year=2019)
+    # check that MTR for both records is equal to CG_rt3
+    assert np.allclose(mtr_itax_base, cg_rt3)
+
+    # calculate MTRs under reform
+    mtr_ref = calc_ref.mtr(variable_str='p23250',
+                           calc_all_already_called=True,
+                           wrt_full_compensation=False)
+    mtr_itax_ref = mtr_ref[1]
+
+    cg_rt3_ref = pol_ref.to_array('CG_rt3', year=2019)
+    cg_rt4_ref = pol_ref.to_array(param='CG_rt4', year=2019)
+
+    # check that MTR of houshold below top threshold is equal to
+    # CG_rt3
+    assert np.allclose(mtr_itax_ref[0], cg_rt3_ref)
+    # check that MTR of household above top threshold is equal to
+    # CG_rt4
+    assert np.allclose(mtr_itax_ref[1], cg_rt4_ref)
