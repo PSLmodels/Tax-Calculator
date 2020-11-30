@@ -1217,8 +1217,8 @@
            <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
            <span class="n">PT_SSTB_income</span><span class="p">,</span> <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span>
            <span class="n">PT_qbid_rt</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span>
-           <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
-           <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span>
+           <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span>
+           <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">PT_qbid_limit_switch</span><span class="p">,</span>
            <span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates taxable income, c04800, and</span>
@@ -1239,7 +1239,9 @@
             <span class="n">upper_thd</span> <span class="o">=</span> <span class="n">lower_thd</span> <span class="o">+</span> <span class="n">pre_qbid_taxinc_gap</span>
             <span class="k">if</span> <span class="n">PT_SSTB_income</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&gt;=</span> <span class="n">upper_thd</span><span class="p">:</span>
                 <span class="n">qbided</span> <span class="o">=</span> <span class="mf">0.</span>
-            <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># if PT_qbid_limit_switch is True, apply wage/capital</span>
+            <span class="c1"># limitations.</span>
+            <span class="k">elif</span> <span class="n">PT_qbid_limit_switch</span><span class="p">:</span>
                 <span class="n">wage_cap</span> <span class="o">=</span> <span class="n">PT_binc_w2_wages</span> <span class="o">*</span> <span class="n">PT_qbid_w2_wages_rt</span>
                 <span class="n">alt_cap</span> <span class="o">=</span> <span class="p">(</span><span class="n">PT_binc_w2_wages</span> <span class="o">*</span> <span class="n">PT_qbid_alt_w2_wages_rt</span> <span class="o">+</span>
                            <span class="n">PT_ubia_property</span> <span class="o">*</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">)</span>
@@ -1260,6 +1262,11 @@
                     <span class="n">prt</span> <span class="o">=</span> <span class="p">(</span><span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">lower_thd</span><span class="p">)</span> <span class="o">/</span> <span class="n">pre_qbid_taxinc_gap</span>
                     <span class="n">adj</span> <span class="o">=</span> <span class="n">prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">qbid_adjusted</span> <span class="o">-</span> <span class="n">cap_adjusted</span><span class="p">)</span>
                     <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_adjusted</span> <span class="o">-</span> <span class="n">adj</span>
+            <span class="c1"># if PT_qbid_limit_switch is False, assume all taxpayers</span>
+            <span class="c1"># have sufficient wage expenses and capital income to avoid</span>
+            <span class="c1"># QBID limitations.</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">qbided</span> <span class="o">=</span> <span class="n">qbid_before_limits</span>
         <span class="c1"># apply taxinc cap (assuning cap rate is equal to PT_qbid_rt)</span>
         <span class="n">net_cg</span> <span class="o">=</span> <span class="n">e00650</span> <span class="o">+</span> <span class="n">c01000</span>  <span class="c1"># per line 34 in 2018 Pub 535 Worksheet 12-A</span>
         <span class="n">taxinc_cap</span> <span class="o">=</span> <span class="n">PT_qbid_rt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">net_cg</span><span class="p">)</span>
