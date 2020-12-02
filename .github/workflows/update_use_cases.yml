@@ -10,14 +10,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          persist-credentials: false
 
       - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v2
+        uses: conda-incubator/setup-miniconda@v2.0.1
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
+          miniconda-version: "latest"
           python-version: 3.7
           auto-update-conda: true
+          auto-activate-base: false
 
       - name: Build use cases file
         working-directory: ./
