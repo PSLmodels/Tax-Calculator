@@ -16,10 +16,8 @@ jobs:
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
-          miniconda-version: "latest"
-          python-version: 3.7
+          python-version: 3.8
           auto-activate-base: false
-          auto-update-conda: true
 
       - name: Build use cases file
         working-directory: ./
