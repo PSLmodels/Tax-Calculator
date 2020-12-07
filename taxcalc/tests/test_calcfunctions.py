@@ -166,11 +166,10 @@ def test_function_args_usage(tests_path):
         raise ValueError(msg)
 
 
-def test_DependentCare(monkeypatch):
+def test_DependentCare(skip_jit):
     """
     Tests the DependentCare function
     """
-    monkeypatch.setenv("TESTING", "True")
 
     test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000], 
                   .2, 7165, 5000, 0)
