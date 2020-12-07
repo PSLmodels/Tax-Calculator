@@ -9,6 +9,10 @@ import os
 import re
 import ast
 from taxcalc import Records  # pylint: disable=import-error
+from taxcalc import calcfunctions
+import numpy as np
+
+os.environ['TESTING'] = 'True' # os TESTING environment only accepts string arguments
 
 
 class GetFuncDefs(ast.NodeVisitor):
