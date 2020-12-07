@@ -11,8 +11,7 @@ import ast
 from taxcalc import Records  # pylint: disable=import-error
 from taxcalc import calcfunctions
 import numpy as np
-
-os.environ['TESTING'] = 'True' # os TESTING environment only accepts string arguments
+import pytest
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -165,3 +164,17 @@ def test_function_args_usage(tests_path):
                 msg += 'FUNCTION,ARGUMENT= {} {}\n'.format(fname, arg)
     if found_error:
         raise ValueError(msg)
+
+
+def test_DependentCare(monkeypatch):
+    """
+    Tests the DependentCare function
+    """
+    monkeypatch.setenv("TESTING", "True")
+
+    test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000], 
+                  .2, 7165, 5000, 0)
+    test_value = calcfunctions.DependentCare(*test_tuple)
+    expected_value = 25196
+
+    assert np.allclose(test_value, expected_value)
