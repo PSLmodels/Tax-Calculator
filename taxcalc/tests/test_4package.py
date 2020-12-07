@@ -40,6 +40,9 @@ def test_for_consistency(tests_path):
         "paramtools>=0.14.2",
         "pip",
         "jupyter-book",
+        "curl",
+        "pybtex",
+        "pandoc"
     ])
     # read conda.recipe/meta.yaml requirements
     meta_file = os.path.join(tests_path, '..', '..',
