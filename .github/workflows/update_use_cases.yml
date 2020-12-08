@@ -1,10 +1,11 @@
 name: Update Tax-Calculator Use Cases
 on:
-  push:
+  schedule:
+    - cron: '0 1 * * *'
 
 
 jobs:
-  fetch_use_cases:
+  update_use_cases:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
