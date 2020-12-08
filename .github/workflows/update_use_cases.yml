@@ -40,7 +40,7 @@ jobs:
 
           echo >> use_cases.md
           echo >> use_cases.md
-          TZ=US/Eastern echo "Updated on $(date +'%Y-%m-%d') at $(date +"%I:%M %p")" >> use_cases.md
+          TZ=US/Eastern echo "Updated on $(date +'%Y-%m-%d') >> use_cases.md
 
           mv use_cases.md docs/use_cases.md
 
