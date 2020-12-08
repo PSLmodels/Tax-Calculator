@@ -1,5 +1,4 @@
-Recorded use cases
-==================
+# Recorded use cases
 
 \[1\] Kyle Pomerleau and Peter Metz. How would your taxes change under
 Joe Biden\'s tax plan? November 2020. URL:
@@ -266,3 +265,6 @@ and opportunity for all Americans. February 2016. URL:
 \[62\] Kevin Hassett. On the Dynamic Scoring of Fiscal Policy. July
 2015. URL:
 <https://www.aei.org/press/on-the-dynamic-scoring-of-fiscal-policy/>.
+
+
+Updated on 2020-12-08 at 02:59 PM
