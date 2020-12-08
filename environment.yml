@@ -15,9 +15,6 @@ dependencies:
 - pylint
 - coverage
 - "paramtools>=0.14.2"
-- curl
-- pandoc
 - pip
 - pip:
     - jupyter-book
-    - pybtex

@@ -1,7 +1,6 @@
 name: Update Tax-Calculator Use Cases
 on:
-  schedule:
-    - cron: '0 1 * * *'
+  push:
 
 
 jobs:
@@ -28,6 +27,9 @@ jobs:
           cd docs
           rm use_cases.md
           cd ..
+
+          conda install curl pandoc
+          pip install pybtex
           
           curl -H 'Zotero-API-Version: 3' -H 'Zotero-API-Key: MiQBsz0ilWhpsmQJyqeO2TzU' 'https://api.zotero.org/groups/2524233/items?format=bibtex&order=date&sort=desc&limit=100' --output citations.bib
           pybtex-format citations.bib citations.txt
