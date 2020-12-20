@@ -5,7 +5,7 @@
                 "type": "int",
                 "validators": {
                     "range": {
-                        "min": 2013,
+                        "min": 2011,
                         "max": 2030
                     }
                 }
@@ -86,6 +86,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "value": 0.0
             },
@@ -128,7 +136,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.124
             }
         ],
@@ -153,6 +161,14 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 106800.0
+            },
+            {
+                "year": 2012,
+                "value": 110100.0
+            },
             {
                 "year": 2013,
                 "value": 113700.0
@@ -204,7 +220,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 9e+99
             }
         ],
@@ -230,7 +246,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.029
             }
         ],
@@ -255,6 +271,31 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 125000.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -303,6 +344,10 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "value": 0.009
             }
@@ -321,7 +366,7 @@
     "SS_thd50": {
         "title": "Threshold for Social Security benefit taxability 1",
         "description": "The first threshold for Social Security benefit taxability: if taxpayers have provisional income greater than this threshold, up to 50% of their Social Security benefit will be subject to tax under current law.",
-        "notes": "",
+        "notes": "See IRS Publication 915",
         "section_1": "Social Security Taxability",
         "section_2": "Threshold For Social Security Benefit Taxability 1",
         "indexable": true,
@@ -329,27 +374,27 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "single",
                 "value": 25000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mjoint",
                 "value": 32000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mseparate",
                 "value": 25000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "headhh",
                 "value": 25000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "widow",
                 "value": 25000.0
             }
@@ -368,7 +413,7 @@
     "SS_percentage1": {
         "title": "Social Security taxable income decimal fraction 1",
         "description": "Under current law if their provisional income is above the first threshold for Social Security taxability but below the second threshold, taxpayers need to apply this fraction to both the excess of their provisional income over the first threshold and their Social Security benefits, and then include the smaller one in their AGI.",
-        "notes": "",
+        "notes": "See IRS Publication 915",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -376,7 +421,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.5
             }
         ],
@@ -394,7 +439,7 @@
     "SS_thd85": {
         "title": "Threshold for Social Security benefit taxability 2",
         "description": "The second threshold for Social Security taxability: if taxpayers have provisional income greater than this threshold, up to 85% of their Social Security benefit will be subject to tax under current law.",
-        "notes": "",
+        "notes": "See IRS Publication 915",
         "section_1": "Social Security Taxability",
         "section_2": "Threshold For Social Security Benefit Taxability 2",
         "indexable": true,
@@ -402,27 +447,27 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "single",
                 "value": 34000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mjoint",
                 "value": 44000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mseparate",
                 "value": 34000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "headhh",
                 "value": 34000.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "widow",
                 "value": 34000.0
             }
@@ -441,7 +486,7 @@
     "SS_percentage2": {
         "title": "Social Security taxable income decimal fraction 2",
         "description": "Under current law if their provisional income is above the second threshold for Social Security taxability, taxpayers need to apply this fraction to both the excess of their provisional income over the second threshold and their social security benefits, and then include the smaller one in their AGI.",
-        "notes": "",
+        "notes": "See IRS Publication 915",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -449,7 +494,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.85
             }
         ],
@@ -475,7 +520,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -501,7 +546,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -527,7 +572,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -553,7 +598,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -579,7 +624,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -604,6 +649,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -659,6 +712,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 1.0
+            },
+            {
+                "year": 2012,
+                "value": 1.0
+            },
+            {
                 "year": 2013,
                 "value": 1.0
             },
@@ -713,7 +774,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -739,7 +800,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -765,7 +826,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -790,6 +851,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -845,6 +914,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "value": 0.0
             },
@@ -895,7 +972,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -921,7 +998,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -946,6 +1023,14 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -997,6 +1082,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "value": 0.0
             },
@@ -1047,27 +1140,27 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "single",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mjoint",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mseparate",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "headhh",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "widow",
                 "value": 0.0
             }
@@ -1093,6 +1186,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -1308,13 +1451,21 @@
     "II_em": {
         "title": "Personal and dependent exemption amount",
         "description": "Subtracted from AGI in the calculation of taxable income, per taxpayer and dependent.",
-        "notes": "",
+        "notes": "See 1040 Instructions",
         "section_1": "Personal Exemptions",
         "section_2": "Personal And Dependent Exemption Amount",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 3700.0
+            },
+            {
+                "year": 2012,
+                "value": 3800.0
+            },
             {
                 "year": 2013,
                 "value": 3900.0
@@ -1369,6 +1520,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -1592,6 +1793,10 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.00
+            },
+            {
                 "year": 2013,
                 "value": 0.02
             }
@@ -1618,7 +1823,7 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": false
             }
         ],
