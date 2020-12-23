@@ -1841,13 +1841,63 @@
     "STD": {
         "title": "Standard deduction amount",
         "description": "Amount filing unit can use as a standard deduction.",
-        "notes": "",
+        "notes": "See IRS Publication 17",
         "section_1": "Standard Deduction",
         "section_2": "Standard Deduction Amount",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 5800.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 11600.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 5800.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 8500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 11600.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 5950.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 11900.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 5950.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 8700.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 11900.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -2063,13 +2113,21 @@
     "STD_Dep": {
         "title": "Standard deduction for dependents",
         "description": "This is the maximum standard deduction for dependents.",
-        "notes": "",
+        "notes": "See IRS Publication 501",
         "section_1": "",
         "section_2": "",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 950.0
+            },
+            {
+                "year": 2012,
+                "value": 950.0
+            },
             {
                 "year": 2013,
                 "value": 1000.0
@@ -2113,13 +2171,63 @@
     "STD_Aged": {
         "title": "Additional standard deduction for blind and aged",
         "description": "To get the standard deduction for aged or blind individuals, taxpayers need to add this value to regular standard deduction.",
-        "notes": "",
+        "notes": "See IRS Publication 501",
         "section_1": "Standard Deduction",
         "section_2": "Additional Standard Deduction For Blind And Aged",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 1450.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 1150.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 1150.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 1450.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 1150.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 1450.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 1100.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 1150.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 1450.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 1150.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -2318,7 +2426,7 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": false
             }
         ],
