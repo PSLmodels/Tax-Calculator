@@ -2452,6 +2452,56 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "MARS": "single",
                 "value": 0.0
@@ -2648,6 +2698,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -2846,7 +2946,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -2871,6 +2971,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -3069,6 +3219,56 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "MARS": "single",
                 "value": 0.0
@@ -3266,7 +3466,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -3284,13 +3484,21 @@
     "ID_Medical_frt": {
         "title": "Floor (as a decimal fraction of AGI) for deductible medical expenses.",
         "description": "Taxpayers are eligible to deduct the portion of their medical expenses exceeding this fraction of AGI.",
-        "notes": "When using PUF data, lowering this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.",
+        "notes": "See IRS Publication 502.  When using PUF data, lowering this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "indexable": false,
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.075
+            },
+            {
+                "year": 2012,
+                "value": 0.075
+            },
             {
                 "year": 2013,
                 "value": 0.1
@@ -3335,13 +3543,21 @@
     "ID_Medical_frt_add4aged": {
         "title": "Addon floor (as a decimal fraction of AGI) for deductible medical expenses for elderly filing units.",
         "description": "Elderly taxpayers have this fraction added to the value of the regular floor rate for deductible medical expenses.  This fraction was -0.025 from 2013 to 2016, but that was temporary and it changed to zero beginning in 2017.",
-        "notes": "When using PUF data, changing this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.",
+        "notes": "See IRS Publication 502. When using PUF data, changing this parameter value may produce unexpected results because PUF e17500 variable is zero below the floor.",
         "section_1": "Itemized Deductions",
         "section_2": "Medical Expenses",
         "indexable": false,
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": -0.025
@@ -3386,7 +3602,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -3411,6 +3627,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -3609,7 +3875,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -3635,7 +3901,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 9e+99
             }
         ],
@@ -3660,6 +3926,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -3858,7 +4174,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -3884,7 +4200,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 9e+99
             }
         ],
@@ -3909,6 +4225,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -4107,7 +4473,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -4132,6 +4498,56 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -4355,7 +4771,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -4380,6 +4796,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -4570,13 +5036,21 @@
     "ID_Charity_crt_all": {
         "title": "Ceiling (as a decimal fraction of AGI) for all charitable contribution deductions",
         "description": "The total deduction for charity is capped at this fraction of AGI.",
-        "notes": "When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.",
+        "notes": "See IRS Publication 526. When using PUF data, raising this parameter value may produce unexpected results because in PUF data the variables e19800 and e20100 are already capped.",
         "section_1": "Itemized Deductions",
         "section_2": "Charity",
         "indexable": false,
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.5
+            },
+            {
+                "year": 2012,
+                "value": 0.5
+            },
             {
                 "year": 2013,
                 "value": 0.5
@@ -4633,7 +5107,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.3
             }
         ],
@@ -4660,7 +5134,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -4686,7 +5160,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -4711,6 +5185,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -4909,27 +5433,27 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "single",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mjoint",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "mseparate",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "headhh",
                 "value": 0.0
             },
             {
-                "year": 2013,
+                "year": 2011,
                 "MARS": "widow",
                 "value": 0.0
             }
@@ -4956,7 +5480,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.1
             }
         ],
@@ -4981,6 +5505,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -5035,6 +5567,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -5225,7 +5807,7 @@
     "ID_Miscellaneous_frt": {
         "title": "Floor (as a decimal fraction of AGI) for deductible miscellaneous expenses.",
         "description": "Taxpayers are eligible to deduct the portion of their miscellaneous expense exceeding this fraction of AGI.",
-        "notes": "When using PUF data, lowering this parameter value may produce unexpected results because in PUF data the variable e20400 is zero below the floor.",
+        "notes": "See IRS Publication 529. When using PUF data, lowering this parameter value may produce unexpected results because in PUF data the variable e20400 is zero below the floor.",
         "section_1": "Itemized Deductions",
         "section_2": "Miscellaneous",
         "indexable": false,
@@ -5233,7 +5815,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.02
             }
         ],
@@ -5259,6 +5841,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -5313,6 +5903,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
