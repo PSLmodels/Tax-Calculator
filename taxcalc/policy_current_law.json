@@ -6143,13 +6143,63 @@
     "ID_ps": {
         "title": "Itemized deduction phaseout AGI start (Pease provision)",
         "description": "The itemized deductions will be reduced for taxpayers with AGI higher than this level.",
-        "notes": "",
+        "notes": "See Schedule A Instructions",
         "section_1": "Itemized Deductions",
         "section_2": "Itemized Deduction Limitation",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -6373,6 +6423,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "value": 0.03
             },
@@ -6426,6 +6484,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.8
@@ -6481,7 +6547,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -6507,7 +6573,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 1.0
             }
         ],
@@ -6532,6 +6598,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -6731,37 +6847,37 @@
         "value": [
             {
                 "idedtype": "med",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "sltx",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "retx",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "cas",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "misc",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "int",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "char",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             }
         ],
@@ -6787,7 +6903,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 1.0
             }
         ],
@@ -6814,37 +6930,37 @@
         "value": [
             {
                 "idedtype": "med",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "sltx",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "retx",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "cas",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "misc",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "int",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "char",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             }
         ],
@@ -6869,6 +6985,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -7067,7 +7233,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 9e+99
             }
         ],
@@ -7094,37 +7260,37 @@
         "value": [
             {
                 "idedtype": "med",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "sltx",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "retx",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "cas",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "misc",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "int",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             },
             {
                 "idedtype": "char",
-                "year": 2013,
+                "year": 2011,
                 "value": true
             }
         ],
@@ -7150,7 +7316,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
