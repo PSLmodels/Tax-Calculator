@@ -7342,6 +7342,56 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "MARS": "single",
+                "value": 34500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 69000.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 34500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 46250.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 69000.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 35350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 70700.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 35350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 47350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 70700.0
+            },
+            {
                 "year": 2013,
                 "MARS": "single",
                 "value": 36250.0
@@ -7539,7 +7589,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.15
             }
         ],
@@ -7564,6 +7614,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -7762,6 +7862,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.15
+            },
+            {
+                "year": 2011,
+                "value": 0.15
+            },
+            {
                 "year": 2013,
                 "value": 0.2
             }
@@ -7787,6 +7895,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -7985,7 +8143,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 1.0
             }
         ],
@@ -8011,7 +8169,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -8036,6 +8194,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 34500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 69000.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 34500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 46250.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 69000.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 35350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 70700.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 35350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 47350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 70700.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -8234,7 +8442,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.15
             }
         ],
@@ -8259,6 +8467,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -8457,6 +8715,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.15
+            },
+            {
+                "year": 2012,
+                "value": 0.15
+            },
+            {
                 "year": 2013,
                 "value": 0.2
             }
@@ -8482,6 +8748,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -8680,7 +8996,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 1.0
             }
         ],
@@ -8706,7 +9022,7 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": false
             }
         ],
@@ -8731,6 +9047,14 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -8782,7 +9106,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -8807,6 +9131,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.1
+            },
+            {
+                "year": 2012,
+                "value": 0.1
+            },
             {
                 "year": 2013,
                 "value": 0.1
