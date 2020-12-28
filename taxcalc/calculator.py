@@ -1087,7 +1087,7 @@ class Calculator():
         The 'growdiff_response' subdictionary of the returned dictionary is
         suitable as input into the GrowDiff.update_growdiff method.
         """
-        # check for existence of reform
+        # check for existence of reform and assumption files
         if not os.path.isfile(reform):
             raise ValueError("This .json reform file does not exist or this is a misspecified directory.")
         if not os.path.isfile(assump):
