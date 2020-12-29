@@ -692,7 +692,17 @@ class Parameters(pt.Parameters):
             req.raise_for_status()
             txt = req.text
         else:
-            txt = obj
+            if isinstance(topkey, str) and (topkey == ''):
+                raise ValueError("String is empty.")
+            if isinstance(obj, str):
+                if obj == '':
+                    raise ValueError("String is empty.")    
+                elif ("{" or "}") in obj:
+                    txt = obj
+                else:
+                    raise ValueError("The .json file or variable does not exist or is misspecified.")
+            else:
+                raise ValueError("The .json file or variable does not exist or is misspecified.")
         # strip out //-comments without changing line numbers
         json_txt = re.sub('//.*', ' ', txt)
         # convert JSON text into a Python dictionary

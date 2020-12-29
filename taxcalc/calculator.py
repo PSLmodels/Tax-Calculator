@@ -8,7 +8,6 @@ Tax-Calculator federal income and payroll tax Calculator class.
 # pylint: disable=too-many-lines,no-value-for-parameter
 
 import copy
-import os
 import numpy as np
 import pandas as pd
 import paramtools
@@ -1087,12 +1086,6 @@ class Calculator():
         The 'growdiff_response' subdictionary of the returned dictionary is
         suitable as input into the GrowDiff.update_growdiff method.
         """
-        # check for existence of reform and assumption files
-        if not os.path.isfile(reform):
-            raise ValueError("This .json reform file does not exist or this is a misspecified directory.")
-        if not os.path.isfile(assump):
-            raise ValueError("This .json assumptions file does not exist or this is a misspecified directory.")
-        # construct the composite dictionary
         param_dict = dict()
         param_dict['policy'] = Policy.read_json_reform(reform)
         param_dict['consumption'] = Consumption.read_json_update(assump)
