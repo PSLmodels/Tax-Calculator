@@ -1086,6 +1086,7 @@ class Calculator():
         The 'growdiff_response' subdictionary of the returned dictionary is
         suitable as input into the GrowDiff.update_growdiff method.
         """
+        # construct the composite dictionary
         param_dict = dict()
         param_dict['policy'] = Policy.read_json_reform(reform)
         param_dict['consumption'] = Consumption.read_json_update(assump)
