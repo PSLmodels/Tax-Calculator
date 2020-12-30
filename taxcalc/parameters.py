@@ -697,7 +697,7 @@ class Parameters(pt.Parameters):
             if isinstance(obj, str):
                 if obj == '':
                     raise ValueError("String is empty.")    
-                elif ("{" or "}") in obj:
+                elif ("{" and "}") in obj:
                     txt = obj
                 else:
                     raise ValueError("The .json file or variable does not exist or is misspecified.")
