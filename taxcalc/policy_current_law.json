@@ -11558,6 +11558,56 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "MARS": "single",
+                "value": 8500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 17000.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 8500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 12150.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 17000.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 8700.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 17400.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 8700.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 12400.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 17400.0
+            },
+            {
                 "year": 2013,
                 "MARS": "single",
                 "value": 8925.0
@@ -11780,6 +11830,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.15
+            },
+            {
+                "year": 2012,
+                "value": 0.15
+            },
+            {
                 "year": 2013,
                 "value": 0.15
             },
@@ -11833,6 +11891,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 34500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 69000.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 34500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 46250.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 69000.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 35350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 70700.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 35350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 47350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 70700.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -12056,6 +12164,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.25
+            },
+            {
+                "year": 2012,
+                "value": 0.25
+            },
+            {
                 "year": 2013,
                 "value": 0.25
             },
@@ -12109,6 +12225,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 83600.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 139350.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 69675.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 119400.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 139350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 85650.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 142700.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 73200.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 122300.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 142700.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -12332,6 +12498,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.28
+            },
+            {
+                "year": 2012,
+                "value": 0.28
+            },
+            {
                 "year": 2013,
                 "value": 0.28
             },
@@ -12385,6 +12559,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 174400.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 212300.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 106150.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 193350.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 212300.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 178650.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 217450.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 108725.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 198050.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 217450.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -12608,6 +12832,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.33
+            },
+            {
+                "year": 2012,
+                "value": 0.33
+            },
+            {
                 "year": 2013,
                 "value": 0.33
             },
@@ -12661,6 +12893,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 379150.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 379150.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 189575.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 379150.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 379150.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 388350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 388350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 194175.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 388350.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 388350.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -12884,6 +13166,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.35
+            },
+            {
+                "year": 2012,
+                "value": 0.35
+            },
+            {
                 "year": 2013,
                 "value": 0.35
             },
@@ -12937,6 +13227,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -13160,6 +13500,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 1.0
+            },
+            {
+                "year": 2012,
+                "value": 1.0
+            },
+            {
                 "year": 2013,
                 "value": 0.396
             },
@@ -13213,6 +13561,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 9e+99
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 9e+99
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -13436,7 +13834,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 1.0
             }
         ],
@@ -13462,7 +13860,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 1.0
             }
         ],
@@ -13488,7 +13886,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.0
             }
         ],
@@ -13514,7 +13912,7 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": false
             }
         ],
@@ -13540,7 +13938,7 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": true
             }
         ],
@@ -13565,6 +13963,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -13619,6 +14025,56 @@
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -13842,6 +14298,56 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "MARS": "single",
+                "value": 1.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 1.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 1.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 1.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 1.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 1.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 1.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 1.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 1.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 1.0
+            },
+            {
                 "year": 2013,
                 "MARS": "single",
                 "value": 1.0
@@ -14064,6 +14570,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "value": 0.0
             },
@@ -14117,6 +14631,14 @@
         "indexed": false,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
             {
                 "year": 2013,
                 "value": 0.0
@@ -14172,6 +14694,14 @@
         "type": "float",
         "value": [
             {
+                "year": 2011,
+                "value": 0.0
+            },
+            {
+                "year": 2012,
+                "value": 0.0
+            },
+            {
                 "year": 2013,
                 "value": 0.0
             },
@@ -14226,7 +14756,7 @@
         "type": "bool",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": true
             }
         ],
@@ -14244,13 +14774,63 @@
     "AMT_em": {
         "title": "AMT exemption amount",
         "description": "The amount of AMT taxable income exempted from AMT.",
-        "notes": "",
+        "notes": "See Form 6251 Instructions",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 48450.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 74450.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 48450.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 48450.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 74450.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 50600.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 78750.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 39375.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 50600.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 78750.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -14474,7 +15054,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.25
             }
         ],
@@ -14492,13 +15072,63 @@
     "AMT_em_ps": {
         "title": "AMT exemption phaseout start",
         "description": "AMT exemption starts to decrease when AMT taxable income goes beyond this threshold.",
-        "notes": "",
+        "notes": "See Form 6251 Instructions",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "MARS": "single",
+                "value": 112500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mjoint",
+                "value": 150000.0
+            },
+            {
+                "year": 2011,
+                "MARS": "mseparate",
+                "value": 75000.0
+            },
+            {
+                "year": 2011,
+                "MARS": "headhh",
+                "value": 112500.0
+            },
+            {
+                "year": 2011,
+                "MARS": "widow",
+                "value": 150000.0
+            },
+            {
+                "year": 2012,
+                "MARS": "single",
+                "value": 112500.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mjoint",
+                "value": 150000.0
+            },
+            {
+                "year": 2012,
+                "MARS": "mseparate",
+                "value": 75000.0
+            },
+            {
+                "year": 2012,
+                "MARS": "headhh",
+                "value": 112500.0
+            },
+            {
+                "year": 2012,
+                "MARS": "widow",
+                "value": 150000.0
+            },
             {
                 "year": 2013,
                 "MARS": "single",
@@ -14714,13 +15344,21 @@
     "AMT_child_em": {
         "title": "Child AMT exemption additional income base",
         "description": "The child's AMT exemption is capped by this amount plus the child's earned income.",
-        "notes": "",
+        "notes": "See Form 6251 Instructions",
         "section_1": "",
         "section_2": "",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 6800.0
+            },
+            {
+                "year": 2012,
+                "value": 6950.0
+            },
             {
                 "year": 2013,
                 "value": 7150.0
@@ -14764,7 +15402,7 @@
     "AMT_child_em_c_age": {
         "title": "Age ceiling for special AMT exemption",
         "description": "Individuals under this age must use the child AMT exemption rules.",
-        "notes": "",
+        "notes": "See Form 6251 Instructions",
         "section_1": "",
         "section_2": "",
         "indexable": false,
@@ -14772,7 +15410,7 @@
         "type": "int",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 18
             }
         ],
@@ -14790,7 +15428,7 @@
     "AMT_rt1": {
         "title": "AMT rate 1",
         "description": "The tax rate applied to the portion of AMT taxable income below the surtax threshold, AMT bracket 1.",
-        "notes": "",
+        "notes": "See Form 6251 Instructions",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": false,
@@ -14798,7 +15436,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.26
             }
         ],
@@ -14816,13 +15454,21 @@
     "AMT_brk1": {
         "title": "AMT bracket 1 (upper threshold)",
         "description": "AMT taxable income below this is subject to AMT rate 1 and above it is subject to AMT rate 1 + the additional AMT rate.",
-        "notes": "",
+        "notes": "See Form 6251 Instructions",
         "section_1": "Personal Income",
         "section_2": "Alternative Minimum Tax",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 175000.0
+            },
+            {
+                "year": 2012,
+                "value": 175000.0
+            },
             {
                 "year": 2013,
                 "value": 179500.0
@@ -14874,7 +15520,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 0.02
             }
         ],
@@ -14892,13 +15538,21 @@
     "AMT_em_pe": {
         "title": "AMT exemption phaseout ending AMT taxable income for Married filing Separately",
         "description": "The AMT exemption is entirely disallowed beyond this AMT taxable income level for individuals who are married but filing separately.",
-        "notes": "",
+        "notes": "See Form 6251 Instructions",
         "section_1": "",
         "section_2": "",
         "indexable": true,
         "indexed": true,
         "type": "float",
         "value": [
+            {
+                "year": 2011,
+                "value": 223900.0
+            },
+            {
+                "year": 2012,
+                "value": 232500.0
+            },
             {
                 "year": 2013,
                 "value": 238550.0
@@ -14946,7 +15600,7 @@
     "CDCC_c": {
         "title": "Maximum child & dependent care credit per dependent",
         "description": "The maximum amount of credit allowed for each qualifying dependent.",
-        "notes": "",
+        "notes": "See IRS Publication 503",
         "section_1": "Nonrefundable Credits",
         "section_2": "Child And Dependent Care",
         "indexable": true,
@@ -14954,7 +15608,7 @@
         "type": "float",
         "value": [
             {
-                "year": 2013,
+                "year": 2011,
                 "value": 3000.0
             }
         ],
