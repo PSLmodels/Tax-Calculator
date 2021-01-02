@@ -36,7 +36,7 @@ class Policy(Parameters):
 
     DEFAULTS_FILE_NAME = 'policy_current_law.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
-    JSON_START_YEAR = 2013  # remains the same unless earlier data added
+    JSON_START_YEAR = 2011  # remains the same unless earlier data added
     LAST_KNOWN_YEAR = 2019  # last year for which indexed param vals are known
     # should increase LAST_KNOWN_YEAR by one every calendar year
     LAST_BUDGET_YEAR = 2030  # last extrapolation year
