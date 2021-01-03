@@ -26,8 +26,8 @@ class GrowDiff(Parameters):
     class instance: GrowDiff
     """
 
-    JSON_START_YEAR = 2013  # must be same as Policy.JSON_START_YEAR
-    DEFAULT_NUM_YEARS = 18  # must be same as Policy.DEFAULT_NUM_YEARS
+    JSON_START_YEAR = 2011  # must be same as Policy.JSON_START_YEAR
+    DEFAULT_NUM_YEARS = 20  # must be same as Policy.DEFAULT_NUM_YEARS
     DEFAULTS_FILE_NAME = 'growdiff.json'
     DEFAULTS_FILE_PATH = os.path.abspath(os.path.dirname(__file__))
 
