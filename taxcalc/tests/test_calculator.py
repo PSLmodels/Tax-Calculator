@@ -61,10 +61,10 @@ def test_make_calculator_with_policy_reform(cps_subsample):
     # create a Policy object and apply a policy reform
     pol = Policy()
     reform = {
-        'II_em': {2013: 4000},
-        'II_em-indexed': {2013: False},
-        'STD_Aged': {2013: [1600, 1300, 1300, 1600, 1600]},
-        'STD_Aged-indexed': {2013: False}
+        'II_em': {2011: 4000},
+        'II_em-indexed': {2011: False},
+        'STD_Aged': {2011: [1600, 1300, 1300, 1600, 1600]},
+        'STD_Aged-indexed': {2011: False}
     }
     pol.implement_reform(reform)
     # create a Calculator object using this policy reform
@@ -103,7 +103,8 @@ def test_make_calculator_with_multiyear_reform(cps_subsample):
     assert pol.num_years == Policy.DEFAULT_NUM_YEARS
     assert calc.current_year == year
     assert calc.policy_param('II_em') == 3950
-    exp_II_em = [3900, 3950, 5000] + [6000] * (Policy.DEFAULT_NUM_YEARS - 3)
+    exp_II_em = ([3700, 3800, 3900, 3950, 5000] + [6000] *
+                 (Policy.DEFAULT_NUM_YEARS - 5))
     assert np.allclose(calc.policy_param('_II_em'),
                        np.array(exp_II_em))
     calc.increment_year()
@@ -247,10 +248,10 @@ def test_make_calculator_increment_years_first(cps_subsample):
                              [std6, std6, std6, std6, std6],
                              [std7, std7, std7, std7, std7]])
     act_STD_Aged = calc.policy_param('_STD_Aged')
-    assert np.allclose(act_STD_Aged[:5], exp_STD_Aged)
+    assert np.allclose(act_STD_Aged[2:7], exp_STD_Aged)
     exp_II_em = np.array([3900, 3950, 5000, 6000, 6000])
     act_II_em = calc.policy_param('_II_em')
-    assert np.allclose(act_II_em[:5], exp_II_em)
+    assert np.allclose(act_II_em[2:7], exp_II_em)
 
 
 def test_ID_HC_vs_BS(cps_subsample):
