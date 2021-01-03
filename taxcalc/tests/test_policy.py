@@ -435,7 +435,7 @@ def test_reform_makes_no_changes_before_year():
     reform = {'II_em': {2015: 4400}, 'II_em-indexed': {2015: True}}
     ppo.implement_reform(reform)
     ppo.set_year(2015)
-    assert np.allclose(ppo._II_em[:3], np.array([3900, 3950, 4400]),
+    assert np.allclose(ppo._II_em[2:5], np.array([3900, 3950, 4400]),
                        atol=0.01, rtol=0.0)
     assert ppo.II_em == 4400
 
