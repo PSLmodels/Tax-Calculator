@@ -293,35 +293,35 @@
     "e07240": {
       "type": "float",
       "desc": "Retirement savings contributions credit from Form 8880",
-      "form": {"2011-2011": "1040 line 50",
+      "form": {"2011-2013": "1040 line 50",
                "2014-2016": "1040 line 51"},
       "availability": "taxdata_puf"
     },
     "e07260": {
       "type": "float",
       "desc": "Residential energy credit from Form 5695",
-      "form": {"2011-2011": "1040 line 52",
+      "form": {"2011-2013": "1040 line 52",
                "2014-2016": "1040 line 53"},
       "availability": "taxdata_puf"
     },
     "e07300": {
       "type": "float",
       "desc": "Foreign tax credit from Form 1116",
-      "form": {"2011-2011": "1040 line 47",
+      "form": {"2011-2013": "1040 line 47",
                "2014-2016": "1040 line 48"},
       "availability": "taxdata_puf"
     },
     "e07400": {
       "type": "float",
       "desc": "General business credit from Form 3800",
-      "form": {"2011-2011": "1040 line 53a",
+      "form": {"2011-2013": "1040 line 53a",
                "2014-2016": "1040 line 54a"},
       "availability": "taxdata_puf"
     },
     "e07600": {
       "type": "float",
       "desc": "Prior year minimum tax credit from Form 8801",
-      "form": {"2011-2011": "1040 line 53b",
+      "form": {"2011-2013": "1040 line 53b",
                "2014-2016": "1040 line 54b"},
       "availability": "taxdata_puf"
     },
@@ -335,21 +335,21 @@
     "e09800": {
       "type": "float",
       "desc": "Unreported payroll taxes from Form 4137 or 8919",
-      "form": {"2011-2011": "1040 line 57",
+      "form": {"2011-2013": "1040 line 57",
                "2014-2016": "1040 line 58"},
       "availability": "taxdata_puf"
     },
     "e09900": {
       "type": "float",
       "desc": "Penalty tax on qualified retirement plans",
-      "form": {"2011-2011": "1040 line 58",
+      "form": {"2011-2013": "1040 line 58",
                "2014-2016": "1040 line 59"},
       "availability": "taxdata_puf"
     },
     "e11200": {
       "type": "float",
       "desc": "Excess payroll (FICA/RRTA) tax withheld",
-      "form": {"2011-2011": "1040 line 69",
+      "form": {"2011-2013": "1040 line 69",
                "2014-2016": "1040 line 71"},
       "availability": "taxdata_puf"
     },
@@ -566,7 +566,7 @@
     "p08000": {
       "type": "float",
       "desc": "Other tax credits (but not including Sch R credit)",
-      "form": {"2011-2011": "1040 line 53",
+      "form": {"2011-2013": "1040 line 53",
                "2014-2016": "1040 line 54"},
       "availability": "taxdata_puf"
     },
@@ -653,7 +653,7 @@
     "niit": {
       "type": "float",
       "desc": "Net Investment Income Tax from Form 8960",
-      "form": {"2011-2011": "1040 line 60b",
+      "form": {"2011-2013": "1040 line 60b",
                "2014-2016": "1040 line 62b"}
     },
     "combined": {
@@ -689,7 +689,7 @@
     "eitc": {
       "type": "float",
       "desc": "Earned Income Credit",
-      "form": {"2011-2011": "1040 line 64a",
+      "form": {"2011-2013": "1040 line 64a",
                "2014-2016": "1040 line 66a"}
     },
     "rptc": {
@@ -720,7 +720,7 @@
     "iitax": {
       "type": "float",
       "desc": "Total federal individual income tax liability; appears as INCTAX variable in tc CLI minimal output",
-      "form": {"2011-2011": "1040 line 61 minus line 56 minus line 60a",
+      "form": {"2011-2013": "1040 line 61 minus line 56 minus line 60a",
                "2014-2016": "1040 line 63 minus line 57 minus line 62a"}
     },
     "num": {
@@ -731,13 +731,13 @@
     "othertaxes": {
       "type": "float",
       "desc": "Other taxes: sum of niit, e09700, e09800 and e09900 (included in c09200)",
-      "form": {"2011-2011": "sum of 1040 lines 57 through 60",
+      "form": {"2011-2013": "sum of 1040 lines 57 through 60",
                "2014-2016": "sum of 1040 lines 58 through 62"}
     },
     "payrolltax": {
       "type": "float",
       "desc": "Total (employee + employer) payroll tax liability; appears as PAYTAX variable in tc CLI minimal output (payrolltax = ptax_was + setax + ptax_amc)",
-      "form": {"2011-2011": "OASDI+HI FICA plus 1040 lines 56 and 60a",
+      "form": {"2011-2013": "OASDI+HI FICA plus 1040 lines 56 and 60a",
                "2014-2016": "OASDI+HI FICA plus 1040 lines 57 and 62a"}
     },
     "refund": {
@@ -834,19 +834,19 @@
     "c05800": {
       "type": "float",
       "desc": "Total (regular + AMT) income tax liability before credits (equals taxbc plus c09600)",
-      "form": {"2011-2011": "1040 line 46",
+      "form": {"2011-2013": "1040 line 46",
                "2014-2016": "1040 line 47"}
     },
     "c07100": {
       "type": "float",
       "desc": "Total non-refundable credits used to reduce positive tax liability",
-      "form": {"2011-2011": "1040 line 46 minus 1040 line 55",
+      "form": {"2011-2013": "1040 line 46 minus 1040 line 55",
                "2014-2016": "1040 line 47 minus 1040 line 56"}
     },
     "c07180": {
       "type": "float",
       "desc": "Credit for child and dependent care expenses from Form 2441",
-      "form": {"2011-2011": "1040 line 48",
+      "form": {"2011-2013": "1040 line 48",
                "2014-2016": "1040 line 49"}
     },
     "c07200": {
@@ -857,13 +857,13 @@
     "c07220": {
       "type": "float",
       "desc": "Child tax credit (adjusted) from Form 8812",
-      "form": {"2011-2011": "1040 line 51",
+      "form": {"2011-2013": "1040 line 51",
                "2014-2016": "1040 line 52"}
     },
     "c07230": {
       "type": "float",
       "desc": "Education tax credits non-refundable amount from Form 8863 (includes c87668)",
-      "form": {"2011-2011": "8863 line 19 and 1040 line 49",
+      "form": {"2011-2013": "8863 line 19 and 1040 line 49",
                "2014-2016": "8863 line 19 and 1040 line 50"}
 
     },
@@ -900,7 +900,7 @@
     "c09200": {
       "type": "float",
       "desc": "Income tax liability (including othertaxes) after non-refundable credits are used, but before refundable credits are applied",
-      "form": {"2011-2011": "1040 line 61",
+      "form": {"2011-2013": "1040 line 61",
                "2014-2016": "1040 line 63"}
     },
     "c09600": {
@@ -911,13 +911,13 @@
     "c10960": {
       "type": "float",
       "desc": "American Opportunity Credit refundable amount from Form 8863",
-      "form": {"2011-2011": "8863 line 8 and 1040 line 66",
+      "form": {"2011-2013": "8863 line 8 and 1040 line 66",
                "2014-2016": "8863 line 8 and 1040 line 68"}
     },
     "c11070": {
       "type": "float",
       "desc": "Child tax credit (refunded) from Form 8812",
-      "form": {"2011-2011": "1040 line 65",
+      "form": {"2011-2013": "1040 line 65",
                "2014-2016": "1040 line 67"}
     },
     "c17000": {
@@ -1103,25 +1103,25 @@
     "ptax_amc": {
       "type": "float",
       "desc": "Additional Medicare Tax from Form 8959 (included in payrolltax)",
-      "form": {"2011-2011": "1040 line 60a",
+      "form": {"2011-2013": "1040 line 60a",
                "2014-2016": "1040 line 62a"}
     },
     "ptax_oasdi": {
       "type": "float",
       "desc": "Employee + employer OASDI FICA tax plus self-employment tax (excludes HI FICA so positive ptax_oasdi is less than ptax_was plus setax)",
-      "form": {"2011-2011": "OASDI FICA plus 1040 line 56",
+      "form": {"2011-2013": "OASDI FICA plus 1040 line 56",
                "2014-2016": "OASDI FICA plus 1040 line 57"}
     },
     "ptax_was": {
       "type": "float",
       "desc": "Employee + employer OASDI + HI FICA tax",
-      "form": {"2011-2011": "OASDHI FICA",
+      "form": {"2011-2013": "OASDHI FICA",
                "2014-2016": "OASDHI FICA"}
     },
     "setax": {
       "type": "float",
       "desc": "Self-employment tax",
-      "form": {"2011-2011": "1040 line 56",
+      "form": {"2011-2013": "1040 line 56",
                "2014-2016": "1040 line 57"}
     },
     "ymod": {
