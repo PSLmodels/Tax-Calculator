@@ -32,8 +32,8 @@ def test_update_consumption():
     }
     consump.update_consumption(revision)
     expected_mpc_e20400 = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.06)
-    expected_mpc_e20400[0] = 0.0
-    expected_mpc_e20400[1] = 0.05
+    expected_mpc_e20400[:3] = 0.0
+    expected_mpc_e20400[3] = 0.05
     assert np.allclose(consump._MPC_e20400,
                        expected_mpc_e20400,
                        rtol=0.0)
@@ -41,8 +41,8 @@ def test_update_consumption():
                        np.zeros((Consumption.DEFAULT_NUM_YEARS,)),
                        rtol=0.0)
     expected_ben_mcare_value = np.full((Consumption.DEFAULT_NUM_YEARS,), 0.80)
-    expected_ben_mcare_value[0] = 1.0
-    expected_ben_mcare_value[1] = 0.75
+    expected_ben_mcare_value[:3] = 1.0
+    expected_ben_mcare_value[3] = 0.75
     assert np.allclose(consump._BEN_mcare_value,
                        expected_ben_mcare_value,
                        rtol=0.0)
@@ -63,7 +63,7 @@ def test_incorrect_update_consumption():
     with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500': {'xyz': 0.2}})
     with pytest.raises(paramtools.ValidationError):
-        Consumption().update_consumption({'MPC_e17500': {2012: 0.2}})
+        Consumption().update_consumption({'MPC_e17500': {2010: 0.2}})
     with pytest.raises(paramtools.ValidationError):
         Consumption().update_consumption({'MPC_e17500': {2052: 0.2}})
     with pytest.raises(paramtools.ValidationError):
@@ -102,15 +102,15 @@ def test_consumption_default_data():
     pdata = consump.specification(meta_data=True, ignore_state=True)
     for pname in pdata.keys():
         if pname.startswith('MPC'):
-            assert pdata[pname]['value'] == [{"value": 0.0, "year": 2013}]
+            assert pdata[pname]['value'] == [{"value": 0.0, "year": 2011}]
         elif pname.startswith('BEN'):
-            assert pdata[pname]['value'] == [{"value": 1.0, "year": 2013}]
+            assert pdata[pname]['value'] == [{"value": 1.0, "year": 2011}]
 
 
 def test_consumption_response(cps_subsample):
     consump = Consumption()
     mpc = 0.5
-    consumption_response = {'MPC_e20400': {2013: mpc}}
+    consumption_response = {'MPC_e20400': {2011: mpc}}
     consump.update_consumption(consumption_response)
     # test incorrect call to response method
     with pytest.raises(ValueError):
