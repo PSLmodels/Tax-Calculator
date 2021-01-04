@@ -40,7 +40,6 @@
     <script src="../../_static/jquery.js"></script>
     <script src="../../_static/underscore.js"></script>
     <script src="../../_static/doctools.js"></script>
-    <script src="../../_static/language_data.js"></script>
     <script src="../../_static/togglebutton.js"></script>
     <script src="../../_static/clipboard.min.js"></script>
     <script src="../../_static/copybutton.js"></script>
@@ -669,6 +668,7 @@
 <span class="sd">    transforms the calc-style function into an apply-style function that</span>
 <span class="sd">    can be called by Calculator class methods (see calculator.py).</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">parameters</span><span class="p">:</span>
         <span class="n">parameters</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -725,6 +725,9 @@
 <span class="sd">            wrapper function nested in make_wrapper function nested</span>
 <span class="sd">            in iterate_jit decorator.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;TESTING&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;True&#39;</span><span class="p">:</span> <span class="c1"># os TESTING environment only accepts string arguments</span>
+                <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
             <span class="n">in_arrays</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">pm_or_pf</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">farg</span> <span class="ow">in</span> <span class="n">all_out_args</span> <span class="o">+</span> <span class="n">in_args</span><span class="p">:</span>

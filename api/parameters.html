@@ -40,7 +40,6 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script src="../_static/togglebutton.js"></script>
     <script src="../_static/clipboard.min.js"></script>
     <script src="../_static/copybutton.js"></script>
@@ -691,7 +690,7 @@ labels.</p></li>
 
 <dl class="py method">
 <dt id="taxcalc.parameters.Parameters.extend_func">
-<code class="sig-name descname">extend_func</code><span class="sig-paren">(</span><em class="sig-param">param: str</em>, <em class="sig-param">extend_vo: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">known_vo: NewType.&lt;locals&gt;.new_type</em>, <em class="sig-param">extend_grid: List</em>, <em class="sig-param">label: str</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.extend_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.extend_func" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">extend_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">param</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">extend_vo</span><span class="p">:</span> <span class="n">ValueObject</span></em>, <em class="sig-param"><span class="n">known_vo</span><span class="p">:</span> <span class="n">ValueObject</span></em>, <em class="sig-param"><span class="n">extend_grid</span><span class="p">:</span> <span class="n">List</span></em>, <em class="sig-param"><span class="n">label</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/paramtools/parameters.html#Parameters.extend_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.parameters.Parameters.extend_func" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function for applying indexing rates to parameter values as they
 are extended. Projects may implement their own <cite>extend_func</cite> by
 overriding this one. Projects need to write their own <cite>indexing_rate</cite>
