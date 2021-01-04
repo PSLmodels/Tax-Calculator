@@ -504,10 +504,20 @@ def test_read_bad_json_assump_file():
     """
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, badassump1)
-    with pytest.raises(ValueError):
+    with pytest.raises(OSError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, list())
+
+
+def test_json_doesnt_exist():
+    """
+    Test JSON file which doesn't exist
+    """
+    with pytest.raises(OSError):
+        Calculator.read_json_param_objects(None, './reforms/doesnt_exist.json')
+    with pytest.raises(OSError):
+        Calculator.read_json_param_objects('./reforms/doesnt_exist.json', None)
 
 
 def test_calc_all():

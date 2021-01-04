@@ -700,9 +700,9 @@ class Parameters(pt.Parameters):
                 elif ("{" and "}") in obj:
                     txt = obj
                 else:
-                    raise ValueError("The .json file or variable does not exist or is misspecified.")
+                    raise OSError("The .json file or variable does not exist or is misspecified.")
             else:
-                raise ValueError("The .json file or variable does not exist or is misspecified.")
+                raise OSError("The .json file or variable does not exist or is misspecified.")
         # strip out //-comments without changing line numbers
         json_txt = re.sub('//.*', ' ', txt)
         # convert JSON text into a Python dictionary
