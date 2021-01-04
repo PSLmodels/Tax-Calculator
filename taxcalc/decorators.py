@@ -243,6 +243,7 @@ def iterate_jit(parameters=None, **kwargs):
     transforms the calc-style function into an apply-style function that
     can be called by Calculator class methods (see calculator.py).
     """
+
     if not parameters:
         parameters = []
 
@@ -299,6 +300,9 @@ def iterate_jit(parameters=None, **kwargs):
             wrapper function nested in make_wrapper function nested
             in iterate_jit decorator.
             """
+            if os.getenv('TESTING') == 'True': # os TESTING environment only accepts string arguments
+                return func(*args, **kwargs)
+
             in_arrays = []
             pm_or_pf = []
             for farg in all_out_args + in_args:
