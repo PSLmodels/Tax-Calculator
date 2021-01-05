@@ -11,7 +11,7 @@ jobs:
           persist-credentials: false
 
       - name: Setup Miniconda
-        uses: goanpeca/setup-miniconda@v1
+        uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml

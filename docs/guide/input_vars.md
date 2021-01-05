@@ -706,8 +706,8 @@ _IRS Form Location:_
 2013-2016: imputed from CPS data  
 
 
-##  `nu05`  
-_Description_: Number of dependents under 5 years old  
+##  `nu06`  
+_Description_: Number of dependents under 6 years old  
 _Datatype_: int  
 _Availability_: taxdata_puf, taxdata_cps  
 _IRS Form Location:_  
