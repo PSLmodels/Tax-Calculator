@@ -424,6 +424,7 @@ class Parameters(pt.Parameters):
         # Re-instate ops.
         self.label_to_extend = label_to_extend
         self.array_first = array_first
+        self.set_state()
 
         # Filter out "-indexed" params.
         nonindexed_params = {
@@ -431,10 +432,6 @@ class Parameters(pt.Parameters):
             for param, val in params.items()
             if param not in index_affected
         }
-
-        needs_reset = set(needs_reset) - set(nonindexed_params.keys())
-        if needs_reset:
-            self._set_state(params=needs_reset)
 
         # 3. Do adjustment for all non-indexing related parameters.
         adj = super().adjust(nonindexed_params, **kwargs)
