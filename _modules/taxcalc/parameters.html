@@ -1117,7 +1117,19 @@
             <span class="n">req</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
             <span class="n">txt</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">txt</span> <span class="o">=</span> <span class="n">obj</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topkey</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">topkey</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;topkey string is empty.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;obj string is empty.&quot;</span><span class="p">)</span>    
+                <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;The .json file does not exist.&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;{&quot;</span> <span class="ow">and</span> <span class="s2">&quot;}&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+                    <span class="n">txt</span> <span class="o">=</span> <span class="n">obj</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The JSON variable is misspecified.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The JSON variable is misspecified.&quot;</span><span class="p">)</span>
         <span class="c1"># strip out //-comments without changing line numbers</span>
         <span class="n">json_txt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;//.*&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">txt</span><span class="p">)</span>
         <span class="c1"># convert JSON text into a Python dictionary</span>
