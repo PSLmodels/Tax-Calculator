@@ -812,7 +812,9 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
             upper_thd = lower_thd + pre_qbid_taxinc_gap
             if PT_SSTB_income == 1 and pre_qbid_taxinc >= upper_thd:
                 qbided = 0.
-            else:
+            # if PT_qbid_limit_switch is True, apply wage/capital
+            # limitations.
+            elif PT_qbid_limit_switch:
                 wage_cap = PT_binc_w2_wages * PT_qbid_w2_wages_rt
                 alt_cap = (PT_binc_w2_wages * PT_qbid_alt_w2_wages_rt +
                            PT_ubia_property * PT_qbid_alt_property_rt)
@@ -833,6 +835,11 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
                     prt = (pre_qbid_taxinc - lower_thd) / pre_qbid_taxinc_gap
                     adj = prt * (qbid_adjusted - cap_adjusted)
                     qbided = qbid_adjusted - adj
+            # if PT_qbid_limit_switch is False, assume all taxpayers
+            # have sufficient wage expenses and capital income to avoid
+            # QBID limitations.
+            else:
+                qbided = qbid_before_limits
         # apply taxinc cap (assuning cap rate is equal to PT_qbid_rt)
         net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
@@ -999,7 +1006,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         dwks30 = dwks22 + dwks28
         dwks31 = dwks21 - dwks30
         dwks32 = CG_rt3 * dwks31
-        hi_base = max(0., dwks31 - CG_brk3[MARS - 1])
+        # compute total taxable CG for additional top bracket
+        cg_all = dwks20 + dwks28 + dwks31
+        hi_base = max(0., cg_all - CG_brk3[MARS - 1])
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
         # break in worksheet lines

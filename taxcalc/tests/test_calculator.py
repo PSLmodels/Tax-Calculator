@@ -513,6 +513,16 @@ def test_read_bad_json_assump_file():
         Calculator.read_json_param_objects(None, list())
 
 
+def test_json_doesnt_exist():
+    """
+    Test JSON file which doesn't exist
+    """
+    with pytest.raises(FileNotFoundError):
+        Calculator.read_json_param_objects(None, './reforms/doesnt_exist.json')
+    with pytest.raises(FileNotFoundError):
+        Calculator.read_json_param_objects('./reforms/doesnt_exist.json', None)
+
+
 def test_calc_all():
     """
     Test calc_all method.
@@ -863,6 +873,42 @@ def test_qbid_calculation():
     assert np.allclose(tc_df.qbided, tpc_df.qbid)
 
 
+def test_qbid_limit_switch():
+    """
+    Test Calculator's switch to implement wage/capital limitations
+    on QBI deduction.
+    """
+    cy = 2019
+    ref = {"PT_qbid_limit_switch": {2019: False}}
+
+    # filing unit has $500,000 in wages and $100,000 in QBI. Since
+    # the household is above the taxable income limitation threshold,
+    # with full wage/capital limitations, it does not receive a QBI
+    # deduction. With sufficent wage/capital to avoid the limitation,
+    # the filing unit receives a deduction of:
+    # $100,000 * 20% = $20,000.
+    VARS = 'RECID,MARS,e00200s,e00200p,e00200,e26270,e02000\n'
+    FUNIT = '1,2,250000,250000,500000,100000,100000'
+
+    funit_df = pd.read_csv(StringIO(VARS + FUNIT))
+    recs = Records(data=funit_df, start_year=cy,
+                   gfactors=None, weights=None)
+
+    calc_base = Calculator(policy=Policy(), records=recs)
+    calc_base.calc_all()
+
+    qbid_base = calc_base.array('qbided')
+    assert np.equal(qbid_base, 0)
+
+    pol_ref = Policy()
+    pol_ref.implement_reform(ref)
+    calc_ref = Calculator(policy=pol_ref, records=recs)
+    calc_ref.calc_all()
+
+    qbid_ref = calc_ref.array('qbided')
+    assert np.equal(qbid_ref, 20000)
+
+
 def test_calc_all_benefits_amounts(cps_subsample):
     '''
     Testing how benefits are handled in the calc_all method
@@ -897,3 +943,66 @@ def test_calc_all_benefits_amounts(cps_subsample):
 
     assert np.allclose(ubi_diff, benefit_cost_diff)
     assert np.allclose(ubi_diff, benefit_value_diff)
+
+
+def test_cg_top_rate():
+    """
+    Test top CG bracket and rate.
+    """
+    cy = 2019
+
+    # set NIIT and STD to zero to isolate CG tax rates
+    base = {"NIIT_rt": {2019: 0},
+            "STD": {2019: [0, 0, 0, 0, 0]}}
+
+    # create additional top CG bracket and rate
+    ref = {"CG_brk3": {2019: [1000000, 1000000, 1000000, 1000000, 1000000]},
+           "CG_rt4": {2019: 0.4},
+           "NIIT_rt": {2019: 0},
+           "STD": {2019: [0, 0, 0, 0, 0]}}
+
+    # create one record just below the top CG bracket and one just above
+    VARS = 'RECID,MARS,p23250\n'
+    FUNITS = '1,2,999999\n2,2,1000001\n'
+
+    pol_base = Policy()
+    pol_base.implement_reform(base)
+
+    pol_ref = Policy()
+    pol_ref.implement_reform(ref)
+
+    funit_df = pd.read_csv(StringIO(VARS + FUNITS))
+    recs = Records(data=funit_df, start_year=cy,
+                   gfactors=None, weights=None)
+
+    calc_base = Calculator(policy=pol_base, records=recs)
+    calc_base.calc_all()
+
+    calc_ref = Calculator(policy=pol_ref, records=recs)
+    calc_ref.calc_all()
+
+    # calculate MTRs wrt long term gains
+    mtr_base = calc_base.mtr(variable_str='p23250',
+                             calc_all_already_called=True,
+                             wrt_full_compensation=False)
+    mtr_itax_base = mtr_base[1]
+
+    cg_rt3 = pol_base.to_array('CG_rt3', year=2019)
+    # check that MTR for both records is equal to CG_rt3
+    assert np.allclose(mtr_itax_base, cg_rt3)
+
+    # calculate MTRs under reform
+    mtr_ref = calc_ref.mtr(variable_str='p23250',
+                           calc_all_already_called=True,
+                           wrt_full_compensation=False)
+    mtr_itax_ref = mtr_ref[1]
+
+    cg_rt3_ref = pol_ref.to_array('CG_rt3', year=2019)
+    cg_rt4_ref = pol_ref.to_array(param='CG_rt4', year=2019)
+
+    # check that MTR of houshold below top threshold is equal to
+    # CG_rt3
+    assert np.allclose(mtr_itax_ref[0], cg_rt3_ref)
+    # check that MTR of household above top threshold is equal to
+    # CG_rt4
+    assert np.allclose(mtr_itax_ref[1], cg_rt4_ref)

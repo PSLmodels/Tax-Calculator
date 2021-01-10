@@ -9,6 +9,9 @@ import os
 import re
 import ast
 from taxcalc import Records  # pylint: disable=import-error
+from taxcalc import calcfunctions
+import numpy as np
+import pytest
 
 
 class GetFuncDefs(ast.NodeVisitor):
@@ -161,3 +164,16 @@ def test_function_args_usage(tests_path):
                 msg += 'FUNCTION,ARGUMENT= {} {}\n'.format(fname, arg)
     if found_error:
         raise ValueError(msg)
+
+
+def test_DependentCare(skip_jit):
+    """
+    Tests the DependentCare function
+    """
+
+    test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000], 
+                  .2, 7165, 5000, 0)
+    test_value = calcfunctions.DependentCare(*test_tuple)
+    expected_value = 25196
+
+    assert np.allclose(test_value, expected_value)
