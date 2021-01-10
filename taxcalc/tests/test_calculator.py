@@ -514,6 +514,16 @@ def test_read_bad_json_assump_file():
         Calculator.read_json_param_objects(None, list())
 
 
+def test_json_doesnt_exist():
+    """
+    Test JSON file which doesn't exist
+    """
+    with pytest.raises(FileNotFoundError):
+        Calculator.read_json_param_objects(None, './reforms/doesnt_exist.json')
+    with pytest.raises(FileNotFoundError):
+        Calculator.read_json_param_objects('./reforms/doesnt_exist.json', None)
+
+
 def test_calc_all():
     """
     Test calc_all method.
