@@ -27,7 +27,7 @@
 //     income takes a filing unit above the ceiling.
 //
 {
-    "AMT_child_em_c_age": {"2013": 24},
+    "AMT_child_em_c_age": {"2011": 24},
 
-    "EITC_excess_InvestIncome_rt": {"2013": 1.0}
+    "EITC_excess_InvestIncome_rt": {"2011": 1.0}
 }
