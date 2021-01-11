@@ -43,8 +43,8 @@ def main():
                               'value is zero.'))
     args = parser.parse_args()
     # check YEAR value
-    if args.YEAR < 2013 or args.YEAR > 2023:
-        sys.stderr.write('ERROR: YEAR not in [2013,2023] range\n')
+    if args.YEAR < 2011 or args.YEAR > 2023:
+        sys.stderr.write('ERROR: YEAR not in [2011,2023] range\n')
         sys.stderr.write('USAGE: {}\n'.format(usage_str))
         return 1
     # check LETTER value
