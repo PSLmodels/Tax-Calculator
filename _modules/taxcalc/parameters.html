@@ -849,6 +849,7 @@
         <span class="c1"># Re-instate ops.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">label_to_extend</span> <span class="o">=</span> <span class="n">label_to_extend</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span> <span class="o">=</span> <span class="n">array_first</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_state</span><span class="p">()</span>
 
         <span class="c1"># Filter out &quot;-indexed&quot; params.</span>
         <span class="n">nonindexed_params</span> <span class="o">=</span> <span class="p">{</span>
@@ -856,10 +857,6 @@
             <span class="k">for</span> <span class="n">param</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">param</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">index_affected</span>
         <span class="p">}</span>
-
-        <span class="n">needs_reset</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">needs_reset</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">nonindexed_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-        <span class="k">if</span> <span class="n">needs_reset</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_set_state</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">needs_reset</span><span class="p">)</span>
 
         <span class="c1"># 3. Do adjustment for all non-indexing related parameters.</span>
         <span class="n">adj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">nonindexed_params</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
