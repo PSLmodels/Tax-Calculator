@@ -1196,14 +1196,14 @@ class TestAdjust:
         """
         pol1 = Policy()
         pol1.implement_reform({
-            "CTC_c": {2022: 1005},
+            "CTC_c": {2022: 2000},
             "CTC_c-indexed": {2022: True}
         })
 
         pol2 = Policy()
         pol2.adjust(
             {
-                "CTC_c": [{"year": 2022, "value": 1005}],
+                "CTC_c": [{"year": 2022, "value": 2000}],
                 "CTC_c-indexed": [{"year": 2022, "value": True}],
             }
         )
@@ -1214,8 +1214,8 @@ class TestAdjust:
         pol2.set_state(year=[2021, 2022, 2023])
         exp = np.array([
             pol0.CTC_c[0],
-            1005,
-            1005 * (1 + pol2.inflation_rates(year=2022))
+            2000,
+            2000 * (1 + pol2.inflation_rates(year=2022))
         ]).round(2)
 
         np.testing.assert_allclose(pol2.CTC_c, exp)
@@ -1472,8 +1472,6 @@ class TestAdjust:
                 "II_brk5": [{"value": 330000, "MARS": "single", "year": 2026}],
                 "II_brk6": [{"value": 316700, "MARS": "single", "year": 2020}],
                 "II_brk7": [{"value": 445400, "MARS": "single", "year": 2020}],
-
-
             }
         )
 
