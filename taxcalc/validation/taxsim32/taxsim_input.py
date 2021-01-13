@@ -142,7 +142,11 @@ def assumption_set(year, letter):
         adict['max_pnben'] = 60  # TAXSIM ivar 19
         adict['max_ssben'] = 60  # TAXSIM ivar 20
         adict['max_uiben'] = 10  # TAXSIM ivar 21
+        adict['max_scorp_inc'] = 350  # TAXSIM ivar 28
+        adict['max_pbus_inc'] = 350  # TAXSIM ivar 29
         adict['max_pprof_inc'] = 1  # TAXSIM ivar 30
+        adict['max_sbus_inc'] = 350  # TAXSIM ivar 31
+        adict['max_sprof_inc'] = 1  # TAXSIM ivar 32
     if letter == 'c':  # <=====================================================
         # childcare expense amount:
         adict['max_ccexp'] = 10  # TAXSIM ivar 26
@@ -150,7 +154,6 @@ def assumption_set(year, letter):
         adict['max_ided_proptax'] = 30  # TAXSIM ivar 24
         adict['max_ided_nopref'] = 10  # TAXSIM ivar 25
         adict['max_ided_mortgage'] = 40  # TAXSIM ivar 27
-        adict['max_scorp_inc'] = 30  # TAXSIM ivar 28
     return adict
 
 
@@ -260,15 +263,17 @@ def sample_dataframe(assump, year, offset):
     # (30) Primary Taxpayer's SSTB
     sdict[30] = np.random.randint(0,
                                   assump['max_pprof_inc']+1,
-                                  size) * 1000
+                                  size)
     # (31) Spouse's QBI
-    sdict[31] = np.random.randint(0,
-                                  assump['max_sbus_inc']+1,
-                                  size) * 1000
+    sqbi = np.random.randint(0,
+                              assump['max_sbus_inc']+1,
+                              size) * 1000
+    sdict[31] = np.where(mstat == 2, sqbi, zero)
     # (32) Spouse's SSTB
-    sdict[32] = np.random.randint(0,
+    spouse_sstb = np.random.randint(0,
                                   assump['max_sprof_inc']+1,
-                                  size) * 1000
+                                  size)
+    sdict[32] = np.where(mstat == 2, spouse_sstb, zero)
     # (33) IDTL: variable to request intermediate calculations
     sdict[33] = 2
 
