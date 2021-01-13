@@ -112,13 +112,13 @@ class Parameters(pt.Parameters):
             if param != "schema"
         }
 
-    def adjust(self, params_or_path, print_warnings=True, **kwargs):
+    def adjust(
+        self, params_or_path, print_warnings=True, raise_errors=True, **kwargs
+    ):
         """
         Implements custom warning and error handling.
-
         If print_warnings is True, warnings are printed out and if
         print_warnings is False, nothing is printed.
-
         ParamTools throws an error if a warning is triggered and
         ignore_warnings is False. This method circumvents this behavior.
         """
@@ -128,11 +128,21 @@ class Parameters(pt.Parameters):
         else:
             kwargs["ignore_warnings"] = True
         self._warnings = {}
+        self._errors = {}
         try:
-            return self.adjust_with_indexing(params_or_path, **kwargs)
+            with self.transaction(
+                defer_validation=True,
+                raise_errors=True,
+                ignore_warnings=kwargs["ignore_warnings"],
+            ):
+                return self.adjust_with_indexing(
+                    params_or_path, raise_errors=True, **kwargs
+                )
         except pt.ValidationError as ve:
-            if self.errors:
+            if self.errors and raise_errors:
                 raise ve
+            elif self.errors and not raise_errors:
+                return {}
             if print_warnings:
                 print("WARNING:")
                 print(self.warnings)
@@ -141,10 +151,11 @@ class Parameters(pt.Parameters):
             _warnings = copy.deepcopy(self._warnings)
             self._warnings = {}
             self._errors = {}
-            adjustment = self.adjust_with_indexing(params_or_path, **kwargs)
+            adjustment = self.adjust_with_indexing(
+                params_or_path, raise_errors=True, **kwargs
+            )
             self._warnings = _warnings
             return adjustment
-
     def adjust_with_indexing(self, params_or_path, **kwargs):
         """
         Custom adjust method that handles special indexing logic. The logic
