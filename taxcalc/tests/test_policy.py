@@ -1003,6 +1003,21 @@ def test_cpi_offset_on_reverting_params():
         p1._STD[ryear - syear],
         p2._STD[ryear - syear], atol=0.5)
 
+def test_raise_errors_regression():
+    """
+    This tests that raise_errors prevents the error from being thrown. The
+    correct behavior is to exit the `adjust` function and store the errors.
+    """
+    ref = {
+        "II_brk7-indexed": [{"value": True}],
+        "II_brk6": [{"value": 316700, "MARS": "single", "year": 2020}],
+        "II_brk7": [{"value": 445400, "MARS": "single", "year": 2020}],
+
+    }
+    pol = Policy()
+    pol.adjust(ref, raise_errors=False)
+    assert pol.errors
+
 
 class TestAdjust:
     """
@@ -1440,6 +1455,52 @@ class TestAdjust:
         np.testing.assert_equal(
             (pol2.CTC_c[1] / pol2.CTC_c[0] - 1).round(4),
             pol0.inflation_rates(year=2021) + (-0.005),
+        )
+
+
+    def test_adj_related_parameters_and_index_status(self):
+        """
+        Test changing two related parameters simulataneously and
+        one of their indexed statuses.
+        """
+
+        pol = Policy()
+        pol.adjust(
+            {
+                "II_brk7-indexed": [{"year": 2020, "value": True}],
+                # Update II_brk5 in 2026 to make reform valid after reset.
+                "II_brk5": [{"value": 330000, "MARS": "single", "year": 2026}],
+                "II_brk6": [{"value": 316700, "MARS": "single", "year": 2020}],
+                "II_brk7": [{"value": 445400, "MARS": "single", "year": 2020}],
+
+
+            }
+        )
+
+        # Check no difference prior to 2020
+        pol0 = Policy()
+        cmp_policy_objs(
+            pol0,
+            pol,
+            year_range=range(pol.start_year, 2019 + 1),
+        )
+
+        res = (
+            (pol.sel["II_brk6"]["MARS"] == "single")
+            & (pol.sel["II_brk6"]["year"] == 2020)
+        )
+        assert res.isel[0]["value"] == [316700]
+        res = (
+            (pol.sel["II_brk7"]["MARS"] == "single")
+            & (pol.sel["II_brk7"]["year"] == 2020)
+        )
+        assert res.isel[0]["value"] == [445400]
+
+        II_brk7 = pol.to_array("II_brk7", year=[2021, 2022])
+        II_brk7_single = II_brk7[:, 0]
+        np.testing.assert_equal(
+            (II_brk7_single[1] / II_brk7_single[0] - 1).round(4),
+            pol.inflation_rates(year=2021),
         )
 
     def test_indexed_status_parsing(self):
