@@ -112,6 +112,7 @@ def translate(ivar):
     invar['e26270'] = ivar.loc[:, 28]
     invar['e00900p'] = ivar.loc[:, 29]
     invar['e00900s'] = ivar.loc[:, 31]
+    invar['e00900'] = invar['e00900p'] + invar['e00900s']
 
     pprofinc = ivar.loc[:, 30]
     sprofinc = ivar.loc[:, 32]
