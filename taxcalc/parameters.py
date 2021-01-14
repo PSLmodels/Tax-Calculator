@@ -424,6 +424,7 @@ class Parameters(pt.Parameters):
         # Re-instate ops.
         self.label_to_extend = label_to_extend
         self.array_first = array_first
+        self.set_state()
 
         # Filter out "-indexed" params.
         nonindexed_params = {
@@ -431,10 +432,6 @@ class Parameters(pt.Parameters):
             for param, val in params.items()
             if param not in index_affected
         }
-
-        needs_reset = set(needs_reset) - set(nonindexed_params.keys())
-        if needs_reset:
-            self._set_state(params=needs_reset)
 
         # 3. Do adjustment for all non-indexing related parameters.
         adj = super().adjust(nonindexed_params, **kwargs)
@@ -692,7 +689,19 @@ class Parameters(pt.Parameters):
             req.raise_for_status()
             txt = req.text
         else:
-            txt = obj
+            if isinstance(topkey, str) and (topkey == ''):
+                raise ValueError("topkey string is empty.")
+            if isinstance(obj, str):
+                if obj == '':
+                    raise ValueError("obj string is empty.")    
+                elif obj.endswith('.json') and not os.path.isfile(obj):
+                    raise FileNotFoundError("The .json file does not exist.")
+                elif ("{" and "}") in obj:
+                    txt = obj
+                else:
+                    raise ValueError("The JSON variable is misspecified.")
+            else:
+                raise ValueError("The JSON variable is misspecified.")
         # strip out //-comments without changing line numbers
         json_txt = re.sub('//.*', ' ', txt)
         # convert JSON text into a Python dictionary
