@@ -52,8 +52,8 @@ def runner(assump_set, year):
         df_diff_recs = df_diff[df_diff['a'] != df_diff['b']]
         diff_dict['# of differing records'].append(df_diff_recs.shape[0])
 
-        diff_list = [x-y for x, y in zip(taxsim_df[col], taxcalc_df[col])]
-        max_val, ind = max(diff_list), diff_list.index(max(diff_list))
+        # This uses a generator object which is faster because it doesn't store the diffs as a list in memory
+        ind, max_val = max( enumerate( (x-y) for x,y in zip(taxsim_df[col], taxcalc_df[col]) ), key=lambda x: x[1] ) 
 
         diff_dict['max_diff'].append(max_val)
         if max_val != 0:
