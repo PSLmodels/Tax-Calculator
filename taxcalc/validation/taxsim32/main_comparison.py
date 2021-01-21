@@ -48,6 +48,7 @@ def main(assump_set, year):
 
 
     actual_df = pd.DataFrame(diff_dict, index=taxsim_df.columns[3:])
+    print(f"Difference in dataframes for assumption set {assump_set} in year {year}")
     print(actual_df)
 
     # (3) check for difference between LYY.taxdiffs-actual and LYY.taxdiffs-expect

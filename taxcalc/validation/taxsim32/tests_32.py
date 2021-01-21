@@ -4,7 +4,7 @@ import input_setup
 import main_comparison
 
 # setup input files
-# input_setup.main()
+input_setup.main()
 
 # run taxcalc/taxsim comparison
 for assump_set in ('a', 'b', 'c'):
