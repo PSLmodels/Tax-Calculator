@@ -1,35 +1,17 @@
-# from colorama import Fore, Style
-# print(Fore.RED + Style.BRIGHT + 'test')
+# DESCRIPTIONS of variable outputs can be found on the TAXSIM-32 website near
+# the bottom of the page
+# URL: https://users.nber.org/~taxsim/taxsim32/
 
 import sys
-import argparse
 import os
-# from zipfile import ZipFile
-import numpy as np
 import pandas as pd
+from colorama import Fore, Style
 
 
-def main():
-
-    usage_str = 'python test.py LETTER YEAR [--help]'
-    parser = argparse.ArgumentParser(
-        prog='',
-        usage=usage_str,
-        description=('Main runner file for each assumption set per year.'))
-    parser.add_argument('LETTER', nargs='?', default='',
-                        help=('LETTER specifies assumption set '
-                              'used to generate input data.'))
-    parser.add_argument('YEAR', nargs='?', type=int, default=0,
-                        help=('YEAR specifies calendar year assumed in '
-                              'generated input data (specified in the form '
-                              '20{year})'))
-
-    args = parser.parse_args()
-    runner(args.LETTER, args.YEAR)
-
-def runner(assump_set, year):
+def main(assump_set, year):
+    
     # (1) generate TAXSIM-32-formatted output using Tax-Calculator tc CLI
-    # os.system(f'python taxcalc.py {assump_set}{year}.in')
+    os.system(f'python taxcalc.py {assump_set}{year}.in')
 
     # (2) generate tax differences
     taxsim_df = pd.read_csv(f'{assump_set}{year}.in.out-taxsim', sep=' ', skipinitialspace=True, index_col=False)
@@ -52,10 +34,9 @@ def runner(assump_set, year):
         df_diff_recs = df_diff[df_diff['a'] != df_diff['b']]
         diff_dict['# of differing records'].append(df_diff_recs.shape[0])
 
-        # This uses a generator object which is faster because it doesn't store the diffs as a list in memory
-        ind, max_val = max( enumerate( (x-y) for x,y in zip(taxsim_df.loc[:, col], taxcalc_df.loc[:, col]) ), key=lambda x: x[1] ) 
+        ind, max_val = max( enumerate( abs(x-y) for x,y in zip(taxcalc_df.loc[:, col], taxsim_df.loc[:, col]) ), key=lambda x: x[1] ) 
 
-        diff_dict['max_diff'].append(max_val)
+        diff_dict['max_diff'].append(taxcalc_df.loc[ind, col] - taxsim_df.loc[ind, col])
         if max_val != 0:
             diff_dict['max_diff_index'].append(ind)
             diff_dict['max_diff_taxsim_val'].append(taxsim_df.loc[ind, col])
@@ -66,10 +47,22 @@ def runner(assump_set, year):
             diff_dict['max_diff_taxcalc_val'].append('no diff')
 
 
-    final_df = pd.DataFrame(diff_dict, index=taxsim_df.columns[3:])
-    print(final_df)
+    actual_df = pd.DataFrame(diff_dict, index=taxsim_df.columns[3:])
+    print(actual_df)
 
     # (3) check for difference between LYY.taxdiffs-actual and LYY.taxdiffs-expect
+    if os.path.isfile(f'{assump_set}{year}-taxdiffs-expect.csv'):
+        expect_df = pd.read_csv(f'{assump_set}{year}-taxdiffs-expect.csv', index_col=0)
+        
+        print(actual_df.eq(expect_df))
+        print(Fore.BLUE + Style.BRIGHT + 'Above, True values mean the element is the same between the ACTUAL and EXPECT dataframes.')
+
+        print(Fore.BLUE + Style.BRIGHT + '(EXPECT files are used for debugging purposes.)')
+    else:
+        print("This EXPECT file doesn't exist.")
+
+    # (4) Write the created df to *.taxdiffs-actual
+    actual_df.to_csv(f'{assump_set}{year}-taxdiffs-actual.csv')
 
 
 

@@ -69,9 +69,9 @@ def zip_files():
             zipf.write(file)
 
 
-if __name__ == '__main__':
+def main():
     get_inputs()
     get_ftp_output()
     change_delim()
-    remove_header()
-    zip_files()
+    # remove_header()
+    # zip_files()
