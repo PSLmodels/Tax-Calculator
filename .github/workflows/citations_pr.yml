@@ -16,7 +16,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: taxcalc-dev
-          environment-file: environment.yml
+          # environment-file: environment.yml
           python-version: 3.8
           auto-update-conda: true
 
@@ -67,6 +67,10 @@ jobs:
         run: |
           /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
           brew install gh
+          echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> /home/runner/.profile
+          sudo apt-get install build-essential
+          brew intsall gcc
+          wait
 
           gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
           gh pr create --title "test title" --body "test body" --repo PSLmodels/Tax-Calculator --base master
