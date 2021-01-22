@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Recipe 5: Redefining Expanded Income &#8212; Tax-Calculator</title>
     
-  <link rel="stylesheet" href="../_static/css/index.73d71520a4ca3b99cfee5594769eaaae.css">
+  <link rel="stylesheet" href="../_static/css/index.f658d18f9b420779cfdf24aa0a7e2d77.css">
 
     
   <link rel="stylesheet"
@@ -34,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/panels-main.c949a650a448cc0ae9fd3441c0e17fb0.css" />
     <link rel="stylesheet" type="text/css" href="../_static/panels-variables.06eb56fa6e07937060861dad626602ad.css" />
     
-  <link rel="preload" as="script" href="../_static/js/index.3da636dd464baa7582d2.js">
+  <link rel="preload" as="script" href="../_static/js/index.d3f166471bb80abb5163.js">
 
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -622,6 +622,29 @@ methods.</p>
   warnings.warn(&quot;The select module is deprecated. Use Values instead.&quot;)
 </pre></div>
 </div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2018_REFORM1_iitax_rev($B)= 1490.622
+2018_REFORM2_iitax_rev($B)= 1318.628
+
+Extract of 2018 income-tax difference table by expanded-income decile
+(taxfall is count of funits with cut in income tax in reform 2 vs 1)
+(taxrise is count of funits with rise in income tax in reform 2 vs 1)
+            funits(#m) taxfall(#m) taxrise(#m) agg_diff($b)  mean_diff($) aftertax_income_diff(%)
+&lt;$0K          0.139124         0.0         0.0          0.0           0.0                     0.0
+=$0K         29.360997    0.003983    0.002566    -0.000287     -0.009787              -10.994703
+$0-10K       32.634225    2.439499    1.481056    -0.192404     -5.895768                0.153202
+$10-20K      21.215453   11.400456    3.749611    -1.574948    -74.235899                0.523949
+$20-30K      18.488102   13.415713    3.117832    -3.833011   -207.323123                0.911481
+$30-40K      16.846289   13.309936    2.780591    -7.114322   -422.307974                1.398477
+$40-50K      13.333506    11.09226    1.916136    -8.326389   -624.471124                1.663769
+$50-75K      22.922516   20.261737    2.364728   -20.252232   -883.508263                1.781652
+$75-100K     13.730687   12.392468    1.229796   -16.292847  -1186.601008                 1.73044
+$100-200K    21.754256   19.722118    1.936147   -41.919663  -1926.963736                1.832605
+$200-500K     7.847764    7.236539    0.604507   -43.906601  -5594.791585                2.662069
+$500-1000K    1.149148     1.07263    0.076518   -15.341258 -13350.120894                2.854432
+&gt;$1000K       0.514758    0.428676    0.086082   -13.239708  -25720.23792                 1.98472
+ALL         199.936825  112.776014   19.345569  -171.993672   -860.240085                 1.89689
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -675,7 +698,7 @@ methods.</p>
     </div>
 
     
-  <script src="../_static/js/index.3da636dd464baa7582d2.js"></script>
+  <script src="../_static/js/index.d3f166471bb80abb5163.js"></script>
 
 
     
