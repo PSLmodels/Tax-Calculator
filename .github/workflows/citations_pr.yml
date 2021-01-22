@@ -11,6 +11,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          ref: up_to_date_citations
+
+      - name: Pull (Fast-Forward) upstream changes
+        uses: aormsby/Fork-Sync-With-Upstream-action@v2.3
+        with:
+          upstream_repository: PSLmodels/Tax-Calculator
+          upstream_branch: master
+          target_branch: up_to_date_citations
+          git_pull_args: --ff-only
 
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v2
@@ -55,23 +65,21 @@ jobs:
           
           git add use_cases.md
           git commit -m "Update use_cases.md"
+          git push
         if: env.GIT_DIFF
 
       - name: Set current date as env variable
         run: echo "MY_DATE=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
+        if: env.GIT_DIFF
 
       - name: Open PR if use cases file changed
-        uses: peter-evans/create-pull-request@v3
-        with:
-          delete-branch: true
-          base: up_to_date_citations
-          title: 'Update use cases file'
-          body: |
-            The use cases have been updated. This PR updates `use_cases.md`.
-            Updated on ${{ env.MY_DATE }}
+        shell: bash -l {0}
+        run: |
+          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          brew install gh
 
-          labels: |
-            automated PR
+          gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
+          gh pr create --title "test title" --body "test body" --repo PSLmodels/Tax-Calculator --base master
         if: env.GIT_DIFF
 
           
