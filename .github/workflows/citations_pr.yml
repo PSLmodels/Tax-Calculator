@@ -63,16 +63,17 @@ jobs:
         if: env.GIT_DIFF
 
       - name: Open PR if use cases file changed
-        shell: bash -l {0}
-        run: |
-          /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-          brew install gh
-          echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> /home/runner/.profile
-          sudo apt-get install build-essential
-          brew install gcc
+        uses: peter-evans/create-pull-request@v3.6.0
+        with:
+          commit-message: Update use cases
+          branch: up_to_date_citations
+          delete-branch: true
+          title: 'Update use cases on ${{ env.MY_DATE }}'
+          body: |
+            The use cases have been updated.
+            This PR updates the use cases file as of ${{ env.MY_DATE }}.
+          labels: |
+            automated pr
 
-          gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
-          gh pr create --title "test title" --body "test body" --repo PSLmodels/Tax-Calculator --base master
-        if: env.GIT_DIFF
 
           
