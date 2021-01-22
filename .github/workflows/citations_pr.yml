@@ -69,8 +69,7 @@ jobs:
           brew install gh
           echo 'eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv)' >> /home/runner/.profile
           sudo apt-get install build-essential
-          brew intsall gcc
-          wait
+          brew install gcc
 
           gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
           gh pr create --title "test title" --body "test body" --repo PSLmodels/Tax-Calculator --base master
