@@ -14,14 +14,6 @@ jobs:
         with:
           ref: up_to_date_citations
 
-      - name: Pull (Fast-Forward) upstream changes
-        uses: aormsby/Fork-Sync-With-Upstream-action@v2.3
-        with:
-          upstream_repository: PSLmodels/Tax-Calculator
-          upstream_branch: master
-          target_branch: up_to_date_citations
-          git_pull_args: --ff-only
-
       - name: Setup Miniconda
         uses: conda-incubator/setup-miniconda@v2
         with:
