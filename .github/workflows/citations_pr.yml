@@ -58,7 +58,7 @@ jobs:
         if: env.GIT_DIFF
 
       - name: Set current date as env variable
-        run: echo "MY_DATE=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+        run: echo "MY_DATE=$(date +'%m-%d-%Y %H:%M:%S')" >> $GITHUB_ENV
 
       - name: Open PR if use cases file changed
         uses: peter-evans/create-pull-request@v3
