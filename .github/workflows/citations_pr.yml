@@ -64,7 +64,7 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           delete-branch: true
-          base: master
+          base: up_to_date_citations
           title: 'Update use cases file'
           body: |
             The use cases have been updated. This PR updates `use_cases.md`.
