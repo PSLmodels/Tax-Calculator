@@ -1,0 +1,73 @@
+name: Update Tax-Calculator Use Cases (automated PR)
+on:
+  push:
+  # schedule:
+    # - cron: '0 1 * * *'
+
+
+jobs:
+  update_use_cases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: taxcalc-dev
+          environment-file: environment.yml
+          python-version: 3.8
+          auto-update-conda: true
+
+      - name: Build use cases file
+        working-directory: ./
+        shell: bash -l {0}
+        run: |
+          cd docs
+          rm use_cases.md
+          cd ..
+
+          conda install curl pandoc
+          pip install pybtex
+          
+          curl -H 'Zotero-API-Version: 3' -H 'Zotero-API-Key: MiQBsz0ilWhpsmQJyqeO2TzU' 'https://api.zotero.org/groups/2524233/items?format=bibtex&order=date&sort=desc&limit=100' --output citations.bib
+          pybtex-format citations.bib citations.txt
+          python bib_format.py
+          pandoc -s citations2.txt -f gfm -o use_cases.md
+          rm citations.bib citations.txt citations2.txt
+
+          mv use_cases.md docs/use_cases.md
+
+
+      - name: Check for diff in use cases file
+        uses: technote-space/get-diff-action@v4
+        with:
+          FILES:
+            ./docs/use_cases.md
+
+      - name: Make commit if use cases file changed
+        working-directory: ./docs
+        shell: bash -l {0}
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          
+          git add use_cases.md
+          git commit -m "Update use_cases.md"
+        if: env.GIT_DIFF
+
+      - name: Open PR if use cases file changed
+        uses: peter-evans/create-pull-request@v3
+        with:
+          delete-branch: true
+          title: 'Update use cases file'
+          body: |
+            The use cases have been updated. This PR updates `use_cases.md`.
+            Updated on $(date +'%Y-%m-%d').
+
+          labels: |
+            automated PR
+        if: env.GIT_DIFF
+
+          
