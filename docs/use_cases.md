@@ -1,4 +1,5 @@
-# Recorded use cases
+Recorded use cases
+==================
 
 \[1\] Angela Rachidi. Reducing the marriage penalty for low-income
 families. January 2021. URL:
