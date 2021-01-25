@@ -16,6 +16,7 @@ dependencies:
 - pylint
 - coverage
 - "paramtools>=0.14.2"
+- colorama
 - pip
 - pip:
     - jupyter-book
