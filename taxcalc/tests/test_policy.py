@@ -1003,6 +1003,7 @@ def test_cpi_offset_on_reverting_params():
         p1._STD[ryear - syear],
         p2._STD[ryear - syear], atol=0.5)
 
+
 def test_raise_errors_regression():
     """
     This tests that raise_errors prevents the error from being thrown. The
@@ -1456,7 +1457,6 @@ class TestAdjust:
             (pol2.CTC_c[1] / pol2.CTC_c[0] - 1).round(4),
             pol0.inflation_rates(year=2021) + (-0.005),
         )
-
 
     def test_adj_related_parameters_and_index_status(self):
         """

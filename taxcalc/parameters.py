@@ -156,6 +156,7 @@ class Parameters(pt.Parameters):
             )
             self._warnings = _warnings
             return adjustment
+
     def adjust_with_indexing(self, params_or_path, **kwargs):
         """
         Custom adjust method that handles special indexing logic. The logic
@@ -704,7 +705,7 @@ class Parameters(pt.Parameters):
                 raise ValueError("topkey string is empty.")
             if isinstance(obj, str):
                 if obj == '':
-                    raise ValueError("obj string is empty.")    
+                    raise ValueError("obj string is empty.")
                 elif obj.endswith('.json') and not os.path.isfile(obj):
                     raise FileNotFoundError("The .json file does not exist.")
                 elif ("{" and "}") in obj:
