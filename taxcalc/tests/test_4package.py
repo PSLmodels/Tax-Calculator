@@ -37,7 +37,7 @@ def test_for_consistency(tests_path):
         'pycodestyle',
         'pylint',
         'coverage',
-        "paramtools>=0.17.0",
+        "paramtools",
         "pip",
         "jupyter-book",
     ])
