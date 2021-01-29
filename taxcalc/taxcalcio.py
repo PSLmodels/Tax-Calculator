@@ -71,7 +71,6 @@ class TaxCalcIO():
         self.errmsg = ''
         # check name and existence of INPUT file
         inp = 'x'
-        self.puf_input_data = False
         self.cps_input_data = False
         if isinstance(input_data, str):
             # remove any leading directory path from INPUT filename
@@ -83,7 +82,6 @@ class TaxCalcIO():
                 msg = 'INPUT file name does not end in .csv'
                 self.errmsg += 'ERROR: {}\n'.format(msg)
             # check existence of INPUT file
-            self.puf_input_data = input_data.endswith('puf.csv')
             self.cps_input_data = input_data.endswith('cps.csv')
             if not self.cps_input_data and not os.path.isfile(input_data):
                 msg = 'INPUT file could not be found'
@@ -207,6 +205,7 @@ class TaxCalcIO():
         self.policy_dicts = list()
 
     def init(self, input_data, tax_year, baseline, reform, assump,
+             start_year, weights, adjust_ratios,
              aging_input_data, exact_calculations):
         """
         TaxCalcIO class post-constructor method that completes initialization.
@@ -215,6 +214,9 @@ class TaxCalcIO():
         ----------
         First five are same as the first five of the TaxCalcIO constructor:
             input_data, tax_year, baseline, reform, assump.
+
+        Next three are required for creating a Records object:
+            start_year, weights, adjust_ratios
 
         aging_input_data: boolean
             whether or not to extrapolate Records data from data year to
@@ -317,14 +319,23 @@ class TaxCalcIO():
                     exact_calculations=exact_calculations
                 )
             else:  # if not cps_input_data but aging_input_data
+                # check for start_year, weights and adjustment ratios files
+                if any([start_year, weights, adjust_ratios] == None):
+                    raise ValueError("A start year, weights file and adjustment must be passed.")
                 recs = Records(
                     data=input_data,
+                    start_year=start_year,
                     gfactors=gfactors_ref,
+                    weights=weights,
+                    adjust_ratios=adjust_ratios,
                     exact_calculations=exact_calculations
                 )
                 recs_base = Records(
                     data=input_data,
+                    start_year=start_year,
                     gfactors=gfactors_base,
+                    weights=weights,
+                    adjust_ratios=adjust_ratios,
                     exact_calculations=exact_calculations
                 )
         else:  # input_data are raw data that are not being aged
@@ -431,7 +442,7 @@ class TaxCalcIO():
         Nothing
         """
         # pylint: disable=too-many-arguments,too-many-branches,too-many-locals
-        if self.puf_input_data and self.calc.reform_warnings:
+        if self.calc.reform_warnings:
             warn = 'PARAMETER VALUE WARNING(S):  {}\n{}{}'  # pragma: no cover
             print(  # pragma: no cover
                 warn.format('(read documentation for each parameter)',
