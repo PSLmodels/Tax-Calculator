@@ -24,8 +24,7 @@ class Records(Data):
     ----------
     data: string or Pandas DataFrame
         string describes CSV file in which records data reside;
-        DataFrame already contains records data;
-        default value is the string 'puf.csv'
+        DataFrame already contains records data.
         NOTE: when using custom data, set this argument to a DataFrame.
         NOTE: to use your own data for a specific year with Tax-Calculator,
         be sure to read the documentation on creating your own data file and
@@ -37,8 +36,7 @@ class Records(Data):
               the data variable information in the specified VARINFO file.
 
     start_year: integer
-        specifies calendar year of the input data;
-        default value is PUFCSV_YEAR.
+        specifies calendar year of the input data.
         Note that if specifying your own data (see above NOTE) as being
         a custom data set, be sure to explicitly set start_year to the
         custom data's calendar year.
@@ -49,16 +47,14 @@ class Records(Data):
     weights: string or Pandas DataFrame or None
         string describes CSV file in which weights reside;
         DataFrame already contains weights;
-        None creates empty sample-weights DataFrame;
-        default value is filename of the PUF weights.
+        None creates empty sample-weights DataFrame.
         NOTE: when using custom weights, set this argument to a DataFrame.
         NOTE: assumes weights are integers that are 100 times the real weights.
 
     adjust_ratios: string or Pandas DataFrame or None
         string describes CSV file in which adjustment ratios reside;
         DataFrame already contains transposed/no-index adjustment ratios;
-        None creates empty adjustment-ratios DataFrame;
-        default value is filename of the PUF adjustment ratios.
+        None creates empty adjustment-ratios DataFrame.
         NOTE: when using custom ratios, set this argument to a DataFrame.
         NOTE: if specifying a DataFrame, set adjust_ratios to my_df defined as:
               my_df = pd.read_csv('<my_ratios.csv>', index_col=0).transpose()
@@ -84,7 +80,7 @@ class Records(Data):
 
     Notes
     -----
-    Typical usage when using PUF input data is as follows::
+    Typical usage when using any  input data is as follows::
 
         recs = Records()
 
@@ -105,11 +101,8 @@ class Records(Data):
     # suppress pylint warnings about too many class instance attributes:
     # pylint: disable=too-many-instance-attributes
 
-    PUFCSV_YEAR = 2011
     CPSCSV_YEAR = 2014
 
-    PUF_WEIGHTS_FILENAME = 'puf_weights.csv.gz'
-    PUF_RATIOS_FILENAME = 'puf_ratios.csv'
     CPS_WEIGHTS_FILENAME = 'cps_weights.csv.gz'
     CPS_RATIOS_FILENAME = None
     CODE_PATH = os.path.abspath(os.path.dirname(__file__))
@@ -117,11 +110,11 @@ class Records(Data):
     VARINFO_FILE_PATH = CODE_PATH
 
     def __init__(self,
-                 data='puf.csv',
-                 start_year=PUFCSV_YEAR,
+                 data=None,
+                 start_year=None,
                  gfactors=GrowFactors(),
-                 weights=PUF_WEIGHTS_FILENAME,
-                 adjust_ratios=PUF_RATIOS_FILENAME,
+                 weights=None,
+                 adjust_ratios=None,
                  exact_calculations=False):
         # pylint: disable=no-member,too-many-branches
         if isinstance(weights, str):
