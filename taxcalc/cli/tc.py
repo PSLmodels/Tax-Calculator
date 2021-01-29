@@ -24,12 +24,12 @@ def cli_tc_main():
     # pylint: disable=too-many-statements,too-many-branches
     # pylint: disable=too-many-return-statements
     # parse command-line arguments:
-    usage_str = 'tc INPUT TAXYEAR {}{}{}{}{}'.format(
+    usage_str = 'tc INPUT TAXYEAR STARTYEAR WEIGHTS ADJUST_RATIOS {}{}{}{}{}'.format(
         '[--help]\n',
         ('          '
          '[--baseline BASELINE] [--reform REFORM] [--assump  ASSUMP]\n'),
         ('          '
-         '[--exact] [--tables] [--graphs]\n'),
+         '[--aging] [--exact] [--tables] [--graphs]\n'),
         ('          '
          '[--dump] [--dvars DVARS] [--sqldb] [--outdir OUTDIR]\n'),
         ('          '
@@ -49,12 +49,24 @@ def cli_tc_main():
                               'to compute taxes for TAXYEAR. Specifying '
                               '"cps.csv" uses CPS input files included in '
                               'the taxcalc package.'),
-                        default='')
+                        default=None)
     parser.add_argument('TAXYEAR', nargs='?',
                         help=('TAXYEAR is calendar year for which taxes '
                               'are computed.'),
                         type=int,
                         default=0)
+    parser.add_argument('STARTYEAR', nargs='?',
+                        help=('STARTYEAR is the earliest calendar year where '
+                              'tax units are present in the passed INPUT file.'),
+                        default=None)
+    parser.add_argument('WEIGHTS', nargs='?',
+                        help=('WEIGHTS is the name of CSV-formatted file that '
+                              'contains weights.'),
+                        default=None)
+    parser.add_argument('ADJUST_RATIOS', nargs='?',
+                        help=('ADJUST_RATIOS is the name of CSV-formatted file that '
+                              'contains adjustment ratios.'),
+                        default=None)
     parser.add_argument('--baseline',
                         help=('BASELINE is name of optional JSON reform file. '
                               'No --baseline implies baseline policy is '
@@ -72,6 +84,12 @@ def cli_tc_main():
                               'assumptions file.  No --assump implies use '
                               'of no customized assumptions.'),
                         default=None)
+    parser.add_argument('--aging',
+                        help=('AGING is flag to set whether or not to extrapolate '
+                        'the passed data to the Records object from data\'s given '
+                        'start year year to TAXYEAR'),
+                        default=False,
+                        action="store_true")
     parser.add_argument('--exact',
                         help=('optional flag that suppresses the smoothing of '
                               '"stair-step" provisions in the tax law that '
@@ -152,10 +170,13 @@ def cli_tc_main():
         sys.stderr.write(tcio.errmsg)
         sys.stderr.write('USAGE: tc --help\n')
         return 1
-    aging = inputfn.endswith('puf.csv') or inputfn.endswith('cps.csv')
+    aging = args.aging
     tcio.init(input_data=inputfn, tax_year=taxyear,
               baseline=args.baseline,
               reform=args.reform, assump=args.assump,
+              start_year=args.STARTYEAR,
+              weights=args.WEIGHTS,
+              adjust_ratios=args.ADJUST_RATIOS,
               aging_input_data=aging,
               exact_calculations=args.exact)
     if tcio.errmsg:
