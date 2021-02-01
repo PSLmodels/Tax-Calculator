@@ -473,7 +473,7 @@ class Parameters(pt.Parameters):
                         )
                         super().adjust({base_param: vos}, **kwargs)
 
-                    # 2.e Extend values throughq remaining years.
+                    # 2.e Extend values through remaining years.
                     self.extend(params=[base_param], label="year")
 
                 needs_reset.append(base_param)
