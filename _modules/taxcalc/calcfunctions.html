@@ -1213,12 +1213,11 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
-           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span>
-           <span class="n">PT_SSTB_income</span><span class="p">,</span> <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span>
-           <span class="n">PT_qbid_rt</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span>
-           <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span>
-           <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">PT_qbid_limit_switch</span><span class="p">,</span>
-           <span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">):</span>
+           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
+           <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span> <span class="n">PT_qbid_rt</span><span class="p">,</span>
+           <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
+           <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">c04800</span><span class="p">,</span>
+           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span> <span class="n">PT_qbid_limit_switch</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates taxable income, c04800, and</span>
 <span class="sd">    qualified business income deduction, qbided.</span>
@@ -1270,6 +1269,12 @@
         <span class="n">net_cg</span> <span class="o">=</span> <span class="n">e00650</span> <span class="o">+</span> <span class="n">c01000</span>  <span class="c1"># per line 34 in 2018 Pub 535 Worksheet 12-A</span>
         <span class="n">taxinc_cap</span> <span class="o">=</span> <span class="n">PT_qbid_rt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">net_cg</span><span class="p">)</span>
         <span class="n">qbided</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">qbided</span><span class="p">,</span> <span class="n">taxinc_cap</span><span class="p">)</span>
+
+        <span class="c1"># apply qbid phaseout</span>
+        <span class="k">if</span> <span class="n">qbided</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">pre_qbid_taxinc</span> <span class="o">&gt;</span> <span class="n">PT_qbid_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="n">excess</span> <span class="o">=</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">PT_qbid_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">qbided</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">qbided</span> <span class="o">-</span> <span class="n">PT_qbid_prt</span> <span class="o">*</span> <span class="n">excess</span><span class="p">)</span>
+
     <span class="c1"># calculate taxable income after qualified business income deduction</span>
     <span class="n">c04800</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pre_qbid_taxinc</span> <span class="o">-</span> <span class="n">qbided</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">qbided</span><span class="p">)</span>
