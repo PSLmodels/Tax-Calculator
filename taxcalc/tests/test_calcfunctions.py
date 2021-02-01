@@ -171,7 +171,7 @@ def test_DependentCare(skip_jit):
     Tests the DependentCare function
     """
 
-    test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000], 
+    test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000],
                   .2, 7165, 5000, 0)
     test_value = calcfunctions.DependentCare(*test_tuple)
     expected_value = 25196
