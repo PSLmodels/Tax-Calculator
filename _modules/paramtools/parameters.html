@@ -426,7 +426,8 @@
 <span></span><span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">defaultdict</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">contextlib</span> <span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 
@@ -528,6 +529,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_validator_schema</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;spec&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_defer_validation</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_labels</span><span class="p">(</span><span class="o">**</span><span class="p">(</span><span class="n">initial_state</span> <span class="ow">or</span> <span class="p">{}))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">index_rates</span> <span class="o">=</span> <span class="n">index_rates</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_rates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sel</span> <span class="o">=</span> <span class="n">ParameterSlice</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -605,7 +607,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Access the label state of the ``Parameters`` instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span></div>
+        <span class="k">return</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">value</span> <span class="k">for</span> <span class="n">label</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span></div>
 
 <div class="viewcode-block" id="Parameters.read_params"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.read_params">[docs]</a>    <span class="k">def</span> <span class="nf">read_params</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -691,18 +693,19 @@
         <span class="n">ignore_warnings</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">extend_adj</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-        <span class="n">is_deserialized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">deserialized</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">validate</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">clobber</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Internal method for performing adjustments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Validate user adjustments.</span>
-        <span class="k">if</span> <span class="n">is_deserialized</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">deserialized</span><span class="p">:</span>
             <span class="n">parsed_params</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">parsed_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validator_schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
-                    <span class="n">params_or_path</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="p">,</span> <span class="n">is_deserialized</span><span class="o">=</span><span class="kc">True</span>
+                    <span class="n">params_or_path</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="p">,</span> <span class="n">deserialized</span><span class="o">=</span><span class="kc">True</span>
                 <span class="p">)</span>
             <span class="k">except</span> <span class="n">MarshmallowValidationError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_parse_validation_messages</span><span class="p">(</span><span class="n">ve</span><span class="o">.</span><span class="n">messages</span><span class="p">,</span> <span class="n">params_or_path</span><span class="p">)</span>
@@ -765,7 +768,6 @@
                         <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                         <span class="n">ignore_warnings</span><span class="o">=</span><span class="n">ignore_warnings</span><span class="p">,</span>
                     <span class="p">)</span>
-
                     <span class="c1"># set user adjustments.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_adjust</span><span class="p">(</span>
                         <span class="n">parsed_params</span><span class="p">,</span>
@@ -801,6 +803,98 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_state</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">parsed_params</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
         <span class="k">return</span> <span class="n">parsed_params</span>
+
+    <span class="nd">@contextmanager</span>
+    <span class="k">def</span> <span class="nf">transaction</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">defer_validation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Rollback any changes to parameter state after the context block closes.</span>
+
+<span class="sd">        .. code-block:: Python</span>
+
+<span class="sd">            import paramtools</span>
+
+<span class="sd">            class Params(paramtools.Parameters):</span>
+<span class="sd">                defaults = {</span>
+<span class="sd">                    &quot;min_param&quot;: {</span>
+<span class="sd">                        &quot;title&quot;: &quot;Min param&quot;,</span>
+<span class="sd">                        &quot;description&quot;: &quot;Must be less than &#39;max_param&#39;&quot;,</span>
+<span class="sd">                        &quot;type&quot;: &quot;int&quot;,</span>
+<span class="sd">                        &quot;value&quot;: 2,</span>
+<span class="sd">                        &quot;validators&quot;: {</span>
+<span class="sd">                            &quot;range&quot;: {&quot;max&quot;: &quot;max_param&quot;}</span>
+<span class="sd">                        }</span>
+<span class="sd">                    },</span>
+<span class="sd">                    &quot;max_param&quot;: {</span>
+<span class="sd">                        &quot;title&quot;: &quot;Max param&quot;,</span>
+<span class="sd">                        &quot;type&quot;: &quot;int&quot;,</span>
+<span class="sd">                        &quot;value&quot;: 3</span>
+<span class="sd">                    }</span>
+<span class="sd">                }</span>
+
+<span class="sd">            params = Params()</span>
+<span class="sd">            with params.transaction():</span>
+<span class="sd">                params.adjust({&quot;min_param&quot;: 4})</span>
+<span class="sd">                params.adjust({&quot;max_param&quot;: 5})</span>
+
+
+<span class="sd">        **Parameters:**</span>
+<span class="sd">            - `defer_validation`: Defer schema-level validation until the end of the block.</span>
+<span class="sd">            - `ignore_warnings`: Whether to raise an error on warnings or ignore them.</span>
+<span class="sd">            - `raise_errors`: Either raise errors or simply store the error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_data</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+        <span class="n">_ops</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">operators</span><span class="p">)</span>
+        <span class="n">_state</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">view_state</span><span class="p">())</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_defer_validation</span> <span class="o">=</span> <span class="n">defer_validation</span>
+            <span class="k">yield</span> <span class="bp">self</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">_data</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">_state</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ops</span> <span class="o">=</span> <span class="n">_ops</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_defer_validation</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">defer_validation</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">specification</span><span class="p">(</span><span class="n">use_state</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">meta_data</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+                <span class="n">ignore_warnings</span><span class="o">=</span><span class="n">ignore_warnings</span><span class="p">,</span>
+                <span class="n">raise_errors</span><span class="o">=</span><span class="n">raise_errors</span><span class="p">,</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">raise_errors</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Validate parameter adjustment without modifying existing values.</span>
+
+<span class="sd">        For example, validate the current parameter values:</span>
+
+<span class="sd">        .. code-block:: Python</span>
+
+<span class="sd">            params.validate(</span>
+<span class="sd">                params.specification(use_state=False)</span>
+<span class="sd">            )</span>
+
+<span class="sd">        **Parameters:**</span>
+<span class="sd">            - `params`: Parameters to validate.</span>
+<span class="sd">            - `ignore_warnings`: Whether to raise an error on warnings or ignore them.</span>
+<span class="sd">            - `raise_errors`: Either raise errors or simply store the error messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validator_schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+                <span class="n">params</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="p">,</span> <span class="n">deserialized</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">MarshmallowValidationError</span> <span class="k">as</span> <span class="n">ve</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parse_validation_messages</span><span class="p">(</span><span class="n">ve</span><span class="o">.</span><span class="n">messages</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+
+        <span class="n">has_errors</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;messages&quot;</span><span class="p">))</span>
+        <span class="n">has_warnings</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;messages&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">raise_errors</span> <span class="ow">and</span> <span class="n">has_errors</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+            <span class="ow">not</span> <span class="n">ignore_warnings</span> <span class="ow">and</span> <span class="n">has_warnings</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="bp">self</span><span class="o">.</span><span class="n">validation_error</span>
 
 <div class="viewcode-block" id="Parameters.delete"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1058,7 +1152,7 @@
                 <span class="k">return</span> <span class="n">value</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">data_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="n">exp_full_shape</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
+        <span class="n">exp_full_shape</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
         <span class="n">act_full_shape</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value_items</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">act_full_shape</span> <span class="o">!=</span> <span class="n">exp_full_shape</span><span class="p">:</span>
             <span class="c1"># maintains label value order over value objects.</span>
@@ -1291,14 +1385,14 @@
                         <span class="n">extended</span><span class="p">[</span><span class="n">val</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ext</span><span class="p">)</span>
                         <span class="n">skl</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
                         <span class="n">adjustment</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">(</span><span class="n">ext</span><span class="p">,</span> <span class="n">_auto</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-        <span class="c1"># Ensure that the adjust method of paramtools.Parameter is used</span>
+        <span class="c1"># Ensure that the adjust method of paramtools.Parameters is used</span>
         <span class="c1"># in case the child class also implements adjust.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_adjust</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjust</span><span class="p">(</span>
             <span class="n">adjustment</span><span class="p">,</span>
             <span class="n">extend_adj</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">ignore_warnings</span><span class="o">=</span><span class="n">ignore_warnings</span><span class="p">,</span>
             <span class="n">raise_errors</span><span class="o">=</span><span class="n">raise_errors</span><span class="p">,</span>
-            <span class="n">is_deserialized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">deserialized</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Parameters.extend_func"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters.extend_func">[docs]</a>    <span class="k">def</span> <span class="nf">extend_func</span><span class="p">(</span>
@@ -1705,7 +1799,7 @@
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">label_grid</span><span class="p">):</span>
                 <span class="n">label_values</span> <span class="o">=</span> <span class="n">label_grid</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-                <span class="n">pfunc</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span>
+                <span class="n">pfunc</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span>
                     <span class="n">keyfunc</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span> <span class="n">label_values</span><span class="o">=</span><span class="n">label_values</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">has_meta_data</span><span class="p">:</span>
