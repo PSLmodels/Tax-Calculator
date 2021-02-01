@@ -12384,6 +12384,253 @@
             "cps": false
         }
     },
+    "PT_qbid_ps": {
+        "title": "QBID phaseout taxable income start",
+        "description": "QBID begins to decrease when pre-QBID taxable income is above this level.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "widow",
+                "value": 9e99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_prt": {
+        "title": "QBID phaseout rate",
+        "description": "QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2014,
+                "value": 0.0
+            },
+            {
+                "year": 2015,
+                "value": 0.0
+            },
+            {
+                "year": 2016,
+                "value": 0.0
+            },
+            {
+                "year": 2017,
+                "value": 0.0
+            },
+            {
+                "year": 2018,
+                "value": 0.0
+            },
+            {
+                "year": 2019,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "AMT_em": {
         "title": "AMT exemption amount",
         "description": "The amount of AMT taxable income exempted from AMT.",
