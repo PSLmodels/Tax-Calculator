@@ -8,6 +8,7 @@ Tax-Calculator tax-filing-unit Records class.
 import os
 import numpy as np
 import pandas as pd
+import warnings
 from taxcalc.data import Data
 from taxcalc.growfactors import GrowFactors
 from taxcalc.utils import read_egg_csv
@@ -121,7 +122,15 @@ class Records(Data):
             weights = os.path.join(Records.CODE_PATH, weights)
         super().__init__(data, start_year, gfactors, weights)
         if data is None:
+            warnings.warn('This Records object has no data.')
             return  # because there are no data
+        if start_year is None:
+            warnings.warn('The data for this Records object has defined no start year.')
+            return # because there is no start year
+        if weights is None:
+            warnings.warn('This Records object has no weights.')
+        if adjust_ratios is None:
+            warnings.warn('This Records object has no adjustment ratios (blowup factors).')
         # read adjustment ratios
         self.ADJ = None
         self._read_ratios(adjust_ratios)
