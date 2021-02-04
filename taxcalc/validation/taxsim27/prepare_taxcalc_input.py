@@ -53,6 +53,8 @@ def main():
     # read TAXSIM-27 INPUT file into a pandas DataFrame
     ivar = pd.read_csv(args.INPUT, delim_whitespace=True,
                        header=None, names=range(1, 28))
+    full_var = pd.read_csv(args.INPUT, delim_whitespace=True)
+    full_var.to_csv(args.INPUT + '_full.csv')
     # translate INPUT variables into OUTPUT variables
     invar = translate(ivar)
     # write OUTPUT file containing Tax-Calculator input variables

@@ -69,9 +69,9 @@ else
     fi
 fi
 # remove temporary files
-rm -f $LYY.in-$YY-#-#-#-doc.text
-if [[ "$SAVE" == "" ]] ; then
-    rm -f $LYY.in $LYY.in.csv $LYY.in-$YY-#-#-#.csv \
-          $LYY.in.out-taxcalc $LYY.in.out-taxsim
-fi
+# rm -f $LYY.in-$YY-#-#-#-doc.text
+# if [[ "$SAVE" == "" ]] ; then
+#     rm -f $LYY.in $LYY.in.csv $LYY.in-$YY-#-#-#.csv \
+#           $LYY.in.out-taxcalc $LYY.in.out-taxsim
+# fi
 exit $RC
