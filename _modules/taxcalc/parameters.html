@@ -706,8 +706,9 @@
                 <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">vo</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
             <span class="p">)</span>
 
-            <span class="n">rate_adjustment_vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gte</span><span class="p">(</span>
-                <span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+            <span class="n">rate_adjustment_vals</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="s2">&quot;parameter_indexing_CPI_offset&quot;</span><span class="p">][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+                <span class="o">&gt;=</span> <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
             <span class="p">)</span>
             <span class="c1"># &quot;Undo&quot; any existing parameter_indexing_CPI_offset for</span>
             <span class="c1"># years after parameter_indexing_CPI_offset has</span>
@@ -736,13 +737,12 @@
                 <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">):</span>
                     <span class="n">param</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-indexed&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;indexed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_lte</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">],</span>
-                        <span class="kc">True</span><span class="p">,</span>
-                        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]},</span>
+                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">]][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+                        <span class="o">&lt;=</span> <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
                     <span class="p">)</span>
-                    <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gt</span><span class="p">(</span>
-                        <span class="n">param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
+                    <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cpi_min_year</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">]</span>
                     <span class="p">)</span>
                     <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">to_delete</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -777,7 +777,7 @@
                 <span class="c1"># only revert param in 2026 if it&#39;s not in revision</span>
                 <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">param</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="c1"># grab param values from 2017</span>
-                    <span class="n">vos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_eq</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">pyear</span><span class="p">)</span>
+                    <span class="n">vos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">pyear</span>
                     <span class="c1"># use final_ifactor to inflate from 2017 to 2026</span>
                     <span class="k">for</span> <span class="n">vo</span> <span class="ow">in</span> <span class="n">vos</span><span class="p">:</span>
                         <span class="n">long_param_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -802,14 +802,11 @@
                 <span class="p">):</span>
                     <span class="k">continue</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">[</span><span class="n">param</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;indexed&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
-                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_lte</span><span class="p">(</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">],</span>
-                        <span class="kc">True</span><span class="p">,</span>
-                        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">last_known_year</span><span class="p">}</span>
+                    <span class="n">init_vals</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_init_values</span><span class="p">[</span><span class="n">param</span><span class="p">]][</span><span class="s1">&#39;year&#39;</span><span class="p">]</span>
+                        <span class="o">&lt;=</span> <span class="n">last_known_year</span>
                     <span class="p">)</span>
-                    <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_eq</span><span class="p">(</span>
-                        <span class="n">param</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">_auto</span><span class="o">=</span><span class="kc">True</span>
-                    <span class="p">)</span>
+                    <span class="n">to_delete</span><span class="p">[</span><span class="n">param</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">param</span><span class="p">][</span><span class="s2">&quot;_auto&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span>  <span class="c1"># noqa</span>
                     <span class="n">needs_reset</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">to_delete</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -849,20 +846,17 @@
                 <span class="c1"># was changed.</span>
                 <span class="k">if</span> <span class="n">base_param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
                     <span class="n">min_index_change_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">indexed_changes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-                    <span class="n">vos</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_lt</span><span class="p">(</span>
-                        <span class="n">params</span><span class="p">[</span><span class="n">base_param</span><span class="p">],</span>
-                        <span class="kc">False</span><span class="p">,</span>
-                        <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">min_index_change_year</span><span class="p">},</span>
+                    <span class="n">vos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="n">base_param</span><span class="p">]][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">lt</span><span class="p">(</span>
+                        <span class="n">min_index_change_year</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span>
                     <span class="p">)</span>
-                    <span class="k">if</span> <span class="n">vos</span><span class="p">:</span>
+
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">vos</span><span class="p">)):</span>
                         <span class="n">min_adj_year</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">vos</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">vo</span><span class="p">:</span> <span class="n">vo</span><span class="p">[</span><span class="s2">&quot;year&quot;</span><span class="p">])[</span>
                             <span class="s2">&quot;year&quot;</span>
                         <span class="p">]</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
                             <span class="p">{</span>
-                                <span class="n">base_param</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gt</span><span class="p">(</span>
-                                    <span class="n">base_param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">min_adj_year</span>
-                                <span class="p">)</span>
+                                <span class="n">base_param</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">base_param</span><span class="p">][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">min_adj_year</span>  <span class="c1"># noqa</span>
                             <span class="p">}</span>
                         <span class="p">)</span>
                         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">({</span><span class="n">base_param</span><span class="p">:</span> <span class="n">vos</span><span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -879,7 +873,7 @@
                     <span class="c1"># Get and delete all default values after year where</span>
                     <span class="c1"># indexed status changed.</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span>
-                        <span class="p">{</span><span class="n">base_param</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_gt</span><span class="p">(</span><span class="n">base_param</span><span class="p">,</span> <span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)}</span>
+                        <span class="p">{</span><span class="n">base_param</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">base_param</span><span class="p">][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">year</span><span class="p">}</span>
                     <span class="p">)</span>
 
                     <span class="c1"># 2.b Extend values for this parameter to the year where</span>
@@ -899,8 +893,8 @@
                     <span class="c1"># 2.d Adjust with values greater than or equal to current</span>
                     <span class="c1"># year in params</span>
                     <span class="k">if</span> <span class="n">base_param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
-                        <span class="n">vos</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">select_gte</span><span class="p">(</span>
-                            <span class="n">params</span><span class="p">[</span><span class="n">base_param</span><span class="p">],</span> <span class="kc">False</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="n">year</span><span class="p">}</span>
+                        <span class="n">vos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sel</span><span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="n">base_param</span><span class="p">]][</span><span class="s2">&quot;year&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">gte</span><span class="p">(</span>
+                            <span class="n">year</span><span class="p">,</span> <span class="n">strict</span><span class="o">=</span><span class="kc">False</span>
                         <span class="p">)</span>
                         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">adjust</span><span class="p">({</span><span class="n">base_param</span><span class="p">:</span> <span class="n">vos</span><span class="p">},</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 

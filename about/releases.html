@@ -866,11 +866,11 @@ for a complete commit history.</p>
 <li><p>Adopt the <a class="reference external" href="https://github.com/PSLmodels/ParamTools">ParamTools library</a> for parameter processing and validation, allowing easier integration with other projects that rely on ParamTools, less code for the Tax-Calculator project to maintain, and other benefits for Tax-Calculator users. Backwards compatibiltiy was maintained except for a minor API change: The parameter values that are accessible as instance attributes (e.g. pol.II_em) are not casted down into a lower dimension. So, if the year is 2017, then pol.II_em returns [4050.0] instead of 4050.0. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2401">#2401</a> by Hank Doupe]</p></li>
 <li><p>CPI_offset was replaced by parameter_indexing_CPI_offset, which has slightly different behavior: When parameter_indexing_CPI_offset is specified in a reform, that value is no longer added to the existing parameter_indexing_CPI_offset as was the case with CPI_offset. Rather, the specified value becomes the offset from the baseline unchained CPI. This new behavior is consistent with what is expected from all other Tax-Calculator parameters. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2413">#2413</a> by Peter Metz]</p></li>
 <li><p>Replace the variable reporting the number of dependents under 5 years old (nu05) with the number under 6 years old (nu06) to support recent policy proposals. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2443">#2443</a> by Peter Metz, with primary work in <a class="reference external" href="https://github.com/PSLmodels/taxdata/pull/329">TaxData PR #329</a> by Anderson Frailey]</p></li>
-<li><p>Remove the changes.md file to consolidate version reporting in this file, releases.md. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2474">#2474</a> by Matt Jensen]</p></li>
+<li><p>Remove the <a class="reference external" href="http://changes.md">changes.md</a> file to consolidate version reporting in this file, <a class="reference external" href="http://releases.md">releases.md</a>. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2474">#2474</a> by Matt Jensen]</p></li>
 </ul>
 <p><strong>New Features</strong></p>
 <ul class="simple">
-<li><p>Enable Windows users to convert TAXSIM input files to the interface required by Tax-Calculator’s tc Command Line Interface by replacing validation script taxcalc.sh with taxcalc.py [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2408">#2408</a> by Peter Metz based on feedback from Ernie Tedeschi]</p></li>
+<li><p>Enable Windows users to convert TAXSIM input files to the interface required by Tax-Calculator’s tc Command Line Interface by replacing validation script <a class="reference external" href="http://taxcalc.sh">taxcalc.sh</a> with <a class="reference external" href="http://taxcalc.py">taxcalc.py</a> [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2408">#2408</a> by Peter Metz based on feedback from Ernie Tedeschi]</p></li>
 <li><p>Add automated testing for Python 3.8 to ensure a bug-free experience for users on the latest version of Python. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2414">#2414</a> by Hank Doupe]</p></li>
 <li><p>Include UBI amounts, when introduced by user reforms, to variables that report total benefits. [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2418">#2418</a> by Jason DeBacker]</p></li>
 <li><p>Improve <a class="reference external" href="https://pslmodels.github.io/Tax-Calculator/">documentation site</a> with <a class="reference external" href="https://jupyterbook.org/intro.html">Jupyter Book</a> [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2420">#2420</a> by Max Ghenis with auxiliary PRs by Jason DeBacker]</p></li>
@@ -2656,7 +2656,7 @@ by Martin Holmer]</p></li>
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1228">#1228</a>)</p>
 <p><strong>API Changes</strong></p>
 <ul class="simple">
-<li><p>Move simtax.py to taxcalc/validation/taxsim directory
+<li><p>Move <a class="reference external" href="http://simtax.py">simtax.py</a> to taxcalc/validation/taxsim directory
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1288">#1288</a>
 by Martin Holmer]</p></li>
 </ul>
@@ -2668,7 +2668,7 @@ by Martin Holmer]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
 <ul class="simple">
-<li><p>Add growdiff.json to MANIFEST.in
+<li><p>Add growdiff.json to <a class="reference external" href="http://MANIFEST.in">MANIFEST.in</a>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1217">#1217</a>
 and
 <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1219">#1219</a>
@@ -2715,7 +2715,7 @@ by Cody Kallen]</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
 <ul class="simple">
-<li><p>Add name of new Stage3 adjustment-ratios file to MANIFEST.in
+<li><p>Add name of new Stage3 adjustment-ratios file to <a class="reference external" href="http://MANIFEST.in">MANIFEST.in</a>
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/1197">#1197</a>
 by Anderson Frailey]</p></li>
 </ul>
@@ -3051,7 +3051,7 @@ by Martin Holmer]</p></li>
 <ul class="simple">
 <li><p>Revise code to use smaller <code class="docutils literal notranslate"><span class="pre">puf.csv</span></code> input file and make changes to
 create that input file</p></li>
-<li><p>Remove debugging variables from functions.py reducing execution time
+<li><p>Remove debugging variables from <a class="reference external" href="http://functions.py">functions.py</a> reducing execution time
 by 42 percent
 [<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/833">#833</a>]</p></li>
 <li><p>Add comments to show one way to use Python debugger to trace
@@ -3086,9 +3086,9 @@ the same results
 </ul>
 <p><strong>New Features</strong></p>
 <ul class="simple">
-<li><p>Add –exact option to simtax.py and inctax.py scripts</p></li>
+<li><p>Add –exact option to <a class="reference external" href="http://simtax.py">simtax.py</a> and <a class="reference external" href="http://inctax.py">inctax.py</a> scripts</p></li>
 <li><p>Add calculation of Schedule R credit</p></li>
-<li><p>Remove _cmp variable from functions.py code</p></li>
+<li><p>Remove _cmp variable from <a class="reference external" href="http://functions.py">functions.py</a> code</p></li>
 </ul>
 <p><strong>Bug Fixes</strong></p>
 <ul class="simple">
@@ -3129,8 +3129,8 @@ bug in the Windows conda package for Pandas 0.16.2</p></li>
 </ul>
 <p><strong>New Features</strong></p>
 <ul class="simple">
-<li><p>Add –records option to simtax.py</p></li>
-<li><p>Add –csvdump option to inctax.py</p></li>
+<li><p>Add –records option to <a class="reference external" href="http://simtax.py">simtax.py</a></p></li>
+<li><p>Add –csvdump option to <a class="reference external" href="http://inctax.py">inctax.py</a></p></li>
 <li><p>Add three “d” samples to Tax-Calculator versus Internet-TAXSIM comparisons</p></li>
 <li><p>Add first set of Tax-Calculator versus TaxBrain comparisons</p></li>
 <li><p>Add data and logic to implement EITC age-eligibility rules</p></li>
