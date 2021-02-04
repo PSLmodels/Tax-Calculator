@@ -394,11 +394,11 @@ def test_bad_json_names(tests_path):
     csvname = os.path.join(tests_path, '..', 'growfactors.csv')
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(csvname, None)
-    with pytest.raises(ValueError):
+    with pytest.raises(FileNotFoundError):
         Calculator.read_json_param_objects('http://name.json.html', None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, csvname)
-    with pytest.raises(ValueError):
+    with pytest.raises(FileNotFoundError):
         Calculator.read_json_param_objects(None, 'http://name.json.html')
 
 
@@ -509,7 +509,7 @@ def test_read_bad_json_assump_file():
         Calculator.read_json_param_objects(None, badassump1)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         Calculator.read_json_param_objects(None, list())
 
 
@@ -517,9 +517,9 @@ def test_json_doesnt_exist():
     """
     Test JSON file which doesn't exist
     """
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, './reforms/doesnt_exist.json')
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(ValueError):
         Calculator.read_json_param_objects('./reforms/doesnt_exist.json', None)
 
 

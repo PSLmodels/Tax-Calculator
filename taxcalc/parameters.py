@@ -738,40 +738,9 @@ class Parameters(pt.Parameters):
         # process the main function arguments
         if obj is None:
             return dict()
-        if not isinstance(obj, str):
-            raise ValueError('obj is neither None nor a string')
-        if not isinstance(topkey, str):
-            raise ValueError('topkey={} is not a string'.format(topkey))
-        if os.path.isfile(obj):
-            if not obj.endswith('.json'):
-                msg = 'obj does not end with ".json": {}'
-                raise ValueError(msg.format(obj))
-            txt = open(obj, 'r').read()
-        elif obj.startswith('http'):
-            if not obj.endswith('.json'):
-                msg = 'obj does not end with ".json": {}'
-                raise ValueError(msg.format(obj))
-            req = requests.get(obj)
-            req.raise_for_status()
-            txt = req.text
-        else:
-            if isinstance(topkey, str) and (topkey == ''):
-                raise ValueError("topkey string is empty.")
-            if isinstance(obj, str):
-                if obj == '':
-                    raise ValueError("obj string is empty.")
-                elif obj.endswith('.json') and not os.path.isfile(obj):
-                    raise FileNotFoundError("The .json file does not exist.")
-                elif ("{" and "}") in obj:
-                    txt = obj
-                else:
-                    raise ValueError("The JSON variable is misspecified.")
-            else:
-                raise ValueError("The JSON variable is misspecified.")
-        # strip out //-comments without changing line numbers
-        json_txt = re.sub('//.*', ' ', txt)
-        # convert JSON text into a Python dictionary
-        full_dict = json_to_dict(json_txt)
+
+        full_dict = pt.read_json(obj)
+
         # check top-level key contents of dictionary
         if topkey in full_dict.keys():
             single_dict = full_dict[topkey]

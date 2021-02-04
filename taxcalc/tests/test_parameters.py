@@ -566,7 +566,7 @@ def test_read_json_revision():
     }
     """
     # pllint: disable=private-method
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         # error because first obj argument is neither None nor a string
         Parameters._read_json_revision(list(), '')
     with pytest.raises(ValueError):
