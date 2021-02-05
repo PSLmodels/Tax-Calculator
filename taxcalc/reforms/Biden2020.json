@@ -1,0 +1,43 @@
+// Title: Biden 2020 Campaign Tax Proposals
+// Reform_File_Author: Jason DeBacker based on work by Erin Melly
+// Reform_Reference:  https://www.taxpolicycenter.org/publications/updated-analysis-former-vice-president-bidens-tax-proposals
+// Reform_Baseline: TCJA.json
+// Reform_Description:
+// - Apply payroll taxes to filers with income > $400,000
+// - Repeal TCJA rate cuts on filers with income > $400,000
+// - Increase capital gains rates filers with income > $1,000,000
+// - Expand CTC
+// - Expand EITC eligibility to those over age 64
+
+{
+    "II_brk5": {"2021": [416700.00, 416700.00, 208350.00, 416700.00, 416700.00], 
+                "2026": [502101.0, 502101.0, 251050.0, 502101.0, 502101.0]}, 
+    "II_rt5": {"2021": 0.33},
+    "II_brk6": {"2021": [418400.00, 470700.00, 235350.00, 444550.00, 470700.00],
+                "2026": [504149.0, 567168.0, 283584.0, 535659.0, 567168.0]},
+    "II_rt7": {"2021": 0.396},
+    "PT_brk5": {"2021": [416700.00, 416700.00, 208350.00, 416700.00, 416700.00],
+                "2026": [502101.0, 502101.0, 251050.0, 502101.0, 502101.0]},
+    "PT_rt5": {"2021": 0.33},
+    "PT_brk6": {"2021": [418400.00, 470700.00, 235350.00, 444550.00, 470700.00],
+                "2026": [504149.0, 567168.0, 283584.0, 535659.0, 567168.0]},
+    "PT_rt7": {"2021": 0.396},
+    "ID_ps": {"2021": [261500.0, 313800.0, 156900.0, 287650.0, 313800.0],
+              "2026": [315093.0, 378112.0, 189056.0, 346603.0, 378112.0]},
+    "ID_prt": {"2021": 0.03},
+    "ID_crt": {"2021": 0.8},
+    "PT_qbid_taxinc_thd": {"2021": [400000.00, 400000.00, 400000.00, 400000.00, 400000.00],
+                           "2026": [0.0, 0.0, 0.0, 0.0, 0.0]},
+    "PT_qbid_taxinc_gap": {"2021": [100000.0, 100000.0, 100000.0, 100000.0, 100000.00],
+                           "2026": [1.0, 1.0, 1.0, 1.0, 1.0]},
+    "CG_brk3": {"2021": [1000000, 1000000, 1000000, 1000000, 1000000]},
+    "CG_rt4": {"2021": 0.396},
+    "EITC_MaxEligAge": {"2021": 125},
+    "ID_BenefitSurtax_trt": {"2021": 1.0},
+    "ID_BenefitSurtax_crt": {"2021": 0.28},
+    "ID_BenefitSurtax_Switch": {"2021": [true, true, false, true, true, true, true]},
+    "SS_Earnings_thd": {"2021": 400000},
+    "ALD_IRAContributions_hc": {"2021": 1.0},
+    "ALD_KEOGH_SEP_hc": {"2021": 1.0},
+    "CR_ResidentialEnergy_hc": {"2021": 0.0}
+}
