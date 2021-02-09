@@ -130,7 +130,7 @@ class Records(Data):
         if weights is None:
             warnings.warn('This Records object has no weights.')
         if adjust_ratios is None:
-            warnings.warn('This Records object has no adjustment ratios (blowup factors).')
+            warnings.warn('This Records object has no adjustment ratios.')
         # read adjustment ratios
         self.ADJ = None
         self._read_ratios(adjust_ratios)
