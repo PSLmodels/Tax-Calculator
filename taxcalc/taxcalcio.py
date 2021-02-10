@@ -320,8 +320,8 @@ class TaxCalcIO():
                 )
             else:  # if not cps_input_data but aging_input_data
                 # check for start_year, weights and adjustment ratios files
-                if any([start_year, weights, adjust_ratios] == None):
-                    raise ValueError("A start year, weights file and adjustment must be passed.")
+                if start_year == None:
+                    raise ValueError("A start year must be passed.")
                 recs = Records(
                     data=input_data,
                     start_year=start_year,
