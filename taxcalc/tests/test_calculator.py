@@ -182,7 +182,7 @@ def test_calculator_mtr(cps_subsample):
     assert np.allclose(calc.array('c00100'), c00100x)
 
 
-def test_calculator_mtr_when_PT_rates_differ():
+def test_calculator_mtr_when_PT_rates_differ(test_data_start_year, test_weights):
     """
     Test Calculator mtr method in special case.
     """
@@ -206,7 +206,7 @@ def test_calculator_mtr_when_PT_rates_differ():
         'RECID,MARS,FLPDYR,e00200,e00200p,e00900,e00900p,extraneous\n'
         '1,    1,   2009,  200000,200000, 100000,100000, 9999999999\n'
     )
-    rec = Records(pd.read_csv(StringIO(funit)))
+    rec = Records(pd.read_csv(StringIO(funit)), start_year=test_data_start_year, weights=test_weights)
     pol = Policy()
     calc1 = Calculator(policy=pol, records=rec)
     (_, mtr1, _) = calc1.mtr(variable_str='p23250')
@@ -748,7 +748,6 @@ def test_ce_aftertax_income(cps_subsample):
 
 @pytest.mark.itmded_vars
 @pytest.mark.pre_release
-@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('year, cvname, hcname',
                          [(2018, 'c17000', 'ID_Medical_hc'),
                           (2018, 'c18300', 'ID_AllTaxes_hc'),
@@ -762,7 +761,8 @@ def test_ce_aftertax_income(cps_subsample):
                           (2017, 'c19700', 'ID_Charity_hc'),
                           (2017, 'c20500', 'ID_Casualty_hc'),
                           (2017, 'c20800', 'ID_Miscellaneous_hc')])
-def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
+
+def test_itemded_component_amounts(year, cvname, hcname, cps_fullsample):
     """
     Check that all c04470 components are adjusted to reflect the filing
     unit's standard-vs-itemized-deduction decision.  Check for 2018
@@ -775,7 +775,7 @@ def test_itemded_component_amounts(year, cvname, hcname, puf_fullsample):
     here use c21060, instead of c04470, as the itemized deductions total.
     """
     # pylint: disable=too-many-locals
-    recs = Records(data=puf_fullsample)
+    recs = Records(data=cps_fullsample, gfactors=None, start_year=2013)
     # policy1 such that everybody itemizes deductions and all are allowed
     policy1 = Policy()
     reform1 = {

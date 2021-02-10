@@ -26,7 +26,7 @@ def test_incorrect_Records_instantiation(cps_subsample):
                        adjust_ratios=list())
 
 
-def test_correct_Records_instantiation(cps_subsample):
+def test_correct_Records_instantiation(cps_subsample, test_ratios_path):
     rec1 = Records.cps_constructor(data=cps_subsample, gfactors=None)
     assert rec1
     assert np.all(rec1.MARS != 0)
@@ -37,8 +37,7 @@ def test_correct_Records_instantiation(cps_subsample):
     assert sum_e00200_in_cps_year_plus_one == sum_e00200_in_cps_year
     wghts_path = os.path.join(Records.CODE_PATH, Records.CPS_WEIGHTS_FILENAME)
     wghts_df = pd.read_csv(wghts_path)
-    ratios_path = os.path.join(Records.CODE_PATH, Records.PUF_RATIOS_FILENAME)
-    ratios_df = pd.read_csv(ratios_path, index_col=0).transpose()
+    ratios_df = pd.read_csv(test_ratios_path, index_col=0).transpose()
     rec2 = Records(data=cps_subsample,
                    start_year=Records.CPSCSV_YEAR,
                    gfactors=GrowFactors(),

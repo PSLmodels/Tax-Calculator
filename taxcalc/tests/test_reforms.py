@@ -231,12 +231,12 @@ def test_reform_json_and_output(tests_path):
         raise ValueError(msg)
 
 
-def reform_results(rid, reform_dict, puf_data, reform_2017_law):
+def reform_results(rid, reform_dict, reform_2017_law, test_data_subsample, test_weights, test_data_start_year):
     """
     Return actual results of the reform specified by rid and reform_dict.
     """
     # pylint: disable=too-many-locals
-    rec = Records(data=puf_data)
+    rec = Records(data=test_data_subsample, weights=test_weights, start_year = test_data_start_year)
     # create baseline Calculator object, calc1
     pol = Policy()
     if reform_dict['baseline'] == '2017_law.json':
@@ -301,17 +301,16 @@ def fixture_reforms_dict(tests_path):
 NUM_REFORMS = 64  # when changing this also change num_reforms in conftest.py
 
 
-@pytest.mark.requires_pufcsv
 @pytest.mark.parametrize('rid', [i for i in range(1, NUM_REFORMS + 1)])
 def test_reforms(rid, test_reforms_init, tests_path, baseline_2017_law,
-                 reforms_dict, puf_subsample):
+                 reforms_dict, test_data_subsample, test_weights, test_data_start_year):
     """
     Write actual reform results to files.
     """
     # pylint: disable=too-many-arguments
     assert test_reforms_init == NUM_REFORMS
     actual = reform_results(rid, reforms_dict[str(rid)],
-                            puf_subsample, baseline_2017_law)
+                            baseline_2017_law, test_data_subsample, test_weights, test_data_start_year)
     afile_path = os.path.join(tests_path,
                               'reform_actual_{}.csv'.format(rid))
     with open(afile_path, 'w') as afile:

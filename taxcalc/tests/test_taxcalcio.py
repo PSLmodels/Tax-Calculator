@@ -258,7 +258,7 @@ def test_ctor_errors(input_data, baseline, reform, assump, outdir):
     (2020, 'errorreformfile', 'errorreformfile', None)
 ])
 def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
-                     year, base, ref, asm):
+                     year, base, ref, asm, test_data_start_year, test_weights, test_ratios_path):
     """
     Ensure error messages generated correctly by TaxCalcIO.init method.
     """
@@ -292,12 +292,13 @@ def test_init_errors(reformfile0, errorreformfile, errorassumpfile,
     # test TaxCalcIO.init method
     tcio.init(input_data=recdf, tax_year=year,
               baseline=baseline, reform=reform, assump=assump,
+              start_year=test_data_start_year, weights=test_weights, adjust_ratios=test_ratios_path,
               aging_input_data=False,
               exact_calculations=True)
     assert tcio.errmsg
 
 
-def test_creation_with_aging(reformfile0):
+def test_creation_with_aging(reformfile0, test_data_start_year, test_weights, test_ratios_path):
     """
     Test TaxCalcIO instantiation with/without no policy reform and with aging.
     """
@@ -313,6 +314,7 @@ def test_creation_with_aging(reformfile0):
               baseline=None,
               reform=reformfile0.name,
               assump=None,
+              start_year=test_data_start_year, weights=test_weights, adjust_ratios=test_ratios_path,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -329,13 +331,14 @@ def test_creation_with_aging(reformfile0):
               baseline=None,
               reform=None,
               assump=None,
+              start_year=test_data_start_year, weights=test_weights, adjust_ratios=test_ratios_path,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
     assert tcio.tax_year() == taxyear
 
 
-def test_ctor_init_with_cps_files():
+def test_ctor_init_with_cps_files(test_data_start_year, test_weights, test_ratios_path, cpscsv_year):
     """
     Test use of CPS input files.
     """
@@ -343,6 +346,7 @@ def test_ctor_init_with_cps_files():
     txyr = 2020
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
+              start_year=test_data_start_year, weights=test_weights, adjust_ratios=test_ratios_path,
               aging_input_data=True,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -351,6 +355,7 @@ def test_ctor_init_with_cps_files():
     txyr = 2013
     tcio = TaxCalcIO('cps.csv', txyr, None, None, None)
     tcio.init('cps.csv', txyr, None, None, None,
+              start_year=cpscsv_year, weights=test_weights, adjust_ratios=test_ratios_path,
               aging_input_data=True,
               exact_calculations=False)
     assert tcio.errmsg
@@ -370,7 +375,7 @@ def test_ctor_init_with_cps_files():
     FLPDYR
     """, False, 8)
 ])
-def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
+def test_custom_dump_variables(dumpvar_str, str_valid, num_vars, test_data_start_year):
     """
     Test TaxCalcIO custom_dump_variables method.
     """
@@ -382,6 +387,7 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
     assert not tcio.errmsg
     tcio.init(input_data=recdf, tax_year=year,
               baseline=None, reform=None, assump=None,
+              start_year=test_data_start_year, weights=None, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -393,7 +399,7 @@ def test_custom_dump_variables(dumpvar_str, str_valid, num_vars):
         assert len(varset) == num_vars
 
 
-def test_output_options(reformfile1, assumpfile1):
+def test_output_options(reformfile1, assumpfile1, test_data_start_year):
     """
     Test TaxCalcIO output_dump options when writing_output_file.
     """
@@ -409,6 +415,7 @@ def test_output_options(reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
+              start_year=test_data_start_year, weights=None, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -453,7 +460,7 @@ def test_output_options(reformfile1, assumpfile1):
         os.remove(outfilepath)
 
 
-def test_write_doc_file(reformfile1, assumpfile1):
+def test_write_doc_file(reformfile1, assumpfile1, test_data_start_year):
     """
     Test write_doc_file with compound reform.
     """
@@ -470,6 +477,7 @@ def test_write_doc_file(reformfile1, assumpfile1):
               baseline=None,
               reform=compound_reform,
               assump=assumpfile1.name,
+              start_year=test_data_start_year, weights=None, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -480,7 +488,7 @@ def test_write_doc_file(reformfile1, assumpfile1):
         os.remove(docfilepath)
 
 
-def test_sqldb_option(reformfile1, assumpfile1):
+def test_sqldb_option(reformfile1, assumpfile1, test_data_start_year):
     """
     Test TaxCalcIO output_sqldb option when not writing_output_file.
     """
@@ -496,6 +504,7 @@ def test_sqldb_option(reformfile1, assumpfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=assumpfile1.name,
+              start_year=test_data_start_year, weights=None, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -516,7 +525,7 @@ def test_sqldb_option(reformfile1, assumpfile1):
         os.remove(dbfilepath)
 
 
-def test_no_tables_or_graphs(reformfile1):
+def test_no_tables_or_graphs(reformfile1, test_data_start_year):
     """
     Test TaxCalcIO with output_tables=True and output_graphs=True but
     INPUT has zero weights.
@@ -542,6 +551,7 @@ def test_no_tables_or_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
+              start_year=test_data_start_year, weights=None, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -565,7 +575,7 @@ def test_no_tables_or_graphs(reformfile1):
         os.remove(fname)
 
 
-def test_tables(reformfile1):
+def test_tables(reformfile1, test_data_start_year, test_weights):
     """
     Test TaxCalcIO with output_tables=True and with positive weights.
     """
@@ -590,6 +600,7 @@ def test_tables(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
+              start_year=test_data_start_year, weights=test_weights, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -602,7 +613,7 @@ def test_tables(reformfile1):
         os.remove(fname)
 
 
-def test_graphs(reformfile1):
+def test_graphs(reformfile1, test_data_start_year):
     """
     Test TaxCalcIO with output_graphs=True.
     """
@@ -628,6 +639,7 @@ def test_graphs(reformfile1):
               baseline=None,
               reform=reformfile1.name,
               assump=None,
+              start_year=test_data_start_year, weights=None, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
@@ -662,7 +674,7 @@ def fixture_warnreformfile():
             pass  # sometimes we can't remove a generated temporary file
 
 
-def test_analyze_warnings_print(warnreformfile):
+def test_analyze_warnings_print(warnreformfile, test_data_start_year):
     """
     Test TaxCalcIO.analyze method when there is a reform warning.
     """
@@ -680,6 +692,7 @@ def test_analyze_warnings_print(warnreformfile):
               baseline=None,
               reform=warnreformfile.name,
               assump=None,
+              start_year=test_data_start_year, weights=None, adjust_ratios=None,
               aging_input_data=False,
               exact_calculations=False)
     assert not tcio.errmsg
