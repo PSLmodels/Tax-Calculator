@@ -1012,7 +1012,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
         # break in worksheet lines
-        dwks33 = min(dwks9, e24518)
+        dwks33 = min(dwks9, e24515)
         dwks34 = dwks10 + dwks19
         dwks36 = max(0., dwks34 - dwks1)
         dwks37 = max(0., dwks33 - dwks36)
