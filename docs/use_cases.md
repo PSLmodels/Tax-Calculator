@@ -311,3 +311,8 @@ Joe Biden\'s tax plan? November 2020. URL:
 \[63\] Angela Rachidi. Reducing the marriage penalty for low-income
 families. January 2021. URL:
 <https://www.aei.org/poverty-studies/reducing-the-marriage-tax-penalty-for-low-income-families/>.
+
+\[64\] Robert Orr and Samuel Hammond. Analysis of the Romney Child
+Allowance. February 2021. URL:
+<https://www.niskanencenter.org/wp-content/uploads/2021/02/Analysis-of-the-Romney-Child-Allowance_final.pdf>
+(visited on 2021-02-12).
