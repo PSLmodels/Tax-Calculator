@@ -28,6 +28,121 @@ def BenefitPrograms(calc):
     """
     Calculate total government cost and consumption value of benefits
     delivered by non-repealed benefit programs.
+
+    Parameters
+    ----------
+    BEN_housing_repeal: boolean
+        Specifies whether housing benefits have been repealed
+        Default value is false
+    
+    housing_ben: float
+        Imputed housing benefits
+
+    BEN_ssi_repeal: boolean
+        Specifies whether SSI benefits have been repealed
+        Default value is false
+    
+    ssi_ben: float
+        Imputed SSI benefits
+
+    BEN_snap_repeal: boolean
+        Specifies whether SNAP benefits have been repealed
+        Default value is false
+    
+    snap_ben: float
+        Imputed SNAP benefits
+    
+    BEN_tanf_repeal: boolean
+        Specifies whether TANF benefits have been repealed
+        Default value is false
+    
+    tanf_ben: float
+        Imputed TANF benefits
+
+    BEN_vet_repeal: boolean
+        Specifies whether veterans benefits have been repealed
+        Default value is false
+    
+    vet_ben: float
+        Imputed Veteran's benefits
+
+    BEN_wic_repeal: boolean
+        Specifies whether WIC benefits have been repealed
+        Default value is false
+    
+    wic_ben: float
+        Imputed WIC benefits
+
+    BEN_mcare_repeal: boolean
+        Specifies whether Medicare benefits have been repealed
+        Default value is false
+    
+    mcare_ben: float
+        Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance
+    
+    BEN_mcaid_repeal: boolean
+        Specifies whether Medicaid benefits have been repealed
+        Default value is false
+    
+    mcaid_ben: float
+        Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance
+
+    BEN_oasdi_repeal: boolean
+        Specifies whether social security benefits (e02400) have been repealed
+        Default value is false
+
+    e02400: float
+        Total social security (OASDI) benefits
+
+    BEN_ui_repeal: boolean
+        Specifies whether unemployment insurance benefits (e02300) have been repealed 
+        Default value is false
+    
+    e02300: float
+        Unemployment insurance benefits
+
+    BEN_other_repeal: boolean
+        Specifies whether other benefits have been repealed
+        Default value is false
+
+    other_ben: float
+        Non-imputed benefits
+    
+    ubi: float
+        Universal Basic Income benefit for filing unit
+
+    BEN_housing_value:
+
+    
+    BEN_snap_value:
+
+
+    BEN_tanf_value:
+
+
+    BEN_vet_value:
+
+
+    BEN_wic_value:
+
+    
+    BEN_mcare_value:
+
+
+    BEN_mcaid_value:
+
+
+    BEN_other_value:
+
+
+
+    Returns
+    -------
+    benefit_cost_total: float
+        Government cost of all benefits received by tax unit
+
+    benefit_value_total: float
+        Consumption value of all benefits received by tax unti, which is included in expanced_income
     """
     # zero out benefits delivered by repealed programs
     zero = np.zeros(calc.array_len)
@@ -97,6 +212,131 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
                   was_plus_sey_p, was_plus_sey_s):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
+
+    Parameters
+    ----------
+    SS_Earnings_c: float
+        Maximum taxable earnings for Social Security. 
+        Individual earnings below this amount are subjected to OASDI payroll tax.
+        This parameter is indexed by rate of growth in average wages not by the price inflation rate.
+    
+    e00200p: float
+        Wages, salaries, and tips for taxpayer net of pension contributions
+    
+    e00200s: float
+        Wages, salaries, and tips for spouse net of pension contributions
+    
+    pencon_p: float
+        Contributions to defined-contribution pension plans for taxpayer
+    
+    pencon_s: float
+        Contributions to defined-contribution pension plans for spouse
+    
+    FICA_ss_trt: float
+        Social security payroll tax rate, including both employer and employee
+    
+    FICA_mc_trt: float
+        Medicare payroll tax rate, including both employer and employee
+    
+    ALD_SelfEmploymentTax_hc: float
+        Adjustment for self-employment tax haircut
+        If greater than zero, reduces the employer equivalent portion of self-employment adjustment
+        Final adjustment amount = (1-Haircut)*SelfEmploymentTaxAdjustment
+    
+    SS_Earnings_thd: float
+        Additional taxable earnings threshold for Social Security 
+        Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to 
+        earnings below the maximum taxable earnings threshold.
+    
+    e00900p: float
+        Schedule C business net profit/loss for taxpayer
+    
+    e00900s: float
+        Schedule C business net profit/loss for spouse
+    
+    e02100p: float
+        Farm net income/loss for taxpayer
+    
+    e02100s: float
+        Farm net income/loss for spouse
+    
+    k1bx14p: float
+        Partner self-employment earnings/loss for taxpayer (included in e26270 total)
+    
+    k1bx14s: float
+        Partner self-employment earnings/loss for spouse (included in e26270 total)
+    
+    payrolltax: float
+        Total (employee and employer) payroll tax liability 
+        payrolltax = ptax_was + setax + ptax_amc
+    
+    ptax_was: float
+        Employee and employer OASDI plus HI FICA tax
+    
+    setax: float
+        Self-employment tax
+    
+    c03260: float
+        ???
+    
+    ptax_oasdi: float
+        Employee and employer OASDI FICA tax plus self employment tax
+        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
+    
+    sey: float
+        ???
+    
+    earned: float
+        ???
+    
+    earned_p: float
+        ???
+    
+    earned_s: float
+        ???
+    
+    was_plus_sey_p: float
+        ???
+    
+    was_plus_sey_s: float
+        ???
+
+    Returns
+    -------
+    sey: float
+        ???
+    
+    payrolltax: float
+        Total (employee and employer) payroll tax liability 
+        payrolltax = ptax_was + setax + ptax_amc
+    
+    ptax_was: float
+        Employee and employer OASDI plus HI FICA tax
+    
+    setax: float
+        Self-employment tax
+    
+    c03260: float
+        ???
+    
+    ptax_oasdi: float
+        Employee and employer OASDI FICA tax plus self employment tax
+        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
+    
+    earned: float
+        ???
+    
+    earned_p: float
+        ???
+    
+    earned_s: float
+        ???
+    
+    was_plus_sey_p: float
+        ???
+    
+    was_plus_sey_s: float
+        ???
     """
     # compute sey and its individual components
     sey_p = e00900p + e02100p + k1bx14p
