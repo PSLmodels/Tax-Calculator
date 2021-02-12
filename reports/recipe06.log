@@ -32,8 +32,8 @@ nbclient.exceptions.CellTimeoutError: A cell timed out while it was being execut
 The message was: Cell execution timed out.
 Here is a preview of the cell contents:
 -------------------
-['import taxcalc as tc', 'import behresp', '', '# use publicly-available CPS input file', 'recs = tc.Records.cps_constructor()']
+['import numpy as np', 'import taxcalc as tc', '', '', 'class Calculator(tc.Calculator):']
 ...
-['# print total income tax revenue estimates for CYR', '# (estimates in billons of dollars)', "print('{}_CURRENT_LAW_P__itax_rev($B)= {:.3f}'.format(CYR, itax_rev1 * 1e-9))", "print('{}_REFORM_STATIC__itax_rev($B)= {:.3f}'.format(CYR, itax_rev2sa * 1e-9))", "print('{}_REFORM_DYNAMIC_itax_rev($B)= {:.3f}'.format(CYR, itax_rev2br * 1e-9))"]
+["    line = '{}  {:.1f}  {:.1f}  {:.1f}  {:5.1f}  {:5.1f}  {:5.1f}  {:5.1f}'", '    print(line.format(cyr, funits * 1e-6,', '                      itax1 * 1e-9, itax2 * 1e-9,', '                      eitc1 * 1e-9, eitc2 * 1e-9,', '                      colr1 * 1e-9, colr2 * 1e-9))']
 -------------------
 

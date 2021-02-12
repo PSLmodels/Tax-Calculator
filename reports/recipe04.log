@@ -34,6 +34,6 @@ Here is a preview of the cell contents:
 -------------------
 ['import taxcalc as tc', 'import behresp', '', '# use publicly-available CPS input file', 'recs = tc.Records.cps_constructor()']
 ...
-['# print total income tax revenue estimates for CYR', '# (estimates in billons of dollars)', "print('{}_CURRENT_LAW_P__itax_rev($B)= {:.3f}'.format(CYR, itax_rev1 * 1e-9))", "print('{}_REFORM_STATIC__itax_rev($B)= {:.3f}'.format(CYR, itax_rev2sa * 1e-9))", "print('{}_REFORM_DYNAMIC_itax_rev($B)= {:.3f}'.format(CYR, itax_rev2br * 1e-9))"]
+["    glabel = '[{:.8g}, {:.8g})'.format(grp_interval.left, grp_interval.right)", '    print(results.format(glabel, funits, grp_response, pct_response))', '    idx += 1', 'pct_response = 100. * tot_response / tot_baseline', "print(results.format('ALL', tot_funits, tot_response, pct_response))"]
 -------------------
 
