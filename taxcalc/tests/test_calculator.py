@@ -241,8 +241,8 @@ def test_make_calculator_increment_years_first(cps_subsample):
     irate2016 = irates[2016 - syr]
     std6 = std5 * (1.0 + irate2015)
     std7 = std6 * (1.0 + irate2016)
-    exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1500],
-                             [1550, 1200, 1200, 1550, 1550],
+    exp_STD_Aged = np.array([[1500, 1200, 1200, 1500, 1200],
+                             [1550, 1200, 1200, 1550, 1200],
                              [std5, std5, std5, std5, std5],
                              [std6, std6, std6, std6, std6],
                              [std7, std7, std7, std7, std7]])

@@ -300,7 +300,8 @@ def iterate_jit(parameters=None, **kwargs):
             wrapper function nested in make_wrapper function nested
             in iterate_jit decorator.
             """
-            if os.getenv('TESTING') == 'True': # os TESTING environment only accepts string arguments
+            # os TESTING environment only accepts string arguments
+            if os.getenv('TESTING') == 'True':
                 return func(*args, **kwargs)
 
             in_arrays = []
