@@ -83,8 +83,12 @@ Executing `tc` requires only two command-line arguments: the name of an input fi
 
 Here we explain how to conduct tax analysis with `tc` by presenting a series of examples and explaining what output is produced in each example. There are several types of output that `tc` can generate so there will be more than a few examples. The examples are numbered in order to make it easier to refer to different examples. All the examples assume that the input file is `test.csv`, which was mentioned earlier in this guide.
 
+## Examples
+
+**All examples presented below assume some `STARTYEAR`, which is the earliest year represented in the user's input file.**
+
 ```
-tc test.csv 2020
+tc test.csv 2020 STARTYEAR --aging
 ```
 
 This produces a minimal output file containing 2020 tax liabilities for each filing unit assuming the income amounts in the input file are amounts for 2020 and assuming current-law tax policy projected to 2020\. The name of the CSV-formatted output file is `test-20-#-#-#.csv`. The first `#` symbol indicates we did not specify a baseline file and the second `#` symbol indicates we did not specify a policy reform file and the third `#` symbol indicates we did not specify an economic assumption file.  
@@ -92,8 +96,26 @@ The variables included in the minimal output file include: `RECID` (of filing un
 
 Also, documentation of the reform is always written to a text file ending in `-doc.text`, which in this example would be named `test-20-#-#-#-doc.text`.
 
+
+
+
+````{admonition} Using weights and adjustment ratios
+The example provided above produces only a minimal output file. It does not utilize sample weights, blowup factors, or adjustment ratios. In order to produce a full output file using these three components, they must be specified. For simplicity, assume that our sample weights file is called `weights_file.csv` and our adjustment ratios file is called `adjustment_ratios_file.csv`. Then the command would be:
+
 ```
-tc test.csv 2020 --dump
+tc test.csv 2020 STARTYEAR weights_file.csv adjust_ratios_file.csv --aging
+```
+
+The `--aging` flag allows Tax-Calculator to extrapolate your data from the start year to the target year using any provided weights (and adjustment ratios). Without the `--aging` flag, Tax-Calculator will not extrapolate your data over time.
+
+For more information, refer to the documentation using the command `tc --help`. The following example commands on this page **do not have weights or adjustment ratios passed to them.**
+````
+
+
+
+
+```
+tc test.csv 2020 STARTYEAR --aging --dump
 ```
 
 This produces a much more complete output file with the same name `test-20-#-#-#.csv` as the minimal output file produced in example (1). No other output is generated other than the `test-20-#-#-#-doc.text` file. The `--dump` option causes **all** the input variables (including the ones understood by Tax-Calculator but not included in `test.csv`, which are all zero) and **all** the output variables calculated by Tax-Calculator to be included in the output file. For a complete list of input variables, see the [Input Variables](#input) section. For a complete list of output variables, see the [Output Variables](#output) section. Since Tax-Calculator ignores variables in the input file that are not in the Input Variables section, the dump output file in example (2) can be used as an input file and it will produce exactly the same tax liabilities (apart from rounding errors of one or two cents) as in the original dump output.
@@ -101,13 +123,13 @@ This produces a much more complete output file with the same name `test-20-#-#-#
 This full dump output can be useful for debugging and is small when using just a few filing units as input. But when using large samples as input (for example, the `cps.csv` input file), the size of the dump output becomes quite large. There is a way to specify a **partial dump** that includes only variables of interest. To have `tc` do a partial dump, create a text file that lists the names of the variables to be included in the partial dump. You can put the varible names on separate lines and/or put several names on one line separated by spaces. Then point to that file using the `--dvars` option. So, for example, if your list of dump variables is in a file named `mydumpvars`, a partial dump file is created this way:
 
 ```
-tc cps.csv 2020 --dump --dvars mydumpvars
+tc cps.csv 2020 STARTYEAR --aging --dump --dvars mydumpvars
 ```
 
 If there is no `--dvars` option, the `--dump` option produces a full dump.
 
 ```
-tc test.csv 2020 --sqldb
+tc test.csv 2020 STARTYEAR --aging --sqldb
 ```
 
 This produces the same dump output as example (2) except that the dump output is written not to a CSV-formatted file, but to the dump table in an SQLite3 database file, which is called `test-20-#-#-#.db` in this example. Because the `--dump` option is not used in example (3), minimal output will be written to the `test-20-#-#-#.csv` file. Note that use of the `--dvars` option causes the contents of the database file to be a partial dump.
@@ -115,7 +137,7 @@ This produces the same dump output as example (2) except that the dump output is
 Pros and cons of putting dump output in a CSV file or an SQLite3 database table: The CSV file is almost twice as large as the database, but it can be easily imported into a wide range of statistical packages. The main advantage of the SQLite3 database is that the Anaconda Python distribution includes [sqlite3](https://www.sqlite.org/cli.html) (or sqlite3.exe on Windows), a command-line tool that can be used to tabulate dump output using structured query language (SQL). SQL is a language that you use to specify the tabulation you want and the SQL database figures out the procedure for generating your tabulation and then executes that procedure; there is no computer programming involved. We illustrate SQL tabulation of dump output in a [subsequent section](#cli-tab-results).
 
 ```
-tc test.csv 2020 --dump --sqldb
+tc test.csv 2020 STARTYEAR --aging --dump --sqldb
 ```
 
 This shows that you can get dump output in the two different formats from a single `tc` run.
@@ -123,7 +145,7 @@ This shows that you can get dump output in the two different formats from a sing
 The remaining examples use neither the `--dump` nor the `--sqldb` option, and thus, produce minimal output for the reform. But either or both of those options could be used in all the subsequent examples to generate more complete output for the reform.
 
 ```
-tc test.csv 2021 --reform ref3.json
+tc test.csv 2021 STARTYEAR --aging --reform ref3.json
 ```
 
 This produces 2021 output for the filing units in the `test.csv` file using the policy reform specified in the `ref3.json` file. The name of the output file in this example is `test-21-#-ref3-#.csv` because no baseline or assumption options were specified.
@@ -131,13 +153,13 @@ This produces 2021 output for the filing units in the `test.csv` file using the 
 If, in addition to `ref3.json`, there was a `ref4.json` reform file and analysis of the **compound reform** (consisting of first implementing the `ref3.json` reform relative to current-law policy and then implementing the `ref4.json` reform relative to the `ref3.json` reform) is desired, both reform files can be mentioned in the `--reform` option as follows:
 
 ```
-tc test.csv 2021 --reform ref3.json+ref4.json
+tc test.csv 2021 STARTYEAR --aging --reform ref3.json+ref4.json
 ```
 
 The above command generates an output file named `test-21-#-ref3+ref4-#.csv`
 
 ```
-tc test.csv 2021 --reform ref3.json --assump res1.json
+tc test.csv 2021 STARTYEAR --aging --reform ref3.json --assump res1.json
 ```
 
 This produces 2021 output for the filing units in the `test.csv` file using the policy reform specified in the `ref3.json` file and the economic assumptions specified in the `eas1.json` file. The output results produced by this analysis are written to the `test-21-#-ref3-eas1.csv` file.
@@ -157,7 +179,7 @@ The following examples illustrate output options that work only if each filing u
 The output options illustrated in the following examples generate tables of the post-reform level and the reform-induced change in tax liability by income deciles as well as graphs of marginal and average tax rates and percentage change in aftertax income by income percentiles. These tables and graphs are meant to provide a quick glance at the impact of a reform. Any serious analysis of a reform will involve generating custom tables and graphs using [partial dump](#partdump) output. One of many examples of this sort of custom analysis is [here](https://www.washingtonpost.com/graphics/2017/business/tax-bill-calculator/?).
 
 ```
-$ tc cps.csv 2022 --reform ref3.json --tables
+$ tc cps.csv 2022 2014 --aging --reform ref3.json --tables
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2022.
 
@@ -205,7 +227,7 @@ Note that on Windows you would use `dir` instead of `ls` and `type` instead of `
 Also note that the tables above in example (7) include in the bottom decile some filing units who have negative or zero expanded income in the baseline. If you want tables that somehow exclude those filing units, use the `--dump` option and tabulate your own tables.
 
 ```
-$ tc cps.csv 2024 --reform ref3.json --graphs
+$ tc cps.csv 2024 2014 --aging --reform ref3.json --graphs
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2024.
 
@@ -235,13 +257,12 @@ There is yet another `tc` output option that writes to the screen results from a
 None of the above examples use the `--baseline` option, which means that baseline policy in those examples is current-law policy. The following example shows how to use the `--baseline` option to engage in counter-factual historical analysis. Suppose we want to analyze what would have happened if some alternative to TCJA had been enacted in late 2017\. To do this we need to have pre-TCJA policy be the baseline policy and we need to have the alternative reform be implemented relative to pre-TCJA policy. The following `tc` run does exactly that using a local copy of the [2017_law.json](https://github.com/PSLmodels/Tax-Calculator/blob/master/taxcalc/reforms/2017_law.json) <a>file and the `alt_reform.json` file containing the alternative reform defined relative to pre-TCJA law.
 
 ```
-$ tc cps.csv 2019 --baseline 2017_law.json --reform 2017_law.json+alt_reform.json
+$ tc cps.csv 2019 2014 --aging --baseline 2017_law.json --reform 2017_law.json+alt_reform.json
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2019.
 ```
 
-In all the examples in this section, we have executed one `tc` run at at time. 
-But **what if you want to execute many `tc` runs** because you want results for many years and/or for several different reforms.
+In all the examples in this section, we have executed one `tc` run at at time. **What if you want to execute many `tc` runs** because you want results for many years and/or for several different reforms?
 Unless you are asking for full-dump output, a single `tc` run should take no more than one minute on your computer (even if you are using the large `cps.csv` input file).
 The easiest way to speed up the execution of many `tc` runs is to split them into groups of runs and execute each group of runs in a different command-prompt window.
 On most modern computers that have four CPU cores and a fast disk drive, executing four runs in different windows will take not much more time than executing a single `tc` run.
@@ -266,7 +287,7 @@ This feature reduces substantially the amount of typing required to conduct
 exploratory data analysis.
 
 ```
-$ tc cps.csv 2016 --sqldb
+$ tc cps.csv 2016 2014 --aging --sqldb
 You loaded data for 2014.
 Tax-Calculator startup automatically extrapolated your data to 2016.
 

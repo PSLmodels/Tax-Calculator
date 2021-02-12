@@ -58,7 +58,8 @@ def cli_tc_main():
     parser.add_argument('STARTYEAR', nargs='?',
                         help=('STARTYEAR is the earliest calendar year where '
                               'tax units are present in the passed INPUT file.'),
-                        default=None)
+                        type=int,
+                        default=0)
     parser.add_argument('WEIGHTS', nargs='?',
                         help=('WEIGHTS is the name of CSV-formatted file that '
                               'contains weights.'),
@@ -86,8 +87,8 @@ def cli_tc_main():
                         default=None)
     parser.add_argument('--aging',
                         help=('AGING is flag to set whether or not to extrapolate '
-                        'the passed data to the Records object from data\'s given '
-                        'start year year to TAXYEAR'),
+                        'data passed to the Records object from the given '
+                        'STARTYEAR to TAXYEAR'),
                         default=False,
                         action="store_true")
     parser.add_argument('--exact',
