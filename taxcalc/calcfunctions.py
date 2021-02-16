@@ -31,118 +31,11 @@ def BenefitPrograms(calc):
 
     Parameters
     ----------
-    BEN_housing_repeal: boolean
-        Specifies whether housing benefits have been repealed
-        Default value is false
-    
-    housing_ben: float
-        Imputed housing benefits
-
-    BEN_ssi_repeal: boolean
-        Specifies whether SSI benefits have been repealed
-        Default value is false
-    
-    ssi_ben: float
-        Imputed SSI benefits
-
-    BEN_snap_repeal: boolean
-        Specifies whether SNAP benefits have been repealed
-        Default value is false
-    
-    snap_ben: float
-        Imputed SNAP benefits
-    
-    BEN_tanf_repeal: boolean
-        Specifies whether TANF benefits have been repealed
-        Default value is false
-    
-    tanf_ben: float
-        Imputed TANF benefits
-
-    BEN_vet_repeal: boolean
-        Specifies whether veterans benefits have been repealed
-        Default value is false
-    
-    vet_ben: float
-        Imputed Veteran's benefits
-
-    BEN_wic_repeal: boolean
-        Specifies whether WIC benefits have been repealed
-        Default value is false
-    
-    wic_ben: float
-        Imputed WIC benefits
-
-    BEN_mcare_repeal: boolean
-        Specifies whether Medicare benefits have been repealed
-        Default value is false
-    
-    mcare_ben: float
-        Imputed Medicare benefits expressed as the actuarial value of Medicare health insurance
-    
-    BEN_mcaid_repeal: boolean
-        Specifies whether Medicaid benefits have been repealed
-        Default value is false
-    
-    mcaid_ben: float
-        Imputed Medicaid benefits expressed as the actuarial value of Medicaid health insurance
-
-    BEN_oasdi_repeal: boolean
-        Specifies whether social security benefits (e02400) have been repealed
-        Default value is false
-
-    e02400: float
-        Total social security (OASDI) benefits
-
-    BEN_ui_repeal: boolean
-        Specifies whether unemployment insurance benefits (e02300) have been repealed 
-        Default value is false
-    
-    e02300: float
-        Unemployment insurance benefits
-
-    BEN_other_repeal: boolean
-        Specifies whether other benefits have been repealed
-        Default value is false
-
-    other_ben: float
-        Non-imputed benefits
-    
-    ubi: float
-        Universal Basic Income benefit for filing unit
-
-    BEN_housing_value:
-
-    
-    BEN_snap_value:
-
-
-    BEN_tanf_value:
-
-
-    BEN_vet_value:
-
-
-    BEN_wic_value:
-
-    
-    BEN_mcare_value:
-
-
-    BEN_mcaid_value:
-
-
-    BEN_other_value:
-
 
 
     Returns
     -------
-    benefit_cost_total: float
-        Government cost of all benefits received by tax unit
-
-    benefit_value_total: float
-        Consumption value of all benefits received by tax unti, which is included in expanced_income
+    
     """
     # zero out benefits delivered by repealed programs
     zero = np.zeros(calc.array_len)
@@ -277,34 +170,35 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Self-employment tax
     
     c03260: float
-        ???
+        Deductible part of self-employment tax
+        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax
     
     ptax_oasdi: float
         Employee and employer OASDI FICA tax plus self employment tax
         Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
     
     sey: float
-        ???
+        Total self-employment income for filing unit
     
     earned: float
-        ???
+        Earned income for filing unit
     
     earned_p: float
-        ???
+        Earned income for taxpayer
     
     earned_s: float
-        ???
+        Earned income for spouse
     
     was_plus_sey_p: float
-        ???
+        Wage and salary income plus taxable self employment income for taxpayer
     
     was_plus_sey_s: float
-        ???
+        Wage and salary income plus taxable self employment income for spouse
 
     Returns
     -------
     sey: float
-        ???
+        Total self-employment income for filing unit
     
     payrolltax: float
         Total (employee and employer) payroll tax liability 
@@ -317,26 +211,27 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Self-employment tax
     
     c03260: float
-        ???
+        Deductible part of self-employment tax
+        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax
     
     ptax_oasdi: float
         Employee and employer OASDI FICA tax plus self employment tax
         Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
     
     earned: float
-        ???
+        Earned income for filing unit
     
     earned_p: float
-        ???
+        Earned income for taxpayer
     
     earned_s: float
-        ???
+        Earned income for spouse
     
     was_plus_sey_p: float
-        ???
+        Wage and salary income plus taxable self employment income for taxpayer
     
     was_plus_sey_s: float
-        ???
+        Wage and salary income plus taxable self employment income for spouse
     """
     # compute sey and its individual components
     sey_p = e00900p + e02100p + k1bx14p
