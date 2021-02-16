@@ -311,18 +311,34 @@ def DependentCare(nu13, elderly_dependents, earned,
 
     Parameters
     ----------
-    nu13: Number of dependents under 13 years old
-    elderly_dependents: number of elderly dependents
-    earned: Form 2441 earned income amount
-    MARS: Marital Status
-    ALD_Dependents_thd: Maximum income to qualify for deduction
-    ALD_Dependents_hc: Deduction for dependent care haircut
-    ALD_Dependents_Child_c: National weighted average cost of childcare
-    ALD_Dependents_Elder_c: Eldercare deduction ceiling
+    nu13: int
+        Number of dependents under 13 years old
+
+    elderly_dependents: int
+        Number of elderly dependents age 65+ in filing unit excluding taxpayer and spouse
+
+    earned: float
+        Earned income for filing unit
+
+    MARS: Int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+
+    ALD_Dependents_thd: float
+        Maximum income to qualify for dependent care deduction
+
+    ALD_Dependents_hc: float
+        Deduction for childcare costs haircut
+
+    ALD_Dependents_Child_c: float
+        National weighted average cost of childcare, ceiling for available childcare deduction
+
+    ALD_Dependents_Elder_c: float
+        Eldercare deduction ceiling
 
     Returns
     -------
-    care_deduction: Total above the line deductions for dependent care.
+    care_deduction: float
+        Total above the line deductions for dependent care.
     """
 
     if earned <= ALD_Dependents_thd[MARS - 1]:
@@ -351,59 +367,84 @@ def Adj(e03150, e03210, c03260,
     -----
     Taxpayer characteristics:
 
-        e03210 : Student loan interest paid
+        e03210: float
+            Student loan interest paid
 
-        e03220 : Educator expenses
+        e03220: float
+            Educator expenses
 
-        e03150 : Total deductible IRA plan contributions
+        e03150: float
+            Total deductible IRA plan contributions
 
-        e03230 : Tuition and fees (Form 8917)
+        e03230: float
+            Tuition and fees (Form 8917)
 
-        e03240 : Domestic production activity deduction (Form 8903)
+        e03240: float
+            Domestic production activity deduction (Form 8903)
 
-        c03260 : Self-employment tax deduction (after haircut)
+        c03260: float
+            Self-employment tax deduction (after haircut)
 
-        e03270 : Self-employed health insurance premiums
+        e03270: float
+            Self-employed health insurance premiums
 
-        e03290 : HSA deduction (Form 8889)
+        e03290: float
+            HSA deduction (Form 8889)
 
-        e03300 : Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions
+        e03300: float
+            Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions
 
-        e03400 : Penalty on early withdrawal of savings deduction
+        e03400: float
+            Penalty on early withdrawal of savings deduction
 
-        e03500 : Alimony paid
+        e03500: float
+            Alimony paid
 
-        e00800 : Alimony received
+        e00800: float
+            Alimony received
 
-        care_deduction : Dependent care expense deduction
+        care_deduction: float
+            Dependent care expense deduction
 
     Tax law parameters:
 
-        ALD_StudentLoan_hc : Student loan interest deduction haircut
+        ALD_StudentLoan_hc: float
+            Student loan interest deduction haircut
 
-        ALD_SelfEmp_HealthIns_hc : Self-employed h.i. deduction haircut
+        ALD_SelfEmp_HealthIns_hc: float
+            Self-employed h.i. deduction haircut
 
-        ALD_KEOGH_SEP_hc : KEOGH/etc. plan contribution deduction haircut
+        ALD_KEOGH_SEP_hc: float
+            KEOGH/etc. plan contribution deduction haircut
 
-        ALD_EarlyWithdraw_hc : Penalty on early withdrawal deduction haricut
+        ALD_EarlyWithdraw_hc: float
+            Penalty on early withdrawal deduction haricut
 
-        ALD_AlimonyPaid_hc : Alimony paid deduction haircut
+        ALD_AlimonyPaid_hc: float
+            Alimony paid deduction haircut
 
-        ALD_AlimonyReceived_hc : Alimony received deduction haircut
+        ALD_AlimonyReceived_hc: float
+            Alimony received deduction haircut
 
-        ALD_EducatorExpenses_hc: Eductor expenses haircut
+        ALD_EducatorExpenses_hc: float
+            Eductor expenses haircut
 
-        ALD_HSADeduction_hc: HSA Deduction haircut
+        ALD_HSADeduction_hc: float
+            HSA Deduction haircut
 
-        ALD_IRAContributions_hc: IRA Contribution haircut
+        ALD_IRAContributions_hc: float
+            IRA Contribution haircut
 
-        ALD_DomesticProduction_hc: Domestic production haircut
+        ALD_DomesticProduction_hc: float
+            Domestic production haircut
 
-        ALD_Tuition_hc: Tuition and fees haircut
+        ALD_Tuition_hc: float
+            Tuition and fees haircut
 
     Returns
     -------
-    c02900 : total Form 1040 adjustments, which are not included in AGI
+    c02900: float
+        Total of all "above the line" income adjustments to get AGI
     """
     # Form 2555 foreign earned income exclusion is assumed to be zero
     # Form 1040 adjustments that are included in expanded income:
@@ -429,6 +470,37 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
                        invinc_ec_base):
     """
     Computes invinc_ec_base.
+    
+    Parameters
+    ----------
+    p22250: float
+        Net short-term capital gails/losses (Schedule D)
+
+    p23250: float
+        Net long-term capital gains/losses (Schedule D)
+
+    sep: int
+        2 when MARS is 3 (married filing separately); otherwise 1
+
+    e00300: float
+        Taxable interest income
+
+    e00600: float
+        Ordinar dividends included in AGI
+
+    e01100: float
+        Capital gains distributions not reported on Schedule D
+
+    e01200: float
+        Other net gain/loss from Form 4797
+
+    invinc_ec_base: float
+        Exclusion of investment income from AGI
+
+    Returns
+    -------
+    invinc_ec_base: float
+        Exclusion of investment income from AGI
     """
     # limitation on net short-term and long-term capital losses
     cgain = max((-3000. / sep), p22250 + p23250)
@@ -448,6 +520,133 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
     """
     CapGains function: ...
+    
+    Parameters
+    ----------
+    p23250: float
+        Net long-term capital gains/losses (Schedule D)
+    
+    p22250: float
+        Net short-term capital gails/losses (Schedule D)
+
+    sep: int
+        2 when MARS is 3 (married filing separately); otherwise 1
+
+    ALD_StudentLoan_hc: float
+        Student loan interest deduction haircut
+
+    ALD_InvInc_ec_rt: float
+        Investment income exclusion rate haircut
+
+    invinc_ec_base: float
+        Exclusion of investment income from AGI
+    
+    e00200: float
+        Wages, salaries, tips for filing unit net of pension contributions
+
+    e00300: float
+        Taxable interest income
+
+    e00600: float
+        Ordinary dividends included in AGI
+
+    e00650: float
+        Qualified dividends included in ordinary dividends
+
+    e00700: float
+        Taxable refunds of state and local income taxes
+
+    e00800: float
+        Alimony received
+
+    CG_nodiff: bool
+        Long term capital gains and qualified dividends taxed no differently than regular taxable income
+
+    CG_ec: float
+        Dollar amount of all capital gains and qualified dividends that are excluded from AGI
+
+    CG_reinvest_ec_rt: float
+        Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI
+
+    ALD_BusinessLosses_c: float
+        Maximm amount of business losses deductible
+
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+        
+    e00900: float
+        Schedule C business net profit/loss for filing unit
+
+    e01100: float
+        Capital gain distributions not reported on Schedule D
+
+    e01200: float
+        Other net gain/loss from Form 4797
+
+    e01400: float
+        Taxable IRA distributions
+
+    e01700: float
+        Taxable pensions and annunities
+
+    e02000: float
+        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)
+
+    e02100: float
+        Farm net income/loss for filing unit from Schedule F
+
+    e02300: float
+        Unemployment insurance benefits
+
+    e00400: float
+        Tax-exempt interest income
+
+    e02400: float
+        Total social security (OASDI) benefits
+
+    c02900: float
+        Total of all "above the line" income adjustments to get AGI
+
+    e03210: float
+        Student loan interest
+
+    e03230: float
+        Tuition and fees from Form 8917
+
+    e03240: float
+        Domestic production activities from Form 8903
+
+    c01000: float
+        Limitation on capital losses
+
+    c23650: float
+        Net capital gains (long and short term) before exclusion
+
+    ymod: float
+        Variable that is used in OASDI benefit taxation logic
+
+    ymod1: float
+        Variable that is included in AGI
+
+    invinc_agi_ec: float
+        Exclusion of investment income from AGI
+
+    Returns
+    -------
+    c01000: float
+        Limitation on capital losses
+
+    c23650: float
+        Net capital gains (long and short term) before exclusion
+
+    ymod: float
+        Variable that is used in OASDI benefit taxation logic
+
+    ymod1: float
+        Variable that is included in AGI
+
+    invinc_agi_ec: float
+        Exclusion of investment income from AGI
     """
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
@@ -480,6 +679,37 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2, c02500):
     """
     Calculates OASDI benefits included in AGI, c02500.
+    
+    Parameters
+    ----------
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+
+    ymod: float
+        Variable that is used in OASDI benefit taxation logic
+
+    e02400: float
+        Total social security (OASDI) benefits
+
+    SS_thd50: float
+        Threshold for social security benefit taxability (1)
+
+    SS_thd85: float
+        Threshold for social security benefit taxability (2)
+
+    SS_percentage1: float
+        Social security taxable income decimal fraction (1)
+
+    SS_percentage2: float
+        Social security taxable income decimal fraction (2)
+
+    c02500: float
+        Social security (OASDI) benefits included in AGI
+
+    Returns
+    -------
+    c02500: float
+        Social security (OASDI) benefits included in AGI
     """
     if ymod < SS_thd50[MARS - 1]:
         c02500 = 0.
@@ -501,27 +731,46 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
 
     Parameters
     ----------
-    nu18: Number of people in the tax unit under 18
+    nu18: int
+        Number of people in the tax unit under 18
 
-    n1820: Number of people in the tax unit age 18-20
+    n1820: int
+        Number of people in the tax unit age 18-20
 
-    n21: Number of people in the tax unit age 21+
+    n21: int
+        Number of people in the tax unit age 21+
 
-    UBI_u18: UBI benefit for those under 18
+    UBI_u18: float
+        UBI benefit for those under 18
 
-    UBI_1820: UBI benefit for those between 18 to 20
+    UBI_1820: float
+        UBI benefit for those between 18 to 20
 
-    UBI_21: UBI benefit for those 21 or more
+    UBI_21: float
+        UBI benefit for those 21 or more
 
-    UBI_ecrt: Fraction of UBI benefits that are not included in AGI
+    UBI_ecrt: float
+        Fraction of UBI benefits that are not included in AGI
+
+    ubi: float
+        Total UBI received by the tax unit (is included in expanded_income)
+
+    taxable_ubi: float
+        Amount of UBI that is taxable (is added to AGI)
+
+    nontaxable_ubi: float
+        Amount of UBI that is nontaxable
 
     Returns
     -------
-    ubi: total UBI received by the tax unit (is included in expanded_income)
+    ubi: float
+        Total UBI received by the tax unit (is included in expanded_income)
 
-    taxable_ubi: amount of UBI that is taxable (is added to AGI)
+    taxable_ubi: float
+        Amount of UBI that is taxable (is added to AGI)
 
-    nontaxable_ubi: amount of UBI that is nontaxable
+    nontaxable_ubi: float
+        Amount of UBI that is nontaxable
     """
     ubi = nu18 * UBI_u18 + n1820 * UBI_1820 + n21 * UBI_21
     taxable_ubi = ubi * (1. - UBI_ecrt)
@@ -536,6 +785,70 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
+
+    Parameters
+    ----------
+    ymod1: float
+        Variable that is included in AGI
+
+    c02500: float
+        Social security (OASDI) benefits included in AGI
+
+    c02900: float
+        Total of all "above the line" income adjustments to get AGI
+
+    XTOT: int
+        Total number of exemptions for filing unit
+
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+
+    sep: int
+        2 when MARS is 3 (married filing separately); otherwise 1
+
+    DSI: int
+        1 if claimed as dependent on another return; otherwise 0
+
+    exact: int
+        Whether or not to do rounding of phaseout fraction
+
+    nu18: int
+        Number of people in the tax unit under 18
+
+    taxable_ubi: float
+        Amount of UBI that is taxable (is added to AGI)
+
+    II_em: float
+        Personal and dependent exemption amount
+
+    II_em_ps: float
+        Personal exemption phaseout starting income
+
+    II_prt: float
+        Personal exemption phaseout rate
+
+    II_no_em_nu18: bool
+        Repeal personal exemtptions for dependents under age 18
+        
+    c00100: float
+        Adjusted Gross Income (AGI)
+
+    pre_c04600: float
+        Personal exemption before phase-out
+
+    c04600: float
+        Personal exemptions after phase-out
+
+    Returns
+    -------
+    c00100: float
+        Adjusted Gross Income (AGI)
+
+    pre_c04600: float
+        Personal exemption before phase-out
+
+    c04600: float
+        Personal exemptions after phase-out
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
