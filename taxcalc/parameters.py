@@ -16,9 +16,13 @@ from taxcalc.utils import json_to_dict
 class CompatibleDataSchema(ma.Schema):
     """
     Schema for Compatible data object
-    {
-        "compatible_data": {"data1": bool, "data2": bool, ...}
-    }
+
+    .. code-block :: json
+
+        {
+            "compatible_data": {"puf": true, "cps": false}
+        }
+
     """
 
     puf = ma.fields.Boolean()
@@ -33,24 +37,36 @@ pt.register_custom_type(
 
 class Parameters(pt.Parameters):
     """
-    Base Parameters class that wraps ParamTools, providing parameter indexing
-    for tax policy in the adjust method and backwards-compatible preserving
-    layer that supports Tax-Calculator's conventional reform formatting style
-    as well as convenience methods like set_Year for classes operating on this
-    one.
+    Base class that wraps ParamTools, providing parameter indexing
+    for tax policy in the ``adjust`` method and convenience methods
+    like ``set_year`` for classes inheriting from it. It also provides
+    a backwards-compatible layer for Tax-Calculator versions prior to 3.0.
 
     The defaults file path may be set through the defaults class attribute
-    variable or through the old DEFAULTS_FILE_NAME/DEFAULTS_FILE_PATH work
-    flow.
+    variable or through the ``DEFAULTS_FILE_NAME`` /
+    ``DEFAULTS_FILE_PATH work`` flow.
 
     A custom getter method is implemented so that the value of a parameter
     over all allowed years can conveniently be retrieved by adding an
-    underscore before the variable name (e.g. EITC_c vs _EITC_c).
+    underscore before the variable name (e.g. ``EITC_c`` vs ``_EITC_c``).
 
-    Note: Like all pt.Parameters classes the values of attributes
-    corresponding to a parameter value on this class are ephemeral and the only
-    way to make permanent changes to this class'sstate is through the set_state
-    or adjust methods.
+    This class inherits methods from ParamTools like ``items``:
+
+        .. code-block :: python
+
+            import taxcalc as tc
+            pol = tc.Policy()
+
+            for name, value in pol.items():
+                print(name, value)
+
+            # parameter_indexing_CPI_offset [0.]
+            # FICA_ss_trt [0.124]
+            # SS_Earnings_c [113700.]
+
+    Check out the ParamTools
+    `documentation <https://paramtools.dev/api/reference.html>`_
+    for more information on these inherited methods.
 
     """
     defaults = None
@@ -112,27 +128,64 @@ class Parameters(pt.Parameters):
             if param != "schema"
         }
 
-    def adjust(self, params_or_path, print_warnings=True, **kwargs):
+    def adjust(
+        self, params_or_path, print_warnings=True, raise_errors=True, **kwargs
+    ):
         """
-        Implements custom warning and error handling.
+        Update parameter values using a ParamTools styled adjustment.
 
-        If print_warnings is True, warnings are printed out and if
-        print_warnings is False, nothing is printed.
+        Parameters
+        ----------
+        params_or_path : Dict, str
+            New parameter values in the paramtools format. For example:
 
-        ParamTools throws an error if a warning is triggered and
-        ignore_warnings is False. This method circumvents this behavior.
-        """
+            .. code-block:: json
+
+                {
+                    "standard_deduction": [
+                        {"year": 2024, "marital_status": "single", "value": 10000.0},
+                        {"year": 2024, "marital_status": "joint", "value": 10000.0}
+                    ],
+                    "ss_rate": [{"year": 2024, "value": 0.2}]}
+                }
+
+        print_warnings : Boolean
+            Print parameter warnings or not
+        raise_errors: Boolean
+            Raise errors as a ValidationError. If False, they will be stored
+            in the errors attribute.
+
+
+        Returns
+        -------
+        adjustment : Dict
+            Parsed paremeter dictionary
+
+        """  # noqa
         if print_warnings:
             _data = copy.deepcopy(self._data)
             kwargs["ignore_warnings"] = False
         else:
             kwargs["ignore_warnings"] = True
         self._warnings = {}
+        self._errors = {}
         try:
-            return self.adjust_with_indexing(params_or_path, **kwargs)
+            # Wrap all updates in adjust_with_indexing in a transaction and
+            # defer related-parameter validation until all intermediate updates
+            # are complete.
+            with self.transaction(
+                defer_validation=True,
+                raise_errors=True,
+                ignore_warnings=kwargs["ignore_warnings"],
+            ):
+                return self.adjust_with_indexing(
+                    params_or_path, raise_errors=True, **kwargs
+                )
         except pt.ValidationError as ve:
-            if self.errors:
+            if self.errors and raise_errors:
                 raise ve
+            elif self.errors and not raise_errors:
+                return {}
             if print_warnings:
                 print("WARNING:")
                 print(self.warnings)
@@ -141,51 +194,60 @@ class Parameters(pt.Parameters):
             _warnings = copy.deepcopy(self._warnings)
             self._warnings = {}
             self._errors = {}
-            adjustment = self.adjust_with_indexing(params_or_path, **kwargs)
+            adjustment = self.adjust_with_indexing(
+                params_or_path, raise_errors=True, **kwargs
+            )
             self._warnings = _warnings
             return adjustment
 
     def adjust_with_indexing(self, params_or_path, **kwargs):
         """
-        Custom adjust method that handles special indexing logic. The logic
-        is:
+        Adjust parameter values with the following indexing logic:
 
         1. If "parameter_indexing_CPI_offset" is adjusted, first set
-        parameter_indexing_CPI_offset to zero before implementing the
-        adjusted parameter_indexing_CPI_offset to avoid stacking adjustments.
-        Then, revert all values of indexed parameters to the 'known' values:
+           parameter_indexing_CPI_offset to zero before implementing the
+           adjusted parameter_indexing_CPI_offset to avoid stacking
+           adjustments. Then, revert all values of indexed parameters to
+           the 'known' values:
+
             a. The current values of parameters that are being adjusted are
-                deleted after the first year in which
-                parameter_indexing_CPI_offset is adjusted.
+               deleted after the first year in which
+               parameter_indexing_CPI_offset is adjusted.
             b. The current values of parameters that are not being adjusted
-                (i.e. are not in params) are deleted after the last known year,
-                with the exception of parameters that revert to their pre-TCJA
-                values in 2026. Instead, these (2026) parameter values are
-                recalculated using the new inflation rates.
+               (i.e. are not in params) are deleted after the last known year,
+               with the exception of parameters that revert to their pre-TCJA
+               values in 2026. Instead, these (2026) parameter values are
+               recalculated using the new inflation rates.
+
             After the 'unknown' values have been deleted, the last known value
             is extrapolated through the budget window. If there are indexed
             parameters in the adjustment, they will be included in the final
             adjustment call (unless their indexed status is changed).
+
         2. If the "indexed" status is updated for any parameter:
+
             a. If a parameter has values that are being adjusted before
-                the indexed status is adjusted, update those parameters first.
+               the indexed status is adjusted, update those parameters first.
             b. Extend the values of that parameter to the year in which
-                the status is changed.
+               the status is changed.
             c. Change the indexed status for the parameter.
             d. Update parameter values in adjustment that are adjusted after
-                the year in which the indexed status changes.
+               the year in which the indexed status changes.
             e. Using the new "-indexed" status, extend the values of that
-                parameter through the remaining years or until the -indexed
-                status changes again.
+               parameter through the remaining years or until the -indexed
+               status changes again.
+
         3. Update all parameters that are not indexing related, i.e. they are
-            not "parameter_indexing_CPI_offset" or do not end with "-indexed".
+           not "parameter_indexing_CPI_offset" or do not end with "-indexed".
+
         4. Return parsed adjustment with all adjustments, including "-indexed"
-            parameters.
+           parameters.
 
         Notable side-effects:
-            - All values of a parameter whose indexed status is adjusted are
-              wiped out after the year in which the value is adjusted for the
-              same hard-coding reason.
+
+        - All values of a parameter whose indexed status is adjusted are
+          wiped out after the year in which the value is adjusted for the
+          same hard-coding reason.
         """
         # Temporarily turn off extra ops during the intermediary adjustments
         # so that expensive and unnecessary operations are not run.
@@ -219,8 +281,9 @@ class Parameters(pt.Parameters):
                 key=lambda vo: vo["year"]
             )
 
-            rate_adjustment_vals = self.select_gte(
-                "parameter_indexing_CPI_offset", year=cpi_min_year["year"]
+            rate_adjustment_vals = (
+                self.sel["parameter_indexing_CPI_offset"]["year"]
+                >= cpi_min_year["year"]
             )
             # "Undo" any existing parameter_indexing_CPI_offset for
             # years after parameter_indexing_CPI_offset has
@@ -249,13 +312,12 @@ class Parameters(pt.Parameters):
                 if param.endswith("-indexed"):
                     param = param.split("-indexed")[0]
                 if self._data[param].get("indexed", False):
-                    init_vals[param] = pt.select_lte(
-                        self._init_values[param],
-                        True,
-                        {"year": cpi_min_year["year"]},
+                    init_vals[param] = (
+                        self.sel[self._init_values[param]]["year"]
+                        <= cpi_min_year["year"]
                     )
-                    to_delete[param] = self.select_gt(
-                        param, year=cpi_min_year["year"]
+                    to_delete[param] = (
+                        self.sel[param]["year"] > cpi_min_year["year"]
                     )
                     needs_reset.append(param)
             self.delete(to_delete, **kwargs)
@@ -290,7 +352,7 @@ class Parameters(pt.Parameters):
                 # only revert param in 2026 if it's not in revision
                 if params.get(param) is None:
                     # grab param values from 2017
-                    vos = self.select_eq(param, year=pyear)
+                    vos = self.sel[param]["year"] == pyear
                     # use final_ifactor to inflate from 2017 to 2026
                     for vo in vos:
                         long_param_vals[param].append(
@@ -315,14 +377,11 @@ class Parameters(pt.Parameters):
                 ):
                     continue
                 if self._data[param].get("indexed", False):
-                    init_vals[param] = pt.select_lte(
-                        self._init_values[param],
-                        True,
-                        {"year": last_known_year}
+                    init_vals[param] = (
+                        self.sel[self._init_values[param]]['year']
+                        <= last_known_year
                     )
-                    to_delete[param] = self.select_eq(
-                        param, strict=True, _auto=True
-                    )
+                    to_delete[param] = self.sel[param]["_auto"] == True  # noqa
                     needs_reset.append(param)
 
             self.delete(to_delete, **kwargs)
@@ -362,20 +421,17 @@ class Parameters(pt.Parameters):
                 # was changed.
                 if base_param in params:
                     min_index_change_year = min(indexed_changes.keys())
-                    vos = pt.select_lt(
-                        params[base_param],
-                        False,
-                        {"year": min_index_change_year},
+                    vos = self.sel[params[base_param]]["year"].lt(
+                        min_index_change_year, strict=False
                     )
-                    if vos:
+
+                    if len(list(vos)):
                         min_adj_year = min(vos, key=lambda vo: vo["year"])[
                             "year"
                         ]
                         self.delete(
                             {
-                                base_param: self.select_gt(
-                                    base_param, year=min_adj_year
-                                )
+                                base_param: self.sel[base_param]["year"] > min_adj_year  # noqa
                             }
                         )
                         super().adjust({base_param: vos}, **kwargs)
@@ -392,7 +448,7 @@ class Parameters(pt.Parameters):
                     # Get and delete all default values after year where
                     # indexed status changed.
                     self.delete(
-                        {base_param: self.select_gt(base_param, year=year)}
+                        {base_param: self.sel[base_param]["year"] > year}
                     )
 
                     # 2.b Extend values for this parameter to the year where
@@ -412,8 +468,8 @@ class Parameters(pt.Parameters):
                     # 2.d Adjust with values greater than or equal to current
                     # year in params
                     if base_param in params:
-                        vos = pt.select_gte(
-                            params[base_param], False, {"year": year}
+                        vos = self.sel[params[base_param]]["year"].gte(
+                            year, strict=False
                         )
                         super().adjust({base_param: vos}, **kwargs)
 
@@ -495,29 +551,33 @@ class Parameters(pt.Parameters):
 
     def _update(self, revision, print_warnings, raise_errors):
         """
-        A translation layer on top of Parameters.adjust. Projects
-        that have historically used the `_update` method with
+        A translation layer on top of ``adjust``. Projects
+        that have historically used the ``_update`` method with
         Tax-Calculator styled adjustments can continue to do so
         without making any changes to how they handle adjustments.
 
         Converts reforms that are compatible with Tax-Calculator:
 
-        adjustment = {
-            "standard_deduction": {2024: [10000.0, 10000.0]},
-            "ss_rate": {2024: 0.2}
-        }
+        .. code-block:: python
+
+            adjustment = {
+                "standard_deduction": {2024: [10000.0, 10000.0]},
+                "ss_rate": {2024: 0.2}
+            }
 
         into reforms that are compatible with ParamTools:
 
-        {
-            'standard_deduction': [
-                {'year': 2024, 'marital_status': 'single', 'value': 10000.0},
-                {'year': 2024, 'marital_status': 'joint', 'value': 10000.0}
-            ],
-            'ss_rate': [{'year': 2024, 'value': 0.2}]}
-        }
+        .. code-block:: python
 
-        """
+            {
+                "standard_deduction": [
+                    {"year": 2024, "marital_status": "single", "value": 10000.0},
+                    {"year": 2024, "marital_status": "joint", "value": 10000.0}
+                ],
+                "ss_rate": [{"year": 2024, "value": 0.2}]}
+            }
+
+        """  # noqa: E501
         if not isinstance(revision, dict):
             raise pt.ValidationError(
                 {"errors": {"schema": "Revision must be a dictionary."}},
@@ -693,7 +753,7 @@ class Parameters(pt.Parameters):
                 raise ValueError("topkey string is empty.")
             if isinstance(obj, str):
                 if obj == '':
-                    raise ValueError("obj string is empty.")    
+                    raise ValueError("obj string is empty.")
                 elif obj.endswith('.json') and not os.path.isfile(obj):
                     raise FileNotFoundError("The .json file does not exist.")
                 elif ("{" and "}") in obj:
@@ -735,8 +795,9 @@ class Parameters(pt.Parameters):
 
     def __getattr__(self, attr):
         """
-        Allows the user to get the value of a parameter over all years,
-        not just the ones that are active.
+        Get the value of a parameter over all years by accessing it
+        with an underscore in front of its name: ``pol._EITC_c`` instead of
+        ``pol.EITC_c``.
         """
         if (
             attr.startswith("_") and

@@ -9,10 +9,12 @@ import pytest
 # convert all numpy warnings into errors so they can be detected in tests
 numpy.seterr(all='raise')
 
+
 @pytest.fixture
 def skip_jit(monkeypatch):
     monkeypatch.setenv("TESTING", "True")
     yield
+
 
 @pytest.fixture(scope='session')
 def tests_path():

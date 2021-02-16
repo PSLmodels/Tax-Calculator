@@ -1028,12 +1028,11 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
-           e02100, e27200, e00650, c01000,
-           PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
-           PT_qbid_rt, PT_qbid_taxinc_thd, PT_qbid_taxinc_gap,
-           PT_qbid_w2_wages_rt, PT_qbid_alt_w2_wages_rt,
-           PT_qbid_alt_property_rt, PT_qbid_limit_switch,
-           c04800, qbided):
+           e02100, e27200, e00650, c01000, PT_SSTB_income,
+           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
+           PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
+           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
+           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1085,6 +1084,12 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
         net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
+
+        # apply qbid phaseout
+        if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
+            excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
+            qbided = max(0., qbided - PT_qbid_prt * excess)
+
     # calculate taxable income after qualified business income deduction
     c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
@@ -1247,7 +1252,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
         # break in worksheet lines
-        dwks33 = min(dwks9, e24518)
+        dwks33 = min(dwks9, e24515)
         dwks34 = dwks10 + dwks19
         dwks36 = max(0., dwks34 - dwks1)
         dwks37 = max(0., dwks33 - dwks36)
