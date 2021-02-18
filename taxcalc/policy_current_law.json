@@ -2104,7 +2104,7 @@
     },
     "STD_allow_charity_ded_nonitemizers": {
         "title": "Allow standard deduction filers to take the charitable contributions deduction",
-        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.",
+        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.",
         "notes": "",
         "section_1": "",
         "section_2": "",
@@ -2115,11 +2115,53 @@
             {
                 "year": 2013,
                 "value": false
+            },
+            {
+                "year": 2020,
+                "value": false
+            },
+            {
+                "year": 2021,
+                "value": false
             }
         ],
         "validators": {
             "range": {
                 "min": false,
+                "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "STD_charity_ded_nonitemizers_max": {
+        "title": "Ceiling amount (in dollars) for charitable deductions for non-itemizers",
+        "description": "Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
                 "max": true
             }
         },
