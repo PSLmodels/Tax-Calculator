@@ -31,11 +31,13 @@ def BenefitPrograms(calc):
 
     Parameters
     ----------
-
+    calc: calculator object
+        calc represents the reform while self represents the baseline
 
     Returns
     -------
-    
+    None:
+        The function modifies calc
     """
     # zero out benefits delivered by repealed programs
     zero = np.zeros(calc.array_len)
@@ -320,7 +322,7 @@ def DependentCare(nu13, elderly_dependents, earned,
     earned: float
         Earned income for filing unit
 
-    MARS: Int
+    MARS: int
         Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
 
     ALD_Dependents_thd: float
@@ -363,83 +365,79 @@ def Adj(e03150, e03210, c03260,
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
-    Notes
+    Parameters
     -----
-    Taxpayer characteristics:
+    e03210: float
+        Student loan interest paid
 
-        e03210: float
-            Student loan interest paid
+    e03220: float
+        Educator expenses
 
-        e03220: float
-            Educator expenses
+    e03150: float
+        Total deductible IRA plan contributions
 
-        e03150: float
-            Total deductible IRA plan contributions
+    e03230: float
+        Tuition and fees (Form 8917)
 
-        e03230: float
-            Tuition and fees (Form 8917)
+    e03240: float
+        Domestic production activity deduction (Form 8903)
 
-        e03240: float
-            Domestic production activity deduction (Form 8903)
+    c03260: float
+        Self-employment tax deduction (after haircut)
 
-        c03260: float
-            Self-employment tax deduction (after haircut)
+    e03270: float
+        Self-employed health insurance premiums
 
-        e03270: float
-            Self-employed health insurance premiums
+    e03290: float
+        HSA deduction (Form 8889)
 
-        e03290: float
-            HSA deduction (Form 8889)
+    e03300: float
+        Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions
 
-        e03300: float
-            Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions
+    e03400: float
+        Penalty on early withdrawal of savings deduction
 
-        e03400: float
-            Penalty on early withdrawal of savings deduction
+    e03500: float
+        Alimony paid
 
-        e03500: float
-            Alimony paid
+    e00800: float
+        Alimony received
 
-        e00800: float
-            Alimony received
+    care_deduction: float
+        Dependent care expense deduction
 
-        care_deduction: float
-            Dependent care expense deduction
+    ALD_StudentLoan_hc: float
+        Student loan interest deduction haircut
 
-    Tax law parameters:
+    ALD_SelfEmp_HealthIns_hc: float
+        Self-employed h.i. deduction haircut
 
-        ALD_StudentLoan_hc: float
-            Student loan interest deduction haircut
+    ALD_KEOGH_SEP_hc: float
+        KEOGH/etc. plan contribution deduction haircut
 
-        ALD_SelfEmp_HealthIns_hc: float
-            Self-employed h.i. deduction haircut
+    ALD_EarlyWithdraw_hc: float
+        Penalty on early withdrawal deduction haricut
 
-        ALD_KEOGH_SEP_hc: float
-            KEOGH/etc. plan contribution deduction haircut
+    ALD_AlimonyPaid_hc: float
+        Alimony paid deduction haircut
 
-        ALD_EarlyWithdraw_hc: float
-            Penalty on early withdrawal deduction haricut
+    ALD_AlimonyReceived_hc: float
+        Alimony received deduction haircut
 
-        ALD_AlimonyPaid_hc: float
-            Alimony paid deduction haircut
+    ALD_EducatorExpenses_hc: float
+        Eductor expenses haircut
 
-        ALD_AlimonyReceived_hc: float
-            Alimony received deduction haircut
+    ALD_HSADeduction_hc: float
+        HSA Deduction haircut
 
-        ALD_EducatorExpenses_hc: float
-            Eductor expenses haircut
+    ALD_IRAContributions_hc: float
+        IRA Contribution haircut
 
-        ALD_HSADeduction_hc: float
-            HSA Deduction haircut
+    ALD_DomesticProduction_hc: float
+        Domestic production haircut
 
-        ALD_IRAContributions_hc: float
-            IRA Contribution haircut
-
-        ALD_DomesticProduction_hc: float
-            Domestic production haircut
-
-        ALD_Tuition_hc: float
-            Tuition and fees haircut
+    ALD_Tuition_hc: float
+        Tuition and fees haircut
 
     Returns
     -------
