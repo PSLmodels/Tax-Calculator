@@ -29,6 +29,11 @@ jobs:
           pip install -e .
           pip install pytest-cov
           pip install pytest-pycodestyle
+      - name: Build test data
+        shell: bash -l {0}
+        working-directory: ./taxcalc/
+        run: |
+          python generate_test_data.py
       - name: Test
         shell: bash -l {0}
         working-directory: ./
