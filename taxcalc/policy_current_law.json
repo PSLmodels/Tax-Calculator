@@ -2162,7 +2162,7 @@
         "validators": {
             "range": {
                 "min": 0.0,
-                "max": true
+                "max": 9e99
             }
         },
         "compatible_data": {
