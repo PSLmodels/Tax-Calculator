@@ -879,50 +879,90 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     """
     Applies a cap to gross itemized deductions.
 
-    Notes
-    -----
-    Tax Law Parameters:
-        ID_AmountCap_Switch : Indicator for which itemized deductions are
-                              capped
-        ID_AmountCap_rt : Cap on itemized deductions; decimal fraction of AGI
+    Parameters
+    ----------
+    e17500: float
+        Itemizable medical and dental expenses
 
-    Taxpayer Characteristics:
-        e17500 : Medical expenses
+    e18400: float
+        Itemizable state and local income/sales taxes
 
-        e18400 : State and local taxes
+    e18500: float
+        Itemizable real-estate taxes paid
 
-        e18500 : Real-estate taxes
+    e19200: float
+        Itemizable interest paid
 
-        e19200 : Interest paid
+    e19800: float
+        Itemizable charitable giving: cash/check contributions
 
-        e19800 : Charity cash contributions
+    e20100: float
+        Itemizable charitalb giving: other than cash/check contributions
 
-        e20100 : Charity noncash contributions
+    e20400: float
+        Itemizable gross (before 10% AGI disregard) causalty or theft loss
 
-        e20400 : Total miscellaneous expenses
+    g20500: float
+        Itemizable gross (before 10% AGI disregard) causalty or theft loss
 
-        g20500 : Gross casualty or theft loss (before disregard)
+    c00100: float
+        Adjusted gross income (AGI)
 
-        c00100: Adjusted Gross Income
+    ID_AmountCap_rt: float
+        Ceiling on the gross amount of itemized deductions allowed; decimal fraction of AGI
 
+    ID_AmountCap_Switch: bool
+        Deductions subject to the cap on itemized deduction benefits
+
+    e17500_capped: float
+        Schedule A: medical expenses, capped as a decimal fraction of AGI
+
+    e18400_capped: float
+        Schedule A: state and local income taxes deductlbe, capped as a decimal fraction of AGI
+
+    e18500_capped: float
+        Schedule A: state and local real estate taxes deductible, capped as a decimal fraction of AGI
+
+    e19200_capped: float
+        Schedule A: interest deduction deductible, capped as decimal fraction of AGI
+
+    e19800_capped: float
+        Schedule A: charity cash contributions deductible, capped as a decimal fraction of AGI
+
+    e20100_capped: float
+        Schedule A: charity noncash contributions deductible, capped as a decimal fraction of AGI
+
+    e20400_capped: float
+        Schedule A: gross miscellaneous deductions deductible, capped as a decimal fraction of AGI
+
+    g20500_capped: float
+        Schedule A: gross causalty or theft loss deductible, capped as a decimal fraction of AGI
+    
     Returns
     -------
-        e17500_capped: Medical expenses, capped by ItemDedCap
+    e17500_capped: float
+        Schedule A: medical expenses, capped as a decimal fraction of AGI
 
-        e18400_capped: State and local taxes, capped by ItemDedCap
+    e18400_capped: float
+        Schedule A: state and local income taxes deductlbe, capped as a decimal fraction of AGI
 
-        e18500_capped : Real-estate taxes, capped by ItemDedCap
+    e18500_capped: float
+        Schedule A: state and local real estate taxes deductible, capped as a decimal fraction of AGI
 
-        e19200_capped : Interest paid, capped by ItemDedCap
+    e19200_capped: float
+        Schedule A: interest deduction deductible, capped as decimal fraction of AGI
 
-        e19800_capped : Charity cash contributions, capped by ItemDedCap
+    e19800_capped: float
+        Schedule A: charity cash contributions deductible, capped as a decimal fraction of AGI
 
-        e20100_capped : Charity noncash contributions, capped by ItemDedCap
+    e20100_capped: float
+        Schedule A: charity noncash contributions deductible, capped as a decimal fraction of AGI
 
-        e20400_capped : Total miscellaneous expenses, capped by ItemDedCap
+    e20400_capped: float
+        Schedule A: gross miscellaneous deductions deductible, capped as a decimal fraction of AGI
 
-        g20500_capped : Gross casualty or theft loss (before disregard),
-                        capped by ItemDedCap
+    g20500_capped: float
+        Schedule A: gross causalty or theft loss deductible, capped as a decimal fraction of AGI
     """
     # pylint: disable=too-many-branches
 
@@ -993,86 +1033,188 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     """
     Calculates itemized deductions, Form 1040, Schedule A.
 
-    Notes
-    -----
-    Tax Law Parameters:
-        ID_ps : Itemized deduction phaseout AGI start (Pease)
+    Parameters
+    ----------
+    e17500_capped: float
+        Schedule A: medical expenses, capped as a decimal fraction of AGI
 
-        ID_crt : Itemized deduction maximum phaseout
-                 as a decimal fraction of total itemized deduction (Pease)
+    e18400_capped: float
+        Schedule A: state and local income taxes deductlbe, capped as a decimal fraction of AGI
 
-        ID_prt : Itemized deduction phaseout rate (Pease)
+    e18500_capped: float
+        Schedule A: state and local real estate taxes deductible, capped as a decimal fraction of AGI
 
-        ID_c: Dollar limit on itemized deductions
+    e19200_capped: float
+        Schedule A: interest deduction deductible, capped as decimal fraction of AGI
 
-        ID_Medical_frt : Deduction for medical expenses;
-                         floor as a decimal fraction of AGI
+    e19800_capped: float
+        Schedule A: charity cash contributions deductible, capped as a decimal fraction of AGI
 
-        ID_Medical_frt_add4aged : Addon for medical expenses deduction for
-                                  elderly; addon as a decimal fraction of AGI
+    e20100_capped: float
+        Schedule A: charity noncash contributions deductible, capped as a decimal fraction of AGI
 
-        ID_Casualty_frt : Deduction for casualty loss;
-                          floor as a decimal fraction of AGI
+    e20400_capped: float
+        Schedule A: gross miscellaneous deductions deductible, capped as a decimal fraction of AGI
 
-        ID_Miscellaneous_frt : Deduction for miscellaneous expenses;
-                               floor as a decimal fraction of AGI
+    g20500_capped: float
+        Schedule A: gross causalty or theft loss deductible, capped as a decimal fraction of AGI
 
-        ID_Charity_crt_all : Deduction for all charitable contributions;
-                             ceiling as a decimal fraction of AGI
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
 
-        ID_Charity_crt_noncash : Deduction for noncash charitable
-                                 contributions; ceiling as a decimal
-                                 fraction of AGI
+    age_head: int
+        Age in years of taxpayer
 
-        ID_Charity_frt : Disregard for charitable contributions;
-                         floor as a decimal fraction of AGI
+    age_spouse: int
+        Age in years of spouse
 
-        ID_Medical_c : Ceiling on medical expense deduction
+    c00100: float
+        Adjusted gross income (AGI)
 
-        ID_StateLocalTax_c : Ceiling on state and local tax deduction
+    c04470: float
+        Itemized deductions after phase out (0 for non itemizers)
 
-        ID_RealEstate_c : Ceiling on real estate tax deduction
+    c21040: float
+        Itemized deductions that are phased out
 
-        ID_AllTaxes_c: Ceiling combined state and local income/sales and
-                       real estate tax deductions
+    c21060: float
+        Itemized deductions before phase out (0 for non itemizers)
 
-        ID_InterestPaid_c : Ceiling on interest paid deduction
+    c17000: float
+        Schedule A: medical expenses deducted
 
-        ID_Charity_c : Ceiling on charity expense deduction
+    c18300: float
+        Schedule A: state and local taxes plus real estate taxes deducted
 
-        ID_Charity_f: Floor on charity expense deduction
+    c19200: float
+        Schedule A: interest deducted
 
-        ID_Casualty_c : Ceiling on casuality expense deduction
+    c19700: float
+        Schedule A: charity contributions deducted
 
-        ID_Miscellaneous_c : Ceiling on miscellaneous expense deduction
+    c20500: float
+        Schedule A: net causalty or theft loss deducted
 
-        ID_StateLocalTax_crt : Deduction for state and local taxes;
-                               ceiling as a decimal fraction of AGI
+    c20800: float
+        Schedule A: net limited miscellaneous deductions deducted
 
-        ID_RealEstate_crt : Deduction for real estate taxes;
-                            ceiling as a decimal fraction of AGI
+    ID_ps: float
+        Itemized deduction phaseout AGI start
 
-    Taxpayer Characteristics:
-        e17500_capped : Medical expenses, capped by ItemDedCap
+    ID_Medical_frt: float
+        Floor (as decimal fraction of AGI) for deductible medical expenses
 
-        e18400_capped : State and local taxes, capped by ItemDedCap
+    ID_Medical_frt_add4aged: float
+        Add on floor (as decimal fraction of AGI) for deductible medical expenses for elderly filing units
 
-        e18500_capped : Real-estate taxes, capped by ItemDedCap
+    ID_Medical_hc: float
+        Medical expense deduction haircut
 
-        e19200_capped : Interest paid, capped by ItemDedCap
+    ID_Casualty_frt: float
+        Floor (as decimal fraction of AGI) for deductible causality loss
 
-        e19800_capped : Charity cash contributions, capped by ItemDedCap
+    ID_Casualty_hc: float
+        Casualty expense deduction haircut
 
-        e20100_capped : Charity noncash contributions, capped by ItemDedCap
+    ID_Miscellaneous_frt: float
+        Floor (as decimal fraction of AGI) for deductible miscellaneous expenses
 
-        e20400_capped : Total miscellaneous expenses, capped by ItemDedCap
+    ID_Miscellaneous_hc: float
+        Miscellaneous expense deduction haircut
 
-        g20500_capped : Gross casualty or theft loss (before disregard),
-                        capped by ItemDedCap
+    ID_Charity_crt_all: float
+        Ceiling (as decimal fraction of AGI) for all charitable contribution deductions
+
+    ID_Charity_crt_noncash: Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions
+
+    ID_prt: float
+        Itemized deduction phaseout rate
+
+    ID_crt: float
+        Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions
+
+    ID_c: float
+        Ceiling on the amount of itemized deductions allowed (dollars)
+
+    ID_StateLocalTax_hc: float
+        State and local income and sales taxes deduction haircut
+
+    ID_Charity_frt: float
+        Floor (as decimal fraction of AGI) for deductible charitable contributions
+
+    ID_Charity_hc: float
+        Charity expense deduction haircut
+
+    ID_InterestPaid_hc: float
+        Interest paid deduction haircut
+
+    ID_RealEstate_hc: float
+        State, local, and foreign real estate taxes deductions haircut
+
+    ID_Medical_c: float
+        Ceiling on the amount of medical expense deduction allowed (dollars)
+
+    ID_StateLocalTax_c: float
+        Ceiling on the amount of state and local income and sales taxes deduction allowed (dollars)
+
+    ID_RealEstate_c: float
+        Ceiling on the amount of state, local, and foreign real estate taxes deduction allowed (dollars)
+
+    ID_InterestPaid_c: float
+        Ceiling on the amount of interest paid deduction allowed (dollars)
+
+    ID_Charity_c: float
+        Ceiling on the amount of charity expense deduction allowed (dollars)
+
+    ID_Casualty_c: float
+        Ceiling on the amount of casualty expense deduction allowed (dollars)
+
+    ID_Miscellaneous_c: float
+        Ceiling on the amount of miscellaneous expense deduction allowed (dollars)
+
+    ID_AllTaxes_c: float
+        Ceiling on the amount of state and local income, stales, and real estate deductions allowed (dollars)
+
+    ID_AllTaxes_hc: float
+        State and local income, sales, and real estate tax deduciton haircut
+
+    ID_StateLocalTax_crt: float
+        Ceiling (as decimal fraction of AGI) for the combination of all state and local income and sales tax deductions
+
+    ID_RealEstate_crt: float
+        Ceiling (as decimal fraction of AGI) for the combination of all state, local, and foreign real estate tax deductions
+
+    ID_Charity_f: float
+        Floor on the amount of charity expense deduction allowed (dollars)
 
     Returns
     -------
-    c04470 : total itemized deduction amount (and other intermediate variables)
+    c17000: float
+        Schedule A: medical expenses deducted
+
+    c18300: float
+        Schedule A: state and local taxes plus real estate taxes deducted
+
+    c19200: float
+        Schedule A: interest deducted
+
+    c19700: float
+        Schedule A: charity contributions deducted
+
+    c20500: float
+        Schedule A: net causalty or theft loss deducted
+
+    c20800: float
+        Schedule A: net limited miscellaneous deductions deducted
+
+    c21040: float
+        Itemized deductions that are phased out
+
+    c21060: float
+        Itemized deductions before phase out (0 for non itemizers)
+
+    c04470: float
+        Itemized deductions after phase out (0 for non itemizers)
     """
     posagi = max(c00100, 0.)
     # Medical
@@ -1141,27 +1283,42 @@ def AdditionalMedicareTax(e00200, MARS,
     """
     Computes Additional Medicare Tax (Form 8959) included in payroll taxes.
 
-    Notes
+    Parameters
     -----
-    Tax Law Parameters:
-        AMEDT_ec : Additional Medicare Tax earnings exclusion
+    MARS: int
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
 
-        AMEDT_rt : Additional Medicare Tax rate
+    AMEDT_ec: float
+        Additional Medicare Tax earnings exclusion
 
-        FICA_ss_trt : FICA Social Security tax rate
+    AMEDT_rt: float
+        Additional Medicare Tax rate
 
-        FICA_mc_trt : FICA Medicare tax rate
+    FICA_ss_trt: float
+        FICA Social Security tax rate
 
-    Taxpayer Charateristics:
-        e00200 : Wages and salaries
+    FICA_mc_trt: float
+        FICA Medicare tax rate
 
-        sey : Self-employment income
+    e00200: float
+        Wages and salaries
+
+    sey: float
+        Self-employment income
+
+    ptax_amc: float
+        Additional Medicare Tax
+
+    payrolltax: float
+        payroll tax augmented by Additional Medicare Tax
 
     Returns
     -------
-    ptax_amc : Additional Medicare Tax
+    ptax_amc: float
+        Additional Medicare Tax
 
-    payrolltax : payroll tax augmented by Additional Medicare Tax
+    payrolltax: float
+        payroll tax augmented by Additional Medicare Tax
     """
     line8 = max(0., sey) * (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt))
     line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
