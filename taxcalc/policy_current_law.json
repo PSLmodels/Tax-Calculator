@@ -4350,7 +4350,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 0.6,
+                "max": 1.0,
                 "level": "warn"
             }
         },
