@@ -826,7 +826,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     if MARS == 3 and MIDR == 1:
         standard = 0.
     if STD_allow_charity_ded_nonitemizers:
-        standard += max(c19700, STD_charity_ded_nonitemizers_max)
+        standard += min(c19700, STD_charity_ded_nonitemizers_max)
     return standard
 
 
