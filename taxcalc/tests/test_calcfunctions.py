@@ -211,8 +211,9 @@ expected = [12000, 15800, 13500, 14400, 6000, 6000, 0, 1000, 1350]
         (tuple9, expected[8])], ids=[
             'Married, young', 'Married, allow charity',
             'Married, allow charity, over limit',
-            'Married, two old', 'Single 1', 'Single 2', 'HoHH',
-            'HoHH, dep, under earn', 'HoHH, dep, over earn'])
+            'Married, two old', 'Single 1', 'Single 2', 'Married, Single',
+            'Marrid, Single, dep, under earn',
+            'Married, Single, dep, over earn'])
 def test_StdDed(test_tuple, expected_value, skip_jit):
     """
     Tests the StdDed function
