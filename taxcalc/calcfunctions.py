@@ -426,17 +426,17 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     taxable_ubi: float
         taxable UBI amount
     II_em: 
-    
+
     II_em_ps:
-    
+
     II_prt:
-    
+
     II_no_em_nu18,
-    
+
     c00100: float
         AGI
     pre_c04600: float
-    
+
     c04600: float
         exemption amount
 
