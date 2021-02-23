@@ -2,6 +2,7 @@ import copy
 import os
 import re
 from collections import defaultdict
+from typing import Union, Mapping, Any, List
 
 import marshmallow as ma
 import paramtools as pt
@@ -698,19 +699,32 @@ class Parameters(pt.Parameters):
     @staticmethod
     def _read_json_revision(obj, topkey):
         """
-        Read JSON revision specified by obj and topkey
+        Read JSON revision specified by ``obj`` and ``topkey``
         returning a single revision dictionary suitable for
-        use with the Parameters._update method.
-        The obj function argument can be None or a string, where the
-        string contains a local filename, a URL beginning with 'http'
-        pointing to a valid JSON file hosted online, or valid JSON
-        text.
-        The topkey argument must be a string containing the top-level
+        use with the ``Parameters._update`` or ``Parameters.adjust`` methods.
+        The obj function argument can be ``None`` or a string, where the
+        string can be:
+
+          - Path for a local file
+          - Link pointing to a valid JSON file
+          - Valid JSON text
+
+        The ``topkey`` argument must be a string containing the top-level
         key in a compound-revision JSON text for which a revision
-        dictionary is returned.  If the specified topkey is not among
-        the top-level JSON keys, the obj is assumed to be a
-        non-compound-revision JSON text for the specified topkey.
-        """
+        dictionary is returned.  If the specified ``topkey`` is not among
+        the top-level JSON keys, the ``obj`` is assumed to be a
+        non-compound-revision JSON text for the specified ``topkey``.
+
+        Some examples of valid links are:
+
+        - HTTP: ``https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/master/taxcalc/reforms/2017_law.json``
+
+        - Github API: ``github://PSLmodels:Tax-Calculator@master/taxcalc/reforms/2017_law.json``
+
+        Checkout the ParamTools
+        `docs <https://paramtools.dev/_modules/paramtools/parameters.html#Parameters.read_params>`_
+        for more information on valid file URLs.
+        """  # noqa
         # embedded function used only in _read_json_revision staticmethod
         def convert_year_to_int(syr_dict):
             """
@@ -740,6 +754,10 @@ class Parameters(pt.Parameters):
             single_dict = full_dict[topkey]
         else:
             single_dict = full_dict
+
+        if is_paramtools_format(single_dict):
+            return single_dict
+
         # convert string year to integer year in dictionary and return
         return convert_year_to_int(single_dict)
 
@@ -777,3 +795,45 @@ class Parameters(pt.Parameters):
             )
         else:
             raise AttributeError(f"{attr} not definied.")
+
+
+TaxcalcReform = Union[str, Mapping[int, Any]]
+ParamToolsAdjustment = Union[str, List[pt.ValueObject]]
+
+
+def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
+    """
+    Check first item in ``params`` to determine if it is using the ParamTools
+    adjustment or the Tax-Calculator reform format.
+    If first item is a ``dict``, then it is likely be a Tax-Calculator reform.
+    Otherwise, it is likely to be a ParamTools format.
+
+    Parameters
+    ----------
+    params: dict
+        Either a ParamTools or Tax-Calculator styled parameters ``dict``.
+
+        .. code-block:: python
+
+            # ParamTools style format:
+            {
+                "ss_rate": {2024: 0.2}
+            }
+
+            # Tax-Calculator style format:
+            {
+                "ss_rate": [{"year": 2024, "value": 0.2}]}
+            }
+
+    Returns
+    -------
+    bool:
+        Whether ``params`` is likely to be a ParamTools formatted adjustment o not.
+    """
+    for data in params.values():
+        if isinstance(data, dict):
+            return False  # taxcalc reform
+        else:
+            # Not doing a specific check to see if the value is a list
+            # since it could be a list or just a scalar value.
+            return True

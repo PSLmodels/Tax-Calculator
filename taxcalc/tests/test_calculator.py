@@ -491,6 +491,15 @@ def test_json_assump_url():
     assert params_url
     assert params_url == params_str
 
+    assump_gh_url = (
+        "github://PSLmodels:Tax-Calculator@master/taxcalc/assumptions/"
+        "economic_assumptions_template.json"
+    )
+    params_gh_url = Calculator.read_json_param_objects(None, assump_gh_url)
+    assert params_gh_url
+    assert params_gh_url == params_str
+
+
 
 def test_read_bad_json_assump_file():
     """
