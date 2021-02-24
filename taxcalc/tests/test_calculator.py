@@ -500,7 +500,6 @@ def test_json_assump_url():
     assert params_gh_url == params_str
 
 
-
 def test_read_bad_json_assump_file():
     """
     Test invalid JSON assumption files.

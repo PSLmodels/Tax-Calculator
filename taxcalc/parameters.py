@@ -11,7 +11,6 @@ import requests
 
 import taxcalc
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import json_to_dict
 
 
 class CompatibleDataSchema(ma.Schema):
@@ -828,7 +827,8 @@ def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
     Returns
     -------
     bool:
-        Whether ``params`` is likely to be a ParamTools formatted adjustment o not.
+        Whether ``params`` is likely to be a ParamTools formatted adjustment or
+        not.
     """
     for data in params.values():
         if isinstance(data, dict):
