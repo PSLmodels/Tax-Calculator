@@ -91,17 +91,26 @@ def test_round_trip_tcja_reform(tests_path):
     clp_mdata = dict(pol.items())
     # create rtr metadata dictionary for round-trip reform in fyear
     pol = Policy()
+    # Revert to 2017 law
     reform_file = os.path.join(tests_path, '..', 'reforms', '2017_law.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
-
     assert not pol.parameter_warnings
     assert not pol.errors
+    # Layer on TCJA
     reform_file = os.path.join(tests_path, '..', 'reforms', 'TCJA.json')
     with open(reform_file, 'r') as rfile:
         rtext = rfile.read()
     pol.implement_reform(Policy.read_json_reform(rtext))
+    assert not pol.parameter_warnings
+    assert not pol.errors
+    # Layer on the CARES Act
+    pol.implement_reform({'ID_Charity_crt_all': {2020: 1.0, 2021: 0.6},
+                          'STD_allow_charity_ded_nonitemizers':
+                          {2020: True, 2021: False},
+                          'STD_charity_ded_nonitemizers_max':
+                          {2020: 300.0, 2021: 0.0}})
     assert not pol.parameter_warnings
     assert not pol.errors
     pol.set_year(fyear)

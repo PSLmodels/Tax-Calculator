@@ -401,6 +401,49 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
+
+    Parameters
+    ----------
+    ymod1: float
+
+    c02500: float
+
+    c02900: float
+
+    XTOT: float
+
+    MARS: int
+        filing status
+    sep: float
+
+    DSI: float
+
+    exact: int
+        exact == 1 means do exact calculation, else do smoothed calculation
+        which is used for marginal tax rates
+    nu18: int
+        number of dependents under age 18
+    taxable_ubi: float
+        taxable UBI amount
+    II_em: 
+
+    II_em_ps:
+
+    II_prt:
+
+    II_no_em_nu18,
+
+    c00100: float
+        AGI
+    pre_c04600: float
+
+    c04600: float
+        exemption amount
+
+    Returns
+    -------
+    tuple
+        returns AGI (c00100), (pre_c04600), exemption amount (c04600)
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
@@ -728,7 +771,8 @@ def AdditionalMedicareTax(e00200, MARS,
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, standard, c19700,
-           STD_allow_charity_ded_nonitemizers):
+           STD_allow_charity_ded_nonitemizers,
+           STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
     dependents, aged and bind.
@@ -782,7 +826,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     if MARS == 3 and MIDR == 1:
         standard = 0.
     if STD_allow_charity_ded_nonitemizers:
-        standard += c19700
+        standard += min(c19700, STD_charity_ded_nonitemizers_max)
     return standard
 
 
