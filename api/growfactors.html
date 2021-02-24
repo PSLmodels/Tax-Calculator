@@ -464,7 +464,7 @@
 <h2>taxcalc.growfactors<a class="headerlink" href="#taxcalc-growfactors" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="taxcalc.growfactors.GrowFactors">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.growfactors.</code><code class="sig-name descname">GrowFactors</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">growfactors_filename</span><span class="o">=</span><span class="default_value">'growfactors.csv'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">taxcalc.growfactors.</span></code><code class="sig-name descname"><span class="pre">GrowFactors</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">growfactors_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'growfactors.csv'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructor for the GrowFactors class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -486,25 +486,25 @@ default value is name of file containing baseline grow factors.</p>
 containing the default growth factors in the GrowFactors.FILE_NAME file.</p>
 <dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.factor_value">
-<code class="sig-name descname">factor_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">year</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.factor_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.factor_value" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">factor_value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.factor_value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.factor_value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return value of factor with specified name for specified year.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.price_inflation_rates">
-<code class="sig-name descname">price_inflation_rates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">firstyear</span></em>, <em class="sig-param"><span class="n">lastyear</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.price_inflation_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.price_inflation_rates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">price_inflation_rates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">firstyear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lastyear</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.price_inflation_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.price_inflation_rates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return list of price inflation rates rounded to four decimal digits.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.update">
-<code class="sig-name descname">update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">year</span></em>, <em class="sig-param"><span class="n">diff</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add to self.gfdf[name][year] the specified diff amount.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.growfactors.GrowFactors.wage_growth_rates">
-<code class="sig-name descname">wage_growth_rates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">firstyear</span></em>, <em class="sig-param"><span class="n">lastyear</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.wage_growth_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.wage_growth_rates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">wage_growth_rates</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">firstyear</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lastyear</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growfactors.html#GrowFactors.wage_growth_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growfactors.GrowFactors.wage_growth_rates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return list of wage growth rates rounded to four decimal digits.</p>
 </dd></dl>
 

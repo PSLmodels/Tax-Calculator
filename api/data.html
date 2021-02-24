@@ -464,7 +464,7 @@
 <h2>taxcalc.data<a class="headerlink" href="#taxcalc-data" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="taxcalc.data.Data">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.data.</code><code class="sig-name descname">Data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">start_year</span></em>, <em class="sig-param"><span class="n">gfactors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">weights</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">taxcalc.data.</span></code><code class="sig-name descname"><span class="pre">Data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_year</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gfactors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.data.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Inherit from this class for Records and other collections of
 cross-sectional data that need to have growth factors and sample
 weights to age the data to years after the start_year.</p>
@@ -506,26 +506,26 @@ NOTE: assumes weights are integers that are 100 times the real weights.</p></li>
 </dl>
 <dl class="py method">
 <dt id="taxcalc.data.Data._extrapolate">
-<code class="sig-name descname">_extrapolate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._extrapolate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._extrapolate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_extrapolate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">year</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._extrapolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.data.Data._extrapolate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply to dats variables the growth factor values for specified year.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.data.Data._read_data">
-<code class="sig-name descname">_read_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_read_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.data.Data._read_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read data from file or use specified DataFrame as data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.data.Data._read_var_info">
-<code class="sig-name descname">_read_var_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_var_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_var_info" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_read_var_info</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_var_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.data.Data._read_var_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read Data variables metadata from JSON file and
 specifies static variable name sets listed above.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.data.Data._read_weights">
-<code class="sig-name descname">_read_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data._read_weights" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">_read_weights</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data._read_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.data.Data._read_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read sample weights from file or
 use specified DataFrame as weights or
 create empty DataFrame if None.
@@ -534,14 +534,14 @@ NOTE: assumes weights are integers equal to 100 times the real weight.</p>
 
 <dl class="py method">
 <dt id="taxcalc.data.Data.increment_year">
-<code class="sig-name descname">increment_year</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data.increment_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data.increment_year" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">increment_year</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data.increment_year"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.data.Data.increment_year" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add one to current year; and also does
 extrapolation &amp; reweighting for new current year if aged_data is True.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.data.Data.zero_out_changing_calculated_vars">
-<code class="sig-name descname">zero_out_changing_calculated_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data.zero_out_changing_calculated_vars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.data.Data.zero_out_changing_calculated_vars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">zero_out_changing_calculated_vars</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/data.html#Data.zero_out_changing_calculated_vars"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.data.Data.zero_out_changing_calculated_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set to zero all variables in the self.CHANGING_CALCULATED_VARS set.</p>
 </dd></dl>
 

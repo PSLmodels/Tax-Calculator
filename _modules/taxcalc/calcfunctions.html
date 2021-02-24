@@ -826,6 +826,49 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Adjusted Gross Income (AGI), c00100, and</span>
 <span class="sd">    compute personal exemption amount, c04600.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ymod1: float</span>
+
+<span class="sd">    c02500: float</span>
+
+<span class="sd">    c02900: float</span>
+
+<span class="sd">    XTOT: float</span>
+
+<span class="sd">    MARS: int</span>
+<span class="sd">        filing status</span>
+<span class="sd">    sep: float</span>
+
+<span class="sd">    DSI: float</span>
+
+<span class="sd">    exact: int</span>
+<span class="sd">        exact == 1 means do exact calculation, else do smoothed calculation</span>
+<span class="sd">        which is used for marginal tax rates</span>
+<span class="sd">    nu18: int</span>
+<span class="sd">        number of dependents under age 18</span>
+<span class="sd">    taxable_ubi: float</span>
+<span class="sd">        taxable UBI amount</span>
+<span class="sd">    II_em: </span>
+
+<span class="sd">    II_em_ps:</span>
+
+<span class="sd">    II_prt:</span>
+
+<span class="sd">    II_no_em_nu18,</span>
+
+<span class="sd">    c00100: float</span>
+<span class="sd">        AGI</span>
+<span class="sd">    pre_c04600: float</span>
+
+<span class="sd">    c04600: float</span>
+<span class="sd">        exemption amount</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple</span>
+<span class="sd">        returns AGI (c00100), (pre_c04600), exemption amount (c04600)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate AGI assuming no foreign earned income exclusion</span>
     <span class="n">c00100</span> <span class="o">=</span> <span class="n">ymod1</span> <span class="o">+</span> <span class="n">c02500</span> <span class="o">-</span> <span class="n">c02900</span> <span class="o">+</span> <span class="n">taxable_ubi</span>
@@ -1153,7 +1196,8 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">StdDed</span><span class="p">(</span><span class="n">DSI</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">STD</span><span class="p">,</span> <span class="n">age_head</span><span class="p">,</span> <span class="n">age_spouse</span><span class="p">,</span> <span class="n">STD_Aged</span><span class="p">,</span> <span class="n">STD_Dep</span><span class="p">,</span>
            <span class="n">MARS</span><span class="p">,</span> <span class="n">MIDR</span><span class="p">,</span> <span class="n">blind_head</span><span class="p">,</span> <span class="n">blind_spouse</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c19700</span><span class="p">,</span>
-           <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">):</span>
+           <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">,</span>
+           <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates standard deduction, including standard deduction for</span>
 <span class="sd">    dependents, aged and bind.</span>
@@ -1207,7 +1251,7 @@
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">MIDR</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">standard</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">if</span> <span class="n">STD_allow_charity_ded_nonitemizers</span><span class="p">:</span>
-        <span class="n">standard</span> <span class="o">+=</span> <span class="n">c19700</span>
+        <span class="n">standard</span> <span class="o">+=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c19700</span><span class="p">,</span> <span class="n">STD_charity_ded_nonitemizers_max</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">standard</span>
 
 

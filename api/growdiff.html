@@ -464,7 +464,7 @@
 <h2>taxcalc.growdiff<a class="headerlink" href="#taxcalc-growdiff" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="taxcalc.growdiff.GrowDiff">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.growdiff.</code><code class="sig-name descname">GrowDiff</code><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">taxcalc.growdiff.</span></code><code class="sig-name descname"><span class="pre">GrowDiff</span></code><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff" title="Permalink to this definition">¶</a></dt>
 <dd><p>GrowDiff is a subclass of the abstract Parameters class, and
 therefore, inherits its methods (none of which are shown here).</p>
 <p>Constructor for GrowDiff class.</p>
@@ -481,20 +481,20 @@ therefore, inherits its methods (none of which are shown here).</p>
 </dl>
 <dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.apply_to">
-<code class="sig-name descname">apply_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">growfactors</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.apply_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.apply_to" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">apply_to</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">growfactors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.apply_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.apply_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply updated GrowDiff values to specified GrowFactors instance.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.has_any_response">
-<code class="sig-name descname">has_any_response</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.has_any_response"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.has_any_response" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">has_any_response</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.has_any_response"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.has_any_response" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns true if any parameter is non-zero for any year;
 returns false if all parameters are zero in all years.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.read_json_update">
-<em class="property">static </em><code class="sig-name descname">read_json_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em>, <em class="sig-param"><span class="n">topkey</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.read_json_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.read_json_update" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">read_json_update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topkey</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.read_json_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.read_json_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a revision dictionary suitable for use with update_growdiff
 method generated from the specified JSON object, which can be None or
 a string containing a local filename, a URL beginning with ‘http’
@@ -503,7 +503,7 @@ pointing to a valid JSON file hosted online, or a valid JSON text.</p>
 
 <dl class="py method">
 <dt id="taxcalc.growdiff.GrowDiff.update_growdiff">
-<code class="sig-name descname">update_growdiff</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">revision</span></em>, <em class="sig-param"><span class="n">print_warnings</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">raise_errors</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.update_growdiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.update_growdiff" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_growdiff</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">revision</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/growdiff.html#GrowDiff.update_growdiff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.growdiff.GrowDiff.update_growdiff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update growdiff default values using specified revision dictionary.
 See Parameters._update for argument documentation and details about
 the expected structure of the revision dictionary.</p>

@@ -464,7 +464,7 @@
 <h2>taxcalc.policy<a class="headerlink" href="#taxcalc-policy" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="taxcalc.policy.Policy">
-<em class="property">class </em><code class="sig-prename descclassname">taxcalc.policy.</code><code class="sig-name descname">Policy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gfactors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">only_reading_defaults</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.policy.Policy" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">taxcalc.policy.</span></code><code class="sig-name descname"><span class="pre">Policy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gfactors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_reading_defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Policy is a subclass of the abstract Parameters class, and
 therefore, inherits its methods (none of which are shown here).</p>
 <p>Constructor for the federal tax policy class.</p>
@@ -484,20 +484,20 @@ therefore, inherits its methods (none of which are shown here).</p>
 </dl>
 <dl class="py method">
 <dt id="taxcalc.policy.Policy.implement_reform">
-<code class="sig-name descname">implement_reform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">reform</span></em>, <em class="sig-param"><span class="n">print_warnings</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">raise_errors</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.implement_reform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.policy.Policy.implement_reform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">implement_reform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">print_warnings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raise_errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.implement_reform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.implement_reform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implement reform using Tax-Calculator syled reforms/adjustments. Users
 may also use the adjust method with ParamTools styled reforms.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.policy.Policy.parameter_list">
-<em class="property">static </em><code class="sig-name descname">parameter_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.parameter_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.policy.Policy.parameter_list" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">parameter_list</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.parameter_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.parameter_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns list of parameter names in the policy_current_law.json file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="taxcalc.policy.Policy.read_json_reform">
-<em class="property">static </em><code class="sig-name descname">read_json_reform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.read_json_reform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.policy.Policy.read_json_reform" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">read_json_reform</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.read_json_reform"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.read_json_reform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a reform dictionary suitable for use with implement_reform
 method generated from the specified JSON object, which can be None or
 a string containing a local filename, a URL beginning with ‘http’
@@ -506,7 +506,7 @@ pointing to a valid JSON file hosted online, or a valid JSON text.</p>
 
 <dl class="py method">
 <dt id="taxcalc.policy.Policy.set_rates">
-<code class="sig-name descname">set_rates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.set_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#taxcalc.policy.Policy.set_rates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">set_rates</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/policy.html#Policy.set_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.policy.Policy.set_rates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize taxcalc indexing data.</p>
 </dd></dl>
 

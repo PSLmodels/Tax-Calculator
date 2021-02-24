@@ -447,7 +447,7 @@
 <span class="c1">#      calculator.py or calcfunctions.py file.</span>
 
 
-<div class="viewcode-block" id="id_wrapper"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.id_wrapper">[docs]</a><span class="k">def</span> <span class="nf">id_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">dec_args</span><span class="p">,</span> <span class="o">**</span><span class="n">dec_kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
+<div class="viewcode-block" id="id_wrapper"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.id_wrapper">[docs]</a><span class="k">def</span> <span class="nf">id_wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">dec_args</span><span class="p">,</span> <span class="o">**</span><span class="n">dec_kwargs</span><span class="p">):</span>  <span class="c1"># pylint: disable=unused-argument</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Function wrapper when numba package is not being used during debugging.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -470,11 +470,11 @@
     <span class="n">JIT</span> <span class="o">=</span> <span class="n">numba</span><span class="o">.</span><span class="n">jit</span>
 
 
-<div class="viewcode-block" id="GetReturnNode"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.GetReturnNode">[docs]</a><span class="k">class</span> <span class="nc">GetReturnNode</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
+<div class="viewcode-block" id="GetReturnNode"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode">[docs]</a><span class="k">class</span> <span class="nc">GetReturnNode</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">NodeVisitor</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A NodeVisitor to get the return tuple names from a calc-style function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="GetReturnNode.visit_Return"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.GetReturnNode.visit_Return">[docs]</a>    <span class="k">def</span> <span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name,no-self-use</span>
+<div class="viewcode-block" id="GetReturnNode.visit_Return"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.GetReturnNode.visit_Return">[docs]</a>    <span class="k">def</span> <span class="nf">visit_Return</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>  <span class="c1"># pylint: disable=invalid-name,no-self-use</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        visit_Return is used by NodeVisitor.visit method.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -483,7 +483,7 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id</span><span class="p">]</span></div></div>
 
 
-<div class="viewcode-block" id="create_apply_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.create_apply_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_apply_function_string</span><span class="p">(</span><span class="n">sigout</span><span class="p">,</span> <span class="n">sigin</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
+<div class="viewcode-block" id="create_apply_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_apply_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_apply_function_string</span><span class="p">(</span><span class="n">sigout</span><span class="p">,</span> <span class="n">sigin</span><span class="p">,</span> <span class="n">parameters</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a string for a function of the form::</span>
 
@@ -526,7 +526,7 @@
     <span class="k">return</span> <span class="n">fstr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="create_toplevel_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.create_toplevel_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_toplevel_function_string</span><span class="p">(</span><span class="n">args_out</span><span class="p">,</span> <span class="n">args_in</span><span class="p">,</span> <span class="n">pm_or_pf</span><span class="p">):</span>
+<div class="viewcode-block" id="create_toplevel_function_string"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.create_toplevel_function_string">[docs]</a><span class="k">def</span> <span class="nf">create_toplevel_function_string</span><span class="p">(</span><span class="n">args_out</span><span class="p">,</span> <span class="n">args_in</span><span class="p">,</span> <span class="n">pm_or_pf</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create a string for a function of the form:</span>
 
@@ -585,7 +585,7 @@
     <span class="k">return</span> <span class="n">fstr</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="make_apply_function"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.make_apply_function">[docs]</a><span class="k">def</span> <span class="nf">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span>
+<div class="viewcode-block" id="make_apply_function"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.make_apply_function">[docs]</a><span class="k">def</span> <span class="nf">make_apply_function</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">out_args</span><span class="p">,</span> <span class="n">in_args</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span>
                         <span class="n">do_jit</span><span class="o">=</span><span class="n">DO_JIT</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Takes a calc-style function and creates the necessary Python code for</span>
@@ -623,7 +623,7 @@
     <span class="k">return</span> <span class="n">fakeglobals</span><span class="p">[</span><span class="s1">&#39;ap_func&#39;</span><span class="p">]</span></div>
 
 
-<div class="viewcode-block" id="apply_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.apply_jit">[docs]</a><span class="k">def</span> <span class="nf">apply_jit</span><span class="p">(</span><span class="n">dtype_sig_out</span><span class="p">,</span> <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="apply_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.apply_jit">[docs]</a><span class="k">def</span> <span class="nf">apply_jit</span><span class="p">(</span><span class="n">dtype_sig_out</span><span class="p">,</span> <span class="n">dtype_sig_in</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Make a decorator that takes in a calc-style function, handle apply step.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -662,7 +662,7 @@
     <span class="k">return</span> <span class="n">make_wrapper</span></div>
 
 
-<div class="viewcode-block" id="iterate_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.calcfunctions.iterate_jit">[docs]</a><span class="k">def</span> <span class="nf">iterate_jit</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="iterate_jit"><a class="viewcode-back" href="../../api/decorators.html#taxcalc.decorators.iterate_jit">[docs]</a><span class="k">def</span> <span class="nf">iterate_jit</span><span class="p">(</span><span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Public decorator for a calc-style function (see calcfunctions.py) that</span>
 <span class="sd">    transforms the calc-style function into an apply-style function that</span>
