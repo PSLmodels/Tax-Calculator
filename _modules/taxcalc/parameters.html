@@ -427,6 +427,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span>
 
 <span class="kn">import</span> <span class="nn">marshmallow</span> <span class="k">as</span> <span class="nn">ma</span>
 <span class="kn">import</span> <span class="nn">paramtools</span> <span class="k">as</span> <span class="nn">pt</span>
@@ -435,7 +436,6 @@
 
 <span class="kn">import</span> <span class="nn">taxcalc</span>
 <span class="kn">from</span> <span class="nn">taxcalc.growfactors</span> <span class="kn">import</span> <span class="n">GrowFactors</span>
-<span class="kn">from</span> <span class="nn">taxcalc.utils</span> <span class="kn">import</span> <span class="n">json_to_dict</span>
 
 
 <span class="k">class</span> <span class="nc">CompatibleDataSchema</span><span class="p">(</span><span class="n">ma</span><span class="o">.</span><span class="n">Schema</span><span class="p">):</span>
@@ -1123,19 +1123,32 @@
 <div class="viewcode-block" id="Parameters._read_json_revision"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.Parameters._read_json_revision">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_read_json_revision</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">topkey</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Read JSON revision specified by obj and topkey</span>
+<span class="sd">        Read JSON revision specified by ``obj`` and ``topkey``</span>
 <span class="sd">        returning a single revision dictionary suitable for</span>
-<span class="sd">        use with the Parameters._update method.</span>
-<span class="sd">        The obj function argument can be None or a string, where the</span>
-<span class="sd">        string contains a local filename, a URL beginning with &#39;http&#39;</span>
-<span class="sd">        pointing to a valid JSON file hosted online, or valid JSON</span>
-<span class="sd">        text.</span>
-<span class="sd">        The topkey argument must be a string containing the top-level</span>
+<span class="sd">        use with the ``Parameters._update`` or ``Parameters.adjust`` methods.</span>
+<span class="sd">        The obj function argument can be ``None`` or a string, where the</span>
+<span class="sd">        string can be:</span>
+
+<span class="sd">          - Path for a local file</span>
+<span class="sd">          - Link pointing to a valid JSON file</span>
+<span class="sd">          - Valid JSON text</span>
+
+<span class="sd">        The ``topkey`` argument must be a string containing the top-level</span>
 <span class="sd">        key in a compound-revision JSON text for which a revision</span>
-<span class="sd">        dictionary is returned.  If the specified topkey is not among</span>
-<span class="sd">        the top-level JSON keys, the obj is assumed to be a</span>
-<span class="sd">        non-compound-revision JSON text for the specified topkey.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+<span class="sd">        dictionary is returned.  If the specified ``topkey`` is not among</span>
+<span class="sd">        the top-level JSON keys, the ``obj`` is assumed to be a</span>
+<span class="sd">        non-compound-revision JSON text for the specified ``topkey``.</span>
+
+<span class="sd">        Some examples of valid links are:</span>
+
+<span class="sd">        - HTTP: ``https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/master/taxcalc/reforms/2017_law.json``</span>
+
+<span class="sd">        - Github API: ``github://PSLmodels:Tax-Calculator@master/taxcalc/reforms/2017_law.json``</span>
+
+<span class="sd">        Checkout the ParamTools</span>
+<span class="sd">        `docs &lt;https://paramtools.dev/_modules/paramtools/parameters.html#Parameters.read_params&gt;`_</span>
+<span class="sd">        for more information on valid file URLs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>  <span class="c1"># noqa</span>
         <span class="c1"># embedded function used only in _read_json_revision staticmethod</span>
         <span class="k">def</span> <span class="nf">convert_year_to_int</span><span class="p">(</span><span class="n">syr_dict</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;</span>
@@ -1157,45 +1170,18 @@
         <span class="c1"># process the main function arguments</span>
         <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;obj is neither None nor a string&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topkey</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;topkey=</span><span class="si">{}</span><span class="s1"> is not a string&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">topkey</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;obj does not end with &quot;.json&quot;: </span><span class="si">{}</span><span class="s1">&#39;</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
-            <span class="n">txt</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;http&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">):</span>
-                <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;obj does not end with &quot;.json&quot;: </span><span class="si">{}</span><span class="s1">&#39;</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
-            <span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-            <span class="n">req</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
-            <span class="n">txt</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">text</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">topkey</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">topkey</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;topkey string is empty.&quot;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">obj</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;obj string is empty.&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">obj</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.json&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-                    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;The .json file does not exist.&quot;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;{&quot;</span> <span class="ow">and</span> <span class="s2">&quot;}&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
-                    <span class="n">txt</span> <span class="o">=</span> <span class="n">obj</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The JSON variable is misspecified.&quot;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The JSON variable is misspecified.&quot;</span><span class="p">)</span>
-        <span class="c1"># strip out //-comments without changing line numbers</span>
-        <span class="n">json_txt</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;//.*&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="n">txt</span><span class="p">)</span>
-        <span class="c1"># convert JSON text into a Python dictionary</span>
-        <span class="n">full_dict</span> <span class="o">=</span> <span class="n">json_to_dict</span><span class="p">(</span><span class="n">json_txt</span><span class="p">)</span>
+
+        <span class="n">full_dict</span> <span class="o">=</span> <span class="n">pt</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
         <span class="c1"># check top-level key contents of dictionary</span>
         <span class="k">if</span> <span class="n">topkey</span> <span class="ow">in</span> <span class="n">full_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">single_dict</span> <span class="o">=</span> <span class="n">full_dict</span><span class="p">[</span><span class="n">topkey</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">single_dict</span> <span class="o">=</span> <span class="n">full_dict</span>
+
+        <span class="k">if</span> <span class="n">is_paramtools_format</span><span class="p">(</span><span class="n">single_dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">single_dict</span>
+
         <span class="c1"># convert string year to integer year in dictionary and return</span>
         <span class="k">return</span> <span class="n">convert_year_to_int</span><span class="p">(</span><span class="n">single_dict</span><span class="p">)</span></div>
 
@@ -1233,6 +1219,49 @@
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> not definied.&quot;</span><span class="p">)</span></div></div>
+
+
+<span class="n">TaxcalcReform</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Mapping</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span>
+<span class="n">ParamToolsAdjustment</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">pt</span><span class="o">.</span><span class="n">ValueObject</span><span class="p">]]</span>
+
+
+<div class="viewcode-block" id="is_paramtools_format"><a class="viewcode-back" href="../../api/parameters.html#taxcalc.parameters.is_paramtools_format">[docs]</a><span class="k">def</span> <span class="nf">is_paramtools_format</span><span class="p">(</span><span class="n">params</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">TaxcalcReform</span><span class="p">,</span> <span class="n">ParamToolsAdjustment</span><span class="p">]):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check first item in ``params`` to determine if it is using the ParamTools</span>
+<span class="sd">    adjustment or the Tax-Calculator reform format.</span>
+<span class="sd">    If first item is a ``dict``, then it is likely be a Tax-Calculator reform.</span>
+<span class="sd">    Otherwise, it is likely to be a ParamTools format.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    params: dict</span>
+<span class="sd">        Either a ParamTools or Tax-Calculator styled parameters ``dict``.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            # ParamTools style format:</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;ss_rate&quot;: {2024: 0.2}</span>
+<span class="sd">            }</span>
+
+<span class="sd">            # Tax-Calculator style format:</span>
+<span class="sd">            {</span>
+<span class="sd">                &quot;ss_rate&quot;: [{&quot;year&quot;: 2024, &quot;value&quot;: 0.2}]}</span>
+<span class="sd">            }</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    bool:</span>
+<span class="sd">        Whether ``params`` is likely to be a ParamTools formatted adjustment or</span>
+<span class="sd">        not.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># taxcalc reform</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Not doing a specific check to see if the value is a list</span>
+            <span class="c1"># since it could be a list or just a scalar value.</span>
+            <span class="k">return</span> <span class="kc">True</span></div>
 </pre></div>
 
               </div>

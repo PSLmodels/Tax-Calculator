@@ -503,18 +503,31 @@ with an underscore in front of its name: <code class="docutils literal notransla
 <dl class="py method">
 <dt id="taxcalc.parameters.Parameters._read_json_revision">
 <em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">_read_json_revision</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">topkey</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#Parameters._read_json_revision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.Parameters._read_json_revision" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read JSON revision specified by obj and topkey
+<dd><p>Read JSON revision specified by <code class="docutils literal notranslate"><span class="pre">obj</span></code> and <code class="docutils literal notranslate"><span class="pre">topkey</span></code>
 returning a single revision dictionary suitable for
-use with the Parameters._update method.
-The obj function argument can be None or a string, where the
-string contains a local filename, a URL beginning with ‘http’
-pointing to a valid JSON file hosted online, or valid JSON
-text.
-The topkey argument must be a string containing the top-level
+use with the <code class="docutils literal notranslate"><span class="pre">Parameters._update</span></code> or <code class="docutils literal notranslate"><span class="pre">Parameters.adjust</span></code> methods.
+The obj function argument can be <code class="docutils literal notranslate"><span class="pre">None</span></code> or a string, where the
+string can be:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Path for a local file</p></li>
+<li><p>Link pointing to a valid JSON file</p></li>
+<li><p>Valid JSON text</p></li>
+</ul>
+</div></blockquote>
+<p>The <code class="docutils literal notranslate"><span class="pre">topkey</span></code> argument must be a string containing the top-level
 key in a compound-revision JSON text for which a revision
-dictionary is returned.  If the specified topkey is not among
-the top-level JSON keys, the obj is assumed to be a
-non-compound-revision JSON text for the specified topkey.</p>
+dictionary is returned.  If the specified <code class="docutils literal notranslate"><span class="pre">topkey</span></code> is not among
+the top-level JSON keys, the <code class="docutils literal notranslate"><span class="pre">obj</span></code> is assumed to be a
+non-compound-revision JSON text for the specified <code class="docutils literal notranslate"><span class="pre">topkey</span></code>.</p>
+<p>Some examples of valid links are:</p>
+<ul class="simple">
+<li><p>HTTP: <code class="docutils literal notranslate"><span class="pre">https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/master/taxcalc/reforms/2017_law.json</span></code></p></li>
+<li><p>Github API: <code class="docutils literal notranslate"><span class="pre">github://PSLmodels:Tax-Calculator&#64;master/taxcalc/reforms/2017_law.json</span></code></p></li>
+</ul>
+<p>Checkout the ParamTools
+<a class="reference external" href="https://paramtools.dev/_modules/paramtools/parameters.html#Parameters.read_params">docs</a>
+for more information on valid file URLs.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -661,6 +674,39 @@ Parameters.</p>
 assumed to have a param:year:value format.</p>
 </dd></dl>
 
+</dd></dl>
+
+<span class="target" id="module-taxcalc.parameters"></span><dl class="py function">
+<dt id="taxcalc.parameters.is_paramtools_format">
+<code class="sig-prename descclassname"><span class="pre">taxcalc.parameters.</span></code><code class="sig-name descname"><span class="pre">is_paramtools_format</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="p"><span class="pre">:</span></span> <span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span> </span><span class="pre">Mapping</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">ValueObject</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/parameters.html#is_paramtools_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.parameters.is_paramtools_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check first item in <code class="docutils literal notranslate"><span class="pre">params</span></code> to determine if it is using the ParamTools
+adjustment or the Tax-Calculator reform format.
+If first item is a <code class="docutils literal notranslate"><span class="pre">dict</span></code>, then it is likely be a Tax-Calculator reform.
+Otherwise, it is likely to be a ParamTools format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>params</strong> (<em>dict</em>) – <p>Either a ParamTools or Tax-Calculator styled parameters <code class="docutils literal notranslate"><span class="pre">dict</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ParamTools style format:</span>
+<span class="p">{</span>
+    <span class="s2">&quot;ss_rate&quot;</span><span class="p">:</span> <span class="p">{</span><span class="mi">2024</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1"># Tax-Calculator style format:</span>
+<span class="p">{</span>
+    <span class="s2">&quot;ss_rate&quot;</span><span class="p">:</span> <span class="p">[{</span><span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2024</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">}]}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether <code class="docutils literal notranslate"><span class="pre">params</span></code> is likely to be a ParamTools formatted adjustment or
+not.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
