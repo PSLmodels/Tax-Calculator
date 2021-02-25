@@ -5,7 +5,6 @@
 import sys
 import os
 import pandas as pd
-from colorama import Fore, Style
 
 
 def main(assump_set, year):
@@ -56,9 +55,9 @@ def main(assump_set, year):
         expect_df = pd.read_csv(f'{assump_set}{year}-taxdiffs-expect.csv', index_col=0)
         
         print(actual_df.eq(expect_df))
-        print(Fore.BLUE + Style.BRIGHT + 'Above, True values mean the element is the same between the ACTUAL and EXPECT dataframes.')
 
-        print(Fore.BLUE + Style.BRIGHT + '(EXPECT files are used for debugging purposes.)')
+        print('Above, True values mean the element is the same between the ACTUAL and EXPECT dataframes. ' +
+            '(EXPECT files are used for debugging purposes.)')
     else:
         print("This EXPECT file doesn't exist.")
 
