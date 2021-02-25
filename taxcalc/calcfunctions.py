@@ -401,6 +401,49 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
+
+    Parameters
+    ----------
+    ymod1: float
+
+    c02500: float
+
+    c02900: float
+
+    XTOT: float
+
+    MARS: int
+        filing status
+    sep: float
+
+    DSI: float
+
+    exact: int
+        exact == 1 means do exact calculation, else do smoothed calculation
+        which is used for marginal tax rates
+    nu18: int
+        number of dependents under age 18
+    taxable_ubi: float
+        taxable UBI amount
+    II_em: 
+
+    II_em_ps:
+
+    II_prt:
+
+    II_no_em_nu18,
+
+    c00100: float
+        AGI
+    pre_c04600: float
+
+    c04600: float
+        exemption amount
+
+    Returns
+    -------
+    tuple
+        returns AGI (c00100), (pre_c04600), exemption amount (c04600)
     """
     # calculate AGI assuming no foreign earned income exclusion
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
@@ -728,7 +771,8 @@ def AdditionalMedicareTax(e00200, MARS,
 @iterate_jit(nopython=True)
 def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
            MARS, MIDR, blind_head, blind_spouse, standard, c19700,
-           STD_allow_charity_ded_nonitemizers):
+           STD_allow_charity_ded_nonitemizers,
+           STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
     dependents, aged and bind.
@@ -782,18 +826,17 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     if MARS == 3 and MIDR == 1:
         standard = 0.
     if STD_allow_charity_ded_nonitemizers:
-        standard += c19700
+        standard += min(c19700, STD_charity_ded_nonitemizers_max)
     return standard
 
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
-           e02100, e27200, e00650, c01000,
-           PT_SSTB_income, PT_binc_w2_wages, PT_ubia_property,
-           PT_qbid_rt, PT_qbid_taxinc_thd, PT_qbid_taxinc_gap,
-           PT_qbid_w2_wages_rt, PT_qbid_alt_w2_wages_rt,
-           PT_qbid_alt_property_rt, PT_qbid_limit_switch,
-           c04800, qbided):
+           e02100, e27200, e00650, c01000, PT_SSTB_income,
+           PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
+           PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
+           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
+           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -845,6 +888,12 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
         net_cg = e00650 + c01000  # per line 34 in 2018 Pub 535 Worksheet 12-A
         taxinc_cap = PT_qbid_rt * max(0., pre_qbid_taxinc - net_cg)
         qbided = min(qbided, taxinc_cap)
+
+        # apply qbid phaseout
+        if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
+            excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
+            qbided = max(0., qbided - PT_qbid_prt * excess)
+
     # calculate taxable income after qualified business income deduction
     c04800 = max(0., pre_qbid_taxinc - qbided)
     return (c04800, qbided)
@@ -1007,7 +1056,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         hi_incremental_rate = CG_rt4 - CG_rt3
         highest_rate_incremental_tax = hi_incremental_rate * hi_base
         # break in worksheet lines
-        dwks33 = min(dwks9, e24518)
+        dwks33 = min(dwks9, e24515)
         dwks34 = dwks10 + dwks19
         dwks36 = max(0., dwks34 - dwks1)
         dwks37 = max(0., dwks33 - dwks36)

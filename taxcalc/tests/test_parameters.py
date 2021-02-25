@@ -14,7 +14,13 @@ import numpy as np
 import paramtools
 import pytest
 # pylint: disable=import-error
-from taxcalc import Parameters, Policy, Consumption, GrowFactors
+from taxcalc import (
+    Parameters,
+    Policy,
+    Consumption,
+    GrowFactors,
+    is_paramtools_format,
+)
 
 
 # Test specification and use of simple Parameters-derived class that has
@@ -556,17 +562,35 @@ def test_expand_2d_partial_expand():
     assert np.allclose(res, exp, atol=0.01, rtol=0.0)
 
 
-def test_read_json_revision():
+taxcalc_revision = """
+{
+    "consumption": {"BEN_mcaid_value": {"2013": 0.9}}
+}
+"""
+
+paramtools_revision = """
+{
+    "consumption": {"BEN_mcaid_value": [{"year": "2013", "value": 0.9}]}
+}
+"""
+
+paramtools_revision2 = """
+{
+    "consumption": {"BEN_mcaid_value": 0.9}
+}
+"""
+
+
+@pytest.mark.parametrize("good_revision", [
+    taxcalc_revision,
+    paramtools_revision,
+])
+def test_read_json_revision(good_revision):
     """
     Check _read_json_revision logic.
     """
-    good_revision = """
-    {
-      "consumption": {"BEN_mcaid_value": {"2013": 0.9}}
-    }
-    """
     # pllint: disable=private-method
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         # error because first obj argument is neither None nor a string
         Parameters._read_json_revision(list(), '')
     with pytest.raises(ValueError):
@@ -575,3 +599,19 @@ def test_read_json_revision():
     with pytest.raises(ValueError):
         # error because second topkey argument is not in good_revision
         Parameters._read_json_revision(good_revision, 'unknown_topkey')
+
+
+@pytest.mark.parametrize("params,is_paramtools", [
+    (taxcalc_revision, False),
+    (paramtools_revision, True),
+    (paramtools_revision2, True),
+])
+def test_read_json_revision_foramts(params, is_paramtools):
+    """
+    Check _read_json_revision for ParamTools and Tax-Calculator
+    styled parameters.
+    """
+    result = Parameters._read_json_revision(params, "consumption")
+    assert is_paramtools_format(result) is is_paramtools
+    if is_paramtools:
+        assert result == json.loads(params)["consumption"]

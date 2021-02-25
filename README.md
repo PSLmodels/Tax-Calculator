@@ -10,5 +10,8 @@ Tax-Calculator
 Tax-Calculator is an open-source microsimulation model for static
 analysis of USA federal income and payroll taxes.
 
+We are seeking contributors and maintainers. If you are interested in joining the project as a contributor or maintainer, 
+contact matt.jensen@aei.org or jump right in. 
+
 Complete documentation is available
 [here](https://PSLmodels.github.io/Tax-Calculator/).

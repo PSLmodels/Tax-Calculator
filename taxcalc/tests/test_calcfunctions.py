@@ -171,9 +171,53 @@ def test_DependentCare(skip_jit):
     Tests the DependentCare function
     """
 
-    test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000], 
+    test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000],
                   .2, 7165, 5000, 0)
     test_value = calcfunctions.DependentCare(*test_tuple)
     expected_value = 25196
+
+    assert np.allclose(test_value, expected_value)
+
+
+STD_in = [6000, 12000, 6000, 12000, 12000]
+STD_Aged_in = [1500, 1200, 1500, 1500, 1500]
+tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
+          False, 0)
+tuple2 = (0, 1000, STD_in, 66, 44, STD_Aged_in, 1000, 2, 0, 1, 1, 2,
+          200, True, 300)
+tuple3 = (0, 1000, STD_in, 44, 66, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
+          400, True, 300)
+tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
+          True, 0)
+tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
+          True, 0)
+tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
+          True, 0)
+tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 1, 0, 0, 2, 0,
+          True, 0)
+tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
+          True, 0)
+tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
+          True, 0)
+expected = [12000, 15800, 13500, 14400, 6000, 6000, 0, 1000, 1350]
+
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value',[
+        (tuple1, expected[0]), (tuple2, expected[1]),
+        (tuple3, expected[2]), (tuple4, expected[3]),
+        (tuple5, expected[4]), (tuple6, expected[5]),
+        (tuple7, expected[6]), (tuple8, expected[7]),
+        (tuple9, expected[8])], ids=[
+            'Married, young', 'Married, allow charity',
+            'Married, allow charity, over limit',
+            'Married, two old', 'Single 1', 'Single 2', 'Married, Single',
+            'Marrid, Single, dep, under earn',
+            'Married, Single, dep, over earn'])
+def test_StdDed(test_tuple, expected_value, skip_jit):
+    """
+    Tests the StdDed function
+    """
+    test_value = calcfunctions.StdDed(*test_tuple)
 
     assert np.allclose(test_value, expected_value)

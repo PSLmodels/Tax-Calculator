@@ -1938,7 +1938,7 @@
             {
                 "year": 2013,
                 "MARS": "widow",
-                "value": 1500.0
+                "value": 1200.0
             },
             {
                 "year": 2014,
@@ -1963,7 +1963,7 @@
             {
                 "year": 2014,
                 "MARS": "widow",
-                "value": 1550.0
+                "value": 1200.0
             },
             {
                 "year": 2015,
@@ -1988,7 +1988,7 @@
             {
                 "year": 2015,
                 "MARS": "widow",
-                "value": 1550.0
+                "value": 1250.0
             },
             {
                 "year": 2016,
@@ -2013,7 +2013,7 @@
             {
                 "year": 2016,
                 "MARS": "widow",
-                "value": 1550.0
+                "value": 1250.0
             },
             {
                 "year": 2017,
@@ -2038,7 +2038,7 @@
             {
                 "year": 2017,
                 "MARS": "widow",
-                "value": 1550.0
+                "value": 1250.0
             },
             {
                 "year": 2018,
@@ -2104,7 +2104,7 @@
     },
     "STD_allow_charity_ded_nonitemizers": {
         "title": "Allow standard deduction filers to take the charitable contributions deduction",
-        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.",
+        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.",
         "notes": "",
         "section_1": "",
         "section_2": "",
@@ -2115,12 +2115,54 @@
             {
                 "year": 2013,
                 "value": false
+            },
+            {
+                "year": 2020,
+                "value": true
+            },
+            {
+                "year": 2021,
+                "value": false
             }
         ],
         "validators": {
             "range": {
                 "min": false,
                 "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "STD_charity_ded_nonitemizers_max": {
+        "title": "Ceiling amount (in dollars) for charitable deductions for non-itemizers",
+        "description": "Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 9e99
             }
         },
         "compatible_data": {
@@ -4293,6 +4335,14 @@
                 "value": 0.6
             },
             {
+                "year": 2020,
+                "value": 1.0
+            },
+            {
+                "year": 2021,
+                "value": 0.6
+            },
+            {
                 "year": 2026,
                 "value": 0.5
             }
@@ -4300,7 +4350,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 0.6,
+                "max": 1.0,
                 "level": "warn"
             }
         },
@@ -12382,6 +12432,253 @@
         "compatible_data": {
             "puf": false,
             "cps": false
+        }
+    },
+    "PT_qbid_ps": {
+        "title": "QBID phaseout taxable income start",
+        "description": "QBID begins to decrease when pre-QBID taxable income is above this level.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "widow",
+                "value": 9e99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_prt": {
+        "title": "QBID phaseout rate",
+        "description": "QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2014,
+                "value": 0.0
+            },
+            {
+                "year": 2015,
+                "value": 0.0
+            },
+            {
+                "year": 2016,
+                "value": 0.0
+            },
+            {
+                "year": 2017,
+                "value": 0.0
+            },
+            {
+                "year": 2018,
+                "value": 0.0
+            },
+            {
+                "year": 2019,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
         }
     },
     "AMT_em": {
