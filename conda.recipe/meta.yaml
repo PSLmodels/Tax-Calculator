@@ -14,7 +14,7 @@ requirements:
     - "bokeh>=1.4.0"
     - requests
     - numba
-    - "paramtools>=0.17.0"
+    - "paramtools>=0.18.0"
     - aiohttp
 
   run:
@@ -24,7 +24,7 @@ requirements:
     - "bokeh>=1.4.0"
     - requests
     - numba
-    - "paramtools>=0.17.0"
+    - "paramtools>=0.18.0"
     - aiohttp
 
 test:

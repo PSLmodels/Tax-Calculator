@@ -15,7 +15,7 @@ dependencies:
 - pycodestyle
 - pylint
 - coverage
-- "paramtools>=0.17.0"
+- "paramtools>=0.18.0"
 - pip
 - pip:
     - jupyter-book
