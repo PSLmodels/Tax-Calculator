@@ -6,9 +6,8 @@ import pandas as pd
 import os
 import glob
 from zipfile import ZipFile
+
 # requires curl
-
-
 def get_inputs():
     """
     Runs taxsim_input.py for all combinations of year and assumption sets
@@ -55,23 +54,7 @@ def change_delim():
             fout.write(filedata)
 
 
-def remove_header():
-    for file in glob.glob("*.in.out-taxsim"):
-        with open(file, 'r') as fin:
-            data = fin.read().splitlines(True)
-        with open(file, 'w') as fout:
-            fout.writelines(data[1:])
-
-
-def zip_files():
-    with ZipFile('output-taxsim.zip', 'w') as zipf:
-        for file in glob.glob("*.in.out-taxsim"):
-            zipf.write(file)
-
-
 def main():
     get_inputs()
     get_ftp_output()
     change_delim()
-    # remove_header()
-    # zip_files()
