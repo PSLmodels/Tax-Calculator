@@ -43,6 +43,9 @@ the document that generates data for input into TAXSIM-32, see the TAXSIM-32 web
 Instructions
 ------------------
 1. Navigate to `taxcalc/validation/taxsim32` and run the Python script `tests_32.py`.
+2. If you would like to generate new input files and and get new files from TAXSIM-32,
+just delete all of the `.in.out-taxsim` files. On Mac/Linux, this can be done with
+`rm -f *.in.out-taxsim`.
 
 
 Troubleshooting
