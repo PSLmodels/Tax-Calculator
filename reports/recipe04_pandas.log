@@ -32,8 +32,8 @@ nbclient.exceptions.CellTimeoutError: A cell timed out while it was being execut
 The message was: Cell execution timed out.
 Here is a preview of the cell contents:
 -------------------
-['import pandas as pd', 'import taxcalc as tc', '', '', '# override the ExpandIncome calcfunction that computes "market income"']
+['import taxcalc as tc', 'import pandas as pd', 'import numpy as np', 'import behresp', '']
 ...
-["title = 'Extract of {} income-tax difference table by expanded-income decile'", 'print(title.format(CYR))', "print('(taxfall is count of funits with cut in income tax in reform 2 vs 1)')", "print('(taxrise is count of funits with rise in income tax in reform 2 vs 1)')", 'print(diff_extract.to_string())']
+["grouped['pct_response'] = 100 * grouped.response_b / grouped.e19800_b", "grouped.drop('e19800_b', axis=1, inplace=True)", '', '# Rename columns for printing.', "grouped.columns = ['Earnings Group', 'Num(#M)', 'Resp($B)', 'Resp(%)']"]
 -------------------
 
