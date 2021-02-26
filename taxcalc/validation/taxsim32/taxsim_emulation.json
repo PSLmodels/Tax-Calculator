@@ -25,14 +25,9 @@
 //     the magnitude of model-calculated marginal tax rates with respect to
 //     investment income in cases where a marginal increase in investment
 //     income takes a filing unit above the ceiling.
-//
-// (3) PT_qbid_limit_switch = true
-// 	   INSERT TEXT
 
 {
     "AMT_child_em_c_age": {"2013": 24},
 
     "EITC_excess_InvestIncome_rt": {"2013": 1.0}
-
-    // "PT_qbid_limit_switch": {"2013": "False"}
 }
