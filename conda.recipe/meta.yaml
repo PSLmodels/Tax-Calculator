@@ -16,6 +16,7 @@ requirements:
     - numba
     - "paramtools>=0.18.0"
     - aiohttp
+    - curl
 
   run:
     - python
@@ -26,6 +27,7 @@ requirements:
     - numba
     - "paramtools>=0.18.0"
     - aiohttp
+    - curl
 
 test:
   commands:
