@@ -2069,6 +2069,33 @@
        </code>
       </a>
      </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-limit-switch">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_limit_switch
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-ps">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_ps
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#pt-qbid-prt">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         PT_qbid_prt
+        </span>
+       </code>
+      </a>
+     </li>
     </ul>
    </li>
    <li class="toc-h3 nav-item toc-entry">
@@ -2828,6 +2855,15 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#std-charity-ded-nonitemizers-max">
+     <code class="docutils literal notranslate">
+      <span class="pre">
+       STD_charity_ded_nonitemizers_max
+      </span>
+     </code>
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
     <a class="reference internal nav-link" href="#amt-child-em">
      <code class="docutils literal notranslate">
       <span class="pre">
@@ -3568,11 +3604,11 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Value Type:</em> float<br />
 <em>Known Values:</em><br />
 for: [single, mjoint, mseparate, headhh, widow]<br />
-2013: [1500.0, 1200.0, 1200.0, 1500.0, 1500.0]<br />
-2014: [1550.0, 1200.0, 1200.0, 1550.0, 1550.0]<br />
-2015: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br />
-2016: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br />
-2017: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]<br />
+2013: [1500.0, 1200.0, 1200.0, 1500.0, 1200.0]<br />
+2014: [1550.0, 1200.0, 1200.0, 1550.0, 1200.0]<br />
+2015: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]<br />
+2016: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]<br />
+2017: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]<br />
 2018: [1600.0, 1300.0, 1300.0, 1600.0, 1300.0]<br />
 2019: [1650.0, 1300.0, 1300.0, 1650.0, 1300.0]<br />
 <em>Valid Range:</em> min = 0 and max = 9e+99<br />
@@ -4298,14 +4334,14 @@ for: [med, sltx, retx, cas, misc, int, char]<br />
 2017: 0.5<br />
 2018: 0.6<br />
 2019: 0.6<br />
-2020: 0.6<br />
+2020: 1.0<br />
 2021: 0.6<br />
 2022: 0.6<br />
 2023: 0.6<br />
 2024: 0.6<br />
 2025: 0.6<br />
 2026: 0.5<br />
-<em>Valid Range:</em> min = 0 and max = 0.6<br />
+<em>Valid Range:</em> min = 0 and max = 1.0<br />
 <em>Out-of-Range Action:</em> warn</p>
 </div>
 <div class="section" id="id-charity-crt-noncash">
@@ -5890,6 +5926,58 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 <em>Valid Range:</em> min = 0 and max = 1<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
+<div class="section" id="pt-qbid-limit-switch">
+<h4><code class="docutils literal notranslate"><span class="pre">PT_qbid_limit_switch</span></code><a class="headerlink" href="#pt-qbid-limit-switch" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> False <em>CPS data:</em> False<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> bool<br />
+<em>Known Values:</em><br />
+2013: True<br />
+2014: True<br />
+2015: True<br />
+2016: True<br />
+2017: True<br />
+2018: True<br />
+2019: True<br />
+<em>Valid Range:</em> min = False and max = True<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="pt-qbid-ps">
+<h4><code class="docutils literal notranslate"><span class="pre">PT_qbid_ps</span></code><a class="headerlink" href="#pt-qbid-ps" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> QBID begins to decrease when pre-QBID taxable income is above this level.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> True<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+for: [single, mjoint, mseparate, headhh, widow]<br />
+2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="pt-qbid-prt">
+<h4><code class="docutils literal notranslate"><span class="pre">PT_qbid_prt</span></code><a class="headerlink" href="#pt-qbid-prt" title="Permalink to this headline">¶</a></h4>
+<p><em>Description:</em> QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0 and max = 9e+99<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
 </div>
 <div class="section" id="regular-non-amt-non-pass-through">
 <h3>Regular: Non-AMT, Non-Pass-Through<a class="headerlink" href="#regular-non-amt-non-pass-through" title="Permalink to this headline">¶</a></h3>
@@ -7238,7 +7326,7 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 </div>
 <div class="section" id="std-allow-charity-ded-nonitemizers">
 <h3><code class="docutils literal notranslate"><span class="pre">STD_allow_charity_ded_nonitemizers</span></code><a class="headerlink" href="#std-allow-charity-ded-nonitemizers" title="Permalink to this headline">¶</a></h3>
-<p><em>Description:</em> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.<br />
+<p><em>Description:</em> Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.<br />
 <em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
 <em>Can Be Inflation Indexed:</em> False <em>Is Inflation Indexed:</em> False<br />
 <em>Value Type:</em> bool<br />
@@ -7251,6 +7339,23 @@ for: [single, mjoint, mseparate, headhh, widow]<br />
 2018: False<br />
 2019: False<br />
 <em>Valid Range:</em> min = False and max = True<br />
+<em>Out-of-Range Action:</em> error</p>
+</div>
+<div class="section" id="std-charity-ded-nonitemizers-max">
+<h3><code class="docutils literal notranslate"><span class="pre">STD_charity_ded_nonitemizers_max</span></code><a class="headerlink" href="#std-charity-ded-nonitemizers-max" title="Permalink to this headline">¶</a></h3>
+<p><em>Description:</em> Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.<br />
+<em>Has An Effect When Using:</em> <em>PUF data:</em> True <em>CPS data:</em> True<br />
+<em>Can Be Inflation Indexed:</em> True <em>Is Inflation Indexed:</em> False<br />
+<em>Value Type:</em> float<br />
+<em>Known Values:</em><br />
+2013: 0.0<br />
+2014: 0.0<br />
+2015: 0.0<br />
+2016: 0.0<br />
+2017: 0.0<br />
+2018: 0.0<br />
+2019: 0.0<br />
+<em>Valid Range:</em> min = 0.0 and max = 9e+99<br />
 <em>Out-of-Range Action:</em> error</p>
 </div>
 <div class="section" id="amt-child-em">
