@@ -4,6 +4,27 @@ Go [here](https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclose
 for a complete commit history.
 
 
+2021-03-01 Release 3.1.0
+------------------------
+(last merged pull request is
+[#2566](https://github.com/PSLmodels/Tax-Calculator/pull/2566))
+
+**This is an enhancement and bug-fix release.**
+
+**API Changes**
+
+**New Features**
+- Package for Python 3.9. [[#2522](https://github.com/PSLmodels/tax-calculator/pull/2522) by Max Ghenis]
+- Parameters for QBI deduction phaseout. [[#2508](https://github.com/PSLmodels/tax-calculator/pull/2508) by Peter Metz]
+- Switch for QBI deduction wage and capital limitations. [[#2497(https://github.com/PSLmodels/tax-calculator/pull/2497) by Peter Metz]
+- Interaction with `calcfunctions.py` functions and unit tests without `@jit` decorator. [[#2515](https://github.com/PSLmodels/tax-calculator/pull/2515) by Jacob Chuslo]
+
+**Bug Fixes**
+- Fix default parameter value for deduction for blind and aged widowed taxpayers. [[#2537](https://github.com/PSLmodels/tax-calculator/pull/2537) by Jacob Chuslo, reported by Jason DeBacker]
+- Include self-employment tax in calculation of partnership-specific marginal tax rates. [[#2486](https://github.com/PSLmodels/tax-calculator/pull/2486) by Cody Kallen]
+- Fix stacking of an optional capital gains tax bracket. [[#2500](https://github.com/PSLmodels/tax-calculator/pull/2500) by Peter Metz]
+- Fix bug caused by adjusting the indexed status of a parameter while also adjusting the parameter's value and a related parameter's value. [[#2532](https://github.com/PSLmodels/tax-calculator/pull/2532) by Hank Doupe]
+
 2020-08-24 Release 3.0.0
 ------------------------
 (last merged pull request is

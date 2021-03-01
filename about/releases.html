@@ -442,6 +442,11 @@
         <nav id="bd-toc-nav">
             <ul class="nav section-nav flex-column">
  <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#release-3-1-0">
+   2021-03-01 Release 3.1.0
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
   <a class="reference internal nav-link" href="#release-3-0-0">
    2020-08-24 Release 3.0.0
   </a>
@@ -857,6 +862,27 @@
 <h1>Release history<a class="headerlink" href="#release-history" title="Permalink to this headline">¶</a></h1>
 <p>Go <a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pulls?q=is%3Apr+is%3Aclosed">here</a>
 for a complete commit history.</p>
+<div class="section" id="release-3-1-0">
+<h2>2021-03-01 Release 3.1.0<a class="headerlink" href="#release-3-1-0" title="Permalink to this headline">¶</a></h2>
+<p>(last merged pull request is
+<a class="reference external" href="https://github.com/PSLmodels/Tax-Calculator/pull/2566">#2566</a>)</p>
+<p><strong>This is an enhancement and bug-fix release.</strong></p>
+<p><strong>API Changes</strong></p>
+<p><strong>New Features</strong></p>
+<ul class="simple">
+<li><p>Package for Python 3.9. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2522">#2522</a> by Max Ghenis]</p></li>
+<li><p>Parameters for QBI deduction phaseout. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2508">#2508</a> by Peter Metz]</p></li>
+<li><p>Switch for QBI deduction wage and capital limitations. [[#2497(<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2497">https://github.com/PSLmodels/tax-calculator/pull/2497</a>) by Peter Metz]</p></li>
+<li><p>Interaction with <code class="docutils literal notranslate"><span class="pre">calcfunctions.py</span></code> functions and unit tests without <code class="docutils literal notranslate"><span class="pre">&#64;jit</span></code> decorator. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2515">#2515</a> by Jacob Chuslo]</p></li>
+</ul>
+<p><strong>Bug Fixes</strong></p>
+<ul class="simple">
+<li><p>Fix default parameter value for deduction for blind and aged widowed taxpayers. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2537">#2537</a> by Jacob Chuslo, reported by Jason DeBacker]</p></li>
+<li><p>Include self-employment tax in calculation of partnership-specific marginal tax rates. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2486">#2486</a> by Cody Kallen]</p></li>
+<li><p>Fix stacking of an optional capital gains tax bracket. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2500">#2500</a> by Peter Metz]</p></li>
+<li><p>Fix bug caused by adjusting the indexed status of a parameter while also adjusting the parameter’s value and a related parameter’s value. [<a class="reference external" href="https://github.com/PSLmodels/tax-calculator/pull/2532">#2532</a> by Hank Doupe]</p></li>
+</ul>
+</div>
 <div class="section" id="release-3-0-0">
 <h2>2020-08-24 Release 3.0.0<a class="headerlink" href="#release-3-0-0" title="Permalink to this headline">¶</a></h2>
 <p>(last merged pull request is
