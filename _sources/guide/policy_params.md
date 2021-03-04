@@ -629,11 +629,11 @@ _Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True
 _Value Type:_ float  
 _Known Values:_  
  for: [single, mjoint, mseparate, headhh, widow]  
-2013: [1500.0, 1200.0, 1200.0, 1500.0, 1200.0]  
-2014: [1550.0, 1200.0, 1200.0, 1550.0, 1200.0]  
-2015: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]  
-2016: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]  
-2017: [1550.0, 1250.0, 1250.0, 1550.0, 1250.0]  
+2013: [1500.0, 1200.0, 1200.0, 1500.0, 1500.0]  
+2014: [1550.0, 1200.0, 1200.0, 1550.0, 1550.0]  
+2015: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]  
+2016: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]  
+2017: [1550.0, 1250.0, 1250.0, 1550.0, 1550.0]  
 2018: [1600.0, 1300.0, 1300.0, 1600.0, 1300.0]  
 2019: [1650.0, 1300.0, 1300.0, 1650.0, 1300.0]  
 _Valid Range:_ min = 0 and max = 9e+99  
@@ -1345,14 +1345,14 @@ _Known Values:_
 2017: 0.5  
 2018: 0.6  
 2019: 0.6  
-2020: 1.0  
+2020: 0.6  
 2021: 0.6  
 2022: 0.6  
 2023: 0.6  
 2024: 0.6  
 2025: 0.6  
 2026: 0.5  
-_Valid Range:_ min = 0 and max = 1.0  
+_Valid Range:_ min = 0 and max = 0.6  
 _Out-of-Range Action:_ warn  
 
 
@@ -2923,58 +2923,6 @@ _Valid Range:_ min = 0 and max = 1
 _Out-of-Range Action:_ error  
 
 
-####  `PT_qbid_limit_switch`  
-_Description:_ A value of True imposes wage/capital limitations. Note that neither the PUF nor CPS have data on wage expenses or capital income, and therefore all taxpayers are fully subject to the QBID limitations. A value of False assumes sufficient wage and capital income to avoid QBID limitations.  
-_Has An Effect When Using:_ _PUF data:_ False _CPS data:_ False  
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
-_Value Type:_ bool  
-_Known Values:_  
-2013: True  
-2014: True  
-2015: True  
-2016: True  
-2017: True  
-2018: True  
-2019: True  
-_Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error  
-
-
-####  `PT_qbid_ps`  
-_Description:_ QBID begins to decrease when pre-QBID taxable income is above this level.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ True  
-_Value Type:_ float  
-_Known Values:_  
- for: [single, mjoint, mseparate, headhh, widow]  
-2013: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2014: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2015: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2016: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2017: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2018: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-2019: [9e+99, 9e+99, 9e+99, 9e+99, 9e+99]  
-_Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error  
-
-
-####  `PT_qbid_prt`  
-_Description:_ QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.0  
-2014: 0.0  
-2015: 0.0  
-2016: 0.0  
-2017: 0.0  
-2018: 0.0  
-2019: 0.0  
-_Valid Range:_ min = 0 and max = 9e+99  
-_Out-of-Range Action:_ error  
-
-
 ### Regular: Non-AMT, Non-Pass-Through
 
 ####  `II_rt1`  
@@ -4303,7 +4251,7 @@ _Out-of-Range Action:_ error
 
 
 ####  `STD_allow_charity_ded_nonitemizers`  
-_Description:_ Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.  
+_Description:_ Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.  
 _Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
 _Can Be Inflation Indexed:_ False _Is Inflation Indexed:_ False  
 _Value Type:_ bool  
@@ -4316,23 +4264,6 @@ _Known Values:_
 2018: False  
 2019: False  
 _Valid Range:_ min = False and max = True  
-_Out-of-Range Action:_ error  
-
-
-####  `STD_charity_ded_nonitemizers_max`  
-_Description:_ Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.  
-_Has An Effect When Using:_ _PUF data:_ True _CPS data:_ True  
-_Can Be Inflation Indexed:_ True _Is Inflation Indexed:_ False  
-_Value Type:_ float  
-_Known Values:_  
-2013: 0.0  
-2014: 0.0  
-2015: 0.0  
-2016: 0.0  
-2017: 0.0  
-2018: 0.0  
-2019: 0.0  
-_Valid Range:_ min = 0.0 and max = 9e+99  
 _Out-of-Range Action:_ error  
 
 
