@@ -1307,7 +1307,8 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
 
     Parameters
     ----------
-    taxable_income
+    taxable_income: float
+        Taxable income
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     e00900: float
@@ -1389,8 +1390,10 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
 
     Returns
     -------
-    reg_tax
-    pt_tax
+    reg_tax: float
+        Individual income tax liability on non-pass-through income
+    pt_tax: float
+        Individual income tax liability from pass-through income
     """
     # separate non-negative taxable income into two non-negative components,
     # doing this in a way so that the components add up to taxable income
@@ -1447,6 +1450,95 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
               PT_top_stacking, c05200):
     """
     SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
+
+    Parameters
+    ----------
+    c04800: float
+        Regular taxable income
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    e00900: float
+        Schedule C business net profit/loss for filing unit
+    e26270: float
+        Schedule E: combined partnership and S-corporation net income/loss
+    e02000: float
+        Farm net income/loss for filing unit from Schedule F
+    e00200: float
+        Farm net income/loss for filing unit from Schedule F
+    PT_rt1: float
+        Pass through income tax rate 1
+    PT_rt2: float
+        Pass through income tax rate 2
+    PT_rt3: float
+        Pass through income tax rate 3
+    PT_rt4: float
+        Pass through income tax rate 4
+    PT_rt5: float
+        Pass through income tax rate 5
+    PT_rt6: float
+        Pass through income tax rate 6
+    PT_rt7: float
+        Pass through income tax rate 7
+    PT_rt8: float
+        Pass through income tax rate 8
+    PT_brk1: float
+        Pass through income tax bracket (upper threshold) 1
+    PT_brk2: float
+        Pass through income tax bracket (upper threshold) 2
+    PT_brk3: float
+        Pass through income tax bracket (upper threshold) 3
+    PT_brk4: float
+        Pass through income tax bracket (upper threshold) 4
+    PT_brk5: float
+        Pass through income tax bracket (upper threshold) 5
+    PT_brk6: float
+        Pass through income tax bracket (upper threshold) 6
+    PT_brk7: float
+        Pass through income tax bracket (upper threshold) 7
+    II_rt1: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+    II_rt2: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+    II_rt3: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+    II_rt4: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+    II_rt5: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+    II_rt6: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+    II_rt7: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+    II_rt8: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+    II_brk1: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1
+    II_brk2: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2
+    II_brk3: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3
+    II_brk4: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4
+    II_brk5: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5
+    II_brk6: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6
+    II_brk7: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7
+    PT_EligibleRate_active: float
+        Share of active business income eligible for PT rate schedule
+    PT_EligibleRate_passive: float
+        Share of passive business income eligible for PT rate schedule
+    PT_wages_active_income: bool
+        Wages included in (positive) active business eligible for PT rates
+    PT_top_stacking: bool
+        PT taxable income stacked on top of regular taxable income
+    c05200
+
+    Returns
+    -------
+    c05200: float
+        Tax aount from Schedule X, Y, Z tables
     """
     c05200 = SchXYZ(c04800, MARS, e00900, e26270, e02000, e00200,
                     PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
