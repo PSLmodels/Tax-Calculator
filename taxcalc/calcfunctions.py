@@ -1533,7 +1533,8 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
         Wages included in (positive) active business eligible for PT rates
     PT_top_stacking: bool
         PT taxable income stacked on top of regular taxable income
-    c05200
+    c05200: float
+        Tax amount from Schedule X,Y,Z tables
 
     Returns
     -------
@@ -1569,6 +1570,150 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
     if CG_nodiff is false.
+
+    Parameters
+    ----------
+    e00650: float
+        Qualified dividends included in ordinary dividends
+    c01000: float
+        Limitation on capital losses
+    c23650: float
+        Net capital gain (long term + short term) before exclusion
+    p23250: float
+        Schedule D: net long-term capital gains/losses
+    e01100: float
+        Capital gains distributions not reported on Schedule D
+    e58990: float
+        Investment income elected amount from Form 4952
+    e00200: float
+        Wages, salaries, and tips for filing unit net of pension contributions
+    e24515: float
+        Schedule D: un-recaptured section 1250 Gain
+    e24518: float
+        Schedule D: 28% rate gain or loss
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    c04800: float
+        Regular taxable income
+    c05200: float
+        Tax amount from Schedule X,Y,Z tables
+    e00900: float
+        Schedule C business net profit/loss for filing unit
+    e26270: float
+        Schedule E: combined partnership and S-corporation net income/loss
+    e02000: float
+        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss
+    II_rt1: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 1
+    II_rt2: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 2
+    II_rt3: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 3
+    II_rt4: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 4
+    II_rt5: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 5
+    II_rt6: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 6
+    II_rt7: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 7
+    II_rt8: float
+        Personal income (regular/non-AMT/non-pass-through) tax rate 8
+    II_brk1: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1
+    II_brk2: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2
+    II_brk3: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3
+    II_brk4: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4
+    II_brk5: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5
+    II_brk6: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6
+    II_brk7: float
+        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7
+    PT_rt1: float
+        Pass through income tax rate 1
+    PT_rt2: float
+        Pass through income tax rate 2
+    PT_rt3: float
+        Pass through income tax rate 3
+    PT_rt4: float
+        Pass through income tax rate 4
+    PT_rt5: float
+        Pass through income tax rate 5
+    PT_rt6: float
+        Pass through income tax rate 6
+    PT_rt7: float
+        Pass through income tax rate 7
+    PT_rt8: float
+        Pass through income tax rate 8
+    PT_brk1: float
+        Pass through income tax bracket (upper threshold) 1
+    PT_brk2: float
+        Pass through income tax bracket (upper threshold) 2
+    PT_brk3: float
+        Pass through income tax bracket (upper threshold) 3
+    PT_brk4: float
+        Pass through income tax bracket (upper threshold) 4
+    PT_brk5: float
+        Pass through income tax bracket (upper threshold) 5
+    PT_brk6: float
+        Pass through income tax bracket (upper threshold) 6
+    PT_brk7: float
+        Pass through income tax bracket (upper threshold) 7
+    CG_nodiff: bool
+        Long term capital gains and qualified dividends taxed no differently than regular taxable income
+    PT_EligibleRate_active: float
+        Share of active business income eligible for PT rate schedule
+    PT_EligibleRate_passive: float
+        Share of passive business income eligible for PT rate schedule
+    PT_wages_active_income: bool
+        Wages included in (positive) active business eligible for PT rates
+    PT_top_stacking: bool
+        PT taxable income stacked on top of regular taxable income
+    CG_rt1: float
+        Long term capital gain and qualified dividends (regular/non-AMT) rate 1
+    CG_rt2: float
+        Long term capital gain and qualified dividends (regular/non-AMT) rate 2
+    CG_rt3: float
+        Long term capital gain and qualified dividends (regular/non-AMT) rate 3
+    CG_rt4: float
+        Long term capital gain and qualified dividends (regular/non-AMT) rate 4
+    CG_brk1: float
+        Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 1
+    CG_brk2: float
+        Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 2
+    CG_brk3: float
+        Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 3
+    dwks10: float
+        Sum of dwks6 + dwks9
+    dwks13: float
+        Difference of dwks10 - dwks12
+    dwks14: float
+        Maximum of 0 and dwks1 - dwks13
+    dwks19: float
+        Maximum of dwks17 and dwks16
+    c05700: float
+        Lump sum distributions
+    taxbc: float
+        Regular tax on regular taxable income before credits
+
+    Returns
+    -------
+    dwks10: float
+        Sum of dwks6 + dwks9
+    dwks13: float
+        Difference of dwks10 - dwks12
+    dwks14: float
+        Maximum of 0 and dwks1 - dwks13
+    dwks19: float
+        Maximum of dwks17 and dwks16
+    c05700: float
+        Lump sum distributions
+    taxbc: float
+        Regular tax on regular taxable income before credits
     """
     # pylint: disable=too-many-statements
     if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
@@ -1671,6 +1816,28 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
 def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
     """
     Computes surtax on AGI above some threshold.
+
+    Parameters
+    ----------
+    c00100: float
+        Adjusted Gross Income (AGI)
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    AGI_surtax_trt: float
+        New AGI surtax rate
+    AGI_surtax_thd: float
+        Threshold for the new AGI surtax
+    taxbc: float
+        Regular tax on regular taxable income before credits
+    surtax: float
+        Surtax on AGI above some threshold
+
+    Returns
+    -------
+    taxbc: float
+        Regular tax on regular taxable income before credits
+    surtax: float
+        Surtax on AGI above some threshold
     """
     if AGI_surtax_trt > 0.:
         hiAGItax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
@@ -1696,6 +1863,104 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     c05800 is total (regular + AMT) income tax liability before credits.
 
     Note that line-number variable names refer to 2015 Form 6251.
+
+    Parameters
+    -----------
+    e07300: float
+        Foreign tax credit from Form 1116
+    dwks13: float
+        Difference of dwks10 - dwks12
+    standard: float
+        Standard deduction (zero for itemizers)
+    f6251: int
+        1 if Form 6251 (AMT) attached to return, otherwise 0
+    c00100: float
+        Adjusted Gross Income (AGI)
+    c18300: float
+        Schedule A: state and local taxes plus real estate taxes deducted
+    taxbc: float
+        Regular tax on regular taxable income before credits
+    c04470: float
+        Itemized deductions after phase-out (zero for non itemizers)
+    c17000: float
+        Schedule A: Medical expenses deducted
+    c20800: float
+        Schedule A: net limited miscellaneous deductions deducted
+    c21040: float
+        Itemized deductiosn that are phased out
+    e24515: float
+        Schedule D: Un-Recaptured Section 1250 Gain
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    sep: int
+        2 when MARS is 3 (married filing separately), otherwise 1
+    dwks19: float
+        Maximum of 0 and dwks1 - dwks13
+    dwks14: float
+        Maximum of 0 and dwks1 - dwks13
+    c05700: float
+        Lump sum distributions
+    e62900: float
+        Alternative Minimum Tax foreign tax credit from Form 6251
+    e00700: float
+        Schedule C business net profit/loss for filing unit
+    dwks10: float
+        Sum of dwks6 + dwks9
+    age_head: int
+        Age in years of taxpayer (i.e. primary adult)
+    age_spouse: int
+        Age in years of spouse (i.e. secondary adult if present)
+    earned: float
+        Earned income for filing unit
+    cmbtp: float
+        Estimate of income on (AMT) Form 6251 but not in AGI
+    AMT_child_em_c_age: int
+        Age ceiling for special AMT exemption
+    AMT_brk1: float
+        AMT bracket 1 (upper threshold)
+    AMT_em: float
+        AMT exemption amount
+    AMT_prt: float
+        AMT exemption phaseout rate
+    AMT_rt1: float
+        AMT rate 1
+    AMT_rt2: float
+        Additional AMT rate for AMT taxable income about AMT bracket 1
+    AMT_child_em: float
+        Child AMT exemption additional income base
+    AMT_em_ps: float
+        AMT exemption phaseout start
+    AMT_em_pe: float
+        AMT exemption phaseout ending AMT taxable income for Married Filing Separately
+    AMT_CG_brk1: float
+        Top of long-term capital gains and qualified dividends (AMT) tax bracket 1
+    AMT_CG_brk2: float
+        Top of long-term capital gains and qualified dividends (AMT) tax bracket 2
+    AMT_CG_brk3: float
+        Top of long-term capital gains and qualified dividends (AMT) tax bracket 3
+    AMT_CG_rt1: float
+        Long term capital gain and qualified dividends (AMT) rate 1
+    AMT_CG_rt2: float
+        Long term capital gain and qualified dividends (AMT) rate 2
+    AMT_CG_rt3: float
+        Long term capital gain and qualified dividends (AMT) rate 3
+    AMT_CG_rt4: float
+        Long term capital gain and qualified dividends (AMT) rate 4
+    c05800: float
+        Total (regular + AMT) income tax liability before credits
+    c09600: float
+        Alternative Minimum Tax (AMT) liability
+    c62100: float
+        Alternative Minimum Tax (AMT)
+
+    Returns
+    -------
+    c62100: float
+        Alternative Minimum Tax (AMT)
+    c09600: float
+        Alternative Minimum Tax (AMT) liability
+    c05800: float
+        Total (regular + AMT) income tax liability before credits
     """
     # pylint: disable=too-many-statements,too-many-branches
     # Form 6251, Part I
