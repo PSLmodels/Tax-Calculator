@@ -5,6 +5,8 @@ import numpy
 import pandas
 import pytest
 
+from pytest_harvest import get_session_results_df
+
 
 # convert all numpy warnings into errors so they can be detected in tests
 numpy.seterr(all='raise')
@@ -131,3 +133,39 @@ def fixture_test_reforms(tests_path):
             raise ValueError(msg)
         else:
             os.remove(actfile_path)
+
+
+def pytest_sessionfinish(session):
+    """ Gather all test profiling test results and print to user."""
+
+    tests_path = os.path.abspath(os.path.dirname(__file__))
+
+    new_stats_df = get_session_results_df(session)
+    old_stats_df = pandas.read_csv(os.path.join(tests_path, 'test_stats_benchmark.csv'))
+
+    if all(x in old_stats_df.columns for x in new_stats_df): # check if test session covered all tests (not a subset)
+        # format time differenced dataframe
+        time_diff = new_stats_df['duration_ms'] - old_stats_df['duration_ms']
+        new_stats_df['time_diff'] = time_diff
+        new_stats_df.rename(columns={'test_id': 'Test', 'status': 'Status', 'duration_ms': 'Time (ms)'})
+
+        print('\n')
+
+        tol = 1.0 # choose tolerance in seconds
+        tol *= 1000
+
+        for ind, row in new_stats_df.iterrows():
+            if row['time_diff'] > tol:
+                diff = round(abs(row['time_diff']), 3)
+                print(f"{row['Test']} is slower than the current benchmark by {diff} ms")
+
+        print('\n')
+
+        for ind, row in new_stats_df.iterrows():
+            if row['time_diff'] < (-1 * tol):
+                diff = round(abs(row['time_diff']), 3)
+                print(f"{row['Test']} is faster than the current benchmark by {diff} msh")
+
+        print('\n')
+
+        new_stats_df.to_csv('test_stats_current.csv')
