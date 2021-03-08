@@ -9,7 +9,7 @@ You can install it with [Anaconda](https://www.anaconda.com/products/individual)
 via:
 
 ```
-conda install -c pslmodels taxcalc
+conda install -c conda-forge taxcalc
 ```
 
 When using
@@ -51,12 +51,12 @@ The cross-model validation work with NBER's TAXSIM-27 model is described
 
 ## Latest release
 
-{doc}`3.0.0 (2020-08-22) <about/releases>`
+{doc}`3.1.0 (2020-03-01) <about/releases>`
 
 If you are already using Tax-Calculator, upgrade using the following command:
 
 ```
-conda update -c PSLmodels taxcalc
+conda update -c conda-forge taxcalc
 ```
 
 If you're a new user, read {doc}`usage/starting`.

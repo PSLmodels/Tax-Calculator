@@ -391,15 +391,20 @@ def test_bad_json_names(tests_path):
     """
     Test that ValueError raised with assump or reform do not end in '.json'
     """
+    test_url = (
+        'https://raw.githubusercontent.com/PSLmodels/'
+        'Tax-Calculator/master/taxcalc/reforms/'
+        '2017_law.out.csv'
+    )
     csvname = os.path.join(tests_path, '..', 'growfactors.csv')
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(csvname, None)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects('http://name.json.html', None)
+        Calculator.read_json_param_objects(test_url, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, csvname)
     with pytest.raises(ValueError):
-        Calculator.read_json_param_objects(None, 'http://name.json.html')
+        Calculator.read_json_param_objects(None, test_url)
 
 
 def test_json_assump_url():
@@ -491,6 +496,14 @@ def test_json_assump_url():
     assert params_url
     assert params_url == params_str
 
+    assump_gh_url = (
+        "github://PSLmodels:Tax-Calculator@master/taxcalc/assumptions/"
+        "economic_assumptions_template.json"
+    )
+    params_gh_url = Calculator.read_json_param_objects(None, assump_gh_url)
+    assert params_gh_url
+    assert params_gh_url == params_str
+
 
 def test_read_bad_json_assump_file():
     """
@@ -509,7 +522,7 @@ def test_read_bad_json_assump_file():
         Calculator.read_json_param_objects(None, badassump1)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, 'unknown_file_name')
-    with pytest.raises(ValueError):
+    with pytest.raises(TypeError):
         Calculator.read_json_param_objects(None, list())
 
 
@@ -517,9 +530,9 @@ def test_json_doesnt_exist():
     """
     Test JSON file which doesn't exist
     """
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, './reforms/doesnt_exist.json')
-    with pytest.raises(FileNotFoundError):
+    with pytest.raises(ValueError):
         Calculator.read_json_param_objects('./reforms/doesnt_exist.json', None)
 
 
