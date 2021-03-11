@@ -2045,6 +2045,36 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
     """
     Computes Net Investment Income Tax (NIIT) amount assuming that
     all annuity income is excluded from net investment income.
+
+    Parameters
+    ----------
+    e00300: float
+        Tax-exempt interest income
+    e00600: float
+        Ordinary dividends included in AGI
+    e02000: float
+        Schedule E total rental, royalty, parternship, S-corporation, etc, income/loss
+    e26270: float
+        Schedule E: combined partnership and S-corporation net income/loss
+    c01000: float
+        Limitation on capital losses
+    c00100: float
+        Adjusted Gross Income (AGI)
+    NIIT_thd: float
+        Net Investment Income Tax modified AGI threshold
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    NIIT_PT_taxed: bool
+        Whether or not partnership and S-corp income is NIIT based
+    NIIT_rt: float
+        Net Investment Income Tax rate
+    niit: float
+        Net investment income tax from Form 8960
+
+    Returns
+    -------
+    niit: float
+        Net investment income tax from Form 8960
     """
     modAGI = c00100  # no foreign earned income exclusion to add
     if not NIIT_PT_taxed:
