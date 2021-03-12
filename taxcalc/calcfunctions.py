@@ -2158,13 +2158,20 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
 
     Parameters
     ----------
-    basic_frac
-    phasein_rate
-    earnings
-    max_amount
-    phaseout_start
-    agi
-    phaseout_rate
+    basic_frac: list
+        Fraction of maximum earned income credit paid at zero earnings
+    phasein_rate: list
+        Earned income credit phasein rate
+    earnings: float
+        Earned income for filing unit
+    max_amount: list
+        Maximum earned income credit
+    phaseout_start: list
+        Earned income credit phaseout start AGI
+    agi: float
+        Adjusted Gross Income (AGI)
+    phaseout_rate: list
+        Earned income credit phaseout rate
 
     Returns
     -------
@@ -2223,29 +2230,29 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
         Earned income for taxpayer   
     earned_s: float
         Earned income for spouse
-    EITC_ps: float
+    EITC_ps: list
         Earned income credit phaseout start AGI
-    EITC_MinEligAge: int
+    EITC_MinEligAge: list
         Minimum age for childless EITC eligibility
-    EITC_MaxEligAge: int
+    EITC_MaxEligAge: list
         Maximum age for childless EITC eligibility
-    EITC_ps_MarriedJ: float
+    EITC_ps_MarriedJ: list
         Extra earned income credit phaseout start AGI for married filling jointly
-    EITC_rt: float
+    EITC_rt: list
         Earned income credit phasein rate
-    EITC_c: float
+    EITC_c: list
         Maximum earned income credit
-    EITC_prt: float
+    EITC_prt: list
         Earned income credit phaseout rate
-    EITC_basic_frac: float
+    EITC_basic_frac: list
         Fraction of maximum earned income credit paid at zero earnings
-    EITC_InvestIncome_c: float
+    EITC_InvestIncome_c: list
         Maximum investment income before EITC reduction
-    EITC_excess_InvestIncome_rt: float
+    EITC_excess_InvestIncome_rt: list
         Rate of EITC reduction when investemtn income exceeds ceiling
-    EITC_indiv: bool
+    EITC_indiv: list
         EITC is computed for each spouse based in individual earnings
-    EITC_sep_filers_elig: bool
+    EITC_sep_filers_elig: list
         Separate filers are eligible for the EITC
     c59660: float
         EITC amount
