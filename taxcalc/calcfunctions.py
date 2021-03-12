@@ -2090,6 +2090,40 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
           exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
+
+    Parameters
+    ----------
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    earned_p: float
+        Earned income for taxpayer   
+    earned_s: float
+        Earned income for spouse
+    f2441: int
+        Number of child/dependent care qualifying persons
+    CDCC_c: float
+        Maximum child/dependent care credit per dependent
+    e32800: float
+        Child/dependent care expenses for qualifying persons from Form 2441
+    exact: int
+        Whether or not to do rounding of phaseout fraction
+    c00100: float
+        Adjusted Gross Income (AGI)
+    CDCC_ps: float
+        Child/dependent care credit phaseout start
+    CDCC_crt: float
+        Child/dependent care credit phaseout percentage rate ceiling
+    c05800: float
+        Total (regular + AMT) income tax liability before credits
+    e07300: float
+        Foreign tax credit from Form 1116
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
+
+    Returns
+    -------
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
     """
     # credit for at most two cared-for individuals and for actual expenses
     max_credit = min(f2441, 2) * CDCC_c
@@ -2121,6 +2155,21 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
     English parameter names are used in this function because the
     EITC formula is not available on IRS forms or in IRS instructions;
     the extensive IRS EITC look-up table does not reveal the formula.
+
+    Parameters
+    ----------
+    basic_frac
+    phasein_rate
+    earnings
+    max_amount
+    phaseout_start
+    agi
+    phaseout_rate
+
+    Returns
+    -------
+    eitc: float
+        Earned Income Credit
     """
     eitc = min((basic_frac * max_amount +
                 (1.0 - basic_frac) * phasein_rate * earnings), max_amount)
@@ -2141,6 +2190,70 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          c59660):
     """
     Computes EITC amount, c59660.
+
+    Parameters
+    ----------
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    DSI: int
+        1 if claimed as dependent on another return, otherwise 0
+    EIC: int
+        Number of EIC qualifying children
+    c00100: float
+        Adjusted Gross Income (AGI)
+    e00300: float
+        Taxable interest income
+    e00400: float
+        Tax exempt interest income
+    e00600: float
+        Ordinary dividends included in AGI
+    c01000: float
+        Limitation on capital losses
+    e02000: float
+        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss
+    e26270: float
+        Schedule E combined partnership and S-corporation net income/loss
+    age_head: int
+        Age in years of taxpayer (primary adult)
+    age_spouse: int
+        Age in years of spouse (secondary adult, if present)
+    earned: float
+        Earned income for filing unit
+    earned_p: float
+        Earned income for taxpayer   
+    earned_s: float
+        Earned income for spouse
+    EITC_ps: float
+        Earned income credit phaseout start AGI
+    EITC_MinEligAge: int
+        Minimum age for childless EITC eligibility
+    EITC_MaxEligAge: int
+        Maximum age for childless EITC eligibility
+    EITC_ps_MarriedJ: float
+        Extra earned income credit phaseout start AGI for married filling jointly
+    EITC_rt: float
+        Earned income credit phasein rate
+    EITC_c: float
+        Maximum earned income credit
+    EITC_prt: float
+        Earned income credit phaseout rate
+    EITC_basic_frac: float
+        Fraction of maximum earned income credit paid at zero earnings
+    EITC_InvestIncome_c: float
+        Maximum investment income before EITC reduction
+    EITC_excess_InvestIncome_rt: float
+        Rate of EITC reduction when investemtn income exceeds ceiling
+    EITC_indiv: bool
+        EITC is computed for each spouse based in individual earnings
+    EITC_sep_filers_elig: bool
+        Separate filers are eligible for the EITC
+    c59660: float
+        EITC amount
+
+    Returns
+    -------
+    c59660: float
+        EITC amount
     """
     # pylint: disable=too-many-branches
     if MARS != 2:
@@ -2206,6 +2319,32 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
                                rptc_p, rptc_s, rptc):
     """
     Computes refundable payroll tax credit amounts.
+
+    Parameters
+    ----------
+    was_plus_sey_p: float
+        Wage and salary income plus taxable self employment income for taxpayer   
+    was_plus_sey_s: float
+        Wage and salary income plus taxable self employment income for spouse
+    RPTC_c: float
+        Maximum refundable payroll tax credit
+    RPTC_rt: float
+        Refundable payroll tax credit phasein rate
+    rptc_p: float
+        Refundable Payroll Tax Credit for taxpayer
+    rptc_s: float
+        Refundable Payroll Tax Credit for spouse
+    rptc: float
+        Refundable Payroll Tax Credit for filing unit
+
+    Returns
+    -------
+    rptc_p: float
+        Refundable Payroll Tax Credit for taxpayer
+    rptc_s: float
+        Refundable Payroll Tax Credit for spouse
+    rptc: float
+        Refundable Payroll Tax Credit for filing unit
     """
     rptc_p = min(was_plus_sey_p * RPTC_rt, RPTC_c)
     rptc_s = min(was_plus_sey_s * RPTC_rt, RPTC_c)
