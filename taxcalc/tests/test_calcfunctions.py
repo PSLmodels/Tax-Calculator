@@ -221,3 +221,45 @@ def test_StdDed(test_tuple, expected_value, skip_jit):
     test_value = calcfunctions.StdDed(*test_tuple)
 
     assert np.allclose(test_value, expected_value)
+
+def test_AfterTaxIncome(skip_jit):
+    '''
+    Tests the AfterTaxIncome function
+    '''
+    test_tuple = (1000, 5000, 4000)
+    test_value = calcfunctions.AfterTaxIncome(*test_tuple)
+    expected_value = 4000
+    assert np.allclose(test_value, expected_value)
+
+
+def test_ExpandIncome(skip_jit):
+    '''
+    Tests the ExpandIncome function
+    '''
+    test_tuple = (10000, 1000, 500, 100, 200, 300, 400, 20, 500 ,50, 250, 10, 20, 30, 40, 60, 70, 80, 1500, 2000, 16380)
+    test_value = calcfunctions.ExpandIncome(*test_tuple)
+    expected_value = 16380
+    assert np.allclose(test_value, expected_value)
+
+
+tuple1 = (1, 1, 2, 0, 0, 1000)
+tuple2 = (0, 1, 2, 0, 0, 1000)
+tuple3= (1, 1, 2, 100, 0, 1000)
+tuple4=(0, 2, 1, 100, 200, 1000)
+tuple5=(0, 1, 3, 100, 300, 1000)
+expected1 = (0,1000)
+expected2=(0,1000)
+expected3=(0,1000)
+expected4=(200,1200)
+expected5=(300,1300)
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value',[
+        (tuple1, expected1), (tuple2, expected2), (tuple3, expected3), (tuple4, expected4), (tuple5, expected5)])
+
+def test_LumpSumTax(test_tuple, expected_value, skip_jit):
+    '''
+    Tests LumpSumTax function
+    '''
+    test_value = calcfunctions.LumpSumTax(*test_tuple) 
+    assert np.allclose(test_value, expected_value)
