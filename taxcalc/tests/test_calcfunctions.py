@@ -263,3 +263,36 @@ def test_LumpSumTax(test_tuple, expected_value, skip_jit):
     '''
     test_value = calcfunctions.LumpSumTax(*test_tuple) 
     assert np.allclose(test_value, expected_value)
+
+FST_AGI_thd_lo_in=[1000000, 1000000, 500000, 1000000, 1000000]
+FST_AGI_thd_hi_in=[2000000, 2000000, 1000000, 2000000, 2000000]
+tuple1=(1100000, 1, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple2=(2100000, 1, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple3=(1100000, 1, 1000, 100, 100, 0, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple4=(1100000, 2, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple5=(2100000, 2, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple6=(1100000, 2, 1000, 100, 100, 0, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple7=(510000, 3, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple8=(1100000, 3, 1000, 100, 100, 0.1, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+tuple9=(510000, 3, 1000, 100, 100, 0, FST_AGI_thd_lo_in, FST_AGI_thd_hi_in, 100, 200, 2000, 300)
+expected1=(10915, 11115, 12915, 11215)
+expected2=(209150, 209350, 211150, 209450)
+expected3=(0, 200, 2000, 300)
+expected4=(10915, 11115, 12915, 11215)
+expected5=(209150, 209350, 211150, 209450)
+expected6=(0, 200, 2000, 300)
+expected7=(1003, 1203, 3003, 1303)
+expected8=(109150, 109350, 111150, 109450)
+expected9=(0, 200, 2000, 300)
+
+@pytest.mark.parametrize(
+    'test_tuple,expected_value',[
+        (tuple1, expected1), (tuple2, expected2), (tuple3, expected3), (tuple4, expected4), (tuple5, expected5), (tuple6, expected6), 
+        (tuple7, expected7), (tuple8, expected8), (tuple9, expected9)])
+
+def test_FairShareTax(test_tuple, expected_value, skip_jit):
+    '''
+    Tests FairShareTax function
+    '''
+    test_value = calcfunctions.FairShareTax(*test_tuple) 
+    assert np.allclose(test_value, expected_value)
