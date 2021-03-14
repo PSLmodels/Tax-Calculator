@@ -110,7 +110,7 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
 
     Parameters
     ----------
-    SS_Earnings_c: float
+    SS_Earnings_c: list
         Maximum taxable earnings for Social Security. 
         Individual earnings below this amount are subjected to OASDI payroll tax.
         This parameter is indexed by rate of growth in average wages not by the price inflation rate. 
@@ -122,15 +122,15 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
         Contributions to defined-contribution pension plans for taxpayer   
     pencon_s: float
         Contributions to defined-contribution pension plans for spouse    
-    FICA_ss_trt: float
+    FICA_ss_trt: list
         Social security payroll tax rate, including both employer and employee    
-    FICA_mc_trt: float
+    FICA_mc_trt: list
         Medicare payroll tax rate, including both employer and employee   
-    ALD_SelfEmploymentTax_hc: float
+    ALD_SelfEmploymentTax_hc: list
         Adjustment for self-employment tax haircut
         If greater than zero, reduces the employer equivalent portion of self-employment adjustment
         Final adjustment amount = (1-Haircut)*SelfEmploymentTaxAdjustment    
-    SS_Earnings_thd: float
+    SS_Earnings_thd: list
         Additional taxable earnings threshold for Social Security 
         Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to 
         earnings below the maximum taxable earnings threshold.   
@@ -286,13 +286,13 @@ def DependentCare(nu13, elderly_dependents, earned,
         Earned income for filing unit
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
-    ALD_Dependents_thd: float
+    ALD_Dependents_thd: list
         Maximum income to qualify for dependent care deduction
-    ALD_Dependents_hc: float
+    ALD_Dependents_hc: list
         Deduction for childcare costs haircut
-    ALD_Dependents_Child_c: float
+    ALD_Dependents_Child_c: list
         National weighted average cost of childcare, ceiling for available childcare deduction
-    ALD_Dependents_Elder_c: float
+    ALD_Dependents_Elder_c: list
         Eldercare deduction ceiling
 
     Returns
@@ -351,27 +351,27 @@ def Adj(e03150, e03210, c03260,
         Alimony received
     care_deduction: float
         Dependent care expense deduction
-    ALD_StudentLoan_hc: float
+    ALD_StudentLoan_hc: list
         Student loan interest deduction haircut
-    ALD_SelfEmp_HealthIns_hc: float
+    ALD_SelfEmp_HealthIns_hc: list
         Self-employed h.i. deduction haircut
-    ALD_KEOGH_SEP_hc: float
+    ALD_KEOGH_SEP_hc: list
         KEOGH/etc. plan contribution deduction haircut
-    ALD_EarlyWithdraw_hc: float
+    ALD_EarlyWithdraw_hc: list
         Penalty on early withdrawal deduction haricut
-    ALD_AlimonyPaid_hc: float
+    ALD_AlimonyPaid_hc: list
         Alimony paid deduction haircut
-    ALD_AlimonyReceived_hc: float
+    ALD_AlimonyReceived_hc: list
         Alimony received deduction haircut
-    ALD_EducatorExpenses_hc: float
+    ALD_EducatorExpenses_hc: list
         Eductor expenses haircut
-    ALD_HSADeduction_hc: float
+    ALD_HSADeduction_hc: list
         HSA Deduction haircut
-    ALD_IRAContributions_hc: float
+    ALD_IRAContributions_hc: list
         IRA Contribution haircut
-    ALD_DomesticProduction_hc: float
+    ALD_DomesticProduction_hc: list
         Domestic production haircut
-    ALD_Tuition_hc: float
+    ALD_Tuition_hc: list
         Tuition and fees haircut
 
     Returns
@@ -455,9 +455,9 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
         Net short-term capital gails/losses (Schedule D)
     sep: int
         2 when MARS is 3 (married filing separately); otherwise 1
-    ALD_StudentLoan_hc: float
+    ALD_StudentLoan_hc: list
         Student loan interest deduction haircut
-    ALD_InvInc_ec_rt: float
+    ALD_InvInc_ec_rt: list
         Investment income exclusion rate haircut
     invinc_ec_base: float
         Exclusion of investment income from AGI   
@@ -473,13 +473,13 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
         Taxable refunds of state and local income taxes
     e00800: float
         Alimony received
-    CG_nodiff: bool
+    CG_nodiff: list
         Long term capital gains and qualified dividends taxed no differently than regular taxable income
-    CG_ec: float
+    CG_ec: list
         Dollar amount of all capital gains and qualified dividends that are excluded from AGI
-    CG_reinvest_ec_rt: float
+    CG_reinvest_ec_rt: list
         Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI
-    ALD_BusinessLosses_c: float
+    ALD_BusinessLosses_c: list
         Maximm amount of business losses deductible
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))      
@@ -575,13 +575,13 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
         Variable that is used in OASDI benefit taxation logic
     e02400: float
         Total social security (OASDI) benefits
-    SS_thd50: float
+    SS_thd50: list
         Threshold for social security benefit taxability (1)
-    SS_thd85: float
+    SS_thd85: list
         Threshold for social security benefit taxability (2)
-    SS_percentage1: float
+    SS_percentage1: list
         Social security taxable income decimal fraction (1)
-    SS_percentage2: float
+    SS_percentage2: list
         Social security taxable income decimal fraction (2)
     c02500: float
         Social security (OASDI) benefits included in AGI
@@ -617,13 +617,13 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
         Number of people in the tax unit age 18-20
     n21: int
         Number of people in the tax unit age 21+
-    UBI_u18: float
+    UBI_u18: list
         UBI benefit for those under 18
-    UBI_1820: float
+    UBI_1820: list
         UBI benefit for those between 18 to 20
-    UBI_21: float
+    UBI_21: list
         UBI benefit for those 21 or more
-    UBI_ecrt: float
+    UBI_ecrt: list
         Fraction of UBI benefits that are not included in AGI
     ubi: float
         Total UBI received by the tax unit (is included in expanded_income)
@@ -677,13 +677,13 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Number of people in the tax unit under 18
     taxable_ubi: float
         Amount of UBI that is taxable (is added to AGI)
-    II_em: float
+    II_em: list
         Personal and dependent exemption amount
-    II_em_ps: float
+    II_em_ps: list
         Personal exemption phaseout starting income
-    II_prt: float
+    II_prt: list
         Personal exemption phaseout rate
-    II_no_em_nu18: bool
+    II_no_em_nu18: list
         Repeal personal exemtptions for dependents under age 18       
     c00100: float
         Adjusted Gross Income (AGI)
@@ -752,9 +752,9 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         Itemizable gross (before 10% AGI disregard) causalty or theft loss
     c00100: float
         Adjusted gross income (AGI)
-    ID_AmountCap_rt: float
+    ID_AmountCap_rt: list
         Ceiling on the gross amount of itemized deductions allowed; decimal fraction of AGI
-    ID_AmountCap_Switch: bool
+    ID_AmountCap_Switch: list
         Deductions subject to the cap on itemized deduction benefits
     e17500_capped: float
         Schedule A: medical expenses, capped as a decimal fraction of AGI
@@ -905,65 +905,65 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
         Schedule A: net causalty or theft loss deducted
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
-    ID_ps: float
+    ID_ps: list
         Itemized deduction phaseout AGI start
-    ID_Medical_frt: float
+    ID_Medical_frt: list
         Floor (as decimal fraction of AGI) for deductible medical expenses
-    ID_Medical_frt_add4aged: float
+    ID_Medical_frt_add4aged: list
         Add on floor (as decimal fraction of AGI) for deductible medical expenses for elderly filing units
-    ID_Medical_hc: float
+    ID_Medical_hc: list
         Medical expense deduction haircut
-    ID_Casualty_frt: float
+    ID_Casualty_frt: list
         Floor (as decimal fraction of AGI) for deductible causality loss
-    ID_Casualty_hc: float
+    ID_Casualty_hc: list
         Casualty expense deduction haircut
-    ID_Miscellaneous_frt: float
+    ID_Miscellaneous_frt: list
         Floor (as decimal fraction of AGI) for deductible miscellaneous expenses
-    ID_Miscellaneous_hc: float
+    ID_Miscellaneous_hc: list
         Miscellaneous expense deduction haircut
-    ID_Charity_crt_all: float
+    ID_Charity_crt_all: list
         Ceiling (as decimal fraction of AGI) for all charitable contribution deductions
-    ID_Charity_crt_noncash: float
+    ID_Charity_crt_noncash: list
         Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions
-    ID_prt: float
+    ID_prt: list
         Itemized deduction phaseout rate
-    ID_crt: float
+    ID_crt: list
         Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions
-    ID_c: float
+    ID_c: list
         Ceiling on the amount of itemized deductions allowed (dollars)
-    ID_StateLocalTax_hc: float
+    ID_StateLocalTax_hc: list
         State and local income and sales taxes deduction haircut
-    ID_Charity_frt: float
+    ID_Charity_frt: list
         Floor (as decimal fraction of AGI) for deductible charitable contributions
-    ID_Charity_hc: float
+    ID_Charity_hc: list
         Charity expense deduction haircut
-    ID_InterestPaid_hc: float
+    ID_InterestPaid_hc: list
         Interest paid deduction haircut
-    ID_RealEstate_hc: float
+    ID_RealEstate_hc: list
         State, local, and foreign real estate taxes deductions haircut
-    ID_Medical_c: float
+    ID_Medical_c: list
         Ceiling on the amount of medical expense deduction allowed (dollars)
-    ID_StateLocalTax_c: float
+    ID_StateLocalTax_c: list
         Ceiling on the amount of state and local income and sales taxes deduction allowed (dollars)
-    ID_RealEstate_c: float
+    ID_RealEstate_c: list
         Ceiling on the amount of state, local, and foreign real estate taxes deduction allowed (dollars)
-    ID_InterestPaid_c: float
+    ID_InterestPaid_c: list
         Ceiling on the amount of interest paid deduction allowed (dollars)
-    ID_Charity_c: float
+    ID_Charity_c: list
         Ceiling on the amount of charity expense deduction allowed (dollars)
-    ID_Casualty_c: float
+    ID_Casualty_c: list
         Ceiling on the amount of casualty expense deduction allowed (dollars)
-    ID_Miscellaneous_c: float
+    ID_Miscellaneous_c: list
         Ceiling on the amount of miscellaneous expense deduction allowed (dollars)
-    ID_AllTaxes_c: float
+    ID_AllTaxes_c: list
         Ceiling on the amount of state and local income, stales, and real estate deductions allowed (dollars)
-    ID_AllTaxes_hc: float
+    ID_AllTaxes_hc: list
         State and local income, sales, and real estate tax deduciton haircut
-    ID_StateLocalTax_crt: float
+    ID_StateLocalTax_crt: list
         Ceiling (as decimal fraction of AGI) for the combination of all state and local income and sales tax deductions
-    ID_RealEstate_crt: float
+    ID_RealEstate_crt: list
         Ceiling (as decimal fraction of AGI) for the combination of all state, local, and foreign real estate tax deductions
-    ID_Charity_f: float
+    ID_Charity_f: list
         Floor on the amount of charity expense deduction allowed (dollars)
 
     Returns
@@ -1058,13 +1058,13 @@ def AdditionalMedicareTax(e00200, MARS,
     -----
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
-    AMEDT_ec: float
+    AMEDT_ec: list
         Additional Medicare Tax earnings exclusion
-    AMEDT_rt: float
+    AMEDT_rt: list
         Additional Medicare Tax rate
-    FICA_ss_trt: float
+    FICA_ss_trt: list
         FICA Social Security tax rate
-    FICA_mc_trt: float
+    FICA_mc_trt: list
         FICA Medicare tax rate
     e00200: float
         Wages and salaries
@@ -1105,15 +1105,15 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         1 if claimed as dependent on another return; otherwise 0
     earned: float
         Earned income for filing unit
-    STD: float
+    STD: list
         Standard deduction amount
     age_head: int
         Age in years of taxpayer
     age_spouse: int
         Age in years of spouse
-    STD_Aged: float
+    STD_Aged: list
         Additional standard deduction for blind and aged
-    STD_Dep: float
+    STD_Dep: list
         Standard deduction for dependents
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
@@ -1127,8 +1127,10 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
         Standard deduction (zero for itemizers)
     c19700: float
         Schedule A: charity contributions deducted
-    STD_allow_charity_ded_nonitemizers: bool
+    STD_allow_charity_ded_nonitemizers: list
         Allow standard deduction filers to take the charitable contributions deduction
+    STD_charity_ded_nonitemizers_max: list
+        Ceiling amount (in dollars) for charitable deductions for non-itemizers
 
     Returns
     -------
@@ -1203,27 +1205,27 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
         Filing unit's share of total W-2 wages paid by the pass-through business
     PT_ubia_property: float
         Filing unit's share of total business property owned by the pass-through business
-    PT_qbid_rt: float
+    PT_qbid_rt: list
         Pass-through qualified business income deduction rate
-    PT_qbid_taxinc_thd: float
+    PT_qbid_taxinc_thd: list
         Lower threshold of pre-QBID taxable income
-    PT_qbid_taxinc_gap: float
+    PT_qbid_taxinc_gap: list
         Dollar gap between upper and lower threshold of pre-QBID taxable income
-    PT_qbid_w2_wages_rt: float
+    PT_qbid_w2_wages_rt: list
         QBID cap rate on pass-through business W-2 wages paid
-    PT_qbid_alt_w2_wages_rt: float
+    PT_qbid_alt_w2_wages_rt: list
         Alternative QBID cap rate on pass-through business W-2 wages paid
-    PT_qbid_alt_property_rt: float
+    PT_qbid_alt_property_rt: list
         Alternative QBID cap rate on pass-through business property owned
     c04800: float
         Regular taxable income
-    PT_qbid_ps: float
+    PT_qbid_ps: list
         QBID phaseout taxable income start
-    PT_qbid_prt: float
+    PT_qbid_prt: list
         QBID phaseout rate
     qbided: float
         Qualified Business Income (QBI) deduction
-    PT_qbid_limit_switch: bool
+    PT_qbid_limit_switch: list
         QBID wage and capital limitations switch
 
     Returns
@@ -1320,73 +1322,73 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
         Schedule E total rental, royalty, parternship, S-corporation, etc, income/loss
     e00200: float
         Wages, salaries, and tips for filing unit net of pension contributions
-    PT_rt1: float
+    PT_rt1: list
         Pass through income tax rate 1
-    PT_rt2: float
+    PT_rt2: list
         Pass through income tax rate 2
-    PT_rt3: float
+    PT_rt3: list
         Pass through income tax rate 3
-    PT_rt4: float
+    PT_rt4: list
         Pass through income tax rate 4
-    PT_rt5: float
+    PT_rt5: list
         Pass through income tax rate 5
-    PT_rt6: float
+    PT_rt6: list
         Pass through income tax rate 6
-    PT_rt7: float
+    PT_rt7: list
         Pass through income tax rate 7
-    PT_rt8: float
+    PT_rt8: list
         Pass through income tax rate 8
-    PT_brk1: float
+    PT_brk1: list
         Pass through income tax bracket (upper threshold) 1
-    PT_brk2: float
+    PT_brk2: list
         Pass through income tax bracket (upper threshold) 2
-    PT_brk3: float
+    PT_brk3: list
         Pass through income tax bracket (upper threshold) 3
-    PT_brk4: float
+    PT_brk4: list
         Pass through income tax bracket (upper threshold) 4
-    PT_brk5: float
+    PT_brk5: list
         Pass through income tax bracket (upper threshold) 5
-    PT_brk6: float
+    PT_brk6: list
         Pass through income tax bracket (upper threshold) 6
-    PT_brk7: float
+    PT_brk7: list
         Pass through income tax bracket (upper threshold) 7
-    II_rt1: float
+    II_rt1: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 1
-    II_rt2: float
+    II_rt2: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 2
-    II_rt3: float
+    II_rt3: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 3
-    II_rt4: float
+    II_rt4: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 4
-    II_rt5: float
+    II_rt5: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 5
-    II_rt6: float
+    II_rt6: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 6
-    II_rt7: float
+    II_rt7: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 7
-    II_rt8: float
+    II_rt8: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 8
-    II_brk1: float
+    II_brk1: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1
-    II_brk2: float
+    II_brk2: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2
-    II_brk3: float
+    II_brk3: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3
-    II_brk4: float
+    II_brk4: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4
-    II_brk5: float
+    II_brk5: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5
-    II_brk6: float
+    II_brk6: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6
-    II_brk7: float
+    II_brk7: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7
-    PT_EligibleRate_active: float
+    PT_EligibleRate_active: list
         Share of active business income eligible for PT rate schedule
-    PT_EligibleRate_passive: float
+    PT_EligibleRate_passive: list
         Share of passive business income eligible for PT rate schedule
-    PT_wages_active_income: bool
+    PT_wages_active_income: list
         Wages included in (positive) active business eligible for PT rates
-    PT_top_stacking: bool
+    PT_top_stacking: list
         PT taxable income stacked on top of regular taxable income
 
     Returns
@@ -1466,73 +1468,73 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
         Farm net income/loss for filing unit from Schedule F
     e00200: float
         Farm net income/loss for filing unit from Schedule F
-    PT_rt1: float
+    PT_rt1: list
         Pass through income tax rate 1
-    PT_rt2: float
+    PT_rt2: list
         Pass through income tax rate 2
-    PT_rt3: float
+    PT_rt3: list
         Pass through income tax rate 3
-    PT_rt4: float
+    PT_rt4: list
         Pass through income tax rate 4
-    PT_rt5: float
+    PT_rt5: list
         Pass through income tax rate 5
-    PT_rt6: float
+    PT_rt6: list
         Pass through income tax rate 6
-    PT_rt7: float
+    PT_rt7: list
         Pass through income tax rate 7
-    PT_rt8: float
+    PT_rt8: list
         Pass through income tax rate 8
-    PT_brk1: float
+    PT_brk1: list
         Pass through income tax bracket (upper threshold) 1
-    PT_brk2: float
+    PT_brk2: list
         Pass through income tax bracket (upper threshold) 2
-    PT_brk3: float
+    PT_brk3: list
         Pass through income tax bracket (upper threshold) 3
-    PT_brk4: float
+    PT_brk4: list
         Pass through income tax bracket (upper threshold) 4
-    PT_brk5: float
+    PT_brk5: list
         Pass through income tax bracket (upper threshold) 5
-    PT_brk6: float
+    PT_brk6: list
         Pass through income tax bracket (upper threshold) 6
-    PT_brk7: float
+    PT_brk7: list
         Pass through income tax bracket (upper threshold) 7
-    II_rt1: float
+    II_rt1: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 1
-    II_rt2: float
+    II_rt2: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 2
-    II_rt3: float
+    II_rt3: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 3
-    II_rt4: float
+    II_rt4: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 4
-    II_rt5: float
+    II_rt5: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 5
-    II_rt6: float
+    II_rt6: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 6
-    II_rt7: float
+    II_rt7: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 7
-    II_rt8: float
+    II_rt8: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 8
-    II_brk1: float
+    II_brk1: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1
-    II_brk2: float
+    II_brk2: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2
-    II_brk3: float
+    II_brk3: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3
-    II_brk4: float
+    II_brk4: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4
-    II_brk5: float
+    II_brk5: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5
-    II_brk6: float
+    II_brk6: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6
-    II_brk7: float
+    II_brk7: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7
-    PT_EligibleRate_active: float
+    PT_EligibleRate_active: list
         Share of active business income eligible for PT rate schedule
-    PT_EligibleRate_passive: float
+    PT_EligibleRate_passive: list
         Share of passive business income eligible for PT rate schedule
-    PT_wages_active_income: bool
+    PT_wages_active_income: list
         Wages included in (positive) active business eligible for PT rates
-    PT_top_stacking: bool
+    PT_top_stacking: list
         PT taxable income stacked on top of regular taxable income
     c05200: float
         Tax amount from Schedule X,Y,Z tables
@@ -1604,89 +1606,89 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         Schedule E: combined partnership and S-corporation net income/loss
     e02000: float
         Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss
-    II_rt1: float
+    II_rt1: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 1
-    II_rt2: float
+    II_rt2: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 2
-    II_rt3: float
+    II_rt3: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 3
-    II_rt4: float
+    II_rt4: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 4
-    II_rt5: float
+    II_rt5: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 5
-    II_rt6: float
+    II_rt6: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 6
-    II_rt7: float
+    II_rt7: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 7
-    II_rt8: float
+    II_rt8: list
         Personal income (regular/non-AMT/non-pass-through) tax rate 8
-    II_brk1: float
+    II_brk1: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1
-    II_brk2: float
+    II_brk2: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2
-    II_brk3: float
+    II_brk3: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3
-    II_brk4: float
+    II_brk4: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4
-    II_brk5: float
+    II_brk5: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5
-    II_brk6: float
+    II_brk6: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6
-    II_brk7: float
+    II_brk7: list
         Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7
-    PT_rt1: float
+    PT_rt1: list
         Pass through income tax rate 1
-    PT_rt2: float
+    PT_rt2: list
         Pass through income tax rate 2
-    PT_rt3: float
+    PT_rt3: list
         Pass through income tax rate 3
-    PT_rt4: float
+    PT_rt4: list
         Pass through income tax rate 4
-    PT_rt5: float
+    PT_rt5: list
         Pass through income tax rate 5
-    PT_rt6: float
+    PT_rt6: list
         Pass through income tax rate 6
-    PT_rt7: float
+    PT_rt7: list
         Pass through income tax rate 7
-    PT_rt8: float
+    PT_rt8: list
         Pass through income tax rate 8
-    PT_brk1: float
+    PT_brk1: list
         Pass through income tax bracket (upper threshold) 1
-    PT_brk2: float
+    PT_brk2: list
         Pass through income tax bracket (upper threshold) 2
-    PT_brk3: float
+    PT_brk3: list
         Pass through income tax bracket (upper threshold) 3
-    PT_brk4: float
+    PT_brk4: list
         Pass through income tax bracket (upper threshold) 4
-    PT_brk5: float
+    PT_brk5: list
         Pass through income tax bracket (upper threshold) 5
-    PT_brk6: float
+    PT_brk6: list
         Pass through income tax bracket (upper threshold) 6
-    PT_brk7: float
+    PT_brk7: list
         Pass through income tax bracket (upper threshold) 7
-    CG_nodiff: bool
+    CG_nodiff: list
         Long term capital gains and qualified dividends taxed no differently than regular taxable income
-    PT_EligibleRate_active: float
+    PT_EligibleRate_active: list
         Share of active business income eligible for PT rate schedule
-    PT_EligibleRate_passive: float
+    PT_EligibleRate_passive: list
         Share of passive business income eligible for PT rate schedule
-    PT_wages_active_income: bool
+    PT_wages_active_income: list
         Wages included in (positive) active business eligible for PT rates
-    PT_top_stacking: bool
+    PT_top_stacking: list
         PT taxable income stacked on top of regular taxable income
-    CG_rt1: float
+    CG_rt1: list
         Long term capital gain and qualified dividends (regular/non-AMT) rate 1
-    CG_rt2: float
+    CG_rt2: list
         Long term capital gain and qualified dividends (regular/non-AMT) rate 2
-    CG_rt3: float
+    CG_rt3: list
         Long term capital gain and qualified dividends (regular/non-AMT) rate 3
-    CG_rt4: float
+    CG_rt4: list
         Long term capital gain and qualified dividends (regular/non-AMT) rate 4
-    CG_brk1: float
+    CG_brk1: list
         Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 1
-    CG_brk2: float
+    CG_brk2: list
         Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 2
-    CG_brk3: float
+    CG_brk3: list
         Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 3
     dwks10: float
         Sum of dwks6 + dwks9
@@ -1824,9 +1826,9 @@ def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
         Adjusted Gross Income (AGI)
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
-    AGI_surtax_trt: float
+    AGI_surtax_trt: list
         New AGI surtax rate
-    AGI_surtax_thd: float
+    AGI_surtax_thd: list
         Threshold for the new AGI surtax
     taxbc: float
         Regular tax on regular taxable income before credits
@@ -1915,37 +1917,37 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         Earned income for filing unit
     cmbtp: float
         Estimate of income on (AMT) Form 6251 but not in AGI
-    AMT_child_em_c_age: int
+    AMT_child_em_c_age: list
         Age ceiling for special AMT exemption
-    AMT_brk1: float
+    AMT_brk1: list
         AMT bracket 1 (upper threshold)
-    AMT_em: float
+    AMT_em: list
         AMT exemption amount
     AMT_prt: float
         AMT exemption phaseout rate
-    AMT_rt1: float
+    AMT_rt1: list
         AMT rate 1
-    AMT_rt2: float
+    AMT_rt2: list
         Additional AMT rate for AMT taxable income about AMT bracket 1
-    AMT_child_em: float
+    AMT_child_em: list
         Child AMT exemption additional income base
-    AMT_em_ps: float
+    AMT_em_ps: list
         AMT exemption phaseout start
-    AMT_em_pe: float
+    AMT_em_pe: list
         AMT exemption phaseout ending AMT taxable income for Married Filing Separately
-    AMT_CG_brk1: float
+    AMT_CG_brk1: list
         Top of long-term capital gains and qualified dividends (AMT) tax bracket 1
-    AMT_CG_brk2: float
+    AMT_CG_brk2: list
         Top of long-term capital gains and qualified dividends (AMT) tax bracket 2
-    AMT_CG_brk3: float
+    AMT_CG_brk3: list
         Top of long-term capital gains and qualified dividends (AMT) tax bracket 3
-    AMT_CG_rt1: float
+    AMT_CG_rt1: list
         Long term capital gain and qualified dividends (AMT) rate 1
-    AMT_CG_rt2: float
+    AMT_CG_rt2: list
         Long term capital gain and qualified dividends (AMT) rate 2
-    AMT_CG_rt3: float
+    AMT_CG_rt3: list
         Long term capital gain and qualified dividends (AMT) rate 3
-    AMT_CG_rt4: float
+    AMT_CG_rt4: list
         Long term capital gain and qualified dividends (AMT) rate 4
     c05800: float
         Total (regular + AMT) income tax liability before credits
@@ -2060,13 +2062,13 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
         Limitation on capital losses
     c00100: float
         Adjusted Gross Income (AGI)
-    NIIT_thd: float
+    NIIT_thd: list
         Net Investment Income Tax modified AGI threshold
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
-    NIIT_PT_taxed: bool
+    NIIT_PT_taxed: list
         Whether or not partnership and S-corp income is NIIT based
-    NIIT_rt: float
+    NIIT_rt: list
         Net Investment Income Tax rate
     niit: float
         Net investment income tax from Form 8960
@@ -2101,7 +2103,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         Earned income for spouse
     f2441: int
         Number of child/dependent care qualifying persons
-    CDCC_c: float
+    CDCC_c: list
         Maximum child/dependent care credit per dependent
     e32800: float
         Child/dependent care expenses for qualifying persons from Form 2441
@@ -2109,9 +2111,9 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
         Whether or not to do rounding of phaseout fraction
     c00100: float
         Adjusted Gross Income (AGI)
-    CDCC_ps: float
+    CDCC_ps: list
         Child/dependent care credit phaseout start
-    CDCC_crt: float
+    CDCC_crt: list
         Child/dependent care credit phaseout percentage rate ceiling
     c05800: float
         Total (regular + AMT) income tax liability before credits
@@ -2333,9 +2335,9 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
         Wage and salary income plus taxable self employment income for taxpayer   
     was_plus_sey_s: float
         Wage and salary income plus taxable self employment income for spouse
-    RPTC_c: float
+    RPTC_c: list
         Maximum refundable payroll tax credit
-    RPTC_rt: float
+    RPTC_rt: list
         Refundable payroll tax credit phasein rate
     rptc_p: float
         Refundable Payroll Tax Credit for taxpayer
@@ -2374,6 +2376,68 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
     Worksheet" in 2018 Publication 972, which pertain to these two
     nonrefundable tax credits.
+
+    Parameters
+    ----------
+    n24: int
+        Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted Gross Income (AGI)
+    XTOT: int
+        Total number of exemptions for filing unit
+    num: int
+        2 when MARS is 2 (married filing jointly), otherwise 1
+    c05800: float
+        Total (regular + AMT) income tax liability before credits
+    e07260: float
+        Residential energy credit from Form 5695
+    CR_ResidentialEnergy_hc: list
+        Credit for residential energy haircut
+    e07300: float
+        Foreign tax credit from Form 1116
+    CR_ForeignTax_hc: list
+        Credit for foreign tax credit
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
+    c07230: float
+        Education tax credits non-refundable amount from Form 8863
+    e07240: float
+        Retirement savings contributions credit from Form 8880
+    CR_RetirementSavings_hc: list
+        Credit for retirement savings haircut
+    c07200: float
+        Schedule R credit for the elderly and the disabled 
+    CTC_c: list
+        Maximum nonrefundable child tax credit per child
+    CTC_ps: list
+        Child tax credit phaseout MAGI start
+    CTC_prt: list
+        Child and dependent tax credit phaseout rate
+    exact: int
+        Whether or not to do rounding of phaseout fraction
+    ODC_c: list
+        Maximum nonrefundable other-dependent credit
+    CTC_c_under6_bonus: list
+        Bonus child tax credit maximum for qualifying children under six
+    nu06: int
+        Number of dependents under 6 years old
+    c07220: float
+        Child tax credit (adjusted) from Form 8812
+    odc: float
+        Other Dependent Credit
+    codtc_limited: float
+        Maximum of 0 and line 10 minus line 16
+
+    Returns
+    -------
+    c07220: float
+        Child tax credit (adjusted) from Form 8812
+    odc: float
+        Other Dependent Credit
+    codtc_limited: float
+        Maximum of 0 and line 10 minus line 16
     """
     # Worksheet Part 1
     line1 = CTC_c * n24 + CTC_c_under6_bonus * nu06
@@ -2423,6 +2487,36 @@ def PersonalTaxCredit(MARS, c00100,
     """
     Computes personal_refundable_credit and personal_nonrefundable_credit,
     neither of which are part of current-law policy.
+
+    Parameters
+    ----------
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted Gross Income (AGI)
+    II_credit: list
+        Personal refundable credit maximum amount
+    II_credit_ps: list
+        Personal refundable credit phaseout start
+    II_credit_prt: list
+        Personal refundable credit phaseout rate
+    II_credit_nr: list
+        Personal nonrefundable credit maximum amount
+    II_credit_nr_ps: list
+        Personal nonrefundable credit phaseout start
+    II_credit_nr_prt: list
+        Personal nonrefundable credit phaseout rate
+    personal_refundable_credit: float
+        Personal refundable credit
+    personal_nonrefundable_credit: float
+        Personal nonrefundable credit
+
+    Returns
+    -------
+    personal_refundable_credit: float
+        Personal refundable credit
+    personal_nonrefundable_credit: float
+        Personal nonrefundable credit
     """
     # calculate personal refundable credit amount with phase-out
     personal_refundable_credit = II_credit[MARS - 1]
@@ -2447,40 +2541,31 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
     amount, e87521, and then applies the 0.4 refundable rate.
     Logic corresponds to Form 8863, Part I.
 
-    Notes
-    -----
-    Tax Law Parameters that are not parameterized:
-
-        90000 : American Opportunity Credit phaseout income base
-
-        10000 : American Opportunity Credit phaseout income range length
-
-        1/1000 : American Opportunity Credit phaseout rate
-
-        0.4 : American Opportunity Credit refundable rate
-
     Parameters
     ----------
-        exact : whether or not to do rounding of phaseout fraction
-
-        e87521 : total tentative American Opportunity Credit for all students,
-                 Form 8863, line 1
-
-        num : number of people filing jointly
-
-        c00100 : AGI
-
-        CR_AmOppRefundable_hc: haircut for the refundable portion of the
-                               American Opportunity Credit
-
-        CR_AmOppNonRefundable_hc: haircut for the nonrefundable portion of the
-                                  American Opportunity Credit
+    exact: int
+        Whether or not to do rounding of phaseout fraction
+    e87521: float
+        Total tentative AmOppCredit amount for all students
+    num: int
+        2 when MARS is 2 (married filing jointly), otherwise 1
+    c00100: float
+        Adjusted Gross Income (AGI)
+    CR_AmOppRefundable_hc: list
+        Refundable portion of the American Opportunity Credit haircut
+    CR_AmOppNonRefundable_hc: list
+        Nonrefundable portion of the American Opportunity Credit haircut
+    c10960: float
+        American Opportunity Credit refundable amount from Form 8863
+    c87668: float
+        American Opportunity Credit non-refundable amount from Form 8863
 
     Returns
     -------
-        c10960 : Refundable part of American Opportunity Credit
-
-        c87668 : Tentative nonrefundable part of American Opportunity Credit
+    c10960: float
+        American Opportunity Credit refundable amount from Form 8863
+    c87668: float
+        American Opportunity Credit non-refundable amount from Form 8863
     """
     if e87521 > 0.:
         c87658 = max(0., 90000. * num - c00100)
@@ -2512,6 +2597,40 @@ def SchR(age_head, age_spouse, MARS, c00100,
 
     Note that the CR_SchR_hc policy parameter allows the user to eliminate
     or reduce total Schedule R credits.
+
+    Parameters
+    ----------
+    age_head: int
+        Age in years of taxpayer (primary adult)
+    age_spouse: int
+        Age in years of spouse (secondary adult, if present)
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted Gross Income (AGI)
+    c05800: float
+        Total (regular + AMT) income tax liability before credit
+    e07300: float
+        Foreign tax credit from Form 1116
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
+    e02400: float
+        Total social security (OASDI) benefits
+    c02500: float
+        Social security (OASDI) benefits included in AGI
+    e01500: float
+        Total pensions and annuities
+    e01700: float
+        Taxable pensions and annuities
+    CR_SchR_hc: list
+        Schedule R credit haircut
+    c07200: float
+        Schedule R credit for the elderly and the disabled 
+
+    Returns
+    -------
+    c07200: float
+        Schedule R credit for the elderly and the disabled 
     """
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled (so line12 = line10)
@@ -2563,36 +2682,43 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
     Computes Education Tax Credits (Form 8863) nonrefundable amount, c07230.
     Logic corresponds to Form 8863, Part II.
 
-    Notes
-    -----
-    Tax Law Parameters that are not parameterized:
-
-        0.2 : Lifetime Learning Credit ratio against expense
-
-    Tax Law Parameters that are parameterized:
-
-        LLC_Expense_c : Lifetime Learning Credit expense limit
-
-        ETC_pe_Married : Education Tax Credit phaseout end for married
-
-        ETC_pe_Single : Education Tax Credit phaseout end for single
-
-    Taxpayer Charateristics:
-
-        exact : whether or not to do rounding of phaseout fraction
-
-        e87530 : Lifetime Learning Credit total qualified expenses,
-                 Form 8863, line 10
-
-        e07300 : Foreign tax credit - Form 1116
-
-        c07180 : Child/dependent care expense credit - Form 2441
-
-        c07200 : Schedule R credit
+    Parameters
+    ----------
+    exact: int
+        Whether or not to do rounding of phaseout fraction
+    e87530: float
+        Adjusted qualified lifetime learning expenses for all students
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    c00100: float
+        Adjusted Gross Income (AGI)
+    num: int
+        2 when MARS is 2 (married filing jointly), otherwise 1
+    c05800: float
+        Total (regular + AMT) income tax liability before credits
+    e07300: float
+        Foreign tax credit from Form 1116
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
+    c07200: float
+        Schedule R credit for the elderly and the disabled
+    c87668: float
+        American Opportunity Credit non-refundalbe amount from Form 8863
+    LLC_Expense_c: list
+        Lifetime learning credit expense limit
+    ETC_pe_Single: list
+        Education tax credit phaseout ends (single)
+    ETC_pe_Married: list
+        Education tax credit phaseout ends (married)
+    CR_Education_hc: list
+        Education Credits haircut
+    c07230: float
+        Education tax credits non-refundable amount from Form 8863
 
     Returns
     -------
-    c07230 : Education Tax Credits (Form 8863) nonrefundable amount
+    c07230: float
+        Education tax credits non-refundable amount from Form 8863
     """
     c87560 = 0.2 * min(e87530, LLC_Expense_c)
     if MARS == 2:
@@ -2621,6 +2747,30 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
     """
     Computes nonrefundable charity credit, charity_credit.
     This credit is not part of current-law policy.
+
+    Parameters
+    ----------
+    e19800: float
+        Itemizable charitable giving for cash and check contributions
+    e20100: float
+        Itemizable charitable giving other than cash and check contributions
+    c00100: float
+        Adjusted Gross Income (AGI)
+    CR_Charity_rt: list
+        Charity credit rate
+    CR_Charity_f: list
+        Charity credit floor
+    CR_Charity_frt: list
+        Charity credit floor rate
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    charity_credit: float
+        Credit for charitable giving
+
+    Returns
+    -------
+    charity_credit: float
+        Credit for charitable giving
     """
     total_charity = e19800 + e20100
     floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
@@ -2643,12 +2793,87 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
     Parameters
     ----------
-    CR_RetirementSavings_hc: Retirement savings credit haircut
-    CR_ForeignTax_hc: Foreign tax credit haircut
-    CR_ResidentialEnergy_hc: Residential energy credit haircut
-    CR_GeneralBusiness_hc: General business credit haircut
-    CR_MinimumTax_hc: Minimum tax credit haircut
-    CR_OtherCredits_hc: Other credits haircut
+    c05800: float
+        Total (regular + AMT) income tax liability before credits
+    e07240: float
+        Retirement savings contributions credit from Form 8880
+    e07260: float
+        Residential energy credit from Form 5695
+    e07300: float
+        Foreign tax credit from Form 1116
+    e07400: float
+        General business credit from Form 3800
+    e07600: float
+        Prior year minimum tax credit from Form 8801
+    p08000: float
+        Other tax credits
+    odc: float
+        Other Dependent Credit
+    personal_nonrefundable_credit: float
+        Personal nonrefundable credit
+    CR_RetirementSavings_hc: list
+        Credit for retirement savings haircut
+    CR_ForeignTax_hc: list
+        Credit for foreign tax credit
+    CR_ResidentialEnergy_hc: list
+        Credit for residential energy haircut
+    CR_GeneralBusiness_hc: list
+        Credit for general business haircut
+    CR_MinimumTax_hc: list
+        Credit for previous year minimum tax credit haircut
+    CR_OtherCredits_hc: list
+        Other Credit haircut
+    charity_credit: float
+        Credit for charitable giving
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
+    c07200: float
+        Schedule R credit for the elderly and the disabled
+    c07220: float
+        Child tax credit (adjusted) from From 8812
+    c07230: float
+        Education tax credits non-refundable amount from Form 8863
+    c07240: float
+        Retirement savings credit - Form 8880
+    c07260: float
+        Residential energy credit - Form 5695
+    c07300: float
+        Foreign tax credit - Form 1116
+    c07400: float
+        General business credit - Form 3800
+    c07600: float
+        Prior year minimum tax credit - Form 8801
+    c08000: float
+        Other credits
+
+    Returns
+    -------
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
+    c07200: float
+        Schedule R credit for the elderly and the disabled
+    c07220: float
+        Child tax credit (adjusted) from From 8812
+    c07230: float
+        Education tax credits non-refundable amount from Form 8863
+    c07240: float
+        Retirement savings credit - Form 8880
+    odc: float
+        Other Dependent Credit
+    c07260: float
+        Residential energy credit - Form 5695
+    c07300: float
+        Foreign tax credit - Form 1116
+    c07400: float
+        General business credit - Form 3800
+    c07600: float
+        Prior year minimum tax credit - Form 8801
+    c08000: float
+        Other credits
+    charity_credit: float
+        Credit for charitable giving
+    personal_nonrefundable_credit: float
+        Personal nonrefundable credit
     """
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
@@ -2703,6 +2928,44 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     """
     Calculates refundable Additional Child Tax Credit (ACTC), c11070,
     following 2018 Form 8812 logic.
+
+    Parameters
+    ----------
+    codtc_limited: float
+        Maximum of 0 and line 10 minus line 16 
+    ACTC_c: list
+        Maximum refundable additional child tax credit
+    n24: int
+        Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17
+    earned: float
+        Earned income for filing unit
+    ACTC_Income_thd: list
+        Additional Child Tax Credit income threshold
+    ACTC_rt: list
+        Additional Child Tax Credit rate
+    nu06: int
+        Number of dependents under 6 years old
+    ACTC_rt_bonus_under6family: list
+        Bonus additional child tax credit rate for families with qualifying children under 6
+    ACTC_ChildNum: list
+        Additional Child Tax Credit minimum number of qualified children for different formula 
+    ptax_was: float
+        Employee and employer OASDI plus HI FICA tax  
+    c03260: float
+        Self-employment tax deduction (after haircut)
+    e09800: float
+        Unreported payroll taxes from Form 4137 or 8919
+    c59660: float
+        EITC amount
+    e11200: float
+        Excess payroll (FICA/RRTA) tax withheld
+    c11070: float
+        Child tax credit (refunded) from Form 8812
+
+    Returns
+    -------
+    c11070: float
+        Child tax credit (refunded) from Form 8812
     """
     # Part I
     line3 = codtc_limited
@@ -2742,6 +3005,60 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     """
     Computes total used nonrefundable credits, c07100, othertaxes, and
     income tax before refundable credits, c09200.
+
+    Parameters
+    ----------
+    c05800: float
+        Total (regular + AMT) income tax liability before credits
+    c07180: float
+        Credit for child and dependent care expenses from Form 2441
+    c07200: float
+        Schedule R credit for the elderly and the disabled
+    c07220: float
+        Child tax credit (adjusted) from Form 8812
+    c07230: float
+        Education tax credit non-refundable amount from Form 8863
+    c07240: float
+        Retirement savings credit - Form 8880
+    c07260: float
+        Residential energy credit - Form 5695
+    c07300: float
+        Foreign tax credit - Form 1116
+    c07400: float
+        General business credit - Form 3800
+    c07600: float
+        Prior year minimum tax credit - Form 8801
+    c08000: float
+        Other credits
+    e09700: float
+        Recapture of Investment Credit
+    e09800: float
+        Unreported payroll taxes from Form 4137 or 8919
+    e09900: float
+        Penalty tax on qualified retirement plans
+    niit: float
+        Net Investment Income Tax from Form 8960
+    othertaxes: float
+        Sum of niit, e09700, e09800, and e09900
+    c07100: float
+        Total non-refundable credits used to reduce positive tax liability
+    c09200: float
+        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied
+    odc: float
+        Other Dependent Credit
+    charity_credit: float
+        Credit for charitable giving
+    personal_nonrefundable_credit: float
+        Personal nonrefundable credit
+    
+    Returns
+    -------
+    c07100: float
+        Total non-refundable credits used to reduce positive tax liability
+    othertaxes: float
+        Sum of niit, e09700, e09800, and e09900
+    c09200: float
+        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied
     """
     # total used nonrefundable credits (as computed in NonrefundableCredits)
     c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
@@ -2764,6 +3081,49 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
+
+    Parameters
+    ----------
+    CTC_new_c: list
+        New refundable child tax credit maximum amount per child
+    CTC_new_rt: list
+        New refundalbe child tax credit amount phasein rate
+    CTC_new_c_under6_bonus: list
+        Bonus new refundable child tax credit maximum for qualifying children under six
+    CTC_new_ps: list
+        New refundable child tax credit phaseout starting AGI
+    CTC_new_prt: list
+        New refundable child tax credit amount phaseout rate
+    CTC_new_for_all: list
+        Whether or not maximum amount of the new refundable child tax credit is available to all
+    CTC_new_refund_limited: list
+        New child tax credit refund limited to a decimal fraction of payroll taxes
+    CTC_new_refund_limit_payroll_rt: list
+        New child tax credit refund limit rate (decimal fraction of payroll taxes)
+    CTC_new_refund_limited_all_payroll: list
+        New child tax credit refund limit applies to all FICA taxes, not just OASDI
+    payrolltax: float
+        Total (employee + employer) payroll tax liability
+    n24: int
+        Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17
+    nu06: int
+        Number of dependents under 6 years old
+    c00100: float
+        Adjusted Gross Income (AGI)
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    ptax_oasdi: float
+        Employee and employer OASDI FICA tax plus self employment tax
+        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
+    c09200: float
+        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied
+    ctc_new: float 
+        New refundable child tax credit
+
+    Returns
+    -------
+    ctc_new: float
+        New refundable child tax credit
     """
     if n24 > 0:
         posagi = max(c00100, 0.)
@@ -2794,6 +3154,44 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           eitc, refund, iitax, combined):
     """
     Computes final taxes.
+
+    Parameters
+    ----------
+    c59660: float
+        EITC amount
+    c11070: float
+        Child tax credit (refunded) from Form 8812
+    c10960: float
+        American Opportunity Credit refundable amount from Form 8863
+    personal_refundable_credit: float
+        Personal refundable credit
+    ctc_new: float
+        New refundable child tax credit
+    rptc: float
+        Refundable Payroll Tax Credit for filing unit
+    c09200: float
+        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied
+    payrolltax: float
+        Total (employee + employer) payroll tax liability
+    eitc: float
+        Earned Income Credit
+    refund: float
+        Total refundable income tax credits
+    iitax: float
+        Total federal individual income tax liability
+    combined: float
+        Sum of iitax and payrolltax and lumpsum_tax
+
+    Returns
+    -------
+    eitc: float
+        Earned Income Credit
+    refund: float
+        Total refundable income tax credits
+    iitax: float
+        Total federal individual income tax liability
+    combined: float
+        Sum of iitax and payrolltax and lumpsum_tax
     """
     eitc = c59660
     refund = (eitc + c11070 + c10960 +
@@ -2811,6 +3209,32 @@ def Taxes(income, MARS, tbrk_base,
     Taxes function returns tax amount given the progressive tax rate
     schedule specified by the rate* and (upper) tbrk* parameters and
     given income, filing status (MARS), and tax bracket base (tbrk_base).
+
+    Parameters
+    ----------
+    income
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    tbrk_base
+    rate1
+    rate2
+    rate3
+    rate4
+    rate5
+    rate6
+    rate7
+    rate8
+    tbrk1
+    tbrk2
+    tbrk3
+    tbrk4
+    tbrk5
+    tbrk6
+    tbrk7
+
+    Returns
+    -------
+    None
     """
     if tbrk_base > 0.:
         brk1 = max(tbrk1[MARS - 1] - tbrk_base, 0.)
@@ -2841,6 +3265,16 @@ def Taxes(income, MARS, tbrk_base,
 def ComputeBenefit(calc, ID_switch):
     """
     Calculates the value of the benefits accrued from itemizing.
+
+    Parameters
+    ----------
+    calc: calculator object
+        calc represents the reform while self represents the baseline
+    ID_switch
+
+    Returns
+    -------
+    benefit
     """
     # compute income tax liability with no itemized deductions allowed for
     # the types of itemized deductions covered under the BenefitSurtax
@@ -2869,6 +3303,16 @@ def BenefitSurtax(calc):
     """
     Computes itemized-deduction-benefit surtax and adds the surtax amount
     to income tax, combined tax, and surtax liabilities.
+
+    Parameters
+    ----------
+    calc: calculator object
+        calc represents the reform while self represents the baseline
+
+    Returns
+    -------
+    None:
+        The function modifies calc
     """
     if calc.policy_param('ID_BenefitSurtax_crt') != 1.:
         ben = ComputeBenefit(calc,
@@ -2890,6 +3334,16 @@ def BenefitLimitation(calc):
     """
     Limits the benefits of select itemized deductions to a fraction of
     deductible expenses.
+
+    Parameters
+    ----------
+    calc: calculator object
+        calc represents the reform while self represents the baseline
+
+    Returns
+    -------
+    None:
+        The function modifies calc
     """
     if calc.policy_param('ID_BenefitCap_rt') != 1.:
         benefit = ComputeBenefit(calc,
@@ -2930,29 +3384,43 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     """
     Computes Fair Share Tax, or "Buffet Rule", types of reforms.
 
-    Taxpayer Characteristics
-    ------------------------
-
-    c00100 : AGI
-
-    MARS : filing (marital) status
-
-    ptax_was : payroll tax on wages and salaries
-
-    setax : self-employment tax
-
-    ptax_amc : Additional Medicare Tax on high earnings
+    Parameters
+    ----------
+    c00100: float
+        Adjusted Gross Income (AGI)
+    MARS: int
+        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
+    ptax_was: float
+        Employee and employer OASDI plus HI FICA tax 
+    setax: float
+        Self-employment tax 
+    ptax_amc: float
+        Additional Medicare Tax
+    FST_AGI_trt: list
+        New minimum tax; rate as a decimal fraction of AGI
+    FST_AGI_thd_lo: list
+        Minimum AGI needed to be subject to the new minimum tax
+    FST_AGI_thd_hi: list
+        AGI level at which the New Minimum Tax is fully phased in
+    fstax: float
+        Fair Share Tax amount
+    iitax: float
+        Total federal individual income tax liability
+    combined: float
+        Sum of iitax and payrolltax and lumpsum_tax
+    surtax: float
+        Individual income tax subtotal augmented by fstax
 
     Returns
     -------
-
-    fstax : Fair Share Tax amount
-
-    iitax : individual income tax augmented by fstax
-
-    combined : individual income tax plus payroll taxes augmented by fstax
-
-    surtax : individual income tax subtotal augmented by fstax
+    fstax: float
+        Fair Share Tax amount
+    iitax: float
+        Total federal individual income tax liability
+    combined: float
+        Sum of iitax and payrolltax and lumpsum_tax
+    surtax: float
+        Individual income tax subtotal augmented by fstax
     """
     if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
         employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
@@ -2974,6 +3442,28 @@ def LumpSumTax(DSI, num, XTOT,
                lumpsum_tax, combined):
     """
     Computes lump-sum tax and add it to combined taxes.
+
+    Parameters
+    ----------
+    DSI: int
+        1 if claimed as dependent on another return, otherwise 0
+    num: int
+        2 when MARS is 2 (married filing jointly); otherwise 1
+    XTOT: int
+        Total number of exemptions for filing unit
+    LST: list
+        Dollar amount of lump-sum tax
+    lumpsum_tax: float
+        Lumpsum (or head) tax
+    combined: float
+        Sum of iitax and payrolltax and lumpsum_tax
+
+    Returns
+    -------
+    lumpsum_tax: float
+        Lumpsum (or head) tax
+    combined: float
+        Sum of iitax and payrolltax and lumpsum_tax
     """
     if LST == 0.0 or DSI == 1:
         lumpsum_tax = 0.
@@ -2990,6 +3480,56 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  benefit_value_total, expanded_income):
     """
     Calculates expanded_income from component income types.
+
+    Parameters
+    ----------
+    e00200: float
+        Wages, salaries, and tips for filing unit net of pension contributions 
+    pencon_p: float
+        Contributions to defined-contribution pension plans for taxpayer
+    pencon_s: float
+        Contributions to defined-contribution pension plans for spouse 
+    e00300: float
+        Taxable interest income
+    e00400: float
+        Tax-exempt interest income
+    e00600: float
+        Ordinary dividends included in AGI
+    e00700: float
+        Taxable refunds of state and local income taxes
+    e00800: float
+        Alimony received
+    e00900: float
+        Schedule C business net profit/loss for filing unit
+    e01100: float
+        Capital gain distributions not reported on Schedule D
+    e01200: float
+        Other net gain/loss from Form 4797
+    e01400: float
+        Taxable IRA distributions
+    e01500: float
+        Total pensions and annuities
+    e02000: float
+        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss
+    e02100: float
+        Farm net income/loss for filing unit from Schedule F
+    p22250: float
+        Schedule D net short term capital gains/losses
+    p23250:float
+        Schedule D net long term capital gains/losses
+    cmbtp: float
+        Estimate of inome on (AMT) Form 6251 but not in AGI
+    ptax_was: float
+        Employee and employer OASDI and HI FICA tax
+    benefit_value_total: float
+        Consumption value of all benefits received by tax unit, which is included in expanded income
+    expanded_income: float
+        Broad income measure that includes benefit_value_total
+
+    Returns
+    -------
+    expanded_income: float
+        Broad income measure that includes benefit_value_total
     """
     expanded_income = (
         e00200 +  # wage and salary income net of DC pension contributions
@@ -3025,12 +3565,17 @@ def AfterTaxIncome(combined, expanded_income, aftertax_income):
 
     Parameters
     ----------
-    combined: combined tax liability
-    expanded_income: expanded income
+    combined: float
+        Sum of iitax and payrolltax and lumpsum_tax
+    expanded_income: float
+        Broad income measure that includes benefit_value_total 
+    aftertax_income: float
+        After tax income is equal to expanded_income minus combined
 
     Returns
     -------
-    aftertax_income: expanded_income minus combined
+    aftertax_income: float
+        After tax income is equal to expanded_income minus combined
     """
     aftertax_income = expanded_income - combined
     return aftertax_income
