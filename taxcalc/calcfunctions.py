@@ -1370,7 +1370,7 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
 
 
 @iterate_jit(nopython=True)
-def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
+def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, n21, n1820, c05800,
                       e07260, CR_ResidentialEnergy_hc,
                       e07300, CR_ForeignTax_hc,
                       c07180,
@@ -1379,7 +1379,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
                       CTC_c_under6_bonus, nu06,
-                      CTC_refundable, CTC_include17, nu18,
+                      CTC_refundable, CTC_include17,
                       c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
@@ -1388,7 +1388,8 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     """
     # Worksheet Part 1
     if CTC_include17:
-        childnum = max(n24, nu18)
+        eligible17 = max(0, XTOT - n21 - n1820 - n24 - num)
+        childnum = n24 + eligible17
     else:
         childnum = n24
     line1 = CTC_c * childnum + CTC_c_under6_bonus * nu06
@@ -1732,7 +1733,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
-                  CTC_refundable, CTC_include17, nu18,
+                  CTC_refundable, CTC_include17, XTOT, n21, n1820, num,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
     """
@@ -1741,13 +1742,15 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     """
     # Part I
     line3 = codtc_limited
+    if CTC_include17:
+        eligible17 = max(0, XTOT - n21 - n1820 - n24 - num)
+        childnum = n24 + eligible17
+    else:
+        childnum = n24
     if CTC_refundable:
         line4 = 0.
     else:
-        if CTC_include17:
-            line4 = ACTC_c * max(n24, nu18)
-        else:
-            line4 = ACTC_c * n24
+        line4 = ACTC_c * childnum
     c11070 = 0.  # line15
     if line3 > 0. and line4 > 0.:
         line5 = min(line3, line4)
@@ -1758,10 +1761,10 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
         else:
             ACTC_rate = ACTC_rt + ACTC_rt_bonus_under6family
         line8 = ACTC_rate * line7
-        if n24 < ACTC_ChildNum:
+        if childnum < ACTC_ChildNum:
             if line8 > 0.:
                 c11070 = min(line5, line8)
-        else:  # if n24 >= ACTC_ChildNum
+        else:  # if childnum >= ACTC_ChildNum
             if line8 >= line5:
                 c11070 = line5
             else:  # complete Part II
@@ -1802,13 +1805,14 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             CTC_new_refund_limited_all_payroll, payrolltax,
-            n24, nu06, nu18, c00100, MARS, ptax_oasdi, c09200,
-            ctc_new):
+            n24, nu06, n1820, n21, num, XTOT, c00100, MARS, ptax_oasdi,
+            c09200, ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
     """
     if CTC_include17:
-        childnum = max(n24, nu18)
+        eligible17 = max(0, XTOT - n21 - n1820 - n24 - num)
+        childnum = n24 + eligible17
     else:
         childnum = n24
     if childnum > 0:
