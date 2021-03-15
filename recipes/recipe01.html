@@ -830,95 +830,95 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <span class="g g-Whitespace">    </span><span class="mi">465</span><span class="sd">         signature = typing.signature(state.return_type, *state.args)</span>
 
 <span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/typed_passes.py</span> in <span class="ni">run_pass</span><span class="nt">(self, state)</span>
-<span class="g g-Whitespace">    </span><span class="mi">382</span><span class="sd">                 lower = lowering.Lower(targetctx, library, fndesc, interp,</span>
-<span class="g g-Whitespace">    </span><span class="mi">383</span><span class="sd">                                        metadata=metadata)</span>
-<span class="ne">--&gt; </span><span class="mi">384</span><span class="sd">                 lower.lower()</span>
+<span class="g g-Whitespace">    </span><span class="mi">384</span><span class="sd">                 lower.lower()</span>
 <span class="g g-Whitespace">    </span><span class="mi">385</span><span class="sd">                 if not flags.no_cpython_wrapper:</span>
-<span class="g g-Whitespace">    </span><span class="mi">386</span><span class="sd">                     lower.create_cpython_wrapper(flags.release_gil)</span>
+<span class="ne">--&gt; </span><span class="mi">386</span><span class="sd">                     lower.create_cpython_wrapper(flags.release_gil)</span>
+<span class="g g-Whitespace">    </span><span class="mi">387</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">388</span><span class="sd">                 if not flags.no_cfunc_wrapper:</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">134</span><span class="sd">         if self.generator_info is None:</span>
-<span class="g g-Whitespace">    </span><span class="mi">135</span><span class="sd">             self.genlower = None</span>
-<span class="ne">--&gt; </span><span class="mi">136</span><span class="sd">             self.lower_normal_function(self.fndesc)</span>
-<span class="g g-Whitespace">    </span><span class="mi">137</span><span class="sd">         else:</span>
-<span class="g g-Whitespace">    </span><span class="mi">138</span><span class="sd">             self.genlower = self.GeneratorLower(self)</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">create_cpython_wrapper</span><span class="nt">(self, release_gil)</span>
+<span class="g g-Whitespace">    </span><span class="mi">240</span><span class="sd">                                                 self.env, self.call_helper,</span>
+<span class="g g-Whitespace">    </span><span class="mi">241</span><span class="sd">                                                 release_gil=release_gil)</span>
+<span class="ne">--&gt; </span><span class="mi">242</span><span class="sd">         self.context.create_cpython_wrapper(self.library, self.fndesc,</span>
+<span class="g g-Whitespace">    </span><span class="mi">243</span><span class="sd">                                             self.env, self.call_helper,</span>
+<span class="g g-Whitespace">    </span><span class="mi">244</span><span class="sd">                                             release_gil=release_gil)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_normal_function</span><span class="nt">(self, fndesc)</span>
-<span class="g g-Whitespace">    </span><span class="mi">188</span><span class="sd">         # Init argument values</span>
-<span class="g g-Whitespace">    </span><span class="mi">189</span><span class="sd">         self.extract_function_arguments()</span>
-<span class="ne">--&gt; </span><span class="mi">190</span><span class="sd">         entry_block_tail = self.lower_function_body()</span>
-<span class="g g-Whitespace">    </span><span class="mi">191</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">192</span><span class="sd">         # Close tail of entry block</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/cpu.py</span> in <span class="ni">create_cpython_wrapper</span><span class="nt">(self, library, fndesc, env, call_helper, release_gil)</span>
+<span class="g g-Whitespace">    </span><span class="mi">160</span><span class="sd">                                 fndesc, env, call_helper=call_helper,</span>
+<span class="g g-Whitespace">    </span><span class="mi">161</span><span class="sd">                                 release_gil=release_gil)</span>
+<span class="ne">--&gt; </span><span class="mi">162</span><span class="sd">         builder.build()</span>
+<span class="g g-Whitespace">    </span><span class="mi">163</span><span class="sd">         library.add_ir_module(wrapper_module)</span>
+<span class="g g-Whitespace">    </span><span class="mi">164</span><span class="sd"> </span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_function_body</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">214</span><span class="sd">             bb = self.blkmap[offset]</span>
-<span class="g g-Whitespace">    </span><span class="mi">215</span><span class="sd">             self.builder.position_at_end(bb)</span>
-<span class="ne">--&gt; </span><span class="mi">216</span><span class="sd">             self.lower_block(block)</span>
-<span class="g g-Whitespace">    </span><span class="mi">217</span><span class="sd">         self.post_lower()</span>
-<span class="g g-Whitespace">    </span><span class="mi">218</span><span class="sd">         return entry_block_tail</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">build</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">120</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">121</span><span class="sd">         api = self.context.get_python_api(builder)</span>
+<span class="ne">--&gt; </span><span class="mi">122</span><span class="sd">         self.build_wrapper(api, builder, closure, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">123</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">124</span><span class="sd">         return wrapper, api</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_block</span><span class="nt">(self, block)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span><span class="sd">             with new_error_context(&#39;lowering &quot;{inst}&quot; at {loc}&#39;, inst=inst,</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span><span class="sd">                                    loc=self.loc, errcls_=defaulterrcls):</span>
-<span class="ne">--&gt; </span><span class="mi">230</span><span class="sd">                 self.lower_inst(inst)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span><span class="sd">         self.post_block(block)</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span><span class="sd"> </span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">build_wrapper</span><span class="nt">(self, api, builder, closure, args, kws)</span>
+<span class="g g-Whitespace">    </span><span class="mi">153</span><span class="sd">                 innerargs.append(None)</span>
+<span class="g g-Whitespace">    </span><span class="mi">154</span><span class="sd">             else:</span>
+<span class="ne">--&gt; </span><span class="mi">155</span><span class="sd">                 val = cleanup_manager.add_arg(builder.load(obj), ty)</span>
+<span class="g g-Whitespace">    </span><span class="mi">156</span><span class="sd">                 innerargs.append(val)</span>
+<span class="g g-Whitespace">    </span><span class="mi">157</span><span class="sd"> </span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_inst</span><span class="nt">(self, inst)</span>
-<span class="g g-Whitespace">    </span><span class="mi">326</span><span class="sd">             ty = self.typeof(inst.target.name)</span>
-<span class="g g-Whitespace">    </span><span class="mi">327</span><span class="sd">             val = self.lower_assign(ty, inst)</span>
-<span class="ne">--&gt; </span><span class="mi">328</span><span class="sd">             self.storevar(val, inst.target.name)</span>
-<span class="g g-Whitespace">    </span><span class="mi">329</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">330</span><span class="sd">         elif isinstance(inst, ir.Branch):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">add_arg</span><span class="nt">(self, obj, ty)</span>
+<span class="g g-Whitespace">     </span><span class="mi">56</span><span class="sd">             &quot;arg%d.err&quot; % self.arg_count)</span>
+<span class="g g-Whitespace">     </span><span class="mi">57</span><span class="sd">         with self.builder.goto_block(cleanupblk):</span>
+<span class="ne">---&gt; </span><span class="mi">58</span><span class="sd">             cleanup_arg()</span>
+<span class="g g-Whitespace">     </span><span class="mi">59</span><span class="sd">             # Go to next cleanup block</span>
+<span class="g g-Whitespace">     </span><span class="mi">60</span><span class="sd">             self.builder.branch(self.nextblk)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">storevar</span><span class="nt">(self, value, name)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1262</span><span class="sd">         fetype = self.typeof(name)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1263</span><span class="sd">         # Define if not already</span>
-<span class="ne">-&gt; </span><span class="mi">1264</span><span class="sd">         self._alloca_var(name, fetype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1265</span><span class="sd"> </span>
-<span class="g g-Whitespace">   </span><span class="mi">1266</span><span class="sd">         # Clean up existing value stored in the variable</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/callwrapper.py</span> in <span class="ni">cleanup_arg</span><span class="nt">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">48</span><span class="sd">             #  may need the native value)</span>
+<span class="g g-Whitespace">     </span><span class="mi">49</span><span class="sd">             if self.context.enable_nrt:</span>
+<span class="ne">---&gt; </span><span class="mi">50</span><span class="sd">                 self.context.nrt.decref(self.builder, ty, native.value)</span>
+<span class="g g-Whitespace">     </span><span class="mi">51</span><span class="sd"> </span>
+<span class="g g-Whitespace">     </span><span class="mi">52</span><span class="sd">         self.cleanups.append(cleanup_arg)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">_alloca_var</span><span class="nt">(self, name, fetype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1239</span><span class="sd">             # If not already defined, allocate it</span>
-<span class="g g-Whitespace">   </span><span class="mi">1240</span><span class="sd">             llty = self.context.get_value_type(fetype)</span>
-<span class="ne">-&gt; </span><span class="mi">1241</span><span class="sd">             ptr = self.alloca_lltype(name, llty)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1242</span><span class="sd">             # Remember the pointer</span>
-<span class="g g-Whitespace">   </span><span class="mi">1243</span><span class="sd">             self.varmap[name] = ptr</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/runtime/context.py</span> in <span class="ni">decref</span><span class="nt">(self, builder, typ, value)</span>
+<span class="g g-Whitespace">    </span><span class="mi">222</span><span class="sd">         Recursively decref the given *value* and its members.</span>
+<span class="g g-Whitespace">    </span><span class="mi">223</span><span class="sd">         &quot;&quot;&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">224</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_call_incref_decref</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="s2">&quot;NRT_decref&quot;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">225</span> 
+<span class="g g-Whitespace">    </span><span class="mi">226</span>     <span class="k">def</span> <span class="nf">get_nrt_api</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">builder</span><span class="p">):</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">alloca_lltype</span><span class="nt">(self, name, lltype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1307</span><span class="sd">         if is_uservar:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1308</span><span class="sd">             # Emit debug info for user variable</span>
-<span class="ne">-&gt; </span><span class="mi">1309</span><span class="sd">             sizeof = self.context.get_abi_sizeof(lltype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1310</span><span class="sd">             self.debuginfo.mark_variable(self.builder, aptr, name=name,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1311</span><span class="sd">                                          lltype=lltype, size=sizeof,</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/runtime/context.py</span> in <span class="ni">_call_incref_decref</span><span class="nt">(self, builder, typ, value, funcname)</span>
+<span class="g g-Whitespace">    </span><span class="mi">202</span>         <span class="kn">from</span> <span class="nn">numba.core.runtime.nrtdynmod</span> <span class="kn">import</span> <span class="n">incref_decref_ty</span>
+<span class="g g-Whitespace">    </span><span class="mi">203</span> 
+<span class="ne">--&gt; </span><span class="mi">204</span>         <span class="n">meminfos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meminfos</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">typ</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">205</span>         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">mi</span> <span class="ow">in</span> <span class="n">meminfos</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">206</span>             <span class="n">mod</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">module</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/base.py</span> in <span class="ni">get_abi_sizeof</span><span class="nt">(self, ty)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1100</span><span class="sd">         &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1101</span>         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ty</span><span class="p">,</span> <span class="n">llvmir</span><span class="o">.</span><span class="n">Type</span><span class="p">),</span> <span class="s2">&quot;Expected LLVM type&quot;</span>
-<span class="ne">-&gt; </span><span class="mi">1102</span>         <span class="k">return</span> <span class="n">ty</span><span class="o">.</span><span class="n">get_abi_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_data</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1103</span> 
-<span class="g g-Whitespace">   </span><span class="mi">1104</span>     <span class="k">def</span> <span class="nf">get_abi_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ty</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/runtime/context.py</span> in <span class="ni">get_meminfos</span><span class="nt">(self, builder, ty, val)</span>
+<span class="g g-Whitespace">    </span><span class="mi">190</span> 
+<span class="g g-Whitespace">    </span><span class="mi">191</span>         <span class="k">for</span> <span class="n">mtyp</span><span class="p">,</span> <span class="n">getter</span> <span class="ow">in</span> <span class="n">members</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">192</span>             <span class="n">field</span> <span class="o">=</span> <span class="n">getter</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">193</span>             <span class="n">inner_meminfos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_meminfos</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">mtyp</span><span class="p">,</span> <span class="n">field</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">194</span>             <span class="n">meminfos</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">inner_meminfos</span><span class="p">)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/types.py</span> in <span class="ni">get_abi_size</span><span class="nt">(self, target_data, context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span>         <span class="n">Get</span> <span class="n">the</span> <span class="n">ABI</span> <span class="n">size</span> <span class="n">of</span> <span class="n">this</span> <span class="nb">type</span> <span class="n">according</span> <span class="n">to</span> <span class="n">data</span> <span class="n">layout</span> <span class="o">*</span><span class="n">target_data</span><span class="o">*.</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>         <span class="s2">&quot;&quot;&quot;</span>
-<span class="ne">---&gt; </span><span class="mi">52</span><span class="s2">         llty = self._get_ll_pointer_type(target_data, context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span><span class="s2">         return target_data.get_pointee_abi_size(llty)</span>
-<span class="g g-Whitespace">     </span><span class="mi">54</span><span class="s2"> </span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/datamodel/models.py</span> in <span class="ni">getter</span><span class="nt">(k, value)</span>
+<span class="g g-Whitespace">    </span><span class="mi">708</span>                 <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_value_type</span><span class="p">(),</span> <span class="n">value</span><span class="o">.</span><span class="n">type</span>
+<span class="g g-Whitespace">    </span><span class="mi">709</span>                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;expecting </span><span class="si">{0}</span><span class="s2"> but got </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
+<span class="ne">--&gt; </span><span class="mi">710</span>             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">711</span> 
+<span class="g g-Whitespace">    </span><span class="mi">712</span>         <span class="k">return</span> <span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_type</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">partial</span><span class="p">(</span><span class="n">getter</span><span class="p">,</span> <span class="n">k</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">]</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/types.py</span> in <span class="ni">_get_ll_pointer_type</span><span class="nt">(self, target_data, context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">42</span><span class="s2">         else:</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span><span class="s2">             m = Module(context=context)</span>
-<span class="ne">---&gt; </span><span class="mi">44</span><span class="s2">         foo = GlobalVariable(m, self, name=&quot;foo&quot;)</span>
-<span class="g g-Whitespace">     </span><span class="mi">45</span><span class="s2">         with parse_assembly(str(m)) as llmod:</span>
-<span class="g g-Whitespace">     </span><span class="mi">46</span><span class="s2">             return llmod.get_global_variable(foo.name).type</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/datamodel/models.py</span> in <span class="ni">get</span><span class="nt">(self, builder, val, pos)</span>
+<span class="g g-Whitespace">    </span><span class="mi">642</span>         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">643</span>             <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_field_position</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">644</span>         <span class="k">return</span> <span class="n">builder</span><span class="o">.</span><span class="n">extract_value</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">[</span><span class="n">pos</span><span class="p">],</span>
+<span class="g g-Whitespace">    </span><span class="mi">645</span>                                      <span class="n">name</span><span class="o">=</span><span class="s2">&quot;extracted.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fields</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
+<span class="g g-Whitespace">    </span><span class="mi">646</span> 
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/values.py</span> in <span class="ni">__init__</span><span class="nt">(self, module, typ, name, addrspace)</span>
-<span class="g g-Whitespace">    </span><span class="mi">471</span><span class="s2">         self.value_type = typ</span>
-<span class="g g-Whitespace">    </span><span class="mi">472</span><span class="s2">         self.initializer = None</span>
-<span class="ne">--&gt; </span><span class="mi">473</span><span class="s2">         self.unnamed_addr = False</span>
-<span class="g g-Whitespace">    </span><span class="mi">474</span><span class="s2">         self.global_constant = False</span>
-<span class="g g-Whitespace">    </span><span class="mi">475</span><span class="s2">         self.addrspace = addrspace</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/builder.py</span> in <span class="ni">extract_value</span><span class="nt">(self, agg, idx, name)</span>
+<span class="g g-Whitespace">    </span><span class="mi">969</span>             <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">970</span>         <span class="n">instr</span> <span class="o">=</span> <span class="n">instructions</span><span class="o">.</span><span class="n">ExtractValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">block</span><span class="p">,</span> <span class="n">agg</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">971</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">972</span>         <span class="k">return</span> <span class="n">instr</span>
+<span class="g g-Whitespace">    </span><span class="mi">973</span> 
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>

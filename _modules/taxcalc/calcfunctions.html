@@ -851,7 +851,7 @@
 <span class="sd">        number of dependents under age 18</span>
 <span class="sd">    taxable_ubi: float</span>
 <span class="sd">        taxable UBI amount</span>
-<span class="sd">    II_em: </span>
+<span class="sd">    II_em:</span>
 
 <span class="sd">    II_em_ps:</span>
 
@@ -1258,17 +1258,24 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">TaxInc</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">standard</span><span class="p">,</span> <span class="n">c04470</span><span class="p">,</span> <span class="n">c04600</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span>
-           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
+           <span class="n">e02100</span><span class="p">,</span> <span class="n">e27200</span><span class="p">,</span> <span class="n">e00650</span><span class="p">,</span> <span class="n">c01000</span><span class="p">,</span> <span class="n">e02300</span><span class="p">,</span> <span class="n">PT_SSTB_income</span><span class="p">,</span>
            <span class="n">PT_binc_w2_wages</span><span class="p">,</span> <span class="n">PT_ubia_property</span><span class="p">,</span> <span class="n">PT_qbid_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_taxinc_thd</span><span class="p">,</span> <span class="n">PT_qbid_taxinc_gap</span><span class="p">,</span> <span class="n">PT_qbid_w2_wages_rt</span><span class="p">,</span>
            <span class="n">PT_qbid_alt_w2_wages_rt</span><span class="p">,</span> <span class="n">PT_qbid_alt_property_rt</span><span class="p">,</span> <span class="n">c04800</span><span class="p">,</span>
-           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span> <span class="n">PT_qbid_limit_switch</span><span class="p">):</span>
+           <span class="n">PT_qbid_ps</span><span class="p">,</span> <span class="n">PT_qbid_prt</span><span class="p">,</span> <span class="n">qbided</span><span class="p">,</span> <span class="n">PT_qbid_limit_switch</span><span class="p">,</span>
+           <span class="n">UI_em</span><span class="p">,</span> <span class="n">UI_thd</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates taxable income, c04800, and</span>
 <span class="sd">    qualified business income deduction, qbided.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># calculate UI excluded from taxable income</span>
+    <span class="k">if</span> <span class="n">c00100</span> <span class="o">&lt;=</span> <span class="n">UI_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="n">ui_excluded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e02300</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ui_excluded</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="c1"># calculate taxable income before qualified business income deduction</span>
-    <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span><span class="p">)</span>
+    <span class="n">pre_qbid_taxinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c00100</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">c04470</span><span class="p">,</span> <span class="n">standard</span><span class="p">)</span> <span class="o">-</span> <span class="n">c04600</span> <span class="o">-</span>
+                          <span class="n">ui_excluded</span><span class="p">)</span>
     <span class="c1"># calculate qualified business income deduction</span>
     <span class="n">qbided</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">qbinc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">e00900</span> <span class="o">+</span> <span class="n">e26270</span> <span class="o">+</span> <span class="n">e02100</span> <span class="o">+</span> <span class="n">e27200</span><span class="p">)</span>
@@ -1647,7 +1654,8 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">F2441</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">earned_p</span><span class="p">,</span> <span class="n">earned_s</span><span class="p">,</span> <span class="n">f2441</span><span class="p">,</span> <span class="n">CDCC_c</span><span class="p">,</span> <span class="n">e32800</span><span class="p">,</span>
-          <span class="n">exact</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CDCC_ps</span><span class="p">,</span> <span class="n">CDCC_crt</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">):</span>
+          <span class="n">exact</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CDCC_ps</span><span class="p">,</span> <span class="n">CDCC_ps2</span><span class="p">,</span> <span class="n">CDCC_crt</span><span class="p">,</span> <span class="n">CDCC_frt</span><span class="p">,</span>
+          <span class="n">CDCC_prt</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates Form 2441 child and dependent care expense credit, c07180.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1663,14 +1671,28 @@
     <span class="n">c33000</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32800</span><span class="p">,</span> <span class="nb">min</span><span class="p">(</span><span class="n">c32880</span><span class="p">,</span> <span class="n">c32890</span><span class="p">)))</span>
     <span class="c1"># credit is limited by AGI-related fraction</span>
     <span class="k">if</span> <span class="n">exact</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># exact calculation as on tax forms</span>
-        <span class="n">tratio</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">max</span><span class="p">(((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2000.</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
-        <span class="n">c33200</span> <span class="o">=</span> <span class="n">c33000</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">20.</span><span class="p">,</span> <span class="n">CDCC_crt</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="mf">15.</span><span class="p">,</span> <span class="n">tratio</span><span class="p">))</span>
+        <span class="c1"># first phase-down from 35 to 20 percent</span>
+        <span class="n">tratio1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">max</span><span class="p">(((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_prt</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
+        <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">CDCC_frt</span><span class="p">,</span> <span class="n">CDCC_crt</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">CDCC_crt</span> <span class="o">-</span> <span class="n">CDCC_frt</span><span class="p">,</span> <span class="n">tratio1</span><span class="p">))</span>
+        <span class="c1"># second phase-down from 20 percent to zero</span>
+        <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">CDCC_ps2</span><span class="p">:</span>
+            <span class="n">tratio2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">max</span><span class="p">(((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps2</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_prt</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
+            <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">CDCC_frt</span> <span class="o">-</span> <span class="nb">min</span><span class="p">(</span><span class="n">CDCC_frt</span><span class="p">,</span> <span class="n">tratio2</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">c33200</span> <span class="o">=</span> <span class="n">c33000</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">20.</span><span class="p">,</span> <span class="n">CDCC_crt</span> <span class="o">-</span>
-                                     <span class="nb">max</span><span class="p">(((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2000.</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
-    <span class="c1"># credit is limited by tax liability</span>
-    <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span><span class="p">),</span> <span class="n">c33200</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">c07180</span>
+        <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">CDCC_frt</span><span class="p">,</span> <span class="n">CDCC_crt</span> <span class="o">-</span>
+                    <span class="nb">max</span><span class="p">(((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_prt</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">c00100</span> <span class="o">&gt;</span> <span class="n">CDCC_ps2</span><span class="p">:</span>
+            <span class="n">crate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">CDCC_frt</span> <span class="o">-</span>
+                        <span class="nb">max</span><span class="p">(((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">CDCC_ps2</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_prt</span><span class="p">),</span> <span class="mf">0.</span><span class="p">))</span>
+    <span class="n">c33200</span> <span class="o">=</span> <span class="n">c33000</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">crate</span>
+    <span class="c1"># credit is limited by tax liability if not refundable</span>
+    <span class="k">if</span> <span class="n">CDCC_refundable</span><span class="p">:</span>
+        <span class="n">c07180</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">CDCC_refund</span> <span class="o">=</span> <span class="n">c33200</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">c07180</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">c05800</span> <span class="o">-</span> <span class="n">e07300</span><span class="p">),</span> <span class="n">c33200</span><span class="p">)</span>
+        <span class="n">CDCC_refund</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="EITCamount"><a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.EITCamount">[docs]</a><span class="nd">@JIT</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -1783,6 +1805,7 @@
                       <span class="n">c07200</span><span class="p">,</span>
                       <span class="n">CTC_c</span><span class="p">,</span> <span class="n">CTC_ps</span><span class="p">,</span> <span class="n">CTC_prt</span><span class="p">,</span> <span class="n">exact</span><span class="p">,</span> <span class="n">ODC_c</span><span class="p">,</span>
                       <span class="n">CTC_c_under6_bonus</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span>
+                      <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span>
                       <span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes amounts on &quot;Child Tax Credit and Credit for Other Dependents</span>
@@ -1790,8 +1813,12 @@
 <span class="sd">    nonrefundable tax credits.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Worksheet Part 1</span>
-    <span class="n">line1</span> <span class="o">=</span> <span class="n">CTC_c</span> <span class="o">*</span> <span class="n">n24</span> <span class="o">+</span> <span class="n">CTC_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
-    <span class="n">line2</span> <span class="o">=</span> <span class="n">ODC_c</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">n24</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
+        <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">n21</span> <span class="o">-</span> <span class="n">n1820</span> <span class="o">-</span> <span class="n">n24</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span>
+    <span class="n">line1</span> <span class="o">=</span> <span class="n">CTC_c</span> <span class="o">*</span> <span class="n">childnum</span> <span class="o">+</span> <span class="n">CTC_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
+    <span class="n">line2</span> <span class="o">=</span> <span class="n">ODC_c</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">childnum</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
     <span class="n">line3</span> <span class="o">=</span> <span class="n">line1</span> <span class="o">+</span> <span class="n">line2</span>
     <span class="n">modAGI</span> <span class="o">=</span> <span class="n">c00100</span>  <span class="c1"># no foreign earned income exclusion to add to AGI (line6)</span>
     <span class="k">if</span> <span class="n">line3</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">modAGI</span> <span class="o">&gt;</span> <span class="n">CTC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
@@ -1813,27 +1840,33 @@
         <span class="n">line13</span> <span class="o">=</span> <span class="n">line11</span> <span class="o">-</span> <span class="n">line12</span>
         <span class="n">line14</span> <span class="o">=</span> <span class="mf">0.</span>
         <span class="n">line15</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line13</span> <span class="o">-</span> <span class="n">line14</span><span class="p">)</span>
-        <span class="n">line16</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line10</span><span class="p">,</span> <span class="n">line15</span><span class="p">)</span>  <span class="c1"># credit is capped by tax liability</span>
+        <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+            <span class="n">c07220</span> <span class="o">=</span> <span class="n">line10</span> <span class="o">*</span> <span class="n">line1</span> <span class="o">/</span> <span class="n">line3</span>
+            <span class="n">odc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">),</span> <span class="n">line15</span><span class="p">)</span>
+            <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">c07220</span> <span class="o">-</span> <span class="n">odc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">line16</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line10</span><span class="p">,</span> <span class="n">line15</span><span class="p">)</span>  <span class="c1"># credit is capped by tax liability</span>
+            <span class="c1"># separate the CTC and ODTC amounts</span>
+            <span class="n">c07220</span> <span class="o">=</span> <span class="n">line16</span> <span class="o">*</span> <span class="n">line1</span> <span class="o">/</span> <span class="n">line3</span>
+            <span class="n">odc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line16</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">)</span>
+            <span class="c1"># compute codtc_limited for use in AdditionalCTC function</span>
+            <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">line16</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">line16</span> <span class="o">=</span> <span class="mf">0.</span>
-    <span class="c1"># separate the CTC and ODTC amounts</span>
-    <span class="n">c07220</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># nonrefundable CTC amount</span>
-    <span class="n">odc</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># nonrefundable ODTC amount</span>
-    <span class="k">if</span> <span class="n">line16</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">line1</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
-            <span class="n">c07220</span> <span class="o">=</span> <span class="n">line16</span> <span class="o">*</span> <span class="n">line1</span> <span class="o">/</span> <span class="n">line3</span>
-        <span class="n">odc</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line16</span> <span class="o">-</span> <span class="n">c07220</span><span class="p">)</span>
-    <span class="c1"># compute codtc_limited for use in AdditionalCTC function</span>
-    <span class="n">codtc_limited</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">line10</span> <span class="o">-</span> <span class="n">line16</span><span class="p">)</span>
+        <span class="n">c07220</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">odc</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">codtc_limited</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">c07220</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">codtc_limited</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">PersonalTaxCredit</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">PersonalTaxCredit</span><span class="p">(</span><span class="n">MARS</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span>
                       <span class="n">II_credit</span><span class="p">,</span> <span class="n">II_credit_ps</span><span class="p">,</span> <span class="n">II_credit_prt</span><span class="p">,</span>
                       <span class="n">II_credit_nr</span><span class="p">,</span> <span class="n">II_credit_nr_ps</span><span class="p">,</span> <span class="n">II_credit_nr_prt</span><span class="p">,</span>
+                      <span class="n">RRC_c</span><span class="p">,</span> <span class="n">RRC_ps</span><span class="p">,</span> <span class="n">RRC_pe</span><span class="p">,</span>
                       <span class="n">personal_refundable_credit</span><span class="p">,</span>
-                      <span class="n">personal_nonrefundable_credit</span><span class="p">):</span>
+                      <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
+                      <span class="n">recovery_rebate_credit</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes personal_refundable_credit and personal_nonrefundable_credit,</span>
 <span class="sd">    neither of which are part of current-law policy.</span>
@@ -1850,7 +1883,17 @@
         <span class="n">pout</span> <span class="o">=</span> <span class="n">II_credit_nr_prt</span> <span class="o">*</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">II_credit_nr_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
         <span class="n">fully_phasedout</span> <span class="o">=</span> <span class="n">personal_nonrefundable_credit</span> <span class="o">-</span> <span class="n">pout</span>
         <span class="n">personal_nonrefundable_credit</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">fully_phasedout</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">personal_nonrefundable_credit</span><span class="p">)</span>
+    <span class="c1"># calculate Recovery Rebate Credit from ARPA 2021</span>
+    <span class="k">if</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="n">RRC_c</span> <span class="o">*</span> <span class="n">XTOT</span>
+    <span class="k">elif</span> <span class="n">c00100</span> <span class="o">&lt;</span> <span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+        <span class="n">prt</span> <span class="o">=</span> <span class="p">((</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span> <span class="o">/</span>
+               <span class="p">(</span><span class="n">RRC_pe</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">RRC_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="n">RRC_c</span> <span class="o">*</span> <span class="n">XTOT</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">prt</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">recovery_rebate_credit</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
+            <span class="n">recovery_rebate_credit</span><span class="p">)</span>
 
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -2047,6 +2090,7 @@
 <span class="k">def</span> <span class="nf">NonrefundableCredits</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">e07240</span><span class="p">,</span> <span class="n">e07260</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">e07400</span><span class="p">,</span>
                          <span class="n">e07600</span><span class="p">,</span> <span class="n">p08000</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span>
                          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span>
+                         <span class="n">CTC_refundable</span><span class="p">,</span>
                          <span class="n">CR_RetirementSavings_hc</span><span class="p">,</span> <span class="n">CR_ForeignTax_hc</span><span class="p">,</span>
                          <span class="n">CR_ResidentialEnergy_hc</span><span class="p">,</span> <span class="n">CR_GeneralBusiness_hc</span><span class="p">,</span>
                          <span class="n">CR_MinimumTax_hc</span><span class="p">,</span> <span class="n">CR_OtherCredits_hc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
@@ -2057,6 +2101,7 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
+<span class="sd">    CTC_refundable: Whether the CTC is a refundable tax credit</span>
 <span class="sd">    CR_RetirementSavings_hc: Retirement savings credit haircut</span>
 <span class="sd">    CR_ForeignTax_hc: Foreign tax credit haircut</span>
 <span class="sd">    CR_ResidentialEnergy_hc: Residential energy credit haircut</span>
@@ -2079,8 +2124,9 @@
     <span class="n">c07240</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e07240</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CR_RetirementSavings_hc</span><span class="p">),</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07240</span>
     <span class="c1"># Child tax credit</span>
-    <span class="n">c07220</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07220</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
-    <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07220</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+        <span class="n">c07220</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">c07220</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
+        <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">c07220</span>
     <span class="c1"># Other dependent credit</span>
     <span class="n">odc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">odc</span><span class="p">,</span> <span class="n">avail</span><span class="p">)</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">avail</span> <span class="o">-</span> <span class="n">odc</span>
@@ -2112,6 +2158,7 @@
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">AdditionalCTC</span><span class="p">(</span><span class="n">codtc_limited</span><span class="p">,</span> <span class="n">ACTC_c</span><span class="p">,</span> <span class="n">n24</span><span class="p">,</span> <span class="n">earned</span><span class="p">,</span> <span class="n">ACTC_Income_thd</span><span class="p">,</span>
                   <span class="n">ACTC_rt</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">ACTC_rt_bonus_under6family</span><span class="p">,</span> <span class="n">ACTC_ChildNum</span><span class="p">,</span>
+                  <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span>
                   <span class="n">ptax_was</span><span class="p">,</span> <span class="n">c03260</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">c59660</span><span class="p">,</span> <span class="n">e11200</span><span class="p">,</span>
                   <span class="n">c11070</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -2120,7 +2167,15 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Part I</span>
     <span class="n">line3</span> <span class="o">=</span> <span class="n">codtc_limited</span>
-    <span class="n">line4</span> <span class="o">=</span> <span class="n">ACTC_c</span> <span class="o">*</span> <span class="n">n24</span>
+    
+    <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+        <span class="n">line4</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
+            <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">n21</span> <span class="o">-</span> <span class="n">n1820</span> <span class="o">-</span> <span class="n">n24</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span>
+        <span class="n">line4</span> <span class="o">=</span> <span class="n">ACTC_c</span> <span class="o">*</span> <span class="n">childnum</span>
     <span class="n">c11070</span> <span class="o">=</span> <span class="mf">0.</span>  <span class="c1"># line15</span>
     <span class="k">if</span> <span class="n">line3</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">line4</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">line5</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line3</span><span class="p">,</span> <span class="n">line4</span><span class="p">)</span>
@@ -2131,10 +2186,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ACTC_rate</span> <span class="o">=</span> <span class="n">ACTC_rt</span> <span class="o">+</span> <span class="n">ACTC_rt_bonus_under6family</span>
         <span class="n">line8</span> <span class="o">=</span> <span class="n">ACTC_rate</span> <span class="o">*</span> <span class="n">line7</span>
-        <span class="k">if</span> <span class="n">n24</span> <span class="o">&lt;</span> <span class="n">ACTC_ChildNum</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">childnum</span> <span class="o">&lt;</span> <span class="n">ACTC_ChildNum</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">line8</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
                 <span class="n">c11070</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">line5</span><span class="p">,</span> <span class="n">line8</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if n24 &gt;= ACTC_ChildNum</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># if childnum &gt;= ACTC_ChildNum</span>
             <span class="k">if</span> <span class="n">line8</span> <span class="o">&gt;=</span> <span class="n">line5</span><span class="p">:</span>
                 <span class="n">c11070</span> <span class="o">=</span> <span class="n">line5</span>
             <span class="k">else</span><span class="p">:</span>  <span class="c1"># complete Part II</span>
@@ -2152,13 +2207,14 @@
 <span class="k">def</span> <span class="nf">C1040</span><span class="p">(</span><span class="n">c05800</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">c07200</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">c07230</span><span class="p">,</span> <span class="n">c07240</span><span class="p">,</span> <span class="n">c07260</span><span class="p">,</span> <span class="n">c07300</span><span class="p">,</span>
           <span class="n">c07400</span><span class="p">,</span> <span class="n">c07600</span><span class="p">,</span> <span class="n">c08000</span><span class="p">,</span> <span class="n">e09700</span><span class="p">,</span> <span class="n">e09800</span><span class="p">,</span> <span class="n">e09900</span><span class="p">,</span> <span class="n">niit</span><span class="p">,</span> <span class="n">othertaxes</span><span class="p">,</span>
           <span class="n">c07100</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span> <span class="n">odc</span><span class="p">,</span> <span class="n">charity_credit</span><span class="p">,</span>
-          <span class="n">personal_nonrefundable_credit</span><span class="p">):</span>
+          <span class="n">personal_nonrefundable_credit</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes total used nonrefundable credits, c07100, othertaxes, and</span>
 <span class="sd">    income tax before refundable credits, c09200.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># total used nonrefundable credits (as computed in NonrefundableCredits)</span>
-    <span class="n">c07100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span> <span class="o">+</span> <span class="n">c07600</span> <span class="o">+</span> <span class="n">c07300</span> <span class="o">+</span> <span class="n">c07400</span> <span class="o">+</span> <span class="n">c07220</span> <span class="o">+</span> <span class="n">c08000</span> <span class="o">+</span>
+    <span class="n">c07100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span> <span class="o">+</span> <span class="n">c07600</span> <span class="o">+</span> <span class="n">c07300</span> <span class="o">+</span> <span class="n">c07400</span> <span class="o">+</span>
+              <span class="n">c07220</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">CTC_refundable</span><span class="p">)</span> <span class="o">+</span> <span class="n">c08000</span> <span class="o">+</span>
               <span class="n">c07230</span> <span class="o">+</span> <span class="n">c07240</span> <span class="o">+</span> <span class="n">c07260</span> <span class="o">+</span> <span class="n">odc</span> <span class="o">+</span> <span class="n">charity_credit</span> <span class="o">+</span>
               <span class="n">personal_nonrefundable_credit</span><span class="p">)</span>
     <span class="c1"># tax after credits (2016 Form 1040, line 56)</span>
@@ -2171,17 +2227,21 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">CTC_new</span><span class="p">(</span><span class="n">CTC_new_c</span><span class="p">,</span> <span class="n">CTC_new_rt</span><span class="p">,</span> <span class="n">CTC_new_c_under6_bonus</span><span class="p">,</span>
-            <span class="n">CTC_new_ps</span><span class="p">,</span> <span class="n">CTC_new_prt</span><span class="p">,</span> <span class="n">CTC_new_for_all</span><span class="p">,</span>
+            <span class="n">CTC_new_ps</span><span class="p">,</span> <span class="n">CTC_new_prt</span><span class="p">,</span> <span class="n">CTC_new_for_all</span><span class="p">,</span> <span class="n">CTC_include17</span><span class="p">,</span>
             <span class="n">CTC_new_refund_limited</span><span class="p">,</span> <span class="n">CTC_new_refund_limit_payroll_rt</span><span class="p">,</span>
             <span class="n">CTC_new_refund_limited_all_payroll</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span>
-            <span class="n">n24</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span> <span class="n">c09200</span><span class="p">,</span>
-            <span class="n">ctc_new</span><span class="p">):</span>
+            <span class="n">n24</span><span class="p">,</span> <span class="n">nu06</span><span class="p">,</span> <span class="n">XTOT</span><span class="p">,</span> <span class="n">n21</span><span class="p">,</span> <span class="n">n1820</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">ptax_oasdi</span><span class="p">,</span>
+            <span class="n">c09200</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes new refundable child tax credit using specified parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">n24</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
+        <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">n21</span> <span class="o">-</span> <span class="n">n1820</span> <span class="o">-</span> <span class="n">n24</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span>
+    <span class="k">if</span> <span class="n">childnum</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">posagi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
-        <span class="n">ctc_new</span> <span class="o">=</span> <span class="n">CTC_new_c</span> <span class="o">*</span> <span class="n">n24</span> <span class="o">+</span> <span class="n">CTC_new_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
+        <span class="n">ctc_new</span> <span class="o">=</span> <span class="n">CTC_new_c</span> <span class="o">*</span> <span class="n">childnum</span> <span class="o">+</span> <span class="n">CTC_new_c_under6_bonus</span> <span class="o">*</span> <span class="n">nu06</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">CTC_new_for_all</span><span class="p">:</span>
             <span class="n">ctc_new</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">CTC_new_rt</span> <span class="o">*</span> <span class="n">posagi</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">)</span>
         <span class="n">ymax</span> <span class="o">=</span> <span class="n">CTC_new_ps</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
@@ -2204,14 +2264,18 @@
 
 <span class="nd">@iterate_jit</span><span class="p">(</span><span class="n">nopython</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">IITAX</span><span class="p">(</span><span class="n">c59660</span><span class="p">,</span> <span class="n">c11070</span><span class="p">,</span> <span class="n">c10960</span><span class="p">,</span> <span class="n">personal_refundable_credit</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">,</span> <span class="n">rptc</span><span class="p">,</span>
-          <span class="n">c09200</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span>
-          <span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
+          <span class="n">c09200</span><span class="p">,</span> <span class="n">payrolltax</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">,</span> <span class="n">recovery_rebate_credit</span><span class="p">,</span>
+          <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes final taxes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
-    <span class="n">refund</span> <span class="o">=</span> <span class="p">(</span><span class="n">eitc</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">c10960</span> <span class="o">+</span>
-              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
+        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="n">c07220</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ctc_refund</span> <span class="o">=</span> <span class="mf">0.</span>
+    <span class="n">refund</span> <span class="o">=</span> <span class="p">(</span><span class="n">eitc</span> <span class="o">+</span> <span class="n">c11070</span> <span class="o">+</span> <span class="n">c10960</span> <span class="o">+</span> <span class="n">CDCC_refund</span> <span class="o">+</span> <span class="n">recovery_rebate_credit</span> <span class="o">+</span>
+              <span class="n">personal_refundable_credit</span> <span class="o">+</span> <span class="n">ctc_new</span> <span class="o">+</span> <span class="n">rptc</span> <span class="o">+</span> <span class="n">ctc_refund</span><span class="p">)</span>
     <span class="n">iitax</span> <span class="o">=</span> <span class="n">c09200</span> <span class="o">-</span> <span class="n">refund</span>
     <span class="n">combined</span> <span class="o">=</span> <span class="n">iitax</span> <span class="o">+</span> <span class="n">payrolltax</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">eitc</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">)</span>
