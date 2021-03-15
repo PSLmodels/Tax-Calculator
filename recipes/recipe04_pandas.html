@@ -26,7 +26,7 @@
 
     
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/sphinx-book-theme.37f24b989f4638ff9c27c22dc7559d4f.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/sphinx-book-theme.e7340bb3dbd8dde6db86f25597f54a1b.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
@@ -566,6 +566,97 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 
 <span class="c1"># Rename columns for printing.</span>
 <span class="n">grouped</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Earnings Group&#39;</span><span class="p">,</span> <span class="s1">&#39;Num(#M)&#39;</span><span class="p">,</span> <span class="s1">&#39;Resp($B)&#39;</span><span class="p">,</span> <span class="s1">&#39;Resp(%)&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">68</span><span class="n">ca76a6053b</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">27</span> 
+<span class="g g-Whitespace">     </span><span class="mi">28</span> <span class="c1"># calculate reform tax liabilities for cyr</span>
+<span class="ne">---&gt; </span><span class="mi">29</span> <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">30</span> <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">31</span> 
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">advance_to_year</span><span class="nt">(self, year)</span>
+<span class="g g-Whitespace">    </span><span class="mi">160</span>                              <span class="s1">&#39;greater than or equal to current year!&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">161</span>         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">162</span>             <span class="bp">self</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">163</span>         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="n">year</span>
+<span class="g g-Whitespace">    </span><span class="mi">164</span> 
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">increment_year</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">146</span>         <span class="n">next_year</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">current_year</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="g g-Whitespace">    </span><span class="mi">147</span>         <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
+<span class="ne">--&gt; </span><span class="mi">148</span>         <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="o">.</span><span class="n">set_year</span><span class="p">(</span><span class="n">next_year</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">149</span>         <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">set_year</span><span class="p">(</span><span class="n">next_year</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">150</span> 
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">set_year</span><span class="nt">(self, year)</span>
+<span class="g g-Whitespace">    </span><span class="mi">670</span> 
+<span class="g g-Whitespace">    </span><span class="mi">671</span>     <span class="k">def</span> <span class="nf">set_year</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">year</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">672</span>         <span class="bp">self</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">year</span><span class="o">=</span><span class="n">year</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">673</span> 
+<span class="g g-Whitespace">    </span><span class="mi">674</span>     <span class="nd">@property</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">set_state</span><span class="nt">(self, **labels)</span>
+<span class="g g-Whitespace">    </span><span class="mi">169</span>         <span class="s2">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">170</span><span class="s2"> </span>
+<span class="ne">--&gt; </span><span class="mi">171</span><span class="s2">         self._set_state(**labels)</span>
+<span class="g g-Whitespace">    </span><span class="mi">172</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">173</span><span class="s2">     def clear_state(self):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">_set_state</span><span class="nt">(self, params, **labels)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1080</span><span class="s2">                 )</span>
+<span class="g g-Whitespace">   </span><span class="mi">1081</span><span class="s2">             if self.array_first:</span>
+<span class="ne">-&gt; </span><span class="mi">1082</span><span class="s2">                 setattr(self, name, self.to_array(name))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1083</span><span class="s2">             else:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1084</span><span class="s2">                 setattr(self, name, value)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">to_array</span><span class="nt">(self, param, **labels)</span>
+<span class="g g-Whitespace">    </span><span class="mi">688</span><span class="s2">         if state:</span>
+<span class="g g-Whitespace">    </span><span class="mi">689</span><span class="s2">             value_items = list(</span>
+<span class="ne">--&gt; </span><span class="mi">690</span><span class="s2">                 intersection(</span>
+<span class="g g-Whitespace">    </span><span class="mi">691</span><span class="s2">                     self.sel[param].isin(strict=False, **{label: values})</span>
+<span class="nn">    692                     for label, values</span> in <span class="ni">state.items</span><span class="nt">()</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/values.py</span> in <span class="ni">intersection</span><span class="nt">(queryresults)</span>
+<span class="g g-Whitespace">    </span><span class="mi">522</span><span class="s2"> ):</span>
+<span class="g g-Whitespace">    </span><span class="mi">523</span><span class="s2">     result = None</span>
+<span class="ne">--&gt; </span><span class="mi">524</span><span class="s2">     for queryresult in queryresults:</span>
+<span class="g g-Whitespace">    </span><span class="mi">525</span><span class="s2">         if result is None:</span>
+<span class="g g-Whitespace">    </span><span class="mi">526</span><span class="s2">             result = queryresult</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">&lt;genexpr&gt;</span><span class="nt">(.0)</span>
+<span class="g g-Whitespace">    </span><span class="mi">689</span><span class="s2">             value_items = list(</span>
+<span class="g g-Whitespace">    </span><span class="mi">690</span><span class="s2">                 intersection(</span>
+<span class="ne">--&gt; </span><span class="mi">691</span><span class="s2">                     self.sel[param].isin(strict=False, **{label: values})</span>
+<span class="nn">    692                     for label, values</span> in <span class="ni">state.items</span><span class="nt">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">693</span><span class="s2">                 )</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">__getitem__</span><span class="nt">(self, parameter_or_values)</span>
+<span class="g g-Whitespace">     </span><span class="mi">55</span><span class="s2">                 self._cache[parameter_or_values] = keyfunc</span>
+<span class="g g-Whitespace">     </span><span class="mi">56</span><span class="s2">                 keyfuncs[&quot;value&quot;] = keyfunc</span>
+<span class="ne">---&gt; </span><span class="mi">57</span><span class="s2">                 values = Values(data[&quot;value&quot;], keyfuncs=keyfuncs)</span>
+<span class="g g-Whitespace">     </span><span class="mi">58</span><span class="s2">                 self._cache[parameter_or_values] = values</span>
+<span class="g g-Whitespace">     </span><span class="mi">59</span><span class="s2">                 return values</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/values.py</span> in <span class="ni">__init__</span><span class="nt">(self, values, keyfuncs, skls, index)</span>
+<span class="g g-Whitespace">    </span><span class="mi">235</span><span class="s2">             self.skls = skls</span>
+<span class="g g-Whitespace">    </span><span class="mi">236</span><span class="s2">         else:</span>
+<span class="ne">--&gt; </span><span class="mi">237</span><span class="s2">             self.skls = self.build_skls(self.values, keyfuncs or </span><span class="si">{}</span><span class="s2">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">238</span><span class="s2"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">239</span><span class="s2">     def build_skls(self, values, keyfuncs):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/values.py</span> in <span class="ni">build_skls</span><span class="nt">(self, values, keyfuncs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">242</span><span class="s2">         for ix, vo in values.items():</span>
+<span class="g g-Whitespace">    </span><span class="mi">243</span><span class="s2">             for label, value in vo.items():</span>
+<span class="ne">--&gt; </span><span class="mi">244</span><span class="s2">                 label_values[label].append(value)</span>
+<span class="g g-Whitespace">    </span><span class="mi">245</span><span class="s2">                 label_index[label].append(ix)</span>
+<span class="g g-Whitespace">    </span><span class="mi">246</span><span class="s2"> </span>
+
+<span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
 </div>
 </div>
