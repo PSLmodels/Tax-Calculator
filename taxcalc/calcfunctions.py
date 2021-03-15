@@ -1741,13 +1741,14 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     """
     # Part I
     line3 = codtc_limited
-    if CTC_include17:
-        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
-    else:
-        childnum = n24
+    
     if CTC_refundable:
         line4 = 0.
     else:
+        if CTC_include17:
+            childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+        else:
+            childnum = n24
         line4 = ACTC_c * childnum
     c11070 = 0.  # line15
     if line3 > 0. and line4 > 0.:
