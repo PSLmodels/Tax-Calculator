@@ -3212,25 +3212,42 @@ def Taxes(income, MARS, tbrk_base,
 
     Parameters
     ----------
-    income
+    income: float
+        Taxable income
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
-    tbrk_base
-    rate1
-    rate2
-    rate3
-    rate4
-    rate5
-    rate6
-    rate7
-    rate8
-    tbrk1
-    tbrk2
-    tbrk3
-    tbrk4
-    tbrk5
-    tbrk6
-    tbrk7
+    tbrk_base: float
+        Amount of income used to determine the braket the filer is in
+    rate1: list
+        Income tax rate 1
+    rate2: list
+        Income tax rate 2
+    rate3: list
+        Income tax rate 3
+    rate4: list
+        Income tax rate 4
+    rate5: list
+        Income tax rate 5
+    rate6: list
+        Income tax rate 6
+    rate7: list
+        Income tax rate 7
+    rate8: list
+        Income tax rate 8
+    tbrk1: list
+        Income tax bracket (upper threshold) 1
+    tbrk2: list
+        Income tax bracket (upper threshold) 2
+    tbrk3: list
+        Income tax bracket (upper threshold) 3
+    tbrk4: list
+        Income tax bracket (upper threshold) 4
+    tbrk5: list
+        Income tax bracket (upper threshold) 5
+    tbrk6: list
+        Income tax bracket (upper threshold) 6
+    tbrk7: list
+        Income tax bracket (upper threshold) 7
 
     Returns
     -------
