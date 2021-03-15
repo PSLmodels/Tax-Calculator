@@ -3039,7 +3039,7 @@
     "RRC_ps": {
         "title": "Recovery Rebate Credit phaseout start",
         "description": "The Recovery Rebate Credit amount will be reduced for taxpayers with AGI higher than this threshold level.",
-        "notes": "",
+        "notes": "Enacted for 2021 as part of the American Rescue Plan Act",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
@@ -3086,7 +3086,7 @@
     "RRC_pe": {
         "title": "Recovery Rebate Credit phaseout end",
         "description": "The Recovery Rebate Credit amount will be fully phased out for taxpayers with AGI higher than this threshold level.",
-        "notes": "",
+        "notes": "Enacted for 2021 as part of the American Rescue Plan Act",
         "section_1": "Refundable Credits",
         "section_2": "Personal Refundable Credit",
         "indexable": true,
