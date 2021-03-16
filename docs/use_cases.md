@@ -316,3 +316,9 @@ families. January 2021. URL:
 Allowance. February 2021. URL:
 <https://www.niskanencenter.org/wp-content/uploads/2021/02/Analysis-of-the-Romney-Child-Allowance_final.pdf>
 (visited on 2021-02-12).
+
+\[65\] Alex Brill, Kyle Pomerleau, and Grant Seiter. The tax benefits of
+parenthood: A history and analysis of current proposals. February 2021.
+Section: Economics. URL:
+<https://www.aei.org/research-products/report/the-tax-benefits-of-parenthood-a-history-and-analysis-of-current-proposals/>
+(visited on 2021-02-25).

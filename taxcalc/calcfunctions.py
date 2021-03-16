@@ -676,6 +676,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     nu18: int
         Number of people in the tax unit under 18
     taxable_ubi: float
+<<<<<<< HEAD
         Amount of UBI that is taxable (is added to AGI)
     II_em: float
         Personal and dependent exemption amount
@@ -685,6 +686,17 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemtptions for dependents under age 18       
+=======
+        taxable UBI amount
+    II_em:
+
+    II_em_ps:
+
+    II_prt:
+
+    II_no_em_nu18,
+
+>>>>>>> upstream/master
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
@@ -1165,11 +1177,12 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
 @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
-           e02100, e27200, e00650, c01000, PT_SSTB_income,
+           e02100, e27200, e00650, c01000, e02300, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
            PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch):
+           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch,
+           UI_em, UI_thd):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
@@ -1235,8 +1248,14 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     qbided: float
         Qualified Business Income (QBI) deduction
     """
+    # calculate UI excluded from taxable income
+    if c00100 <= UI_thd[MARS - 1]:
+        ui_excluded = min(e02300, UI_em)
+    else:
+        ui_excluded = 0.
     # calculate taxable income before qualified business income deduction
-    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
+    pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600 -
+                          ui_excluded)
     # calculate qualified business income deduction
     qbided = 0.
     qbinc = max(0., e00900 + e26270 + e02100 + e27200)
@@ -2089,7 +2108,8 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
 
 @iterate_jit(nopython=True)
 def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
-          exact, c00100, CDCC_ps, CDCC_crt, c05800, e07300, c07180):
+          exact, c00100, CDCC_ps, CDCC_ps2, CDCC_crt, CDCC_frt,
+          CDCC_prt, CDCC_refundable, c05800, e07300, c07180, CDCC_refund):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
 
@@ -2139,14 +2159,28 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     c33000 = max(0., min(c32800, min(c32880, c32890)))
     # credit is limited by AGI-related fraction
     if exact == 1:  # exact calculation as on tax forms
-        tratio = math.ceil(max(((c00100 - CDCC_ps) / 2000.), 0.))
-        c33200 = c33000 * 0.01 * max(20., CDCC_crt - min(15., tratio))
+        # first phase-down from 35 to 20 percent
+        tratio1 = math.ceil(max(((c00100 - CDCC_ps) * CDCC_prt), 0.))
+        crate = max(CDCC_frt, CDCC_crt - min(CDCC_crt - CDCC_frt, tratio1))
+        # second phase-down from 20 percent to zero
+        if c00100 > CDCC_ps2:
+            tratio2 = math.ceil(max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
+            crate = max(0., CDCC_frt - min(CDCC_frt, tratio2))
     else:
-        c33200 = c33000 * 0.01 * max(20., CDCC_crt -
-                                     max(((c00100 - CDCC_ps) / 2000.), 0.))
-    # credit is limited by tax liability
-    c07180 = min(max(0., c05800 - e07300), c33200)
-    return c07180
+        crate = max(CDCC_frt, CDCC_crt -
+                    max(((c00100 - CDCC_ps) * CDCC_prt), 0.))
+        if c00100 > CDCC_ps2:
+            crate = max(0., CDCC_frt -
+                        max(((c00100 - CDCC_ps2) * CDCC_prt), 0.))
+    c33200 = c33000 * 0.01 * crate
+    # credit is limited by tax liability if not refundable
+    if CDCC_refundable:
+        c07180 = 0.
+        CDCC_refund = c33200
+    else:
+        c07180 = min(max(0., c05800 - e07300), c33200)
+        CDCC_refund = 0.
+    return (c07180, CDCC_refund)
 
 
 @JIT(nopython=True)
@@ -2371,6 +2405,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       c07200,
                       CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
                       CTC_c_under6_bonus, nu06,
+                      CTC_refundable, CTC_include17, n21, n1820,
                       c07220, odc, codtc_limited):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
@@ -2440,8 +2475,12 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
         Maximum of 0 and line 10 minus line 16
     """
     # Worksheet Part 1
-    line1 = CTC_c * n24 + CTC_c_under6_bonus * nu06
-    line2 = ODC_c * max(0, XTOT - n24 - num)
+    if CTC_include17:
+        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+    else:
+        childnum = n24
+    line1 = CTC_c * childnum + CTC_c_under6_bonus * nu06
+    line2 = ODC_c * max(0, XTOT - childnum - num)
     line3 = line1 + line2
     modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
     if line3 > 0. and modAGI > CTC_ps[MARS - 1]:
@@ -2463,27 +2502,33 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
         line13 = line11 - line12
         line14 = 0.
         line15 = max(0., line13 - line14)
-        line16 = min(line10, line15)  # credit is capped by tax liability
+        if CTC_refundable:
+            c07220 = line10 * line1 / line3
+            odc = min(max(0., line10 - c07220), line15)
+            codtc_limited = max(0., line10 - c07220 - odc)
+        else:
+            line16 = min(line10, line15)  # credit is capped by tax liability
+            # separate the CTC and ODTC amounts
+            c07220 = line16 * line1 / line3
+            odc = max(0., line16 - c07220)
+            # compute codtc_limited for use in AdditionalCTC function
+            codtc_limited = max(0., line10 - line16)
     else:
         line16 = 0.
-    # separate the CTC and ODTC amounts
-    c07220 = 0.  # nonrefundable CTC amount
-    odc = 0.  # nonrefundable ODTC amount
-    if line16 > 0.:
-        if line1 > 0.:
-            c07220 = line16 * line1 / line3
-        odc = max(0., line16 - c07220)
-    # compute codtc_limited for use in AdditionalCTC function
-    codtc_limited = max(0., line10 - line16)
+        c07220 = 0.
+        odc = 0.
+        codtc_limited = 0.
     return (c07220, odc, codtc_limited)
 
 
 @iterate_jit(nopython=True)
-def PersonalTaxCredit(MARS, c00100,
+def PersonalTaxCredit(MARS, c00100, XTOT,
                       II_credit, II_credit_ps, II_credit_prt,
                       II_credit_nr, II_credit_nr_ps, II_credit_nr_prt,
+                      RRC_c, RRC_ps, RRC_pe,
                       personal_refundable_credit,
-                      personal_nonrefundable_credit):
+                      personal_nonrefundable_credit,
+                      recovery_rebate_credit):
     """
     Computes personal_refundable_credit and personal_nonrefundable_credit,
     neither of which are part of current-law policy.
@@ -2530,7 +2575,17 @@ def PersonalTaxCredit(MARS, c00100,
         pout = II_credit_nr_prt * (c00100 - II_credit_nr_ps[MARS - 1])
         fully_phasedout = personal_nonrefundable_credit - pout
         personal_nonrefundable_credit = max(0., fully_phasedout)
-    return (personal_refundable_credit, personal_nonrefundable_credit)
+    # calculate Recovery Rebate Credit from ARPA 2021
+    if c00100 < RRC_ps[MARS - 1]:
+        recovery_rebate_credit = RRC_c * XTOT
+    elif c00100 < RRC_pe[MARS - 1]:
+        prt = ((c00100 - RRC_ps[MARS - 1]) /
+               (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
+        recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
+    else:
+        recovery_rebate_credit = 0.0
+    return (personal_refundable_credit, personal_nonrefundable_credit,
+            recovery_rebate_credit)
 
 
 @iterate_jit(nopython=True)
@@ -2783,6 +2838,7 @@ def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
 def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, odc,
                          personal_nonrefundable_credit,
+                         CTC_refundable,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
                          CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit,
@@ -2793,6 +2849,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
     Parameters
     ----------
+<<<<<<< HEAD
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07240: float
@@ -2874,6 +2931,15 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Credit for charitable giving
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
+=======
+    CTC_refundable: Whether the CTC is a refundable tax credit
+    CR_RetirementSavings_hc: Retirement savings credit haircut
+    CR_ForeignTax_hc: Foreign tax credit haircut
+    CR_ResidentialEnergy_hc: Residential energy credit haircut
+    CR_GeneralBusiness_hc: General business credit haircut
+    CR_MinimumTax_hc: Minimum tax credit haircut
+    CR_OtherCredits_hc: Other credits haircut
+>>>>>>> upstream/master
     """
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
@@ -2890,8 +2956,9 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
     # Child tax credit
-    c07220 = min(c07220, avail)
-    avail = avail - c07220
+    if not CTC_refundable:
+        c07220 = min(c07220, avail)
+        avail = avail - c07220
     # Other dependent credit
     odc = min(odc, avail)
     avail = avail - odc
@@ -2923,6 +2990,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 @iterate_jit(nopython=True)
 def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
                   ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
+                  CTC_refundable, CTC_include17, XTOT, n21, n1820, num,
                   ptax_was, c03260, e09800, c59660, e11200,
                   c11070):
     """
@@ -2969,7 +3037,15 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     """
     # Part I
     line3 = codtc_limited
-    line4 = ACTC_c * n24
+    
+    if CTC_refundable:
+        line4 = 0.
+    else:
+        if CTC_include17:
+            childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+        else:
+            childnum = n24
+        line4 = ACTC_c * childnum
     c11070 = 0.  # line15
     if line3 > 0. and line4 > 0.:
         line5 = min(line3, line4)
@@ -2980,10 +3056,10 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
         else:
             ACTC_rate = ACTC_rt + ACTC_rt_bonus_under6family
         line8 = ACTC_rate * line7
-        if n24 < ACTC_ChildNum:
+        if childnum < ACTC_ChildNum:
             if line8 > 0.:
                 c11070 = min(line5, line8)
-        else:  # if n24 >= ACTC_ChildNum
+        else:  # if childnum >= ACTC_ChildNum
             if line8 >= line5:
                 c11070 = line5
             else:  # complete Part II
@@ -3001,7 +3077,7 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
           c07100, c09200, odc, charity_credit,
-          personal_nonrefundable_credit):
+          personal_nonrefundable_credit, CTC_refundable):
     """
     Computes total used nonrefundable credits, c07100, othertaxes, and
     income tax before refundable credits, c09200.
@@ -3061,7 +3137,8 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
         Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied
     """
     # total used nonrefundable credits (as computed in NonrefundableCredits)
-    c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 + c07220 + c08000 +
+    c07100 = (c07180 + c07200 + c07600 + c07300 + c07400 +
+              c07220 * (1. - CTC_refundable) + c08000 +
               c07230 + c07240 + c07260 + odc + charity_credit +
               personal_nonrefundable_credit)
     # tax after credits (2016 Form 1040, line 56)
@@ -3074,11 +3151,11 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
 
 @iterate_jit(nopython=True)
 def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
-            CTC_new_ps, CTC_new_prt, CTC_new_for_all,
+            CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
             CTC_new_refund_limited_all_payroll, payrolltax,
-            n24, nu06, c00100, MARS, ptax_oasdi, c09200,
-            ctc_new):
+            n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oasdi,
+            c09200, ctc_new):
     """
     Computes new refundable child tax credit using specified parameters.
 
@@ -3125,9 +3202,13 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
     ctc_new: float
         New refundable child tax credit
     """
-    if n24 > 0:
+    if CTC_include17:
+        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+    else:
+        childnum = n24
+    if childnum > 0:
         posagi = max(c00100, 0.)
-        ctc_new = CTC_new_c * n24 + CTC_new_c_under6_bonus * nu06
+        ctc_new = CTC_new_c * childnum + CTC_new_c_under6_bonus * nu06
         if not CTC_new_for_all:
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
         ymax = CTC_new_ps[MARS - 1]
@@ -3150,8 +3231,8 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
 
 @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
-          c09200, payrolltax,
-          eitc, refund, iitax, combined):
+          c09200, payrolltax, CDCC_refund, recovery_rebate_credit,
+          eitc, c07220, CTC_refundable, refund, iitax, combined):
     """
     Computes final taxes.
 
@@ -3194,8 +3275,12 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
         Sum of iitax and payrolltax and lumpsum_tax
     """
     eitc = c59660
-    refund = (eitc + c11070 + c10960 +
-              personal_refundable_credit + ctc_new + rptc)
+    if CTC_refundable:
+        ctc_refund = c07220
+    else:
+        ctc_refund = 0.
+    refund = (eitc + c11070 + c10960 + CDCC_refund + recovery_rebate_credit +
+              personal_refundable_credit + ctc_new + rptc + ctc_refund)
     iitax = c09200 - refund
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)
