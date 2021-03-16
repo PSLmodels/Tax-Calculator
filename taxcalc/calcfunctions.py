@@ -676,7 +676,6 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     nu18: int
         Number of people in the tax unit under 18
     taxable_ubi: float
-<<<<<<< HEAD
         Amount of UBI that is taxable (is added to AGI)
     II_em: float
         Personal and dependent exemption amount
@@ -686,24 +685,12 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
         Personal exemption phaseout rate
     II_no_em_nu18: float
         Repeal personal exemtptions for dependents under age 18       
-=======
-        taxable UBI amount
-    II_em:
-
-    II_em_ps:
-
-    II_prt:
-
-    II_no_em_nu18,
-
->>>>>>> upstream/master
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
         Personal exemption before phase-out
     c04600: float
         Personal exemptions after phase-out
-
     Returns
     -------
     c00100: float
@@ -2849,7 +2836,6 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
 
     Parameters
     ----------
-<<<<<<< HEAD
     c05800: float
         Total (regular + AMT) income tax liability before credits
     e07240: float
@@ -2902,7 +2888,6 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Prior year minimum tax credit - Form 8801
     c08000: float
         Other credits
-
     Returns
     -------
     c07180: float
@@ -2931,15 +2916,6 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Credit for charitable giving
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
-=======
-    CTC_refundable: Whether the CTC is a refundable tax credit
-    CR_RetirementSavings_hc: Retirement savings credit haircut
-    CR_ForeignTax_hc: Foreign tax credit haircut
-    CR_ResidentialEnergy_hc: Residential energy credit haircut
-    CR_GeneralBusiness_hc: General business credit haircut
-    CR_MinimumTax_hc: Minimum tax credit haircut
-    CR_OtherCredits_hc: Other credits haircut
->>>>>>> upstream/master
     """
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
