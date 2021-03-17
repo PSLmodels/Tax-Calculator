@@ -516,214 +516,123 @@ This recipe shows how to analyze the behavioral responses to a tax reform using 
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="n">c2b69f7d7ea4</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">17</span> 
 <span class="g g-Whitespace">     </span><span class="mi">18</span> <span class="c1"># specify Calculator object for static analysis of reform policy</span>
-<span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformA.json&#39;</span><span class="p">))</span>
-<span class="ne">---&gt; </span><span class="mi">20</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+<span class="ne">---&gt; </span><span class="mi">19</span> <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformA.json&#39;</span><span class="p">))</span>
+<span class="g g-Whitespace">     </span><span class="mi">20</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
 <span class="g g-Whitespace">     </span><span class="mi">21</span> 
-<span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="c1"># calculate reform income tax liabilities for cyr under static assumptions</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">__init__</span><span class="nt">(self, policy, records, verbose, sync_years, consumption)</span>
-<span class="g g-Whitespace">     </span><span class="mi">96</span>         <span class="c1"># pylint: disable=too-many-arguments,too-many-branches</span>
-<span class="g g-Whitespace">     </span><span class="mi">97</span>         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">policy</span><span class="p">,</span> <span class="n">Policy</span><span class="p">):</span>
-<span class="ne">---&gt; </span><span class="mi">98</span>             <span class="bp">self</span><span class="o">.</span><span class="n">__policy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">policy</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">99</span>         <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span>             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;must specify policy as a Policy object&#39;</span><span class="p">)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py</span> in <span class="ni">implement_reform</span><span class="nt">(self, reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span>         <span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">120</span><span class="sd">         # need to do conversion:</span>
+<span class="ne">--&gt; </span><span class="mi">121</span><span class="sd">         return self._update(reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">123</span><span class="sd">     @staticmethod</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>                 <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="o">*</span><span class="n">rv</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> 
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">_update</span><span class="nt">(self, revision, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">663</span><span class="sd">                     None</span>
+<span class="g g-Whitespace">    </span><span class="mi">664</span><span class="sd">                 )</span>
+<span class="ne">--&gt; </span><span class="mi">665</span><span class="sd">         return self.adjust(</span>
+<span class="g g-Whitespace">    </span><span class="mi">666</span><span class="sd">             new_params,</span>
+<span class="g g-Whitespace">    </span><span class="mi">667</span><span class="sd">             print_warnings=print_warnings,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span>     <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span>         <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">270</span>             <span class="n">state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;__setstate__&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>             <span class="n">y</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">adjust</span><span class="nt">(self, params_or_path, print_warnings, raise_errors, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">179</span><span class="sd">                 ignore_warnings=kwargs[&quot;ignore_warnings&quot;],</span>
+<span class="g g-Whitespace">    </span><span class="mi">180</span><span class="sd">             ):</span>
+<span class="ne">--&gt; </span><span class="mi">181</span><span class="sd">                 return self.adjust_with_indexing(</span>
+<span class="g g-Whitespace">    </span><span class="mi">182</span><span class="sd">                     params_or_path, raise_errors=True, **kwargs</span>
+<span class="g g-Whitespace">    </span><span class="mi">183</span><span class="sd">                 )</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/contextlib.py</span> in <span class="ni">__exit__</span><span class="nt">(self, type, value, traceback)</span>
+<span class="g g-Whitespace">    </span><span class="mi">118</span><span class="sd">         if type is None:</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span><span class="sd">             try:</span>
+<span class="ne">--&gt; </span><span class="mi">120</span><span class="sd">                 next(self.gen)</span>
+<span class="g g-Whitespace">    </span><span class="mi">121</span><span class="sd">             except StopIteration:</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span><span class="sd">                 return False</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">transaction</span><span class="nt">(self, defer_validation, raise_errors, ignore_warnings)</span>
+<span class="g g-Whitespace">    </span><span class="mi">435</span><span class="sd">             self._defer_validation = False</span>
+<span class="g g-Whitespace">    </span><span class="mi">436</span><span class="sd">         if defer_validation:</span>
+<span class="ne">--&gt; </span><span class="mi">437</span><span class="sd">             self.validate(</span>
+<span class="g g-Whitespace">    </span><span class="mi">438</span><span class="sd">                 self.specification(use_state=False, meta_data=False),</span>
+<span class="g g-Whitespace">    </span><span class="mi">439</span><span class="sd">                 ignore_warnings=ignore_warnings,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>                 <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="o">*</span><span class="n">rv</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> 
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">validate</span><span class="nt">(self, params, raise_errors, ignore_warnings)</span>
+<span class="g g-Whitespace">    </span><span class="mi">459</span><span class="sd">         &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">460</span>         <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">461</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_validator_schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">462</span>                 <span class="n">params</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="p">,</span> <span class="n">deserialized</span><span class="o">=</span><span class="kc">True</span>
+<span class="g g-Whitespace">    </span><span class="mi">463</span>             <span class="p">)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span>     <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span>         <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">270</span>             <span class="n">state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;__setstate__&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>             <span class="n">y</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">load</span><span class="nt">(self, data, ignore_warnings, deserialized)</span>
+<span class="g g-Whitespace">    </span><span class="mi">238</span>         <span class="k">try</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">239</span>             <span class="k">if</span> <span class="n">deserialized</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">240</span>                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_only</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">241</span>             <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">242</span>                 <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validate_only</span><span class="nt">(self, data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">216</span>                 <span class="n">field_errors</span><span class="o">=</span><span class="n">field_errors</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">217</span>             <span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">218</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_invoke_schema_validators</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">219</span>                 <span class="n">error_store</span><span class="o">=</span><span class="n">error_store</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">220</span>                 <span class="n">pass_many</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_tuple</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">208</span> 
-<span class="g g-Whitespace">    </span><span class="mi">209</span> <span class="k">def</span> <span class="nf">_deepcopy_tuple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="n">deepcopy</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">210</span>     <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">211</span>     <span class="c1"># We&#39;re not going to put the tuple in the memo, but it&#39;s still important we</span>
-<span class="g g-Whitespace">    </span><span class="mi">212</span>     <span class="c1"># check for it, in case the tuple contains recursive mutable structures.</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/marshmallow/schema.py</span> in <span class="ni">_invoke_schema_validators</span><span class="nt">(self, error_store, pass_many, data, original_data, many, partial, field_errors)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1185</span>                     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1186</span>             <span class="k">else</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1187</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">_run_validator</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1188</span>                     <span class="n">validator</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1189</span>                     <span class="n">data</span><span class="p">,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">&lt;listcomp&gt;</span><span class="nt">(.0)</span>
-<span class="g g-Whitespace">    </span><span class="mi">208</span> 
-<span class="g g-Whitespace">    </span><span class="mi">209</span> <span class="k">def</span> <span class="nf">_deepcopy_tuple</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="n">deepcopy</span><span class="o">=</span><span class="n">deepcopy</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">210</span>     <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">211</span>     <span class="c1"># We&#39;re not going to put the tuple in the memo, but it&#39;s still important we</span>
-<span class="g g-Whitespace">    </span><span class="mi">212</span>     <span class="c1"># check for it, in case the tuple contains recursive mutable structures.</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/marshmallow/schema.py</span> in <span class="ni">_run_validator</span><span class="nt">(self, validator_func, output, original_data, error_store, many, partial, pass_original, index)</span>
+<span class="g g-Whitespace">    </span><span class="mi">777</span>                 <span class="n">validator_func</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">original_data</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">778</span>             <span class="k">else</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">779</span>                 <span class="n">validator_func</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">780</span>         <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">781</span>             <span class="n">error_store</span><span class="o">.</span><span class="n">store_error</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">messages</span><span class="p">,</span> <span class="n">err</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validate_params</span><span class="nt">(self, data, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">256</span>         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">specs</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="g g-Whitespace">    </span><span class="mi">257</span>             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">specs</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">258</span>                 <span class="n">_warnings</span><span class="p">,</span> <span class="n">_errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_param</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">259</span>                 <span class="k">if</span> <span class="n">_warnings</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">260</span>                     <span class="n">warnings</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">_warnings</span><span class="p">}</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validate_param</span><span class="nt">(self, param_name, param_spec, raw_data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">274</span>             <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;spec&quot;</span><span class="p">],</span> <span class="s2">&quot;_defer_validation&quot;</span><span class="p">,</span> <span class="kc">False</span>
+<span class="g g-Whitespace">    </span><span class="mi">275</span>         <span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">276</span>         <span class="n">validators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validators</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">277</span>             <span class="n">param_name</span><span class="p">,</span> <span class="n">param_spec</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">validate_schema</span><span class="o">=</span><span class="n">validate_schema</span>
+<span class="g g-Whitespace">    </span><span class="mi">278</span>         <span class="p">)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validators</span><span class="nt">(self, param_name, param_spec, raw_data, validate_schema)</span>
+<span class="g g-Whitespace">    </span><span class="mi">317</span>             <span class="k">if</span> <span class="n">vname</span> <span class="o">==</span> <span class="s2">&quot;range&quot;</span> <span class="ow">and</span> <span class="n">param_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,):</span>
+<span class="g g-Whitespace">    </span><span class="mi">318</span>                 <span class="n">vname</span> <span class="o">=</span> <span class="s2">&quot;date_range&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">319</span>             <span class="n">validator</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">WRAPPER_MAP</span><span class="p">[</span><span class="n">vname</span><span class="p">])(</span>
+<span class="g g-Whitespace">    </span><span class="mi">320</span>                 <span class="n">vname</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">321</span>                 <span class="n">vdata</span><span class="p">,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">_get_range_validator</span><span class="nt">(self, vname, range_dict, param_name, param_spec, raw_data, ndim_restriction, validate_schema)</span>
+<span class="g g-Whitespace">    </span><span class="mi">424</span>             <span class="n">min_oth_param</span><span class="p">,</span> <span class="n">min_vos</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+<span class="g g-Whitespace">    </span><span class="mi">425</span>         <span class="k">elif</span> <span class="n">is_related_param</span> <span class="ow">and</span> <span class="n">validate_schema</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">426</span>             <span class="n">min_oth_param</span><span class="p">,</span> <span class="n">min_vos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_related_value</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">427</span>                 <span class="n">min_value</span><span class="p">,</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_spec</span><span class="p">,</span> <span class="n">raw_data</span>
+<span class="g g-Whitespace">    </span><span class="mi">428</span>             <span class="p">)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>                 <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="o">*</span><span class="n">rv</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> 
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">_get_related_value</span><span class="nt">(self, oth_param_name, param_name, param_spec, raw_data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">535</span>         <span class="n">labs_to_check</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">param_spec</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;_auto&quot;</span><span class="p">)}</span>
+<span class="g g-Whitespace">    </span><span class="mi">536</span>         <span class="k">if</span> <span class="n">labs_to_check</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">537</span>             <span class="n">res</span> <span class="o">=</span> <span class="p">[</span>
+<span class="g g-Whitespace">    </span><span class="mi">538</span>                 <span class="n">val</span>
+<span class="g g-Whitespace">    </span><span class="mi">539</span>                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span>     <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span>         <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">270</span>             <span class="n">state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;__setstate__&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>             <span class="n">y</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>                 <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="o">*</span><span class="n">rv</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> 
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">268</span>     <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">269</span>         <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">270</span>             <span class="n">state</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">271</span>         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="s1">&#39;__setstate__&#39;</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">272</span>             <span class="n">y</span><span class="o">.</span><span class="n">__setstate__</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">144</span>     <span class="n">copier</span> <span class="o">=</span> <span class="n">_deepcopy_dispatch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>     <span class="k">if</span> <span class="n">copier</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">146</span>         <span class="n">y</span> <span class="o">=</span> <span class="n">copier</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">147</span>     <span class="k">else</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>         <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_dict</span><span class="nt">(x, memo, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>     <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">229</span>     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-<span class="ne">--&gt; </span><span class="mi">230</span>         <span class="n">y</span><span class="p">[</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">memo</span><span class="p">)]</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">231</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">232</span> <span class="n">d</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="n">_deepcopy_dict</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">x</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>                 <span class="k">else</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>                     <span class="n">y</span> <span class="o">=</span> <span class="n">_reconstruct</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">,</span> <span class="o">*</span><span class="n">rv</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span> 
-<span class="g g-Whitespace">    </span><span class="mi">174</span>     <span class="c1"># If is its own copy, don&#39;t memoize.</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
-<span class="g g-Whitespace">    </span><span class="mi">262</span>     <span class="k">if</span> <span class="n">deep</span> <span class="ow">and</span> <span class="n">args</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">263</span>         <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">264</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">265</span>     <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">266</span>         <span class="n">memo</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span> <span class="o">=</span> <span class="n">y</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">&lt;genexpr&gt;</span><span class="nt">(.0)</span>
-<span class="g g-Whitespace">    </span><span class="mi">261</span>     <span class="n">deep</span> <span class="o">=</span> <span class="n">memo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="g g-Whitespace">    </span><span class="mi">262</span>     <span class="k">if</span> <span class="n">deep</span> <span class="ow">and</span> <span class="n">args</span><span class="p">:</span>
-<span class="ne">--&gt; </span><span class="mi">263</span>         <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">264</span>     <span class="n">y</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">265</span>     <span class="k">if</span> <span class="n">deep</span><span class="p">:</span>
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
-<span class="g g-Whitespace">    </span><span class="mi">175</span>     <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">x</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">176</span>         <span class="n">memo</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
-<span class="ne">--&gt; </span><span class="mi">177</span>         <span class="n">_keep_alive</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">memo</span><span class="p">)</span> <span class="c1"># Make sure x lives at least as long as d</span>
-<span class="g g-Whitespace">    </span><span class="mi">178</span>     <span class="k">return</span> <span class="n">y</span>
-<span class="g g-Whitespace">    </span><span class="mi">179</span> 
-
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_keep_alive</span><span class="nt">(x, memo)</span>
-<span class="g g-Whitespace">    </span><span class="mi">250</span>     <span class="n">the</span> <span class="n">memo</span> <span class="n">itself</span><span class="o">...</span>
-<span class="g g-Whitespace">    </span><span class="mi">251</span>     <span class="s2">&quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">252</span><span class="s2">     try:</span>
-<span class="g g-Whitespace">    </span><span class="mi">253</span><span class="s2">         memo[id(memo)].append(x)</span>
-<span class="g g-Whitespace">    </span><span class="mi">254</span><span class="s2">     except KeyError:</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">&lt;listcomp&gt;</span><span class="nt">(.0)</span>
+<span class="g g-Whitespace">    </span><span class="mi">538</span>                 <span class="n">val</span>
+<span class="g g-Whitespace">    </span><span class="mi">539</span>                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span>
+<span class="ne">--&gt; </span><span class="mi">540</span>                 <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">param_spec</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">labs_to_check</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">541</span>             <span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">542</span>         <span class="k">else</span><span class="p">:</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
