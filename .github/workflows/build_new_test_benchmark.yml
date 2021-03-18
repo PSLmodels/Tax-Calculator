@@ -13,12 +13,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
 
-      - name: Setup Miniconda using Python ${{ matrix.python-version }}
+      - name: Setup Miniconda using Python
         uses: conda-incubator/setup-miniconda@v2
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
-          python-version: 3.9
+          python-version: 3.8
           auto-activate-base: false
 
       - name: Build
@@ -30,17 +30,20 @@ jobs:
 
       - name: Test
         shell: bash -l {0}
-        working-directory: ./
+        working-directory: ./taxcalc/tests
         run: |
           pytest -m 'not requires_pufcsv and not pre_release and not local'
           
       - name: Commit new test stats benchmark
         shell: bash -l {0}
-        working-directory: ./
+        working-directory: ./taxcalc/tests
         run: |
+          rm -rf test_stats_benchmark.csv
+          mv test_stats_current.csv test_stats_benchmark.csv
+
           git config user.name github-actions
           git config user.email github-actions@github.com
 
-          git add -A
+          git add test_stats_benchmark.csv
           git commit -m "Update test benchmark $(date +'%Y-%m-%d')"
           git push
