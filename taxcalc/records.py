@@ -133,16 +133,16 @@ class Records(Data):
         self.ADJ = None
         self._read_ratios(adjust_ratios)
         # specify exact value based on exact_calculations
-        self.exact[:] = np.where(exact_calculations is True, 1, 0)
+        self.exact = np.where(exact_calculations is True, 1, 0)
         # specify FLPDYR value based on start_year
-        self.FLPDYR.fill(start_year)
+        self.FLPDYR = start_year
         # check for valid MARS values
         if not np.all(np.logical_and(np.greater_equal(self.MARS, 1),
                                      np.less_equal(self.MARS, 5))):
             raise ValueError('not all MARS values in [1,5] range')
         # create variables derived from MARS, which is in MUST_READ_VARS
-        self.num[:] = np.where(self.MARS == 2, 2, 1)
-        self.sep[:] = np.where(self.MARS == 3, 2, 1)
+        self.num = np.where(self.MARS == 2, 2, 1)
+        self.sep = np.where(self.MARS == 3, 2, 1)
         # check for valid EIC values
         if not np.all(np.logical_and(np.greater_equal(self.EIC, 0),
                                      np.less_equal(self.EIC, 3))):
@@ -224,7 +224,7 @@ class Records(Data):
         extrapolation, reweighting, adjusting for new current year.
         """
         super().increment_year()
-        self.FLPDYR.fill(self.current_year)  # pylint: disable=no-member
+        self.FLPDYR = self.current_year  # pylint: disable=no-member
         # apply variable adjustment ratios
         self._adjust(self.current_year)
 
@@ -263,19 +263,19 @@ class Records(Data):
         self.e00650 *= gfv['ADIVS']
         self.e00700 *= gfv['ATXPY']
         self.e00800 *= gfv['ATXPY']
-        self.e00900s[:] = np.where(self.e00900s >= 0,
+        self.e00900s = np.where(self.e00900s >= 0,
                                    self.e00900s * gfv['ASCHCI'],
                                    self.e00900s * gfv['ASCHCL'])
-        self.e00900p[:] = np.where(self.e00900p >= 0,
+        self.e00900p = np.where(self.e00900p >= 0,
                                    self.e00900p * gfv['ASCHCI'],
                                    self.e00900p * gfv['ASCHCL'])
-        self.e00900[:] = self.e00900p + self.e00900s
+        self.e00900 = self.e00900p + self.e00900s
         self.e01100 *= gfv['ACGNS']
         self.e01200 *= gfv['ACGNS']
         self.e01400 *= gfv['ATXPY']
         self.e01500 *= gfv['ATXPY']
         self.e01700 *= gfv['ATXPY']
-        self.e02000[:] = np.where(self.e02000 >= 0,
+        self.e02000 = np.where(self.e02000 >= 0,
                                   self.e02000 * gfv['ASCHEI'],
                                   self.e02000 * gfv['ASCHEL'])
         self.e02100 *= gfv['ASCHF']

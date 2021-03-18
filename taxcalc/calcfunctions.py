@@ -23,6 +23,8 @@ import copy
 import numpy as np
 from taxcalc.decorators import iterate_jit, JIT
 
+from numba import njit
+
 
 def BenefitPrograms(calc):
     """
@@ -358,9 +360,9 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
     return c02500
 
 
-@iterate_jit(nopython=True)
-def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
-        ubi, taxable_ubi, nontaxable_ubi):
+# @iterate_jit(nopython=True)
+@np.vectorize
+def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt):
     """
     Calculates total and taxable Universal Basic Income (UBI) amount.
 
@@ -392,6 +394,7 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt,
     taxable_ubi = ubi * (1. - UBI_ecrt)
     nontaxable_ubi = ubi - taxable_ubi
     return ubi, taxable_ubi, nontaxable_ubi
+
 
 
 @iterate_jit(nopython=True)
@@ -830,7 +833,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     return standard
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
            e02100, e27200, e00650, c01000, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
@@ -841,6 +844,15 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
     """
+    df = self._Calculator__records._datastore
+    params = ['PT_qbid_rt', 'PT_qbid_taxinc_thd', 'MARS', 'PT_SSTB_income',
+                'PT_qbid_limit_switch', 'PT_binc_w2_wages', 'PT_qbid_alt_w2_wages_rt',
+                'PT_ubia_property', 'PT_ubia_property', 'PT_qbid_alt_property_rt',
+                'PT_qbid_rt', 'PT_qbid_ps', 'PT_qbid_prt']
+    pl = {}
+    for param in params:
+        pl[param] = self.policy_param(param)
+
     # calculate taxable income before qualified business income deduction
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
     # calculate qualified business income deduction
@@ -1911,10 +1923,11 @@ def BenefitLimitation(calc):
         calc.incarray('combined', excess_benefit)
 
 
-@iterate_jit(nopython=True)
-def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
-                 FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi,
-                 fstax, iitax, combined, surtax):
+# @iterate_jit(nopython=True)
+@np.vectorize
+def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc, iitax, combined, surtax,
+                 FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi):
+                 # fstax, iitax, combined, surtax):
     """
     Computes Fair Share Tax, or "Buffet Rule", types of reforms.
 
@@ -1942,12 +1955,15 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
 
     surtax : individual income tax subtotal augmented by fstax
     """
-    if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo[MARS - 1]:
+    
+    # NOTE: FST_AGI_thd_lo and FST_AGI_thd_hi are replaced by FST_AGI_thd_lo_all
+    # and FST_AGI_thd_hi_all to make broadcasting work
+    if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo_all:
         employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
         fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
-        thd_gap = max(FST_AGI_thd_hi[MARS - 1] - FST_AGI_thd_lo[MARS - 1], 0.)
-        if thd_gap > 0. and c00100 < FST_AGI_thd_hi[MARS - 1]:
-            fstax *= (c00100 - FST_AGI_thd_lo[MARS - 1]) / thd_gap
+        thd_gap = max(FST_AGI_thd_hi_all - FST_AGI_thd_lo_all, 0.)
+        if thd_gap > 0. and c00100 < FST_AGI_thd_hi_all:
+            fstax *= (c00100 - FST_AGI_thd_lo_all) / thd_gap
         iitax += fstax
         combined += fstax
         surtax += fstax

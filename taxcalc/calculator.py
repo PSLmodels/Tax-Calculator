@@ -99,7 +99,7 @@ class Calculator():
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self.__records = copy.deepcopy(records)
+            self.__records = records #copy.deepcopy(records)
         else:
             raise ValueError('must specify records as a Records object')
         if self.__policy.current_year < self.__records.data_year:
@@ -166,16 +166,41 @@ class Calculator():
         """
         Call all tax-calculation functions for the current_year.
         """
-        # conducts static analysis of Calculator object for current_year
-        UBI(self.__policy, self.__records)
-        BenefitPrograms(self)
-        self._calc_one_year(zero_out_calc_vars)
-        BenefitSurtax(self)
-        BenefitLimitation(self)
-        FairShareTax(self.__policy, self.__records)
-        LumpSumTax(self.__policy, self.__records)
-        ExpandIncome(self.__policy, self.__records)
-        AfterTaxIncome(self.__policy, self.__records)
+        df = self._Calculator__records._datastore
+        def get_params(params: list):
+            pl = []
+            for p in params:
+                pl.append(self.policy_param(p))
+            return pl
+
+
+
+        pl = get_params(['UBI_u18', 'UBI_1820', 'UBI_21', 'UBI_ecrt'])
+
+        return_ubi = UBI(df.nu18, df.n1820, df.n21,
+                        *pl)
+
+        out_args = ['ubi', 'taxable_ubi', 'nontaxable_ubi']
+        for out_arg, col in zip(out_args, return_ubi):
+            df[out_arg] = col
+        # BenefitPrograms(self)
+        # self._calc_one_year(zero_out_calc_vars)
+        # BenefitSurtax(self)
+        # BenefitLimitation(self)
+        pl = get_params(['FST_AGI_trt', 'FST_AGI_thd_lo', 'FST_AGI_thd_hi'])
+        FST_AGI_thd_lo_all = pl['FST_AGI_thd_lo'][MARS-1]
+        FST_AGI_thd_hi_all = pl['FST_AGI_thd_hi'][MARS-1]
+
+        return_fairshare = FairShareTax(df.c00100, df.MARS, df.ptax_was, df.setax, df.ptax_amc,
+                                        df.iitax, df.combined, df.surtax,
+                                        FST_AGI_trt, FST_AGI_thd_lo_all, FST_AGI_thd_hi_all)
+
+        out_args = ['fstax', 'iitax', 'combined', 'surtax']
+        for out_arg, col in zip(out_args, return_fairshare):
+            df[out_arg] = col
+        # LumpSumTax(self.__policy, self.__records)
+        # ExpandIncome(self.__policy, self.__records)
+        # AfterTaxIncome(self.__policy, self.__records)
 
     def weighted_total(self, variable_name):
         """
@@ -204,9 +229,7 @@ class Calculator():
         else:
             assert isinstance(variable_list, list)
             varlist = variable_list
-        arys = [self.array(varname) for varname in varlist]
-        dframe = pd.DataFrame(data=np.column_stack(arys), columns=varlist)
-        del arys
+        dframe = self.__records._datastore.loc[:, varlist]
         del varlist
         return dframe
 
@@ -220,7 +243,7 @@ class Calculator():
         """
         if variable_value is None:
             return getattr(self.__records, variable_name)
-        assert isinstance(variable_value, np.ndarray)
+        assert isinstance(variable_value, (pd.Series, np.ndarray))
         setattr(self.__records, variable_name, variable_value)
         return None
 
@@ -238,7 +261,7 @@ class Calculator():
         """
         Add variable_add to named variable in embedded Records object.
         """
-        assert isinstance(variable_add, np.ndarray)
+        assert isinstance(variable_add, (pd.Series, np.ndarray))
         setattr(self.__records, variable_name,
                 self.array(variable_name) + variable_add)
 
