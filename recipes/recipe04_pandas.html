@@ -573,48 +573,46 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">68</span><span class="n">ca76a6053b</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">     </span><span class="mi">18</span> 
-<span class="g g-Whitespace">     </span><span class="mi">19</span> <span class="c1"># calculate marginal tax rate wrt cash charitable giving</span>
-<span class="ne">---&gt; </span><span class="mi">20</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr1</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">21</span>                          <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span> 
+<span class="g g-Whitespace">     </span><span class="mi">27</span> 
+<span class="g g-Whitespace">     </span><span class="mi">28</span> <span class="c1"># calculate reform tax liabilities for cyr</span>
+<span class="ne">---&gt; </span><span class="mi">29</span> <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">30</span> <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
+<span class="g g-Whitespace">     </span><span class="mi">31</span> 
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">mtr</span><span class="nt">(self, variable_str, negative_finite_diff, zero_out_calculated_vars, calc_all_already_called, wrt_full_compensation)</span>
-<span class="g g-Whitespace">    </span><span class="mi">672</span>         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">has_response</span><span class="p">():</span>
-<span class="g g-Whitespace">    </span><span class="mi">673</span>             <span class="bp">self</span><span class="o">.</span><span class="n">__consumption</span><span class="o">.</span><span class="n">response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">,</span> <span class="n">finite_diff</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">674</span>         <span class="bp">self</span><span class="o">.</span><span class="n">calc_all</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="n">zero_out_calculated_vars</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">675</span>         <span class="n">payrolltax_chng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;payrolltax&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">676</span>         <span class="n">incometax_chng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">advance_to_year</span><span class="nt">(self, year)</span>
+<span class="g g-Whitespace">    </span><span class="mi">160</span>                              <span class="s1">&#39;greater than or equal to current year!&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">161</span>         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">162</span>             <span class="bp">self</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">163</span>         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="n">year</span>
+<span class="g g-Whitespace">    </span><span class="mi">164</span> 
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">calc_all</span><span class="nt">(self, zero_out_calc_vars)</span>
-<span class="g g-Whitespace">    </span><span class="mi">170</span>         <span class="n">UBI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">171</span>         <span class="n">BenefitPrograms</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">172</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_calc_one_year</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">173</span>         <span class="n">BenefitSurtax</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">174</span>         <span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">increment_year</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">145</span>         <span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">146</span><span class="sd">         next_year = self.__policy.current_year + 1</span>
+<span class="ne">--&gt; </span><span class="mi">147</span><span class="sd">         self.__records.increment_year()</span>
+<span class="g g-Whitespace">    </span><span class="mi">148</span><span class="sd">         self.__policy.set_year(next_year)</span>
+<span class="g g-Whitespace">    </span><span class="mi">149</span><span class="sd">         self.__consumption.set_year(next_year)</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_calc_one_year</span><span class="nt">(self, zero_out_calc_vars)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1402</span>         <span class="k">for</span> <span class="n">cvname</span> <span class="ow">in</span> <span class="n">item_component_variable_names</span><span class="p">:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1403</span>             <span class="bp">self</span><span class="o">.</span><span class="n">zeroarray</span><span class="p">(</span><span class="n">cvname</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1404</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_taxinc_to_amt</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1405</span>         <span class="n">std_taxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c05800&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1406</span>         <span class="c1"># Set standard deduction to zero, calculate taxes w/o</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/records.py</span> in <span class="ni">increment_year</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">224</span><span class="sd">         extrapolation, reweighting, adjusting for new current year.</span>
+<span class="g g-Whitespace">    </span><span class="mi">225</span><span class="sd">         &quot;&quot;&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">226</span>         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">227</span>         <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
+<span class="g g-Whitespace">    </span><span class="mi">228</span>         <span class="c1"># apply variable adjustment ratios</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_taxinc_to_amt</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1361</span>         <span class="s2">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1362</span><span class="s2">         TaxInc(self.__policy, self.__records)</span>
-<span class="ne">-&gt; </span><span class="mi">1363</span><span class="s2">         SchXYZTax(self.__policy, self.__records)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1364</span><span class="s2">         GainsTax(self.__policy, self.__records)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1365</span><span class="s2">         AGIsurtax(self.__policy, self.__records)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/data.py</span> in <span class="ni">increment_year</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">145</span>         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__aging_data</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">146</span>             <span class="c1"># ... apply variable extrapolation growth factors</span>
+<span class="ne">--&gt; </span><span class="mi">147</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">148</span>             <span class="c1"># ... specify current-year sample weights</span>
+<span class="g g-Whitespace">    </span><span class="mi">149</span>             <span class="n">wt_colname</span> <span class="o">=</span> <span class="s1">&#39;WT</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="p">)</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/decorators.py</span> in <span class="ni">wrapper</span><span class="nt">(*args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">323</span><span class="s2">                  {&quot;applied_f&quot;: applied_jitted_f}, fakeglobals)</span>
-<span class="g g-Whitespace">    </span><span class="mi">324</span><span class="s2">             high_level_fn = fakeglobals[&#39;hl_func&#39;]</span>
-<span class="ne">--&gt; </span><span class="mi">325</span><span class="s2">             ans = high_level_fn(*args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">326</span><span class="s2">             return ans</span>
-<span class="g g-Whitespace">    </span><span class="mi">327</span><span class="s2"> </span>
-
-<span class="nn">&lt;string&gt;</span> in <span class="ni">hl_func</span><span class="nt">(pm, pf)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/records.py</span> in <span class="ni">_extrapolate</span><span class="nt">(self, year)</span>
+<span class="g g-Whitespace">    </span><span class="mi">332</span>         <span class="c1"># BENEFITS</span>
+<span class="g g-Whitespace">    </span><span class="mi">333</span>         <span class="bp">self</span><span class="o">.</span><span class="n">other_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENOTHER&#39;</span><span class="p">]</span>
+<span class="ne">--&gt; </span><span class="mi">334</span>         <span class="bp">self</span><span class="o">.</span><span class="n">mcare_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENMCARE&#39;</span><span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">335</span>         <span class="bp">self</span><span class="o">.</span><span class="n">mcaid_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENMCAID&#39;</span><span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">336</span>         <span class="bp">self</span><span class="o">.</span><span class="n">ssi_ben</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABENSSI&#39;</span><span class="p">]</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
