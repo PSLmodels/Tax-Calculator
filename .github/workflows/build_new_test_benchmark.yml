@@ -18,7 +18,7 @@ jobs:
         with:
           activate-environment: taxcalc-dev
           environment-file: environment.yml
-          python-version: 3.8
+          python-version: 3.9
           auto-activate-base: false
 
       - name: Build
@@ -30,7 +30,7 @@ jobs:
 
       - name: Test
         shell: bash -l {0}
-        working-directory: ./taxcalc/tests
+        working-directory: ./
         run: |
           pytest -m 'not requires_pufcsv and not pre_release and not local'
           
@@ -38,7 +38,7 @@ jobs:
         shell: bash -l {0}
         working-directory: ./taxcalc/tests
         run: |
-          rm -rf test_stats_benchmark.csv
+          rm test_stats_benchmark.csv
           mv test_stats_current.csv test_stats_benchmark.csv
 
           git config user.name github-actions
