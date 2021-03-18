@@ -554,46 +554,95 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mf">7e2</span><span class="n">f4954ccea</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">21</span> <span class="c1"># specify Calculator object for static analysis of reform policy</span>
+<span class="g g-Whitespace">     </span><span class="mi">22</span> <span class="c1"># TODO: Move this reform online so it can be read non-locally.</span>
+<span class="ne">---&gt; </span><span class="mi">23</span> <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformB.json&#39;</span><span class="p">))</span>
+<span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
 <span class="g g-Whitespace">     </span><span class="mi">25</span> 
-<span class="g g-Whitespace">     </span><span class="mi">26</span> <span class="c1"># calculate reform tax liabilities for CYR</span>
-<span class="ne">---&gt; </span><span class="mi">27</span> <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">CYR</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">28</span> <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-<span class="g g-Whitespace">     </span><span class="mi">29</span> 
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">advance_to_year</span><span class="nt">(self, year)</span>
-<span class="g g-Whitespace">    </span><span class="mi">160</span>                              <span class="s1">&#39;greater than or equal to current year!&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">161</span>         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">iteration</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">162</span>             <span class="bp">self</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">163</span>         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_year</span> <span class="o">==</span> <span class="n">year</span>
-<span class="g g-Whitespace">    </span><span class="mi">164</span> 
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py</span> in <span class="ni">implement_reform</span><span class="nt">(self, reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span>         <span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">120</span><span class="sd">         # need to do conversion:</span>
+<span class="ne">--&gt; </span><span class="mi">121</span><span class="sd">         return self._update(reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">123</span><span class="sd">     @staticmethod</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">increment_year</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>         <span class="sd">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">146</span><span class="sd">         next_year = self.__policy.current_year + 1</span>
-<span class="ne">--&gt; </span><span class="mi">147</span><span class="sd">         self.__records.increment_year()</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span><span class="sd">         self.__policy.set_year(next_year)</span>
-<span class="g g-Whitespace">    </span><span class="mi">149</span><span class="sd">         self.__consumption.set_year(next_year)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">_update</span><span class="nt">(self, revision, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">663</span><span class="sd">                     None</span>
+<span class="g g-Whitespace">    </span><span class="mi">664</span><span class="sd">                 )</span>
+<span class="ne">--&gt; </span><span class="mi">665</span><span class="sd">         return self.adjust(</span>
+<span class="g g-Whitespace">    </span><span class="mi">666</span><span class="sd">             new_params,</span>
+<span class="g g-Whitespace">    </span><span class="mi">667</span><span class="sd">             print_warnings=print_warnings,</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/records.py</span> in <span class="ni">increment_year</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">224</span><span class="sd">         extrapolation, reweighting, adjusting for new current year.</span>
-<span class="g g-Whitespace">    </span><span class="mi">225</span><span class="sd">         &quot;&quot;&quot;</span>
-<span class="ne">--&gt; </span><span class="mi">226</span>         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">increment_year</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">227</span>         <span class="bp">self</span><span class="o">.</span><span class="n">FLPDYR</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_year</span><span class="p">)</span>  <span class="c1"># pylint: disable=no-member</span>
-<span class="g g-Whitespace">    </span><span class="mi">228</span>         <span class="c1"># apply variable adjustment ratios</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">adjust</span><span class="nt">(self, params_or_path, print_warnings, raise_errors, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">179</span><span class="sd">                 ignore_warnings=kwargs[&quot;ignore_warnings&quot;],</span>
+<span class="g g-Whitespace">    </span><span class="mi">180</span><span class="sd">             ):</span>
+<span class="ne">--&gt; </span><span class="mi">181</span><span class="sd">                 return self.adjust_with_indexing(</span>
+<span class="g g-Whitespace">    </span><span class="mi">182</span><span class="sd">                     params_or_path, raise_errors=True, **kwargs</span>
+<span class="g g-Whitespace">    </span><span class="mi">183</span><span class="sd">                 )</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/data.py</span> in <span class="ni">increment_year</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">145</span>         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__aging_data</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">146</span>             <span class="c1"># ... apply variable extrapolation growth factors</span>
-<span class="ne">--&gt; </span><span class="mi">147</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_extrapolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">148</span>             <span class="c1"># ... specify current-year sample weights</span>
-<span class="g g-Whitespace">    </span><span class="mi">149</span>             <span class="n">wt_colname</span> <span class="o">=</span> <span class="s1">&#39;WT</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__current_year</span><span class="p">)</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">adjust_with_indexing</span><span class="nt">(self, params_or_path, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">481</span><span class="sd">         self.label_to_extend = label_to_extend</span>
+<span class="g g-Whitespace">    </span><span class="mi">482</span><span class="sd">         self.array_first = array_first</span>
+<span class="ne">--&gt; </span><span class="mi">483</span><span class="sd">         self.set_state()</span>
+<span class="g g-Whitespace">    </span><span class="mi">484</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">485</span><span class="sd">         # Filter out &quot;-indexed&quot; params.</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/records.py</span> in <span class="ni">_extrapolate</span><span class="nt">(self, year)</span>
-<span class="g g-Whitespace">    </span><span class="mi">299</span>         <span class="bp">self</span><span class="o">.</span><span class="n">e07400</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ABOOK&#39;</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">300</span>         <span class="bp">self</span><span class="o">.</span><span class="n">p08000</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
-<span class="ne">--&gt; </span><span class="mi">301</span>         <span class="bp">self</span><span class="o">.</span><span class="n">e09700</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">302</span>         <span class="bp">self</span><span class="o">.</span><span class="n">e09800</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
-<span class="g g-Whitespace">    </span><span class="mi">303</span>         <span class="bp">self</span><span class="o">.</span><span class="n">e09900</span> <span class="o">*=</span> <span class="n">gfv</span><span class="p">[</span><span class="s1">&#39;ATXPY&#39;</span><span class="p">]</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">set_state</span><span class="nt">(self, **labels)</span>
+<span class="g g-Whitespace">    </span><span class="mi">169</span><span class="sd">         &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">170</span> 
+<span class="ne">--&gt; </span><span class="mi">171</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_set_state</span><span class="p">(</span><span class="o">**</span><span class="n">labels</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">172</span> 
+<span class="g g-Whitespace">    </span><span class="mi">173</span>     <span class="k">def</span> <span class="nf">clear_state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">_set_state</span><span class="nt">(self, params, **labels)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1080</span>                 <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1081</span>             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">array_first</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1082</span>                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_array</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1083</span>             <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1084</span>                 <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">to_array</span><span class="nt">(self, param, **labels)</span>
+<span class="g g-Whitespace">    </span><span class="mi">681</span>         <span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">682</span><span class="sd">         label_grid = copy.deepcopy(self.label_grid)</span>
+<span class="ne">--&gt; </span><span class="mi">683</span><span class="sd">         state = copy.deepcopy(self._state)</span>
+<span class="g g-Whitespace">    </span><span class="mi">684</span><span class="sd">         if labels:</span>
+<span class="g g-Whitespace">    </span><span class="mi">685</span><span class="sd">             parsed_labels = self.parse_labels(**labels)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
+<span class="g g-Whitespace">    </span><span class="mi">170</span><span class="sd">                     y = x</span>
+<span class="g g-Whitespace">    </span><span class="mi">171</span><span class="sd">                 else:</span>
+<span class="ne">--&gt; </span><span class="mi">172</span><span class="sd">                     y = _reconstruct(x, memo, *rv)</span>
+<span class="g g-Whitespace">    </span><span class="mi">173</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">174</span><span class="sd">     # If is its own copy, don&#39;t memoize.</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_reconstruct</span><span class="nt">(x, memo, func, args, state, listiter, dictiter, deepcopy)</span>
+<span class="g g-Whitespace">    </span><span class="mi">294</span><span class="sd">             for key, value in dictiter:</span>
+<span class="g g-Whitespace">    </span><span class="mi">295</span><span class="sd">                 key = deepcopy(key, memo)</span>
+<span class="ne">--&gt; </span><span class="mi">296</span><span class="sd">                 value = deepcopy(value, memo)</span>
+<span class="g g-Whitespace">    </span><span class="mi">297</span><span class="sd">                 y[key] = value</span>
+<span class="g g-Whitespace">    </span><span class="mi">298</span><span class="sd">         else:</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
+<span class="g g-Whitespace">    </span><span class="mi">144</span><span class="sd">     copier = _deepcopy_dispatch.get(cls)</span>
+<span class="g g-Whitespace">    </span><span class="mi">145</span><span class="sd">     if copier is not None:</span>
+<span class="ne">--&gt; </span><span class="mi">146</span><span class="sd">         y = copier(x, memo)</span>
+<span class="g g-Whitespace">    </span><span class="mi">147</span><span class="sd">     else:</span>
+<span class="g g-Whitespace">    </span><span class="mi">148</span><span class="sd">         if issubclass(cls, type):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">_deepcopy_list</span><span class="nt">(x, memo, deepcopy)</span>
+<span class="g g-Whitespace">    </span><span class="mi">203</span><span class="sd">     append = y.append</span>
+<span class="g g-Whitespace">    </span><span class="mi">204</span><span class="sd">     for a in x:</span>
+<span class="ne">--&gt; </span><span class="mi">205</span><span class="sd">         append(deepcopy(a, memo))</span>
+<span class="g g-Whitespace">    </span><span class="mi">206</span><span class="sd">     return y</span>
+<span class="g g-Whitespace">    </span><span class="mi">207</span><span class="sd"> d[list] = _deepcopy_list</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
+<span class="g g-Whitespace">    </span><span class="mi">126</span><span class="sd"> del d, t</span>
+<span class="g g-Whitespace">    </span><span class="mi">127</span><span class="sd"> </span>
+<span class="ne">--&gt; </span><span class="mi">128</span><span class="sd"> def deepcopy(x, memo=None, _nil=[]):</span>
+<span class="g g-Whitespace">    </span><span class="mi">129</span><span class="sd">     &quot;&quot;&quot;</span><span class="n">Deep</span> <span class="n">copy</span> <span class="n">operation</span> <span class="n">on</span> <span class="n">arbitrary</span> <span class="n">Python</span> <span class="n">objects</span><span class="o">.</span>
+<span class="g g-Whitespace">    </span><span class="mi">130</span> 
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
