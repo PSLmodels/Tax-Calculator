@@ -756,40 +756,40 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     ID_AmountCap_Switch: list
         Deductions subject to the cap on itemized deduction benefits
     e17500_capped: float
-        Schedule A: medical expenses, capped as a decimal fraction of AGI
+        Schedule A: medical expenses, capped by ItemDedCap as a decimal fraction of AGI
     e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped as a decimal fraction of AGI
+        Schedule A: state and local income taxes deductlbe, capped by ItemDedCap as a decimal fraction of AGI
     e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped as a decimal fraction of AGI
+        Schedule A: state and local real estate taxes deductible, capped by ItemDedCap as a decimal fraction of AGI
     e19200_capped: float
-        Schedule A: interest deduction deductible, capped as decimal fraction of AGI
+        Schedule A: interest deduction deductible, capped by ItemDedCap as decimal fraction of AGI
     e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped as a decimal fraction of AGI
+        Schedule A: charity cash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI
     e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped as a decimal fraction of AGI
+        Schedule A: charity noncash contributions deductible, capped aby ItemDedCap s a decimal fraction of AGI
     e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped as a decimal fraction of AGI
+        Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI
     g20500_capped: float
-        Schedule A: gross causalty or theft loss deductible, capped as a decimal fraction of AGI
+        Schedule A: gross causalty or theft loss deductible, capped aby ItemDedCap s a decimal fraction of AGI
     
     Returns
     -------
     e17500_capped: float
-        Schedule A: medical expenses, capped as a decimal fraction of AGI
+        Schedule A: medical expenses, capped by ItemDedCap as a decimal fraction of AGI
     e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped as a decimal fraction of AGI
+        Schedule A: state and local income taxes deductlbe, capped by ItemDedCap as a decimal fraction of AGI
     e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped as a decimal fraction of AGI
+        Schedule A: state and local real estate taxes deductible, capped by ItemDedCap as a decimal fraction of AGI
     e19200_capped: float
-        Schedule A: interest deduction deductible, capped as decimal fraction of AGI
+        Schedule A: interest deduction deductible, capped by ItemDedCap as decimal fraction of AGI
     e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped as a decimal fraction of AGI
+        Schedule A: charity cash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI
     e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped as a decimal fraction of AGI
+        Schedule A: charity noncash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI
     e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped as a decimal fraction of AGI
+        Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI
     g20500_capped: float
-        Schedule A: gross causalty or theft loss deductible, capped as a decimal fraction of AGI
+        Schedule A: gross causalty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI
     """
     # pylint: disable=too-many-branches
 
@@ -863,21 +863,21 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     Parameters
     ----------
     e17500_capped: float
-        Schedule A: medical expenses, capped as a decimal fraction of AGI
+        Schedule A: medical expenses, capped by ItemDedCap as a decimal fraction of AGI
     e18400_capped: float
-        Schedule A: state and local income taxes deductlbe, capped as a decimal fraction of AGI
+        Schedule A: state and local income taxes deductlbe, capped by ItemDedCap as a decimal fraction of AGI
     e18500_capped: float
-        Schedule A: state and local real estate taxes deductible, capped as a decimal fraction of AGI
+        Schedule A: state and local real estate taxes deductible, capped by ItemDedCap as a decimal fraction of AGI
     e19200_capped: float
-        Schedule A: interest deduction deductible, capped as decimal fraction of AGI
+        Schedule A: interest deduction deductible, capped by ItemDedCap as decimal fraction of AGI
     e19800_capped: float
-        Schedule A: charity cash contributions deductible, capped as a decimal fraction of AGI
+        Schedule A: charity cash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI
     e20100_capped: float
-        Schedule A: charity noncash contributions deductible, capped as a decimal fraction of AGI
+        Schedule A: charity noncash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI
     e20400_capped: float
-        Schedule A: gross miscellaneous deductions deductible, capped as a decimal fraction of AGI
+        Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI
     g20500_capped: float
-        Schedule A: gross causalty or theft loss deductible, capped as a decimal fraction of AGI
+        Schedule A: gross causalty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     age_head: int
@@ -905,7 +905,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
     ID_ps: list
-        Itemized deduction phaseout AGI start
+        Itemized deduction phaseout AGI start (Pease)
     ID_Medical_frt: float
         Floor (as decimal fraction of AGI) for deductible medical expenses
     ID_Medical_frt_add4aged: float
@@ -925,9 +925,9 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     ID_Charity_crt_noncash: float
         Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions
     ID_prt: float
-        Itemized deduction phaseout rate
+        Itemized deduction phaseout rate (Pease)
     ID_crt: float
-        Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions
+        Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease)
     ID_c: list
         Ceiling on the amount of itemized deductions allowed (dollars)
     ID_StateLocalTax_hc: float
@@ -3369,7 +3369,7 @@ def ComputeBenefit(calc, ID_switch):
     Returns
     -------
     benefit: float
-        Imputed benefits
+        Imputed benefits from itemizing deductions
     """
     # compute income tax liability with no itemized deductions allowed for
     # the types of itemized deductions covered under the BenefitSurtax
