@@ -19,3 +19,4 @@ dependencies:
 - pip
 - pip:
     - jupyter-book
+    - pytest_harvest
