@@ -833,7 +833,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     return standard
 
 
-# @iterate_jit(nopython=True)
+@iterate_jit(nopython=True)
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
            e02100, e27200, e00650, c01000, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
