@@ -844,15 +844,6 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
     """
-    df = self._Calculator__records._datastore
-    params = ['PT_qbid_rt', 'PT_qbid_taxinc_thd', 'MARS', 'PT_SSTB_income',
-                'PT_qbid_limit_switch', 'PT_binc_w2_wages', 'PT_qbid_alt_w2_wages_rt',
-                'PT_ubia_property', 'PT_ubia_property', 'PT_qbid_alt_property_rt',
-                'PT_qbid_rt', 'PT_qbid_ps', 'PT_qbid_prt']
-    pl = {}
-    for param in params:
-        pl[param] = self.policy_param(param)
-
     # calculate taxable income before qualified business income deduction
     pre_qbid_taxinc = max(0., c00100 - max(c04470, standard) - c04600)
     # calculate qualified business income deduction
