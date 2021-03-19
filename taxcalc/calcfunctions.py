@@ -31,7 +31,7 @@ def BenefitPrograms(calc):
 
     Parameters
     ----------
-    calc: calculator object
+    calc: Calculator object
         calc represents the reform while self represents the baseline
 
     Returns
@@ -415,7 +415,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
     e00300: float
         Taxable interest income
     e00600: float
-        Ordinar dividends included in AGI
+        Ordinary dividends included in AGI
     e01100: float
         Capital gains distributions not reported on Schedule D
     e01200: float
@@ -2588,7 +2588,7 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
     exact: int
         Whether or not to do rounding of phaseout fraction
     e87521: float
-        Total tentative AmOppCredit amount for all students
+        Total tentative AmOppCredit amount for all students.  From Form 8863, line 1.
     num: int
         2 when MARS is 2 (married filing jointly), otherwise 1
     c00100: float
@@ -2608,6 +2608,14 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
         American Opportunity Credit refundable amount from Form 8863
     c87668: float
         American Opportunity Credit non-refundable amount from Form 8863
+
+    Notes
+    -----
+    Tax Law Paramters that are not parameterized:
+        90000: American Opportunity phaseout income base
+        10000: American Opportunity Credit phaseout income range length
+        1/1000: American Opportunity Credit phaseout rate
+        0.3: American Opportunity Credit refundable rate
     """
     if e87521 > 0.:
         c87658 = max(0., 90000. * num - c00100)
@@ -2761,6 +2769,11 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
     -------
     c07230: float
         Education tax credits non-refundable amount from Form 8863
+    
+    Notes
+    -----
+    Tax Law Parameters that are not parameterized:
+        0.2: Lifetime Learning Credit ratio against expense
     """
     c87560 = 0.2 * min(e87530, LLC_Expense_c)
     if MARS == 2:
@@ -2854,6 +2867,8 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Other Dependent Credit
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
+    CTC_refundable: bool   
+        Whether the child tax credit is fully refundable
     CR_RetirementSavings_hc: float
         Credit for retirement savings haircut
     CR_ForeignTax_hc: float
@@ -3346,13 +3361,15 @@ def ComputeBenefit(calc, ID_switch):
 
     Parameters
     ----------
-    calc: calculator object
+    calc: Calculator object
         calc represents the reform while self represents the baseline
-    ID_switch
+    ID_switch: list
+        Deductions subject to the surtax on itemized deduction benefits
 
     Returns
     -------
-    benefit
+    benefit: float
+        Imputed benefits
     """
     # compute income tax liability with no itemized deductions allowed for
     # the types of itemized deductions covered under the BenefitSurtax
@@ -3384,7 +3401,7 @@ def BenefitSurtax(calc):
 
     Parameters
     ----------
-    calc: calculator object
+    calc: Calculator object
         calc represents the reform while self represents the baseline
 
     Returns
@@ -3415,7 +3432,7 @@ def BenefitLimitation(calc):
 
     Parameters
     ----------
-    calc: calculator object
+    calc: Calculator object
         calc represents the reform while self represents the baseline
 
     Returns
