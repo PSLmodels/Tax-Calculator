@@ -1,0 +1,49 @@
+name: Build and commit new test statistics benchmark file
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: Setup Miniconda using Python
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: taxcalc-dev
+          environment-file: environment.yml
+          python-version: 3.9
+          auto-activate-base: false
+
+      - name: Build
+        shell: bash -l {0}
+        run: |
+          pip install -e .
+          pip install pytest-cov
+          pip install pytest-pycodestyle
+
+      - name: Test
+        shell: bash -l {0}
+        working-directory: ./
+        run: |
+          pytest -m 'not requires_pufcsv and not pre_release and not local'
+          
+      - name: Commit new test stats benchmark
+        shell: bash -l {0}
+        working-directory: ./taxcalc/tests
+        run: |
+          rm test_stats_benchmark.csv
+          mv test_stats_current.csv test_stats_benchmark.csv
+
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+
+          git add test_stats_benchmark.csv
+          git commit -m "Update test benchmark $(date +'%Y-%m-%d')"
+          git push
