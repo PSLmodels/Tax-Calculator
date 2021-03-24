@@ -168,17 +168,16 @@ class Calculator():
         """
         df = self._Calculator__records._datastore
         def get_params(params: list):
-            pl = []
+            pl = {}
             for p in params:
-                pl.append(self.policy_param(p))
+                pl[p] = self.policy_param(p)
             return pl
-
 
 
         pl = get_params(['UBI_u18', 'UBI_1820', 'UBI_21', 'UBI_ecrt'])
 
         return_ubi = UBI(df.nu18, df.n1820, df.n21,
-                        *pl)
+                        *pl.values())
 
         out_args = ['ubi', 'taxable_ubi', 'nontaxable_ubi']
         for out_arg, col in zip(out_args, return_ubi):
@@ -188,12 +187,12 @@ class Calculator():
         # BenefitSurtax(self)
         # BenefitLimitation(self)
         pl = get_params(['FST_AGI_trt', 'FST_AGI_thd_lo', 'FST_AGI_thd_hi'])
-        FST_AGI_thd_lo_all = pl['FST_AGI_thd_lo'][MARS-1]
-        FST_AGI_thd_hi_all = pl['FST_AGI_thd_hi'][MARS-1]
+        FST_AGI_thd_lo_all = pl['FST_AGI_thd_lo'][df.MARS-1]
+        FST_AGI_thd_hi_all = pl['FST_AGI_thd_hi'][df.MARS-1]
 
         return_fairshare = FairShareTax(df.c00100, df.MARS, df.ptax_was, df.setax, df.ptax_amc,
                                         df.iitax, df.combined, df.surtax,
-                                        FST_AGI_trt, FST_AGI_thd_lo_all, FST_AGI_thd_hi_all)
+                                        pl['FST_AGI_trt'], FST_AGI_thd_lo_all, FST_AGI_thd_hi_all)
 
         out_args = ['fstax', 'iitax', 'combined', 'surtax']
         for out_arg, col in zip(out_args, return_fairshare):

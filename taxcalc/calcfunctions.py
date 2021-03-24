@@ -22,6 +22,7 @@ import math
 import copy
 import numpy as np
 from taxcalc.decorators import iterate_jit, JIT
+from numba import njit
 
 
 def BenefitPrograms(calc):
