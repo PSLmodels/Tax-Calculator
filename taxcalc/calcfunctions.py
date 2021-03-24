@@ -684,7 +684,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     II_prt: float
         Personal exemption phaseout rate
     II_no_em_nu18: float
-        Repeal personal exemtptions for dependents under age 18       
+        Repeal personal exemptions for dependents under age 18       
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
@@ -746,9 +746,9 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e20100: float
         Itemizable charitalb giving: other than cash/check contributions
     e20400: float
-        Itemizable gross (before 10% AGI disregard) causalty or theft loss
+        Itemizable gross (before 10% AGI disregard) casualty or theft loss
     g20500: float
-        Itemizable gross (before 10% AGI disregard) causalty or theft loss
+        Itemizable gross (before 10% AGI disregard) casualty or theft loss
     c00100: float
         Adjusted gross income (AGI)
     ID_AmountCap_rt: float
@@ -770,7 +770,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e20400_capped: float
         Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI
     g20500_capped: float
-        Schedule A: gross causalty or theft loss deductible, capped aby ItemDedCap s a decimal fraction of AGI
+        Schedule A: gross casualty or theft loss deductible, capped aby ItemDedCap s a decimal fraction of AGI
     
     Returns
     -------
@@ -789,7 +789,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e20400_capped: float
         Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI
     g20500_capped: float
-        Schedule A: gross causalty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI
+        Schedule A: gross casualty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI
     """
     # pylint: disable=too-many-branches
 
@@ -877,7 +877,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     e20400_capped: float
         Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI
     g20500_capped: float
-        Schedule A: gross causalty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI
+        Schedule A: gross casualty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI
     MARS: int
         Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     age_head: int
@@ -901,7 +901,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c19700: float
         Schedule A: charity contributions deducted
     c20500: float
-        Schedule A: net causalty or theft loss deducted
+        Schedule A: net casualty or theft loss deducted
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
     ID_ps: list
@@ -913,7 +913,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     ID_Medical_hc: float
         Medical expense deduction haircut
     ID_Casualty_frt: float
-        Floor (as decimal fraction of AGI) for deductible causality loss
+        Floor (as decimal fraction of AGI) for deductible casualty loss
     ID_Casualty_hc: float
         Casualty expense deduction haircut
     ID_Miscellaneous_frt: float
@@ -976,7 +976,7 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     c19700: float
         Schedule A: charity contributions deducted
     c20500: float
-        Schedule A: net causalty or theft loss deducted
+        Schedule A: net casualty or theft loss deducted
     c20800: float
         Schedule A: net limited miscellaneous deductions deducted
     c21040: float
