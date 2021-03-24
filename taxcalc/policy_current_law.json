@@ -12829,7 +12829,7 @@
     },
     "UI_thd": {
         "title": "Unemployment Insurance exemption cutoff",
-        "description": "Unemployment Insurance exemption is eliminated when AGI goes beyond this threshold.",
+        "description": "Unemployment Insurance exemption is eliminated when AGI minus Unemployment Insurance goes beyond this threshold.",
         "notes": "",
         "section_1": "",
         "section_2": "",
