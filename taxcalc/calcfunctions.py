@@ -111,92 +111,92 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     Parameters
     ----------
     SS_Earnings_c: float
-        Maximum taxable earnings for Social Security. 
+        Maximum taxable earnings for Social Security.
         Individual earnings below this amount are subjected to OASDI payroll tax.
-        This parameter is indexed by rate of growth in average wages not by the price inflation rate. 
+        This parameter is indexed by rate of growth in average wages not by the price inflation rate.
     e00200p: float
-        Wages, salaries, and tips for taxpayer net of pension contributions    
+        Wages, salaries, and tips for taxpayer net of pension contributions
     e00200s: float
-        Wages, salaries, and tips for spouse net of pension contributions    
+        Wages, salaries, and tips for spouse net of pension contributions
     pencon_p: float
-        Contributions to defined-contribution pension plans for taxpayer   
+        Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
-        Contributions to defined-contribution pension plans for spouse    
+        Contributions to defined-contribution pension plans for spouse
     FICA_ss_trt: float
-        Social security payroll tax rate, including both employer and employee    
+        Social security payroll tax rate, including both employer and employee
     FICA_mc_trt: float
-        Medicare payroll tax rate, including both employer and employee   
+        Medicare payroll tax rate, including both employer and employee
     ALD_SelfEmploymentTax_hc: float
         Adjustment for self-employment tax haircut
         If greater than zero, reduces the employer equivalent portion of self-employment adjustment
-        Final adjustment amount = (1-Haircut)*SelfEmploymentTaxAdjustment    
+        Final adjustment amount = (1-Haircut)*SelfEmploymentTaxAdjustment
     SS_Earnings_thd: float
-        Additional taxable earnings threshold for Social Security 
-        Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to 
-        earnings below the maximum taxable earnings threshold.   
+        Additional taxable earnings threshold for Social Security
+        Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to
+        earnings below the maximum taxable earnings threshold.
     e00900p: float
-        Schedule C business net profit/loss for taxpayer    
+        Schedule C business net profit/loss for taxpayer
     e00900s: float
-        Schedule C business net profit/loss for spouse    
+        Schedule C business net profit/loss for spouse
     e02100p: float
-        Farm net income/loss for taxpayer    
+        Farm net income/loss for taxpayer
     e02100s: float
-        Farm net income/loss for spouse   
+        Farm net income/loss for spouse
     k1bx14p: float
-        Partner self-employment earnings/loss for taxpayer (included in e26270 total)   
+        Partner self-employment earnings/loss for taxpayer (included in e26270 total)
     k1bx14s: float
-        Partner self-employment earnings/loss for spouse (included in e26270 total)   
+        Partner self-employment earnings/loss for spouse (included in e26270 total)
     payrolltax: float
-        Total (employee and employer) payroll tax liability 
-        payrolltax = ptax_was + setax + ptax_amc   
+        Total (employee and employer) payroll tax liability
+        payrolltax = ptax_was + setax + ptax_amc
     ptax_was: float
-        Employee and employer OASDI plus HI FICA tax    
+        Employee and employer OASDI plus HI FICA tax
     setax: float
-        Self-employment tax   
+        Self-employment tax
     c03260: float
         Deductible part of self-employment tax
-        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax    
+        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax
     ptax_oasdi: float
         Employee and employer OASDI FICA tax plus self employment tax
-        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax   
+        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
     sey: float
-        Total self-employment income for filing unit  
+        Total self-employment income for filing unit
     earned: float
-        Earned income for filing unit  
+        Earned income for filing unit
     earned_p: float
-        Earned income for taxpayer  
+        Earned income for taxpayer
     earned_s: float
-        Earned income for spouse    
+        Earned income for spouse
     was_plus_sey_p: float
-        Wage and salary income plus taxable self employment income for taxpayer    
+        Wage and salary income plus taxable self employment income for taxpayer
     was_plus_sey_s: float
         Wage and salary income plus taxable self employment income for spouse
 
     Returns
     -------
     sey: float
-        Total self-employment income for filing unit   
+        Total self-employment income for filing unit
     payrolltax: float
-        Total (employee and employer) payroll tax liability 
-        payrolltax = ptax_was + setax + ptax_amc    
+        Total (employee and employer) payroll tax liability
+        payrolltax = ptax_was + setax + ptax_amc
     ptax_was: float
-        Employee and employer OASDI plus HI FICA tax    
+        Employee and employer OASDI plus HI FICA tax
     setax: float
-        Self-employment tax   
+        Self-employment tax
     c03260: float
         Deductible part of self-employment tax
-        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax    
+        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax
     ptax_oasdi: float
         Employee and employer OASDI FICA tax plus self employment tax
-        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax    
+        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
     earned: float
-        Earned income for filing unit   
+        Earned income for filing unit
     earned_p: float
-        Earned income for taxpayer   
+        Earned income for taxpayer
     earned_s: float
-        Earned income for spouse   
+        Earned income for spouse
     was_plus_sey_p: float
-        Wage and salary income plus taxable self employment income for taxpayer   
+        Wage and salary income plus taxable self employment income for taxpayer
     was_plus_sey_s: float
         Wage and salary income plus taxable self employment income for spouse
     """
@@ -403,7 +403,7 @@ def ALD_InvInc_ec_base(p22250, p23250, sep,
                        invinc_ec_base):
     """
     Computes invinc_ec_base.
-    
+
     Parameters
     ----------
     p22250: float
@@ -446,11 +446,11 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
              c01000, c23650, ymod, ymod1, invinc_agi_ec):
     """
     CapGains function: ...
-    
+
     Parameters
     ----------
     p23250: float
-        Net long-term capital gains/losses (Schedule D)    
+        Net long-term capital gains/losses (Schedule D)
     p22250: float
         Net short-term capital gails/losses (Schedule D)
     sep: int
@@ -460,7 +460,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ALD_InvInc_ec_rt: float
         Investment income exclusion rate haircut
     invinc_ec_base: float
-        Exclusion of investment income from AGI   
+        Exclusion of investment income from AGI
     e00200: float
         Wages, salaries, tips for filing unit net of pension contributions
     e00300: float
@@ -482,7 +482,7 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     ALD_BusinessLosses_c: list
         Maximm amount of business losses deductible
     MARS: int
-        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))      
+        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     e00900: float
         Schedule C business net profit/loss for filing unit
     e01100: float
@@ -566,7 +566,7 @@ def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
                SS_percentage1, SS_percentage2, c02500):
     """
     Calculates OASDI benefits included in AGI, c02500.
-    
+
     Parameters
     ----------
     MARS: int
@@ -684,7 +684,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     II_prt: float
         Personal exemption phaseout rate
     II_no_em_nu18: float
-        Repeal personal exemptions for dependents under age 18       
+        Repeal personal exemptions for dependents under age 18
     c00100: float
         Adjusted Gross Income (AGI)
     pre_c04600: float
@@ -771,7 +771,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
         Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI
     g20500_capped: float
         Schedule A: gross casualty or theft loss deductible, capped aby ItemDedCap s a decimal fraction of AGI
-    
+
     Returns
     -------
     e17500_capped: float
@@ -1133,7 +1133,7 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
 
     Returns
     -------
-    standard: float 
+    standard: float
         Standard deduction (zero for itemizers)
     """
     # calculate deduction for dependents
@@ -1178,7 +1178,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     ----------
     c00100: float
         Adjusted Gross Income (AGI)
-    standard: float 
+    standard: float
         Standard deduction (zero for itemizers)
     c04470: float
         Itemized deductions after phase-out (zero for non-itemizers)
@@ -1195,7 +1195,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     e27200: float
         Schedule E: farm rent net income or loss
     e00650: float
-        Qualified dividends included in ordinary dividends 
+        Qualified dividends included in ordinary dividends
     c01000: float
         Limitation on capital losses
     PT_SSTB_income: int
@@ -2105,7 +2105,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     earned_p: float
-        Earned income for taxpayer   
+        Earned income for taxpayer
     earned_s: float
         Earned income for spouse
     f2441: int
@@ -2250,7 +2250,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     earned: float
         Earned income for filing unit
     earned_p: float
-        Earned income for taxpayer   
+        Earned income for taxpayer
     earned_s: float
         Earned income for spouse
     EITC_ps: list
@@ -2353,7 +2353,7 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
     Parameters
     ----------
     was_plus_sey_p: float
-        Wage and salary income plus taxable self employment income for taxpayer   
+        Wage and salary income plus taxable self employment income for taxpayer
     was_plus_sey_s: float
         Wage and salary income plus taxable self employment income for spouse
     RPTC_c: float
@@ -2430,7 +2430,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     CR_RetirementSavings_hc: float
         Credit for retirement savings haircut
     c07200: float
-        Schedule R credit for the elderly and the disabled 
+        Schedule R credit for the elderly and the disabled
     CTC_c: float
         Maximum nonrefundable child tax credit per child
     CTC_ps: list
@@ -2675,12 +2675,12 @@ def SchR(age_head, age_spouse, MARS, c00100,
     CR_SchR_hc: float
         Schedule R credit haircut
     c07200: float
-        Schedule R credit for the elderly and the disabled 
+        Schedule R credit for the elderly and the disabled
 
     Returns
     -------
     c07200: float
-        Schedule R credit for the elderly and the disabled 
+        Schedule R credit for the elderly and the disabled
     """
     if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
         # calculate credit assuming nobody is disabled (so line12 = line10)
@@ -2769,7 +2769,7 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
     -------
     c07230: float
         Education tax credits non-refundable amount from Form 8863
-    
+
     Notes
     -----
     Tax Law Parameters that are not parameterized:
@@ -2867,7 +2867,7 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
         Other Dependent Credit
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
-    CTC_refundable: bool   
+    CTC_refundable: bool
         Whether the child tax credit is fully refundable
     CR_RetirementSavings_hc: float
         Credit for retirement savings haircut
@@ -2991,7 +2991,7 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     Parameters
     ----------
     codtc_limited: float
-        Maximum of 0 and line 10 minus line 16 
+        Maximum of 0 and line 10 minus line 16
     ACTC_c: float
         Maximum refundable additional child tax credit
     n24: int
@@ -3007,9 +3007,9 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     ACTC_rt_bonus_under6family: float
         Bonus additional child tax credit rate for families with qualifying children under 6
     ACTC_ChildNum: float
-        Additional Child Tax Credit minimum number of qualified children for different formula 
+        Additional Child Tax Credit minimum number of qualified children for different formula
     ptax_was: float
-        Employee and employer OASDI plus HI FICA tax  
+        Employee and employer OASDI plus HI FICA tax
     c03260: float
         Self-employment tax deduction (after haircut)
     e09800: float
@@ -3028,7 +3028,7 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     """
     # Part I
     line3 = codtc_limited
-    
+
     if CTC_refundable:
         line4 = 0.
     else:
@@ -3117,7 +3117,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
         Credit for charitable giving
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
-    
+
     Returns
     -------
     c07100: float
@@ -3185,7 +3185,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax
     c09200: float
         Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied
-    ctc_new: float 
+    ctc_new: float
         New refundable child tax credit
 
     Returns
@@ -3486,9 +3486,9 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc,
     MARS: int
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     ptax_was: float
-        Employee and employer OASDI plus HI FICA tax 
+        Employee and employer OASDI plus HI FICA tax
     setax: float
-        Self-employment tax 
+        Self-employment tax
     ptax_amc: float
         Additional Medicare Tax
     FST_AGI_trt: float
@@ -3579,11 +3579,11 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
     Parameters
     ----------
     e00200: float
-        Wages, salaries, and tips for filing unit net of pension contributions 
+        Wages, salaries, and tips for filing unit net of pension contributions
     pencon_p: float
         Contributions to defined-contribution pension plans for taxpayer
     pencon_s: float
-        Contributions to defined-contribution pension plans for spouse 
+        Contributions to defined-contribution pension plans for spouse
     e00300: float
         Taxable interest income
     e00400: float
@@ -3663,7 +3663,7 @@ def AfterTaxIncome(combined, expanded_income, aftertax_income):
     combined: float
         Sum of iitax and payrolltax and lumpsum_tax
     expanded_income: float
-        Broad income measure that includes benefit_value_total 
+        Broad income measure that includes benefit_value_total
     aftertax_income: float
         After tax income is equal to expanded_income minus combined
 
