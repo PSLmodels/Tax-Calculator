@@ -261,7 +261,7 @@ def test_LumpSumTax(test_tuple, expected_value, skip_jit):
     '''
     Tests LumpSumTax function
     '''
-    test_value = calcfunctions.LumpSumTax(*test_tuple) 
+    test_value = calcfunctions.LumpSumTax(*test_tuple)
     assert np.allclose(test_value, expected_value)
 
 FST_AGI_thd_lo_in=[1000000, 1000000, 500000, 1000000, 1000000]
@@ -287,12 +287,12 @@ expected9=(0, 200, 2000, 300)
 
 @pytest.mark.parametrize(
     'test_tuple,expected_value',[
-        (tuple1, expected1), (tuple2, expected2), (tuple3, expected3), (tuple4, expected4), (tuple5, expected5), (tuple6, expected6), 
+        (tuple1, expected1), (tuple2, expected2), (tuple3, expected3), (tuple4, expected4), (tuple5, expected5), (tuple6, expected6),
         (tuple7, expected7), (tuple8, expected8), (tuple9, expected9)])
 
 def test_FairShareTax(test_tuple, expected_value, skip_jit):
     '''
     Tests FairShareTax function
     '''
-    test_value = calcfunctions.FairShareTax(*test_tuple) 
+    test_value = calcfunctions.FairShareTax(*test_tuple)
     assert np.allclose(test_value, expected_value)
