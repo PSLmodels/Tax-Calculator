@@ -580,18 +580,18 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <span class="g g-Whitespace">     </span><span class="mi">22</span> 
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">mtr</span><span class="nt">(self, variable_str, negative_finite_diff, zero_out_calculated_vars, calc_all_already_called, wrt_full_compensation)</span>
-<span class="g g-Whitespace">    </span><span class="mi">639</span>             <span class="n">finite_diff</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.0</span>
-<span class="g g-Whitespace">    </span><span class="mi">640</span>         <span class="c1"># remember records object in order to restore it after mtr computations</span>
-<span class="ne">--&gt; </span><span class="mi">641</span>         <span class="bp">self</span><span class="o">.</span><span class="n">store_records</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">642</span>         <span class="c1"># extract variable array(s) from embedded records object</span>
-<span class="g g-Whitespace">    </span><span class="mi">643</span>         <span class="n">variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">variable_str</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">677</span>         <span class="n">combined_taxes_chng</span> <span class="o">=</span> <span class="n">incometax_chng</span> <span class="o">+</span> <span class="n">payrolltax_chng</span>
+<span class="g g-Whitespace">    </span><span class="mi">678</span>         <span class="c1"># calculate base level of taxes after restoring records object</span>
+<span class="ne">--&gt; </span><span class="mi">679</span>         <span class="bp">self</span><span class="o">.</span><span class="n">restore_records</span><span class="p">()</span>
+<span class="g g-Whitespace">    </span><span class="mi">680</span>         <span class="k">if</span> <span class="ow">not</span> <span class="n">calc_all_already_called</span> <span class="ow">or</span> <span class="n">zero_out_calculated_vars</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">681</span>             <span class="bp">self</span><span class="o">.</span><span class="n">calc_all</span><span class="p">(</span><span class="n">zero_out_calc_vars</span><span class="o">=</span><span class="n">zero_out_calculated_vars</span><span class="p">)</span>
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">store_records</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">256</span>         <span class="s2">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">257</span><span class="s2">         assert self.__stored_records is None</span>
-<span class="ne">--&gt; </span><span class="mi">258</span><span class="s2">         self.__stored_records = copy.deepcopy(self.__records)</span>
-<span class="g g-Whitespace">    </span><span class="mi">259</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">260</span><span class="s2">     def restore_records(self):</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">restore_records</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">264</span>         <span class="s2">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">265</span><span class="s2">         assert isinstance(self.__stored_records, Records)</span>
+<span class="ne">--&gt; </span><span class="mi">266</span><span class="s2">         self.__records = copy.deepcopy(self.__stored_records)</span>
+<span class="g g-Whitespace">    </span><span class="mi">267</span><span class="s2">         del self.__stored_records</span>
+<span class="g g-Whitespace">    </span><span class="mi">268</span><span class="s2">         self.__stored_records = None</span>
 
 <span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/copy.py</span> in <span class="ni">deepcopy</span><span class="nt">(x, memo, _nil)</span>
 <span class="g g-Whitespace">    </span><span class="mi">170</span><span class="s2">                     y = x</span>

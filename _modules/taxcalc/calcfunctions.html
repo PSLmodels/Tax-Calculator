@@ -1269,7 +1269,7 @@
 <span class="sd">    qualified business income deduction, qbided.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate UI excluded from taxable income</span>
-    <span class="k">if</span> <span class="n">c00100</span> <span class="o">&lt;=</span> <span class="n">UI_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e02300</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">UI_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">ui_excluded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">e02300</span><span class="p">,</span> <span class="n">UI_em</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ui_excluded</span> <span class="o">=</span> <span class="mf">0.</span>
