@@ -1048,7 +1048,7 @@
     },
     "recovery_rebate_credit": {
       "type": "float",
-      "desc": "Recovery Rebate Credit, from American Recovery Plan Act of 2021",
+      "desc": "Recovery Rebate Credit, from American Rescue Plan Act of 2021",
       "form": {"2013-20??": "calculated variable"}
     },
     "personal_nonrefundable_credit": {
