@@ -6,7 +6,7 @@ except ImportError:
 with open('README.md') as f:
     longdesc = f.read()
 
-version = '3.0.0'
+version = '3.1.0'
 
 config = {
     'description': 'Tax Calculator',
@@ -28,9 +28,9 @@ config = {
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Topic :: Software Development :: Libraries :: Python Modules'],
     'tests_require': ['pytest'],
     'entry_points': {

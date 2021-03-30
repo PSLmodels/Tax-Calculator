@@ -2209,7 +2209,7 @@
             {
                 "year": 2011,
                 "MARS": "widow",
-                "value": 1150.0
+                "value": 1200.0
             },
             {
                 "year": 2012,
@@ -2309,7 +2309,7 @@
             {
                 "year": 2015,
                 "MARS": "widow",
-                "value": 1550.0
+                "value": 1250.0
             },
             {
                 "year": 2016,
@@ -2334,7 +2334,7 @@
             {
                 "year": 2016,
                 "MARS": "widow",
-                "value": 1550.0
+                "value": 1250.0
             },
             {
                 "year": 2017,
@@ -2359,7 +2359,7 @@
             {
                 "year": 2017,
                 "MARS": "widow",
-                "value": 1550.0
+                "value": 1250.0
             },
             {
                 "year": 2018,
@@ -2425,7 +2425,7 @@
     },
     "STD_allow_charity_ded_nonitemizers": {
         "title": "Allow standard deduction filers to take the charitable contributions deduction",
-        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here.",
+        "description": "Extends the charitable contributions deduction to taxpayers who take the standard deduction. The same ceilings, floor, and haircuts applied to itemized deduction for charitable contributions also apply here as well as a max on the dollar amount for total charitable deductions for those taking the standard deduction.",
         "notes": "",
         "section_1": "",
         "section_2": "",
@@ -2436,12 +2436,54 @@
             {
                 "year": 2011,
                 "value": false
+            },
+            {
+                "year": 2020,
+                "value": true
+            },
+            {
+                "year": 2021,
+                "value": false
             }
         ],
         "validators": {
             "range": {
                 "min": false,
                 "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "STD_charity_ded_nonitemizers_max": {
+        "title": "Ceiling amount (in dollars) for charitable deductions for non-itemizers",
+        "description": "Puts a ceiling on the dollar of amount of charitable contributions deductions for taxpayers who take the standard deduction.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 300.0
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 9e99
             }
         },
         "compatible_data": {
@@ -3482,6 +3524,126 @@
             "range": {
                 "min": 0,
                 "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_c": {
+        "title": "Recovery Rebate Credit maximum amount",
+        "description": "This credit amount is fully refundable and is phased out based on AGI. It is available for each person in the filing unit, except for dependent filers.",
+        "notes": "Enacted for 2021 as part of the American Rescue Plan Act",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_ps": {
+        "title": "Recovery Rebate Credit phaseout start",
+        "description": "The Recovery Rebate Credit amount will be reduced for taxpayers with AGI higher than this threshold level.",
+        "notes": "Enacted for 2021 as part of the American Rescue Plan Act",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_pe": {
+        "title": "Recovery Rebate Credit phaseout end",
+        "description": "The Recovery Rebate Credit amount will be fully phased out for taxpayers with AGI higher than this threshold level.",
+        "notes": "Enacted for 2021 as part of the American Rescue Plan Act",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
             }
         },
         "compatible_data": {
@@ -5088,6 +5250,14 @@
                 "value": 0.6
             },
             {
+                "year": 2020,
+                "value": 1.0
+            },
+            {
+                "year": 2021,
+                "value": 0.6
+            },
+            {
                 "year": 2026,
                 "value": 0.5
             }
@@ -5095,7 +5265,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 0.6,
+                "max": 1.0,
                 "level": "warn"
             }
         },
@@ -14779,12 +14949,12 @@
             "cps": false
         }
     },
-    "AMT_em": {
-        "title": "AMT exemption amount",
-        "description": "The amount of AMT taxable income exempted from AMT.",
-        "notes": "See Form 6251 Instructions",
+    "PT_qbid_ps": {
+        "title": "QBID phaseout taxable income start",
+        "description": "QBID begins to decrease when pre-QBID taxable income is above this level.",
+        "notes": "",
         "section_1": "Personal Income",
-        "section_2": "Alternative Minimum Tax",
+        "section_2": "Pass-Through",
         "indexable": true,
         "indexed": true,
         "type": "float",
@@ -14839,6 +15009,326 @@
                 "MARS": "widow",
                 "value": 78750.0
             },
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2014,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2015,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2016,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2017,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2018,
+                "MARS": "widow",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "single",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "mjoint",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "mseparate",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "headhh",
+                "value": 9e99
+            },
+            {
+                "year": 2019,
+                "MARS": "widow",
+                "value": 9e99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "PT_qbid_prt": {
+        "title": "QBID phaseout rate",
+        "description": "QBID will decrease at this rate for each dollar of taxable income exceeding QBID phaseout start.",
+        "notes": "",
+        "section_1": "Personal Income",
+        "section_2": "Pass-Through",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2014,
+                "value": 0.0
+            },
+            {
+                "year": 2015,
+                "value": 0.0
+            },
+            {
+                "year": 2016,
+                "value": 0.0
+            },
+            {
+                "year": 2017,
+                "value": 0.0
+            },
+            {
+                "year": 2018,
+                "value": 0.0
+            },
+            {
+                "year": 2019,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "UI_em": {
+        "title": "Unemployment Insurance exemption amount",
+        "description": "The amount of Unemployment Insurance benefits excluded from taxable income.",
+        "notes": "Enacted retroactively for 2020 by the American Rescue Plan Act of 2021",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "UI_thd": {
+        "title": "Unemployment Insurance exemption cutoff",
+        "description": "Unemployment Insurance exemption is eliminated when AGI minus Unemployment Insurance goes beyond this threshold.",
+        "notes": "",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "AMT_em": {
+        "title": "AMT exemption amount",
+        "description": "The amount of AMT taxable income exempted from AMT.",
+        "notes": "See Form 6251 Instructions",
+        "section_1": "Personal Income",
+        "section_2": "Alternative Minimum Tax",
+        "indexable": true,
+        "indexed": true,
+        "type": "float",
+        "value": [
             {
                 "year": 2013,
                 "MARS": "single",
@@ -15623,7 +16113,7 @@
         "validators": {
             "range": {
                 "min": 0,
-                "max": 3000
+                "max": 9e+99
             }
         },
         "compatible_data": {
@@ -15657,6 +16147,32 @@
             "cps": true
         }
     },
+    "CDCC_ps2": {
+        "title": "Child & dependent care credit second phaseout start",
+        "description": "For taxpayers with AGI over this amount, the rate of the credit credit is reduced by one percentage point each $2000 of AGI over this amount.",
+        "notes": "For 2021, the American Rescue Plan Act set this to $400,000. In other years, this phase-out does not apply.",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 9e+99
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
     "CDCC_crt": {
         "title": "Child & dependent care credit phaseout percentage rate ceiling",
         "description": "The maximum percentage rate in the AGI phaseout; this percentage rate decreases as AGI rises above the CDCC_ps level.",
@@ -15676,6 +16192,84 @@
             "range": {
                 "min": 0,
                 "max": 100
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_frt": {
+        "title": "Child & dependent care credit phaseout percentage rate floor",
+        "description": "The minimum percentage rate for the first AGI phaseout of the CDCC.",
+        "notes": "",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 20.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 100
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_prt": {
+        "title": "Child & dependent care credit phaseout percentage rate",
+        "description": "The CDCC credit rate is reduced by this many percentage points for each dollary of AGI over the phase-out thresholds.",
+        "notes": "In the law, the credit rate is reduced by 1 percentage point for every $2000 of AGI over the limit.",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0005
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0,
+                "max": 1
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CDCC_refundable": {
+        "title": "Child & dependent care credit refundable indicator",
+        "description": "If true, the CDCC is fully refundable.",
+        "notes": "",
+        "section_1": "Nonrefundable Credits",
+        "section_2": "Child And Dependent Care",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
             }
         },
         "compatible_data": {
@@ -15764,6 +16358,58 @@
             "range": {
                 "min": 0,
                 "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CTC_include17": {
+        "title": "Whether children of age 17 are eligible for the child tax credit",
+        "description": "If true, children eligible for the child tax credit include those of age 17.",
+        "notes": "",
+        "section_1": "Child/Dependent Credits",
+        "section_2": "Child Tax Credit",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "CTC_refundable": {
+        "title": "Whether the child tax credit is fully refundable",
+        "description": "If true, the child tax credit is made fully refundable.",
+        "notes": "If true, the Additional Child Tax Credit is not used.",
+        "section_1": "Child/Dependent Credits",
+        "section_2": "Child Tax Credit",
+        "indexable": false,
+        "indexed": false,
+        "type": "bool",
+        "value": [
+            {
+                "year": 2013,
+                "value": false
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": false,
+                "max": true
             }
         },
         "compatible_data": {

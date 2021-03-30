@@ -5,14 +5,18 @@ import numpy
 import pandas
 import pytest
 
+from pytest_harvest import get_session_results_df
+
 
 # convert all numpy warnings into errors so they can be detected in tests
 numpy.seterr(all='raise')
+
 
 @pytest.fixture
 def skip_jit(monkeypatch):
     monkeypatch.setenv("TESTING", "True")
     yield
+
 
 @pytest.fixture(scope='session')
 def tests_path():
@@ -129,3 +133,34 @@ def fixture_test_reforms(tests_path):
             raise ValueError(msg)
         else:
             os.remove(actfile_path)
+
+
+def pytest_sessionfinish(session):
+    """ Gather all test profiling test results and print to user."""
+
+    tests_path = os.path.abspath(os.path.dirname(__file__))
+
+    new_stats_df = get_session_results_df(session)
+    old_stats_df = pandas.read_csv(os.path.join(tests_path, 'test_stats_benchmark.csv'))
+
+    merge_df = new_stats_df.merge(old_stats_df, on=['test_id'], how='inner')
+    merge_df['time_diff'] = merge_df['duration_ms_x'] - merge_df['duration_ms_y']
+
+    tol = 1.0 # choose tolerance in seconds
+    tol *= 1000
+
+    for ind, row in merge_df.iterrows():
+        if row['time_diff'] > tol:
+            diff = round(abs(row['time_diff']), 3)
+            print(f"{row['test_id']} is slower than the current benchmark by {diff} ms")
+
+    print('\n')
+
+    for ind, row in merge_df.iterrows():
+        if row['time_diff'] < (-1 * tol):
+            diff = round(abs(row['time_diff']), 3)
+            print(f"{row['test_id']} is faster than the current benchmark by {diff} ms")
+
+    # Save new test stats to disk including time diff
+    new_stats_df['time_diff'] = merge_df['time_diff'].values
+    new_stats_df.to_csv(os.path.join(tests_path, 'test_stats_current.csv'))

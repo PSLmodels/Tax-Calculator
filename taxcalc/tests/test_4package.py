@@ -35,9 +35,9 @@ def test_for_consistency(tests_path):
         'pytest-pep8',
         'pytest-xdist',
         'pycodestyle',
+        'pytest_harvest',
         'pylint',
         'coverage',
-        "paramtools>=0.14.2",
         "pip",
         "jupyter-book",
     ])

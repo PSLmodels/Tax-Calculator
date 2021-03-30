@@ -845,8 +845,14 @@
     },
     "c07180": {
       "type": "float",
-      "desc": "Credit for child and dependent care expenses from Form 2441",
+      "desc": "Nonrefundable credit for child and dependent care expenses from Form 2441",
       "form": {"2011-2013": "1040 line 48",
+               "2014-2016": "1040 line 49"}
+    },
+    "CDCC_refund": {
+      "type": "float",
+      "desc": "Refundable credit for child and dependent care expenses from Form 2441",
+      "form": {"2013-2013": "1040 line 48",
                "2014-2016": "1040 line 49"}
     },
     "c07200": {
@@ -1039,6 +1045,11 @@
       "type": "float",
       "desc": "Personal refundable credit",
       "form": {"2011-20??": "calculated variable"}
+    },
+    "recovery_rebate_credit": {
+      "type": "float",
+      "desc": "Recovery Rebate Credit, from American Rescue Plan Act of 2021",
+      "form": {"2013-20??": "calculated variable"}
     },
     "personal_nonrefundable_credit": {
       "type": "float",

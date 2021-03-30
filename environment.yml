@@ -4,9 +4,10 @@ channels:
 dependencies:
 - python
 - "numpy>=1.14"
-- "pandas>=1.1.0"
+- "pandas>=1.2.0"
 - "bokeh>=1.4.0"
 - requests
+- aiohttp
 - numba
 - pytest
 - pytest-pep8
@@ -14,7 +15,8 @@ dependencies:
 - pycodestyle
 - pylint
 - coverage
-- "paramtools>=0.14.2"
+- "paramtools>=0.18.0"
 - pip
 - pip:
     - jupyter-book
+    - pytest_harvest

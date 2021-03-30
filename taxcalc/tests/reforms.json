@@ -412,7 +412,7 @@
   "41": {
       "baseline": "2017_law.json",
       "start_year": 2015,
-      "value": {"CTC_c": 0},
+      "value": {"CTC_c": 0, "ACTC_c": 0},
       "name": "Eliminate child tax credit",
       "output_type": "iitax",
       "compare_with": {"Tax Expenditure": [57.3, 57.0, 57.1, 56.8]}
