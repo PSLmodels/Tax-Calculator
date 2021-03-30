@@ -539,6 +539,17 @@ in iterate_jit decorator.</p>
 <code class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></code><code class="sig-name descname"><span class="pre">BenefitLimitation</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#BenefitLimitation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.BenefitLimitation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Limits the benefits of select itemized deductions to a fraction of
 deductible expenses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The function modifies calc</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -546,6 +557,17 @@ deductible expenses.</p>
 <code class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></code><code class="sig-name descname"><span class="pre">BenefitPrograms</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#BenefitPrograms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.BenefitPrograms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate total government cost and consumption value of benefits
 delivered by non-repealed benefit programs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The function modifies calc</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -553,6 +575,17 @@ delivered by non-repealed benefit programs.</p>
 <code class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></code><code class="sig-name descname"><span class="pre">BenefitSurtax</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#BenefitSurtax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.BenefitSurtax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes itemized-deduction-benefit surtax and adds the surtax amount
 to income tax, combined tax, and surtax liabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The function modifies calc</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -594,6 +627,20 @@ in iterate_jit decorator.</p>
 <dt id="taxcalc.calcfunctions.ComputeBenefit">
 <code class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></code><code class="sig-name descname"><span class="pre">ComputeBenefit</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">calc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ID_switch</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#ComputeBenefit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.ComputeBenefit" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the value of the benefits accrued from itemizing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>calc</strong> (<em>Calculator object</em>) – calc represents the reform while self represents the baseline</p></li>
+<li><p><strong>ID_switch</strong> (<em>list</em>) – Deductions subject to the surtax on itemized deduction benefits</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>benefit</strong> – Imputed benefits from itemizing deductions</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -617,6 +664,25 @@ in iterate_jit decorator.</p>
 English parameter names are used in this function because the
 EITC formula is not available on IRS forms or in IRS instructions;
 the extensive IRS EITC look-up table does not reveal the formula.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>basic_frac</strong> (<em>list</em>) – Fraction of maximum earned income credit paid at zero earnings</p></li>
+<li><p><strong>phasein_rate</strong> (<em>list</em>) – Earned income credit phasein rate</p></li>
+<li><p><strong>earnings</strong> (<em>float</em>) – Earned income for filing unit</p></li>
+<li><p><strong>max_amount</strong> (<em>list</em>) – Maximum earned income credit</p></li>
+<li><p><strong>phaseout_start</strong> (<em>list</em>) – Earned income credit phaseout start AGI</p></li>
+<li><p><strong>agi</strong> (<em>float</em>) – Adjusted Gross Income (AGI)</p></li>
+<li><p><strong>phaseout_rate</strong> (<em>list</em>) – Earned income credit phaseout rate</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>eitc</strong> – Earned Income Credit</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -735,6 +801,59 @@ in iterate_jit decorator.</p>
 <dt id="taxcalc.calcfunctions.SchXYZ">
 <code class="sig-prename descclassname"><span class="pre">taxcalc.calcfunctions.</span></code><code class="sig-name descname"><span class="pre">SchXYZ</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">taxable_income</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MARS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e00900</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e26270</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e02000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">e00200</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_rt8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_brk1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_brk2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_brk3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_brk4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_brk5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_brk6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_brk7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_rt8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_brk1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_brk2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_brk3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_brk4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_brk5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_brk6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">II_brk7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_EligibleRate_active</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_EligibleRate_passive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_wages_active_income</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT_top_stacking</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/taxcalc/calcfunctions.html#SchXYZ"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#taxcalc.calcfunctions.SchXYZ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns Schedule X, Y, Z tax amount for specified taxable_income.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>taxable_income</strong> (<em>float</em>) – Taxable income</p></li>
+<li><p><strong>MARS</strong> (<em>int</em>) – Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</p></li>
+<li><p><strong>e00900</strong> (<em>float</em>) – Schedule C business net profit/loss for filing unit</p></li>
+<li><p><strong>e26270</strong> (<em>float</em>) – Schedule E: combined partnership and S-corporation net income/loss</p></li>
+<li><p><strong>e02000</strong> (<em>float</em>) – Schedule E total rental, royalty, parternship, S-corporation, etc, income/loss</p></li>
+<li><p><strong>e00200</strong> (<em>float</em>) – Wages, salaries, and tips for filing unit net of pension contributions</p></li>
+<li><p><strong>PT_rt1</strong> (<em>float</em>) – Pass through income tax rate 1</p></li>
+<li><p><strong>PT_rt2</strong> (<em>float</em>) – Pass through income tax rate 2</p></li>
+<li><p><strong>PT_rt3</strong> (<em>float</em>) – Pass through income tax rate 3</p></li>
+<li><p><strong>PT_rt4</strong> (<em>float</em>) – Pass through income tax rate 4</p></li>
+<li><p><strong>PT_rt5</strong> (<em>float</em>) – Pass through income tax rate 5</p></li>
+<li><p><strong>PT_rt6</strong> (<em>float</em>) – Pass through income tax rate 6</p></li>
+<li><p><strong>PT_rt7</strong> (<em>float</em>) – Pass through income tax rate 7</p></li>
+<li><p><strong>PT_rt8</strong> (<em>float</em>) – Pass through income tax rate 8</p></li>
+<li><p><strong>PT_brk1</strong> (<em>list</em>) – Pass through income tax bracket (upper threshold) 1</p></li>
+<li><p><strong>PT_brk2</strong> (<em>list</em>) – Pass through income tax bracket (upper threshold) 2</p></li>
+<li><p><strong>PT_brk3</strong> (<em>list</em>) – Pass through income tax bracket (upper threshold) 3</p></li>
+<li><p><strong>PT_brk4</strong> (<em>list</em>) – Pass through income tax bracket (upper threshold) 4</p></li>
+<li><p><strong>PT_brk5</strong> (<em>list</em>) – Pass through income tax bracket (upper threshold) 5</p></li>
+<li><p><strong>PT_brk6</strong> (<em>list</em>) – Pass through income tax bracket (upper threshold) 6</p></li>
+<li><p><strong>PT_brk7</strong> (<em>list</em>) – Pass through income tax bracket (upper threshold) 7</p></li>
+<li><p><strong>II_rt1</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 1</p></li>
+<li><p><strong>II_rt2</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 2</p></li>
+<li><p><strong>II_rt3</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 3</p></li>
+<li><p><strong>II_rt4</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 4</p></li>
+<li><p><strong>II_rt5</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 5</p></li>
+<li><p><strong>II_rt6</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 6</p></li>
+<li><p><strong>II_rt7</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 7</p></li>
+<li><p><strong>II_rt8</strong> (<em>float</em>) – Personal income (regular/non-AMT/non-pass-through) tax rate 8</p></li>
+<li><p><strong>II_brk1</strong> (<em>list</em>) – Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1</p></li>
+<li><p><strong>II_brk2</strong> (<em>list</em>) – Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2</p></li>
+<li><p><strong>II_brk3</strong> (<em>list</em>) – Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3</p></li>
+<li><p><strong>II_brk4</strong> (<em>list</em>) – Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4</p></li>
+<li><p><strong>II_brk5</strong> (<em>list</em>) – Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5</p></li>
+<li><p><strong>II_brk6</strong> (<em>list</em>) – Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6</p></li>
+<li><p><strong>II_brk7</strong> (<em>list</em>) – Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7</p></li>
+<li><p><strong>PT_EligibleRate_active</strong> (<em>float</em>) – Share of active business income eligible for PT rate schedule</p></li>
+<li><p><strong>PT_EligibleRate_passive</strong> (<em>float</em>) – Share of passive business income eligible for PT rate schedule</p></li>
+<li><p><strong>PT_wages_active_income</strong> (<em>bool</em>) – Wages included in (positive) active business eligible for PT rates</p></li>
+<li><p><strong>PT_top_stacking</strong> (<em>bool</em>) – PT taxable income stacked on top of regular taxable income</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>reg_tax</strong> (<em>float</em>) – Individual income tax liability on non-pass-through income</p></li>
+<li><p><strong>pt_tax</strong> (<em>float</em>) – Individual income tax liability from pass-through income</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -764,6 +883,36 @@ in iterate_jit decorator.</p>
 <dd><p>Taxes function returns tax amount given the progressive tax rate
 schedule specified by the rate* and (upper) tbrk* parameters and
 given income, filing status (MARS), and tax bracket base (tbrk_base).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>income</strong> (<em>float</em>) – Taxable income</p></li>
+<li><p><strong>MARS</strong> (<em>int</em>) – Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</p></li>
+<li><p><strong>tbrk_base</strong> (<em>float</em>) – Amount of income used to determine the braket the filer is in</p></li>
+<li><p><strong>rate1</strong> (<em>list</em>) – Income tax rate 1</p></li>
+<li><p><strong>rate2</strong> (<em>list</em>) – Income tax rate 2</p></li>
+<li><p><strong>rate3</strong> (<em>list</em>) – Income tax rate 3</p></li>
+<li><p><strong>rate4</strong> (<em>list</em>) – Income tax rate 4</p></li>
+<li><p><strong>rate5</strong> (<em>list</em>) – Income tax rate 5</p></li>
+<li><p><strong>rate6</strong> (<em>list</em>) – Income tax rate 6</p></li>
+<li><p><strong>rate7</strong> (<em>list</em>) – Income tax rate 7</p></li>
+<li><p><strong>rate8</strong> (<em>list</em>) – Income tax rate 8</p></li>
+<li><p><strong>tbrk1</strong> (<em>list</em>) – Income tax bracket (upper threshold) 1</p></li>
+<li><p><strong>tbrk2</strong> (<em>list</em>) – Income tax bracket (upper threshold) 2</p></li>
+<li><p><strong>tbrk3</strong> (<em>list</em>) – Income tax bracket (upper threshold) 3</p></li>
+<li><p><strong>tbrk4</strong> (<em>list</em>) – Income tax bracket (upper threshold) 4</p></li>
+<li><p><strong>tbrk5</strong> (<em>list</em>) – Income tax bracket (upper threshold) 5</p></li>
+<li><p><strong>tbrk6</strong> (<em>list</em>) – Income tax bracket (upper threshold) 6</p></li>
+<li><p><strong>tbrk7</strong> (<em>list</em>) – Income tax bracket (upper threshold) 7</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

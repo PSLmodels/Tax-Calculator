@@ -454,6 +454,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculate total government cost and consumption value of benefits</span>
 <span class="sd">    delivered by non-repealed benefit programs.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calc: Calculator object</span>
+<span class="sd">        calc represents the reform while self represents the baseline</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None:</span>
+<span class="sd">        The function modifies calc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># zero out benefits delivered by repealed programs</span>
     <span class="n">zero</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">calc</span><span class="o">.</span><span class="n">array_len</span><span class="p">)</span>
@@ -523,6 +533,98 @@
                   <span class="n">was_plus_sey_p</span><span class="p">,</span> <span class="n">was_plus_sey_s</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute part of total OASDI+HI payroll taxes and earned income variables.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    SS_Earnings_c: float</span>
+<span class="sd">        Maximum taxable earnings for Social Security.</span>
+<span class="sd">        Individual earnings below this amount are subjected to OASDI payroll tax.</span>
+<span class="sd">        This parameter is indexed by rate of growth in average wages not by the price inflation rate.</span>
+<span class="sd">    e00200p: float</span>
+<span class="sd">        Wages, salaries, and tips for taxpayer net of pension contributions</span>
+<span class="sd">    e00200s: float</span>
+<span class="sd">        Wages, salaries, and tips for spouse net of pension contributions</span>
+<span class="sd">    pencon_p: float</span>
+<span class="sd">        Contributions to defined-contribution pension plans for taxpayer</span>
+<span class="sd">    pencon_s: float</span>
+<span class="sd">        Contributions to defined-contribution pension plans for spouse</span>
+<span class="sd">    FICA_ss_trt: float</span>
+<span class="sd">        Social security payroll tax rate, including both employer and employee</span>
+<span class="sd">    FICA_mc_trt: float</span>
+<span class="sd">        Medicare payroll tax rate, including both employer and employee</span>
+<span class="sd">    ALD_SelfEmploymentTax_hc: float</span>
+<span class="sd">        Adjustment for self-employment tax haircut</span>
+<span class="sd">        If greater than zero, reduces the employer equivalent portion of self-employment adjustment</span>
+<span class="sd">        Final adjustment amount = (1-Haircut)*SelfEmploymentTaxAdjustment</span>
+<span class="sd">    SS_Earnings_thd: float</span>
+<span class="sd">        Additional taxable earnings threshold for Social Security</span>
+<span class="sd">        Individual earnings above this threshold are subjected to OASDI payroll tax, in addtion to</span>
+<span class="sd">        earnings below the maximum taxable earnings threshold.</span>
+<span class="sd">    e00900p: float</span>
+<span class="sd">        Schedule C business net profit/loss for taxpayer</span>
+<span class="sd">    e00900s: float</span>
+<span class="sd">        Schedule C business net profit/loss for spouse</span>
+<span class="sd">    e02100p: float</span>
+<span class="sd">        Farm net income/loss for taxpayer</span>
+<span class="sd">    e02100s: float</span>
+<span class="sd">        Farm net income/loss for spouse</span>
+<span class="sd">    k1bx14p: float</span>
+<span class="sd">        Partner self-employment earnings/loss for taxpayer (included in e26270 total)</span>
+<span class="sd">    k1bx14s: float</span>
+<span class="sd">        Partner self-employment earnings/loss for spouse (included in e26270 total)</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        Total (employee and employer) payroll tax liability</span>
+<span class="sd">        payrolltax = ptax_was + setax + ptax_amc</span>
+<span class="sd">    ptax_was: float</span>
+<span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
+<span class="sd">    setax: float</span>
+<span class="sd">        Self-employment tax</span>
+<span class="sd">    c03260: float</span>
+<span class="sd">        Deductible part of self-employment tax</span>
+<span class="sd">        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax</span>
+<span class="sd">    ptax_oasdi: float</span>
+<span class="sd">        Employee and employer OASDI FICA tax plus self employment tax</span>
+<span class="sd">        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax</span>
+<span class="sd">    sey: float</span>
+<span class="sd">        Total self-employment income for filing unit</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    earned_p: float</span>
+<span class="sd">        Earned income for taxpayer</span>
+<span class="sd">    earned_s: float</span>
+<span class="sd">        Earned income for spouse</span>
+<span class="sd">    was_plus_sey_p: float</span>
+<span class="sd">        Wage and salary income plus taxable self employment income for taxpayer</span>
+<span class="sd">    was_plus_sey_s: float</span>
+<span class="sd">        Wage and salary income plus taxable self employment income for spouse</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    sey: float</span>
+<span class="sd">        Total self-employment income for filing unit</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        Total (employee and employer) payroll tax liability</span>
+<span class="sd">        payrolltax = ptax_was + setax + ptax_amc</span>
+<span class="sd">    ptax_was: float</span>
+<span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
+<span class="sd">    setax: float</span>
+<span class="sd">        Self-employment tax</span>
+<span class="sd">    c03260: float</span>
+<span class="sd">        Deductible part of self-employment tax</span>
+<span class="sd">        c03260 = (1 - ALD_SelfEmploymentTax_hc) * 0.5 * setax</span>
+<span class="sd">    ptax_oasdi: float</span>
+<span class="sd">        Employee and employer OASDI FICA tax plus self employment tax</span>
+<span class="sd">        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    earned_p: float</span>
+<span class="sd">        Earned income for taxpayer</span>
+<span class="sd">    earned_s: float</span>
+<span class="sd">        Earned income for spouse</span>
+<span class="sd">    was_plus_sey_p: float</span>
+<span class="sd">        Wage and salary income plus taxable self employment income for taxpayer</span>
+<span class="sd">    was_plus_sey_s: float</span>
+<span class="sd">        Wage and salary income plus taxable self employment income for spouse</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># compute sey and its individual components</span>
     <span class="n">sey_p</span> <span class="o">=</span> <span class="n">e00900p</span> <span class="o">+</span> <span class="n">e02100p</span> <span class="o">+</span> <span class="n">k1bx14p</span>
@@ -602,18 +704,27 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nu13: Number of dependents under 13 years old</span>
-<span class="sd">    elderly_dependents: number of elderly dependents</span>
-<span class="sd">    earned: Form 2441 earned income amount</span>
-<span class="sd">    MARS: Marital Status</span>
-<span class="sd">    ALD_Dependents_thd: Maximum income to qualify for deduction</span>
-<span class="sd">    ALD_Dependents_hc: Deduction for dependent care haircut</span>
-<span class="sd">    ALD_Dependents_Child_c: National weighted average cost of childcare</span>
-<span class="sd">    ALD_Dependents_Elder_c: Eldercare deduction ceiling</span>
+<span class="sd">    nu13: int</span>
+<span class="sd">        Number of dependents under 13 years old</span>
+<span class="sd">    elderly_dependents: int</span>
+<span class="sd">        Number of elderly dependents age 65+ in filing unit excluding taxpayer and spouse</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    ALD_Dependents_thd: list</span>
+<span class="sd">        Maximum income to qualify for dependent care deduction</span>
+<span class="sd">    ALD_Dependents_hc: float</span>
+<span class="sd">        Deduction for childcare costs haircut</span>
+<span class="sd">    ALD_Dependents_Child_c: float</span>
+<span class="sd">        National weighted average cost of childcare, ceiling for available childcare deduction</span>
+<span class="sd">    ALD_Dependents_Elder_c: float</span>
+<span class="sd">        Eldercare deduction ceiling</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    care_deduction: Total above the line deductions for dependent care.</span>
+<span class="sd">    care_deduction: float</span>
+<span class="sd">        Total above the line deductions for dependent care.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">earned</span> <span class="o">&lt;=</span> <span class="n">ALD_Dependents_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
@@ -638,63 +749,61 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).</span>
 
-<span class="sd">    Notes</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    -----</span>
-<span class="sd">    Taxpayer characteristics:</span>
-
-<span class="sd">        e03210 : Student loan interest paid</span>
-
-<span class="sd">        e03220 : Educator expenses</span>
-
-<span class="sd">        e03150 : Total deductible IRA plan contributions</span>
-
-<span class="sd">        e03230 : Tuition and fees (Form 8917)</span>
-
-<span class="sd">        e03240 : Domestic production activity deduction (Form 8903)</span>
-
-<span class="sd">        c03260 : Self-employment tax deduction (after haircut)</span>
-
-<span class="sd">        e03270 : Self-employed health insurance premiums</span>
-
-<span class="sd">        e03290 : HSA deduction (Form 8889)</span>
-
-<span class="sd">        e03300 : Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions</span>
-
-<span class="sd">        e03400 : Penalty on early withdrawal of savings deduction</span>
-
-<span class="sd">        e03500 : Alimony paid</span>
-
-<span class="sd">        e00800 : Alimony received</span>
-
-<span class="sd">        care_deduction : Dependent care expense deduction</span>
-
-<span class="sd">    Tax law parameters:</span>
-
-<span class="sd">        ALD_StudentLoan_hc : Student loan interest deduction haircut</span>
-
-<span class="sd">        ALD_SelfEmp_HealthIns_hc : Self-employed h.i. deduction haircut</span>
-
-<span class="sd">        ALD_KEOGH_SEP_hc : KEOGH/etc. plan contribution deduction haircut</span>
-
-<span class="sd">        ALD_EarlyWithdraw_hc : Penalty on early withdrawal deduction haricut</span>
-
-<span class="sd">        ALD_AlimonyPaid_hc : Alimony paid deduction haircut</span>
-
-<span class="sd">        ALD_AlimonyReceived_hc : Alimony received deduction haircut</span>
-
-<span class="sd">        ALD_EducatorExpenses_hc: Eductor expenses haircut</span>
-
-<span class="sd">        ALD_HSADeduction_hc: HSA Deduction haircut</span>
-
-<span class="sd">        ALD_IRAContributions_hc: IRA Contribution haircut</span>
-
-<span class="sd">        ALD_DomesticProduction_hc: Domestic production haircut</span>
-
-<span class="sd">        ALD_Tuition_hc: Tuition and fees haircut</span>
+<span class="sd">    e03210: float</span>
+<span class="sd">        Student loan interest paid</span>
+<span class="sd">    e03220: float</span>
+<span class="sd">        Educator expenses</span>
+<span class="sd">    e03150: float</span>
+<span class="sd">        Total deductible IRA plan contributions</span>
+<span class="sd">    e03230: float</span>
+<span class="sd">        Tuition and fees (Form 8917)</span>
+<span class="sd">    e03240: float</span>
+<span class="sd">        Domestic production activity deduction (Form 8903)</span>
+<span class="sd">    c03260: float</span>
+<span class="sd">        Self-employment tax deduction (after haircut)</span>
+<span class="sd">    e03270: float</span>
+<span class="sd">        Self-employed health insurance premiums</span>
+<span class="sd">    e03290: float</span>
+<span class="sd">        HSA deduction (Form 8889)</span>
+<span class="sd">    e03300: float</span>
+<span class="sd">        Total deductible KEOGH/SEP/SIMPLE/etc. plan contributions</span>
+<span class="sd">    e03400: float</span>
+<span class="sd">        Penalty on early withdrawal of savings deduction</span>
+<span class="sd">    e03500: float</span>
+<span class="sd">        Alimony paid</span>
+<span class="sd">    e00800: float</span>
+<span class="sd">        Alimony received</span>
+<span class="sd">    care_deduction: float</span>
+<span class="sd">        Dependent care expense deduction</span>
+<span class="sd">    ALD_StudentLoan_hc: float</span>
+<span class="sd">        Student loan interest deduction haircut</span>
+<span class="sd">    ALD_SelfEmp_HealthIns_hc: float</span>
+<span class="sd">        Self-employed h.i. deduction haircut</span>
+<span class="sd">    ALD_KEOGH_SEP_hc: float</span>
+<span class="sd">        KEOGH/etc. plan contribution deduction haircut</span>
+<span class="sd">    ALD_EarlyWithdraw_hc: float</span>
+<span class="sd">        Penalty on early withdrawal deduction haricut</span>
+<span class="sd">    ALD_AlimonyPaid_hc: float</span>
+<span class="sd">        Alimony paid deduction haircut</span>
+<span class="sd">    ALD_AlimonyReceived_hc: float</span>
+<span class="sd">        Alimony received deduction haircut</span>
+<span class="sd">    ALD_EducatorExpenses_hc: float</span>
+<span class="sd">        Eductor expenses haircut</span>
+<span class="sd">    ALD_HSADeduction_hc: float</span>
+<span class="sd">        HSA Deduction haircut</span>
+<span class="sd">    ALD_IRAContributions_hc: float</span>
+<span class="sd">        IRA Contribution haircut</span>
+<span class="sd">    ALD_DomesticProduction_hc: float</span>
+<span class="sd">        Domestic production haircut</span>
+<span class="sd">    ALD_Tuition_hc: float</span>
+<span class="sd">        Tuition and fees haircut</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    c02900 : total Form 1040 adjustments, which are not included in AGI</span>
+<span class="sd">    c02900: float</span>
+<span class="sd">        Total of all &quot;above the line&quot; income adjustments to get AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Form 2555 foreign earned income exclusion is assumed to be zero</span>
     <span class="c1"># Form 1040 adjustments that are included in expanded income:</span>
@@ -720,6 +829,30 @@
                        <span class="n">invinc_ec_base</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes invinc_ec_base.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p22250: float</span>
+<span class="sd">        Net short-term capital gails/losses (Schedule D)</span>
+<span class="sd">    p23250: float</span>
+<span class="sd">        Net long-term capital gains/losses (Schedule D)</span>
+<span class="sd">    sep: int</span>
+<span class="sd">        2 when MARS is 3 (married filing separately); otherwise 1</span>
+<span class="sd">    e00300: float</span>
+<span class="sd">        Taxable interest income</span>
+<span class="sd">    e00600: float</span>
+<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">    e01100: float</span>
+<span class="sd">        Capital gains distributions not reported on Schedule D</span>
+<span class="sd">    e01200: float</span>
+<span class="sd">        Other net gain/loss from Form 4797</span>
+<span class="sd">    invinc_ec_base: float</span>
+<span class="sd">        Exclusion of investment income from AGI</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    invinc_ec_base: float</span>
+<span class="sd">        Exclusion of investment income from AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># limitation on net short-term and long-term capital losses</span>
     <span class="n">cgain</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="o">-</span><span class="mf">3000.</span> <span class="o">/</span> <span class="n">sep</span><span class="p">),</span> <span class="n">p22250</span> <span class="o">+</span> <span class="n">p23250</span><span class="p">)</span>
@@ -739,6 +872,94 @@
              <span class="n">c01000</span><span class="p">,</span> <span class="n">c23650</span><span class="p">,</span> <span class="n">ymod</span><span class="p">,</span> <span class="n">ymod1</span><span class="p">,</span> <span class="n">invinc_agi_ec</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    CapGains function: ...</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    p23250: float</span>
+<span class="sd">        Net long-term capital gains/losses (Schedule D)</span>
+<span class="sd">    p22250: float</span>
+<span class="sd">        Net short-term capital gails/losses (Schedule D)</span>
+<span class="sd">    sep: int</span>
+<span class="sd">        2 when MARS is 3 (married filing separately); otherwise 1</span>
+<span class="sd">    ALD_StudentLoan_hc: float</span>
+<span class="sd">        Student loan interest deduction haircut</span>
+<span class="sd">    ALD_InvInc_ec_rt: float</span>
+<span class="sd">        Investment income exclusion rate haircut</span>
+<span class="sd">    invinc_ec_base: float</span>
+<span class="sd">        Exclusion of investment income from AGI</span>
+<span class="sd">    e00200: float</span>
+<span class="sd">        Wages, salaries, tips for filing unit net of pension contributions</span>
+<span class="sd">    e00300: float</span>
+<span class="sd">        Taxable interest income</span>
+<span class="sd">    e00600: float</span>
+<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">    e00650: float</span>
+<span class="sd">        Qualified dividends included in ordinary dividends</span>
+<span class="sd">    e00700: float</span>
+<span class="sd">        Taxable refunds of state and local income taxes</span>
+<span class="sd">    e00800: float</span>
+<span class="sd">        Alimony received</span>
+<span class="sd">    CG_nodiff: bool</span>
+<span class="sd">        Long term capital gains and qualified dividends taxed no differently than regular taxable income</span>
+<span class="sd">    CG_ec: float</span>
+<span class="sd">        Dollar amount of all capital gains and qualified dividends that are excluded from AGI</span>
+<span class="sd">    CG_reinvest_ec_rt: float</span>
+<span class="sd">        Fraction of all capital gains and qualified dividends in excess of the dollar exclusion that are excluded from AGI</span>
+<span class="sd">    ALD_BusinessLosses_c: list</span>
+<span class="sd">        Maximm amount of business losses deductible</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    e00900: float</span>
+<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">    e01100: float</span>
+<span class="sd">        Capital gain distributions not reported on Schedule D</span>
+<span class="sd">    e01200: float</span>
+<span class="sd">        Other net gain/loss from Form 4797</span>
+<span class="sd">    e01400: float</span>
+<span class="sd">        Taxable IRA distributions</span>
+<span class="sd">    e01700: float</span>
+<span class="sd">        Taxable pensions and annunities</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss (includes e26270 and e27200)</span>
+<span class="sd">    e02100: float</span>
+<span class="sd">        Farm net income/loss for filing unit from Schedule F</span>
+<span class="sd">    e02300: float</span>
+<span class="sd">        Unemployment insurance benefits</span>
+<span class="sd">    e00400: float</span>
+<span class="sd">        Tax-exempt interest income</span>
+<span class="sd">    e02400: float</span>
+<span class="sd">        Total social security (OASDI) benefits</span>
+<span class="sd">    c02900: float</span>
+<span class="sd">        Total of all &quot;above the line&quot; income adjustments to get AGI</span>
+<span class="sd">    e03210: float</span>
+<span class="sd">        Student loan interest</span>
+<span class="sd">    e03230: float</span>
+<span class="sd">        Tuition and fees from Form 8917</span>
+<span class="sd">    e03240: float</span>
+<span class="sd">        Domestic production activities from Form 8903</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">        Limitation on capital losses</span>
+<span class="sd">    c23650: float</span>
+<span class="sd">        Net capital gains (long and short term) before exclusion</span>
+<span class="sd">    ymod: float</span>
+<span class="sd">        Variable that is used in OASDI benefit taxation logic</span>
+<span class="sd">    ymod1: float</span>
+<span class="sd">        Variable that is included in AGI</span>
+<span class="sd">    invinc_agi_ec: float</span>
+<span class="sd">        Exclusion of investment income from AGI</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">        Limitation on capital losses</span>
+<span class="sd">    c23650: float</span>
+<span class="sd">        Net capital gains (long and short term) before exclusion</span>
+<span class="sd">    ymod: float</span>
+<span class="sd">        Variable that is used in OASDI benefit taxation logic</span>
+<span class="sd">    ymod1: float</span>
+<span class="sd">        Variable that is included in AGI</span>
+<span class="sd">    invinc_agi_ec: float</span>
+<span class="sd">        Exclusion of investment income from AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># net capital gain (long term + short term) before exclusion</span>
     <span class="n">c23650</span> <span class="o">=</span> <span class="n">p23250</span> <span class="o">+</span> <span class="n">p22250</span>
@@ -771,6 +992,30 @@
                <span class="n">SS_percentage1</span><span class="p">,</span> <span class="n">SS_percentage2</span><span class="p">,</span> <span class="n">c02500</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates OASDI benefits included in AGI, c02500.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    ymod: float</span>
+<span class="sd">        Variable that is used in OASDI benefit taxation logic</span>
+<span class="sd">    e02400: float</span>
+<span class="sd">        Total social security (OASDI) benefits</span>
+<span class="sd">    SS_thd50: list</span>
+<span class="sd">        Threshold for social security benefit taxability (1)</span>
+<span class="sd">    SS_thd85: list</span>
+<span class="sd">        Threshold for social security benefit taxability (2)</span>
+<span class="sd">    SS_percentage1: float</span>
+<span class="sd">        Social security taxable income decimal fraction (1)</span>
+<span class="sd">    SS_percentage2: float</span>
+<span class="sd">        Social security taxable income decimal fraction (2)</span>
+<span class="sd">    c02500: float</span>
+<span class="sd">        Social security (OASDI) benefits included in AGI</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c02500: float</span>
+<span class="sd">        Social security (OASDI) benefits included in AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ymod</span> <span class="o">&lt;</span> <span class="n">SS_thd50</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">c02500</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -792,27 +1037,35 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    nu18: Number of people in the tax unit under 18</span>
-
-<span class="sd">    n1820: Number of people in the tax unit age 18-20</span>
-
-<span class="sd">    n21: Number of people in the tax unit age 21+</span>
-
-<span class="sd">    UBI_u18: UBI benefit for those under 18</span>
-
-<span class="sd">    UBI_1820: UBI benefit for those between 18 to 20</span>
-
-<span class="sd">    UBI_21: UBI benefit for those 21 or more</span>
-
-<span class="sd">    UBI_ecrt: Fraction of UBI benefits that are not included in AGI</span>
+<span class="sd">    nu18: int</span>
+<span class="sd">        Number of people in the tax unit under 18</span>
+<span class="sd">    n1820: int</span>
+<span class="sd">        Number of people in the tax unit age 18-20</span>
+<span class="sd">    n21: int</span>
+<span class="sd">        Number of people in the tax unit age 21+</span>
+<span class="sd">    UBI_u18: float</span>
+<span class="sd">        UBI benefit for those under 18</span>
+<span class="sd">    UBI_1820: float</span>
+<span class="sd">        UBI benefit for those between 18 to 20</span>
+<span class="sd">    UBI_21: float</span>
+<span class="sd">        UBI benefit for those 21 or more</span>
+<span class="sd">    UBI_ecrt: float</span>
+<span class="sd">        Fraction of UBI benefits that are not included in AGI</span>
+<span class="sd">    ubi: float</span>
+<span class="sd">        Total UBI received by the tax unit (is included in expanded_income)</span>
+<span class="sd">    taxable_ubi: float</span>
+<span class="sd">        Amount of UBI that is taxable (is added to AGI)</span>
+<span class="sd">    nontaxable_ubi: float</span>
+<span class="sd">        Amount of UBI that is nontaxable</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ubi: total UBI received by the tax unit (is included in expanded_income)</span>
-
-<span class="sd">    taxable_ubi: amount of UBI that is taxable (is added to AGI)</span>
-
-<span class="sd">    nontaxable_ubi: amount of UBI that is nontaxable</span>
+<span class="sd">    ubi: float</span>
+<span class="sd">        Total UBI received by the tax unit (is included in expanded_income)</span>
+<span class="sd">    taxable_ubi: float</span>
+<span class="sd">        Amount of UBI that is taxable (is added to AGI)</span>
+<span class="sd">    nontaxable_ubi: float</span>
+<span class="sd">        Amount of UBI that is nontaxable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ubi</span> <span class="o">=</span> <span class="n">nu18</span> <span class="o">*</span> <span class="n">UBI_u18</span> <span class="o">+</span> <span class="n">n1820</span> <span class="o">*</span> <span class="n">UBI_1820</span> <span class="o">+</span> <span class="n">n21</span> <span class="o">*</span> <span class="n">UBI_21</span>
     <span class="n">taxable_ubi</span> <span class="o">=</span> <span class="n">ubi</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">UBI_ecrt</span><span class="p">)</span>
@@ -831,45 +1084,47 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    ymod1: float</span>
-
+<span class="sd">        Variable that is included in AGI</span>
 <span class="sd">    c02500: float</span>
-
+<span class="sd">        Social security (OASDI) benefits included in AGI</span>
 <span class="sd">    c02900: float</span>
-
-<span class="sd">    XTOT: float</span>
-
+<span class="sd">        Total of all &quot;above the line&quot; income adjustments to get AGI</span>
+<span class="sd">    XTOT: int</span>
+<span class="sd">        Total number of exemptions for filing unit</span>
 <span class="sd">    MARS: int</span>
-<span class="sd">        filing status</span>
-<span class="sd">    sep: float</span>
-
-<span class="sd">    DSI: float</span>
-
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    sep: int</span>
+<span class="sd">        2 when MARS is 3 (married filing separately); otherwise 1</span>
+<span class="sd">    DSI: int</span>
+<span class="sd">        1 if claimed as dependent on another return; otherwise 0</span>
 <span class="sd">    exact: int</span>
-<span class="sd">        exact == 1 means do exact calculation, else do smoothed calculation</span>
-<span class="sd">        which is used for marginal tax rates</span>
+<span class="sd">        Whether or not to do rounding of phaseout fraction</span>
 <span class="sd">    nu18: int</span>
-<span class="sd">        number of dependents under age 18</span>
+<span class="sd">        Number of people in the tax unit under 18</span>
 <span class="sd">    taxable_ubi: float</span>
-<span class="sd">        taxable UBI amount</span>
-<span class="sd">    II_em:</span>
-
-<span class="sd">    II_em_ps:</span>
-
-<span class="sd">    II_prt:</span>
-
-<span class="sd">    II_no_em_nu18,</span>
-
+<span class="sd">        Amount of UBI that is taxable (is added to AGI)</span>
+<span class="sd">    II_em: float</span>
+<span class="sd">        Personal and dependent exemption amount</span>
+<span class="sd">    II_em_ps: list</span>
+<span class="sd">        Personal exemption phaseout starting income</span>
+<span class="sd">    II_prt: float</span>
+<span class="sd">        Personal exemption phaseout rate</span>
+<span class="sd">    II_no_em_nu18: float</span>
+<span class="sd">        Repeal personal exemptions for dependents under age 18</span>
 <span class="sd">    c00100: float</span>
-<span class="sd">        AGI</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
 <span class="sd">    pre_c04600: float</span>
-
+<span class="sd">        Personal exemption before phase-out</span>
 <span class="sd">    c04600: float</span>
-<span class="sd">        exemption amount</span>
-
+<span class="sd">        Personal exemptions after phase-out</span>
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    tuple</span>
-<span class="sd">        returns AGI (c00100), (pre_c04600), exemption amount (c04600)</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    pre_c04600: float</span>
+<span class="sd">        Personal exemption before phase-out</span>
+<span class="sd">    c04600: float</span>
+<span class="sd">        Personal exemptions after phase-out</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate AGI assuming no foreign earned income exclusion</span>
     <span class="n">c00100</span> <span class="o">=</span> <span class="n">ymod1</span> <span class="o">+</span> <span class="n">c02500</span> <span class="o">-</span> <span class="n">c02900</span> <span class="o">+</span> <span class="n">taxable_ubi</span>
@@ -902,50 +1157,65 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a cap to gross itemized deductions.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Tax Law Parameters:</span>
-<span class="sd">        ID_AmountCap_Switch : Indicator for which itemized deductions are</span>
-<span class="sd">                              capped</span>
-<span class="sd">        ID_AmountCap_rt : Cap on itemized deductions; decimal fraction of AGI</span>
-
-<span class="sd">    Taxpayer Characteristics:</span>
-<span class="sd">        e17500 : Medical expenses</span>
-
-<span class="sd">        e18400 : State and local taxes</span>
-
-<span class="sd">        e18500 : Real-estate taxes</span>
-
-<span class="sd">        e19200 : Interest paid</span>
-
-<span class="sd">        e19800 : Charity cash contributions</span>
-
-<span class="sd">        e20100 : Charity noncash contributions</span>
-
-<span class="sd">        e20400 : Total miscellaneous expenses</span>
-
-<span class="sd">        g20500 : Gross casualty or theft loss (before disregard)</span>
-
-<span class="sd">        c00100: Adjusted Gross Income</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e17500: float</span>
+<span class="sd">        Itemizable medical and dental expenses</span>
+<span class="sd">    e18400: float</span>
+<span class="sd">        Itemizable state and local income/sales taxes</span>
+<span class="sd">    e18500: float</span>
+<span class="sd">        Itemizable real-estate taxes paid</span>
+<span class="sd">    e19200: float</span>
+<span class="sd">        Itemizable interest paid</span>
+<span class="sd">    e19800: float</span>
+<span class="sd">        Itemizable charitable giving: cash/check contributions</span>
+<span class="sd">    e20100: float</span>
+<span class="sd">        Itemizable charitalb giving: other than cash/check contributions</span>
+<span class="sd">    e20400: float</span>
+<span class="sd">        Itemizable gross (before 10% AGI disregard) casualty or theft loss</span>
+<span class="sd">    g20500: float</span>
+<span class="sd">        Itemizable gross (before 10% AGI disregard) casualty or theft loss</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted gross income (AGI)</span>
+<span class="sd">    ID_AmountCap_rt: float</span>
+<span class="sd">        Ceiling on the gross amount of itemized deductions allowed; decimal fraction of AGI</span>
+<span class="sd">    ID_AmountCap_Switch: list</span>
+<span class="sd">        Deductions subject to the cap on itemized deduction benefits</span>
+<span class="sd">    e17500_capped: float</span>
+<span class="sd">        Schedule A: medical expenses, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e18400_capped: float</span>
+<span class="sd">        Schedule A: state and local income taxes deductlbe, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e18500_capped: float</span>
+<span class="sd">        Schedule A: state and local real estate taxes deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e19200_capped: float</span>
+<span class="sd">        Schedule A: interest deduction deductible, capped by ItemDedCap as decimal fraction of AGI</span>
+<span class="sd">    e19800_capped: float</span>
+<span class="sd">        Schedule A: charity cash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e20100_capped: float</span>
+<span class="sd">        Schedule A: charity noncash contributions deductible, capped aby ItemDedCap s a decimal fraction of AGI</span>
+<span class="sd">    e20400_capped: float</span>
+<span class="sd">        Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    g20500_capped: float</span>
+<span class="sd">        Schedule A: gross casualty or theft loss deductible, capped aby ItemDedCap s a decimal fraction of AGI</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        e17500_capped: Medical expenses, capped by ItemDedCap</span>
-
-<span class="sd">        e18400_capped: State and local taxes, capped by ItemDedCap</span>
-
-<span class="sd">        e18500_capped : Real-estate taxes, capped by ItemDedCap</span>
-
-<span class="sd">        e19200_capped : Interest paid, capped by ItemDedCap</span>
-
-<span class="sd">        e19800_capped : Charity cash contributions, capped by ItemDedCap</span>
-
-<span class="sd">        e20100_capped : Charity noncash contributions, capped by ItemDedCap</span>
-
-<span class="sd">        e20400_capped : Total miscellaneous expenses, capped by ItemDedCap</span>
-
-<span class="sd">        g20500_capped : Gross casualty or theft loss (before disregard),</span>
-<span class="sd">                        capped by ItemDedCap</span>
+<span class="sd">    e17500_capped: float</span>
+<span class="sd">        Schedule A: medical expenses, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e18400_capped: float</span>
+<span class="sd">        Schedule A: state and local income taxes deductlbe, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e18500_capped: float</span>
+<span class="sd">        Schedule A: state and local real estate taxes deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e19200_capped: float</span>
+<span class="sd">        Schedule A: interest deduction deductible, capped by ItemDedCap as decimal fraction of AGI</span>
+<span class="sd">    e19800_capped: float</span>
+<span class="sd">        Schedule A: charity cash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e20100_capped: float</span>
+<span class="sd">        Schedule A: charity noncash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e20400_capped: float</span>
+<span class="sd">        Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    g20500_capped: float</span>
+<span class="sd">        Schedule A: gross casualty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-branches</span>
 
@@ -1016,86 +1286,131 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates itemized deductions, Form 1040, Schedule A.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Tax Law Parameters:</span>
-<span class="sd">        ID_ps : Itemized deduction phaseout AGI start (Pease)</span>
-
-<span class="sd">        ID_crt : Itemized deduction maximum phaseout</span>
-<span class="sd">                 as a decimal fraction of total itemized deduction (Pease)</span>
-
-<span class="sd">        ID_prt : Itemized deduction phaseout rate (Pease)</span>
-
-<span class="sd">        ID_c: Dollar limit on itemized deductions</span>
-
-<span class="sd">        ID_Medical_frt : Deduction for medical expenses;</span>
-<span class="sd">                         floor as a decimal fraction of AGI</span>
-
-<span class="sd">        ID_Medical_frt_add4aged : Addon for medical expenses deduction for</span>
-<span class="sd">                                  elderly; addon as a decimal fraction of AGI</span>
-
-<span class="sd">        ID_Casualty_frt : Deduction for casualty loss;</span>
-<span class="sd">                          floor as a decimal fraction of AGI</span>
-
-<span class="sd">        ID_Miscellaneous_frt : Deduction for miscellaneous expenses;</span>
-<span class="sd">                               floor as a decimal fraction of AGI</span>
-
-<span class="sd">        ID_Charity_crt_all : Deduction for all charitable contributions;</span>
-<span class="sd">                             ceiling as a decimal fraction of AGI</span>
-
-<span class="sd">        ID_Charity_crt_noncash : Deduction for noncash charitable</span>
-<span class="sd">                                 contributions; ceiling as a decimal</span>
-<span class="sd">                                 fraction of AGI</span>
-
-<span class="sd">        ID_Charity_frt : Disregard for charitable contributions;</span>
-<span class="sd">                         floor as a decimal fraction of AGI</span>
-
-<span class="sd">        ID_Medical_c : Ceiling on medical expense deduction</span>
-
-<span class="sd">        ID_StateLocalTax_c : Ceiling on state and local tax deduction</span>
-
-<span class="sd">        ID_RealEstate_c : Ceiling on real estate tax deduction</span>
-
-<span class="sd">        ID_AllTaxes_c: Ceiling combined state and local income/sales and</span>
-<span class="sd">                       real estate tax deductions</span>
-
-<span class="sd">        ID_InterestPaid_c : Ceiling on interest paid deduction</span>
-
-<span class="sd">        ID_Charity_c : Ceiling on charity expense deduction</span>
-
-<span class="sd">        ID_Charity_f: Floor on charity expense deduction</span>
-
-<span class="sd">        ID_Casualty_c : Ceiling on casuality expense deduction</span>
-
-<span class="sd">        ID_Miscellaneous_c : Ceiling on miscellaneous expense deduction</span>
-
-<span class="sd">        ID_StateLocalTax_crt : Deduction for state and local taxes;</span>
-<span class="sd">                               ceiling as a decimal fraction of AGI</span>
-
-<span class="sd">        ID_RealEstate_crt : Deduction for real estate taxes;</span>
-<span class="sd">                            ceiling as a decimal fraction of AGI</span>
-
-<span class="sd">    Taxpayer Characteristics:</span>
-<span class="sd">        e17500_capped : Medical expenses, capped by ItemDedCap</span>
-
-<span class="sd">        e18400_capped : State and local taxes, capped by ItemDedCap</span>
-
-<span class="sd">        e18500_capped : Real-estate taxes, capped by ItemDedCap</span>
-
-<span class="sd">        e19200_capped : Interest paid, capped by ItemDedCap</span>
-
-<span class="sd">        e19800_capped : Charity cash contributions, capped by ItemDedCap</span>
-
-<span class="sd">        e20100_capped : Charity noncash contributions, capped by ItemDedCap</span>
-
-<span class="sd">        e20400_capped : Total miscellaneous expenses, capped by ItemDedCap</span>
-
-<span class="sd">        g20500_capped : Gross casualty or theft loss (before disregard),</span>
-<span class="sd">                        capped by ItemDedCap</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e17500_capped: float</span>
+<span class="sd">        Schedule A: medical expenses, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e18400_capped: float</span>
+<span class="sd">        Schedule A: state and local income taxes deductlbe, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e18500_capped: float</span>
+<span class="sd">        Schedule A: state and local real estate taxes deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e19200_capped: float</span>
+<span class="sd">        Schedule A: interest deduction deductible, capped by ItemDedCap as decimal fraction of AGI</span>
+<span class="sd">    e19800_capped: float</span>
+<span class="sd">        Schedule A: charity cash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e20100_capped: float</span>
+<span class="sd">        Schedule A: charity noncash contributions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    e20400_capped: float</span>
+<span class="sd">        Schedule A: gross miscellaneous deductions deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    g20500_capped: float</span>
+<span class="sd">        Schedule A: gross casualty or theft loss deductible, capped by ItemDedCap as a decimal fraction of AGI</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    age_head: int</span>
+<span class="sd">        Age in years of taxpayer</span>
+<span class="sd">    age_spouse: int</span>
+<span class="sd">        Age in years of spouse</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted gross income (AGI)</span>
+<span class="sd">    c04470: float</span>
+<span class="sd">        Itemized deductions after phase out (0 for non itemizers)</span>
+<span class="sd">    c21040: float</span>
+<span class="sd">        Itemized deductions that are phased out</span>
+<span class="sd">    c21060: float</span>
+<span class="sd">        Itemized deductions before phase out (0 for non itemizers)</span>
+<span class="sd">    c17000: float</span>
+<span class="sd">        Schedule A: medical expenses deducted</span>
+<span class="sd">    c18300: float</span>
+<span class="sd">        Schedule A: state and local taxes plus real estate taxes deducted</span>
+<span class="sd">    c19200: float</span>
+<span class="sd">        Schedule A: interest deducted</span>
+<span class="sd">    c19700: float</span>
+<span class="sd">        Schedule A: charity contributions deducted</span>
+<span class="sd">    c20500: float</span>
+<span class="sd">        Schedule A: net casualty or theft loss deducted</span>
+<span class="sd">    c20800: float</span>
+<span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
+<span class="sd">    ID_ps: list</span>
+<span class="sd">        Itemized deduction phaseout AGI start (Pease)</span>
+<span class="sd">    ID_Medical_frt: float</span>
+<span class="sd">        Floor (as decimal fraction of AGI) for deductible medical expenses</span>
+<span class="sd">    ID_Medical_frt_add4aged: float</span>
+<span class="sd">        Add on floor (as decimal fraction of AGI) for deductible medical expenses for elderly filing units</span>
+<span class="sd">    ID_Medical_hc: float</span>
+<span class="sd">        Medical expense deduction haircut</span>
+<span class="sd">    ID_Casualty_frt: float</span>
+<span class="sd">        Floor (as decimal fraction of AGI) for deductible casualty loss</span>
+<span class="sd">    ID_Casualty_hc: float</span>
+<span class="sd">        Casualty expense deduction haircut</span>
+<span class="sd">    ID_Miscellaneous_frt: float</span>
+<span class="sd">        Floor (as decimal fraction of AGI) for deductible miscellaneous expenses</span>
+<span class="sd">    ID_Miscellaneous_hc: float</span>
+<span class="sd">        Miscellaneous expense deduction haircut</span>
+<span class="sd">    ID_Charity_crt_all: float</span>
+<span class="sd">        Ceiling (as decimal fraction of AGI) for all charitable contribution deductions</span>
+<span class="sd">    ID_Charity_crt_noncash: float</span>
+<span class="sd">        Ceiling (as decimal fraction of AGI) for noncash charitable contribution deductions</span>
+<span class="sd">    ID_prt: float</span>
+<span class="sd">        Itemized deduction phaseout rate (Pease)</span>
+<span class="sd">    ID_crt: float</span>
+<span class="sd">        Itemized deduction maximum phaseout as a decimal fraction of total itemized deductions (Pease)</span>
+<span class="sd">    ID_c: list</span>
+<span class="sd">        Ceiling on the amount of itemized deductions allowed (dollars)</span>
+<span class="sd">    ID_StateLocalTax_hc: float</span>
+<span class="sd">        State and local income and sales taxes deduction haircut</span>
+<span class="sd">    ID_Charity_frt: float</span>
+<span class="sd">        Floor (as decimal fraction of AGI) for deductible charitable contributions</span>
+<span class="sd">    ID_Charity_hc: float</span>
+<span class="sd">        Charity expense deduction haircut</span>
+<span class="sd">    ID_InterestPaid_hc: float</span>
+<span class="sd">        Interest paid deduction haircut</span>
+<span class="sd">    ID_RealEstate_hc: float</span>
+<span class="sd">        State, local, and foreign real estate taxes deductions haircut</span>
+<span class="sd">    ID_Medical_c: list</span>
+<span class="sd">        Ceiling on the amount of medical expense deduction allowed (dollars)</span>
+<span class="sd">    ID_StateLocalTax_c: list</span>
+<span class="sd">        Ceiling on the amount of state and local income and sales taxes deduction allowed (dollars)</span>
+<span class="sd">    ID_RealEstate_c: list</span>
+<span class="sd">        Ceiling on the amount of state, local, and foreign real estate taxes deduction allowed (dollars)</span>
+<span class="sd">    ID_InterestPaid_c: list</span>
+<span class="sd">        Ceiling on the amount of interest paid deduction allowed (dollars)</span>
+<span class="sd">    ID_Charity_c: list</span>
+<span class="sd">        Ceiling on the amount of charity expense deduction allowed (dollars)</span>
+<span class="sd">    ID_Casualty_c: list</span>
+<span class="sd">        Ceiling on the amount of casualty expense deduction allowed (dollars)</span>
+<span class="sd">    ID_Miscellaneous_c: list</span>
+<span class="sd">        Ceiling on the amount of miscellaneous expense deduction allowed (dollars)</span>
+<span class="sd">    ID_AllTaxes_c: list</span>
+<span class="sd">        Ceiling on the amount of state and local income, stales, and real estate deductions allowed (dollars)</span>
+<span class="sd">    ID_AllTaxes_hc: float</span>
+<span class="sd">        State and local income, sales, and real estate tax deduciton haircut</span>
+<span class="sd">    ID_StateLocalTax_crt: float</span>
+<span class="sd">        Ceiling (as decimal fraction of AGI) for the combination of all state and local income and sales tax deductions</span>
+<span class="sd">    ID_RealEstate_crt: float</span>
+<span class="sd">        Ceiling (as decimal fraction of AGI) for the combination of all state, local, and foreign real estate tax deductions</span>
+<span class="sd">    ID_Charity_f: list</span>
+<span class="sd">        Floor on the amount of charity expense deduction allowed (dollars)</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    c04470 : total itemized deduction amount (and other intermediate variables)</span>
+<span class="sd">    c17000: float</span>
+<span class="sd">        Schedule A: medical expenses deducted</span>
+<span class="sd">    c18300: float</span>
+<span class="sd">        Schedule A: state and local taxes plus real estate taxes deducted</span>
+<span class="sd">    c19200: float</span>
+<span class="sd">        Schedule A: interest deducted</span>
+<span class="sd">    c19700: float</span>
+<span class="sd">        Schedule A: charity contributions deducted</span>
+<span class="sd">    c20500: float</span>
+<span class="sd">        Schedule A: net casualty or theft loss deducted</span>
+<span class="sd">    c20800: float</span>
+<span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
+<span class="sd">    c21040: float</span>
+<span class="sd">        Itemized deductions that are phased out</span>
+<span class="sd">    c21060: float</span>
+<span class="sd">        Itemized deductions before phase out (0 for non itemizers)</span>
+<span class="sd">    c04470: float</span>
+<span class="sd">        Itemized deductions after phase out (0 for non itemizers)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">posagi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
     <span class="c1"># Medical</span>
@@ -1164,27 +1479,33 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Additional Medicare Tax (Form 8959) included in payroll taxes.</span>
 
-<span class="sd">    Notes</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    -----</span>
-<span class="sd">    Tax Law Parameters:</span>
-<span class="sd">        AMEDT_ec : Additional Medicare Tax earnings exclusion</span>
-
-<span class="sd">        AMEDT_rt : Additional Medicare Tax rate</span>
-
-<span class="sd">        FICA_ss_trt : FICA Social Security tax rate</span>
-
-<span class="sd">        FICA_mc_trt : FICA Medicare tax rate</span>
-
-<span class="sd">    Taxpayer Charateristics:</span>
-<span class="sd">        e00200 : Wages and salaries</span>
-
-<span class="sd">        sey : Self-employment income</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing marital status (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    AMEDT_ec: list</span>
+<span class="sd">        Additional Medicare Tax earnings exclusion</span>
+<span class="sd">    AMEDT_rt: float</span>
+<span class="sd">        Additional Medicare Tax rate</span>
+<span class="sd">    FICA_ss_trt: float</span>
+<span class="sd">        FICA Social Security tax rate</span>
+<span class="sd">    FICA_mc_trt: float</span>
+<span class="sd">        FICA Medicare tax rate</span>
+<span class="sd">    e00200: float</span>
+<span class="sd">        Wages and salaries</span>
+<span class="sd">    sey: float</span>
+<span class="sd">        Self-employment income</span>
+<span class="sd">    ptax_amc: float</span>
+<span class="sd">        Additional Medicare Tax</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        payroll tax augmented by Additional Medicare Tax</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    ptax_amc : Additional Medicare Tax</span>
-
-<span class="sd">    payrolltax : payroll tax augmented by Additional Medicare Tax</span>
+<span class="sd">    ptax_amc: float</span>
+<span class="sd">        Additional Medicare Tax</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        payroll tax augmented by Additional Medicare Tax</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">line8</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">sey</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">-</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">FICA_mc_trt</span> <span class="o">+</span> <span class="n">FICA_ss_trt</span><span class="p">))</span>
     <span class="n">line11</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="n">AMEDT_ec</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">e00200</span><span class="p">)</span>
@@ -1203,32 +1524,43 @@
 <span class="sd">    Calculates standard deduction, including standard deduction for</span>
 <span class="sd">    dependents, aged and bind.</span>
 
-<span class="sd">    Notes</span>
+<span class="sd">    Parameters</span>
 <span class="sd">    -----</span>
-<span class="sd">    Tax Law Parameters:</span>
-<span class="sd">        STD : Standard deduction amount, filing status dependent</span>
-
-<span class="sd">        STD_Dep : Standard deduction for dependents</span>
-
-<span class="sd">        STD_Aged : Additional standard deduction for blind and aged</span>
-
-<span class="sd">    Taxpayer Characteristics:</span>
-<span class="sd">        earned : Form 2441 earned income amount</span>
-
-<span class="sd">        e02400 : Gross Social Security Benefit</span>
-
-<span class="sd">        DSI : Dependent Status Indicator:</span>
-<span class="sd">            0 - not being claimed as a dependent</span>
-<span class="sd">            1 - claimed as a dependent</span>
-
-<span class="sd">        MIDR : Married filing separately itemized deductions</span>
-<span class="sd">        requirement indicator:</span>
-<span class="sd">            0 - not necessary to itemize because of filing status</span>
-<span class="sd">            1 - necessary to itemize when filing separately</span>
+<span class="sd">    DSI: int</span>
+<span class="sd">        1 if claimed as dependent on another return; otherwise 0</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    STD: list</span>
+<span class="sd">        Standard deduction amount</span>
+<span class="sd">    age_head: int</span>
+<span class="sd">        Age in years of taxpayer</span>
+<span class="sd">    age_spouse: int</span>
+<span class="sd">        Age in years of spouse</span>
+<span class="sd">    STD_Aged: list</span>
+<span class="sd">        Additional standard deduction for blind and aged</span>
+<span class="sd">    STD_Dep: float</span>
+<span class="sd">        Standard deduction for dependents</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    MIDR: int</span>
+<span class="sd">        1 if separately filing spouse itemizes, 0 otherwise</span>
+<span class="sd">    blind_head: int</span>
+<span class="sd">        1 if taxpayer is blind, 0 otherwise</span>
+<span class="sd">    blind_spouse: int</span>
+<span class="sd">        1 if spouse is blind, 0 otherwise</span>
+<span class="sd">    standard: float</span>
+<span class="sd">        Standard deduction (zero for itemizers)</span>
+<span class="sd">    c19700: float</span>
+<span class="sd">        Schedule A: charity contributions deducted</span>
+<span class="sd">    STD_allow_charity_ded_nonitemizers: bool</span>
+<span class="sd">        Allow standard deduction filers to take the charitable contributions deduction</span>
+<span class="sd">    STD_charity_ded_nonitemizers_max: float</span>
+<span class="sd">        Ceiling amount (in dollars) for charitable deductions for non-itemizers</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    standard : the standard deduction amount for filing unit</span>
+<span class="sd">    standard: float</span>
+<span class="sd">        Standard deduction (zero for itemizers)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate deduction for dependents</span>
     <span class="k">if</span> <span class="n">DSI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1267,6 +1599,67 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates taxable income, c04800, and</span>
 <span class="sd">    qualified business income deduction, qbided.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    standard: float</span>
+<span class="sd">        Standard deduction (zero for itemizers)</span>
+<span class="sd">    c04470: float</span>
+<span class="sd">        Itemized deductions after phase-out (zero for non-itemizers)</span>
+<span class="sd">    c04600: float</span>
+<span class="sd">        Personal exemptions after phase-out</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    e00900: float</span>
+<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">    e26270: float</span>
+<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
+<span class="sd">    e02100: float</span>
+<span class="sd">        Farm net income/loss for filing unit from Schedule F</span>
+<span class="sd">    e27200: float</span>
+<span class="sd">        Schedule E: farm rent net income or loss</span>
+<span class="sd">    e00650: float</span>
+<span class="sd">        Qualified dividends included in ordinary dividends</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">        Limitation on capital losses</span>
+<span class="sd">    PT_SSTB_income: int</span>
+<span class="sd">        Value of one implies business income is from a specified service trade or business (SSTB)</span>
+<span class="sd">        Value of zero implies business income is from a qualified trade or business</span>
+<span class="sd">    PT_binc_w2_wages: float</span>
+<span class="sd">        Filing unit&#39;s share of total W-2 wages paid by the pass-through business</span>
+<span class="sd">    PT_ubia_property: float</span>
+<span class="sd">        Filing unit&#39;s share of total business property owned by the pass-through business</span>
+<span class="sd">    PT_qbid_rt: float</span>
+<span class="sd">        Pass-through qualified business income deduction rate</span>
+<span class="sd">    PT_qbid_taxinc_thd: list</span>
+<span class="sd">        Lower threshold of pre-QBID taxable income</span>
+<span class="sd">    PT_qbid_taxinc_gap: list</span>
+<span class="sd">        Dollar gap between upper and lower threshold of pre-QBID taxable income</span>
+<span class="sd">    PT_qbid_w2_wages_rt: float</span>
+<span class="sd">        QBID cap rate on pass-through business W-2 wages paid</span>
+<span class="sd">    PT_qbid_alt_w2_wages_rt: float</span>
+<span class="sd">        Alternative QBID cap rate on pass-through business W-2 wages paid</span>
+<span class="sd">    PT_qbid_alt_property_rt: float</span>
+<span class="sd">        Alternative QBID cap rate on pass-through business property owned</span>
+<span class="sd">    c04800: float</span>
+<span class="sd">        Regular taxable income</span>
+<span class="sd">    PT_qbid_ps: list</span>
+<span class="sd">        QBID phaseout taxable income start</span>
+<span class="sd">    PT_qbid_prt: float</span>
+<span class="sd">        QBID phaseout rate</span>
+<span class="sd">    qbided: float</span>
+<span class="sd">        Qualified Business Income (QBI) deduction</span>
+<span class="sd">    PT_qbid_limit_switch: bool</span>
+<span class="sd">        QBID wage and capital limitations switch</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c04800: float</span>
+<span class="sd">        Regular taxable income</span>
+<span class="sd">    qbided: float</span>
+<span class="sd">        Qualified Business Income (QBI) deduction</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate UI excluded from taxable income</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">e02300</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">UI_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
@@ -1346,6 +1739,96 @@
            <span class="n">PT_top_stacking</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns Schedule X, Y, Z tax amount for specified taxable_income.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    taxable_income: float</span>
+<span class="sd">        Taxable income</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    e00900: float</span>
+<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">    e26270: float</span>
+<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">        Schedule E total rental, royalty, parternship, S-corporation, etc, income/loss</span>
+<span class="sd">    e00200: float</span>
+<span class="sd">        Wages, salaries, and tips for filing unit net of pension contributions</span>
+<span class="sd">    PT_rt1: float</span>
+<span class="sd">        Pass through income tax rate 1</span>
+<span class="sd">    PT_rt2: float</span>
+<span class="sd">        Pass through income tax rate 2</span>
+<span class="sd">    PT_rt3: float</span>
+<span class="sd">        Pass through income tax rate 3</span>
+<span class="sd">    PT_rt4: float</span>
+<span class="sd">        Pass through income tax rate 4</span>
+<span class="sd">    PT_rt5: float</span>
+<span class="sd">        Pass through income tax rate 5</span>
+<span class="sd">    PT_rt6: float</span>
+<span class="sd">        Pass through income tax rate 6</span>
+<span class="sd">    PT_rt7: float</span>
+<span class="sd">        Pass through income tax rate 7</span>
+<span class="sd">    PT_rt8: float</span>
+<span class="sd">        Pass through income tax rate 8</span>
+<span class="sd">    PT_brk1: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 1</span>
+<span class="sd">    PT_brk2: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 2</span>
+<span class="sd">    PT_brk3: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 3</span>
+<span class="sd">    PT_brk4: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 4</span>
+<span class="sd">    PT_brk5: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 5</span>
+<span class="sd">    PT_brk6: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 6</span>
+<span class="sd">    PT_brk7: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 7</span>
+<span class="sd">    II_rt1: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 1</span>
+<span class="sd">    II_rt2: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 2</span>
+<span class="sd">    II_rt3: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 3</span>
+<span class="sd">    II_rt4: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 4</span>
+<span class="sd">    II_rt5: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 5</span>
+<span class="sd">    II_rt6: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 6</span>
+<span class="sd">    II_rt7: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 7</span>
+<span class="sd">    II_rt8: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 8</span>
+<span class="sd">    II_brk1: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1</span>
+<span class="sd">    II_brk2: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2</span>
+<span class="sd">    II_brk3: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3</span>
+<span class="sd">    II_brk4: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4</span>
+<span class="sd">    II_brk5: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5</span>
+<span class="sd">    II_brk6: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6</span>
+<span class="sd">    II_brk7: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7</span>
+<span class="sd">    PT_EligibleRate_active: float</span>
+<span class="sd">        Share of active business income eligible for PT rate schedule</span>
+<span class="sd">    PT_EligibleRate_passive: float</span>
+<span class="sd">        Share of passive business income eligible for PT rate schedule</span>
+<span class="sd">    PT_wages_active_income: bool</span>
+<span class="sd">        Wages included in (positive) active business eligible for PT rates</span>
+<span class="sd">    PT_top_stacking: bool</span>
+<span class="sd">        PT taxable income stacked on top of regular taxable income</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    reg_tax: float</span>
+<span class="sd">        Individual income tax liability on non-pass-through income</span>
+<span class="sd">    pt_tax: float</span>
+<span class="sd">        Individual income tax liability from pass-through income</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># separate non-negative taxable income into two non-negative components,</span>
     <span class="c1"># doing this in a way so that the components add up to taxable income</span>
@@ -1402,6 +1885,96 @@
               <span class="n">PT_top_stacking</span><span class="p">,</span> <span class="n">c05200</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    SchXYZTax calls SchXYZ function and sets c05200 to returned amount.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c04800: float</span>
+<span class="sd">        Regular taxable income</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    e00900: float</span>
+<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">    e26270: float</span>
+<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">        Farm net income/loss for filing unit from Schedule F</span>
+<span class="sd">    e00200: float</span>
+<span class="sd">        Farm net income/loss for filing unit from Schedule F</span>
+<span class="sd">    PT_rt1: float</span>
+<span class="sd">        Pass through income tax rate 1</span>
+<span class="sd">    PT_rt2: float</span>
+<span class="sd">        Pass through income tax rate 2</span>
+<span class="sd">    PT_rt3: float</span>
+<span class="sd">        Pass through income tax rate 3</span>
+<span class="sd">    PT_rt4: float</span>
+<span class="sd">        Pass through income tax rate 4</span>
+<span class="sd">    PT_rt5: float</span>
+<span class="sd">        Pass through income tax rate 5</span>
+<span class="sd">    PT_rt6: float</span>
+<span class="sd">        Pass through income tax rate 6</span>
+<span class="sd">    PT_rt7: float</span>
+<span class="sd">        Pass through income tax rate 7</span>
+<span class="sd">    PT_rt8: float</span>
+<span class="sd">        Pass through income tax rate 8</span>
+<span class="sd">    PT_brk1: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 1</span>
+<span class="sd">    PT_brk2: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 2</span>
+<span class="sd">    PT_brk3: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 3</span>
+<span class="sd">    PT_brk4: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 4</span>
+<span class="sd">    PT_brk5: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 5</span>
+<span class="sd">    PT_brk6: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 6</span>
+<span class="sd">    PT_brk7: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 7</span>
+<span class="sd">    II_rt1: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 1</span>
+<span class="sd">    II_rt2: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 2</span>
+<span class="sd">    II_rt3: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 3</span>
+<span class="sd">    II_rt4: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 4</span>
+<span class="sd">    II_rt5: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 5</span>
+<span class="sd">    II_rt6: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 6</span>
+<span class="sd">    II_rt7: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 7</span>
+<span class="sd">    II_rt8: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 8</span>
+<span class="sd">    II_brk1: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1</span>
+<span class="sd">    II_brk2: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2</span>
+<span class="sd">    II_brk3: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3</span>
+<span class="sd">    II_brk4: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4</span>
+<span class="sd">    II_brk5: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5</span>
+<span class="sd">    II_brk6: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6</span>
+<span class="sd">    II_brk7: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7</span>
+<span class="sd">    PT_EligibleRate_active: float</span>
+<span class="sd">        Share of active business income eligible for PT rate schedule</span>
+<span class="sd">    PT_EligibleRate_passive: float</span>
+<span class="sd">        Share of passive business income eligible for PT rate schedule</span>
+<span class="sd">    PT_wages_active_income: bool</span>
+<span class="sd">        Wages included in (positive) active business eligible for PT rates</span>
+<span class="sd">    PT_top_stacking: bool</span>
+<span class="sd">        PT taxable income stacked on top of regular taxable income</span>
+<span class="sd">    c05200: float</span>
+<span class="sd">        Tax amount from Schedule X,Y,Z tables</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c05200: float</span>
+<span class="sd">        Tax aount from Schedule X, Y, Z tables</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">c05200</span> <span class="o">=</span> <span class="n">SchXYZ</span><span class="p">(</span><span class="n">c04800</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">e00900</span><span class="p">,</span> <span class="n">e26270</span><span class="p">,</span> <span class="n">e02000</span><span class="p">,</span> <span class="n">e00200</span><span class="p">,</span>
                     <span class="n">PT_rt1</span><span class="p">,</span> <span class="n">PT_rt2</span><span class="p">,</span> <span class="n">PT_rt3</span><span class="p">,</span> <span class="n">PT_rt4</span><span class="p">,</span> <span class="n">PT_rt5</span><span class="p">,</span>
@@ -1432,6 +2005,150 @@
 <span class="sd">    GainsTax function implements (2015) Schedule D Tax Worksheet logic for</span>
 <span class="sd">    the special taxation of long-term capital gains and qualified dividends</span>
 <span class="sd">    if CG_nodiff is false.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e00650: float</span>
+<span class="sd">        Qualified dividends included in ordinary dividends</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">        Limitation on capital losses</span>
+<span class="sd">    c23650: float</span>
+<span class="sd">        Net capital gain (long term + short term) before exclusion</span>
+<span class="sd">    p23250: float</span>
+<span class="sd">        Schedule D: net long-term capital gains/losses</span>
+<span class="sd">    e01100: float</span>
+<span class="sd">        Capital gains distributions not reported on Schedule D</span>
+<span class="sd">    e58990: float</span>
+<span class="sd">        Investment income elected amount from Form 4952</span>
+<span class="sd">    e00200: float</span>
+<span class="sd">        Wages, salaries, and tips for filing unit net of pension contributions</span>
+<span class="sd">    e24515: float</span>
+<span class="sd">        Schedule D: un-recaptured section 1250 Gain</span>
+<span class="sd">    e24518: float</span>
+<span class="sd">        Schedule D: 28% rate gain or loss</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    c04800: float</span>
+<span class="sd">        Regular taxable income</span>
+<span class="sd">    c05200: float</span>
+<span class="sd">        Tax amount from Schedule X,Y,Z tables</span>
+<span class="sd">    e00900: float</span>
+<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">    e26270: float</span>
+<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss</span>
+<span class="sd">    II_rt1: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 1</span>
+<span class="sd">    II_rt2: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 2</span>
+<span class="sd">    II_rt3: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 3</span>
+<span class="sd">    II_rt4: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 4</span>
+<span class="sd">    II_rt5: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 5</span>
+<span class="sd">    II_rt6: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 6</span>
+<span class="sd">    II_rt7: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 7</span>
+<span class="sd">    II_rt8: float</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass-through) tax rate 8</span>
+<span class="sd">    II_brk1: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 1</span>
+<span class="sd">    II_brk2: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 2</span>
+<span class="sd">    II_brk3: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 3</span>
+<span class="sd">    II_brk4: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 4</span>
+<span class="sd">    II_brk5: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 5</span>
+<span class="sd">    II_brk6: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 6</span>
+<span class="sd">    II_brk7: list</span>
+<span class="sd">        Personal income (regular/non-AMT/non-pass/through) tax bracket (upper threshold) 7</span>
+<span class="sd">    PT_rt1: float</span>
+<span class="sd">        Pass through income tax rate 1</span>
+<span class="sd">    PT_rt2: float</span>
+<span class="sd">        Pass through income tax rate 2</span>
+<span class="sd">    PT_rt3: float</span>
+<span class="sd">        Pass through income tax rate 3</span>
+<span class="sd">    PT_rt4: float</span>
+<span class="sd">        Pass through income tax rate 4</span>
+<span class="sd">    PT_rt5: float</span>
+<span class="sd">        Pass through income tax rate 5</span>
+<span class="sd">    PT_rt6: float</span>
+<span class="sd">        Pass through income tax rate 6</span>
+<span class="sd">    PT_rt7: float</span>
+<span class="sd">        Pass through income tax rate 7</span>
+<span class="sd">    PT_rt8: float</span>
+<span class="sd">        Pass through income tax rate 8</span>
+<span class="sd">    PT_brk1: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 1</span>
+<span class="sd">    PT_brk2: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 2</span>
+<span class="sd">    PT_brk3: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 3</span>
+<span class="sd">    PT_brk4: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 4</span>
+<span class="sd">    PT_brk5: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 5</span>
+<span class="sd">    PT_brk6: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 6</span>
+<span class="sd">    PT_brk7: list</span>
+<span class="sd">        Pass through income tax bracket (upper threshold) 7</span>
+<span class="sd">    CG_nodiff: bool</span>
+<span class="sd">        Long term capital gains and qualified dividends taxed no differently than regular taxable income</span>
+<span class="sd">    PT_EligibleRate_active: float</span>
+<span class="sd">        Share of active business income eligible for PT rate schedule</span>
+<span class="sd">    PT_EligibleRate_passive: float</span>
+<span class="sd">        Share of passive business income eligible for PT rate schedule</span>
+<span class="sd">    PT_wages_active_income: bool</span>
+<span class="sd">        Wages included in (positive) active business eligible for PT rates</span>
+<span class="sd">    PT_top_stacking: bool</span>
+<span class="sd">        PT taxable income stacked on top of regular taxable income</span>
+<span class="sd">    CG_rt1: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (regular/non-AMT) rate 1</span>
+<span class="sd">    CG_rt2: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (regular/non-AMT) rate 2</span>
+<span class="sd">    CG_rt3: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (regular/non-AMT) rate 3</span>
+<span class="sd">    CG_rt4: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (regular/non-AMT) rate 4</span>
+<span class="sd">    CG_brk1: list</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 1</span>
+<span class="sd">    CG_brk2: list</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 2</span>
+<span class="sd">    CG_brk3: list</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (regular/non-AMT) tax bracket 3</span>
+<span class="sd">    dwks10: float</span>
+<span class="sd">        Sum of dwks6 + dwks9</span>
+<span class="sd">    dwks13: float</span>
+<span class="sd">        Difference of dwks10 - dwks12</span>
+<span class="sd">    dwks14: float</span>
+<span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
+<span class="sd">    dwks19: float</span>
+<span class="sd">        Maximum of dwks17 and dwks16</span>
+<span class="sd">    c05700: float</span>
+<span class="sd">        Lump sum distributions</span>
+<span class="sd">    taxbc: float</span>
+<span class="sd">        Regular tax on regular taxable income before credits</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dwks10: float</span>
+<span class="sd">        Sum of dwks6 + dwks9</span>
+<span class="sd">    dwks13: float</span>
+<span class="sd">        Difference of dwks10 - dwks12</span>
+<span class="sd">    dwks14: float</span>
+<span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
+<span class="sd">    dwks19: float</span>
+<span class="sd">        Maximum of dwks17 and dwks16</span>
+<span class="sd">    c05700: float</span>
+<span class="sd">        Lump sum distributions</span>
+<span class="sd">    taxbc: float</span>
+<span class="sd">        Regular tax on regular taxable income before credits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements</span>
     <span class="k">if</span> <span class="n">c01000</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">c23650</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">p23250</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e01100</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">or</span> <span class="n">e00650</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
@@ -1534,6 +2251,28 @@
 <span class="k">def</span> <span class="nf">AGIsurtax</span><span class="p">(</span><span class="n">c00100</span><span class="p">,</span> <span class="n">MARS</span><span class="p">,</span> <span class="n">AGI_surtax_trt</span><span class="p">,</span> <span class="n">AGI_surtax_thd</span><span class="p">,</span> <span class="n">taxbc</span><span class="p">,</span> <span class="n">surtax</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes surtax on AGI above some threshold.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    AGI_surtax_trt: float</span>
+<span class="sd">        New AGI surtax rate</span>
+<span class="sd">    AGI_surtax_thd: list</span>
+<span class="sd">        Threshold for the new AGI surtax</span>
+<span class="sd">    taxbc: float</span>
+<span class="sd">        Regular tax on regular taxable income before credits</span>
+<span class="sd">    surtax: float</span>
+<span class="sd">        Surtax on AGI above some threshold</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    taxbc: float</span>
+<span class="sd">        Regular tax on regular taxable income before credits</span>
+<span class="sd">    surtax: float</span>
+<span class="sd">        Surtax on AGI above some threshold</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">AGI_surtax_trt</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">hiAGItax</span> <span class="o">=</span> <span class="n">AGI_surtax_trt</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">c00100</span> <span class="o">-</span> <span class="n">AGI_surtax_thd</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="mf">0.</span><span class="p">)</span>
@@ -1559,6 +2298,104 @@
 <span class="sd">    c05800 is total (regular + AMT) income tax liability before credits.</span>
 
 <span class="sd">    Note that line-number variable names refer to 2015 Form 6251.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    e07300: float</span>
+<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">    dwks13: float</span>
+<span class="sd">        Difference of dwks10 - dwks12</span>
+<span class="sd">    standard: float</span>
+<span class="sd">        Standard deduction (zero for itemizers)</span>
+<span class="sd">    f6251: int</span>
+<span class="sd">        1 if Form 6251 (AMT) attached to return, otherwise 0</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    c18300: float</span>
+<span class="sd">        Schedule A: state and local taxes plus real estate taxes deducted</span>
+<span class="sd">    taxbc: float</span>
+<span class="sd">        Regular tax on regular taxable income before credits</span>
+<span class="sd">    c04470: float</span>
+<span class="sd">        Itemized deductions after phase-out (zero for non itemizers)</span>
+<span class="sd">    c17000: float</span>
+<span class="sd">        Schedule A: Medical expenses deducted</span>
+<span class="sd">    c20800: float</span>
+<span class="sd">        Schedule A: net limited miscellaneous deductions deducted</span>
+<span class="sd">    c21040: float</span>
+<span class="sd">        Itemized deductiosn that are phased out</span>
+<span class="sd">    e24515: float</span>
+<span class="sd">        Schedule D: Un-Recaptured Section 1250 Gain</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    sep: int</span>
+<span class="sd">        2 when MARS is 3 (married filing separately), otherwise 1</span>
+<span class="sd">    dwks19: float</span>
+<span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
+<span class="sd">    dwks14: float</span>
+<span class="sd">        Maximum of 0 and dwks1 - dwks13</span>
+<span class="sd">    c05700: float</span>
+<span class="sd">        Lump sum distributions</span>
+<span class="sd">    e62900: float</span>
+<span class="sd">        Alternative Minimum Tax foreign tax credit from Form 6251</span>
+<span class="sd">    e00700: float</span>
+<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">    dwks10: float</span>
+<span class="sd">        Sum of dwks6 + dwks9</span>
+<span class="sd">    age_head: int</span>
+<span class="sd">        Age in years of taxpayer (i.e. primary adult)</span>
+<span class="sd">    age_spouse: int</span>
+<span class="sd">        Age in years of spouse (i.e. secondary adult if present)</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    cmbtp: float</span>
+<span class="sd">        Estimate of income on (AMT) Form 6251 but not in AGI</span>
+<span class="sd">    AMT_child_em_c_age: float</span>
+<span class="sd">        Age ceiling for special AMT exemption</span>
+<span class="sd">    AMT_brk1: float</span>
+<span class="sd">        AMT bracket 1 (upper threshold)</span>
+<span class="sd">    AMT_em: list</span>
+<span class="sd">        AMT exemption amount</span>
+<span class="sd">    AMT_prt: float</span>
+<span class="sd">        AMT exemption phaseout rate</span>
+<span class="sd">    AMT_rt1: float</span>
+<span class="sd">        AMT rate 1</span>
+<span class="sd">    AMT_rt2: float</span>
+<span class="sd">        Additional AMT rate for AMT taxable income about AMT bracket 1</span>
+<span class="sd">    AMT_child_em: float</span>
+<span class="sd">        Child AMT exemption additional income base</span>
+<span class="sd">    AMT_em_ps: list</span>
+<span class="sd">        AMT exemption phaseout start</span>
+<span class="sd">    AMT_em_pe: float</span>
+<span class="sd">        AMT exemption phaseout ending AMT taxable income for Married Filing Separately</span>
+<span class="sd">    AMT_CG_brk1: list</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (AMT) tax bracket 1</span>
+<span class="sd">    AMT_CG_brk2: list</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (AMT) tax bracket 2</span>
+<span class="sd">    AMT_CG_brk3: list</span>
+<span class="sd">        Top of long-term capital gains and qualified dividends (AMT) tax bracket 3</span>
+<span class="sd">    AMT_CG_rt1: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (AMT) rate 1</span>
+<span class="sd">    AMT_CG_rt2: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (AMT) rate 2</span>
+<span class="sd">    AMT_CG_rt3: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (AMT) rate 3</span>
+<span class="sd">    AMT_CG_rt4: float</span>
+<span class="sd">        Long term capital gain and qualified dividends (AMT) rate 4</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">    c09600: float</span>
+<span class="sd">        Alternative Minimum Tax (AMT) liability</span>
+<span class="sd">    c62100: float</span>
+<span class="sd">        Alternative Minimum Tax (AMT)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c62100: float</span>
+<span class="sd">        Alternative Minimum Tax (AMT)</span>
+<span class="sd">    c09600: float</span>
+<span class="sd">        Alternative Minimum Tax (AMT) liability</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-statements,too-many-branches</span>
     <span class="c1"># Form 6251, Part I</span>
@@ -1642,6 +2479,36 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Net Investment Income Tax (NIIT) amount assuming that</span>
 <span class="sd">    all annuity income is excluded from net investment income.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e00300: float</span>
+<span class="sd">        Tax-exempt interest income</span>
+<span class="sd">    e00600: float</span>
+<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">        Schedule E total rental, royalty, parternship, S-corporation, etc, income/loss</span>
+<span class="sd">    e26270: float</span>
+<span class="sd">        Schedule E: combined partnership and S-corporation net income/loss</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">        Limitation on capital losses</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    NIIT_thd: list</span>
+<span class="sd">        Net Investment Income Tax modified AGI threshold</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    NIIT_PT_taxed: bool</span>
+<span class="sd">        Whether or not partnership and S-corp income is NIIT based</span>
+<span class="sd">    NIIT_rt: float</span>
+<span class="sd">        Net Investment Income Tax rate</span>
+<span class="sd">    niit: float</span>
+<span class="sd">        Net investment income tax from Form 8960</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    niit: float</span>
+<span class="sd">        Net investment income tax from Form 8960</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">modAGI</span> <span class="o">=</span> <span class="n">c00100</span>  <span class="c1"># no foreign earned income exclusion to add</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">NIIT_PT_taxed</span><span class="p">:</span>
@@ -1658,6 +2525,40 @@
           <span class="n">CDCC_prt</span><span class="p">,</span> <span class="n">CDCC_refundable</span><span class="p">,</span> <span class="n">c05800</span><span class="p">,</span> <span class="n">e07300</span><span class="p">,</span> <span class="n">c07180</span><span class="p">,</span> <span class="n">CDCC_refund</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates Form 2441 child and dependent care expense credit, c07180.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    earned_p: float</span>
+<span class="sd">        Earned income for taxpayer</span>
+<span class="sd">    earned_s: float</span>
+<span class="sd">        Earned income for spouse</span>
+<span class="sd">    f2441: int</span>
+<span class="sd">        Number of child/dependent care qualifying persons</span>
+<span class="sd">    CDCC_c: float</span>
+<span class="sd">        Maximum child/dependent care credit per dependent</span>
+<span class="sd">    e32800: float</span>
+<span class="sd">        Child/dependent care expenses for qualifying persons from Form 2441</span>
+<span class="sd">    exact: int</span>
+<span class="sd">        Whether or not to do rounding of phaseout fraction</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    CDCC_ps: float</span>
+<span class="sd">        Child/dependent care credit phaseout start</span>
+<span class="sd">    CDCC_crt: float</span>
+<span class="sd">        Child/dependent care credit phaseout percentage rate ceiling</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">    e07300: float</span>
+<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># credit for at most two cared-for individuals and for actual expenses</span>
     <span class="n">max_credit</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">f2441</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">CDCC_c</span>
@@ -1703,6 +2604,28 @@
 <span class="sd">    English parameter names are used in this function because the</span>
 <span class="sd">    EITC formula is not available on IRS forms or in IRS instructions;</span>
 <span class="sd">    the extensive IRS EITC look-up table does not reveal the formula.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    basic_frac: list</span>
+<span class="sd">        Fraction of maximum earned income credit paid at zero earnings</span>
+<span class="sd">    phasein_rate: list</span>
+<span class="sd">        Earned income credit phasein rate</span>
+<span class="sd">    earnings: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    max_amount: list</span>
+<span class="sd">        Maximum earned income credit</span>
+<span class="sd">    phaseout_start: list</span>
+<span class="sd">        Earned income credit phaseout start AGI</span>
+<span class="sd">    agi: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    phaseout_rate: list</span>
+<span class="sd">        Earned income credit phaseout rate</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    eitc: float</span>
+<span class="sd">        Earned Income Credit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="n">basic_frac</span> <span class="o">*</span> <span class="n">max_amount</span> <span class="o">+</span>
                 <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">basic_frac</span><span class="p">)</span> <span class="o">*</span> <span class="n">phasein_rate</span> <span class="o">*</span> <span class="n">earnings</span><span class="p">),</span> <span class="n">max_amount</span><span class="p">)</span>
@@ -1723,6 +2646,70 @@
          <span class="n">c59660</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes EITC amount, c59660.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    DSI: int</span>
+<span class="sd">        1 if claimed as dependent on another return, otherwise 0</span>
+<span class="sd">    EIC: int</span>
+<span class="sd">        Number of EIC qualifying children</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    e00300: float</span>
+<span class="sd">        Taxable interest income</span>
+<span class="sd">    e00400: float</span>
+<span class="sd">        Tax exempt interest income</span>
+<span class="sd">    e00600: float</span>
+<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">    c01000: float</span>
+<span class="sd">        Limitation on capital losses</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss</span>
+<span class="sd">    e26270: float</span>
+<span class="sd">        Schedule E combined partnership and S-corporation net income/loss</span>
+<span class="sd">    age_head: int</span>
+<span class="sd">        Age in years of taxpayer (primary adult)</span>
+<span class="sd">    age_spouse: int</span>
+<span class="sd">        Age in years of spouse (secondary adult, if present)</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    earned_p: float</span>
+<span class="sd">        Earned income for taxpayer</span>
+<span class="sd">    earned_s: float</span>
+<span class="sd">        Earned income for spouse</span>
+<span class="sd">    EITC_ps: list</span>
+<span class="sd">        Earned income credit phaseout start AGI</span>
+<span class="sd">    EITC_MinEligAge: int</span>
+<span class="sd">        Minimum age for childless EITC eligibility</span>
+<span class="sd">    EITC_MaxEligAge: int</span>
+<span class="sd">        Maximum age for childless EITC eligibility</span>
+<span class="sd">    EITC_ps_MarriedJ: list</span>
+<span class="sd">        Extra earned income credit phaseout start AGI for married filling jointly</span>
+<span class="sd">    EITC_rt: list</span>
+<span class="sd">        Earned income credit phasein rate</span>
+<span class="sd">    EITC_c: list</span>
+<span class="sd">        Maximum earned income credit</span>
+<span class="sd">    EITC_prt: list</span>
+<span class="sd">        Earned income credit phaseout rate</span>
+<span class="sd">    EITC_basic_frac: float</span>
+<span class="sd">        Fraction of maximum earned income credit paid at zero earnings</span>
+<span class="sd">    EITC_InvestIncome_c: float</span>
+<span class="sd">        Maximum investment income before EITC reduction</span>
+<span class="sd">    EITC_excess_InvestIncome_rt: float</span>
+<span class="sd">        Rate of EITC reduction when investemtn income exceeds ceiling</span>
+<span class="sd">    EITC_indiv: bool</span>
+<span class="sd">        EITC is computed for each spouse based in individual earnings</span>
+<span class="sd">    EITC_sep_filers_elig: bool</span>
+<span class="sd">        Separate filers are eligible for the EITC</span>
+<span class="sd">    c59660: float</span>
+<span class="sd">        EITC amount</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c59660: float</span>
+<span class="sd">        EITC amount</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># pylint: disable=too-many-branches</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
@@ -1788,6 +2775,32 @@
                                <span class="n">rptc_p</span><span class="p">,</span> <span class="n">rptc_s</span><span class="p">,</span> <span class="n">rptc</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes refundable payroll tax credit amounts.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    was_plus_sey_p: float</span>
+<span class="sd">        Wage and salary income plus taxable self employment income for taxpayer</span>
+<span class="sd">    was_plus_sey_s: float</span>
+<span class="sd">        Wage and salary income plus taxable self employment income for spouse</span>
+<span class="sd">    RPTC_c: float</span>
+<span class="sd">        Maximum refundable payroll tax credit</span>
+<span class="sd">    RPTC_rt: float</span>
+<span class="sd">        Refundable payroll tax credit phasein rate</span>
+<span class="sd">    rptc_p: float</span>
+<span class="sd">        Refundable Payroll Tax Credit for taxpayer</span>
+<span class="sd">    rptc_s: float</span>
+<span class="sd">        Refundable Payroll Tax Credit for spouse</span>
+<span class="sd">    rptc: float</span>
+<span class="sd">        Refundable Payroll Tax Credit for filing unit</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    rptc_p: float</span>
+<span class="sd">        Refundable Payroll Tax Credit for taxpayer</span>
+<span class="sd">    rptc_s: float</span>
+<span class="sd">        Refundable Payroll Tax Credit for spouse</span>
+<span class="sd">    rptc: float</span>
+<span class="sd">        Refundable Payroll Tax Credit for filing unit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rptc_p</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">was_plus_sey_p</span> <span class="o">*</span> <span class="n">RPTC_rt</span><span class="p">,</span> <span class="n">RPTC_c</span><span class="p">)</span>
     <span class="n">rptc_s</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">was_plus_sey_s</span> <span class="o">*</span> <span class="n">RPTC_rt</span><span class="p">,</span> <span class="n">RPTC_c</span><span class="p">)</span>
@@ -1811,6 +2824,68 @@
 <span class="sd">    Computes amounts on &quot;Child Tax Credit and Credit for Other Dependents</span>
 <span class="sd">    Worksheet&quot; in 2018 Publication 972, which pertain to these two</span>
 <span class="sd">    nonrefundable tax credits.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n24: int</span>
+<span class="sd">        Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    XTOT: int</span>
+<span class="sd">        Total number of exemptions for filing unit</span>
+<span class="sd">    num: int</span>
+<span class="sd">        2 when MARS is 2 (married filing jointly), otherwise 1</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">    e07260: float</span>
+<span class="sd">        Residential energy credit from Form 5695</span>
+<span class="sd">    CR_ResidentialEnergy_hc: float</span>
+<span class="sd">        Credit for residential energy haircut</span>
+<span class="sd">    e07300: float</span>
+<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">    CR_ForeignTax_hc: float</span>
+<span class="sd">        Credit for foreign tax credit</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    c07230: float</span>
+<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
+<span class="sd">    e07240: float</span>
+<span class="sd">        Retirement savings contributions credit from Form 8880</span>
+<span class="sd">    CR_RetirementSavings_hc: float</span>
+<span class="sd">        Credit for retirement savings haircut</span>
+<span class="sd">    c07200: float</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">    CTC_c: float</span>
+<span class="sd">        Maximum nonrefundable child tax credit per child</span>
+<span class="sd">    CTC_ps: list</span>
+<span class="sd">        Child tax credit phaseout MAGI start</span>
+<span class="sd">    CTC_prt: float</span>
+<span class="sd">        Child and dependent tax credit phaseout rate</span>
+<span class="sd">    exact: int</span>
+<span class="sd">        Whether or not to do rounding of phaseout fraction</span>
+<span class="sd">    ODC_c: float</span>
+<span class="sd">        Maximum nonrefundable other-dependent credit</span>
+<span class="sd">    CTC_c_under6_bonus: float</span>
+<span class="sd">        Bonus child tax credit maximum for qualifying children under six</span>
+<span class="sd">    nu06: int</span>
+<span class="sd">        Number of dependents under 6 years old</span>
+<span class="sd">    c07220: float</span>
+<span class="sd">        Child tax credit (adjusted) from Form 8812</span>
+<span class="sd">    odc: float</span>
+<span class="sd">        Other Dependent Credit</span>
+<span class="sd">    codtc_limited: float</span>
+<span class="sd">        Maximum of 0 and line 10 minus line 16</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c07220: float</span>
+<span class="sd">        Child tax credit (adjusted) from Form 8812</span>
+<span class="sd">    odc: float</span>
+<span class="sd">        Other Dependent Credit</span>
+<span class="sd">    codtc_limited: float</span>
+<span class="sd">        Maximum of 0 and line 10 minus line 16</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Worksheet Part 1</span>
     <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
@@ -1870,6 +2945,36 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes personal_refundable_credit and personal_nonrefundable_credit,</span>
 <span class="sd">    neither of which are part of current-law policy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    II_credit: list</span>
+<span class="sd">        Personal refundable credit maximum amount</span>
+<span class="sd">    II_credit_ps: list</span>
+<span class="sd">        Personal refundable credit phaseout start</span>
+<span class="sd">    II_credit_prt: float</span>
+<span class="sd">        Personal refundable credit phaseout rate</span>
+<span class="sd">    II_credit_nr: list</span>
+<span class="sd">        Personal nonrefundable credit maximum amount</span>
+<span class="sd">    II_credit_nr_ps: list</span>
+<span class="sd">        Personal nonrefundable credit phaseout start</span>
+<span class="sd">    II_credit_nr_prt: float</span>
+<span class="sd">        Personal nonrefundable credit phaseout rate</span>
+<span class="sd">    personal_refundable_credit: float</span>
+<span class="sd">        Personal refundable credit</span>
+<span class="sd">    personal_nonrefundable_credit: float</span>
+<span class="sd">        Personal nonrefundable credit</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    personal_refundable_credit: float</span>
+<span class="sd">        Personal refundable credit</span>
+<span class="sd">    personal_nonrefundable_credit: float</span>
+<span class="sd">        Personal nonrefundable credit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># calculate personal refundable credit amount with phase-out</span>
     <span class="n">personal_refundable_credit</span> <span class="o">=</span> <span class="n">II_credit</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
@@ -1904,40 +3009,39 @@
 <span class="sd">    amount, e87521, and then applies the 0.4 refundable rate.</span>
 <span class="sd">    Logic corresponds to Form 8863, Part I.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Tax Law Parameters that are not parameterized:</span>
-
-<span class="sd">        90000 : American Opportunity Credit phaseout income base</span>
-
-<span class="sd">        10000 : American Opportunity Credit phaseout income range length</span>
-
-<span class="sd">        1/1000 : American Opportunity Credit phaseout rate</span>
-
-<span class="sd">        0.4 : American Opportunity Credit refundable rate</span>
-
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">        exact : whether or not to do rounding of phaseout fraction</span>
-
-<span class="sd">        e87521 : total tentative American Opportunity Credit for all students,</span>
-<span class="sd">                 Form 8863, line 1</span>
-
-<span class="sd">        num : number of people filing jointly</span>
-
-<span class="sd">        c00100 : AGI</span>
-
-<span class="sd">        CR_AmOppRefundable_hc: haircut for the refundable portion of the</span>
-<span class="sd">                               American Opportunity Credit</span>
-
-<span class="sd">        CR_AmOppNonRefundable_hc: haircut for the nonrefundable portion of the</span>
-<span class="sd">                                  American Opportunity Credit</span>
+<span class="sd">    exact: int</span>
+<span class="sd">        Whether or not to do rounding of phaseout fraction</span>
+<span class="sd">    e87521: float</span>
+<span class="sd">        Total tentative AmOppCredit amount for all students.  From Form 8863, line 1.</span>
+<span class="sd">    num: int</span>
+<span class="sd">        2 when MARS is 2 (married filing jointly), otherwise 1</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    CR_AmOppRefundable_hc: float</span>
+<span class="sd">        Refundable portion of the American Opportunity Credit haircut</span>
+<span class="sd">    CR_AmOppNonRefundable_hc: float</span>
+<span class="sd">        Nonrefundable portion of the American Opportunity Credit haircut</span>
+<span class="sd">    c10960: float</span>
+<span class="sd">        American Opportunity Credit refundable amount from Form 8863</span>
+<span class="sd">    c87668: float</span>
+<span class="sd">        American Opportunity Credit non-refundable amount from Form 8863</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">        c10960 : Refundable part of American Opportunity Credit</span>
+<span class="sd">    c10960: float</span>
+<span class="sd">        American Opportunity Credit refundable amount from Form 8863</span>
+<span class="sd">    c87668: float</span>
+<span class="sd">        American Opportunity Credit non-refundable amount from Form 8863</span>
 
-<span class="sd">        c87668 : Tentative nonrefundable part of American Opportunity Credit</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Tax Law Paramters that are not parameterized:</span>
+<span class="sd">        90000: American Opportunity phaseout income base</span>
+<span class="sd">        10000: American Opportunity Credit phaseout income range length</span>
+<span class="sd">        1/1000: American Opportunity Credit phaseout rate</span>
+<span class="sd">        0.3: American Opportunity Credit refundable rate</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">e87521</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">c87658</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">90000.</span> <span class="o">*</span> <span class="n">num</span> <span class="o">-</span> <span class="n">c00100</span><span class="p">)</span>
@@ -1969,6 +3073,40 @@
 
 <span class="sd">    Note that the CR_SchR_hc policy parameter allows the user to eliminate</span>
 <span class="sd">    or reduce total Schedule R credits.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    age_head: int</span>
+<span class="sd">        Age in years of taxpayer (primary adult)</span>
+<span class="sd">    age_spouse: int</span>
+<span class="sd">        Age in years of spouse (secondary adult, if present)</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credit</span>
+<span class="sd">    e07300: float</span>
+<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    e02400: float</span>
+<span class="sd">        Total social security (OASDI) benefits</span>
+<span class="sd">    c02500: float</span>
+<span class="sd">        Social security (OASDI) benefits included in AGI</span>
+<span class="sd">    e01500: float</span>
+<span class="sd">        Total pensions and annuities</span>
+<span class="sd">    e01700: float</span>
+<span class="sd">        Taxable pensions and annuities</span>
+<span class="sd">    CR_SchR_hc: float</span>
+<span class="sd">        Schedule R credit haircut</span>
+<span class="sd">    c07200: float</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c07200: float</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">age_head</span> <span class="o">&gt;=</span> <span class="mi">65</span> <span class="ow">or</span> <span class="p">(</span><span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">age_spouse</span> <span class="o">&gt;=</span> <span class="mi">65</span><span class="p">):</span>
         <span class="c1"># calculate credit assuming nobody is disabled (so line12 = line10)</span>
@@ -2020,36 +3158,48 @@
 <span class="sd">    Computes Education Tax Credits (Form 8863) nonrefundable amount, c07230.</span>
 <span class="sd">    Logic corresponds to Form 8863, Part II.</span>
 
-<span class="sd">    Notes</span>
-<span class="sd">    -----</span>
-<span class="sd">    Tax Law Parameters that are not parameterized:</span>
-
-<span class="sd">        0.2 : Lifetime Learning Credit ratio against expense</span>
-
-<span class="sd">    Tax Law Parameters that are parameterized:</span>
-
-<span class="sd">        LLC_Expense_c : Lifetime Learning Credit expense limit</span>
-
-<span class="sd">        ETC_pe_Married : Education Tax Credit phaseout end for married</span>
-
-<span class="sd">        ETC_pe_Single : Education Tax Credit phaseout end for single</span>
-
-<span class="sd">    Taxpayer Charateristics:</span>
-
-<span class="sd">        exact : whether or not to do rounding of phaseout fraction</span>
-
-<span class="sd">        e87530 : Lifetime Learning Credit total qualified expenses,</span>
-<span class="sd">                 Form 8863, line 10</span>
-
-<span class="sd">        e07300 : Foreign tax credit - Form 1116</span>
-
-<span class="sd">        c07180 : Child/dependent care expense credit - Form 2441</span>
-
-<span class="sd">        c07200 : Schedule R credit</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    exact: int</span>
+<span class="sd">        Whether or not to do rounding of phaseout fraction</span>
+<span class="sd">    e87530: float</span>
+<span class="sd">        Adjusted qualified lifetime learning expenses for all students</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    num: int</span>
+<span class="sd">        2 when MARS is 2 (married filing jointly), otherwise 1</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">    e07300: float</span>
+<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    c07200: float</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">    c87668: float</span>
+<span class="sd">        American Opportunity Credit non-refundalbe amount from Form 8863</span>
+<span class="sd">    LLC_Expense_c: float</span>
+<span class="sd">        Lifetime learning credit expense limit</span>
+<span class="sd">    ETC_pe_Single: float</span>
+<span class="sd">        Education tax credit phaseout ends (single)</span>
+<span class="sd">    ETC_pe_Married: float</span>
+<span class="sd">        Education tax credit phaseout ends (married)</span>
+<span class="sd">    CR_Education_hc: float</span>
+<span class="sd">        Education Credits haircut</span>
+<span class="sd">    c07230: float</span>
+<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    c07230 : Education Tax Credits (Form 8863) nonrefundable amount</span>
+<span class="sd">    c07230: float</span>
+<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    Tax Law Parameters that are not parameterized:</span>
+<span class="sd">        0.2: Lifetime Learning Credit ratio against expense</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">c87560</span> <span class="o">=</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="nb">min</span><span class="p">(</span><span class="n">e87530</span><span class="p">,</span> <span class="n">LLC_Expense_c</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">MARS</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
@@ -2078,6 +3228,30 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes nonrefundable charity credit, charity_credit.</span>
 <span class="sd">    This credit is not part of current-law policy.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e19800: float</span>
+<span class="sd">        Itemizable charitable giving for cash and check contributions</span>
+<span class="sd">    e20100: float</span>
+<span class="sd">        Itemizable charitable giving other than cash and check contributions</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    CR_Charity_rt: float</span>
+<span class="sd">        Charity credit rate</span>
+<span class="sd">    CR_Charity_f: list</span>
+<span class="sd">        Charity credit floor</span>
+<span class="sd">    CR_Charity_frt: float</span>
+<span class="sd">        Charity credit floor rate</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    charity_credit: float</span>
+<span class="sd">        Credit for charitable giving</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    charity_credit: float</span>
+<span class="sd">        Credit for charitable giving</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">total_charity</span> <span class="o">=</span> <span class="n">e19800</span> <span class="o">+</span> <span class="n">e20100</span>
     <span class="n">floor</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">CR_Charity_frt</span> <span class="o">*</span> <span class="n">c00100</span><span class="p">,</span> <span class="n">CR_Charity_f</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
@@ -2101,13 +3275,88 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    CTC_refundable: Whether the CTC is a refundable tax credit</span>
-<span class="sd">    CR_RetirementSavings_hc: Retirement savings credit haircut</span>
-<span class="sd">    CR_ForeignTax_hc: Foreign tax credit haircut</span>
-<span class="sd">    CR_ResidentialEnergy_hc: Residential energy credit haircut</span>
-<span class="sd">    CR_GeneralBusiness_hc: General business credit haircut</span>
-<span class="sd">    CR_MinimumTax_hc: Minimum tax credit haircut</span>
-<span class="sd">    CR_OtherCredits_hc: Other credits haircut</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">    e07240: float</span>
+<span class="sd">        Retirement savings contributions credit from Form 8880</span>
+<span class="sd">    e07260: float</span>
+<span class="sd">        Residential energy credit from Form 5695</span>
+<span class="sd">    e07300: float</span>
+<span class="sd">        Foreign tax credit from Form 1116</span>
+<span class="sd">    e07400: float</span>
+<span class="sd">        General business credit from Form 3800</span>
+<span class="sd">    e07600: float</span>
+<span class="sd">        Prior year minimum tax credit from Form 8801</span>
+<span class="sd">    p08000: float</span>
+<span class="sd">        Other tax credits</span>
+<span class="sd">    odc: float</span>
+<span class="sd">        Other Dependent Credit</span>
+<span class="sd">    personal_nonrefundable_credit: float</span>
+<span class="sd">        Personal nonrefundable credit</span>
+<span class="sd">    CTC_refundable: bool</span>
+<span class="sd">        Whether the child tax credit is fully refundable</span>
+<span class="sd">    CR_RetirementSavings_hc: float</span>
+<span class="sd">        Credit for retirement savings haircut</span>
+<span class="sd">    CR_ForeignTax_hc: float</span>
+<span class="sd">        Credit for foreign tax credit</span>
+<span class="sd">    CR_ResidentialEnergy_hc: float</span>
+<span class="sd">        Credit for residential energy haircut</span>
+<span class="sd">    CR_GeneralBusiness_hc: float</span>
+<span class="sd">        Credit for general business haircut</span>
+<span class="sd">    CR_MinimumTax_hc: float</span>
+<span class="sd">        Credit for previous year minimum tax credit haircut</span>
+<span class="sd">    CR_OtherCredits_hc: float</span>
+<span class="sd">        Other Credit haircut</span>
+<span class="sd">    charity_credit: float</span>
+<span class="sd">        Credit for charitable giving</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    c07200: float</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">    c07220: float</span>
+<span class="sd">        Child tax credit (adjusted) from From 8812</span>
+<span class="sd">    c07230: float</span>
+<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
+<span class="sd">    c07240: float</span>
+<span class="sd">        Retirement savings credit - Form 8880</span>
+<span class="sd">    c07260: float</span>
+<span class="sd">        Residential energy credit - Form 5695</span>
+<span class="sd">    c07300: float</span>
+<span class="sd">        Foreign tax credit - Form 1116</span>
+<span class="sd">    c07400: float</span>
+<span class="sd">        General business credit - Form 3800</span>
+<span class="sd">    c07600: float</span>
+<span class="sd">        Prior year minimum tax credit - Form 8801</span>
+<span class="sd">    c08000: float</span>
+<span class="sd">        Other credits</span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    c07200: float</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">    c07220: float</span>
+<span class="sd">        Child tax credit (adjusted) from From 8812</span>
+<span class="sd">    c07230: float</span>
+<span class="sd">        Education tax credits non-refundable amount from Form 8863</span>
+<span class="sd">    c07240: float</span>
+<span class="sd">        Retirement savings credit - Form 8880</span>
+<span class="sd">    odc: float</span>
+<span class="sd">        Other Dependent Credit</span>
+<span class="sd">    c07260: float</span>
+<span class="sd">        Residential energy credit - Form 5695</span>
+<span class="sd">    c07300: float</span>
+<span class="sd">        Foreign tax credit - Form 1116</span>
+<span class="sd">    c07400: float</span>
+<span class="sd">        General business credit - Form 3800</span>
+<span class="sd">    c07600: float</span>
+<span class="sd">        Prior year minimum tax credit - Form 8801</span>
+<span class="sd">    c08000: float</span>
+<span class="sd">        Other credits</span>
+<span class="sd">    charity_credit: float</span>
+<span class="sd">        Credit for charitable giving</span>
+<span class="sd">    personal_nonrefundable_credit: float</span>
+<span class="sd">        Personal nonrefundable credit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># limit tax credits to tax liability in order they are on 2015 1040 form</span>
     <span class="n">avail</span> <span class="o">=</span> <span class="n">c05800</span>
@@ -2164,10 +3413,48 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates refundable Additional Child Tax Credit (ACTC), c11070,</span>
 <span class="sd">    following 2018 Form 8812 logic.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    codtc_limited: float</span>
+<span class="sd">        Maximum of 0 and line 10 minus line 16</span>
+<span class="sd">    ACTC_c: float</span>
+<span class="sd">        Maximum refundable additional child tax credit</span>
+<span class="sd">    n24: int</span>
+<span class="sd">        Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17</span>
+<span class="sd">    earned: float</span>
+<span class="sd">        Earned income for filing unit</span>
+<span class="sd">    ACTC_Income_thd: float</span>
+<span class="sd">        Additional Child Tax Credit income threshold</span>
+<span class="sd">    ACTC_rt: float</span>
+<span class="sd">        Additional Child Tax Credit rate</span>
+<span class="sd">    nu06: int</span>
+<span class="sd">        Number of dependents under 6 years old</span>
+<span class="sd">    ACTC_rt_bonus_under6family: float</span>
+<span class="sd">        Bonus additional child tax credit rate for families with qualifying children under 6</span>
+<span class="sd">    ACTC_ChildNum: float</span>
+<span class="sd">        Additional Child Tax Credit minimum number of qualified children for different formula</span>
+<span class="sd">    ptax_was: float</span>
+<span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
+<span class="sd">    c03260: float</span>
+<span class="sd">        Self-employment tax deduction (after haircut)</span>
+<span class="sd">    e09800: float</span>
+<span class="sd">        Unreported payroll taxes from Form 4137 or 8919</span>
+<span class="sd">    c59660: float</span>
+<span class="sd">        EITC amount</span>
+<span class="sd">    e11200: float</span>
+<span class="sd">        Excess payroll (FICA/RRTA) tax withheld</span>
+<span class="sd">    c11070: float</span>
+<span class="sd">        Child tax credit (refunded) from Form 8812</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c11070: float</span>
+<span class="sd">        Child tax credit (refunded) from Form 8812</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Part I</span>
     <span class="n">line3</span> <span class="o">=</span> <span class="n">codtc_limited</span>
-    
+
     <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
         <span class="n">line4</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">else</span><span class="p">:</span>
@@ -2211,6 +3498,60 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes total used nonrefundable credits, c07100, othertaxes, and</span>
 <span class="sd">    income tax before refundable credits, c09200.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c05800: float</span>
+<span class="sd">        Total (regular + AMT) income tax liability before credits</span>
+<span class="sd">    c07180: float</span>
+<span class="sd">        Credit for child and dependent care expenses from Form 2441</span>
+<span class="sd">    c07200: float</span>
+<span class="sd">        Schedule R credit for the elderly and the disabled</span>
+<span class="sd">    c07220: float</span>
+<span class="sd">        Child tax credit (adjusted) from Form 8812</span>
+<span class="sd">    c07230: float</span>
+<span class="sd">        Education tax credit non-refundable amount from Form 8863</span>
+<span class="sd">    c07240: float</span>
+<span class="sd">        Retirement savings credit - Form 8880</span>
+<span class="sd">    c07260: float</span>
+<span class="sd">        Residential energy credit - Form 5695</span>
+<span class="sd">    c07300: float</span>
+<span class="sd">        Foreign tax credit - Form 1116</span>
+<span class="sd">    c07400: float</span>
+<span class="sd">        General business credit - Form 3800</span>
+<span class="sd">    c07600: float</span>
+<span class="sd">        Prior year minimum tax credit - Form 8801</span>
+<span class="sd">    c08000: float</span>
+<span class="sd">        Other credits</span>
+<span class="sd">    e09700: float</span>
+<span class="sd">        Recapture of Investment Credit</span>
+<span class="sd">    e09800: float</span>
+<span class="sd">        Unreported payroll taxes from Form 4137 or 8919</span>
+<span class="sd">    e09900: float</span>
+<span class="sd">        Penalty tax on qualified retirement plans</span>
+<span class="sd">    niit: float</span>
+<span class="sd">        Net Investment Income Tax from Form 8960</span>
+<span class="sd">    othertaxes: float</span>
+<span class="sd">        Sum of niit, e09700, e09800, and e09900</span>
+<span class="sd">    c07100: float</span>
+<span class="sd">        Total non-refundable credits used to reduce positive tax liability</span>
+<span class="sd">    c09200: float</span>
+<span class="sd">        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied</span>
+<span class="sd">    odc: float</span>
+<span class="sd">        Other Dependent Credit</span>
+<span class="sd">    charity_credit: float</span>
+<span class="sd">        Credit for charitable giving</span>
+<span class="sd">    personal_nonrefundable_credit: float</span>
+<span class="sd">        Personal nonrefundable credit</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    c07100: float</span>
+<span class="sd">        Total non-refundable credits used to reduce positive tax liability</span>
+<span class="sd">    othertaxes: float</span>
+<span class="sd">        Sum of niit, e09700, e09800, and e09900</span>
+<span class="sd">    c09200: float</span>
+<span class="sd">        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># total used nonrefundable credits (as computed in NonrefundableCredits)</span>
     <span class="n">c07100</span> <span class="o">=</span> <span class="p">(</span><span class="n">c07180</span> <span class="o">+</span> <span class="n">c07200</span> <span class="o">+</span> <span class="n">c07600</span> <span class="o">+</span> <span class="n">c07300</span> <span class="o">+</span> <span class="n">c07400</span> <span class="o">+</span>
@@ -2234,6 +3575,49 @@
             <span class="n">c09200</span><span class="p">,</span> <span class="n">ctc_new</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes new refundable child tax credit using specified parameters.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    CTC_new_c: float</span>
+<span class="sd">        New refundable child tax credit maximum amount per child</span>
+<span class="sd">    CTC_new_rt: float</span>
+<span class="sd">        New refundalbe child tax credit amount phasein rate</span>
+<span class="sd">    CTC_new_c_under6_bonus: float</span>
+<span class="sd">        Bonus new refundable child tax credit maximum for qualifying children under six</span>
+<span class="sd">    CTC_new_ps: list</span>
+<span class="sd">        New refundable child tax credit phaseout starting AGI</span>
+<span class="sd">    CTC_new_prt: float</span>
+<span class="sd">        New refundable child tax credit amount phaseout rate</span>
+<span class="sd">    CTC_new_for_all: bool</span>
+<span class="sd">        Whether or not maximum amount of the new refundable child tax credit is available to all</span>
+<span class="sd">    CTC_new_refund_limited: bool</span>
+<span class="sd">        New child tax credit refund limited to a decimal fraction of payroll taxes</span>
+<span class="sd">    CTC_new_refund_limit_payroll_rt: float</span>
+<span class="sd">        New child tax credit refund limit rate (decimal fraction of payroll taxes)</span>
+<span class="sd">    CTC_new_refund_limited_all_payroll: bool</span>
+<span class="sd">        New child tax credit refund limit applies to all FICA taxes, not just OASDI</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        Total (employee + employer) payroll tax liability</span>
+<span class="sd">    n24: int</span>
+<span class="sd">        Number of children who are Child-Tax-Credit eligible, one condition for which is being under age 17</span>
+<span class="sd">    nu06: int</span>
+<span class="sd">        Number of dependents under 6 years old</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    ptax_oasdi: float</span>
+<span class="sd">        Employee and employer OASDI FICA tax plus self employment tax</span>
+<span class="sd">        Excludes HI FICA so positive ptax_oasdi is less than ptax_was + setax</span>
+<span class="sd">    c09200: float</span>
+<span class="sd">        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied</span>
+<span class="sd">    ctc_new: float</span>
+<span class="sd">        New refundable child tax credit</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    ctc_new: float</span>
+<span class="sd">        New refundable child tax credit</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">CTC_include17</span><span class="p">:</span>
         <span class="n">childnum</span> <span class="o">=</span> <span class="n">n24</span> <span class="o">+</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">XTOT</span> <span class="o">-</span> <span class="n">n21</span> <span class="o">-</span> <span class="n">n1820</span> <span class="o">-</span> <span class="n">n24</span> <span class="o">-</span> <span class="n">num</span><span class="p">)</span>
@@ -2268,6 +3652,44 @@
           <span class="n">eitc</span><span class="p">,</span> <span class="n">c07220</span><span class="p">,</span> <span class="n">CTC_refundable</span><span class="p">,</span> <span class="n">refund</span><span class="p">,</span> <span class="n">iitax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes final taxes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c59660: float</span>
+<span class="sd">        EITC amount</span>
+<span class="sd">    c11070: float</span>
+<span class="sd">        Child tax credit (refunded) from Form 8812</span>
+<span class="sd">    c10960: float</span>
+<span class="sd">        American Opportunity Credit refundable amount from Form 8863</span>
+<span class="sd">    personal_refundable_credit: float</span>
+<span class="sd">        Personal refundable credit</span>
+<span class="sd">    ctc_new: float</span>
+<span class="sd">        New refundable child tax credit</span>
+<span class="sd">    rptc: float</span>
+<span class="sd">        Refundable Payroll Tax Credit for filing unit</span>
+<span class="sd">    c09200: float</span>
+<span class="sd">        Income tax liabilities (including othertaxes) after non-refundable credits are used, but before refundable credits are applied</span>
+<span class="sd">    payrolltax: float</span>
+<span class="sd">        Total (employee + employer) payroll tax liability</span>
+<span class="sd">    eitc: float</span>
+<span class="sd">        Earned Income Credit</span>
+<span class="sd">    refund: float</span>
+<span class="sd">        Total refundable income tax credits</span>
+<span class="sd">    iitax: float</span>
+<span class="sd">        Total federal individual income tax liability</span>
+<span class="sd">    combined: float</span>
+<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    eitc: float</span>
+<span class="sd">        Earned Income Credit</span>
+<span class="sd">    refund: float</span>
+<span class="sd">        Total refundable income tax credits</span>
+<span class="sd">    iitax: float</span>
+<span class="sd">        Total federal individual income tax liability</span>
+<span class="sd">    combined: float</span>
+<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">eitc</span> <span class="o">=</span> <span class="n">c59660</span>
     <span class="k">if</span> <span class="n">CTC_refundable</span><span class="p">:</span>
@@ -2289,6 +3711,49 @@
 <span class="sd">    Taxes function returns tax amount given the progressive tax rate</span>
 <span class="sd">    schedule specified by the rate* and (upper) tbrk* parameters and</span>
 <span class="sd">    given income, filing status (MARS), and tax bracket base (tbrk_base).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    income: float</span>
+<span class="sd">        Taxable income</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    tbrk_base: float</span>
+<span class="sd">        Amount of income used to determine the braket the filer is in</span>
+<span class="sd">    rate1: list</span>
+<span class="sd">        Income tax rate 1</span>
+<span class="sd">    rate2: list</span>
+<span class="sd">        Income tax rate 2</span>
+<span class="sd">    rate3: list</span>
+<span class="sd">        Income tax rate 3</span>
+<span class="sd">    rate4: list</span>
+<span class="sd">        Income tax rate 4</span>
+<span class="sd">    rate5: list</span>
+<span class="sd">        Income tax rate 5</span>
+<span class="sd">    rate6: list</span>
+<span class="sd">        Income tax rate 6</span>
+<span class="sd">    rate7: list</span>
+<span class="sd">        Income tax rate 7</span>
+<span class="sd">    rate8: list</span>
+<span class="sd">        Income tax rate 8</span>
+<span class="sd">    tbrk1: list</span>
+<span class="sd">        Income tax bracket (upper threshold) 1</span>
+<span class="sd">    tbrk2: list</span>
+<span class="sd">        Income tax bracket (upper threshold) 2</span>
+<span class="sd">    tbrk3: list</span>
+<span class="sd">        Income tax bracket (upper threshold) 3</span>
+<span class="sd">    tbrk4: list</span>
+<span class="sd">        Income tax bracket (upper threshold) 4</span>
+<span class="sd">    tbrk5: list</span>
+<span class="sd">        Income tax bracket (upper threshold) 5</span>
+<span class="sd">    tbrk6: list</span>
+<span class="sd">        Income tax bracket (upper threshold) 6</span>
+<span class="sd">    tbrk7: list</span>
+<span class="sd">        Income tax bracket (upper threshold) 7</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">tbrk_base</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
         <span class="n">brk1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tbrk1</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">tbrk_base</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
@@ -2319,6 +3784,18 @@
 <div class="viewcode-block" id="ComputeBenefit"><a class="viewcode-back" href="../../api/calcfunctions.html#taxcalc.calcfunctions.ComputeBenefit">[docs]</a><span class="k">def</span> <span class="nf">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span> <span class="n">ID_switch</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates the value of the benefits accrued from itemizing.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calc: Calculator object</span>
+<span class="sd">        calc represents the reform while self represents the baseline</span>
+<span class="sd">    ID_switch: list</span>
+<span class="sd">        Deductions subject to the surtax on itemized deduction benefits</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    benefit: float</span>
+<span class="sd">        Imputed benefits from itemizing deductions</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># compute income tax liability with no itemized deductions allowed for</span>
     <span class="c1"># the types of itemized deductions covered under the BenefitSurtax</span>
@@ -2347,6 +3824,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes itemized-deduction-benefit surtax and adds the surtax amount</span>
 <span class="sd">    to income tax, combined tax, and surtax liabilities.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calc: Calculator object</span>
+<span class="sd">        calc represents the reform while self represents the baseline</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None:</span>
+<span class="sd">        The function modifies calc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitSurtax_crt&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
         <span class="n">ben</span> <span class="o">=</span> <span class="n">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span>
@@ -2368,6 +3855,16 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Limits the benefits of select itemized deductions to a fraction of</span>
 <span class="sd">    deductible expenses.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    calc: Calculator object</span>
+<span class="sd">        calc represents the reform while self represents the baseline</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None:</span>
+<span class="sd">        The function modifies calc</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">calc</span><span class="o">.</span><span class="n">policy_param</span><span class="p">(</span><span class="s1">&#39;ID_BenefitCap_rt&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">1.</span><span class="p">:</span>
         <span class="n">benefit</span> <span class="o">=</span> <span class="n">ComputeBenefit</span><span class="p">(</span><span class="n">calc</span><span class="p">,</span>
@@ -2408,29 +3905,43 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes Fair Share Tax, or &quot;Buffet Rule&quot;, types of reforms.</span>
 
-<span class="sd">    Taxpayer Characteristics</span>
-<span class="sd">    ------------------------</span>
-
-<span class="sd">    c00100 : AGI</span>
-
-<span class="sd">    MARS : filing (marital) status</span>
-
-<span class="sd">    ptax_was : payroll tax on wages and salaries</span>
-
-<span class="sd">    setax : self-employment tax</span>
-
-<span class="sd">    ptax_amc : Additional Medicare Tax on high earnings</span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    c00100: float</span>
+<span class="sd">        Adjusted Gross Income (AGI)</span>
+<span class="sd">    MARS: int</span>
+<span class="sd">        Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))</span>
+<span class="sd">    ptax_was: float</span>
+<span class="sd">        Employee and employer OASDI plus HI FICA tax</span>
+<span class="sd">    setax: float</span>
+<span class="sd">        Self-employment tax</span>
+<span class="sd">    ptax_amc: float</span>
+<span class="sd">        Additional Medicare Tax</span>
+<span class="sd">    FST_AGI_trt: float</span>
+<span class="sd">        New minimum tax; rate as a decimal fraction of AGI</span>
+<span class="sd">    FST_AGI_thd_lo: list</span>
+<span class="sd">        Minimum AGI needed to be subject to the new minimum tax</span>
+<span class="sd">    FST_AGI_thd_hi: list</span>
+<span class="sd">        AGI level at which the New Minimum Tax is fully phased in</span>
+<span class="sd">    fstax: float</span>
+<span class="sd">        Fair Share Tax amount</span>
+<span class="sd">    iitax: float</span>
+<span class="sd">        Total federal individual income tax liability</span>
+<span class="sd">    combined: float</span>
+<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+<span class="sd">    surtax: float</span>
+<span class="sd">        Individual income tax subtotal augmented by fstax</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-
-<span class="sd">    fstax : Fair Share Tax amount</span>
-
-<span class="sd">    iitax : individual income tax augmented by fstax</span>
-
-<span class="sd">    combined : individual income tax plus payroll taxes augmented by fstax</span>
-
-<span class="sd">    surtax : individual income tax subtotal augmented by fstax</span>
+<span class="sd">    fstax: float</span>
+<span class="sd">        Fair Share Tax amount</span>
+<span class="sd">    iitax: float</span>
+<span class="sd">        Total federal individual income tax liability</span>
+<span class="sd">    combined: float</span>
+<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+<span class="sd">    surtax: float</span>
+<span class="sd">        Individual income tax subtotal augmented by fstax</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">FST_AGI_trt</span> <span class="o">&gt;</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">c00100</span> <span class="o">&gt;=</span> <span class="n">FST_AGI_thd_lo</span><span class="p">[</span><span class="n">MARS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
         <span class="n">employee_share</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">ptax_was</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">setax</span> <span class="o">+</span> <span class="n">ptax_amc</span>
@@ -2452,6 +3963,28 @@
                <span class="n">lumpsum_tax</span><span class="p">,</span> <span class="n">combined</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes lump-sum tax and add it to combined taxes.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    DSI: int</span>
+<span class="sd">        1 if claimed as dependent on another return, otherwise 0</span>
+<span class="sd">    num: int</span>
+<span class="sd">        2 when MARS is 2 (married filing jointly); otherwise 1</span>
+<span class="sd">    XTOT: int</span>
+<span class="sd">        Total number of exemptions for filing unit</span>
+<span class="sd">    LST: float</span>
+<span class="sd">        Dollar amount of lump-sum tax</span>
+<span class="sd">    lumpsum_tax: float</span>
+<span class="sd">        Lumpsum (or head) tax</span>
+<span class="sd">    combined: float</span>
+<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    lumpsum_tax: float</span>
+<span class="sd">        Lumpsum (or head) tax</span>
+<span class="sd">    combined: float</span>
+<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">LST</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">or</span> <span class="n">DSI</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">lumpsum_tax</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -2468,6 +4001,56 @@
                  <span class="n">benefit_value_total</span><span class="p">,</span> <span class="n">expanded_income</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Calculates expanded_income from component income types.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    e00200: float</span>
+<span class="sd">        Wages, salaries, and tips for filing unit net of pension contributions</span>
+<span class="sd">    pencon_p: float</span>
+<span class="sd">        Contributions to defined-contribution pension plans for taxpayer</span>
+<span class="sd">    pencon_s: float</span>
+<span class="sd">        Contributions to defined-contribution pension plans for spouse</span>
+<span class="sd">    e00300: float</span>
+<span class="sd">        Taxable interest income</span>
+<span class="sd">    e00400: float</span>
+<span class="sd">        Tax-exempt interest income</span>
+<span class="sd">    e00600: float</span>
+<span class="sd">        Ordinary dividends included in AGI</span>
+<span class="sd">    e00700: float</span>
+<span class="sd">        Taxable refunds of state and local income taxes</span>
+<span class="sd">    e00800: float</span>
+<span class="sd">        Alimony received</span>
+<span class="sd">    e00900: float</span>
+<span class="sd">        Schedule C business net profit/loss for filing unit</span>
+<span class="sd">    e01100: float</span>
+<span class="sd">        Capital gain distributions not reported on Schedule D</span>
+<span class="sd">    e01200: float</span>
+<span class="sd">        Other net gain/loss from Form 4797</span>
+<span class="sd">    e01400: float</span>
+<span class="sd">        Taxable IRA distributions</span>
+<span class="sd">    e01500: float</span>
+<span class="sd">        Total pensions and annuities</span>
+<span class="sd">    e02000: float</span>
+<span class="sd">        Schedule E total rental, royalty, partnership, S-corporation, etc, income/loss</span>
+<span class="sd">    e02100: float</span>
+<span class="sd">        Farm net income/loss for filing unit from Schedule F</span>
+<span class="sd">    p22250: float</span>
+<span class="sd">        Schedule D net short term capital gains/losses</span>
+<span class="sd">    p23250:float</span>
+<span class="sd">        Schedule D net long term capital gains/losses</span>
+<span class="sd">    cmbtp: float</span>
+<span class="sd">        Estimate of inome on (AMT) Form 6251 but not in AGI</span>
+<span class="sd">    ptax_was: float</span>
+<span class="sd">        Employee and employer OASDI and HI FICA tax</span>
+<span class="sd">    benefit_value_total: float</span>
+<span class="sd">        Consumption value of all benefits received by tax unit, which is included in expanded income</span>
+<span class="sd">    expanded_income: float</span>
+<span class="sd">        Broad income measure that includes benefit_value_total</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    expanded_income: float</span>
+<span class="sd">        Broad income measure that includes benefit_value_total</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">expanded_income</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">e00200</span> <span class="o">+</span>  <span class="c1"># wage and salary income net of DC pension contributions</span>
@@ -2503,12 +4086,17 @@
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
-<span class="sd">    combined: combined tax liability</span>
-<span class="sd">    expanded_income: expanded income</span>
+<span class="sd">    combined: float</span>
+<span class="sd">        Sum of iitax and payrolltax and lumpsum_tax</span>
+<span class="sd">    expanded_income: float</span>
+<span class="sd">        Broad income measure that includes benefit_value_total</span>
+<span class="sd">    aftertax_income: float</span>
+<span class="sd">        After tax income is equal to expanded_income minus combined</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
-<span class="sd">    aftertax_income: expanded_income minus combined</span>
+<span class="sd">    aftertax_income: float</span>
+<span class="sd">        After tax income is equal to expanded_income minus combined</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">aftertax_income</span> <span class="o">=</span> <span class="n">expanded_income</span> <span class="o">-</span> <span class="n">combined</span>
     <span class="k">return</span> <span class="n">aftertax_income</span>
