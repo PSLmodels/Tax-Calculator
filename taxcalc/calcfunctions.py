@@ -843,7 +843,7 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     qualified business income deduction, qbided.
     """
     # calculate UI excluded from taxable income
-    if c00100 <= UI_thd[MARS - 1]:
+    if (c00100 - e02300) <= UI_thd[MARS - 1]:
         ui_excluded = min(e02300, UI_em)
     else:
         ui_excluded = 0.
