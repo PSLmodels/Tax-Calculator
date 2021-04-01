@@ -1420,11 +1420,29 @@ class Calculator():
                          'PT_top_stacking'])
         df['c05200'] = SchXYZTax(df.c04800, df.MARS, df.e00900, df.e26270, df.e02000, df.e00200, *pl.values())
         
-        # GainsTax(self.__policy, self.__records)
+
+
+
+        df_args = [df.e00650, df.c01000, df.c23650, df.p23250, df.e01100, df.e58990, df.e00200,
+                   df.e24515, df.e24518, df.MARS, df.c04800, df.c05200, df.e00900, df.e26270, df.e02000]
+        pl = get_params(['II_rt1', 'II_rt2', 'II_rt3', 'II_rt4', 'II_rt5', 'II_rt6', 'II_rt7', 'II_rt8',
+                         'II_brk1', 'II_brk2', 'II_brk3', 'II_brk4', 'II_brk5', 'II_brk6', 'II_brk7',
+                         'PT_rt1', 'PT_rt2', 'PT_rt3', 'PT_rt4', 'PT_rt5', 'PT_rt6', 'PT_rt7', 'PT_rt8',
+                         'PT_brk1', 'PT_brk2', 'PT_brk3', 'PT_brk4', 'PT_brk5', 'PT_brk6', 'PT_brk7',
+                         'CG_nodiff', 'PT_EligibleRate_active', 'PT_EligibleRate_passive',
+                         'PT_wages_active_income', 'PT_top_stacking',
+                         'CG_rt1', 'CG_rt2', 'CG_rt3', 'CG_rt4', 'CG_brk1', 'CG_brk2', 'CG_brk3'])
+        return_gt = GainsTax(*df_args, *pl.values())
+        for out_arg, col in zip(['dwks10', 'dwks13', 'dwks14', 'dwks19', 'c05700', 'taxbc'], return_gt):
+            df[out_arg] = col
+
+
 
 
         pl = get_params(['AGI_surtax_trt', 'AGI_surtax_thd'])
         df['taxbc'], df['surtax'] = AGIsurtax(df.c00100, df.MARS, df.taxbc, df.surtax, *pl.values())
+
+
 
 
         pl = get_params(['NIIT_thd', 'NIIT_PT_taxed', 'NIIT_rt'])
@@ -1432,22 +1450,22 @@ class Calculator():
                  df.c00100, df.MARS, df.niit, *pl.values())
 
 
-        # df_args = [df.e07300, df.dwks13, df.standard, df.f6251, df.c00100, df.c18300, df.taxbc,
-        #            df.c04470, df.c17000, df.c20800, df.c21040, df.e24515, df.MARS, df.sep, df.dwks19,
-        #            df.dwks14, df.c05700, df.e62900, df.e00700, df.dwks10, df.age_head, df.age_spouse,
-        #            df.earned, df.cmbtp]
-        # pl = get_params(['AMT_child_em_c_age', 'AMT_brk1',
-        #                  'AMT_em', 'AMT_prt', 'AMT_rt1', 'AMT_rt2',
-        #                  'AMT_child_em', 'AMT_em_ps', 'AMT_em_pe',
-        #                  'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3', 'AMT_CG_rt1', 'AMT_CG_rt2',
-        #                  'AMT_CG_rt3', 'AMT_CG_rt4'])
-        # for p in ['AMT_em', 'AMT_em_ps', 'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3']:
-        #     pl[p] = pl[p][df.MARS-1]
-        # return_amt = AMT(*df_args, *pl.values())
-        # for out_arg, col in zip(['c62100', 'c09600', 'c05800'], return_amt):
-        #     df[out_arg] = col
+        df_args = [df.e07300, df.dwks13, df.standard, df.f6251, df.c00100, df.c18300, df.taxbc,
+                   df.c04470, df.c17000, df.c20800, df.c21040, df.e24515, df.MARS, df.sep, df.dwks19,
+                   df.dwks14, df.c05700, df.e62900, df.e00700, df.dwks10, df.age_head, df.age_spouse,
+                   df.earned, df.cmbtp]
+        pl = get_params(['AMT_child_em_c_age', 'AMT_brk1',
+                         'AMT_em', 'AMT_prt', 'AMT_rt1', 'AMT_rt2',
+                         'AMT_child_em', 'AMT_em_ps', 'AMT_em_pe',
+                         'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3', 'AMT_CG_rt1', 'AMT_CG_rt2',
+                         'AMT_CG_rt3', 'AMT_CG_rt4'])
+        for p in ['AMT_em', 'AMT_em_ps', 'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3']:
+            pl[p] = pl[p][df.MARS-1]
+        return_amt = AMT(*df_args, *pl.values())
+        for out_arg, col in zip(['c62100', 'c09600', 'c05800'], return_amt):
+            df[out_arg] = col
 
-        AMT(self.__policy, self.__records) # cannot use np.vectorize with this
+        # AMT(self.__policy, self.__records)
 
     def _calc_one_year(self, zero_out_calc_vars=False):
 

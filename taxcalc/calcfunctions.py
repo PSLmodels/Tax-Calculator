@@ -203,7 +203,7 @@ def DependentCare(nu13, elderly_dependents, earned,
     return care_deduction
 
 
-# @iterate_jit(nopython=True)
+
 def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500, e00800,
         e03220, e03230, e03240, e03290, care_deduction,
@@ -591,7 +591,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
             e20400_capped, e19200_capped, e19800_capped, e20100_capped)
 
 
-# @iterate_jit(nopython=True)
+
 def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
             e19800_capped, e20100_capped, e20400_capped, g20500_capped,
             MARS, age_head, age_spouse, c00100, 
@@ -793,7 +793,7 @@ def AdditionalMedicareTax(e00200, MARS, sey, payrolltax,
 
 
 
-# @iterate_jit(nopython=True)
+
 def StdDed(DSI, earned, age_head, age_spouse, MARS, MIDR,
            blind_head, blind_spouse, standard, c19700,
            STD, STD_Aged, STD_Dep, STD_allow_charity_ded_nonitemizers,
@@ -863,7 +863,7 @@ def StdDed(DSI, earned, age_head, age_spouse, MARS, MIDR,
 
 
 
-# @iterate_jit(nopython=True)
+
 @np.vectorize
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
            e02100, e27200, e00650, c01000, e02300, PT_SSTB_income,
@@ -1012,7 +1012,7 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     return reg_tax + pt_tax
 
 
-# @iterate_jit(nopython=True)
+
 def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
               PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
               PT_rt6, PT_rt7, PT_rt8,
@@ -1041,7 +1041,6 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
     return c05200
 
 
-@iterate_jit(nopython=True)
 def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
              e24515, e24518, MARS, c04800, c05200, e00900, e26270, e02000,
              II_rt1, II_rt2, II_rt3, II_rt4, II_rt5, II_rt6, II_rt7, II_rt8,
@@ -1050,102 +1049,109 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
              PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7,
              CG_nodiff, PT_EligibleRate_active, PT_EligibleRate_passive,
              PT_wages_active_income, PT_top_stacking,
-             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3,
-             dwks10, dwks13, dwks14, dwks19, c05700, taxbc):
+             CG_rt1, CG_rt2, CG_rt3, CG_rt4, CG_brk1, CG_brk2, CG_brk3):
     """
     GainsTax function implements (2015) Schedule D Tax Worksheet logic for
     the special taxation of long-term capital gains and qualified dividends
     if CG_nodiff is false.
     """
     # pylint: disable=too-many-statements
-    if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
-        hasqdivltcg = 1  # has qualified dividends or long-term capital gains
-    else:
-        hasqdivltcg = 0  # no qualified dividends or long-term capital gains
+    # if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
+    #     hasqdivltcg = 1  # has qualified dividends or long-term capital gains
+    # else:
+    #     hasqdivltcg = 0  # no qualified dividends or long-term capital gains
+
+    hasqdivltcg = np.where(np.any([c01000 > 0., c23650 > 0., p23250 > 0.,
+                                e01100 > 0., e00650 > 0.]), 1, 0)
 
     if CG_nodiff:
-        hasqdivltcg = 0  # no special taxation of qual divids and l-t cap gains
+        hasqdivltcg = np.zeros(size=self.__records.array_length)  # no special taxation of qual divids and l-t cap gains
 
-    if hasqdivltcg == 1:
+    # if hasqdivltcg == 1:
 
-        dwks1 = c04800
-        dwks2 = e00650
-        dwks3 = e58990
-        dwks4 = 0.  # always assumed to be zero
-        dwks5 = max(0., dwks3 - dwks4)
-        dwks6 = max(0., dwks2 - dwks5)
-        dwks7 = min(p23250, c23650)  # SchD lines 15 and 16, respectively
-        # dwks8 = min(dwks3, dwks4)
-        # dwks9 = max(0., dwks7 - dwks8)
-        # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
-        if e01100 > 0.:
-            c24510 = e01100
-        else:
-            c24510 = max(0., dwks7) + e01100
-        dwks9 = max(0., c24510 - min(0., e58990))
-        # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
-        dwks10 = dwks6 + dwks9
-        dwks11 = e24515 + e24518  # SchD lines 18 and 19, respectively
-        dwks12 = min(dwks9, dwks11)
-        dwks13 = dwks10 - dwks12
-        dwks14 = max(0., dwks1 - dwks13)
-        dwks16 = min(CG_brk1[MARS - 1], dwks1)
-        dwks17 = min(dwks14, dwks16)
-        dwks18 = max(0., dwks1 - dwks10)
-        dwks19 = max(dwks17, dwks18)
-        dwks20 = dwks16 - dwks17
-        lowest_rate_tax = CG_rt1 * dwks20
-        # break in worksheet lines
-        dwks21 = min(dwks1, dwks13)
-        dwks22 = dwks20
-        dwks23 = max(0., dwks21 - dwks22)
-        dwks25 = min(CG_brk2[MARS - 1], dwks1)
-        dwks26 = dwks19 + dwks20
-        dwks27 = max(0., dwks25 - dwks26)
-        dwks28 = min(dwks23, dwks27)
-        dwks29 = CG_rt2 * dwks28
-        dwks30 = dwks22 + dwks28
-        dwks31 = dwks21 - dwks30
-        dwks32 = CG_rt3 * dwks31
-        # compute total taxable CG for additional top bracket
-        cg_all = dwks20 + dwks28 + dwks31
-        hi_base = max(0., cg_all - CG_brk3[MARS - 1])
-        hi_incremental_rate = CG_rt4 - CG_rt3
-        highest_rate_incremental_tax = hi_incremental_rate * hi_base
-        # break in worksheet lines
-        dwks33 = min(dwks9, e24515)
-        dwks34 = dwks10 + dwks19
-        dwks36 = max(0., dwks34 - dwks1)
-        dwks37 = max(0., dwks33 - dwks36)
-        dwks38 = 0.25 * dwks37
-        # break in worksheet lines
-        dwks39 = dwks19 + dwks20 + dwks28 + dwks31 + dwks37
-        dwks40 = dwks1 - dwks39
-        dwks41 = 0.28 * dwks40
-        dwks42 = SchXYZ(dwks19, MARS, e00900, e26270, e02000, e00200,
-                        PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
-                        PT_rt6, PT_rt7, PT_rt8,
-                        PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
-                        PT_brk6, PT_brk7,
-                        II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
-                        II_rt6, II_rt7, II_rt8,
-                        II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
-                        II_brk6, II_brk7, PT_EligibleRate_active,
-                        PT_EligibleRate_passive, PT_wages_active_income,
-                        PT_top_stacking)
-        dwks43 = (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
-                  lowest_rate_tax + highest_rate_incremental_tax)
-        dwks44 = c05200
-        dwks45 = min(dwks43, dwks44)
-        c24580 = dwks45
+    dwks1 = np.where(hasqdivltcg == 1, c04800, 0.)
+    dwks2 = np.where(hasqdivltcg == 1, e00650, 0.)
+    dwks3 = np.where(hasqdivltcg == 1, e58990, 0.)
+    dwks4 = np.where(hasqdivltcg == 1, 0., 0.)  # always assumed to be zero
+    dwks5 = np.where(hasqdivltcg == 1, np.maximum(0., dwks3 - dwks4), 0.)
+    dwks6 = np.where(hasqdivltcg == 1, np.maximum(0., dwks2 - dwks5), 0.)
+    dwks7 = np.where(hasqdivltcg == 1, np.minimum(p23250, c23650), 0.)  # SchD lines 15 and 16, respectively
+    dwks8 = np.where(hasqdivltcg == 1, np.minimum(dwks3, dwks4), 0.)
+    dwks9 = np.where(hasqdivltcg == 1, np.maximum(0., dwks7 - dwks8), 0.)
+    # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
+    # if e01100 > 0.:
+    #     c24510 = e01100
+    # else:
+    #     c24510 = np.maximum(0., dwks7) + e01100
+    c24510 = np.where(hasqdivltcg == 1 and e01100 > 0., e01100, np.maximum(0., dwks7) + e01100)
+    dwks9 = np.where(hasqdivltcg == 1, np.maximum(0., c24510 - np.minimum(0., e58990)), 0.)
+    # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
+    dwks10 = np.where(hasqdivltcg == 1, dwks6 + dwks9, np.maximum(0., np.minimum(p23250, c23650)) + e01100)
+    dwks11 = np.where(hasqdivltcg == 1, e24515 + e24518, 0.)  # SchD lines 18 and 19, respectively
+    dwks12 = np.where(hasqdivltcg == 1, np.minimum(dwks9, dwks11), 0.)
+    dwks13 = np.where(hasqdivltcg == 1, dwks10 - dwks12, 0.)
+    dwks14 = np.where(hasqdivltcg == 1, np.maximum(0., dwks1 - dwks13), 0.)
+    dwks16 = np.where(hasqdivltcg == 1, np.minimum(CG_brk1[MARS - 1], dwks1), 0.)
+    dwks17 = np.where(hasqdivltcg == 1, np.minimum(dwks14, dwks16), 0.)
+    dwks18 = np.where(hasqdivltcg == 1, np.maximum(0., dwks1 - dwks10), 0.)
+    dwks19 = np.where(hasqdivltcg == 1, np.maximum(dwks17, dwks18), 0.)
+    dwks20 = np.where(hasqdivltcg == 1, dwks16 - dwks17, 0.)
+    lowest_rate_tax = np.where(hasqdivltcg == 1, CG_rt1 * dwks20, 0.)
+    # break in worksheet lines
+    dwks21 = np.where(hasqdivltcg == 1, np.minimum(dwks1, dwks13), 0.)
+    dwks22 = np.where(hasqdivltcg == 1, dwks20, 0.)
+    dwks23 = np.where(hasqdivltcg == 1, np.maximum(0., dwks21 - dwks22), 0.)
+    dwks25 = np.where(hasqdivltcg == 1, np.minimum(CG_brk2[MARS - 1], dwks1), 0.)
+    dwks26 = np.where(hasqdivltcg == 1, dwks19 + dwks20, 0.)
+    dwks27 = np.where(hasqdivltcg == 1, np.maximum(0., dwks25 - dwks26), 0.)
+    dwks28 = np.where(hasqdivltcg == 1, np.minimum(dwks23, dwks27), 0.)
+    dwks29 = np.where(hasqdivltcg == 1, CG_rt2 * dwks28, 0.)
+    dwks30 = np.where(hasqdivltcg == 1, dwks22 + dwks28, 0.)
+    dwks31 = np.where(hasqdivltcg == 1, dwks21 - dwks30, 0.)
+    dwks32 = np.where(hasqdivltcg == 1, CG_rt3 * dwks31, 0.)
+    # compute total taxable CG for additional top bracket
+    cg_all = np.where(hasqdivltcg == 1, dwks20 + dwks28 + dwks31, 0.)
+    hi_base = np.where(hasqdivltcg == 1, np.maximum(0., cg_all - CG_brk3[MARS - 1]), 0.)
+    hi_incremental_rate = np.where(hasqdivltcg == 1, CG_rt4 - CG_rt3, 0.)
+    highest_rate_incremental_tax = np.where(hasqdivltcg == 1, hi_incremental_rate * hi_base, 0.)
+    # break in worksheet lines
+    dwks33 = np.where(hasqdivltcg == 1, np.minimum(dwks9, e24515), 0.)
+    dwks34 = np.where(hasqdivltcg == 1, dwks10 + dwks19, 0.)
+    dwks36 = np.where(hasqdivltcg == 1, np.maximum(0., dwks34 - dwks1), 0.)
+    dwks37 = np.where(hasqdivltcg == 1, np.maximum(0., dwks33 - dwks36), 0.)
+    dwks38 = np.where(hasqdivltcg == 1, 0.25 * dwks37, 0.)
+    # break in worksheet lines
+    dwks39 = np.where(hasqdivltcg == 1, dwks19 + dwks20 + dwks28 + dwks31 + dwks37, 0.)
+    dwks40 = np.where(hasqdivltcg == 1, dwks1 - dwks39, 0.)
+    dwks41 = np.where(hasqdivltcg == 1, 0.28 * dwks40, 0.)
+    dwks42 = np.where(hasqdivltcg == 1,
+                    SchXYZ(dwks19, MARS, e00900, e26270, e02000, e00200,
+                    PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
+                    PT_rt6, PT_rt7, PT_rt8,
+                    PT_brk1, PT_brk2, PT_brk3, PT_brk4, PT_brk5,
+                    PT_brk6, PT_brk7,
+                    II_rt1, II_rt2, II_rt3, II_rt4, II_rt5,
+                    II_rt6, II_rt7, II_rt8,
+                    II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
+                    II_brk6, II_brk7, PT_EligibleRate_active,
+                    PT_EligibleRate_passive, PT_wages_active_income,
+                    PT_top_stacking),
+                    0.)
+    dwks43 = np.where(hasqdivltcg == 1,
+                    (dwks29 + dwks32 + dwks38 + dwks41 + dwks42 +
+                    lowest_rate_tax + highest_rate_incremental_tax),
+                    0.)
+    dwks44 = np.where(hasqdivltcg == 1, c05200, 0.)
+    dwks45 = np.where(hasqdivltcg == 1, np.minimum(dwks43, dwks44), 0.)
+    c24580 = np.where(hasqdivltcg == 1, dwks45, c05200)
 
-    else:  # if hasqdivltcg is zero
+    # else:  # if hasqdivltcg is zero
 
-        c24580 = c05200
-        dwks10 = max(0., min(p23250, c23650)) + e01100
-        dwks13 = 0.
-        dwks14 = 0.
-        dwks19 = 0.
+    #     c24580 = c05200
+    #     dwks10 = np.maximum(0., np.minimum(p23250, c23650)) + e01100
+    #     dwks13 = 0.
+    #     dwks14 = 0.
+    #     dwks19 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because foreign earned income exclusion is assumed zero
@@ -1154,7 +1160,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     return (dwks10, dwks13, dwks14, dwks19, c05700, taxbc)
 
 
-# @iterate_jit(nopython=True)
+
 def AGIsurtax(c00100, MARS, taxbc, surtax, AGI_surtax_trt, AGI_surtax_thd):
     """
     Computes surtax on AGI above some threshold.
@@ -1166,7 +1172,6 @@ def AGIsurtax(c00100, MARS, taxbc, surtax, AGI_surtax_trt, AGI_surtax_thd):
     return (taxbc, surtax)
 
 
-@iterate_jit(nopython=True)
 def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         c04470, c17000, c20800, c21040, e24515, MARS, sep, dwks19,
         dwks14, c05700, e62900, e00700, dwks10, age_head, age_spouse,
@@ -1175,7 +1180,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
         AMT_em, AMT_prt, AMT_rt1, AMT_rt2,
         AMT_child_em, AMT_em_ps, AMT_em_pe,
         AMT_CG_brk1, AMT_CG_brk2, AMT_CG_brk3, AMT_CG_rt1, AMT_CG_rt2,
-        AMT_CG_rt3, AMT_CG_rt4, c05800, c09600, c62100):
+        AMT_CG_rt3, AMT_CG_rt4):
     """
     Computes Alternative Minimum Tax (AMT) taxable income and liability, where
     c62100 is AMT taxable income,
@@ -1194,85 +1199,97 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     #     c62100 = c00100 - e00700
     c62100 = np.where(standard == 0.0,
                       (c00100 - e00700 - c04470 +
-                       max(0., min(c17000, 0.025 * c00100)) +
+                       np.maximum(0., np.minimum(c17000, 0.025 * c00100)) +
                        c18300 + c20800 - c21040),
                       0.)
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
-    if MARS == 3:
-        amtsepadd = max(0.,
-                        min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe)))
-    else:
-        amtsepadd = 0.
+    # if MARS == 3:
+    #     amtsepadd = np.maximum(0.,
+    #                     np.minimum(AMT_em, AMT_prt * (c62100 - AMT_em_pe)))
+    # else:
+    #     amtsepadd = 0.
     amtsepadd = np.where(MARS == 3,
-                         max(0.,
-                             min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe))),
+                         np.maximum(0.,
+                             np.minimum(AMT_em, AMT_prt * (c62100 - AMT_em_pe))),
                          0.)
     c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
     # Form 6251, Part II top
-    line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
-                 max(0., c62100 - AMT_em_ps[MARS - 1]))
-    young_head = age_head != 0 and age_head < AMT_child_em_c_age
+    line29 = np.maximum(0., AMT_em - AMT_prt *
+                 np.maximum(0., c62100 - AMT_em_ps))
+    young_head = np.logical_and(age_head != 0, age_head < AMT_child_em_c_age)
     no_or_young_spouse = age_spouse < AMT_child_em_c_age
     # if young_head and no_or_young_spouse:
-    #     line29 = min(line29, earned + AMT_child_em)
-    line29 = np.where(young_head and no_or_young_spouse,
-                      min(line29, earned + AMT_child_em),
+    #     line29 = np.minimum(line29, earned + AMT_child_em)
+    line29 = np.where(np.logical_and(young_head, no_or_young_spouse),
+                      np.minimum(line29, earned + AMT_child_em),
                       line29)
-    line30 = max(0., c62100 - line29)
+    line30 = np.maximum(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
-                AMT_rt2 * max(0., (line30 - (AMT_brk1 / sep))))
-    if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
-        # complete Form 6251, Part III (line36 is equal to line30)
-        line37 = dwks13
-        line38 = e24515
-        line39 = min(line37 + line38, dwks10)
-        line40 = min(line30, line39)
-        line41 = max(0., line30 - line40)
-        line42 = (AMT_rt1 * line41 +
-                  AMT_rt2 * max(0., (line41 - (AMT_brk1 / sep))))
-        line44 = dwks14
-        line45 = max(0., AMT_CG_brk1[MARS - 1] - line44)
-        line46 = min(line30, line37)
-        line47 = min(line45, line46)  # line47 is amount taxed at AMT_CG_rt1
-        cgtax1 = line47 * AMT_CG_rt1
-        line48 = line46 - line47
-        line51 = dwks19
-        line52 = line45 + line51
-        line53 = max(0., AMT_CG_brk2[MARS - 1] - line52)
-        line54 = min(line48, line53)  # line54 is amount taxed at AMT_CG_rt2
-        cgtax2 = line54 * AMT_CG_rt2
-        line56 = line47 + line54  # total amount in lower two brackets
-        if line41 == line56:
-            line57 = 0.  # line57 is amount taxed at AMT_CG_rt3
-            linex2 = 0.  # linex2 is amount taxed at AMT_CG_rt4
-        else:
-            line57 = line46 - line56
-            linex1 = min(line48,
-                         max(0., AMT_CG_brk3[MARS - 1] - line44 - line45))
-            linex2 = max(0., line54 - linex1)
-        cgtax3 = line57 * AMT_CG_rt3
-        cgtax4 = linex2 * AMT_CG_rt4
-        if line38 == 0.:
-            line61 = 0.
-        else:
-            line61 = 0.25 * max(0., line30 - line41 - line56 - line57 - linex2)
-        line62 = line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61
-        line64 = min(line3163, line62)
-        line31 = line64
-    else:  # if not completing Form 6251, Part III
-        line31 = line3163
+                AMT_rt2 * np.maximum(0., (line30 - (AMT_brk1 / sep))))
+    # if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
+    cond = np.any([dwks10 > 0., dwks13 > 0., dwks14 > 0., dwks19 > 0., e24515 > 0.])
+    # complete Form 6251, Part III (line36 is equal to line30)
+    line37 = np.where(cond, dwks13, 0.)
+    line38 = np.where(cond, e24515, 0.)
+    line39 = np.where(cond, np.minimum(line37 + line38, dwks10), 0.)
+    line40 = np.where(cond, np.minimum(line30, line39), 0.)
+    line41 = np.where(cond, np.maximum(0., line30 - line40), 0.)
+    line42 = np.where(cond,
+                     (AMT_rt1 * line41 +
+                     AMT_rt2 * np.maximum(0., (line41 - (AMT_brk1 / sep)))),
+                     0.)
+    line44 = np.where(cond, dwks14, 0.)
+    line45 = np.where(cond, np.maximum(0., AMT_CG_brk1 - line44), 0.)
+    line46 = np.where(cond, np.minimum(line30, line37), 0.)
+    line47 = np.where(cond, np.minimum(line45, line46), 0.)  # line47 is amount taxed at AMT_CG_rt1
+    cgtax1 = np.where(cond, line47 * AMT_CG_rt1, 0.)
+    line48 = np.where(cond, line46 - line47, 0.)
+    line51 = np.where(cond, dwks19, 0.)
+    line52 = np.where(cond, line45 + line51, 0.)
+    line53 = np.where(cond, np.maximum(0., AMT_CG_brk2 - line52), 0.)
+    line54 = np.where(cond, np.minimum(line48, line53), 0.)  # line54 is amount taxed at AMT_CG_rt2
+    cgtax2 = np.where(cond, line54 * AMT_CG_rt2, 0.)
+    line56 = np.where(cond, line47 + line54, 0.)  # total amount in lower two brackets
+    # if line41 == line56:
+    #     line57 = 0.  # line57 is amount taxed at AMT_CG_rt3
+    #     linex2 = 0.  # linex2 is amount taxed at AMT_CG_rt4
+    # else:
+    #     line57 = line46 - line56
+    #     linex1 = np.minimum(line48,
+    #                  np.maximum(0., AMT_CG_brk3 - line44 - line45))
+    #     linex2 = np.maximum(0., line54 - linex1)
+    line57 = np.where(np.logical_and(cond, line41 == line56), 0., line46 - line56)
+    linex1 = np.where(np.logical_and(cond, line41 != line56),
+                      np.minimum(line48,
+                         np.maximum(0., AMT_CG_brk3 - line44 - line45)),
+                      0.)
+    linex2 = np.where(np.logical_and(cond, line41 == line56), np.maximum(0., line54 - linex1), 0.)
+    cgtax3 = np.where(cond, line57 * AMT_CG_rt3, 0.)
+    cgtax4 = np.where(cond, linex2 * AMT_CG_rt4, 0.)
+    # if line38 == 0.:
+    #     line61 = 0.
+    # else:
+    #     line61 = 0.25 * np.maximum(0., line30 - line41 - line56 - line57 - linex2)
+    line61 = np.where(np.logical_and(cond, line38 == 0.), 0,
+                        0.25 * np.maximum(0., line30 - line41 - line56 - line57 - linex2))
+    line62 = np.where(cond, line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61, 0.)
+    line64 = np.where(cond, np.minimum(line3163, line62), 0.)
+    line31 = np.where(cond, line64, line3163)
+    # else:  # if not completing Form 6251, Part III
+        # line31 = line3163
     # Form 6251, Part II bottom
-    if f6251 == 1:
-        line32 = e62900
-    else:
-        line32 = e07300
+    # if f6251 == 1:
+        # line32 = e62900
+    # else:
+        # line32 = e07300
+    line32 = np.where(f6251 == 1, e62900, e07300)
     line33 = line31 - line32
-    c09600 = max(0., line33 - max(0., taxbc - e07300 - c05700))
+    c09600 = np.maximum(0., line33 - np.maximum(0., taxbc - e07300 - c05700))
     c05800 = taxbc + c09600
     return (c62100, c09600, c05800)
 
 
-# @iterate_jit(nopython=True)
+
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
                  c00100, MARS, niit, NIIT_thd, NIIT_PT_taxed, NIIT_rt):
     """
@@ -1288,7 +1305,7 @@ def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
     return niit
 
 
-# @iterate_jit(nopython=True)
+
 @np.vectorize
 def F2441(MARS, earned_p, earned_s, f2441, e32800, exact, c00100, 
           c05800, e07300, c07180, CDCC_refund, CDCC_c, CDCC_ps, CDCC_ps2,
@@ -1350,7 +1367,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
     return eitc
 
 
-# @iterate_jit(nopython=True)
+
 @np.vectorize
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
@@ -1419,7 +1436,7 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     return c59660
 
 
-# @iterate_jit(nopython=True)
+
 def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
                                RPTC_c, RPTC_rt):
     """
@@ -1431,7 +1448,7 @@ def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
     return (rptc_p, rptc_s, rptc)
 
 
-# @iterate_jit(nopython=True)
+
 @np.vectorize
 def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
                       e07260, e07300, c07180, c07230, e07240,
@@ -1491,7 +1508,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     return (c07220, odc, codtc_limited)
 
 
-# @iterate_jit(nopython=True)
+
 def PersonalTaxCredit(MARS, c00100, XTOT,
                       II_credit, II_credit_ps, II_credit_prt,
                       II_credit_nr, II_credit_nr_ps, II_credit_nr_prt,
@@ -1616,7 +1633,7 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
     return (c10960, c87668)
 
 
-# @iterate_jit(nopython=True)
+
 @np.vectorize
 def SchR(age_head, age_spouse, MARS, c00100,
          c05800, e07300, c07180, e02400, c02500,
@@ -1672,7 +1689,7 @@ def SchR(age_head, age_spouse, MARS, c00100,
     return c07200
 
 
-# @iterate_jit(nopython=True)
+
 def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
                        e07300, c07180, c07200, c87668,
                        LLC_Expense_c, ETC_pe_Single, ETC_pe_Married,
@@ -1749,7 +1766,7 @@ def CharityCredit(e19800, e20100, c00100, MARS,
     return charity_credit
 
 
-# @iterate_jit(nopython=True)
+
 def NonrefundableCredits(c07300, c07180, c07230, c07240, c07220,
                          c07260, c07400, c07600, c07200, c08000,
                          c05800, e07240, e07260, e07300, e07400,
@@ -1818,7 +1835,7 @@ def NonrefundableCredits(c07300, c07180, c07230, c07240, c07220,
             personal_nonrefundable_credit)
 
 
-# @iterate_jit(nopython=True)
+
 @np.vectorize
 def AdditionalCTC(codtc_limited, nu06, n24, earned, XTOT, n21, n1820, num,
                   ptax_was, c03260, e09800, c59660, e11200, ACTC_c, ACTC_Income_thd,
@@ -1866,7 +1883,7 @@ def AdditionalCTC(codtc_limited, nu06, n24, earned, XTOT, n21, n1820, num,
     return c11070
 
 
-# @iterate_jit(nopython=True)
+
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
           c07100, c09200, odc, charity_credit,
@@ -1888,7 +1905,7 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
     return (c07100, othertaxes, c09200)
 
 
-# @iterate_jit(nopython=True)
+
 @np.vectorize
 def CTC_new(payrolltax, n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oasdi,
             c09200, CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
@@ -1925,7 +1942,7 @@ def CTC_new(payrolltax, n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oas
     return ctc_new
 
 
-# @iterate_jit(nopython=True)
+
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
           c09200, payrolltax, recovery_rebate_credit, eitc, c07220,
           refund, iitax, combined, CDCC_refund, CTC_refundable):
