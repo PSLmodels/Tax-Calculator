@@ -88,13 +88,10 @@ def BenefitPrograms(calc):
     calc.array('benefit_value_total', value)
 
 
-@iterate_jit(nopython=True)
-def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
-                  FICA_ss_trt, FICA_mc_trt, ALD_SelfEmploymentTax_hc,
-                  SS_Earnings_thd, e00900p, e00900s, e02100p, e02100s, k1bx14p,
-                  k1bx14s, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
-                  sey, earned, earned_p, earned_s,
-                  was_plus_sey_p, was_plus_sey_s):
+def EI_PayrollTax(e00200p, e00200s, e00900p, e00900s, e02100p, e02100s,
+                  k1bx14p, k1bx14s, pencon_p, pencon_s, FICA_ss_trt,
+                  FICA_mc_trt, ALD_SelfEmploymentTax_hc, SS_Earnings_c,
+                  SS_Earnings_thd):
     """
     Compute part of total OASDI+HI payroll taxes and earned income variables.
     """
@@ -108,8 +105,8 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     gross_was_s = e00200s + pencon_s
 
     # compute taxable gross earnings for OASDI FICA
-    txearn_was_p = min(SS_Earnings_c, gross_was_p)
-    txearn_was_s = min(SS_Earnings_c, gross_was_s)
+    txearn_was_p = np.minimum(SS_Earnings_c, gross_was_p)
+    txearn_was_s = np.minimum(SS_Earnings_c, gross_was_s)
 
     # compute OASDI and HI payroll taxes on wage-and-salary income, FICA
     ptax_ss_was_p = FICA_ss_trt * txearn_was_p
@@ -120,14 +117,14 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
 
     # compute taxable self-employment income for OASDI SECA
     sey_frac = 1.0 - 0.5 * (FICA_ss_trt + FICA_mc_trt)
-    txearn_sey_p = min(max(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
-    txearn_sey_s = min(max(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
+    txearn_sey_p = np.minimum(np.maximum(0., sey_p * sey_frac), SS_Earnings_c - txearn_was_p)
+    txearn_sey_s = np.minimum(np.maximum(0., sey_s * sey_frac), SS_Earnings_c - txearn_was_s)
 
     # compute self-employment tax on taxable self-employment income, SECA
     setax_ss_p = FICA_ss_trt * txearn_sey_p
     setax_ss_s = FICA_ss_trt * txearn_sey_s
-    setax_mc_p = FICA_mc_trt * max(0., sey_p * sey_frac)
-    setax_mc_s = FICA_mc_trt * max(0., sey_s * sey_frac)
+    setax_mc_p = FICA_mc_trt * np.maximum(0., sey_p * sey_frac)
+    setax_mc_s = FICA_mc_trt * np.maximum(0., sey_s * sey_frac)
     setax_p = setax_ss_p + setax_mc_p
     setax_s = setax_ss_s + setax_mc_s
     setax = setax_p + setax_s
@@ -136,10 +133,10 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # of wage-and-salary income and taxable self employment income
     # that exceeds SS_Earnings_thd
     sey_frac = 1.0 - 0.5 * FICA_ss_trt
-    was_plus_sey_p = gross_was_p + max(0., sey_p * sey_frac)
-    was_plus_sey_s = gross_was_s + max(0., sey_s * sey_frac)
-    extra_ss_income_p = max(0., was_plus_sey_p - SS_Earnings_thd)
-    extra_ss_income_s = max(0., was_plus_sey_s - SS_Earnings_thd)
+    was_plus_sey_p = gross_was_p + np.maximum(0., sey_p * sey_frac)
+    was_plus_sey_s = gross_was_s + np.maximum(0., sey_s * sey_frac)
+    extra_ss_income_p = np.maximum(0., was_plus_sey_p - SS_Earnings_thd)
+    extra_ss_income_s = np.maximum(0., was_plus_sey_s - SS_Earnings_thd)
     extra_payrolltax = (extra_ss_income_p * FICA_ss_trt +
                         extra_ss_income_s * FICA_ss_trt)
 
@@ -157,20 +154,18 @@ def EI_PayrollTax(SS_Earnings_c, e00200p, e00200s, pencon_p, pencon_s,
     # "employer share" of self-employment tax, c03260
     # Note: c03260 is the amount on 2015 Form 1040, line 27
     c03260 = (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax
-    earned = max(0., e00200p + e00200s + sey - c03260)
-    earned_p = max(0., (e00200p + sey_p -
+    earned = np.maximum(0., e00200p + e00200s + sey - c03260)
+    earned_p = np.maximum(0., (e00200p + sey_p -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_p))
-    earned_s = max(0., (e00200s + sey_s -
+    earned_s = np.maximum(0., (e00200s + sey_s -
                         (1. - ALD_SelfEmploymentTax_hc) * 0.5 * setax_s))
     return (sey, payrolltax, ptax_was, setax, c03260, ptax_oasdi,
             earned, earned_p, earned_s, was_plus_sey_p, was_plus_sey_s)
 
 
-@iterate_jit(nopython=True)
 def DependentCare(nu13, elderly_dependents, earned,
                   MARS, ALD_Dependents_thd, ALD_Dependents_hc,
-                  ALD_Dependents_Child_c, ALD_Dependents_Elder_c,
-                  care_deduction):
+                  ALD_Dependents_Child_c, ALD_Dependents_Elder_c):
     """
     Computes dependent-care above-the-line deduction.
 
@@ -190,25 +185,32 @@ def DependentCare(nu13, elderly_dependents, earned,
     care_deduction: Total above the line deductions for dependent care.
     """
 
-    if earned <= ALD_Dependents_thd[MARS - 1]:
-        care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
-                           ALD_Dependents_Child_c) +
-                          ((1. - ALD_Dependents_hc) * elderly_dependents *
-                           ALD_Dependents_Elder_c))
-    else:
-        care_deduction = 0.
+    care_deduction = np.where(earned <= ALD_Dependents_thd,
+                               (((1. - ALD_Dependents_hc) * nu13 *
+                                    ALD_Dependents_Child_c) +
+                               ((1. - ALD_Dependents_hc) * elderly_dependents *
+                                    ALD_Dependents_Elder_c)),
+                                0)
+
+    # if earned <= ALD_Dependents_thd[MARS - 1]:
+    #     care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
+    #                        ALD_Dependents_Child_c) +
+    #                       ((1. - ALD_Dependents_hc) * elderly_dependents *
+    #                        ALD_Dependents_Elder_c))
+    # else:
+    #     care_deduction = 0.
+    
     return care_deduction
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def Adj(e03150, e03210, c03260,
         e03270, e03300, e03400, e03500, e00800,
         e03220, e03230, e03240, e03290, care_deduction,
         ALD_StudentLoan_hc, ALD_SelfEmp_HealthIns_hc, ALD_KEOGH_SEP_hc,
         ALD_EarlyWithdraw_hc, ALD_AlimonyPaid_hc, ALD_AlimonyReceived_hc,
         ALD_EducatorExpenses_hc, ALD_HSADeduction_hc, ALD_IRAContributions_hc,
-        ALD_DomesticProduction_hc, ALD_Tuition_hc,
-        c02900):
+        ALD_DomesticProduction_hc, ALD_Tuition_hc):
     """
     Adj calculates Form 1040 AGI adjustments (i.e., Above-the-Line Deductions).
 
@@ -288,50 +290,45 @@ def Adj(e03150, e03210, c03260,
     return c02900
 
 
-@iterate_jit(nopython=True)
 def ALD_InvInc_ec_base(p22250, p23250, sep,
-                       e00300, e00600, e01100, e01200,
-                       invinc_ec_base):
+                       e00300, e00600, e01100, e01200):
     """
     Computes invinc_ec_base.
     """
     # limitation on net short-term and long-term capital losses
-    cgain = max((-3000. / sep), p22250 + p23250)
+    cgain = np.maximum((-3000. / sep), p22250 + p23250)
     # compute exclusion of investment income from AGI
     invinc_ec_base = e00300 + e00600 + cgain + e01100 + e01200
     return invinc_ec_base
 
 
-@iterate_jit(nopython=True)
-def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
-             ALD_InvInc_ec_rt, invinc_ec_base,
+def CapGains(p23250, p22250, sep, invinc_ec_base, MARS,
              e00200, e00300, e00600, e00650, e00700, e00800,
-             CG_nodiff, CG_ec, CG_reinvest_ec_rt,
-             ALD_BusinessLosses_c, MARS,
              e00900, e01100, e01200, e01400, e01700, e02000, e02100,
              e02300, e00400, e02400, c02900, e03210, e03230, e03240,
-             c01000, c23650, ymod, ymod1, invinc_agi_ec):
+             ALD_InvInc_ec_rt, CG_nodiff, CG_ec,
+             CG_reinvest_ec_rt, ALD_StudentLoan_hc, ALD_BusinessLosses_c):
     """
     CapGains function: ...
     """
     # net capital gain (long term + short term) before exclusion
     c23650 = p23250 + p22250
     # limitation on capital losses
-    c01000 = max((-3000. / sep), c23650)
+    c01000 = np.maximum((-3000. / sep), c23650)
     # compute total investment income
     invinc = e00300 + e00600 + c01000 + e01100 + e01200
     # compute exclusion of investment income from AGI
-    invinc_agi_ec = ALD_InvInc_ec_rt * max(0., invinc_ec_base)
+    invinc_agi_ec = ALD_InvInc_ec_rt * np.maximum(0., invinc_ec_base)
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
-             max(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
+             np.maximum(e00900 + e02000, -ALD_BusinessLosses_c))
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
-        qdcg_pos = max(0., e00650 + c01000)
-        qdcg_exclusion = (min(CG_ec, qdcg_pos) +
-                          CG_reinvest_ec_rt * max(0., qdcg_pos - CG_ec))
-        ymod1 = max(0., ymod1 - qdcg_exclusion)
+        qdcg_pos = np.maximum(0., e00650 + c01000)
+        qdcg_exclusion = (mp.minimum(CG_ec, qdcg_pos) +
+                          CG_reinvest_ec_rt * np.maximum(0., qdcg_pos - CG_ec))
+        ymod1 = np.maximum(0., ymod1 - qdcg_exclusion)
         invinc_agi_ec += qdcg_exclusion
     # compute ymod variable that is used in OASDI benefit taxation logic
     ymod2 = e00400 + (0.50 * e02400) - c02900
@@ -340,26 +337,33 @@ def CapGains(p23250, p22250, sep, ALD_StudentLoan_hc,
     return (c01000, c23650, ymod, ymod1, invinc_agi_ec)
 
 
-@iterate_jit(nopython=True)
-def SSBenefits(MARS, ymod, e02400, SS_thd50, SS_thd85,
-               SS_percentage1, SS_percentage2, c02500):
+def SSBenefits(MARS, ymod, e02400,
+               SS_thd50_all, SS_thd85_all, SS_percentage1, SS_percentage2):
     """
     Calculates OASDI benefits included in AGI, c02500.
     """
-    if ymod < SS_thd50[MARS - 1]:
-        c02500 = 0.
-    elif ymod < SS_thd85[MARS - 1]:
-        c02500 = SS_percentage1 * min(ymod - SS_thd50[MARS - 1], e02400)
-    else:
-        c02500 = min(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
+    # if ymod < SS_thd50[MARS - 1]:
+    #     c02500 = 0.
+    # elif ymod < SS_thd85[MARS - 1]:
+    #     c02500 = SS_percentage1 * min(ymod - SS_thd50[MARS - 1], e02400)
+    # else:
+    #     c02500 = min(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
+    #                  SS_percentage1 *
+    #                  min(e02400, SS_thd85[MARS - 1] -
+    #                      SS_thd50[MARS - 1]), SS_percentage2 * e02400)
+
+    condlist = [ymod < SS_thd50_all, ymod < SS_thd85_all, np.logical_and(ymod >= SS_thd50_all, ymod >= SS_thd85_all)]
+    choicelist = [0,
+                  SS_percentage1 * np.minimum(ymod - SS_thd50_all, e02400),
+                   np.minimum(SS_percentage2 * (ymod - SS_thd85_all) +
                      SS_percentage1 *
-                     min(e02400, SS_thd85[MARS - 1] -
-                         SS_thd50[MARS - 1]), SS_percentage2 * e02400)
+                     np.minimum(e02400, SS_thd85_all -
+                         SS_thd50_all), SS_percentage2 * e02400)]
+
+    c02500 = np.select(condlist, choicelist)
     return c02500
 
 
-# @iterate_jit(nopython=True)
-@np.vectorize
 def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt):
     """
     Calculates total and taxable Universal Basic Income (UBI) amount.
@@ -395,10 +399,9 @@ def UBI(nu18, n1820, n21, UBI_u18, UBI_1820, UBI_21, UBI_ecrt):
 
 
 
-@iterate_jit(nopython=True)
+@np.vectorize
 def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
-        II_em, II_em_ps, II_prt, II_no_em_nu18,
-        c00100, pre_c04600, c04600):
+        II_em, II_em_ps_all, II_prt, II_no_em_nu18):
     """
     Computes Adjusted Gross Income (AGI), c00100, and
     compute personal exemption amount, c04600.
@@ -450,30 +453,27 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
     # calculate personal exemption amount
     if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
-        pre_c04600 = max(0, XTOT - nu18) * II_em
+        pre_c04600 = np.maximum(0, XTOT - nu18) * II_em
     else:
         pre_c04600 = XTOT * II_em
     if DSI:
         pre_c04600 = 0.
     # phase-out personal exemption amount
     if exact == 1:  # exact calculation as on tax forms
-        line5 = max(0., c00100 - II_em_ps[MARS - 1])
-        line6 = math.ceil(line5 / (2500. / sep))
+        line5 = np.maximum(0., c00100 - II_em_ps_all)
+        line6 = np.ceil(line5 / (2500. / sep))
         line7 = II_prt * line6
-        c04600 = max(0., pre_c04600 * (1. - line7))
+        c04600 = np.maximum(0., pre_c04600 * (1. - line7))
     else:  # smoothed calculation needed for sensible mtr calculation
-        dispc_numer = II_prt * (c00100 - II_em_ps[MARS - 1])
+        dispc_numer = II_prt * (c00100 - II_em_ps_all)
         dispc_denom = 2500. / sep
-        dispc = min(1., max(0., dispc_numer / dispc_denom))
+        dispc = np.minimum(1., np.maximum(0., dispc_numer / dispc_denom))
         c04600 = pre_c04600 * (1. - dispc)
     return (c00100, pre_c04600, c04600)
 
 
-@iterate_jit(nopython=True)
 def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
-               c00100, ID_AmountCap_rt, ID_AmountCap_Switch, e17500_capped,
-               e18400_capped, e18500_capped, e19200_capped, e19800_capped,
-               e20100_capped, e20400_capped, g20500_capped):
+               c00100, ID_AmountCap_rt, ID_AmountCap_Switch):
     """
     Applies a cap to gross itemized deductions.
 
@@ -524,7 +524,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     """
     # pylint: disable=too-many-branches
 
-    cap = max(0., ID_AmountCap_rt * c00100)
+    cap = np.maximum(0., ID_AmountCap_rt * c00100)
 
     gross_ded_amt = 0
     if ID_AmountCap_Switch[0]:  # medical
@@ -542,7 +542,7 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     if ID_AmountCap_Switch[6]:  # charity
         gross_ded_amt += e19800 + e20100
 
-    overage = max(0., gross_ded_amt - cap)
+    overage = np.maximum(0., gross_ded_amt - cap)
 
     e17500_capped = e17500
     e18400_capped = e18400
@@ -553,32 +553,48 @@ def ItemDedCap(e17500, e18400, e18500, e19200, e19800, e20100, e20400, g20500,
     e19800_capped = e19800
     e20100_capped = e20100
 
-    if overage > 0. and c00100 > 0.:
-        if ID_AmountCap_Switch[0]:  # medical
-            e17500_capped -= (e17500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[1]:  # statelocal
-            e18400_capped -= (e18400 / (gross_ded_amt) * overage)
-        if ID_AmountCap_Switch[2]:  # realestate
-            e18500_capped -= (e18500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[3]:  # casualty
-            g20500_capped -= (g20500 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[4]:  # misc
-            e20400_capped -= (e20400 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[5]:  # interest
-            e19200_capped -= (e19200 / gross_ded_amt) * overage
-        if ID_AmountCap_Switch[6]:  # charity
-            e19800_capped -= (e19800 / gross_ded_amt) * overage
-            e20100_capped -= (e20100 / gross_ded_amt) * overage
+
+    if ID_AmountCap_Switch[0]:  # medical
+        e17500_capped = np.where(np.logical_and(overage > 0., c00100 > 0),
+                              e17500_capped - (e17500 / gross_ded_amt) * overage,
+                              e17500_capped)
+    if ID_AmountCap_Switch[1]:  # statelocal
+        e18400_capped = np.where(np.logical_and(overage > 0., c00100 > 0.),
+                              e18400_capped - (e18400 / (gross_ded_amt) * overage),
+                              e18400_capped)
+    if ID_AmountCap_Switch[2]:  # realestate
+        e18500_capped = np.where(np.logical_and(overage > 0., c00100 > 0.),
+                              e18500_capped - (e18500 / gross_ded_amt) * overage,
+                              e18500_capped)
+    if ID_AmountCap_Switch[3]:  # casualty
+        g20500_capped = np.where(np.logical_and(overage > 0., c00100 > 0.),
+                             g20500_capped - (g20500 / gross_ded_amt) * overage,
+                             g20500_capped)
+    if ID_AmountCap_Switch[4]:  # misc
+        e20400_capped = np.where(np.logical_and(overage > 0., c00100 > 0.),
+                             e20400_capped - (e20400 / gross_ded_amt) * overage,
+                             e20400_capped)
+    if ID_AmountCap_Switch[5]:  # interest
+        e19200_capped = np.where(np.logical_and(overage > 0., c00100 > 0.),
+                             e19200_capped - (e19200 / gross_ded_amt) * overage,
+                             e19200_capped)
+    if ID_AmountCap_Switch[6]:  # charity
+        e19800_capped = np.where(np.logical_and(overage > 0., c00100 > 0.),
+                             e19800_capped - (e19800 / gross_ded_amt) * overage,
+                             e19800_capped)
+        e20100_capped = np.where(np.logical_and(overage > 0., c00100 > 0.),
+                             e20100_capped - (e20100 / gross_ded_amt) * overage,
+                             e20100_capped)
+
 
     return (e17500_capped, e18400_capped, e18500_capped, g20500_capped,
             e20400_capped, e19200_capped, e19800_capped, e20100_capped)
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
             e19800_capped, e20100_capped, e20400_capped, g20500_capped,
-            MARS, age_head, age_spouse, c00100, c04470, c21040, c21060,
-            c17000, c18300, c19200, c19700, c20500, c20800,
+            MARS, age_head, age_spouse, c00100, 
             ID_ps, ID_Medical_frt, ID_Medical_frt_add4aged, ID_Medical_hc,
             ID_Casualty_frt, ID_Casualty_hc, ID_Miscellaneous_frt,
             ID_Miscellaneous_hc, ID_Charity_crt_all, ID_Charity_crt_noncash,
@@ -672,70 +688,77 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     -------
     c04470 : total itemized deduction amount (and other intermediate variables)
     """
-    posagi = max(c00100, 0.)
+    posagi = np.maximum(c00100, 0.)
     # Medical
     medical_frt = ID_Medical_frt
-    if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
-        medical_frt += ID_Medical_frt_add4aged
+    # if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
+        # medical_frt += ID_Medical_frt_add4aged
+    medical_frt = np.where(np.logical_or(age_head >= 65, np.logical_and(MARS == 2, age_spouse >= 65)),
+                            medical_frt + ID_Medical_frt_add4aged,
+                            medical_frt)
     c17750 = medical_frt * posagi
-    c17000 = max(0., e17500_capped - c17750) * (1. - ID_Medical_hc)
-    c17000 = min(c17000, ID_Medical_c[MARS - 1])
+    c17000 = np.maximum(0., e17500_capped - c17750) * (1. - ID_Medical_hc)
+    c17000 = np.minimum(c17000, ID_Medical_c[MARS - 1])
     # State and local taxes
-    c18400 = min((1. - ID_StateLocalTax_hc) * max(e18400_capped, 0.),
+    c18400 = np.minimum((1. - ID_StateLocalTax_hc) * np.maximum(e18400_capped, 0.),
                  ID_StateLocalTax_c[MARS - 1])
-    c18500 = min((1. - ID_RealEstate_hc) * e18500_capped,
+    c18500 = np.minimum((1. - ID_RealEstate_hc) * e18500_capped,
                  ID_RealEstate_c[MARS - 1])
     # following two statements implement a cap on c18400 and c18500 in a way
     # that those with negative AGI, c00100, are not capped under current law,
     # hence the 0.0001 rather than zero
-    c18400 = min(c18400, ID_StateLocalTax_crt * max(c00100, 0.0001))
-    c18500 = min(c18500, ID_RealEstate_crt * max(c00100, 0.0001))
+    c18400 = np.minimum(c18400, ID_StateLocalTax_crt * np.maximum(c00100, 0.0001))
+    c18500 = np.minimum(c18500, ID_RealEstate_crt * np.maximum(c00100, 0.0001))
     c18300 = (c18400 + c18500) * (1. - ID_AllTaxes_hc)
-    c18300 = min(c18300, ID_AllTaxes_c[MARS - 1])
+    c18300 = np.minimum(c18300, ID_AllTaxes_c[MARS - 1])
     # Interest paid
     c19200 = e19200_capped * (1. - ID_InterestPaid_hc)
-    c19200 = min(c19200, ID_InterestPaid_c[MARS - 1])
+    c19200 = np.minimum(c19200, ID_InterestPaid_c[MARS - 1])
     # Charity
-    lim30 = min(ID_Charity_crt_noncash * posagi, e20100_capped)
-    c19700 = min(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
+    lim30 = np.minimum(ID_Charity_crt_noncash * posagi, e20100_capped)
+    c19700 = np.minimum(ID_Charity_crt_all * posagi, lim30 + e19800_capped)
     # charity floor is zero in present law
-    charity_floor = max(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
-    c19700 = max(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
-    c19700 = min(c19700, ID_Charity_c[MARS - 1])
+    charity_floor = np.maximum(ID_Charity_frt * posagi, ID_Charity_f[MARS - 1])
+    c19700 = np.maximum(0., c19700 - charity_floor) * (1. - ID_Charity_hc)
+    c19700 = np.minimum(c19700, ID_Charity_c[MARS - 1])
     # Casualty
-    c20500 = (max(0., g20500_capped - ID_Casualty_frt * posagi) *
+    c20500 = (np.maximum(0., g20500_capped - ID_Casualty_frt * posagi) *
               (1. - ID_Casualty_hc))
-    c20500 = min(c20500, ID_Casualty_c[MARS - 1])
+    c20500 = np.minimum(c20500, ID_Casualty_c[MARS - 1])
     # Miscellaneous
     c20400 = e20400_capped
     c20750 = ID_Miscellaneous_frt * posagi
-    c20800 = max(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
-    c20800 = min(c20800, ID_Miscellaneous_c[MARS - 1])
+    c20800 = np.maximum(0., c20400 - c20750) * (1. - ID_Miscellaneous_hc)
+    c20800 = np.minimum(c20800, ID_Miscellaneous_c[MARS - 1])
     # Gross total itemized deductions
     c21060 = c17000 + c18300 + c19200 + c19700 + c20500 + c20800
     # Limitations on total itemized deductions
     # (no attempt to adjust c04470 components for limitations)
     nonlimited = c17000 + c20500
     limitstart = ID_ps[MARS - 1]
-    if c21060 > nonlimited and c00100 > limitstart:
-        dedmin = ID_crt * (c21060 - nonlimited)
-        dedpho = ID_prt * max(0., posagi - limitstart)
-        c21040 = min(dedmin, dedpho)
-        c04470 = c21060 - c21040
-    else:
-        c21040 = 0.
-        c04470 = c21060
-    c04470 = min(c04470, ID_c[MARS - 1])
+    # if c21060 > nonlimited and c00100 > limitstart:
+    #     dednp = ID_crt * (c21060 - nonlimited)
+    #     dedpho = ID_prt * np.maximum(0., posagi - limitstart)
+    #     c21040 = np.minimum(dednp, dedpho)
+    #     c04470 = c21060 - c21040
+    # else:
+    #     c21040 = 0.
+    #     c04470 = c21060
+
+    dednp = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), ID_crt * (c21060 - nonlimited), 0.)
+    dedpho = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), ID_prt * np.maximum(0., posagi - limitstart), 0.)
+    c21040 = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), np.minimum(dednp, dedpho), 0.)
+    c04470 = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), c21060 - c21040, c21060)
+
+    c04470 = np.minimum(c04470, ID_c[MARS - 1])
     # Return total itemized deduction amounts and components
     return (c17000, c18300, c19200, c19700, c20500, c20800,
             c21040, c21060, c04470)
 
 
-@iterate_jit(nopython=True)
-def AdditionalMedicareTax(e00200, MARS,
-                          AMEDT_ec, sey, AMEDT_rt,
-                          FICA_mc_trt, FICA_ss_trt,
-                          ptax_amc, payrolltax):
+def AdditionalMedicareTax(e00200, MARS, sey, payrolltax,
+                          AMEDT_ec, AMEDT_rt,
+                          FICA_mc_trt, FICA_ss_trt):
     """
     Computes Additional Medicare Tax (Form 8959) included in payroll taxes.
 
@@ -761,18 +784,19 @@ def AdditionalMedicareTax(e00200, MARS,
 
     payrolltax : payroll tax augmented by Additional Medicare Tax
     """
-    line8 = max(0., sey) * (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt))
-    line11 = max(0., AMEDT_ec[MARS - 1] - e00200)
-    ptax_amc = AMEDT_rt * (max(0., e00200 - AMEDT_ec[MARS - 1]) +
-                           max(0., line8 - line11))
+    line8 = np.maximum(0., sey) * (1. - 0.5 * (FICA_mc_trt + FICA_ss_trt))
+    line11 = np.maximum(0., AMEDT_ec[MARS - 1] - e00200)
+    ptax_amc = AMEDT_rt * (np.maximum(0., e00200 - AMEDT_ec[MARS - 1]) +
+                           np.maximum(0., line8 - line11))
     payrolltax += ptax_amc
     return (ptax_amc, payrolltax)
 
 
-@iterate_jit(nopython=True)
-def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
-           MARS, MIDR, blind_head, blind_spouse, standard, c19700,
-           STD_allow_charity_ded_nonitemizers,
+
+# @iterate_jit(nopython=True)
+def StdDed(DSI, earned, age_head, age_spouse, MARS, MIDR,
+           blind_head, blind_spouse, standard, c19700,
+           STD, STD_Aged, STD_Dep, STD_allow_charity_ded_nonitemizers,
            STD_charity_ded_nonitemizers_max):
     """
     Calculates standard deduction, including standard deduction for
@@ -806,45 +830,54 @@ def StdDed(DSI, earned, STD, age_head, age_spouse, STD_Aged, STD_Dep,
     standard : the standard deduction amount for filing unit
     """
     # calculate deduction for dependents
-    if DSI == 1:
-        c15100 = max(350. + earned, STD_Dep)
-        basic_stded = min(STD[MARS - 1], c15100)
-    else:
-        c15100 = 0.
-        if MIDR == 1:
-            basic_stded = 0.
-        else:
-            basic_stded = STD[MARS - 1]
+    # if DSI == 1:
+    #     c15100 = max(350. + earned, STD_Dep)
+    #     basic_stded = min(STD[MARS - 1], c15100)
+    # else:
+    #     c15100 = 0.
+    #     if MIDR == 1:
+    #         basic_stded = 0.
+    #     else:
+    #         basic_stded = STD[MARS - 1]
+    c15100 = np.where(DSI == 1, np.maximum(350. + earned, STD_Dep), 0.)
+    condlist = [np.logical_and(DSI == 0, MIDR == 1), np.logical_and(DSI == 0, MIDR == 0)]
+    basic_stded = np.select(condlist, [0., STD[MARS-1]])
     # calculate extra standard deduction for aged and blind
     num_extra_stded = blind_head + blind_spouse
-    if age_head >= 65:
-        num_extra_stded += 1
-    if MARS == 2 and age_spouse >= 65:
-        num_extra_stded += 1
+    # if age_head >= 65:
+        # num_extra_stded += 1
+    # if MARS == 2 and age_spouse >= 65:
+        # num_extra_stded += 1
+    num_extra_stded = np.where(age_head >= 65, num_extra_stded + 1, num_extra_stded)
+    num_extra_stded = np.where(np.logical_and(MARS == 2, age_spouse >= 65), num_extra_stded + 1, num_extra_stded)
     extra_stded = num_extra_stded * STD_Aged[MARS - 1]
     # calculate the total standard deduction
     standard = basic_stded + extra_stded
-    if MARS == 3 and MIDR == 1:
-        standard = 0.
+    # if MARS == 3 and MIDR == 1:
+        # standard = 0.
+    standard = np.where(np.logical_and(MARS == 3, MIDR == 1), 0., standard)
     if STD_allow_charity_ded_nonitemizers:
-        standard += min(c19700, STD_charity_ded_nonitemizers_max)
+        standard += np.minimum(c19700, STD_charity_ded_nonitemizers_max)
+
     return standard
 
 
-@iterate_jit(nopython=True)
+
+# @iterate_jit(nopython=True)
+@np.vectorize
 def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
            e02100, e27200, e00650, c01000, e02300, PT_SSTB_income,
            PT_binc_w2_wages, PT_ubia_property, PT_qbid_rt,
            PT_qbid_taxinc_thd, PT_qbid_taxinc_gap, PT_qbid_w2_wages_rt,
-           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt, c04800,
-           PT_qbid_ps, PT_qbid_prt, qbided, PT_qbid_limit_switch,
+           PT_qbid_alt_w2_wages_rt, PT_qbid_alt_property_rt,
+           PT_qbid_ps, PT_qbid_prt, PT_qbid_limit_switch,
            UI_em, UI_thd):
     """
     Calculates taxable income, c04800, and
     qualified business income deduction, qbided.
     """
     # calculate UI excluded from taxable income
-    if c00100 <= UI_thd[MARS - 1]:
+    if c00100 <= UI_thd:
         ui_excluded = min(e02300, UI_em)
     else:
         ui_excluded = 0.
@@ -856,11 +889,11 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     qbinc = max(0., e00900 + e26270 + e02100 + e27200)
     if qbinc > 0. and PT_qbid_rt > 0.:
         qbid_before_limits = qbinc * PT_qbid_rt
-        lower_thd = PT_qbid_taxinc_thd[MARS - 1]
+        lower_thd = PT_qbid_taxinc_thd
         if pre_qbid_taxinc <= lower_thd:
             qbided = qbid_before_limits
         else:
-            pre_qbid_taxinc_gap = PT_qbid_taxinc_gap[MARS - 1]
+            pre_qbid_taxinc_gap = PT_qbid_taxinc_gap
             upper_thd = lower_thd + pre_qbid_taxinc_gap
             if PT_SSTB_income == 1 and pre_qbid_taxinc >= upper_thd:
                 qbided = 0.
@@ -898,8 +931,8 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
         qbided = min(qbided, taxinc_cap)
 
         # apply qbid phaseout
-        if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps[MARS - 1]:
-            excess = pre_qbid_taxinc - PT_qbid_ps[MARS - 1]
+        if qbided > 0. and pre_qbid_taxinc > PT_qbid_ps:
+            excess = pre_qbid_taxinc - PT_qbid_ps
             qbided = max(0., qbided - PT_qbid_prt * excess)
 
     # calculate taxable income after qualified business income deduction
@@ -907,7 +940,6 @@ def TaxInc(c00100, standard, c04470, c04600, MARS, e00900, e26270,
     return (c04800, qbided)
 
 
-@JIT(nopython=True)
 def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
            PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
            PT_rt6, PT_rt7, PT_rt8,
@@ -927,17 +959,22 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     # define pass-through income eligible for PT schedule
     pt_passive = PT_EligibleRate_passive * (e02000 - e26270)
     pt_active_gross = e00900 + e26270
-    if (pt_active_gross > 0) and PT_wages_active_income:
-        pt_active_gross = pt_active_gross + e00200
+    # if (pt_active_gross > 0) and PT_wages_active_income:
+        # pt_active_gross = pt_active_gross + e00200
+    pt_active_gross = np.where(np.logical_and(pt_active_gross > 0, PT_wages_active_income),
+                                pt_active_gross + e00200,
+                                pt_active_gross)
     pt_active = PT_EligibleRate_active * pt_active_gross
-    pt_active = min(pt_active, e00900 + e26270)
-    pt_taxinc = max(0., pt_passive + pt_active)
-    if pt_taxinc >= taxable_income:
-        pt_taxinc = taxable_income
-        reg_taxinc = 0.
-    else:
-        # pt_taxinc is unchanged
-        reg_taxinc = taxable_income - pt_taxinc
+    pt_active = np.minimum(pt_active, e00900 + e26270)
+    pt_taxinc = np.maximum(0., pt_passive + pt_active)
+    # if pt_taxinc >= taxable_income:
+    #     pt_taxinc = taxable_income
+    #     reg_taxinc = 0.
+    # else:
+    #     # pt_taxinc is unchanged
+    #     reg_taxinc = taxable_income - pt_taxinc
+    pt_taxinc = np.where(pt_taxinc >= taxable_income, taxable_income, pt_taxinc)
+    reg_taxinc = np.where(pt_taxinc >= taxable_income, 0., taxable_income - pt_taxinc)
     # determine stacking order
     if PT_top_stacking:
         reg_tbase = 0.
@@ -946,24 +983,36 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
         reg_tbase = pt_taxinc
         pt_tbase = 0.
     # compute Schedule X,Y,Z tax using the two components of taxable income
-    if reg_taxinc > 0.:
-        reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
-                        II_rt1, II_rt2, II_rt3, II_rt4,
-                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    else:
-        reg_tax = 0.
-    if pt_taxinc > 0.:
-        pt_tax = Taxes(pt_taxinc, MARS, pt_tbase,
-                       PT_rt1, PT_rt2, PT_rt3, PT_rt4,
-                       PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
-                       PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
-    else:
-        pt_tax = 0.
+    # if reg_taxinc > 0.:
+    #     reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
+    #                     II_rt1, II_rt2, II_rt3, II_rt4,
+    #                     II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+    #                     II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
+    # else:
+    #     reg_tax = 0.
+    reg_tax = np.where(reg_taxinc > 0.,
+                       Taxes(reg_taxinc, MARS, reg_tbase,
+                       II_rt1, II_rt2, II_rt3, II_rt4,
+                       II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
+                       II_brk3, II_brk4, II_brk5, II_brk6, II_brk7),
+                       0.)
+    # if pt_taxinc > 0.:
+    #     pt_tax = Taxes(pt_taxinc, MARS, pt_tbase,
+    #                    PT_rt1, PT_rt2, PT_rt3, PT_rt4,
+    #                    PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
+    #                    PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
+    # else:
+    #     pt_tax = 0.
+    pt_tax = np.where(pt_taxinc > 0.,
+                      Taxes(pt_taxinc, MARS, pt_tbase,
+                      PT_rt1, PT_rt2, PT_rt3, PT_rt4,
+                      PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
+                      PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7),
+                      0.)
     return reg_tax + pt_tax
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
               PT_rt1, PT_rt2, PT_rt3, PT_rt4, PT_rt5,
               PT_rt6, PT_rt7, PT_rt8,
@@ -974,7 +1023,7 @@ def SchXYZTax(c04800, MARS, e00900, e26270, e02000, e00200,
               II_brk1, II_brk2, II_brk3, II_brk4, II_brk5,
               II_brk6, II_brk7, PT_EligibleRate_active,
               PT_EligibleRate_passive, PT_wages_active_income,
-              PT_top_stacking, c05200):
+              PT_top_stacking):
     """
     SchXYZTax calls SchXYZ function and sets c05200 to returned amount.
     """
@@ -1105,8 +1154,8 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     return (dwks10, dwks13, dwks14, dwks19, c05700, taxbc)
 
 
-@iterate_jit(nopython=True)
-def AGIsurtax(c00100, MARS, AGI_surtax_trt, AGI_surtax_thd, taxbc, surtax):
+# @iterate_jit(nopython=True)
+def AGIsurtax(c00100, MARS, taxbc, surtax, AGI_surtax_trt, AGI_surtax_thd):
     """
     Computes surtax on AGI above some threshold.
     """
@@ -1137,26 +1186,38 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     """
     # pylint: disable=too-many-statements,too-many-branches
     # Form 6251, Part I
-    if standard == 0.0:
-        c62100 = (c00100 - e00700 - c04470 +
-                  max(0., min(c17000, 0.025 * c00100)) +
-                  c18300 + c20800 - c21040)
-    if standard > 0.0:
-        c62100 = c00100 - e00700
+    # if standard == 0.0:
+    #     c62100 = (c00100 - e00700 - c04470 +
+    #               max(0., min(c17000, 0.025 * c00100)) +
+    #               c18300 + c20800 - c21040)
+    # if standard > 0.0:
+    #     c62100 = c00100 - e00700
+    c62100 = np.where(standard == 0.0,
+                      (c00100 - e00700 - c04470 +
+                       max(0., min(c17000, 0.025 * c00100)) +
+                       c18300 + c20800 - c21040),
+                      0.)
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
     if MARS == 3:
         amtsepadd = max(0.,
                         min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe)))
     else:
         amtsepadd = 0.
+    amtsepadd = np.where(MARS == 3,
+                         max(0.,
+                             min(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe))),
+                         0.)
     c62100 = c62100 + amtsepadd  # AMT taxable income, which is line28
     # Form 6251, Part II top
     line29 = max(0., AMT_em[MARS - 1] - AMT_prt *
                  max(0., c62100 - AMT_em_ps[MARS - 1]))
     young_head = age_head != 0 and age_head < AMT_child_em_c_age
     no_or_young_spouse = age_spouse < AMT_child_em_c_age
-    if young_head and no_or_young_spouse:
-        line29 = min(line29, earned + AMT_child_em)
+    # if young_head and no_or_young_spouse:
+    #     line29 = min(line29, earned + AMT_child_em)
+    line29 = np.where(young_head and no_or_young_spouse,
+                      min(line29, earned + AMT_child_em),
+                      line29)
     line30 = max(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2 * max(0., (line30 - (AMT_brk1 / sep))))
@@ -1211,26 +1272,27 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     return (c62100, c09600, c05800)
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def NetInvIncTax(e00300, e00600, e02000, e26270, c01000,
-                 c00100, NIIT_thd, MARS, NIIT_PT_taxed, NIIT_rt, niit):
+                 c00100, MARS, niit, NIIT_thd, NIIT_PT_taxed, NIIT_rt):
     """
     Computes Net Investment Income Tax (NIIT) amount assuming that
     all annuity income is excluded from net investment income.
     """
     modAGI = c00100  # no foreign earned income exclusion to add
     if not NIIT_PT_taxed:
-        NII = max(0., e00300 + e00600 + c01000 + e02000 - e26270)
+        NII = np.maximum(0., e00300 + e00600 + c01000 + e02000 - e26270)
     else:  # do not subtract e26270 from e02000
-        NII = max(0., e00300 + e00600 + c01000 + e02000)
-    niit = NIIT_rt * min(NII, max(0., modAGI - NIIT_thd[MARS - 1]))
+        NII = np.maximum(0., e00300 + e00600 + c01000 + e02000)
+    niit = NIIT_rt * np.minimum(NII, np.maximum(0., modAGI - NIIT_thd[MARS - 1]))
     return niit
 
 
-@iterate_jit(nopython=True)
-def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
-          exact, c00100, CDCC_ps, CDCC_ps2, CDCC_crt, CDCC_frt,
-          CDCC_prt, CDCC_refundable, c05800, e07300, c07180, CDCC_refund):
+# @iterate_jit(nopython=True)
+@np.vectorize
+def F2441(MARS, earned_p, earned_s, f2441, e32800, exact, c00100, 
+          c05800, e07300, c07180, CDCC_refund, CDCC_c, CDCC_ps, CDCC_ps2,
+          CDCC_crt, CDCC_frt, CDCC_prt, CDCC_refundable):
     """
     Calculates Form 2441 child and dependent care expense credit, c07180.
     """
@@ -1270,7 +1332,7 @@ def F2441(MARS, earned_p, earned_s, f2441, CDCC_c, e32800,
     return (c07180, CDCC_refund)
 
 
-@JIT(nopython=True)
+# @JIT(nopython=True)
 def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
                phaseout_start, agi, phaseout_rate):
     """
@@ -1279,31 +1341,31 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
     EITC formula is not available on IRS forms or in IRS instructions;
     the extensive IRS EITC look-up table does not reveal the formula.
     """
-    eitc = min((basic_frac * max_amount +
+    eitc = np.minimum((basic_frac * max_amount +
                 (1.0 - basic_frac) * phasein_rate * earnings), max_amount)
     if earnings > phaseout_start or agi > phaseout_start:
-        eitcx = max(0., (max_amount - phaseout_rate *
-                         max(0., max(earnings, agi) - phaseout_start)))
-        eitc = min(eitc, eitcx)
+        eitcx = np.maximum(0., (max_amount - phaseout_rate *
+                         np.maximum(0., np.maximum(earnings, agi) - phaseout_start)))
+        eitc = np.minimum(eitc, eitcx)
     return eitc
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
+@np.vectorize
 def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
          e02000, e26270, age_head, age_spouse, earned, earned_p, earned_s,
          EITC_ps, EITC_MinEligAge, EITC_MaxEligAge, EITC_ps_MarriedJ,
          EITC_rt, EITC_c, EITC_prt, EITC_basic_frac,
          EITC_InvestIncome_c, EITC_excess_InvestIncome_rt,
-         EITC_indiv, EITC_sep_filers_elig,
-         c59660):
+         EITC_indiv, EITC_sep_filers_elig):
     """
     Computes EITC amount, c59660.
     """
     # pylint: disable=too-many-branches
     if MARS != 2:
         eitc = EITCamount(EITC_basic_frac,
-                          EITC_rt[EIC], earned, EITC_c[EIC],
-                          EITC_ps[EIC], c00100, EITC_prt[EIC])
+                          EITC_rt, earned, EITC_c,
+                          EITC_ps, c00100, EITC_prt)
         if EIC == 0:
             # enforce age eligibility rule for those with no EITC-eligible
             # kids assuming that an unknown age_* value implies EITC age
@@ -1317,20 +1379,20 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
             c59660 = eitc
 
     if MARS == 2:
-        po_start = EITC_ps[EIC] + EITC_ps_MarriedJ[EIC]
+        po_start = EITC_ps + EITC_ps_MarriedJ
         if not EITC_indiv:
             # filing unit EITC rather than individual EITC
             eitc = EITCamount(EITC_basic_frac,
-                              EITC_rt[EIC], earned, EITC_c[EIC],
-                              po_start, c00100, EITC_prt[EIC])
+                              EITC_rt, earned, EITC_c,
+                              po_start, c00100, EITC_prt)
         if EITC_indiv:
             # individual EITC rather than a filing-unit EITC
             eitc_p = EITCamount(EITC_basic_frac,
-                                EITC_rt[EIC], earned_p, EITC_c[EIC],
-                                po_start, earned_p, EITC_prt[EIC])
+                                EITC_rt, earned_p, EITC_c,
+                                po_start, earned_p, EITC_prt)
             eitc_s = EITCamount(EITC_basic_frac,
-                                EITC_rt[EIC], earned_s, EITC_c[EIC],
-                                po_start, earned_s, EITC_prt[EIC])
+                                EITC_rt, earned_s, EITC_c,
+                                po_start, earned_s, EITC_prt)
             eitc = eitc_p + eitc_s
 
         if EIC == 0:
@@ -1357,31 +1419,26 @@ def EITC(MARS, DSI, EIC, c00100, e00300, e00400, e00600, c01000,
     return c59660
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def RefundablePayrollTaxCredit(was_plus_sey_p, was_plus_sey_s,
-                               RPTC_c, RPTC_rt,
-                               rptc_p, rptc_s, rptc):
+                               RPTC_c, RPTC_rt):
     """
     Computes refundable payroll tax credit amounts.
     """
-    rptc_p = min(was_plus_sey_p * RPTC_rt, RPTC_c)
-    rptc_s = min(was_plus_sey_s * RPTC_rt, RPTC_c)
+    rptc_p = np.minimum(was_plus_sey_p * RPTC_rt, RPTC_c)
+    rptc_s = np.minimum(was_plus_sey_s * RPTC_rt, RPTC_c)
     rptc = rptc_p + rptc_s
     return (rptc_p, rptc_s, rptc)
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
+@np.vectorize
 def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
-                      e07260, CR_ResidentialEnergy_hc,
-                      e07300, CR_ForeignTax_hc,
-                      c07180,
-                      c07230,
-                      e07240, CR_RetirementSavings_hc,
-                      c07200,
-                      CTC_c, CTC_ps, CTC_prt, exact, ODC_c,
-                      CTC_c_under6_bonus, nu06,
-                      CTC_refundable, CTC_include17, n21, n1820,
-                      c07220, odc, codtc_limited):
+                      e07260, e07300, c07180, c07230, e07240,
+                      c07200, n21, n1820, exact, nu06,
+                      CTC_c, CTC_ps, CTC_prt, ODC_c, CR_ForeignTax_hc,
+                      CR_ResidentialEnergy_hc, CTC_c_under6_bonus,
+                      CTC_refundable, CTC_include17, CR_RetirementSavings_hc):
     """
     Computes amounts on "Child Tax Credit and Credit for Other Dependents
     Worksheet" in 2018 Publication 972, which pertain to these two
@@ -1396,8 +1453,8 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     line2 = ODC_c * max(0, XTOT - childnum - num)
     line3 = line1 + line2
     modAGI = c00100  # no foreign earned income exclusion to add to AGI (line6)
-    if line3 > 0. and modAGI > CTC_ps[MARS - 1]:
-        excess = modAGI - CTC_ps[MARS - 1]
+    if line3 > 0. and modAGI > CTC_ps:
+        excess = modAGI - CTC_ps
         if exact == 1:  # exact calculation as on tax forms
             excess = 1000. * math.ceil(excess / 1000.)
         line10 = max(0., line3 - CTC_prt * excess)
@@ -1434,46 +1491,57 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
     return (c07220, odc, codtc_limited)
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def PersonalTaxCredit(MARS, c00100, XTOT,
                       II_credit, II_credit_ps, II_credit_prt,
                       II_credit_nr, II_credit_nr_ps, II_credit_nr_prt,
-                      RRC_c, RRC_ps, RRC_pe,
-                      personal_refundable_credit,
-                      personal_nonrefundable_credit,
-                      recovery_rebate_credit):
+                      RRC_c, RRC_ps, RRC_pe):
     """
     Computes personal_refundable_credit and personal_nonrefundable_credit,
     neither of which are part of current-law policy.
     """
     # calculate personal refundable credit amount with phase-out
     personal_refundable_credit = II_credit[MARS - 1]
-    if II_credit_prt > 0. and c00100 > II_credit_ps[MARS - 1]:
-        pout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
+    if II_credit_prt > 0.:# and c00100 > II_credit_ps[MARS - 1]:
+        # pout = II_credit_prt * (c00100 - II_credit_ps[MARS - 1])
+        pout = np.where(c00100 > II_credit_ps[MARS - 1],
+                        II_credit_prt * (c00100 - II_credit_ps[MARS - 1]), 0.)
         fully_phasedout = personal_refundable_credit - pout
-        personal_refundable_credit = max(0., fully_phasedout)
+        personal_refundable_credit = np.maximum(0., fully_phasedout)
     # calculate personal nonrefundable credit amount with phase-out
     personal_nonrefundable_credit = II_credit_nr[MARS - 1]
-    if II_credit_nr_prt > 0. and c00100 > II_credit_nr_ps[MARS - 1]:
-        pout = II_credit_nr_prt * (c00100 - II_credit_nr_ps[MARS - 1])
+    if II_credit_nr_prt > 0.:# and c00100 > II_credit_nr_ps[MARS - 1]:
+        # pout = II_credit_nr_prt * (c00100 - II_credit_nr_ps[MARS - 1])
+        pout = np.where(c00100 > II_credit_nr_ps[MARS - 1],
+                        II_credit_nr_prt * (c00100 - II_credit_nr_ps[MARS - 1]), 0.)
         fully_phasedout = personal_nonrefundable_credit - pout
-        personal_nonrefundable_credit = max(0., fully_phasedout)
+        personal_nonrefundable_credit = np.maximum(0., fully_phasedout)
     # calculate Recovery Rebate Credit from ARPA 2021
-    if c00100 < RRC_ps[MARS - 1]:
-        recovery_rebate_credit = RRC_c * XTOT
-    elif c00100 < RRC_pe[MARS - 1]:
-        prt = ((c00100 - RRC_ps[MARS - 1]) /
-               (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
-        recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
-    else:
-        recovery_rebate_credit = 0.0
+    # if c00100 < RRC_ps[MARS - 1]:
+    #     recovery_rebate_credit = RRC_c * XTOT
+    # elif c00100 < RRC_pe[MARS - 1]:
+    #     prt = ((c00100 - RRC_ps[MARS - 1]) /
+    #            (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
+    #     recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
+    # else:
+    #     recovery_rebate_credit = 0.0
+
+    prt = np.where(c00100 < RRC_pe[MARS - 1],
+                  ((c00100 - RRC_ps[MARS - 1]) /
+                     (RRC_pe[MARS - 1] - RRC_ps[MARS - 1])),
+                  0.)
+
+    condlist = [c00100 < RRC_ps[MARS - 1], c00100 < RRC_pe[MARS - 1],
+                  np.logical_and(c00100 >= RRC_ps[MARS - 1], c00100 >= RRC_pe[MARS - 1])]
+    choicelist = [RRC_c * XTOT, RRC_c * XTOT * (1 - prt), 0.0]
+    recovery_rebate_credit = np.select(condlist, choicelist)
+
     return (personal_refundable_credit, personal_nonrefundable_credit,
             recovery_rebate_credit)
 
 
-@iterate_jit(nopython=True)
 def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
-                     CR_AmOppNonRefundable_hc, c10960, c87668):
+                     CR_AmOppNonRefundable_hc):
     """
     Applies a phaseout to the Form 8863, line 1, American Opportunity Credit
     amount, e87521, and then applies the 0.4 refundable rate.
@@ -1514,26 +1582,45 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
 
         c87668 : Tentative nonrefundable part of American Opportunity Credit
     """
-    if e87521 > 0.:
-        c87658 = max(0., 90000. * num - c00100)
-        c87660 = 10000. * num
-        if exact == 1:  # exact calculation as on tax forms
-            c87662 = 1000. * min(1., round(c87658 / c87660, 3))
-        else:
-            c87662 = 1000. * min(1., c87658 / c87660)
-        c87664 = c87662 * e87521 / 1000.
-        c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
-        c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
-    else:
-        c10960 = 0.
-        c87668 = 0.
+    # if e87521 > 0.:
+    #     c87658 = max(0., 90000. * num - c00100)
+    #     c87660 = 10000. * num
+    #     if exact == 1:  # exact calculation as on tax forms
+    #         c87662 = 1000. * min(1., round(c87658 / c87660, 3))
+    #     else:
+    #         c87662 = 1000. * min(1., c87658 / c87660)
+    #     c87664 = c87662 * e87521 / 1000.
+    #     c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
+    #     c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
+    # else:
+    #     c10960 = 0.
+    #     c87668 = 0.
+    # return (c10960, c87668)
+
+    c87658 = np.where(e87521 > 0., np.maximum(0., 90000. * num - c00100), 0.)
+    c87660 = np.where(e87521 > 0., 10000. * num, 0.)
+
+    c87662 = np.where(np.logical_and(e87521 > 0., exact == 1),
+
+                      1000. * np.minimum(1., np.around(c87658 / c87660, 3)),
+                      
+                      np.where(np.logical_and(e87521 > 0., exact != 1),
+                               1000. * np.minimum(1., c87658 / c87660),
+                               0.)
+                     )
+
+    c87664 = np.where(e87521 > 0., c87662 * e87521 / 1000., 0.)
+    c10960 = np.where(e87521 > 0., 0.4 * c87664 * (1. - CR_AmOppRefundable_hc), 0.)
+    c87668 = np.where(e87521 > 0., c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc), 0.)
+
     return (c10960, c87668)
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
+@np.vectorize
 def SchR(age_head, age_spouse, MARS, c00100,
-         c05800, e07300, c07180, e02400, c02500, e01500, e01700, CR_SchR_hc,
-         c07200):
+         c05800, e07300, c07180, e02400, c02500,
+         e01500, e01700, CR_SchR_hc):
     """
     Calculates Schedule R credit for the elderly and the disabled, c07200.
 
@@ -1585,12 +1672,11 @@ def SchR(age_head, age_spouse, MARS, c00100,
     return c07200
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
                        e07300, c07180, c07200, c87668,
                        LLC_Expense_c, ETC_pe_Single, ETC_pe_Married,
-                       CR_Education_hc,
-                       c07230):
+                       CR_Education_hc):
     """
     Computes Education Tax Credits (Form 8863) nonrefundable amount, c07230.
     Logic corresponds to Form 8863, Part II.
@@ -1626,51 +1712,53 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
     -------
     c07230 : Education Tax Credits (Form 8863) nonrefundable amount
     """
-    c87560 = 0.2 * min(e87530, LLC_Expense_c)
-    if MARS == 2:
-        c87570 = ETC_pe_Married * 1000.
-    else:
-        c87570 = ETC_pe_Single * 1000.
-    c87590 = max(0., c87570 - c00100)
+    c87560 = 0.2 * np.minimum(e87530, LLC_Expense_c)
+    c87570 = np.where(MARS == 2, ETC_pe_Married * 1000., ETC_pe_Single * 1000.)
+    # if MARS == 2:
+        # c87570 = ETC_pe_Married * 1000.
+    # else:
+        # c87570 = ETC_pe_Single * 1000.
+    c87590 = np.maximum(0., c87570 - c00100)
     c87600 = 10000. * num
-    if exact == 1:  # exact calculation as on tax forms
-        c87610 = min(1., round(c87590 / c87600, 3))
-    else:
-        c87610 = min(1., c87590 / c87600)
+    c87610 = np.where(exact == 1, np.minimum(1., round(c87590 / c87600, 3)), np.minimum(1., c87590 / c87600))
+    # if exact == 1:  # exact calculation as on tax forms
+    #     c87610 = np.minimum(1., round(c87590 / c87600, 3))
+    # else:
+    #     c87610 = np.minimum(1., c87590 / c87600)
     c87620 = c87560 * c87610
-    xline4 = max(0., c05800 - (e07300 + c07180 + c07200))
-    xline5 = min(c87620, xline4)
-    xline9 = max(0., c05800 - (e07300 + c07180 + c07200 + xline5))
-    xline10 = min(c87668, xline9)
+    xline4 = np.maximum(0., c05800 - (e07300 + c07180 + c07200))
+    xline5 = np.minimum(c87620, xline4)
+    xline9 = np.maximum(0., c05800 - (e07300 + c07180 + c07200 + xline5))
+    xline10 = np.minimum(c87668, xline9)
     c87680 = xline5 + xline10
     c07230 = c87680 * (1. - CR_Education_hc)
     return c07230
 
 
-@iterate_jit(nopython=True)
-def CharityCredit(e19800, e20100, c00100, CR_Charity_rt, CR_Charity_f,
-                  CR_Charity_frt, MARS, charity_credit):
+def CharityCredit(e19800, e20100, c00100, MARS,
+                  CR_Charity_rt, CR_Charity_f,
+                  CR_Charity_frt):
     """
     Computes nonrefundable charity credit, charity_credit.
     This credit is not part of current-law policy.
     """
     total_charity = e19800 + e20100
-    floor = max(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
-    charity_cr_floored = max(total_charity - floor, 0)
+    floor = np.maximum(CR_Charity_frt * c00100, CR_Charity_f[MARS - 1])
+    charity_cr_floored = np.maximum(total_charity - floor, 0)
     charity_credit = CR_Charity_rt * (charity_cr_floored)
     return charity_credit
 
 
-@iterate_jit(nopython=True)
-def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
+# @iterate_jit(nopython=True)
+def NonrefundableCredits(c07300, c07180, c07230, c07240, c07220,
+                         c07260, c07400, c07600, c07200, c08000,
+                         c05800, e07240, e07260, e07300, e07400,
                          e07600, p08000, odc,
-                         personal_nonrefundable_credit,
+                         personal_nonrefundable_credit, charity_credit,
                          CTC_refundable,
                          CR_RetirementSavings_hc, CR_ForeignTax_hc,
                          CR_ResidentialEnergy_hc, CR_GeneralBusiness_hc,
-                         CR_MinimumTax_hc, CR_OtherCredits_hc, charity_credit,
-                         c07180, c07200, c07220, c07230, c07240,
-                         c07260, c07300, c07400, c07600, c08000):
+                         CR_MinimumTax_hc, CR_OtherCredits_hc):
     """
     NonRefundableCredits function sequentially limits credits to tax liability.
 
@@ -1687,55 +1775,55 @@ def NonrefundableCredits(c05800, e07240, e07260, e07300, e07400,
     # limit tax credits to tax liability in order they are on 2015 1040 form
     avail = c05800
     # Foreign tax credit - Form 1116
-    c07300 = min(e07300 * (1. - CR_ForeignTax_hc), avail)
+    c07300 = np.minimum(e07300 * (1. - CR_ForeignTax_hc), avail)
     avail = avail - c07300
     # Child & dependent care expense credit
-    c07180 = min(c07180, avail)
+    c07180 = np.minimum(c07180, avail)
     avail = avail - c07180
     # Education tax credit
-    c07230 = min(c07230, avail)
+    c07230 = np.minimum(c07230, avail)
     avail = avail - c07230
     # Retirement savings credit - Form 8880
-    c07240 = min(e07240 * (1. - CR_RetirementSavings_hc), avail)
+    c07240 = np.minimum(e07240 * (1. - CR_RetirementSavings_hc), avail)
     avail = avail - c07240
     # Child tax credit
     if not CTC_refundable:
-        c07220 = min(c07220, avail)
+        c07220 = np.minimum(c07220, avail)
         avail = avail - c07220
     # Other dependent credit
-    odc = min(odc, avail)
+    odc = np.minimum(odc, avail)
     avail = avail - odc
     # Residential energy credit - Form 5695
-    c07260 = min(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
+    c07260 = np.minimum(e07260 * (1. - CR_ResidentialEnergy_hc), avail)
     avail = avail - c07260
     # General business credit - Form 3800
-    c07400 = min(e07400 * (1. - CR_GeneralBusiness_hc), avail)
+    c07400 = np.minimum(e07400 * (1. - CR_GeneralBusiness_hc), avail)
     avail = avail - c07400
     # Prior year minimum tax credit - Form 8801
-    c07600 = min(e07600 * (1. - CR_MinimumTax_hc), avail)
+    c07600 = np.minimum(e07600 * (1. - CR_MinimumTax_hc), avail)
     avail = avail - c07600
     # Schedule R credit
-    c07200 = min(c07200, avail)
+    c07200 = np.minimum(c07200, avail)
     avail = avail - c07200
     # Other credits
-    c08000 = min(p08000 * (1. - CR_OtherCredits_hc), avail)
+    c08000 = np.minimum(p08000 * (1. - CR_OtherCredits_hc), avail)
     avail = avail - c08000
-    charity_credit = min(charity_credit, avail)
+    charity_credit = np.minimum(charity_credit, avail)
     avail = avail - charity_credit
     # Personal nonrefundable credit
-    personal_nonrefundable_credit = min(personal_nonrefundable_credit, avail)
+    personal_nonrefundable_credit = np.minimum(personal_nonrefundable_credit, avail)
     avail = avail - personal_nonrefundable_credit
     return (c07180, c07200, c07220, c07230, c07240, odc,
             c07260, c07300, c07400, c07600, c08000, charity_credit,
             personal_nonrefundable_credit)
 
 
-@iterate_jit(nopython=True)
-def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
-                  ACTC_rt, nu06, ACTC_rt_bonus_under6family, ACTC_ChildNum,
-                  CTC_refundable, CTC_include17, XTOT, n21, n1820, num,
-                  ptax_was, c03260, e09800, c59660, e11200,
-                  c11070):
+# @iterate_jit(nopython=True)
+@np.vectorize
+def AdditionalCTC(codtc_limited, nu06, n24, earned, XTOT, n21, n1820, num,
+                  ptax_was, c03260, e09800, c59660, e11200, ACTC_c, ACTC_Income_thd,
+                  ACTC_rt, ACTC_rt_bonus_under6family, ACTC_ChildNum,
+                  CTC_refundable, CTC_include17):
     """
     Calculates refundable Additional Child Tax Credit (ACTC), c11070,
     following 2018 Form 8812 logic.
@@ -1778,7 +1866,7 @@ def AdditionalCTC(codtc_limited, ACTC_c, n24, earned, ACTC_Income_thd,
     return c11070
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
           c07400, c07600, c08000, e09700, e09800, e09900, niit, othertaxes,
           c07100, c09200, odc, charity_credit,
@@ -1793,20 +1881,20 @@ def C1040(c05800, c07180, c07200, c07220, c07230, c07240, c07260, c07300,
               c07230 + c07240 + c07260 + odc + charity_credit +
               personal_nonrefundable_credit)
     # tax after credits (2016 Form 1040, line 56)
-    tax_net_nonrefundable_credits = max(0., c05800 - c07100)
+    tax_net_nonrefundable_credits = np.maximum(0., c05800 - c07100)
     # tax (including othertaxes) before refundable credits
     othertaxes = e09700 + e09800 + e09900 + niit
     c09200 = othertaxes + tax_net_nonrefundable_credits
     return (c07100, othertaxes, c09200)
 
 
-@iterate_jit(nopython=True)
-def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
+# @iterate_jit(nopython=True)
+@np.vectorize
+def CTC_new(payrolltax, n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oasdi,
+            c09200, CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
             CTC_new_ps, CTC_new_prt, CTC_new_for_all, CTC_include17,
             CTC_new_refund_limited, CTC_new_refund_limit_payroll_rt,
-            CTC_new_refund_limited_all_payroll, payrolltax,
-            n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oasdi,
-            c09200, ctc_new):
+            CTC_new_refund_limited_all_payroll):
     """
     Computes new refundable child tax credit using specified parameters.
     """
@@ -1819,7 +1907,7 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
         ctc_new = CTC_new_c * childnum + CTC_new_c_under6_bonus * nu06
         if not CTC_new_for_all:
             ctc_new = min(CTC_new_rt * posagi, ctc_new)
-        ymax = CTC_new_ps[MARS - 1]
+        ymax = CTC_new_ps
         if posagi > ymax:
             ctc_new_reduced = max(0.,
                                   ctc_new - CTC_new_prt * (posagi - ymax))
@@ -1837,10 +1925,10 @@ def CTC_new(CTC_new_c, CTC_new_rt, CTC_new_c_under6_bonus,
     return ctc_new
 
 
-@iterate_jit(nopython=True)
+# @iterate_jit(nopython=True)
 def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
-          c09200, payrolltax, CDCC_refund, recovery_rebate_credit,
-          eitc, c07220, CTC_refundable, refund, iitax, combined):
+          c09200, payrolltax, recovery_rebate_credit, eitc, c07220,
+          refund, iitax, combined, CDCC_refund, CTC_refundable):
     """
     Computes final taxes.
     """
@@ -1855,8 +1943,6 @@ def IITAX(c59660, c11070, c10960, personal_refundable_credit, ctc_new, rptc,
     combined = iitax + payrolltax
     return (eitc, refund, iitax, combined)
 
-
-@JIT(nopython=True)
 def Taxes(income, MARS, tbrk_base,
           rate1, rate2, rate3, rate4, rate5, rate6, rate7, rate8,
           tbrk1, tbrk2, tbrk3, tbrk4, tbrk5, tbrk6, tbrk7):
@@ -1865,30 +1951,37 @@ def Taxes(income, MARS, tbrk_base,
     schedule specified by the rate* and (upper) tbrk* parameters and
     given income, filing status (MARS), and tax bracket base (tbrk_base).
     """
-    if tbrk_base > 0.:
-        brk1 = max(tbrk1[MARS - 1] - tbrk_base, 0.)
-        brk2 = max(tbrk2[MARS - 1] - tbrk_base, 0.)
-        brk3 = max(tbrk3[MARS - 1] - tbrk_base, 0.)
-        brk4 = max(tbrk4[MARS - 1] - tbrk_base, 0.)
-        brk5 = max(tbrk5[MARS - 1] - tbrk_base, 0.)
-        brk6 = max(tbrk6[MARS - 1] - tbrk_base, 0.)
-        brk7 = max(tbrk7[MARS - 1] - tbrk_base, 0.)
-    else:
-        brk1 = tbrk1[MARS - 1]
-        brk2 = tbrk2[MARS - 1]
-        brk3 = tbrk3[MARS - 1]
-        brk4 = tbrk4[MARS - 1]
-        brk5 = tbrk5[MARS - 1]
-        brk6 = tbrk6[MARS - 1]
-        brk7 = tbrk7[MARS - 1]
-    return (rate1 * min(income, brk1) +
-            rate2 * min(brk2 - brk1, max(0., income - brk1)) +
-            rate3 * min(brk3 - brk2, max(0., income - brk2)) +
-            rate4 * min(brk4 - brk3, max(0., income - brk3)) +
-            rate5 * min(brk5 - brk4, max(0., income - brk4)) +
-            rate6 * min(brk6 - brk5, max(0., income - brk5)) +
-            rate7 * min(brk7 - brk6, max(0., income - brk6)) +
-            rate8 * max(0., income - brk7))
+    brk1 = np.where(tbrk_base > 0., np.maximum(tbrk1[MARS - 1] - tbrk_base, 0.), tbrk1[MARS - 1])
+    brk2 = np.where(tbrk_base > 0., np.maximum(tbrk2[MARS - 1] - tbrk_base, 0.), tbrk2[MARS - 1])
+    brk3 = np.where(tbrk_base > 0., np.maximum(tbrk3[MARS - 1] - tbrk_base, 0.), tbrk3[MARS - 1])
+    brk4 = np.where(tbrk_base > 0., np.maximum(tbrk4[MARS - 1] - tbrk_base, 0.), tbrk4[MARS - 1])
+    brk5 = np.where(tbrk_base > 0., np.maximum(tbrk5[MARS - 1] - tbrk_base, 0.), tbrk5[MARS - 1])
+    brk6 = np.where(tbrk_base > 0., np.maximum(tbrk6[MARS - 1] - tbrk_base, 0.), tbrk6[MARS - 1])
+    brk7 = np.where(tbrk_base > 0., np.maximum(tbrk7[MARS - 1] - tbrk_base, 0.), tbrk7[MARS - 1])
+    # if tbrk_base > 0.:
+    #     brk1 = np.maximum(tbrk1[MARS - 1] - tbrk_base, 0.)
+    #     brk2 = np.maximum(tbrk2[MARS - 1] - tbrk_base, 0.)
+    #     brk3 = np.maximum(tbrk3[MARS - 1] - tbrk_base, 0.)
+    #     brk4 = np.maximum(tbrk4[MARS - 1] - tbrk_base, 0.)
+    #     brk5 = np.maximum(tbrk5[MARS - 1] - tbrk_base, 0.)
+    #     brk6 = np.maximum(tbrk6[MARS - 1] - tbrk_base, 0.)
+    #     brk7 = np.maximum(tbrk7[MARS - 1] - tbrk_base, 0.)
+    # else:
+    #     brk1 = tbrk1[MARS - 1]
+    #     brk2 = tbrk2[MARS - 1]
+    #     brk3 = tbrk3[MARS - 1]
+    #     brk4 = tbrk4[MARS - 1]
+    #     brk5 = tbrk5[MARS - 1]
+    #     brk6 = tbrk6[MARS - 1]
+    #     brk7 = tbrk7[MARS - 1]
+    return (rate1 * np.minimum(income, brk1) +
+            rate2 * np.minimum(brk2 - brk1, np.maximum(0., income - brk1)) +
+            rate3 * np.minimum(brk3 - brk2, np.maximum(0., income - brk2)) +
+            rate4 * np.minimum(brk4 - brk3, np.maximum(0., income - brk3)) +
+            rate5 * np.minimum(brk5 - brk4, np.maximum(0., income - brk4)) +
+            rate6 * np.minimum(brk6 - brk5, np.maximum(0., income - brk5)) +
+            rate7 * np.minimum(brk7 - brk6, np.maximum(0., income - brk6)) +
+            rate8 * np.maximum(0., income - brk7))
 
 
 def ComputeBenefit(calc, ID_switch):
@@ -1976,11 +2069,9 @@ def BenefitLimitation(calc):
         calc.incarray('combined', excess_benefit)
 
 
-# @iterate_jit(nopython=True)
 @np.vectorize
 def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc, iitax, combined, surtax,
-                 FST_AGI_trt, FST_AGI_thd_lo, FST_AGI_thd_hi):
-                 # fstax, iitax, combined, surtax):
+                 FST_AGI_trt, FST_AGI_thd_lo_all, FST_AGI_thd_hi_all):
     """
     Computes Fair Share Tax, or "Buffet Rule", types of reforms.
 
@@ -2009,8 +2100,6 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc, iitax, combined, surta
     surtax : individual income tax subtotal augmented by fstax
     """
     
-    # NOTE: FST_AGI_thd_lo and FST_AGI_thd_hi are replaced by FST_AGI_thd_lo_all
-    # and FST_AGI_thd_hi_all to make broadcasting work
     if FST_AGI_trt > 0. and c00100 >= FST_AGI_thd_lo_all:
         employee_share = 0.5 * ptax_was + 0.5 * setax + ptax_amc
         fstax = max(c00100 * FST_AGI_trt - iitax - employee_share, 0.)
@@ -2025,58 +2114,54 @@ def FairShareTax(c00100, MARS, ptax_was, setax, ptax_amc, iitax, combined, surta
     return (fstax, iitax, combined, surtax)
 
 
-@iterate_jit(nopython=True)
-def LumpSumTax(DSI, num, XTOT,
-               LST,
-               lumpsum_tax, combined):
+
+def LumpSumTax(DSI, num, XTOT, combined,
+               LST):
     """
     Computes lump-sum tax and add it to combined taxes.
     """
-    if LST == 0.0 or DSI == 1:
-        lumpsum_tax = 0.
-    else:
-        lumpsum_tax = LST * max(num, XTOT)
+    lumpsum_tax = np.where(LST == 0 or DSI == 1, 0, LST * np.maximum(num, XTOT))
     combined += lumpsum_tax
+
     return (lumpsum_tax, combined)
 
 
-@iterate_jit(nopython=True)
+
 def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
                  e00700, e00800, e00900, e01100, e01200, e01400, e01500,
                  e02000, e02100, p22250, p23250, cmbtp, ptax_was,
-                 benefit_value_total, expanded_income):
+                 benefit_value_total):
     """
     Calculates expanded_income from component income types.
     """
-    expanded_income = (
-        e00200 +  # wage and salary income net of DC pension contributions
-        pencon_p +  # tax-advantaged DC pension contributions for taxpayer
-        pencon_s +  # tax-advantaged DC pension contributions for spouse
-        e00300 +  # taxable interest income
-        e00400 +  # non-taxable interest income
-        e00600 +  # dividends
-        e00700 +  # state and local income tax refunds
-        e00800 +  # alimony received
-        e00900 +  # Sch C business net income/loss
-        e01100 +  # capital gain distributions not reported on Sch D
-        e01200 +  # Form 4797 other net gain/loss
-        e01400 +  # taxable IRA distributions
-        e01500 +  # total pension & annuity income (including DB-plan benefits)
-        e02000 +  # Sch E total rental, ..., partnership, S-corp income/loss
-        e02100 +  # Sch F farm net income/loss
-        p22250 +  # Sch D: net short-term capital gain/loss
-        p23250 +  # Sch D: net long-term capital gain/loss
-        cmbtp +  # other AMT taxable income items from Form 6251
-        0.5 * ptax_was +  # employer share of FICA taxes on wages/salaries
+    expanded_income = np.sum([
+        e00200,  # wage and salary income net of DC pension contributions
+        pencon_p,  # tax-advantaged DC pension contributions for taxpayer
+        pencon_s,  # tax-advantaged DC pension contributions for spouse
+        e00300,  # taxable interest income
+        e00400,  # non-taxable interest income
+        e00600,  # dividends
+        e00700,  # state and local income tax refunds
+        e00800,  # alimony received
+        e00900,  # Sch C business net income/loss
+        e01100,  # capital gain distributions not reported on Sch D
+        e01200,  # Form 4797 other net gain/loss
+        e01400,  # taxable IRA distributions
+        e01500,  # total pension & annuity income (including DB-plan benefits)
+        e02000,  # Sch E total rental, ..., partnership, S-corp income/loss
+        e02100,  # Sch F farm net income/loss
+        p22250,  # Sch D: net short-term capital gain/loss
+        p23250,  # Sch D: net long-term capital gain/loss
+        cmbtp,  # other AMT taxable income items from Form 6251
+        0.5 * ptax_was,  # employer share of FICA taxes on wages/salaries
         benefit_value_total  # consumption value of all benefits received;
         # see the BenefitPrograms function in this file for details on
         # exactly how the benefit_value_total variable is computed
-    )
+    ])
     return expanded_income
 
 
-@iterate_jit(nopython=True)
-def AfterTaxIncome(combined, expanded_income, aftertax_income):
+def AfterTaxIncome(combined, expanded_income):
     """
     Calculates after-tax expanded income.
 

@@ -8,6 +8,7 @@ Tax-Calculator federal income and payroll tax Calculator class.
 # pylint: disable=too-many-lines,no-value-for-parameter
 
 import copy
+from collections import OrderedDict
 import numpy as np
 import pandas as pd
 import paramtools
@@ -168,24 +169,22 @@ class Calculator():
         """
         df = self._Calculator__records._datastore
         def get_params(params: list):
-            pl = {}
+            pl = OrderedDict()
             for p in params:
                 pl[p] = self.policy_param(p)
             return pl
 
 
         pl = get_params(['UBI_u18', 'UBI_1820', 'UBI_21', 'UBI_ecrt'])
-
-        return_ubi = UBI(df.nu18, df.n1820, df.n21,
-                        *pl.values())
-
-        out_args = ['ubi', 'taxable_ubi', 'nontaxable_ubi']
-        for out_arg, col in zip(out_args, return_ubi):
+        return_ubi = UBI(df.nu18, df.n1820, df.n21, *pl.values())
+        for out_arg, col in zip(['ubi', 'taxable_ubi', 'nontaxable_ubi'], return_ubi):
             df[out_arg] = col
-        # BenefitPrograms(self)
-        # self._calc_one_year(zero_out_calc_vars)
-        # BenefitSurtax(self)
-        # BenefitLimitation(self)
+
+        BenefitPrograms(self)
+        self._calc_one_year(zero_out_calc_vars)
+        BenefitSurtax(self)
+        BenefitLimitation(self)
+
         pl = get_params(['FST_AGI_trt', 'FST_AGI_thd_lo', 'FST_AGI_thd_hi'])
         FST_AGI_thd_lo_all = pl['FST_AGI_thd_lo'][df.MARS-1]
         FST_AGI_thd_hi_all = pl['FST_AGI_thd_hi'][df.MARS-1]
@@ -193,13 +192,20 @@ class Calculator():
         return_fairshare = FairShareTax(df.c00100, df.MARS, df.ptax_was, df.setax, df.ptax_amc,
                                         df.iitax, df.combined, df.surtax,
                                         pl['FST_AGI_trt'], FST_AGI_thd_lo_all, FST_AGI_thd_hi_all)
-
-        out_args = ['fstax', 'iitax', 'combined', 'surtax']
-        for out_arg, col in zip(out_args, return_fairshare):
+        for out_arg, col in zip(['fstax', 'iitax', 'combined', 'surtax'], return_fairshare):
             df[out_arg] = col
-        # LumpSumTax(self.__policy, self.__records)
-        # ExpandIncome(self.__policy, self.__records)
-        # AfterTaxIncome(self.__policy, self.__records)
+
+        return_lumpsumtax = LumpSumTax(df.DSI, df.num, df.XTOT, df.combined,
+                            self.policy_param('LST'))
+        for out_arg, col in zip(['lumpsumtax', 'combined'], return_lumpsumtax):
+            df[out_arg] = col
+
+        df['expanded_income'] =  ExpandIncome(df.e00200, df.pencon_p, df.pencon_s, df.e00300, df.e00400, df.e00600,
+                                        df.e00700, df.e00800, df.e00900, df.e01100, df.e01200, df.e01400, df.e01500,
+                                        df.e02000, df.e02100, df.p22250, df.p23250, df.cmbtp, df.ptax_was,
+                                        df.benefit_value_total)
+
+        df['aftertax_income'] = AfterTaxIncome(df.combined, df.expanded_income)
 
     def weighted_total(self, variable_name):
         """
@@ -1381,32 +1387,176 @@ class Calculator():
         """
         Call TaxInc through AMT functions.
         """
-        TaxInc(self.__policy, self.__records)
-        SchXYZTax(self.__policy, self.__records)
-        GainsTax(self.__policy, self.__records)
-        AGIsurtax(self.__policy, self.__records)
-        NetInvIncTax(self.__policy, self.__records)
-        AMT(self.__policy, self.__records)
+        df = self._Calculator__records._datastore
+        def get_params(params: list):
+            pl = OrderedDict()
+            for p in params:
+                pl[p] = self.policy_param(p)
+            return pl
+
+        
+        pl = get_params(['PT_qbid_rt', 'PT_qbid_taxinc_thd', 'PT_qbid_taxinc_gap',
+                         'PT_qbid_w2_wages_rt', 'PT_qbid_alt_w2_wages_rt',
+                         'PT_qbid_alt_property_rt', 'PT_qbid_ps', 'PT_qbid_prt',
+                         'PT_qbid_limit_switch', 'UI_em', 'UI_thd'])
+        for p in ['UI_thd', 'PT_qbid_taxinc_thd', 'PT_qbid_taxinc_gap', 'PT_qbid_ps']:
+            pl[p] = pl[p][df.MARS-1]
+        df['c04800'], df['qbided'] = TaxInc(df.c00100, df.standard, df.c04470, df.c04600,
+               df.MARS, df.e00900, df.e26270, df.e02100,
+               df.e27200, df.e00650, df.c01000, df.e02300, df.PT_SSTB_income,
+               df.PT_binc_w2_wages, df.PT_ubia_property, *pl.values())
+
+
+
+        pl = get_params(['PT_rt1', 'PT_rt2', 'PT_rt3', 'PT_rt4', 'PT_rt5',
+                         'PT_rt6', 'PT_rt7', 'PT_rt8',
+                         'PT_brk1', 'PT_brk2', 'PT_brk3', 'PT_brk4', 'PT_brk5',
+                         'PT_brk6', 'PT_brk7',
+                         'II_rt1', 'II_rt2', 'II_rt3', 'II_rt4', 'II_rt5',
+                         'II_rt6', 'II_rt7', 'II_rt8',
+                         'II_brk1', 'II_brk2', 'II_brk3', 'II_brk4', 'II_brk5',
+                         'II_brk6', 'II_brk7', 'PT_EligibleRate_active',
+                         'PT_EligibleRate_passive', 'PT_wages_active_income',
+                         'PT_top_stacking'])
+        df['c05200'] = SchXYZTax(df.c04800, df.MARS, df.e00900, df.e26270, df.e02000, df.e00200, *pl.values())
+        
+        # GainsTax(self.__policy, self.__records)
+
+
+        pl = get_params(['AGI_surtax_trt', 'AGI_surtax_thd'])
+        df['taxbc'], df['surtax'] = AGIsurtax(df.c00100, df.MARS, df.taxbc, df.surtax, *pl.values())
+
+
+        pl = get_params(['NIIT_thd', 'NIIT_PT_taxed', 'NIIT_rt'])
+        df['niit'] = NetInvIncTax(df.e00300, df.e00600, df.e02000, df.e26270, df.c01000,
+                 df.c00100, df.MARS, df.niit, *pl.values())
+
+
+        # df_args = [df.e07300, df.dwks13, df.standard, df.f6251, df.c00100, df.c18300, df.taxbc,
+        #            df.c04470, df.c17000, df.c20800, df.c21040, df.e24515, df.MARS, df.sep, df.dwks19,
+        #            df.dwks14, df.c05700, df.e62900, df.e00700, df.dwks10, df.age_head, df.age_spouse,
+        #            df.earned, df.cmbtp]
+        # pl = get_params(['AMT_child_em_c_age', 'AMT_brk1',
+        #                  'AMT_em', 'AMT_prt', 'AMT_rt1', 'AMT_rt2',
+        #                  'AMT_child_em', 'AMT_em_ps', 'AMT_em_pe',
+        #                  'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3', 'AMT_CG_rt1', 'AMT_CG_rt2',
+        #                  'AMT_CG_rt3', 'AMT_CG_rt4'])
+        # for p in ['AMT_em', 'AMT_em_ps', 'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3']:
+        #     pl[p] = pl[p][df.MARS-1]
+        # return_amt = AMT(*df_args, *pl.values())
+        # for out_arg, col in zip(['c62100', 'c09600', 'c05800'], return_amt):
+        #     df[out_arg] = col
+
+        AMT(self.__policy, self.__records) # cannot use np.vectorize with this
 
     def _calc_one_year(self, zero_out_calc_vars=False):
+
         """
         Call all the functions except those in the calc_all() method.
         """
+        df = self._Calculator__records._datastore
+        def get_params(params: list):
+            pl = OrderedDict()
+            for p in params:
+                pl[p] = self.policy_param(p)
+            return pl
+
         # pylint: disable=too-many-statements
         if zero_out_calc_vars:
             self.__records.zero_out_changing_calculated_vars()
         # pdb.set_trace()
-        EI_PayrollTax(self.__policy, self.__records)
-        DependentCare(self.__policy, self.__records)
-        Adj(self.__policy, self.__records)
-        ALD_InvInc_ec_base(self.__policy, self.__records)
-        CapGains(self.__policy, self.__records)
-        SSBenefits(self.__policy, self.__records)
-        AGI(self.__policy, self.__records)
-        ItemDedCap(self.__policy, self.__records)
-        ItemDed(self.__policy, self.__records)
-        AdditionalMedicareTax(self.__policy, self.__records)
-        StdDed(self.__policy, self.__records)
+        pl = get_params(['FICA_ss_trt', 'FICA_mc_trt','ALD_SelfEmploymentTax_hc',
+                        'SS_Earnings_c','SS_Earnings_thd'])
+        returns_EI_payroll = EI_PayrollTax(df.e00200p, df.e00200s, df.e00900p, df.e00900s, df.e02100p, df.e02100s,
+                  df.k1bx14p, df.k1bx14s, df.pencon_p, df.pencon_s, *pl.values())
+        out_args = ['sey', 'payrolltax', 'ptax_was', 'setax', 'c03260', 'ptax_oasdi',
+                    'earned', 'earned_p', 'earned_s', 'was_plus_sey_p', 'was_plus_sey_s']
+        for out_arg, col in zip(out_args, returns_EI_payroll):
+            df[out_arg] = col
+
+
+        pl = get_params(['ALD_Dependents_hc', 'ALD_Dependents_Child_c', 'ALD_Dependents_Elder_c'])
+        ALD_Dependents_thd_all = self.policy_param('ALD_Dependents_thd')[df.MARS-1]
+        df['care_deduction'] = DependentCare(df.nu13, df.elderly_dependents, df.earned, df.MARS,
+                                             ALD_Dependents_thd_all, *pl.values())
+
+        df_args = [df.e03150, df.e03210, df.c03260,
+                   df.e03270, df.e03300, df.e03400, df.e03500, df.e00800,
+                   df.e03220, df.e03230, df.e03240, df.e03290, df.care_deduction]
+        pl = get_params(['ALD_StudentLoan_hc', 'ALD_SelfEmp_HealthIns_hc', 'ALD_KEOGH_SEP_hc',
+                         'ALD_EarlyWithdraw_hc', 'ALD_AlimonyPaid_hc', 'ALD_AlimonyReceived_hc',
+                         'ALD_EducatorExpenses_hc', 'ALD_HSADeduction_hc', 'ALD_IRAContributions_hc',
+                         'ALD_DomesticProduction_hc', 'ALD_Tuition_hc'])
+        df['c02900'] = Adj(*df_args, *pl.values())
+
+        df['invinc_ec_base'] = ALD_InvInc_ec_base(df.p22250, df.p23250, df.sep,
+                       df.e00300, df.e00600, df.e01100, df.e01200)
+        
+        pl = get_params(['ALD_InvInc_ec_rt', 'CG_nodiff', 'CG_ec',
+             'CG_reinvest_ec_rt', 'ALD_StudentLoan_hc'])
+        ALD_BusinessLosses_c_all = self.policy_param('ALD_BusinessLosses_c')[df.MARS-1]
+        return_capgains = CapGains(df.p23250, df.p22250, df.sep, df.invinc_ec_base, df.MARS,
+             df.e00200, df.e00300, df.e00600, df.e00650, df.e00700, df.e00800,
+             df.e00900, df.e01100, df.e01200, df.e01400, df.e01700, df.e02000, df.e02100,
+             df.e02300, df.e00400, df.e02400, df.c02900, df.e03210, df.e03230, df.e03240,
+             *pl.values(), ALD_BusinessLosses_c_all)
+        for out_arg, col in zip(['c01000', 'c23650', 'ymod', 'ymod1', 'invinc_agi_ec'], return_capgains):
+            df[out_arg] = col
+
+        SS_thd50_all = self.policy_param('SS_thd50')[df.MARS-1]
+        SS_thd85_all = self.policy_param('SS_thd85')[df.MARS-1]
+        df['c02500'] = SSBenefits(df.MARS, df.ymod, df.e02400, SS_thd50_all, SS_thd85_all,
+                       *get_params(['SS_percentage1', 'SS_percentage2']).values())
+
+        pl = get_params(['II_em', 'II_em_ps', 'II_prt', 'II_no_em_nu18'])
+        II_em_ps_all = self.policy_param('II_em_ps')[df.MARS-1]
+        pl['II_em_ps'] = II_em_ps_all
+        return_AGI = AGI(df.ymod1, df.c02500, df.c02900, df.XTOT,
+                         df.MARS, df.sep, df.DSI, df.exact, df.nu18, df.taxable_ubi,
+                         *pl.values())
+        for out_arg, col in zip(['c00100', 'pre_c04600', 'c04600'], return_AGI):
+            df[out_arg] = col
+
+        
+
+        pl = get_params(['ID_AmountCap_rt', 'ID_AmountCap_Switch'])
+        return_itemdedcap = ItemDedCap(df.e17500, df.e18400, df.e18500, df.e19200, df.e19800,
+                                        df.e20100, df.e20400, df.g20500,df.c00100,
+                                        *pl.values())
+        out_args = ['e17500_capped', 'e18400_capped', 'e18500_capped', 'g20500_capped',
+                    'e20400_capped', 'e19200_capped', 'e19800_capped', 'e20100_capped']
+        for out_arg, col in zip(out_args, return_itemdedcap):
+            df[out_arg] = col
+
+        df_args = [df.e17500_capped, df.e18400_capped, df.e18500_capped, df.e19200_capped,
+                   df.e19800_capped, df.e20100_capped, df.e20400_capped, df.g20500_capped,
+                   df.MARS, df.age_head, df.age_spouse, df.c00100]
+        pl = get_params(['ID_ps', 'ID_Medical_frt', 'ID_Medical_frt_add4aged', 'ID_Medical_hc',
+                         'ID_Casualty_frt', 'ID_Casualty_hc', 'ID_Miscellaneous_frt',
+                         'ID_Miscellaneous_hc', 'ID_Charity_crt_all', 'ID_Charity_crt_noncash',
+                         'ID_prt', 'ID_crt', 'ID_c', 'ID_StateLocalTax_hc', 'ID_Charity_frt',
+                         'ID_Charity_hc', 'ID_InterestPaid_hc', 'ID_RealEstate_hc',
+                         'ID_Medical_c', 'ID_StateLocalTax_c', 'ID_RealEstate_c',
+                         'ID_InterestPaid_c', 'ID_Charity_c', 'ID_Casualty_c',
+                         'ID_Miscellaneous_c', 'ID_AllTaxes_c', 'ID_AllTaxes_hc',
+                         'ID_StateLocalTax_crt', 'ID_RealEstate_crt', 'ID_Charity_f'])
+        return_itemded = ItemDed(*df_args, *pl.values())
+        out_args = ['c17000', 'c18300', 'c19200', 'c19700', 'c20500', 'c20800',
+                    'c21040', 'c21060', 'c04470']
+        for out_arg, col in zip(out_args, return_itemded):
+            df[out_arg] = col
+
+        pl = get_params(['AMEDT_ec', 'AMEDT_rt', 'FICA_mc_trt', 'FICA_ss_trt'])
+        return_addmedtax = AdditionalMedicareTax(df.e00200, df.MARS, df.sey, df.payrolltax, *pl.values())
+        for out_arg, col in zip(['ptax_amc', 'payrolltax'], return_addmedtax):
+            df[out_arg] = col
+
+        pl = get_params(['STD', 'STD_Aged', 'STD_Dep', 'STD_allow_charity_ded_nonitemizers',
+                        'STD_charity_ded_nonitemizers_max'])
+        df['standard'] = StdDed(df.DSI, df.earned, df.age_head, df.age_spouse,
+                                df.MARS, df.MIDR, df.blind_head, df.blind_spouse,
+                                df.standard, df.c19700, *pl.values())
+
         # Store calculated standard deduction, calculate
         # taxes with standard deduction, store AMT + Regular Tax
         std = self.array('standard').copy()
@@ -1453,17 +1603,121 @@ class Calculator():
         del item_cvar
         # Calculate taxes with optimal itemized deduction
         self._taxinc_to_amt()
-        F2441(self.__policy, self.__records)
-        EITC(self.__policy, self.__records)
-        RefundablePayrollTaxCredit(self.__policy, self.__records)
-        PersonalTaxCredit(self.__policy, self.__records)
-        AmOppCreditParts(self.__policy, self.__records)
-        SchR(self.__policy, self.__records)
-        EducationTaxCredit(self.__policy, self.__records)
-        CharityCredit(self.__policy, self.__records)
-        ChildDepTaxCredit(self.__policy, self.__records)
-        NonrefundableCredits(self.__policy, self.__records)
-        AdditionalCTC(self.__policy, self.__records)
-        C1040(self.__policy, self.__records)
-        CTC_new(self.__policy, self.__records)
-        IITAX(self.__policy, self.__records)
+
+
+        pl = get_params(['CDCC_c', 'CDCC_ps', 'CDCC_ps2', 'CDCC_crt',
+                        'CDCC_frt', 'CDCC_prt', 'CDCC_refundable'])
+        return_f2441 = F2441(df.MARS, df.earned_p, df.earned_s,
+                            df.f2441, df.e32800, df.exact, df.c00100,
+                            df.c05800, df.e07300, df.c07180, df.CDCC_refund, *pl.values())
+        for out_arg, col in zip(['c07180', 'CDCC_refund'], return_f2441):
+            df[out_arg] = col
+
+
+
+        pl = get_params(['EITC_ps', 'EITC_MinEligAge', 'EITC_MaxEligAge', 'EITC_ps_MarriedJ',
+                         'EITC_rt', 'EITC_c', 'EITC_prt', 'EITC_basic_frac',
+                         'EITC_InvestIncome_c', 'EITC_excess_InvestIncome_rt',
+                         'EITC_indiv', 'EITC_sep_filers_elig'])
+        for p in ['EITC_rt', 'EITC_ps', 'EITC_c', 'EITC_prt', 'EITC_ps_MarriedJ']:
+            pl[p] = pl[p][df.EIC]
+        df['c59660'] = EITC(df.MARS, df.DSI, df.EIC, df.c00100, df.e00300, df.e00400, df.e00600, df.c01000,
+            df.e02000, df.e26270, df.age_head, df.age_spouse, df.earned, df.earned_p, df.earned_s,
+            *pl.values())
+
+
+        return_rptc = RefundablePayrollTaxCredit(df.was_plus_sey_p, df.was_plus_sey_s,
+                                    *get_params(['RPTC_c', 'RPTC_rt']).values())
+        df['rptc_p'], df['rptc_s'], df['rptc'] = return_rptc
+
+
+
+        pl = get_params(['II_credit', 'II_credit_ps', 'II_credit_prt',
+                         'II_credit_nr', 'II_credit_nr_ps', 'II_credit_nr_prt',
+                         'RRC_c', 'RRC_ps', 'RRC_pe'])
+        return_ptc = PersonalTaxCredit(df.MARS, df.c00100, df.XTOT, *pl.values())
+        out_args = ['personal_refundable_credit', 'personal_nonrefundable_credit',
+                    'recovery_rebate_credit']
+        for out_arg, col in zip(out_args, return_ptc):
+            df[out_arg] = col
+
+
+
+        df['c10960'], df['c87668'] = AmOppCreditParts(df.exact, df.e87521, df.num, df.c00100,
+                *get_params(['CR_AmOppRefundable_hc', 'CR_AmOppNonRefundable_hc']).values())
+        
+
+
+        df['c07200'] = SchR(df.age_head, df.age_spouse, df.MARS, df.c00100,
+                            df.c05800, df.e07300, df.c07180, df.e02400, df.c02500,
+                            df.e01500, df.e01700, self.policy_param('CR_SchR_hc'))
+
+
+
+        pl = get_params(['LLC_Expense_c', 'ETC_pe_Single', 'ETC_pe_Married',
+                       'CR_Education_hc'])
+        df['c07230'] = EducationTaxCredit(df.exact, df.e87530, df.MARS, df.c00100, df.num, df.c05800,
+                       df.e07300, df.c07180, df.c07200, df.c87668, *pl.values())
+
+        df['charity_credit'] = CharityCredit(df.e19800, df.e20100, df.c00100, df.MARS,
+            *get_params(['CR_Charity_rt', 'CR_Charity_f', 'CR_Charity_frt']).values())
+
+
+        pl = get_params(['CTC_c', 'CTC_ps', 'CTC_prt', 'ODC_c', 'CR_ForeignTax_hc',
+                         'CR_ResidentialEnergy_hc', 'CTC_c_under6_bonus',
+                         'CTC_refundable', 'CTC_include17', 'CR_RetirementSavings_hc'])
+        pl['CTC_ps'] = pl['CTC_ps'][df.MARS-1]
+        return_cdtc = ChildDepTaxCredit(df.n24, df.MARS, df.c00100, df.XTOT, df.num, df.c05800,
+                          df.e07260, df.e07300, df.c07180, df.c07230, df.e07240,
+                          df.c07200, df.n21, df.n1820, df.exact, df.nu06, *pl.values())
+        for out_arg, col in zip(['c07220', 'odc', 'codtc_limited'], return_cdtc):
+            df[out_arg] = col
+
+
+
+        pl = get_params(['CTC_refundable',
+                         'CR_RetirementSavings_hc', 'CR_ForeignTax_hc',
+                         'CR_ResidentialEnergy_hc', 'CR_GeneralBusiness_hc',
+                         'CR_MinimumTax_hc', 'CR_OtherCredits_hc'])
+        return_nfc = NonrefundableCredits(df.c07300, df.c07180, df.c07230, df.c07240, df.c07220,
+                             df.c07260, df.c07400, df.c07600, df.c07200, df.c08000,
+                             df.c05800, df.e07240, df.e07260, df.e07300, df.e07400,
+                             df.e07600, df.p08000, df.odc,
+                             df.personal_nonrefundable_credit, df.charity_credit,
+                             *pl.values())
+        out_args = ['c07180', 'c07200', 'c07220', 'c07230', 'c07240', 'odc',
+            'c07260', 'c07300', 'c07400', 'c07600', 'c08000', 'charity_credit',
+            'personal_nonrefundable_credit']
+        for out_arg, col in zip(out_args, return_nfc):
+            df[out_arg] = col
+
+        pl = get_params(['ACTC_c', 'ACTC_Income_thd',
+                         'ACTC_rt', 'ACTC_rt_bonus_under6family', 'ACTC_ChildNum',
+                         'CTC_refundable', 'CTC_include17'])
+        df['c11070'] = AdditionalCTC(df.codtc_limited, df.nu06, df.n24,
+                                    df.earned, df.XTOT, df.n21, df.n1820, df.num,
+                                    df.ptax_was, df.c03260, df.e09800, df.c59660, df.e11200, *pl.values())
+
+
+        return_c1040 = C1040(df.c05800, df.c07180, df.c07200, df.c07220, df.c07230, df.c07240, df.c07260, df.c07300,
+              df.c07400, df.c07600, df.c08000, df.e09700, df.e09800, df.e09900, df.niit, df.othertaxes,
+              df.c07100, df.c09200, df.odc, df.charity_credit,
+              df.personal_nonrefundable_credit,
+              *get_params(['CTC_refundable']).values())
+        for out_arg, col in zip(['c07100', 'othertaxes', 'c09200'], return_c1040):
+            df[out_arg] = col
+
+        pl = get_params(['CTC_new_c', 'CTC_new_rt', 'CTC_new_c_under6_bonus',
+                        'CTC_new_ps', 'CTC_new_prt', 'CTC_new_for_all', 'CTC_include17',
+                        'CTC_new_refund_limited', 'CTC_new_refund_limit_payroll_rt',
+                        'CTC_new_refund_limited_all_payroll'])
+        pl['CTC_new_ps'] = pl['CTC_new_ps'][df.MARS-1]
+        df['ctc_new'] = CTC_new(df.payrolltax, df.n24, df.nu06, df.XTOT,
+            df.n21, df.n1820, df.num, df.c00100, df.MARS,
+            df.ptax_oasdi,df.c09200, *pl.values())
+
+        return_iitax = IITAX(df.c59660, df.c11070, df.c10960, df.personal_refundable_credit, df.ctc_new, df.rptc,
+          df.c09200, df.payrolltax, df.recovery_rebate_credit, df.eitc, df.c07220,
+          df.refund, df.iitax, df.combined, df.CDCC_refund, self.policy_param('CTC_refundable'))
+        for out_arg, col in zip(['eitc', 'refund', 'iitax', 'combined'], return_iitax):
+            df[out_arg] = col
