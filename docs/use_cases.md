@@ -322,3 +322,19 @@ parenthood: A history and analysis of current proposals. February 2021.
 Section: Economics. URL:
 <https://www.aei.org/research-products/report/the-tax-benefits-of-parenthood-a-history-and-analysis-of-current-proposals/>
 (visited on 2021-02-25).
+
+\[66\] Alex Brill, Kyle Pomerleau, and Grant Seiter. Pick your Child Tax
+Credit. March 2021. Section: Economics. URL:
+<https://www.aei.org/economics/pick-your-child-tax-credit/> (visited on
+2021-04-05).
+
+\[67\] Alex Brill. The American Rescue Plan's likely cost is way more
+than \$1.9 trillion. March 2021. URL:
+<https://www.aei.org/economics/the-american-rescue-plans-likely-cost-is-way-more-than-1-9-trillion/>
+(visited on 2021-03-05).
+
+\[68\] Alex Brill, Kyle Pomerleau, and Grant Seiter. How will the
+American Rescue Plan impact your 2021 tax liability? March 2021.
+Section: Economics. URL:
+<https://www.aei.org/economics/how-will-the-american-rescue-plan-impact-your-2021-tax-liability/>
+(visited on 2021-04-05).
