@@ -185,7 +185,7 @@ def DependentCare(nu13, elderly_dependents, earned,
     care_deduction: Total above the line deductions for dependent care.
     """
 
-    care_deduction = np.where(earned <= ALD_Dependents_thd,
+    care_deduction = np.where(earned <= ALD_Dependents_thd[MARS-1],
                                (((1. - ALD_Dependents_hc) * nu13 *
                                     ALD_Dependents_Child_c) +
                                ((1. - ALD_Dependents_hc) * elderly_dependents *
@@ -338,7 +338,7 @@ def CapGains(p23250, p22250, sep, invinc_ec_base, MARS,
 
 
 def SSBenefits(MARS, ymod, e02400,
-               SS_thd50_all, SS_thd85_all, SS_percentage1, SS_percentage2):
+               SS_thd50, SS_thd85, SS_percentage1, SS_percentage2):
     """
     Calculates OASDI benefits included in AGI, c02500.
     """
@@ -352,13 +352,15 @@ def SSBenefits(MARS, ymod, e02400,
     #                  min(e02400, SS_thd85[MARS - 1] -
     #                      SS_thd50[MARS - 1]), SS_percentage2 * e02400)
 
-    condlist = [ymod < SS_thd50_all, ymod < SS_thd85_all, np.logical_and(ymod >= SS_thd50_all, ymod >= SS_thd85_all)]
+    condlist = [ymod < SS_thd50[MARS - 1], ymod < SS_thd85[MARS - 1],
+                np.logical_and(ymod >= SS_thd50[MARS - 1], ymod >= SS_thd85[MARS - 1])]
+
     choicelist = [0,
-                  SS_percentage1 * np.minimum(ymod - SS_thd50_all, e02400),
-                   np.minimum(SS_percentage2 * (ymod - SS_thd85_all) +
+                  SS_percentage1 * np.minimum(ymod - SS_thd50[MARS - 1], e02400),
+                   np.minimum(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
                      SS_percentage1 *
-                     np.minimum(e02400, SS_thd85_all -
-                         SS_thd50_all), SS_percentage2 * e02400)]
+                     np.minimum(e02400, SS_thd85[MARS - 1] -
+                         SS_thd50[MARS - 1]), SS_percentage2 * e02400)]
 
     c02500 = np.select(condlist, choicelist)
     return c02500
@@ -745,10 +747,11 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     #     c21040 = 0.
     #     c04470 = c21060
 
-    dednp = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), ID_crt * (c21060 - nonlimited), 0.)
-    dedpho = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), ID_prt * np.maximum(0., posagi - limitstart), 0.)
-    c21040 = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), np.minimum(dednp, dedpho), 0.)
-    c04470 = np.where(np.logical_and(c21060 > nonlimited, c00100 > limitstart), c21060 - c21040, c21060)
+    condition = np.all([c21060 > nonlimited, c00100 > limitstart])
+    dednp = np.where(condition , ID_crt * (c21060 - nonlimited), 0.)
+    dedpho = np.where(condition, ID_prt * np.maximum(0., posagi - limitstart), 0.)
+    c21040 = np.where(condition, np.minimum(dednp, dedpho), 0.)
+    c04470 = np.where(condition, c21060 - c21040, c21060)
 
     c04470 = np.minimum(c04470, ID_c[MARS - 1])
     # Return total itemized deduction amounts and components
@@ -840,8 +843,9 @@ def StdDed(DSI, earned, age_head, age_spouse, MARS, MIDR,
     #     else:
     #         basic_stded = STD[MARS - 1]
     c15100 = np.where(DSI == 1, np.maximum(350. + earned, STD_Dep), 0.)
-    condlist = [np.logical_and(DSI == 0, MIDR == 1), np.logical_and(DSI == 0, MIDR == 0)]
-    basic_stded = np.select(condlist, [0., STD[MARS-1]])
+    condlist = [DSI == 1, np.logical_and(DSI != 1, MIDR == 1), np.logical_and(DSI != 1, MIDR != 1)]
+    choicelist = [np.minimum(STD[MARS - 1], c15100), 0., STD[MARS - 1]]
+    basic_stded = np.select(condlist, choicelist)
     # calculate extra standard deduction for aged and blind
     num_extra_stded = blind_head + blind_spouse
     # if age_head >= 65:
@@ -1614,15 +1618,18 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
     #     c87668 = 0.
     # return (c10960, c87668)
 
+    # Ignore bad division
+
     c87658 = np.where(e87521 > 0., np.maximum(0., 90000. * num - c00100), 0.)
     c87660 = np.where(e87521 > 0., 10000. * num, 0.)
 
+    divide_quantity = np.divide(c87658, c87660, out=np.zeros_like(c87658), where=c87660!=0)
     c87662 = np.where(np.logical_and(e87521 > 0., exact == 1),
 
-                      1000. * np.minimum(1., np.around(c87658 / c87660, 3)),
+                      1000. * np.minimum(1., np.around(divide_quantity, 3)),
                       
                       np.where(np.logical_and(e87521 > 0., exact != 1),
-                               1000. * np.minimum(1., c87658 / c87660),
+                               1000. * np.minimum(1., divide_quantity),
                                0.)
                      )
 

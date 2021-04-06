@@ -1493,10 +1493,9 @@ class Calculator():
             df[out_arg] = col
 
 
-        pl = get_params(['ALD_Dependents_hc', 'ALD_Dependents_Child_c', 'ALD_Dependents_Elder_c'])
-        ALD_Dependents_thd_all = self.policy_param('ALD_Dependents_thd')[df.MARS-1]
+        pl = get_params(['ALD_Dependents_thd', 'ALD_Dependents_hc', 'ALD_Dependents_Child_c', 'ALD_Dependents_Elder_c'])
         df['care_deduction'] = DependentCare(df.nu13, df.elderly_dependents, df.earned, df.MARS,
-                                             ALD_Dependents_thd_all, *pl.values())
+                                             *pl.values())
 
         df_args = [df.e03150, df.e03210, df.c03260,
                    df.e03270, df.e03300, df.e03400, df.e03500, df.e00800,
@@ -1521,10 +1520,10 @@ class Calculator():
         for out_arg, col in zip(['c01000', 'c23650', 'ymod', 'ymod1', 'invinc_agi_ec'], return_capgains):
             df[out_arg] = col
 
-        SS_thd50_all = self.policy_param('SS_thd50')[df.MARS-1]
-        SS_thd85_all = self.policy_param('SS_thd85')[df.MARS-1]
-        df['c02500'] = SSBenefits(df.MARS, df.ymod, df.e02400, SS_thd50_all, SS_thd85_all,
-                       *get_params(['SS_percentage1', 'SS_percentage2']).values())
+        # SS_thd50_all = self.policy_param('SS_thd50')[df.MARS-1]
+        # SS_thd85_all = self.policy_param('SS_thd85')[df.MARS-1]
+        pl = get_params(['SS_thd50', 'SS_thd85', 'SS_percentage1', 'SS_percentage2'])
+        df['c02500'] = SSBenefits(df.MARS, df.ymod, df.e02400, *pl.values())
 
         pl = get_params(['II_em', 'II_em_ps', 'II_prt', 'II_no_em_nu18'])
         II_em_ps_all = self.policy_param('II_em_ps')[df.MARS-1]

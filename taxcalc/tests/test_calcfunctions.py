@@ -166,38 +166,38 @@ def test_function_args_usage(tests_path):
         raise ValueError(msg)
 
 
-def test_DependentCare(skip_jit):
+def test_DependentCare():
     """
     Tests the DependentCare function
     """
 
-    test_tuple = (3, 2, 100000, 1, [250000, 500000, 250000, 500000, 250000],
-                  .2, 7165, 5000, 0)
+    test_tuple = (3, 2, 100000, 1, np.array([250000, 500000, 250000, 500000, 250000]),
+                  .2, 7165, 5000)
     test_value = calcfunctions.DependentCare(*test_tuple)
     expected_value = 25196
 
     assert np.allclose(test_value, expected_value)
 
 
-STD_in = [6000, 12000, 6000, 12000, 12000]
-STD_Aged_in = [1500, 1200, 1500, 1500, 1500]
-tuple1 = (0, 1000, STD_in, 45, 44, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
+STD_in = np.array([6000, 12000, 6000, 12000, 12000])
+STD_Aged_in = np.array([1500, 1200, 1500, 1500, 1500])
+tuple1 = (0, 1000, 45, 44, 2, 0, 0, 0, 2, 0, STD_in, STD_Aged_in, 1000,
           False, 0)
-tuple2 = (0, 1000, STD_in, 66, 44, STD_Aged_in, 1000, 2, 0, 1, 1, 2,
-          200, True, 300)
-tuple3 = (0, 1000, STD_in, 44, 66, STD_Aged_in, 1000, 2, 0, 0, 0, 2,
-          400, True, 300)
-tuple4 = (0, 1200, STD_in, 66, 67, STD_Aged_in, 1000, 2, 0, 0, 0, 2, 0,
+tuple2 = (0, 1000, 66, 44, 2, 0, 1, 1, 2, 200, STD_in, STD_Aged_in, 1000,
+          True, 300)
+tuple3 = (0, 1000, 44, 66, 2, 0, 0, 0, 2, 400, STD_in, STD_Aged_in, 1000,
+          True, 300)
+tuple4 = (0, 1200, 66, 67, 2, 0, 0, 0, 2, 0, STD_in, STD_Aged_in, 1000,
           True, 0)
-tuple5 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
+tuple5 = (0, 1000, 44, 0, 1, 0, 0, 0, 2, 0, STD_in, STD_Aged_in, 1000,
           True, 0)
-tuple6 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 1, 0, 0, 0, 2, 0,
+tuple6 = (0, 1000, 44, 0, 1, 0, 0, 0, 2, 0, STD_in, STD_Aged_in, 1000,
           True, 0)
-tuple7 = (0, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 1, 0, 0, 2, 0,
+tuple7 = (0, 1000, 44, 0, 3, 1, 0, 0, 2, 0, STD_in, STD_Aged_in, 1000,
           True, 0)
-tuple8 = (1, 200, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
+tuple8 = (1, 200, 44, 0, 3, 0, 0, 0, 2, 0, STD_in, STD_Aged_in, 1000,
           True, 0)
-tuple9 = (1, 1000, STD_in, 44, 0, STD_Aged_in, 1000, 3, 0, 0, 0, 2, 0,
+tuple9 = (1, 1000, 44, 0, 3, 0, 0, 0, 2, 0, STD_in, STD_Aged_in, 1000,
           True, 0)
 expected = [12000, 15800, 13500, 14400, 6000, 6000, 0, 1000, 1350]
 
@@ -214,7 +214,7 @@ expected = [12000, 15800, 13500, 14400, 6000, 6000, 0, 1000, 1350]
             'Married, two old', 'Single 1', 'Single 2', 'Married, Single',
             'Marrid, Single, dep, under earn',
             'Married, Single, dep, over earn'])
-def test_StdDed(test_tuple, expected_value, skip_jit):
+def test_StdDed(test_tuple, expected_value):
     """
     Tests the StdDed function
     """
