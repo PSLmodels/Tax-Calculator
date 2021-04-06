@@ -338,3 +338,8 @@ American Rescue Plan impact your 2021 tax liability? March 2021.
 Section: Economics. URL:
 <https://www.aei.org/economics/how-will-the-american-rescue-plan-impact-your-2021-tax-liability/>
 (visited on 2021-04-05).
+
+\[69\] Max Gehnis. California's basic income bill still needs work.
+April 2021. URL:
+<https://blog.ubicenter.org/20210403/california-ab65-calubi.html>
+(visited on 2021-04-06).
