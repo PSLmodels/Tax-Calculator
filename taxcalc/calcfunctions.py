@@ -2512,7 +2512,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
 def PersonalTaxCredit(MARS, c00100, XTOT,
                       II_credit, II_credit_ps, II_credit_prt,
                       II_credit_nr, II_credit_nr_ps, II_credit_nr_prt,
-                      RRC_c, RRC_ps, RRC_pe,
+                      RRC_c, RRC_ps, RRC_pe, RRC_prt, RRC_c_kids, RRC_c_unit,
                       personal_refundable_credit,
                       personal_nonrefundable_credit,
                       recovery_rebate_credit):
@@ -2526,6 +2526,8 @@ def PersonalTaxCredit(MARS, c00100, XTOT,
         Filing (marital) status. (1=single, 2=joint, 3=separate, 4=household-head, 5=widow(er))
     c00100: float
         Adjusted Gross Income (AGI)
+    XTOT: int
+        Total number of exemptions for filing unit
     II_credit: list
         Personal refundable credit maximum amount
     II_credit_ps: list
@@ -2538,10 +2540,24 @@ def PersonalTaxCredit(MARS, c00100, XTOT,
         Personal nonrefundable credit phaseout start
     II_credit_nr_prt: float
         Personal nonrefundable credit phaseout rate
+    RRC_c: float
+        Maximum amount of Recovery Rebate Credit
+    RRC_ps: list
+        Recovery Rebate Credit phase out start
+    RRC_pe: list
+        Recovery Rebate Credit phase out end
+    RRC_prt: float
+        Recovery Rebate Credit phase out rate
+    RRC_c_kids: float
+        Credit amount per child as part of the Recovery Rebate Credit
+    RRC_c_unit: list
+        Maximum credit for filing unit as part of the Recovery Rebate Credit
     personal_refundable_credit: float
         Personal refundable credit
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
+    personal_rebate_credit: float
+        Personal rebate credit
 
     Returns
     -------
@@ -2549,6 +2565,8 @@ def PersonalTaxCredit(MARS, c00100, XTOT,
         Personal refundable credit
     personal_nonrefundable_credit: float
         Personal nonrefundable credit
+    personal_rebate_credit: float
+        Personal rebate credit
     """
     # calculate personal refundable credit amount with phase-out
     personal_refundable_credit = II_credit[MARS - 1]
@@ -2565,12 +2583,13 @@ def PersonalTaxCredit(MARS, c00100, XTOT,
     # calculate Recovery Rebate Credit from ARPA 2021
     if c00100 < RRC_ps[MARS - 1]:
         recovery_rebate_credit = RRC_c * XTOT
+        recovery_rebate_credit = RRC_c_unit[MARS-1] + RRC_c_kids * nu18
     elif c00100 < RRC_pe[MARS - 1]:
         prt = ((c00100 - RRC_ps[MARS - 1]) /
                (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
         recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
     else:
-        recovery_rebate_credit = 0.0
+        recovery_rebate_credit = max(0, recovery_rebate_credit - RRC_prt * (c00100 - RRC_ps[MARS -1]))
     return (personal_refundable_credit, personal_nonrefundable_credit,
             recovery_rebate_credit)
 

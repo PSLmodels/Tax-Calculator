@@ -3071,6 +3071,56 @@
                 "MARS": "widow",
                 "value": 0.0
             }
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 75000.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 150000.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 75000.00
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 112500.00
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 75000.00
+            }
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            }
         ],
         "validators": {
             "range": {
@@ -3123,6 +3173,174 @@
             "range": {
                 "min": 0,
                 "max": 9e+99
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_prt":{
+        "title":"Recovery Rebate Credit phaseout rate",
+        "description":"The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.",
+        "notes": "Used in 2020 as part of the CARES Act",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 0.5
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 1.0,
+                "level": "warn"
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_c_unit":{
+        "title":"Maximum credit for filing unit",
+        "description":"The maximum credit awarded as part of the Recovery Rebate Credit.",
+        "notes": "Used in 2020 as part of the CARES Act",
+        "section_1": "",
+        "section_2": "",
+        "indexable": true,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2013,
+                "MARS": "widow",
+                "value": 0.0
+            }
+            {
+                "year": 2020,
+                "MARS": "single",
+                "value": 1200.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mjoint",
+                "value": 2400.00
+            },
+            {
+                "year": 2020,
+                "MARS": "mseparate",
+                "value": 1200.00
+            },
+            {
+                "year": 2020,
+                "MARS": "headhh",
+                "value": 1200.00
+            },
+            {
+                "year": 2020,
+                "MARS": "widow",
+                "value": 1200.00
+            }
+            {
+                "year": 2021,
+                "MARS": "single",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mjoint",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "mseparate",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "headhh",
+                "value": 0.0
+            },
+            {
+                "year": 2021,
+                "MARS": "widow",
+                "value": 0.0
+            }
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 1.0,
+                "level": "warn"
+            }
+        },
+        "compatible_data": {
+            "puf": true,
+            "cps": true
+        }
+    },
+    "RRC_c_kids":{
+        "title":"Recovery Rebate Credit amount per child",
+        "description":"The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.",
+        "notes": "Used in 2020 as part of the CARES Act",
+        "section_1": "",
+        "section_2": "",
+        "indexable": false,
+        "indexed": false,
+        "type": "float",
+        "value": [
+            {
+                "year": 2013,
+                "value": 0.0
+            },
+            {
+                "year": 2020,
+                "value": 500.00
+            },
+            {
+                "year": 2021,
+                "value": 0.0
+            },
+        ],
+        "validators": {
+            "range": {
+                "min": 0.0,
+                "max": 1.0,
+                "level": "warn"
             }
         },
         "compatible_data": {
