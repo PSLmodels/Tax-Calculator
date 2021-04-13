@@ -100,7 +100,7 @@ class Calculator():
         else:
             raise ValueError('must specify policy as a Policy object')
         if isinstance(records, Records):
-            self.__records = records #copy.deepcopy(records)
+            self.__records = copy.deepcopy(records)
         else:
             raise ValueError('must specify records as a Records object')
         if self.__policy.current_year < self.__records.data_year:

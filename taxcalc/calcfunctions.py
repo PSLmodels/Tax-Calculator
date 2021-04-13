@@ -21,7 +21,6 @@ indexing).
 import math
 import copy
 import numpy as np
-from taxcalc.decorators import iterate_jit, JIT
 
 
 def BenefitPrograms(calc):
@@ -190,7 +189,7 @@ def DependentCare(nu13, elderly_dependents, earned,
                                     ALD_Dependents_Child_c) +
                                ((1. - ALD_Dependents_hc) * elderly_dependents *
                                     ALD_Dependents_Elder_c)),
-                                0)
+                                0.)
 
     # if earned <= ALD_Dependents_thd[MARS - 1]:
     #     care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
@@ -326,7 +325,7 @@ def CapGains(p23250, p22250, sep, invinc_ec_base, MARS,
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = np.maximum(0., e00650 + c01000)
-        qdcg_exclusion = (mp.minimum(CG_ec, qdcg_pos) +
+        qdcg_exclusion = (np.minimum(CG_ec, qdcg_pos) +
                           CG_reinvest_ec_rt * np.maximum(0., qdcg_pos - CG_ec))
         ymod1 = np.maximum(0., ymod1 - qdcg_exclusion)
         invinc_agi_ec += qdcg_exclusion
@@ -355,12 +354,12 @@ def SSBenefits(MARS, ymod, e02400,
     condlist = [ymod < SS_thd50[MARS - 1], ymod < SS_thd85[MARS - 1],
                 np.logical_and(ymod >= SS_thd50[MARS - 1], ymod >= SS_thd85[MARS - 1])]
 
-    choicelist = [0,
+    choicelist = [0.,
                   SS_percentage1 * np.minimum(ymod - SS_thd50[MARS - 1], e02400),
-                   np.minimum(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
-                     SS_percentage1 *
-                     np.minimum(e02400, SS_thd85[MARS - 1] -
-                         SS_thd50[MARS - 1]), SS_percentage2 * e02400)]
+                  np.minimum(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
+                    SS_percentage1 *
+                    np.minimum(e02400, SS_thd85[MARS - 1] -
+                        SS_thd50[MARS - 1]), SS_percentage2 * e02400)]
 
     c02500 = np.select(condlist, choicelist)
     return c02500
@@ -455,7 +454,7 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
     # calculate personal exemption amount
     if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
-        pre_c04600 = np.maximum(0, XTOT - nu18) * II_em
+        pre_c04600 = np.maximum(0., XTOT - nu18) * II_em
     else:
         pre_c04600 = XTOT * II_em
     if DSI:
@@ -747,8 +746,8 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     #     c21040 = 0.
     #     c04470 = c21060
 
-    condition = np.all([c21060 > nonlimited, c00100 > limitstart])
-    dednp = np.where(condition , ID_crt * (c21060 - nonlimited), 0.)
+    condition = np.all([c21060 > nonlimited, c00100 > limitstart], axis=0)
+    dednp = np.where(condition, ID_crt * (c21060 - nonlimited), 0.)
     dedpho = np.where(condition, ID_prt * np.maximum(0., posagi - limitstart), 0.)
     c21040 = np.where(condition, np.minimum(dednp, dedpho), 0.)
     c04470 = np.where(condition, c21060 - c21040, c21060)
@@ -1065,11 +1064,12 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     # else:
     #     hasqdivltcg = 0  # no qualified dividends or long-term capital gains
 
-    hasqdivltcg = np.where(np.any([c01000 > 0., c23650 > 0., p23250 > 0.,
-                                e01100 > 0., e00650 > 0.]), 1, 0)
+    cond = np.any([c01000 > 0., c23650 > 0., p23250 > 0.,
+                   e01100 > 0., e00650 > 0.], axis=0)
+    hasqdivltcg = np.where(cond, 1, 0)
 
     if CG_nodiff:
-        hasqdivltcg = np.zeros(size=self.__records.array_length)  # no special taxation of qual divids and l-t cap gains
+        hasqdivltcg = np.zeros(np.shape(hasqdivltcg)[0])  # no special taxation of qual divids and l-t cap gains
 
     # if hasqdivltcg == 1:
 
@@ -1087,7 +1087,9 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     #     c24510 = e01100
     # else:
     #     c24510 = np.maximum(0., dwks7) + e01100
-    c24510 = np.where(hasqdivltcg == 1 and e01100 > 0., e01100, np.maximum(0., dwks7) + e01100)
+    condlist = [np.logical_and(hasqdivltcg == 1, e01100 > 0.), np.logical_and(hasqdivltcg == 1, e01100 <= 0.)]
+    choicelist = [e01100, np.maximum(0., dwks7) + e01100]
+    c24510 = np.select(condlist, choicelist)
     dwks9 = np.where(hasqdivltcg == 1, np.maximum(0., c24510 - np.minimum(0., e58990)), 0.)
     # ABOVE TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
     dwks10 = np.where(hasqdivltcg == 1, dwks6 + dwks9, np.maximum(0., np.minimum(p23250, c23650)) + e01100)
@@ -1170,7 +1172,7 @@ def AGIsurtax(c00100, MARS, taxbc, surtax, AGI_surtax_trt, AGI_surtax_thd):
     Computes surtax on AGI above some threshold.
     """
     if AGI_surtax_trt > 0.:
-        hiAGItax = AGI_surtax_trt * max(c00100 - AGI_surtax_thd[MARS - 1], 0.)
+        hiAGItax = AGI_surtax_trt * np.maximum(c00100 - AGI_surtax_thd[MARS - 1], 0.)
         taxbc += hiAGItax
         surtax += hiAGItax
     return (taxbc, surtax)
@@ -1206,6 +1208,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
                        np.maximum(0., np.minimum(c17000, 0.025 * c00100)) +
                        c18300 + c20800 - c21040),
                       0.)
+    c62100 = np.where(standard > 0.0, c00100 - e00700, c62100)
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
     # if MARS == 3:
     #     amtsepadd = np.maximum(0.,
@@ -1221,7 +1224,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     line29 = np.maximum(0., AMT_em - AMT_prt *
                  np.maximum(0., c62100 - AMT_em_ps))
     young_head = np.logical_and(age_head != 0, age_head < AMT_child_em_c_age)
-    no_or_young_spouse = age_spouse < AMT_child_em_c_age
+    no_or_young_spouse = np.where(age_spouse < AMT_child_em_c_age, True, False)
     # if young_head and no_or_young_spouse:
     #     line29 = np.minimum(line29, earned + AMT_child_em)
     line29 = np.where(np.logical_and(young_head, no_or_young_spouse),
@@ -1231,7 +1234,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2 * np.maximum(0., (line30 - (AMT_brk1 / sep))))
     # if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
-    cond = np.any([dwks10 > 0., dwks13 > 0., dwks14 > 0., dwks19 > 0., e24515 > 0.])
+    cond = np.any([dwks10 > 0., dwks13 > 0., dwks14 > 0., dwks19 > 0., e24515 > 0.], axis=0)
     # complete Form 6251, Part III (line36 is equal to line30)
     line37 = np.where(cond, dwks13, 0.)
     line38 = np.where(cond, e24515, 0.)
@@ -1262,25 +1265,25 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     #     linex1 = np.minimum(line48,
     #                  np.maximum(0., AMT_CG_brk3 - line44 - line45))
     #     linex2 = np.maximum(0., line54 - linex1)
-    line57 = np.where(np.logical_and(cond, line41 == line56), 0., line46 - line56)
-    linex1 = np.where(np.logical_and(cond, line41 != line56),
-                      np.minimum(line48,
-                         np.maximum(0., AMT_CG_brk3 - line44 - line45)),
-                      0.)
-    linex2 = np.where(np.logical_and(cond, line41 == line56), np.maximum(0., line54 - linex1), 0.)
+    condlist = [np.logical_and(cond, line41 == line56), np.logical_and(cond, line41 != line56)]
+    line57 = np.select(condlist, [0., line46 - line56])
+    linex1 = np.select(condlist, [0., np.minimum(line48,
+                                      np.maximum(0., AMT_CG_brk3 - line44 - line45))]
+                                      )
+    linex2 = np.select(condlist, [0., np.maximum(0., line54 - linex1)])
     cgtax3 = np.where(cond, line57 * AMT_CG_rt3, 0.)
     cgtax4 = np.where(cond, linex2 * AMT_CG_rt4, 0.)
     # if line38 == 0.:
     #     line61 = 0.
     # else:
     #     line61 = 0.25 * np.maximum(0., line30 - line41 - line56 - line57 - linex2)
-    line61 = np.where(np.logical_and(cond, line38 == 0.), 0,
-                        0.25 * np.maximum(0., line30 - line41 - line56 - line57 - linex2))
+    condlist = [np.logical_and(cond, line38 == 0.), np.logical_and(cond, line38 != 0.)]
+    line61 = np.select(condlist, [0., 0.25 * np.maximum(0., line30 - line41 - line56 - line57 - linex2)])
     line62 = np.where(cond, line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61, 0.)
     line64 = np.where(cond, np.minimum(line3163, line62), 0.)
-    line31 = np.where(cond, line64, line3163)
     # else:  # if not completing Form 6251, Part III
         # line31 = line3163
+    line31 = np.where(cond, line64, line3163)
     # Form 6251, Part II bottom
     # if f6251 == 1:
         # line32 = e62900
@@ -1353,7 +1356,6 @@ def F2441(MARS, earned_p, earned_s, f2441, e32800, exact, c00100,
     return (c07180, CDCC_refund)
 
 
-# @JIT(nopython=True)
 def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
                phaseout_start, agi, phaseout_rate):
     """
@@ -1554,7 +1556,7 @@ def PersonalTaxCredit(MARS, c00100, XTOT,
 
     condlist = [c00100 < RRC_ps[MARS - 1], c00100 < RRC_pe[MARS - 1],
                   np.logical_and(c00100 >= RRC_ps[MARS - 1], c00100 >= RRC_pe[MARS - 1])]
-    choicelist = [RRC_c * XTOT, RRC_c * XTOT * (1 - prt), 0.0]
+    choicelist = [RRC_c * XTOT, RRC_c * XTOT * (1 - prt), 0.]
     recovery_rebate_credit = np.select(condlist, choicelist)
 
     return (personal_refundable_credit, personal_nonrefundable_credit,
@@ -1923,7 +1925,7 @@ def CTC_new(payrolltax, n24, nu06, XTOT, n21, n1820, num, c00100, MARS, ptax_oas
     Computes new refundable child tax credit using specified parameters.
     """
     if CTC_include17:
-        childnum = n24 + max(0, XTOT - n21 - n1820 - n24 - num)
+        childnum = n24 + max(0., XTOT - n21 - n1820 - n24 - num)
     else:
         childnum = n24
     if childnum > 0:
@@ -2144,7 +2146,7 @@ def LumpSumTax(DSI, num, XTOT, combined,
     """
     Computes lump-sum tax and add it to combined taxes.
     """
-    lumpsum_tax = np.where(LST == 0 or DSI == 1, 0, LST * np.maximum(num, XTOT))
+    lumpsum_tax = np.where(np.logical_or(LST == 0, DSI == 1), 0, LST * np.maximum(num, XTOT))
     combined += lumpsum_tax
 
     return (lumpsum_tax, combined)
