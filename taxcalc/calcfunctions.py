@@ -3766,7 +3766,7 @@ def ExpandIncome(e00200, pencon_p, pencon_s, e00300, e00400, e00600,
         benefit_value_total  # consumption value of all benefits received;
         # see the BenefitPrograms function in this file for details on
         # exactly how the benefit_value_total variable is computed
-    ])
+    ], axis=0)
     return expanded_income
 
 
