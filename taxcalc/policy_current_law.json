@@ -3184,8 +3184,8 @@
         "title":"Recovery Rebate Credit phaseout rate",
         "description":"The Recovery Rebate Credit will be phased out at this rate for those with income above the phase out start and below the phase out end.",
         "notes": "Used in 2020 as part of the CARES Act",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -3219,8 +3219,8 @@
         "title":"Maximum credit for filing unit",
         "description":"The maximum credit awarded as part of the Recovery Rebate Credit.",
         "notes": "Used in 2020 as part of the CARES Act",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
         "indexable": true,
         "indexed": false,
         "type": "float",
@@ -3304,7 +3304,7 @@
         "validators": {
             "range": {
                 "min": 0.0,
-                "max": 1.0,
+                "max": 9e+99,
                 "level": "warn"
             }
         },
@@ -3317,8 +3317,8 @@
         "title":"Recovery Rebate Credit amount per child",
         "description":"The credit awarded for each child in an eligible family as part of the Recovery Rebate Credit.",
         "notes": "Used in 2020 as part of the CARES Act",
-        "section_1": "",
-        "section_2": "",
+        "section_1": "Refundable Credits",
+        "section_2": "Personal Refundable Credit",
         "indexable": false,
         "indexed": false,
         "type": "float",
@@ -3339,7 +3339,7 @@
         "validators": {
             "range": {
                 "min": 0.0,
-                "max": 1.0,
+                "max": 9e+99,
                 "level": "warn"
             }
         },
