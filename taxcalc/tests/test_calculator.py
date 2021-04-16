@@ -158,23 +158,23 @@ def test_calculator_mtr(cps_subsample):
         calc.mtr(variable_str='bad_income_type')
     (_, _, mtr_combined) = calc.mtr(variable_str='e00200s',
                                     calc_all_already_called=True)
-    assert isinstance(mtr_combined, np.ndarray)
+    assert isinstance(mtr_combined, (pd.Series, np.ndarray))
     (_, _, mtr_combined) = calc.mtr(variable_str='e00650',
                                     negative_finite_diff=True,
                                     calc_all_already_called=True)
-    assert isinstance(mtr_combined, np.ndarray)
+    assert isinstance(mtr_combined, (pd.Series, np.ndarray))
     (_, _, mtr_combined) = calc.mtr(variable_str='e00900p',
                                     calc_all_already_called=True)
-    assert isinstance(mtr_combined, np.ndarray)
+    assert isinstance(mtr_combined, (pd.Series, np.ndarray))
     (_, _, mtr_combined) = calc.mtr(variable_str='e01700',
                                     calc_all_already_called=True)
-    assert isinstance(mtr_combined, np.ndarray)
+    assert isinstance(mtr_combined, (pd.Series, np.ndarray))
     (_, _, mtr_combined) = calc.mtr(variable_str='e26270',
                                     calc_all_already_called=True)
-    assert isinstance(mtr_combined, np.ndarray)
+    assert isinstance(mtr_combined, (pd.Series, np.ndarray))
     (_, _, mtr_combined) = calc.mtr(variable_str='k1bx14p',
                                     calc_all_already_called=True)
-    assert isinstance(mtr_combined, np.ndarray)
+    assert isinstance(mtr_combined, (pd.Series, np.ndarray))
     (_, _, mtr_combined) = calc.mtr(variable_str='e00200p',
                                     calc_all_already_called=True)
     assert np.allclose(mtr_combined, mtr_cmb)
@@ -377,7 +377,7 @@ def test_calculator_using_nonstd_input():
     assert isinstance(dframe, pd.DataFrame)
     assert dframe.shape == (RAWINPUT_FUNITS, len(varlist))
     mars = calc.array('MARS')
-    assert isinstance(mars, np.ndarray)
+    assert isinstance(mars, (pd.Series, np.ndarray))
     assert mars.shape == (RAWINPUT_FUNITS,)
     exp_iitax = np.zeros((nonstd.array_length,))
     assert np.allclose(calc.array('iitax'), exp_iitax)
@@ -911,7 +911,7 @@ def test_qbid_limit_switch():
     calc_base.calc_all()
 
     qbid_base = calc_base.array('qbided')
-    assert np.equal(qbid_base, 0)
+    assert np.allclose(qbid_base, 0)
 
     pol_ref = Policy()
     pol_ref.implement_reform(ref)
@@ -919,7 +919,7 @@ def test_qbid_limit_switch():
     calc_ref.calc_all()
 
     qbid_ref = calc_ref.array('qbided')
-    assert np.equal(qbid_ref, 20000)
+    assert np.allclose(qbid_ref, 20000)
 
 
 def test_calc_all_benefits_amounts(cps_subsample):
