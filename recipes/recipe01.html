@@ -548,11 +548,18 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <span class="g g-Whitespace">    </span><span class="mi">174</span>         <span class="n">BenefitLimitation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_calc_one_year</span><span class="nt">(self, zero_out_calc_vars)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1383</span>         <span class="n">AGI</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1384</span>         <span class="n">ItemDedCap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="ne">-&gt; </span><span class="mi">1385</span>         <span class="n">ItemDed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1386</span>         <span class="n">AdditionalMedicareTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1387</span>         <span class="n">StdDed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1402</span>         <span class="k">for</span> <span class="n">cvname</span> <span class="ow">in</span> <span class="n">item_component_variable_names</span><span class="p">:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1403</span>             <span class="bp">self</span><span class="o">.</span><span class="n">zeroarray</span><span class="p">(</span><span class="n">cvname</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1404</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_taxinc_to_amt</span><span class="p">()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1405</span>         <span class="n">std_taxes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;c05800&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="g g-Whitespace">   </span><span class="mi">1406</span>         <span class="c1"># Set standard deduction to zero, calculate taxes w/o</span>
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_taxinc_to_amt</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1364</span>         <span class="n">GainsTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1365</span>         <span class="n">AGIsurtax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">1366</span>         <span class="n">NetInvIncTax</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1367</span>         <span class="n">AMT</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__policy</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__records</span><span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1368</span> 
 
 <span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/decorators.py</span> in <span class="ni">wrapper</span><span class="nt">(*args, **kwargs)</span>
 <span class="g g-Whitespace">    </span><span class="mi">323</span>                  <span class="p">{</span><span class="s2">&quot;applied_f&quot;</span><span class="p">:</span> <span class="n">applied_jitted_f</span><span class="p">},</span> <span class="n">fakeglobals</span><span class="p">)</span>
@@ -858,67 +865,116 @@ and also shows how to use the reform files available on the Tax-Calculator websi
 <span class="g g-Whitespace">    </span><span class="mi">232</span><span class="sd"> </span>
 
 <span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_inst</span><span class="nt">(self, inst)</span>
+<span class="g g-Whitespace">    </span><span class="mi">325</span><span class="sd">         if isinstance(inst, ir.Assign):</span>
 <span class="g g-Whitespace">    </span><span class="mi">326</span><span class="sd">             ty = self.typeof(inst.target.name)</span>
-<span class="g g-Whitespace">    </span><span class="mi">327</span><span class="sd">             val = self.lower_assign(ty, inst)</span>
-<span class="ne">--&gt; </span><span class="mi">328</span><span class="sd">             self.storevar(val, inst.target.name)</span>
+<span class="ne">--&gt; </span><span class="mi">327</span><span class="sd">             val = self.lower_assign(ty, inst)</span>
+<span class="g g-Whitespace">    </span><span class="mi">328</span><span class="sd">             self.storevar(val, inst.target.name)</span>
 <span class="g g-Whitespace">    </span><span class="mi">329</span><span class="sd"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">330</span><span class="sd">         elif isinstance(inst, ir.Branch):</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">storevar</span><span class="nt">(self, value, name)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1262</span><span class="sd">         fetype = self.typeof(name)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1263</span><span class="sd">         # Define if not already</span>
-<span class="ne">-&gt; </span><span class="mi">1264</span><span class="sd">         self._alloca_var(name, fetype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1265</span><span class="sd"> </span>
-<span class="g g-Whitespace">   </span><span class="mi">1266</span><span class="sd">         # Clean up existing value stored in the variable</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_assign</span><span class="nt">(self, ty, inst)</span>
+<span class="g g-Whitespace">    </span><span class="mi">500</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">501</span><span class="sd">         elif isinstance(value, ir.Expr):</span>
+<span class="ne">--&gt; </span><span class="mi">502</span><span class="sd">             return self.lower_expr(ty, value)</span>
+<span class="g g-Whitespace">    </span><span class="mi">503</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">504</span><span class="sd">         elif isinstance(value, ir.Var):</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">_alloca_var</span><span class="nt">(self, name, fetype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1239</span><span class="sd">             # If not already defined, allocate it</span>
-<span class="g g-Whitespace">   </span><span class="mi">1240</span><span class="sd">             llty = self.context.get_value_type(fetype)</span>
-<span class="ne">-&gt; </span><span class="mi">1241</span><span class="sd">             ptr = self.alloca_lltype(name, llty)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1242</span><span class="sd">             # Remember the pointer</span>
-<span class="g g-Whitespace">   </span><span class="mi">1243</span><span class="sd">             self.varmap[name] = ptr</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_expr</span><span class="nt">(self, resty, expr)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1156</span><span class="sd">         elif expr.op == &quot;getitem&quot;:</span>
+<span class="g g-Whitespace">   </span><span class="mi">1157</span><span class="sd">             signature = self.fndesc.calltypes[expr]</span>
+<span class="ne">-&gt; </span><span class="mi">1158</span><span class="sd">             return self.lower_getitem(resty, expr, expr.value, expr.index,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1159</span><span class="sd">                                       signature)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1160</span><span class="sd"> </span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">alloca_lltype</span><span class="nt">(self, name, lltype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1307</span><span class="sd">         if is_uservar:</span>
-<span class="g g-Whitespace">   </span><span class="mi">1308</span><span class="sd">             # Emit debug info for user variable</span>
-<span class="ne">-&gt; </span><span class="mi">1309</span><span class="sd">             sizeof = self.context.get_abi_sizeof(lltype)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1310</span><span class="sd">             self.debuginfo.mark_variable(self.builder, aptr, name=name,</span>
-<span class="g g-Whitespace">   </span><span class="mi">1311</span><span class="sd">                                          lltype=lltype, size=sizeof,</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/lowering.py</span> in <span class="ni">lower_getitem</span><span class="nt">(self, resty, expr, value, index, signature)</span>
+<span class="g g-Whitespace">    </span><span class="mi">647</span><span class="sd">                     for av, at, ft in zip(argvals, argtyps,</span>
+<span class="g g-Whitespace">    </span><span class="mi">648</span><span class="sd">                                           signature.args)]</span>
+<span class="ne">--&gt; </span><span class="mi">649</span><span class="sd">         res = impl(self.builder, castvals)</span>
+<span class="g g-Whitespace">    </span><span class="mi">650</span><span class="sd">         return self.context.cast(self.builder, res,</span>
+<span class="g g-Whitespace">    </span><span class="mi">651</span><span class="sd">                                  signature.return_type,</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/base.py</span> in <span class="ni">get_abi_sizeof</span><span class="nt">(self, ty)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1100</span><span class="sd">         &quot;&quot;&quot;</span>
-<span class="g g-Whitespace">   </span><span class="mi">1101</span>         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ty</span><span class="p">,</span> <span class="n">llvmir</span><span class="o">.</span><span class="n">Type</span><span class="p">),</span> <span class="s2">&quot;Expected LLVM type&quot;</span>
-<span class="ne">-&gt; </span><span class="mi">1102</span>         <span class="k">return</span> <span class="n">ty</span><span class="o">.</span><span class="n">get_abi_size</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">target_data</span><span class="p">)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1103</span> 
-<span class="g g-Whitespace">   </span><span class="mi">1104</span>     <span class="k">def</span> <span class="nf">get_abi_alignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ty</span><span class="p">):</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/base.py</span> in <span class="ni">__call__</span><span class="nt">(self, builder, args, loc)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1163</span><span class="sd"> </span>
+<span class="g g-Whitespace">   </span><span class="mi">1164</span><span class="sd">     def __call__(self, builder, args, loc=None):</span>
+<span class="ne">-&gt; </span><span class="mi">1165</span><span class="sd">         res = self._imp(self._context, builder, self._sig, args, loc=loc)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1166</span><span class="sd">         self._context.add_linking_libs(getattr(self, &#39;libs&#39;, ()))</span>
+<span class="g g-Whitespace">   </span><span class="mi">1167</span><span class="sd">         return res</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/types.py</span> in <span class="ni">get_abi_size</span><span class="nt">(self, target_data, context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">50</span>         <span class="n">Get</span> <span class="n">the</span> <span class="n">ABI</span> <span class="n">size</span> <span class="n">of</span> <span class="n">this</span> <span class="nb">type</span> <span class="n">according</span> <span class="n">to</span> <span class="n">data</span> <span class="n">layout</span> <span class="o">*</span><span class="n">target_data</span><span class="o">*.</span>
-<span class="g g-Whitespace">     </span><span class="mi">51</span>         <span class="s2">&quot;&quot;&quot;</span>
-<span class="ne">---&gt; </span><span class="mi">52</span><span class="s2">         llty = self._get_ll_pointer_type(target_data, context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">53</span><span class="s2">         return target_data.get_pointee_abi_size(llty)</span>
-<span class="g g-Whitespace">     </span><span class="mi">54</span><span class="s2"> </span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/base.py</span> in <span class="ni">wrapper</span><span class="nt">(*args, **kwargs)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1193</span><span class="sd">             def wrapper(*args, **kwargs):</span>
+<span class="g g-Whitespace">   </span><span class="mi">1194</span><span class="sd">                 kwargs.pop(&#39;loc&#39;)     # drop unused loc</span>
+<span class="ne">-&gt; </span><span class="mi">1195</span><span class="sd">                 return fn(*args, **kwargs)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1196</span><span class="sd"> </span>
+<span class="g g-Whitespace">   </span><span class="mi">1197</span><span class="sd">             # Copy the following attributes from the wrapped.</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/types.py</span> in <span class="ni">_get_ll_pointer_type</span><span class="nt">(self, target_data, context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">43</span><span class="s2">             m = Module(context=context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">44</span><span class="s2">         foo = GlobalVariable(m, self, name=&quot;foo&quot;)</span>
-<span class="ne">---&gt; </span><span class="mi">45</span><span class="s2">         with parse_assembly(str(m)) as llmod:</span>
-<span class="g g-Whitespace">     </span><span class="mi">46</span><span class="s2">             return llmod.get_global_variable(foo.name).type</span>
-<span class="g g-Whitespace">     </span><span class="mi">47</span><span class="s2"> </span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/np/arrayobj.py</span> in <span class="ni">getitem_arraynd_intp</span><span class="nt">(context, builder, sig, args)</span>
+<span class="g g-Whitespace">    </span><span class="mi">437</span><span class="sd">     ary = make_array(aryty)(context, builder, ary)</span>
+<span class="g g-Whitespace">    </span><span class="mi">438</span><span class="sd"> </span>
+<span class="ne">--&gt; </span><span class="mi">439</span><span class="sd">     res = _getitem_array_generic(context, builder, sig.return_type,</span>
+<span class="g g-Whitespace">    </span><span class="mi">440</span><span class="sd">                                  aryty, ary, (idxty,), (idx,))</span>
+<span class="g g-Whitespace">    </span><span class="mi">441</span><span class="sd">     return impl_ret_borrowed(context, builder, sig.return_type, res)</span>
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/binding/module.py</span> in <span class="ni">parse_assembly</span><span class="nt">(llvmir, context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">19</span><span class="s2">     with ffi.OutputString() as errmsg:</span>
-<span class="g g-Whitespace">     </span><span class="mi">20</span><span class="s2">         mod = ModuleRef(</span>
-<span class="ne">---&gt; </span><span class="mi">21</span><span class="s2">             ffi.lib.LLVMPY_ParseAssembly(context, strbuf, errmsg),</span>
-<span class="g g-Whitespace">     </span><span class="mi">22</span><span class="s2">             context)</span>
-<span class="g g-Whitespace">     </span><span class="mi">23</span><span class="s2">         if errmsg:</span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/np/arrayobj.py</span> in <span class="ni">_getitem_array_generic</span><span class="nt">(context, builder, return_type, aryty, ary, index_types, indices)</span>
+<span class="g g-Whitespace">    </span><span class="mi">411</span><span class="sd">     &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">412</span>     <span class="n">dataptr</span><span class="p">,</span> <span class="n">view_shapes</span><span class="p">,</span> <span class="n">view_strides</span> <span class="o">=</span> \
+<span class="ne">--&gt; </span><span class="mi">413</span>         <span class="n">basic_indexing</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">aryty</span><span class="p">,</span> <span class="n">ary</span><span class="p">,</span> <span class="n">index_types</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">414</span>                        <span class="n">boundscheck</span><span class="o">=</span><span class="n">context</span><span class="o">.</span><span class="n">enable_boundscheck</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">415</span> 
 
-<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/binding/ffi.py</span> in <span class="ni">__call__</span><span class="nt">(self, *args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">149</span><span class="s2">     def __call__(self, *args, **kwargs):</span>
-<span class="g g-Whitespace">    </span><span class="mi">150</span><span class="s2">         with self._lock:</span>
-<span class="ne">--&gt; </span><span class="mi">151</span><span class="s2">             return self._cfn(*args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">152</span><span class="s2"> </span>
-<span class="g g-Whitespace">    </span><span class="mi">153</span><span class="s2"> </span>
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/np/arrayobj.py</span> in <span class="ni">basic_indexing</span><span class="nt">(context, builder, aryty, ary, index_types, indices, boundscheck)</span>
+<span class="g g-Whitespace">    </span><span class="mi">382</span>     <span class="c1"># No need to check wraparound, as negative indices were already</span>
+<span class="g g-Whitespace">    </span><span class="mi">383</span>     <span class="c1"># fixed in the loop above.</span>
+<span class="ne">--&gt; </span><span class="mi">384</span>     <span class="n">dataptr</span> <span class="o">=</span> <span class="n">cgutils</span><span class="o">.</span><span class="n">get_item_pointer</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">aryty</span><span class="p">,</span> <span class="n">ary</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">385</span>                                        <span class="n">output_indices</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">386</span>                                        <span class="n">wraparound</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">boundscheck</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/cgutils.py</span> in <span class="ni">get_item_pointer</span><span class="nt">(context, builder, aryty, ary, inds, wraparound, boundscheck)</span>
+<span class="g g-Whitespace">    </span><span class="mi">670</span>     <span class="c1"># boundschecked. do_boundscheck() will handle enabling or disabling the</span>
+<span class="g g-Whitespace">    </span><span class="mi">671</span>     <span class="c1"># actual boundschecking based on the user config.</span>
+<span class="ne">--&gt; </span><span class="mi">672</span>     <span class="n">shapes</span> <span class="o">=</span> <span class="n">unpack_tuple</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">ary</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">aryty</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">673</span>     <span class="n">strides</span> <span class="o">=</span> <span class="n">unpack_tuple</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">ary</span><span class="o">.</span><span class="n">strides</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">aryty</span><span class="o">.</span><span class="n">ndim</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">674</span>     <span class="k">return</span> <span class="n">get_item_pointer2</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">builder</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">ary</span><span class="o">.</span><span class="n">data</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="n">shapes</span><span class="p">,</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/np/arrayobj.py</span> in <span class="ni">shape</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">109</span>                 <span class="n">mark_positive</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">load</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">110</span> 
+<span class="ne">--&gt; </span><span class="mi">111</span>             <span class="k">return</span> <span class="n">cgutils</span><span class="o">.</span><span class="n">pack_array</span><span class="p">(</span><span class="n">builder</span><span class="p">,</span> <span class="n">dims</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">112</span> 
+<span class="g g-Whitespace">    </span><span class="mi">113</span>     <span class="k">return</span> <span class="n">ArrayStruct</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/numba/core/cgutils.py</span> in <span class="ni">pack_array</span><span class="nt">(builder, values, ty)</span>
+<span class="g g-Whitespace">    </span><span class="mi">638</span>     <span class="n">ary</span> <span class="o">=</span> <span class="n">ir</span><span class="o">.</span><span class="n">ArrayType</span><span class="p">(</span><span class="n">ty</span><span class="p">,</span> <span class="n">n</span><span class="p">)(</span><span class="n">ir</span><span class="o">.</span><span class="n">Undefined</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">639</span>     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">640</span>         <span class="n">ary</span> <span class="o">=</span> <span class="n">builder</span><span class="o">.</span><span class="n">insert_value</span><span class="p">(</span><span class="n">ary</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">641</span>     <span class="k">return</span> <span class="n">ary</span>
+<span class="g g-Whitespace">    </span><span class="mi">642</span> 
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/builder.py</span> in <span class="ni">insert_value</span><span class="nt">(self, agg, value, idx, name)</span>
+<span class="g g-Whitespace">    </span><span class="mi">978</span>         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+<span class="g g-Whitespace">    </span><span class="mi">979</span>             <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+<span class="ne">--&gt; </span><span class="mi">980</span>         <span class="n">instr</span> <span class="o">=</span> <span class="n">instructions</span><span class="o">.</span><span class="n">InsertValue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">block</span><span class="p">,</span> <span class="n">agg</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">981</span>         <span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">instr</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">982</span>         <span class="k">return</span> <span class="n">instr</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/instructions.py</span> in <span class="ni">__init__</span><span class="nt">(self, parent, agg, elem, indices, name)</span>
+<span class="g g-Whitespace">    </span><span class="mi">653</span>         <span class="k">try</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">654</span>             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">655</span>                 <span class="n">typ</span> <span class="o">=</span> <span class="n">typ</span><span class="o">.</span><span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">656</span>         <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">657</span>             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t index at </span><span class="si">%r</span><span class="s2"> in </span><span class="si">%s</span><span class="s2">&quot;</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/types.py</span> in <span class="ni">elements</span><span class="nt">(self)</span>
+<span class="g g-Whitespace">    </span><span class="mi">444</span>     <span class="nd">@property</span>
+<span class="g g-Whitespace">    </span><span class="mi">445</span>     <span class="k">def</span> <span class="nf">elements</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">446</span>         <span class="k">return</span> <span class="n">_Repeat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">447</span> 
+<span class="g g-Whitespace">    </span><span class="mi">448</span>     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/ir/types.py</span> in <span class="ni">__init__</span><span class="nt">(self, value, size)</span>
+<span class="g g-Whitespace">    </span><span class="mi">351</span> <span class="k">class</span> <span class="nc">_Repeat</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">352</span>     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">353</span>         <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+<span class="g g-Whitespace">    </span><span class="mi">354</span>         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+<span class="g g-Whitespace">    </span><span class="mi">355</span> 
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
