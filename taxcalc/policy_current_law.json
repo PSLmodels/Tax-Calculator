@@ -3070,7 +3070,7 @@
                 "year": 2013,
                 "MARS": "widow",
                 "value": 0.0
-            }
+            },
             {
                 "year": 2020,
                 "MARS": "single",
@@ -3095,7 +3095,7 @@
                 "year": 2020,
                 "MARS": "widow",
                 "value": 75000.00
-            }
+            },
             {
                 "year": 2021,
                 "MARS": "single",
@@ -3201,7 +3201,7 @@
             {
                 "year": 2021,
                 "value": 0.0
-            },
+            }
         ],
         "validators": {
             "range": {
@@ -3249,7 +3249,7 @@
                 "year": 2013,
                 "MARS": "widow",
                 "value": 0.0
-            }
+            },
             {
                 "year": 2020,
                 "MARS": "single",
@@ -3274,7 +3274,7 @@
                 "year": 2020,
                 "MARS": "widow",
                 "value": 1200.00
-            }
+            },
             {
                 "year": 2021,
                 "MARS": "single",
@@ -3334,7 +3334,7 @@
             {
                 "year": 2021,
                 "value": 0.0
-            },
+            }
         ],
         "validators": {
             "range": {
