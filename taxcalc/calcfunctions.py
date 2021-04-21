@@ -2509,7 +2509,7 @@ def ChildDepTaxCredit(n24, MARS, c00100, XTOT, num, c05800,
 
 
 @iterate_jit(nopython=True)
-def PersonalTaxCredit(MARS, c00100, XTOT, nu18
+def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
                       II_credit, II_credit_ps, II_credit_prt,
                       II_credit_nr, II_credit_nr_ps, II_credit_nr_prt,
                       RRC_c, RRC_ps, RRC_pe, RRC_prt, RRC_c_kids, RRC_c_unit,
