@@ -644,53 +644,11 @@ to be an accurate representation of the Cost-of-Living Refund proposal.</p>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>YEAR  UNITS   ITAX1   ITAX2  EITC1  EITC2  COLR1  COLR2
-2019  202.7  1402.9  1402.9   59.3   59.3    0.0    0.0
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2020  205.4  1322.9  1044.4   64.3    0.0    0.0  342.8
-</pre></div>
-</div>
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">7468</span><span class="n">b420add7</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">    </span><span class="mi">138</span>     <span class="n">calc1</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">139</span>     <span class="n">calc2</span><span class="o">.</span><span class="n">advance_to_year</span><span class="p">(</span><span class="n">cyr</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">140</span>     <span class="n">calc2</span><span class="o">.</span><span class="n">calc_all</span><span class="p">()</span>
-<span class="g g-Whitespace">    </span><span class="mi">141</span>     <span class="c1"># tabulate weighted amounts</span>
-<span class="g g-Whitespace">    </span><span class="mi">142</span>     <span class="n">funits</span> <span class="o">=</span> <span class="n">calc1</span><span class="o">.</span><span class="n">total_weight</span><span class="p">()</span>
-
-<span class="nn">&lt;ipython-input-2-7468b420add7&gt;</span> in <span class="ni">calc_all</span><span class="nt">(self, zero_out_calc_vars)</span>
-<span class="g g-Whitespace">    </span><span class="mi">100</span>         <span class="s2">&quot;&quot;&quot;</span>
-<span class="g g-Whitespace">    </span><span class="mi">101</span><span class="s2">         tc.BenefitPrograms(self)</span>
-<span class="ne">--&gt; </span><span class="mi">102</span><span class="s2">         self._calc_one_year(zero_out_calc_vars)</span>
-<span class="g g-Whitespace">    </span><span class="mi">103</span><span class="s2">         tc.BenefitSurtax(self)</span>
-<span class="g g-Whitespace">    </span><span class="mi">104</span><span class="s2">         tc.BenefitLimitation(self)</span>
-
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_calc_one_year</span><span class="nt">(self, zero_out_calc_vars)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1431</span><span class="s2">         del item_cvar</span>
-<span class="g g-Whitespace">   </span><span class="mi">1432</span><span class="s2">         # Calculate taxes with optimal itemized deduction</span>
-<span class="ne">-&gt; </span><span class="mi">1433</span><span class="s2">         self._taxinc_to_amt()</span>
-<span class="g g-Whitespace">   </span><span class="mi">1434</span><span class="s2">         F2441(self.__policy, self.__records)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1435</span><span class="s2">         EITC(self.__policy, self.__records)</span>
-
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">_taxinc_to_amt</span><span class="nt">(self)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1362</span><span class="s2">         TaxInc(self.__policy, self.__records)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1363</span><span class="s2">         SchXYZTax(self.__policy, self.__records)</span>
-<span class="ne">-&gt; </span><span class="mi">1364</span><span class="s2">         GainsTax(self.__policy, self.__records)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1365</span><span class="s2">         AGIsurtax(self.__policy, self.__records)</span>
-<span class="g g-Whitespace">   </span><span class="mi">1366</span><span class="s2">         NetInvIncTax(self.__policy, self.__records)</span>
-
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/decorators.py</span> in <span class="ni">wrapper</span><span class="nt">(*args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">323</span><span class="s2">                  {&quot;applied_f&quot;: applied_jitted_f}, fakeglobals)</span>
-<span class="g g-Whitespace">    </span><span class="mi">324</span><span class="s2">             high_level_fn = fakeglobals[&#39;hl_func&#39;]</span>
-<span class="ne">--&gt; </span><span class="mi">325</span><span class="s2">             ans = high_level_fn(*args, **kwargs)</span>
-<span class="g g-Whitespace">    </span><span class="mi">326</span><span class="s2">             return ans</span>
-<span class="g g-Whitespace">    </span><span class="mi">327</span><span class="s2"> </span>
-
-<span class="nn">&lt;string&gt;</span> in <span class="ni">hl_func</span><span class="nt">(pm, pf)</span>
-
-<span class="ne">KeyboardInterrupt</span>: 
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Exception ignored on calling ctypes callback function: &lt;function ExecutionEngine._raw_object_cache_notify at 0x7f43c0159550&gt;
+Traceback (most recent call last):
+  File &quot;/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/llvmlite/binding/executionengine.py&quot;, line 171, in _raw_object_cache_notify
+    def _raw_object_cache_notify(self, data):
+KeyboardInterrupt: 
 </pre></div>
 </div>
 </div>
