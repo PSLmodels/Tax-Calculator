@@ -258,7 +258,7 @@ tuple6 = (2, 170000, 4, 2, II_credit_ARPA, II_credit_ps_ARPA, 0,
 tuple7 = (4, 50000, 2, 1, II_credit_ARPA, II_credit_ps_ARPA, 0,
           II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
           RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
-tuple8 = (4, 115000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
+tuple8 = (4, 117000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
           II_credit_nr_ARPA, II_credit_nr_ps_ARPA, 0, 1400, RRC_ps_ARPA,
           RRC_pe_ARPA, 0, 0, RRC_c_unit_ARPA, 0, 0, 0)
 tuple9 = (4, 130000, 1, 0, II_credit_ARPA, II_credit_ps_ARPA, 0,
@@ -298,7 +298,7 @@ expected4 = (0, 0, 4200)
 expected5 = (0, 0, 2800)
 expected6 = (0, 0, 0)
 expected7 = (0, 0, 2800)
-expected8 = (0, 0, 933.33)
+expected8 = (0, 0, 560)
 expected9 = (0, 0, 0)
 expected10 = (0, 0, 1200)
 expected11 = (0, 0, 600)
