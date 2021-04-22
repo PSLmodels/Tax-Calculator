@@ -1459,8 +1459,6 @@ class Calculator():
                          'AMT_child_em', 'AMT_em_ps', 'AMT_em_pe',
                          'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3', 'AMT_CG_rt1', 'AMT_CG_rt2',
                          'AMT_CG_rt3', 'AMT_CG_rt4'])
-        for p in ['AMT_em', 'AMT_em_ps', 'AMT_CG_brk1', 'AMT_CG_brk2', 'AMT_CG_brk3']:
-            pl[p] = pl[p][df.MARS-1]
         return_amt = AMT(*df_args, *pl.values())
         for out_arg, col in zip(['c62100', 'c09600', 'c05800'], return_amt):
             df[out_arg] = col
@@ -1510,18 +1508,15 @@ class Calculator():
                        df.e00300, df.e00600, df.e01100, df.e01200)
         
         pl = get_params(['ALD_InvInc_ec_rt', 'CG_nodiff', 'CG_ec',
-             'CG_reinvest_ec_rt', 'ALD_StudentLoan_hc'])
-        ALD_BusinessLosses_c_all = self.policy_param('ALD_BusinessLosses_c')[df.MARS-1]
+             'CG_reinvest_ec_rt', 'ALD_StudentLoan_hc', 'ALD_BusinessLosses_c'])
         return_capgains = CapGains(df.p23250, df.p22250, df.sep, df.invinc_ec_base, df.MARS,
              df.e00200, df.e00300, df.e00600, df.e00650, df.e00700, df.e00800,
              df.e00900, df.e01100, df.e01200, df.e01400, df.e01700, df.e02000, df.e02100,
              df.e02300, df.e00400, df.e02400, df.c02900, df.e03210, df.e03230, df.e03240,
-             *pl.values(), ALD_BusinessLosses_c_all)
+             *pl.values())
         for out_arg, col in zip(['c01000', 'c23650', 'ymod', 'ymod1', 'invinc_agi_ec'], return_capgains):
             df[out_arg] = col
 
-        # SS_thd50_all = self.policy_param('SS_thd50')[df.MARS-1]
-        # SS_thd85_all = self.policy_param('SS_thd85')[df.MARS-1]
         pl = get_params(['SS_thd50', 'SS_thd85', 'SS_percentage1', 'SS_percentage2'])
         df['c02500'] = SSBenefits(df.MARS, df.ymod, df.e02400, *pl.values())
 
