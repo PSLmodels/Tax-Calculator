@@ -167,5 +167,4 @@ def pytest_sessionfinish(session):
 
     # Save new test stats to disk including time diff
     new_stats_df['time_diff'] = merge_df['time_diff'].values
-    print(new_stats_df['time_diff'])
     new_stats_df.to_csv(os.path.join(tests_path, 'test_stats_current.csv'))
