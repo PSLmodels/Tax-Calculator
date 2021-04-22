@@ -147,8 +147,8 @@ def pytest_sessionfinish(session):
 
     merge_df = new_stats_df.merge(old_stats_df, on=['test_id'], how='left')
     # time diff for new tests is set to 0
-    merge_df['time_diff'] = merge_df['time_diff'].fillna(0)
     merge_df['time_diff'] = merge_df['duration_ms_x'] - merge_df['duration_ms_y']
+    merge_df['time_diff'] = merge_df['time_diff'].fillna(0)
 
     tol = 1.0 # choose tolerance in seconds
     tol *= 1000
@@ -167,4 +167,5 @@ def pytest_sessionfinish(session):
 
     # Save new test stats to disk including time diff
     new_stats_df['time_diff'] = merge_df['time_diff'].values
+    print(new_stats_df['time_diff'])
     new_stats_df.to_csv(os.path.join(tests_path, 'test_stats_current.csv'))
