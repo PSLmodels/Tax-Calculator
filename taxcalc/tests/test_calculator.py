@@ -911,7 +911,7 @@ def test_qbid_limit_switch():
     calc_base.calc_all()
 
     qbid_base = calc_base.array('qbided')
-    assert np.allclose(qbid_base, 0)
+    assert np.equal(np.array(qbid_base), 0)
 
     pol_ref = Policy()
     pol_ref.implement_reform(ref)
@@ -919,7 +919,7 @@ def test_qbid_limit_switch():
     calc_ref.calc_all()
 
     qbid_ref = calc_ref.array('qbided')
-    assert np.allclose(qbid_ref, 20000)
+    assert np.equal(np.array(qbid_ref), 20000)
 
 
 def test_calc_all_benefits_amounts(cps_subsample):
