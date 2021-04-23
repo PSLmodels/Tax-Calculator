@@ -534,7 +534,7 @@ def CapGains(p23250, p22250, sep, invinc_ec_base, MARS,
     # compute ymod1 variable that is included in AGI
     ymod1 = (e00200 + e00700 + e00800 + e01400 + e01700 +
              invinc - invinc_agi_ec + e02100 + e02300 +
-             np.maximum(e00900 + e02000, -ALD_BusinessLosses_c[MARS - 1]))
+             np.maximum(e00900 + e02000, (-1)*ALD_BusinessLosses_c[MARS - 1]))
     if CG_nodiff:
         # apply QDIV+CG exclusion if QDIV+LTCG receive no special tax treatment
         qdcg_pos = np.maximum(0., e00650 + c01000)
@@ -1036,9 +1036,9 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     limitstart = ID_ps[MARS - 1]
 
     condition = np.logical_and(c21060 > nonlimited, c00100 > limitstart)
-    dednp = np.where(condition, ID_crt * (c21060 - nonlimited), 0.)
+    dedmin = np.where(condition, ID_crt * (c21060 - nonlimited), 0.)
     dedpho = np.where(condition, ID_prt * np.maximum(0., posagi - limitstart), 0.)
-    c21040 = np.where(condition, np.minimum(dednp, dedpho), 0.)
+    c21040 = np.where(condition, np.minimum(dedmin, dedpho), 0.)
     c04470 = np.where(condition, c21060 - c21040, c21060)
 
     c04470 = np.minimum(c04470, ID_c[MARS - 1])
@@ -2185,7 +2185,7 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
                     0.)
     eitc = np.where(np.logical_or(earnings > phaseout_start, agi > phaseout_start),
                     np.minimum(eitc, eitcx),
-                    0.)
+                    eitc)
     return eitc
 
 

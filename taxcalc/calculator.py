@@ -188,7 +188,6 @@ class Calculator():
         pl = get_params(['FST_AGI_trt', 'FST_AGI_thd_lo', 'FST_AGI_thd_hi'])
         FST_AGI_thd_lo_all = pl['FST_AGI_thd_lo'][df.MARS-1]
         FST_AGI_thd_hi_all = pl['FST_AGI_thd_hi'][df.MARS-1]
-
         return_fairshare = FairShareTax(df.c00100, df.MARS, df.ptax_was, df.setax, df.ptax_amc,
                                         df.iitax, df.combined, df.surtax,
                                         pl['FST_AGI_trt'], FST_AGI_thd_lo_all, FST_AGI_thd_hi_all)
@@ -1519,8 +1518,7 @@ class Calculator():
         df['c02500'] = SSBenefits(df.MARS, df.ymod, df.e02400, *pl.values())
 
         pl = get_params(['II_em', 'II_em_ps', 'II_prt', 'II_no_em_nu18'])
-        II_em_ps_all = self.policy_param('II_em_ps')[df.MARS-1]
-        pl['II_em_ps'] = II_em_ps_all
+        pl['II_em_ps'] = self.policy_param('II_em_ps')[df.MARS-1]
         return_AGI = AGI(df.ymod1, df.c02500, df.c02900, df.XTOT,
                          df.MARS, df.sep, df.DSI, df.exact, df.nu18, df.taxable_ubi,
                          *pl.values())
