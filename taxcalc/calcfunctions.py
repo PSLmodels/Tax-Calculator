@@ -301,14 +301,6 @@ def DependentCare(nu13, elderly_dependents, earned,
                                ((1. - ALD_Dependents_hc) * elderly_dependents *
                                     ALD_Dependents_Elder_c)),
                                 0.)
-
-    # if earned <= ALD_Dependents_thd[MARS - 1]:
-    #     care_deduction = (((1. - ALD_Dependents_hc) * nu13 *
-    #                        ALD_Dependents_Child_c) +
-    #                       ((1. - ALD_Dependents_hc) * elderly_dependents *
-    #                        ALD_Dependents_Elder_c))
-    # else:
-    #     care_deduction = 0.
     
     return care_deduction
 
@@ -586,16 +578,6 @@ def SSBenefits(MARS, ymod, e02400,
     c02500: float
         Social security (OASDI) benefits included in AGI
     """
-    # if ymod < SS_thd50[MARS - 1]:
-    #     c02500 = 0.
-    # elif ymod < SS_thd85[MARS - 1]:
-    #     c02500 = SS_percentage1 * min(ymod - SS_thd50[MARS - 1], e02400)
-    # else:
-    #     c02500 = min(SS_percentage2 * (ymod - SS_thd85[MARS - 1]) +
-    #                  SS_percentage1 *
-    #                  min(e02400, SS_thd85[MARS - 1] -
-    #                      SS_thd50[MARS - 1]), SS_percentage2 * e02400)
-
     condlist = [ymod < SS_thd50[MARS - 1], ymod < SS_thd85[MARS - 1],
                 np.logical_and(ymod >= SS_thd50[MARS - 1], ymod >= SS_thd85[MARS - 1])]
 
@@ -1052,14 +1034,6 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     # (no attempt to adjust c04470 components for limitations)
     nonlimited = c17000 + c20500
     limitstart = ID_ps[MARS - 1]
-    # if c21060 > nonlimited and c00100 > limitstart:
-    #     dednp = ID_crt * (c21060 - nonlimited)
-    #     dedpho = ID_prt * np.maximum(0., posagi - limitstart)
-    #     c21040 = np.minimum(dednp, dedpho)
-    #     c04470 = c21060 - c21040
-    # else:
-    #     c21040 = 0.
-    #     c04470 = c21060
 
     condition = np.logical_and(c21060 > nonlimited, c00100 > limitstart)
     dednp = np.where(condition, ID_crt * (c21060 - nonlimited), 0.)
@@ -1164,32 +1138,17 @@ def StdDed(DSI, earned, age_head, age_spouse, MARS, MIDR,
         Standard deduction (zero for itemizers)
     """
     # calculate deduction for dependents
-    # if DSI == 1:
-    #     c15100 = max(350. + earned, STD_Dep)
-    #     basic_stded = min(STD[MARS - 1], c15100)
-    # else:
-    #     c15100 = 0.
-    #     if MIDR == 1:
-    #         basic_stded = 0.
-    #     else:
-    #         basic_stded = STD[MARS - 1]
     c15100 = np.where(DSI == 1, np.maximum(350. + earned, STD_Dep), 0.)
     condlist = [DSI == 1, np.logical_and(DSI != 1, MIDR == 1), np.logical_and(DSI != 1, MIDR != 1)]
     choicelist = [np.minimum(STD[MARS - 1], c15100), 0., STD[MARS - 1]]
     basic_stded = np.select(condlist, choicelist)
     # calculate extra standard deduction for aged and blind
     num_extra_stded = blind_head + blind_spouse
-    # if age_head >= 65:
-        # num_extra_stded += 1
-    # if MARS == 2 and age_spouse >= 65:
-        # num_extra_stded += 1
     num_extra_stded = np.where(age_head >= 65, num_extra_stded + 1, num_extra_stded)
     num_extra_stded = np.where(np.logical_and(MARS == 2, age_spouse >= 65), num_extra_stded + 1, num_extra_stded)
     extra_stded = num_extra_stded * STD_Aged[MARS - 1]
     # calculate the total standard deduction
     standard = basic_stded + extra_stded
-    # if MARS == 3 and MIDR == 1:
-        # standard = 0.
     standard = np.where(np.logical_and(MARS == 3, MIDR == 1), 0., standard)
     if STD_allow_charity_ded_nonitemizers:
         standard += np.minimum(c19700, STD_charity_ded_nonitemizers_max)
@@ -1445,20 +1404,12 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
     # define pass-through income eligible for PT schedule
     pt_passive = PT_EligibleRate_passive * (e02000 - e26270)
     pt_active_gross = e00900 + e26270
-    # if (pt_active_gross > 0) and PT_wages_active_income:
-        # pt_active_gross = pt_active_gross + e00200
     pt_active_gross = np.where(np.logical_and(pt_active_gross > 0, PT_wages_active_income),
                                 pt_active_gross + e00200,
                                 pt_active_gross)
     pt_active = PT_EligibleRate_active * pt_active_gross
     pt_active = np.minimum(pt_active, e00900 + e26270)
     pt_taxinc = np.maximum(0., pt_passive + pt_active)
-    # if pt_taxinc >= taxable_income:
-    #     pt_taxinc = taxable_income
-    #     reg_taxinc = 0.
-    # else:
-    #     # pt_taxinc is unchanged
-    #     reg_taxinc = taxable_income - pt_taxinc
     pt_taxinc = np.where(pt_taxinc >= taxable_income, taxable_income, pt_taxinc)
     reg_taxinc = np.where(pt_taxinc >= taxable_income, 0., taxable_income - pt_taxinc)
     # determine stacking order
@@ -1469,26 +1420,12 @@ def SchXYZ(taxable_income, MARS, e00900, e26270, e02000, e00200,
         reg_tbase = pt_taxinc
         pt_tbase = 0.
     # compute Schedule X,Y,Z tax using the two components of taxable income
-    # if reg_taxinc > 0.:
-    #     reg_tax = Taxes(reg_taxinc, MARS, reg_tbase,
-    #                     II_rt1, II_rt2, II_rt3, II_rt4,
-    #                     II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
-    #                     II_brk3, II_brk4, II_brk5, II_brk6, II_brk7)
-    # else:
-    #     reg_tax = 0.
     reg_tax = np.where(reg_taxinc > 0.,
                        Taxes(reg_taxinc, MARS, reg_tbase,
                        II_rt1, II_rt2, II_rt3, II_rt4,
                        II_rt5, II_rt6, II_rt7, II_rt8, II_brk1, II_brk2,
                        II_brk3, II_brk4, II_brk5, II_brk6, II_brk7),
                        0.)
-    # if pt_taxinc > 0.:
-    #     pt_tax = Taxes(pt_taxinc, MARS, pt_tbase,
-    #                    PT_rt1, PT_rt2, PT_rt3, PT_rt4,
-    #                    PT_rt5, PT_rt6, PT_rt7, PT_rt8, PT_brk1, PT_brk2,
-    #                    PT_brk3, PT_brk4, PT_brk5, PT_brk6, PT_brk7)
-    # else:
-    #     pt_tax = 0.
     pt_tax = np.where(pt_taxinc > 0.,
                       Taxes(pt_taxinc, MARS, pt_tbase,
                       PT_rt1, PT_rt2, PT_rt3, PT_rt4,
@@ -1776,19 +1713,13 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
         Regular tax on regular taxable income before credits
     """
     # pylint: disable=too-many-statements
-    # if c01000 > 0. or c23650 > 0. or p23250 > 0. or e01100 > 0. or e00650 > 0.:
-    #     hasqdivltcg = 1  # has qualified dividends or long-term capital gains
-    # else:
-    #     hasqdivltcg = 0  # no qualified dividends or long-term capital gains
-
+    
     cond = np.any([c01000 > 0., c23650 > 0., p23250 > 0.,
                    e01100 > 0., e00650 > 0.], axis=0)
     hasqdivltcg = np.where(cond, 1, 0)
 
     if CG_nodiff:
         hasqdivltcg = 0.  # no special taxation of qual divids and l-t cap gains
-
-    # if hasqdivltcg == 1:
 
     dwks1 = np.where(hasqdivltcg == 1, c04800, 0.)
     dwks2 = np.where(hasqdivltcg == 1, e00650, 0.)
@@ -1800,10 +1731,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     # dwks8 = np.where(hasqdivltcg == 1, np.minimum(dwks3, dwks4), 0.)
     # dwks9 = np.where(hasqdivltcg == 1, np.maximum(0., dwks7 - dwks8), 0.)
     # BELOW TWO STATEMENTS ARE UNCLEAR IN LIGHT OF dwks9=... COMMENT
-    # if e01100 > 0.:
-    #     c24510 = e01100
-    # else:
-    #     c24510 = np.maximum(0., dwks7) + e01100
     condlist = [np.logical_and(hasqdivltcg == 1, e01100 > 0.), np.logical_and(hasqdivltcg == 1, e01100 <= 0.)]
     choicelist = [e01100, np.maximum(0., dwks7) + e01100]
     c24510 = np.select(condlist, choicelist)
@@ -1867,14 +1794,6 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     dwks44 = np.where(hasqdivltcg == 1, c05200, 0.)
     dwks45 = np.where(hasqdivltcg == 1, np.minimum(dwks43, dwks44), 0.)
     c24580 = np.where(hasqdivltcg == 1, dwks45, c05200)
-
-    # else:  # if hasqdivltcg is zero
-
-    #     c24580 = c05200
-    #     dwks10 = np.maximum(0., np.minimum(p23250, c23650)) + e01100
-    #     dwks13 = 0.
-    #     dwks14 = 0.
-    #     dwks19 = 0.
 
     # final calculations done no matter what the value of hasqdivltcg
     c05100 = c24580  # because foreign earned income exclusion is assumed zero
@@ -2035,12 +1954,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     """
     # pylint: disable=too-many-statements,too-many-branches
     # Form 6251, Part I
-    # if standard == 0.0:
-    #     c62100 = (c00100 - e00700 - c04470 +
-    #               max(0., min(c17000, 0.025 * c00100)) +
-    #               c18300 + c20800 - c21040)
-    # if standard > 0.0:
-    #     c62100 = c00100 - e00700
     c62100 = np.where(standard == 0.0,
                       (c00100 - e00700 - c04470 +
                        np.maximum(0., np.minimum(c17000, 0.025 * c00100)) +
@@ -2048,11 +1961,6 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
                       0.)
     c62100 = np.where(standard > 0.0, c00100 - e00700, c62100)
     c62100 += cmbtp  # add income not in AGI but considered income for AMT
-    # if MARS == 3:
-    #     amtsepadd = np.maximum(0.,
-    #                     np.minimum(AMT_em, AMT_prt * (c62100 - AMT_em_pe)))
-    # else:
-    #     amtsepadd = 0.
     amtsepadd = np.where(MARS == 3,
                          np.maximum(0.,
                              np.minimum(AMT_em[MARS - 1], AMT_prt * (c62100 - AMT_em_pe))),
@@ -2063,15 +1971,12 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
                  np.maximum(0., c62100 - AMT_em_ps[MARS - 1]))
     young_head = np.logical_and(age_head != 0, age_head < AMT_child_em_c_age)
     no_or_young_spouse = np.where(age_spouse < AMT_child_em_c_age, True, False)
-    # if young_head and no_or_young_spouse:
-    #     line29 = np.minimum(line29, earned + AMT_child_em)
     line29 = np.where(np.logical_and(young_head, no_or_young_spouse),
                       np.minimum(line29, earned + AMT_child_em),
                       line29)
     line30 = np.maximum(0., c62100 - line29)
     line3163 = (AMT_rt1 * line30 +
                 AMT_rt2 * np.maximum(0., (line30 - (AMT_brk1 / sep))))
-    # if dwks10 > 0. or dwks13 > 0. or dwks14 > 0. or dwks19 > 0. or e24515 > 0.:
     cond = np.any([dwks10 > 0., dwks13 > 0., dwks14 > 0., dwks19 > 0., e24515 > 0.], axis=0)
     # complete Form 6251, Part III (line36 is equal to line30)
     line37 = np.where(cond, dwks13, 0.)
@@ -2095,14 +2000,7 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     line54 = np.where(cond, np.minimum(line48, line53), 0.)  # line54 is amount taxed at AMT_CG_rt2
     cgtax2 = np.where(cond, line54 * AMT_CG_rt2, 0.)
     line56 = np.where(cond, line47 + line54, 0.)  # total amount in lower two brackets
-    # if line41 == line56:
-    #     line57 = 0.  # line57 is amount taxed at AMT_CG_rt3
-    #     linex2 = 0.  # linex2 is amount taxed at AMT_CG_rt4
-    # else:
-    #     line57 = line46 - line56
-    #     linex1 = np.minimum(line48,
-    #                  np.maximum(0., AMT_CG_brk3 - line44 - line45))
-    #     linex2 = np.maximum(0., line54 - linex1)
+
     condlist = [np.logical_and(cond, line41 == line56), np.logical_and(cond, line41 != line56)]
     line57 = np.select(condlist, [0., line46 - line56])
     linex1 = np.select(condlist, [0., np.minimum(line48,
@@ -2111,22 +2009,13 @@ def AMT(e07300, dwks13, standard, f6251, c00100, c18300, taxbc,
     linex2 = np.select(condlist, [0., np.maximum(0., line54 - linex1)])
     cgtax3 = np.where(cond, line57 * AMT_CG_rt3, 0.)
     cgtax4 = np.where(cond, linex2 * AMT_CG_rt4, 0.)
-    # if line38 == 0.:
-    #     line61 = 0.
-    # else:
-    #     line61 = 0.25 * np.maximum(0., line30 - line41 - line56 - line57 - linex2)
+
     condlist = [np.logical_and(cond, line38 == 0.), np.logical_and(cond, line38 != 0.)]
     line61 = np.select(condlist, [0., 0.25 * np.maximum(0., line30 - line41 - line56 - line57 - linex2)])
     line62 = np.where(cond, line42 + cgtax1 + cgtax2 + cgtax3 + cgtax4 + line61, 0.)
     line64 = np.where(cond, np.minimum(line3163, line62), 0.)
-    # else:  # if not completing Form 6251, Part III
-        # line31 = line3163
-    line31 = np.where(cond, line64, line3163)
+    line31 = np.where(cond, line64, line3163) # if not completing Form 6251, Part III
     # Form 6251, Part II bottom
-    # if f6251 == 1:
-        # line32 = e62900
-    # else:
-        # line32 = e07300
     line32 = np.where(f6251 == 1, e62900, e07300)
     line33 = line31 - line32
     c09600 = np.maximum(0., line33 - np.maximum(0., taxbc - e07300 - c05700))
@@ -2290,10 +2179,6 @@ def EITCamount(basic_frac, phasein_rate, earnings, max_amount,
     """
     eitc = np.minimum((basic_frac * max_amount +
                 (1.0 - basic_frac) * phasein_rate * earnings), max_amount)
-    # if earnings > phaseout_start or agi > phaseout_start:
-        # eitcx = np.maximum(0., (max_amount - phaseout_rate *
-                         # np.maximum(0., np.maximum(earnings, agi) - phaseout_start)))
-        # eitc = np.minimum(eitc, eitcx)
     eitcx = np.where(np.logical_or(earnings > phaseout_start, agi > phaseout_start),
                     np.maximum(0., (max_amount - phaseout_rate *
                          np.maximum(0., np.maximum(earnings, agi) - phaseout_start))),
@@ -2706,21 +2591,6 @@ def AmOppCreditParts(exact, e87521, num, c00100, CR_AmOppRefundable_hc,
         1/1000: American Opportunity Credit phaseout rate
         0.3: American Opportunity Credit refundable rate
     """
-    # if e87521 > 0.:
-    #     c87658 = max(0., 90000. * num - c00100)
-    #     c87660 = 10000. * num
-    #     if exact == 1:  # exact calculation as on tax forms
-    #         c87662 = 1000. * min(1., round(c87658 / c87660, 3))
-    #     else:
-    #         c87662 = 1000. * min(1., c87658 / c87660)
-    #     c87664 = c87662 * e87521 / 1000.
-    #     c10960 = 0.4 * c87664 * (1. - CR_AmOppRefundable_hc)
-    #     c87668 = c87664 - c10960 * (1. - CR_AmOppNonRefundable_hc)
-    # else:
-    #     c10960 = 0.
-    #     c87668 = 0.
-    # return (c10960, c87668)
-
     # Ignore bad division
 
     c87658 = np.where(e87521 > 0., np.maximum(0., 90000. * num - c00100), 0.)
@@ -2882,17 +2752,9 @@ def EducationTaxCredit(exact, e87530, MARS, c00100, num, c05800,
         0.2: Lifetime Learning Credit ratio against expense
     """
     c87560 = 0.2 * np.minimum(e87530, LLC_Expense_c)
-    # if MARS == 2:
-        # c87570 = ETC_pe_Married * 1000.
-    # else:
-        # c87570 = ETC_pe_Single * 1000.
     c87570 = np.where(MARS == 2, ETC_pe_Married * 1000., ETC_pe_Single * 1000.)
     c87590 = np.maximum(0., c87570 - c00100)
     c87600 = 10000. * num
-    # if exact == 1:  # exact calculation as on tax forms
-    #     c87610 = np.minimum(1., round(c87590 / c87600, 3))
-    # else:
-    #     c87610 = np.minimum(1., c87590 / c87600)
     c87610 = np.where(exact == 1, np.minimum(1., np.around(c87590 / c87600, 3)), np.minimum(1., c87590 / c87600))
     c87620 = c87560 * c87610
     xline4 = np.maximum(0., c05800 - (e07300 + c07180 + c07200))
@@ -3442,22 +3304,7 @@ def Taxes(income, MARS, tbrk_base,
     brk5 = np.where(tbrk_base > 0., np.maximum(tbrk5[MARS - 1] - tbrk_base, 0.), tbrk5[MARS - 1])
     brk6 = np.where(tbrk_base > 0., np.maximum(tbrk6[MARS - 1] - tbrk_base, 0.), tbrk6[MARS - 1])
     brk7 = np.where(tbrk_base > 0., np.maximum(tbrk7[MARS - 1] - tbrk_base, 0.), tbrk7[MARS - 1])
-    # if tbrk_base > 0.:
-    #     brk1 = np.maximum(tbrk1[MARS - 1] - tbrk_base, 0.)
-    #     brk2 = np.maximum(tbrk2[MARS - 1] - tbrk_base, 0.)
-    #     brk3 = np.maximum(tbrk3[MARS - 1] - tbrk_base, 0.)
-    #     brk4 = np.maximum(tbrk4[MARS - 1] - tbrk_base, 0.)
-    #     brk5 = np.maximum(tbrk5[MARS - 1] - tbrk_base, 0.)
-    #     brk6 = np.maximum(tbrk6[MARS - 1] - tbrk_base, 0.)
-    #     brk7 = np.maximum(tbrk7[MARS - 1] - tbrk_base, 0.)
-    # else:
-    #     brk1 = tbrk1[MARS - 1]
-    #     brk2 = tbrk2[MARS - 1]
-    #     brk3 = tbrk3[MARS - 1]
-    #     brk4 = tbrk4[MARS - 1]
-    #     brk5 = tbrk5[MARS - 1]
-    #     brk6 = tbrk6[MARS - 1]
-    #     brk7 = tbrk7[MARS - 1]
+    
     return (rate1 * np.minimum(income, brk1) +
             rate2 * np.minimum(brk2 - brk1, np.maximum(0., income - brk1)) +
             rate3 * np.minimum(brk3 - brk2, np.maximum(0., income - brk2)) +

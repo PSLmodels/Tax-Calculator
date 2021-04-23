@@ -1463,8 +1463,6 @@ class Calculator():
         for out_arg, col in zip(['c62100', 'c09600', 'c05800'], return_amt):
             df[out_arg] = col
 
-        # AMT(self.__policy, self.__records)
-
     def _calc_one_year(self, zero_out_calc_vars=False):
 
         """
