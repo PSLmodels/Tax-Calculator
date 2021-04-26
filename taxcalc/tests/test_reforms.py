@@ -152,8 +152,8 @@ def test_round_trip_tcja_reform(tests_path):
                           'ALD_BusinessLosses_c': {2026: [283535.22, 567070.42,
                                                    283535.22, 283535.22,
                                                    567070.42], 2027: [9e+99,
-                                                   9e+99, 9e+99, 9e+99, 9e+99]}
-                                                   })
+                                                   9e+99, 9e+99, 9e+99,
+                                                   9e+99]}})
     assert not pol.parameter_warnings
     assert not pol.errors
     pol.set_year(fyear)
