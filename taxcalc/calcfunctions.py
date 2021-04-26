@@ -2589,7 +2589,7 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
     elif c00100 < RRC_pe[MARS - 1] & c00100 > 0:
         prt = ((c00100 - RRC_ps[MARS - 1])/
                (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
-        recovery_rebate_credit = RRC_c * XTOT * (1-prt)
+        recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
     else:
         recovery_rebate_credit = max(0, RRC_c_unit[MARS-1] + RRC_c_kids * nu18 - RRC_prt * (c00100 - RRC_ps[MARS -1]))
     return (personal_refundable_credit, personal_nonrefundable_credit,
