@@ -2586,12 +2586,16 @@ def PersonalTaxCredit(MARS, c00100, XTOT, nu18,
     if c00100 < RRC_ps[MARS - 1]:
         recovery_rebate_credit = RRC_c * XTOT
         recovery_rebate_credit += RRC_c_unit[MARS-1] + RRC_c_kids * nu18
-    elif c00100 < RRC_pe[MARS - 1] & c00100 > 0:
+        print("if is triggered")
+    elif c00100 < RRC_pe[MARS - 1] and c00100 > 0:
         prt = ((c00100 - RRC_ps[MARS - 1])/
                (RRC_pe[MARS - 1] - RRC_ps[MARS - 1]))
         recovery_rebate_credit = RRC_c * XTOT * (1 - prt)
+        print("elif is triggered")
     else:
         recovery_rebate_credit = max(0, RRC_c_unit[MARS-1] + RRC_c_kids * nu18 - RRC_prt * (c00100 - RRC_ps[MARS -1]))
+        print("else is triggered")
+        print(c00100, RRC_pe[MARS-1])
     return (personal_refundable_credit, personal_nonrefundable_credit,
             recovery_rebate_credit)
 
