@@ -391,15 +391,20 @@ def test_bad_json_names(tests_path):
     """
     Test that ValueError raised with assump or reform do not end in '.json'
     """
+    test_url = (
+        'https://raw.githubusercontent.com/PSLmodels/'
+        'Tax-Calculator/master/taxcalc/reforms/'
+        '2017_law.out.csv'
+    )
     csvname = os.path.join(tests_path, '..', 'growfactors.csv')
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(csvname, None)
-    with pytest.raises(FileNotFoundError):
-        Calculator.read_json_param_objects('http://name.json.html', None)
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects(test_url, None)
     with pytest.raises(ValueError):
         Calculator.read_json_param_objects(None, csvname)
-    with pytest.raises(FileNotFoundError):
-        Calculator.read_json_param_objects(None, 'http://name.json.html')
+    with pytest.raises(ValueError):
+        Calculator.read_json_param_objects(None, test_url)
 
 
 def test_json_assump_url():

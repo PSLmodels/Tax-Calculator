@@ -1,0 +1,3 @@
+[console_scripts]
+tc = taxcalc.cli.tc:cli_tc_main
+

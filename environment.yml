@@ -10,6 +10,7 @@ dependencies:
 - requests
 - aiohttp
 - numba
+- "fsspec<=0.8.7"
 - pytest
 - pytest-pep8
 - pytest-xdist
@@ -20,3 +21,4 @@ dependencies:
 - pip
 - pip:
     - jupyter-book
+    - pytest_harvest
