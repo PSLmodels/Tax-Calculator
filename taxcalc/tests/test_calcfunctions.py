@@ -310,3 +310,4 @@ def test_FairShareTax(test_tuple, expected_value, skip_jit):
     '''
     test_value = calcfunctions.FairShareTax(*test_tuple)
     assert np.allclose(test_value, expected_value)
+
