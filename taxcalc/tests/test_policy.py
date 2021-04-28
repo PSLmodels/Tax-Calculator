@@ -89,6 +89,13 @@ def test_json_reform_url():
     params_url = Policy.read_json_reform(reform_url)
     assert params_str == params_url
 
+    reform_gh_url = (
+        "github://PSLmodels:Tax-Calculator@master/taxcalc/reforms/ptaxes0.json"
+    )
+    params_gh_url = Policy.read_json_reform(reform_gh_url)
+    assert params_gh_url
+    assert params_gh_url == params_str
+
 
 REFORM_JSON = """
 // Example of a reform file suitable for Policy.read_json_reform().

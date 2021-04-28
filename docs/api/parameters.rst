@@ -15,3 +15,6 @@ taxcalc.parameters
     wage_growth_rates, inflation_rates, initialize,
     _update, _read_json_revision, metadata, years_in_revision,
     __getattr__
+
+.. automodule:: taxcalc.parameters
+  :members: is_paramtools_format

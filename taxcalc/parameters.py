@@ -2,6 +2,7 @@ import copy
 import os
 import re
 from collections import defaultdict
+from typing import Union, Mapping, Any, List
 
 import marshmallow as ma
 import paramtools as pt
@@ -10,7 +11,6 @@ import requests
 
 import taxcalc
 from taxcalc.growfactors import GrowFactors
-from taxcalc.utils import json_to_dict
 
 
 class CompatibleDataSchema(ma.Schema):
@@ -698,19 +698,32 @@ class Parameters(pt.Parameters):
     @staticmethod
     def _read_json_revision(obj, topkey):
         """
-        Read JSON revision specified by obj and topkey
+        Read JSON revision specified by ``obj`` and ``topkey``
         returning a single revision dictionary suitable for
-        use with the Parameters._update method.
-        The obj function argument can be None or a string, where the
-        string contains a local filename, a URL beginning with 'http'
-        pointing to a valid JSON file hosted online, or valid JSON
-        text.
-        The topkey argument must be a string containing the top-level
+        use with the ``Parameters._update`` or ``Parameters.adjust`` methods.
+        The obj function argument can be ``None`` or a string, where the
+        string can be:
+
+          - Path for a local file
+          - Link pointing to a valid JSON file
+          - Valid JSON text
+
+        The ``topkey`` argument must be a string containing the top-level
         key in a compound-revision JSON text for which a revision
-        dictionary is returned.  If the specified topkey is not among
-        the top-level JSON keys, the obj is assumed to be a
-        non-compound-revision JSON text for the specified topkey.
-        """
+        dictionary is returned.  If the specified ``topkey`` is not among
+        the top-level JSON keys, the ``obj`` is assumed to be a
+        non-compound-revision JSON text for the specified ``topkey``.
+
+        Some examples of valid links are:
+
+        - HTTP: ``https://raw.githubusercontent.com/PSLmodels/Tax-Calculator/master/taxcalc/reforms/2017_law.json``
+
+        - Github API: ``github://PSLmodels:Tax-Calculator@master/taxcalc/reforms/2017_law.json``
+
+        Checkout the ParamTools
+        `docs <https://paramtools.dev/_modules/paramtools/parameters.html#Parameters.read_params>`_
+        for more information on valid file URLs.
+        """  # noqa
         # embedded function used only in _read_json_revision staticmethod
         def convert_year_to_int(syr_dict):
             """
@@ -732,45 +745,18 @@ class Parameters(pt.Parameters):
         # process the main function arguments
         if obj is None:
             return dict()
-        if not isinstance(obj, str):
-            raise ValueError('obj is neither None nor a string')
-        if not isinstance(topkey, str):
-            raise ValueError('topkey={} is not a string'.format(topkey))
-        if os.path.isfile(obj):
-            if not obj.endswith('.json'):
-                msg = 'obj does not end with ".json": {}'
-                raise ValueError(msg.format(obj))
-            txt = open(obj, 'r').read()
-        elif obj.startswith('http'):
-            if not obj.endswith('.json'):
-                msg = 'obj does not end with ".json": {}'
-                raise ValueError(msg.format(obj))
-            req = requests.get(obj)
-            req.raise_for_status()
-            txt = req.text
-        else:
-            if isinstance(topkey, str) and (topkey == ''):
-                raise ValueError("topkey string is empty.")
-            if isinstance(obj, str):
-                if obj == '':
-                    raise ValueError("obj string is empty.")
-                elif obj.endswith('.json') and not os.path.isfile(obj):
-                    raise FileNotFoundError("The .json file does not exist.")
-                elif ("{" and "}") in obj:
-                    txt = obj
-                else:
-                    raise ValueError("The JSON variable is misspecified.")
-            else:
-                raise ValueError("The JSON variable is misspecified.")
-        # strip out //-comments without changing line numbers
-        json_txt = re.sub('//.*', ' ', txt)
-        # convert JSON text into a Python dictionary
-        full_dict = json_to_dict(json_txt)
+
+        full_dict = pt.read_json(obj)
+
         # check top-level key contents of dictionary
         if topkey in full_dict.keys():
             single_dict = full_dict[topkey]
         else:
             single_dict = full_dict
+
+        if is_paramtools_format(single_dict):
+            return single_dict
+
         # convert string year to integer year in dictionary and return
         return convert_year_to_int(single_dict)
 
@@ -808,3 +794,46 @@ class Parameters(pt.Parameters):
             )
         else:
             raise AttributeError(f"{attr} not definied.")
+
+
+TaxcalcReform = Union[str, Mapping[int, Any]]
+ParamToolsAdjustment = Union[str, List[pt.ValueObject]]
+
+
+def is_paramtools_format(params: Union[TaxcalcReform, ParamToolsAdjustment]):
+    """
+    Check first item in ``params`` to determine if it is using the ParamTools
+    adjustment or the Tax-Calculator reform format.
+    If first item is a ``dict``, then it is likely be a Tax-Calculator reform.
+    Otherwise, it is likely to be a ParamTools format.
+
+    Parameters
+    ----------
+    params: dict
+        Either a ParamTools or Tax-Calculator styled parameters ``dict``.
+
+        .. code-block:: python
+
+            # ParamTools style format:
+            {
+                "ss_rate": {2024: 0.2}
+            }
+
+            # Tax-Calculator style format:
+            {
+                "ss_rate": [{"year": 2024, "value": 0.2}]}
+            }
+
+    Returns
+    -------
+    bool:
+        Whether ``params`` is likely to be a ParamTools formatted adjustment or
+        not.
+    """
+    for data in params.values():
+        if isinstance(data, dict):
+            return False  # taxcalc reform
+        else:
+            # Not doing a specific check to see if the value is a list
+            # since it could be a list or just a scalar value.
+            return True

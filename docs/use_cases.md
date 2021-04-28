@@ -316,3 +316,30 @@ families. January 2021. URL:
 Allowance. February 2021. URL:
 <https://www.niskanencenter.org/wp-content/uploads/2021/02/Analysis-of-the-Romney-Child-Allowance_final.pdf>
 (visited on 2021-02-12).
+
+\[65\] Alex Brill, Kyle Pomerleau, and Grant Seiter. The tax benefits of
+parenthood: A history and analysis of current proposals. February 2021.
+Section: Economics. URL:
+<https://www.aei.org/research-products/report/the-tax-benefits-of-parenthood-a-history-and-analysis-of-current-proposals/>
+(visited on 2021-02-25).
+
+\[66\] Alex Brill, Kyle Pomerleau, and Grant Seiter. Pick your Child Tax
+Credit. March 2021. Section: Economics. URL:
+<https://www.aei.org/economics/pick-your-child-tax-credit/> (visited on
+2021-04-05).
+
+\[67\] Alex Brill. The American Rescue Plan's likely cost is way more
+than \$1.9 trillion. March 2021. URL:
+<https://www.aei.org/economics/the-american-rescue-plans-likely-cost-is-way-more-than-1-9-trillion/>
+(visited on 2021-03-05).
+
+\[68\] Alex Brill, Kyle Pomerleau, and Grant Seiter. How will the
+American Rescue Plan impact your 2021 tax liability? March 2021.
+Section: Economics. URL:
+<https://www.aei.org/economics/how-will-the-american-rescue-plan-impact-your-2021-tax-liability/>
+(visited on 2021-04-05).
+
+\[69\] Max Gehnis. California's basic income bill still needs work.
+April 2021. URL:
+<https://blog.ubicenter.org/20210403/california-ab65-calubi.html>
+(visited on 2021-04-06).

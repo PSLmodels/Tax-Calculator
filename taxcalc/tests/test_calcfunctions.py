@@ -203,7 +203,7 @@ expected = [12000, 15800, 13500, 14400, 6000, 6000, 0, 1000, 1350]
 
 
 @pytest.mark.parametrize(
-    'test_tuple,expected_value',[
+    'test_tuple,expected_value', [
         (tuple1, expected[0]), (tuple2, expected[1]),
         (tuple3, expected[2]), (tuple4, expected[3]),
         (tuple5, expected[4]), (tuple6, expected[5]),
