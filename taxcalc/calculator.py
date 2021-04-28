@@ -186,11 +186,11 @@ class Calculator():
         BenefitLimitation(self)
 
         pl = get_params(['FST_AGI_trt', 'FST_AGI_thd_lo', 'FST_AGI_thd_hi'])
-        FST_AGI_thd_lo_all = pl['FST_AGI_thd_lo'][df.MARS-1]
-        FST_AGI_thd_hi_all = pl['FST_AGI_thd_hi'][df.MARS-1]
+        pl['FST_AGI_thd_lo'] = pl['FST_AGI_thd_lo'][df.MARS-1]
+        pl['FST_AGI_thd_hi'] = pl['FST_AGI_thd_hi'][df.MARS-1]
         return_fairshare = FairShareTax(df.c00100, df.MARS, df.ptax_was, df.setax, df.ptax_amc,
                                         df.iitax, df.combined, df.surtax,
-                                        pl['FST_AGI_trt'], FST_AGI_thd_lo_all, FST_AGI_thd_hi_all)
+                                        *pl.values())
         for out_arg, col in zip(['fstax', 'iitax', 'combined', 'surtax'], return_fairshare):
             df[out_arg] = col
 

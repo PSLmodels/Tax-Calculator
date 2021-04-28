@@ -691,21 +691,21 @@ def AGI(ymod1, c02500, c02900, XTOT, MARS, sep, DSI, exact, nu18, taxable_ubi,
     c00100 = ymod1 + c02500 - c02900 + taxable_ubi
     # calculate personal exemption amount
     if II_no_em_nu18:  # repeal of personal exemptions for deps. under 18
-        pre_c04600 = np.maximum(0., XTOT - nu18) * II_em
+        pre_c04600 = max(0., XTOT - nu18) * II_em
     else:
         pre_c04600 = XTOT * II_em
     if DSI:
         pre_c04600 = 0.
     # phase-out personal exemption amount
     if exact == 1:  # exact calculation as on tax forms
-        line5 = np.maximum(0., c00100 - II_em_ps)
-        line6 = np.ceil(line5 / (2500. / sep))
+        line5 = max(0., c00100 - II_em_ps)
+        line6 = math.ceil(line5 / (2500. / sep))
         line7 = II_prt * line6
-        c04600 = np.maximum(0., pre_c04600 * (1. - line7))
+        c04600 = max(0., pre_c04600 * (1. - line7))
     else:  # smoothed calculation needed for sensible mtr calculation
         dispc_numer = II_prt * (c00100 - II_em_ps)
         dispc_denom = 2500. / sep
-        dispc = np.minimum(1., np.maximum(0., dispc_numer / dispc_denom))
+        dispc = min(1., max(0., dispc_numer / dispc_denom))
         c04600 = pre_c04600 * (1. - dispc)
     return (c00100, pre_c04600, c04600)
 
@@ -989,8 +989,6 @@ def ItemDed(e17500_capped, e18400_capped, e18500_capped, e19200_capped,
     posagi = np.maximum(c00100, 0.)
     # Medical
     medical_frt = ID_Medical_frt
-    # if age_head >= 65 or (MARS == 2 and age_spouse >= 65):
-        # medical_frt += ID_Medical_frt_add4aged
     medical_frt = np.where(np.logical_or(age_head >= 65, np.logical_and(MARS == 2, age_spouse >= 65)),
                             medical_frt + ID_Medical_frt_add4aged,
                             medical_frt)
@@ -1724,7 +1722,7 @@ def GainsTax(e00650, c01000, c23650, p23250, e01100, e58990, e00200,
     dwks1 = np.where(hasqdivltcg == 1, c04800, 0.)
     dwks2 = np.where(hasqdivltcg == 1, e00650, 0.)
     dwks3 = np.where(hasqdivltcg == 1, e58990, 0.)
-    dwks4 = np.where(hasqdivltcg == 1, 0., 0.)  # always assumed to be zero
+    dwks4 = 0.  # always assumed to be zero
     dwks5 = np.where(hasqdivltcg == 1, np.maximum(0., dwks3 - dwks4), 0.)
     dwks6 = np.where(hasqdivltcg == 1, np.maximum(0., dwks2 - dwks5), 0.)
     dwks7 = np.where(hasqdivltcg == 1, np.minimum(p23250, c23650), 0.)  # SchD lines 15 and 16, respectively
@@ -3519,7 +3517,7 @@ def LumpSumTax(DSI, num, XTOT, combined,
     combined: float
         Sum of iitax and payrolltax and lumpsum_tax
     """
-    lumpsum_tax = np.where(np.logical_or(LST == 0, DSI == 1), 0, LST * np.maximum(num, XTOT))
+    lumpsum_tax = np.where(np.logical_or(LST == 0.0, DSI == 1), 0., LST * np.maximum(num, XTOT))
     combined += lumpsum_tax
 
     return (lumpsum_tax, combined)
