@@ -580,18 +580,123 @@ It employs the groupby technique used in the Creating a Custom Table recipe, so 
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
 <span class="ne">KeyboardInterrupt</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
 <span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">2</span><span class="o">-</span><span class="mi">68</span><span class="n">ca76a6053b</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">     </span><span class="mi">31</span> 
-<span class="g g-Whitespace">     </span><span class="mi">32</span> <span class="c1"># calculate marginal tax rate wrt cash charitable giving</span>
-<span class="ne">---&gt; </span><span class="mi">33</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">mtr2</span><span class="p">)</span> <span class="o">=</span> <span class="n">calc2</span><span class="o">.</span><span class="n">mtr</span><span class="p">(</span><span class="s1">&#39;e19800&#39;</span><span class="p">,</span> <span class="n">calc_all_already_called</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="g g-Whitespace">     </span><span class="mi">34</span>                          <span class="n">wrt_full_compensation</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="g g-Whitespace">     </span><span class="mi">35</span> 
+<span class="g g-Whitespace">     </span><span class="mi">23</span> <span class="c1"># specify Calculator object for static analysis of reform policy</span>
+<span class="g g-Whitespace">     </span><span class="mi">24</span> <span class="c1"># TODO: Move this reform online so this can be run non-locally.</span>
+<span class="ne">---&gt; </span><span class="mi">25</span> <span class="n">pol</span><span class="o">.</span><span class="n">implement_reform</span><span class="p">(</span><span class="n">tc</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">read_json_reform</span><span class="p">(</span><span class="s1">&#39;_static/reformB.json&#39;</span><span class="p">))</span>
+<span class="g g-Whitespace">     </span><span class="mi">26</span> <span class="n">calc2</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">Calculator</span><span class="p">(</span><span class="n">policy</span><span class="o">=</span><span class="n">pol</span><span class="p">,</span> <span class="n">records</span><span class="o">=</span><span class="n">recs</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">27</span> 
 
-<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/calculator.py</span> in <span class="ni">mtr</span><span class="nt">(self, variable_str, negative_finite_diff, zero_out_calculated_vars, calc_all_already_called, wrt_full_compensation)</span>
-<span class="g g-Whitespace">    </span><span class="mi">675</span>         <span class="n">payrolltax_chng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;payrolltax&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">676</span>         <span class="n">incometax_chng</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;iitax&#39;</span><span class="p">)</span>
-<span class="ne">--&gt; </span><span class="mi">677</span>         <span class="n">combined_taxes_chng</span> <span class="o">=</span> <span class="n">incometax_chng</span> <span class="o">+</span> <span class="n">payrolltax_chng</span>
-<span class="g g-Whitespace">    </span><span class="mi">678</span>         <span class="c1"># calculate base level of taxes after restoring records object</span>
-<span class="g g-Whitespace">    </span><span class="mi">679</span>         <span class="bp">self</span><span class="o">.</span><span class="n">restore_records</span><span class="p">()</span>
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/policy.py</span> in <span class="ni">implement_reform</span><span class="nt">(self, reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span>         <span class="sd">&quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">120</span><span class="sd">         # need to do conversion:</span>
+<span class="ne">--&gt; </span><span class="mi">121</span><span class="sd">         return self._update(reform, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span><span class="sd"> </span>
+<span class="g g-Whitespace">    </span><span class="mi">123</span><span class="sd">     @staticmethod</span>
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">_update</span><span class="nt">(self, revision, print_warnings, raise_errors)</span>
+<span class="g g-Whitespace">    </span><span class="mi">663</span><span class="sd">                     None</span>
+<span class="g g-Whitespace">    </span><span class="mi">664</span><span class="sd">                 )</span>
+<span class="ne">--&gt; </span><span class="mi">665</span><span class="sd">         return self.adjust(</span>
+<span class="g g-Whitespace">    </span><span class="mi">666</span><span class="sd">             new_params,</span>
+<span class="g g-Whitespace">    </span><span class="mi">667</span><span class="sd">             print_warnings=print_warnings,</span>
+
+<span class="nn">~/work/Tax-Calculator/Tax-Calculator/taxcalc/parameters.py</span> in <span class="ni">adjust</span><span class="nt">(self, params_or_path, print_warnings, raise_errors, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">179</span><span class="sd">                 ignore_warnings=kwargs[&quot;ignore_warnings&quot;],</span>
+<span class="g g-Whitespace">    </span><span class="mi">180</span><span class="sd">             ):</span>
+<span class="ne">--&gt; </span><span class="mi">181</span><span class="sd">                 return self.adjust_with_indexing(</span>
+<span class="g g-Whitespace">    </span><span class="mi">182</span><span class="sd">                     params_or_path, raise_errors=True, **kwargs</span>
+<span class="g g-Whitespace">    </span><span class="mi">183</span><span class="sd">                 )</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/contextlib.py</span> in <span class="ni">__exit__</span><span class="nt">(self, type, value, traceback)</span>
+<span class="g g-Whitespace">    </span><span class="mi">118</span><span class="sd">         if type is None:</span>
+<span class="g g-Whitespace">    </span><span class="mi">119</span><span class="sd">             try:</span>
+<span class="ne">--&gt; </span><span class="mi">120</span><span class="sd">                 next(self.gen)</span>
+<span class="g g-Whitespace">    </span><span class="mi">121</span><span class="sd">             except StopIteration:</span>
+<span class="g g-Whitespace">    </span><span class="mi">122</span><span class="sd">                 return False</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">transaction</span><span class="nt">(self, defer_validation, raise_errors, ignore_warnings)</span>
+<span class="g g-Whitespace">    </span><span class="mi">435</span><span class="sd">             self._defer_validation = False</span>
+<span class="g g-Whitespace">    </span><span class="mi">436</span><span class="sd">         if defer_validation:</span>
+<span class="ne">--&gt; </span><span class="mi">437</span><span class="sd">             self.validate(</span>
+<span class="g g-Whitespace">    </span><span class="mi">438</span><span class="sd">                 self.specification(use_state=False, meta_data=False),</span>
+<span class="g g-Whitespace">    </span><span class="mi">439</span><span class="sd">                 ignore_warnings=ignore_warnings,</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/parameters.py</span> in <span class="ni">validate</span><span class="nt">(self, params, raise_errors, ignore_warnings)</span>
+<span class="g g-Whitespace">    </span><span class="mi">459</span><span class="sd">         &quot;&quot;&quot;</span>
+<span class="g g-Whitespace">    </span><span class="mi">460</span>         <span class="k">try</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">461</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_validator_schema</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">462</span>                 <span class="n">params</span><span class="p">,</span> <span class="n">ignore_warnings</span><span class="p">,</span> <span class="n">deserialized</span><span class="o">=</span><span class="kc">True</span>
+<span class="g g-Whitespace">    </span><span class="mi">463</span>             <span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">load</span><span class="nt">(self, data, ignore_warnings, deserialized)</span>
+<span class="g g-Whitespace">    </span><span class="mi">238</span>         <span class="k">try</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">239</span>             <span class="k">if</span> <span class="n">deserialized</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">240</span>                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_only</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">241</span>             <span class="k">else</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">242</span>                 <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validate_only</span><span class="nt">(self, data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">216</span>                 <span class="n">field_errors</span><span class="o">=</span><span class="n">field_errors</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">217</span>             <span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">218</span>             <span class="bp">self</span><span class="o">.</span><span class="n">_invoke_schema_validators</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">219</span>                 <span class="n">error_store</span><span class="o">=</span><span class="n">error_store</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">220</span>                 <span class="n">pass_many</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/marshmallow/schema.py</span> in <span class="ni">_invoke_schema_validators</span><span class="nt">(self, error_store, pass_many, data, original_data, many, partial, field_errors)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1183</span>                     <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">1184</span>             <span class="k">else</span><span class="p">:</span>
+<span class="ne">-&gt; </span><span class="mi">1185</span>                 <span class="bp">self</span><span class="o">.</span><span class="n">_run_validator</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">1186</span>                     <span class="n">validator</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">1187</span>                     <span class="n">data</span><span class="p">,</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/marshmallow/schema.py</span> in <span class="ni">_run_validator</span><span class="nt">(self, validator_func, output, original_data, error_store, many, partial, pass_original, index)</span>
+<span class="g g-Whitespace">    </span><span class="mi">775</span>                 <span class="n">validator_func</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">original_data</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">776</span>             <span class="k">else</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">777</span>                 <span class="n">validator_func</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">,</span> <span class="n">many</span><span class="o">=</span><span class="n">many</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">778</span>         <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">779</span>             <span class="n">error_store</span><span class="o">.</span><span class="n">store_error</span><span class="p">(</span><span class="n">err</span><span class="o">.</span><span class="n">messages</span><span class="p">,</span> <span class="n">err</span><span class="o">.</span><span class="n">field_name</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validate_params</span><span class="nt">(self, data, **kwargs)</span>
+<span class="g g-Whitespace">    </span><span class="mi">256</span>         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">specs</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+<span class="g g-Whitespace">    </span><span class="mi">257</span>             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">spec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">specs</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">258</span>                 <span class="n">_warnings</span><span class="p">,</span> <span class="n">_errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validate_param</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">spec</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">259</span>                 <span class="k">if</span> <span class="n">_warnings</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">260</span>                     <span class="n">warnings</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">_warnings</span><span class="p">}</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validate_param</span><span class="nt">(self, param_name, param_spec, raw_data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">274</span>             <span class="bp">self</span><span class="o">.</span><span class="n">context</span><span class="p">[</span><span class="s2">&quot;spec&quot;</span><span class="p">],</span> <span class="s2">&quot;_defer_validation&quot;</span><span class="p">,</span> <span class="kc">False</span>
+<span class="g g-Whitespace">    </span><span class="mi">275</span>         <span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">276</span>         <span class="n">validators</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">validators</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">277</span>             <span class="n">param_name</span><span class="p">,</span> <span class="n">param_spec</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">validate_schema</span><span class="o">=</span><span class="n">validate_schema</span>
+<span class="g g-Whitespace">    </span><span class="mi">278</span>         <span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">validators</span><span class="nt">(self, param_name, param_spec, raw_data, validate_schema)</span>
+<span class="g g-Whitespace">    </span><span class="mi">317</span>             <span class="k">if</span> <span class="n">vname</span> <span class="o">==</span> <span class="s2">&quot;range&quot;</span> <span class="ow">and</span> <span class="n">param_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;date&quot;</span><span class="p">,):</span>
+<span class="g g-Whitespace">    </span><span class="mi">318</span>                 <span class="n">vname</span> <span class="o">=</span> <span class="s2">&quot;date_range&quot;</span>
+<span class="ne">--&gt; </span><span class="mi">319</span>             <span class="n">validator</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">WRAPPER_MAP</span><span class="p">[</span><span class="n">vname</span><span class="p">])(</span>
+<span class="g g-Whitespace">    </span><span class="mi">320</span>                 <span class="n">vname</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">321</span>                 <span class="n">vdata</span><span class="p">,</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">_get_range_validator</span><span class="nt">(self, vname, range_dict, param_name, param_spec, raw_data, ndim_restriction, validate_schema)</span>
+<span class="g g-Whitespace">    </span><span class="mi">440</span>             <span class="n">max_oth_param</span><span class="p">,</span> <span class="n">max_vos</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="p">[]</span>
+<span class="g g-Whitespace">    </span><span class="mi">441</span>         <span class="k">elif</span> <span class="n">is_related_param</span> <span class="ow">and</span> <span class="n">validate_schema</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">442</span>             <span class="n">max_oth_param</span><span class="p">,</span> <span class="n">max_vos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_related_value</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">443</span>                 <span class="n">max_value</span><span class="p">,</span> <span class="n">param_name</span><span class="p">,</span> <span class="n">param_spec</span><span class="p">,</span> <span class="n">raw_data</span>
+<span class="g g-Whitespace">    </span><span class="mi">444</span>             <span class="p">)</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">_get_related_value</span><span class="nt">(self, oth_param_name, param_name, param_spec, raw_data)</span>
+<span class="g g-Whitespace">    </span><span class="mi">540</span>         <span class="n">labs_to_check</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">param_spec</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="s2">&quot;_auto&quot;</span><span class="p">)}</span>
+<span class="g g-Whitespace">    </span><span class="mi">541</span>         <span class="k">if</span> <span class="n">labs_to_check</span><span class="p">:</span>
+<span class="ne">--&gt; </span><span class="mi">542</span>             <span class="n">res</span> <span class="o">=</span> <span class="p">[</span>
+<span class="g g-Whitespace">    </span><span class="mi">543</span>                 <span class="n">val</span>
+<span class="g g-Whitespace">    </span><span class="mi">544</span>                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span>
+
+<span class="nn">/usr/share/miniconda/envs/taxcalc-dev/lib/python3.8/site-packages/paramtools/schema.py</span> in <span class="ni">&lt;listcomp&gt;</span><span class="nt">(.0)</span>
+<span class="g g-Whitespace">    </span><span class="mi">543</span>                 <span class="n">val</span>
+<span class="g g-Whitespace">    </span><span class="mi">544</span>                 <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">vals</span>
+<span class="ne">--&gt; </span><span class="mi">545</span>                 <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">param_spec</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">labs_to_check</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">546</span>             <span class="p">]</span>
+<span class="g g-Whitespace">    </span><span class="mi">547</span>         <span class="k">else</span><span class="p">:</span>
 
 <span class="ne">KeyboardInterrupt</span>: 
 </pre></div>
